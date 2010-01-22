@@ -3,14 +3,6 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 
-class Identity(models.Model):
-    identity = models.CharField(max_length=20)
-    user = models.ForeignKey(User)
-
-    def __unicode__(self):
-        return self.user.username + "." + self.identity
-
-
 class BaseNode(models.Model):
     name = models.CharField(max_length=20)
     displayname = models.CharField(max_length=100)
@@ -39,8 +31,6 @@ class Subject(BaseNode):
 
 class Period(BaseNode):
     subject = models.ForeignKey(Subject)
-    #students = models.ManyToManyField(User, related_name="students")
-    #examiners = models.ManyToManyField(User, related_name="examiners")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 
@@ -71,3 +61,8 @@ class DeliveryCandidate(models.Model):
 
     def get_path(self):
         return join(settings.DEVILRY_DELIVERY_PATH, str(self.id))
+
+
+class FileMeta(models.Model):
+    delivery_candidate = models.ForeignKey(DeliveryCandidate)
+    filename = models.CharField(max_length=500)

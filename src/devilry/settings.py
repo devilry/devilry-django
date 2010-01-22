@@ -84,7 +84,4 @@ INSTALLED_APPS = (
     'devilry.core',
 )
 
-AUTH_PROFILE_MODULE = 'core.UserProfile'
-
-
 DEVILRY_DELIVERY_PATH = join(this_dir, "filestore", "deliveries")
