@@ -6,7 +6,10 @@ from django.contrib import admin
 
 class NodeAdmin(admin.ModelAdmin):
     def queryset(self, request):
-        return Node.objects.filter(name__contains='ifi')
+        if request.user.is_superuser:
+            return Node.objects
+        else:
+            return Node.objects.filter(admins=request.user)
     
 
 admin.site.register(Node, NodeAdmin)
