@@ -1,8 +1,11 @@
-from models import DevilryUser, Node, SubjectNode, PeriodNode, AssignmentNode
+from models import Identity, \
+        Node, Subject, Period, Assignment, Delivery, DeliveryCandidate
 from django.contrib import admin
 
-admin.site.register(DevilryUser)
+admin.site.register(Identity)
 admin.site.register(Node)
-admin.site.register(SubjectNode)
-admin.site.register(PeriodNode)
-admin.site.register(AssignmentNode)
+admin.site.register(Subject)
+admin.site.register(Period)
+admin.site.register(Assignment)
+admin.site.register(Delivery)
+admin.site.register(DeliveryCandidate)

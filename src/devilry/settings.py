@@ -1,4 +1,8 @@
 # Django settings for devilry project.
+from os.path import abspath, dirname, join
+
+this_dir = dirname(abspath(__file__))
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -79,3 +83,8 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
     'devilry.core',
 )
+
+AUTH_PROFILE_MODULE = 'core.UserProfile'
+
+
+DEVILRY_DELIVERY_PATH = join(this_dir, "filestore", "deliveries")
