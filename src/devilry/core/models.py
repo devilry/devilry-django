@@ -6,7 +6,7 @@ from django.conf import settings
 class BaseNode(models.Model):
     name = models.CharField(max_length=20)
     displayname = models.CharField(max_length=100)
-    admins = models.ManyToManyField(User)
+    admins = models.ManyToManyField(User, blank=True)
 
     class Meta:
         abstract = True
@@ -48,8 +48,8 @@ class Assignment(BaseNode):
 
 class Delivery(models.Model):
     assignment = models.ForeignKey(Assignment)
-    students = models.ManyToManyField(User, related_name="students")
-    examiners = models.ManyToManyField(User, related_name="examiners")
+    students = models.ManyToManyField(User, related_name="students", blank=True)
+    examiners = models.ManyToManyField(User, related_name="examiners", blank=True)
 
     #def __unicode__(self):
     #    return unicode(self.period) + "." + self.name
