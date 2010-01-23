@@ -12,7 +12,8 @@ class BaseNodeAdmin(admin.ModelAdmin):
     search_fields = ['short_name', 'long_name']
 
     def queryset(self, request):
-        """ Limit administrators to superusers, and  """
+        """ Limit administrators to superusers, and administators on this
+        node or any of the parent-nodes. """
         if request.user.is_superuser:
             return self.get_modelcls().objects
         else:
