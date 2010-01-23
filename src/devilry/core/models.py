@@ -118,12 +118,10 @@ class FileMeta(models.Model):
 
 
 
-#def add_permissions_to_users(sender, **kwargs):
-    #print dir(Node.admins.field)
-    ##for adm in sender.admins.all():
-    ##    print adm
-    #print type(sender.admins.field)
+def add_permissions_to_users(sender, **kwargs):
+    if kwargs['created']:
+        instance = kwargs['instance']
+        print dir(instance.user.user_permissions)
+        print instance.user.has_perm('core.change_node')
 
-
-
-#post_save.connect(add_permissions_to_users, sender=Node)
+post_save.connect(add_permissions_to_users, sender=NodeAdministator)
