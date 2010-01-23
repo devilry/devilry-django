@@ -113,6 +113,7 @@ class DeliveryCandidate(models.Model):
 class FileMeta(models.Model):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filename = models.CharField(max_length=500)
+    filepath = models.FileField(upload_to="deliveries")
 
 
 

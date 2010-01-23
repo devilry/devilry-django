@@ -20,8 +20,8 @@
         "model": "core.node", 
         "fields": {
             "long_name": "Institutt for informatikk", 
-            "short_name": "ifi", 
-            "parent": 2
+            "parent": 2, 
+            "short_name": "ifi"
         }
     }, 
     {
@@ -29,8 +29,8 @@
         "model": "core.node", 
         "fields": {
             "long_name": "Universitetet i Oslo", 
-            "short_name": "uio", 
-            "parent": null
+            "parent": null, 
+            "short_name": "uio"
         }
     }, 
     {
@@ -54,8 +54,8 @@
         "model": "core.subject", 
         "fields": {
             "long_name": "INF1010", 
-            "short_name": "inf1010", 
-            "parent": 1
+            "parent": 1, 
+            "short_name": "inf1010"
         }
     }, 
     {
@@ -63,8 +63,8 @@
         "model": "core.subject", 
         "fields": {
             "long_name": "INF1100", 
-            "short_name": "inf1100", 
-            "parent": 1
+            "parent": 1, 
+            "short_name": "inf1100"
         }
     }, 
     {
@@ -79,11 +79,45 @@
         "pk": 1, 
         "model": "core.period", 
         "fields": {
+            "long_name": "Spring 2010", 
             "start_time": "2010-01-23 12:33:49", 
             "end_time": "2010-05-20 12:33:51", 
-            "long_name": "Spring 2010", 
             "short_name": "spring2010", 
             "subject": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.assignment", 
+        "fields": {
+            "long_name": "Obligatory assignment 1", 
+            "deadline": "2010-01-23 13:45:10", 
+            "period": 1, 
+            "short_name": "oblig1"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.delivery", 
+        "fields": {
+            "assignment": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.deliverycandidate", 
+        "fields": {
+            "delivery": 1, 
+            "time_of_delivery": "2010-01-23 13:46:31"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.filemeta", 
+        "fields": {
+            "filepath": "deliveries/tull.pages", 
+            "delivery_candidate": 1, 
+            "filename": "stuff"
         }
     }
 ]
