@@ -1,0 +1,89 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.nodeadministator", 
+        "fields": {
+            "node": 2, 
+            "user": 3
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.nodeadministator", 
+        "fields": {
+            "node": 1, 
+            "user": 2
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Institutt for informatikk", 
+            "short_name": "ifi", 
+            "parent": 2
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Universitetet i Oslo", 
+            "short_name": "uio", 
+            "parent": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.subjectadministator", 
+        "fields": {
+            "node": 1, 
+            "user": 3
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.subjectadministator", 
+        "fields": {
+            "node": 2, 
+            "user": 4
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF1010", 
+            "short_name": "inf1010", 
+            "parent": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF1100", 
+            "short_name": "inf1100", 
+            "parent": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.periodadministator", 
+        "fields": {
+            "node": 1, 
+            "user": 4
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.period", 
+        "fields": {
+            "start_time": "2010-01-23 12:33:49", 
+            "end_time": "2010-05-20 12:33:51", 
+            "long_name": "Spring 2010", 
+            "short_name": "spring2010", 
+            "subject": 1
+        }
+    }
+]
