@@ -6,7 +6,9 @@ Replace these with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-import models
+from django.contrib.auth.models import User
+from models import Node
+
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -16,15 +18,24 @@ class SimpleTest(TestCase):
         self.failUnlessEqual(1 + 1, 2)
 
 
+class TestSignals(TestCase):
+    def test_add_permissions_to_users(self):
+        bart = User.objects.create_user('bart', 'bart@example.com', 'bartman')
+        ifi = Node(name="ifi", displayname="IFI")
+        ifi.save()
+        ifi.admins.add(bart)
+        
+        
 
-class BasicNodeHierarchy:
-    def setUp(self):
-        self.uio = models.Node(name="uio", displayname="UiO")
-        self.ifi = models.Node(name="ifi", displayname="IFI")
-        #self.infx = models.
 
-class TestDelivery(TestCase):
-    def test_unicode(self):
+#class BasicNodeHierarchy:
+    #def setUp(self):
+        #self.uio = models.Node(name="uio", displayname="UiO")
+        #self.ifi = models.Node(name="ifi", displayname="IFI")
+        ##self.infx = models.
+
+#class TestDelivery(TestCase):
+    #def test_unicode(self):
 
 
 __test__ = {"doctest": """
