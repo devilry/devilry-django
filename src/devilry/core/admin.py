@@ -63,8 +63,8 @@ class PeriodAdmin(BaseNodeAdmin):
     def get_admins(self, request):
         return self.get_modelcls().objects.filter(
                 Q(admins=request.user) |
-                Q(parent__admins=request.user) |
-                Q(parent__admins__admins=request.user))
+                Q(subject__admins=request.user) |
+                Q(subject__parent__admins=request.user))
 
 
 class AssignmentAdministatorInline(admin.TabularInline):
@@ -77,9 +77,9 @@ class AssignmentAdmin(BaseNodeAdmin):
     def get_admins(self, request):
         return self.get_modelcls().objects.filter(
                 Q(admins=request.user) |
-                Q(parent__admins=request.user) |
-                Q(parent__admins__admins=request.user) |
-                Q(parent__admins__admins__admins=request.user))
+                Q(period__admins=request.user) |
+                Q(period__subject__admins=request.user) |
+                Q(period__subject__parent__admins=request.user))
 
 
 
@@ -91,6 +91,14 @@ class DeliveryExaminerInline(admin.TabularInline):
     extra = 1
 class DeliveryAdmin(LimitAccess, admin.ModelAdmin):
     inlines = (DeliveryStudentInline, DeliveryExaminerInline)
+    def get_modelcls(self):
+        return Delivery
+    def get_admins(self, request):
+        return self.get_modelcls().objects.filter(
+                Q(assignment__admins=request.user) |
+                Q(assignment__period__admins=request.user) |
+                Q(assignment__period__subject__admins=request.user) |
+                Q(assignment__period__subject__parent__admins=request.user))
 
 
 admin.site.register(Node, NodeAdmin)

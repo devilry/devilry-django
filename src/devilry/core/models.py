@@ -140,14 +140,13 @@ class FileMeta(models.Model):
 
 
 class PermissionsForUserHandler:
-    def __init__(self, content_type_name, codenames=[], add=True):
-        self.content_type_name = content_type_name
+    def __init__(self, content_type_names=[], codenames=[], add=True):
+        self.content_type_names = content_type_names
         self.codenames = codenames
         if add:
             self._action = self._add
         else:
             self._action = self._remove
-
 
     def _add(self, permission, instance):
         try:
@@ -162,12 +161,13 @@ class PermissionsForUserHandler:
         if self._action == self._add and not kwargs.get('created'):
             return
         instance = kwargs['instance']
-        for codename in self.codenames:
-            codename = codename="%s_%s" % (codename, self.content_type_name)
-            permission = Permission.objects.get(
-                    content_type__name = self.content_type_name,
-                    codename = codename)
-            self._action(permission, instance)
+        for content_type_name in self.content_type_names:
+            for codename in self.codenames:
+                codename = codename="%s_%s" % (codename, content_type_name)
+                permission = Permission.objects.get(
+                        content_type__name = content_type_name,
+                        codename = codename)
+                self._action(permission, instance)
 
 
 
@@ -175,22 +175,31 @@ class PermissionsForUserHandler:
 # Signal handlers
 #
 
-node_post_save_handler = PermissionsForUserHandler('node', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-node_post_delete_handler = PermissionsForUserHandler('node', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+content_type_names = ['node', 'subject', 'period', 'assignment', 'delivery']
+node_post_save_handler = PermissionsForUserHandler(
+        content_type_names, settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+node_post_delete_handler = PermissionsForUserHandler(
+        content_type_names, settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
 post_save.connect(node_post_save_handler, sender=NodeAdministator)
 post_delete.connect(node_post_delete_handler, sender=NodeAdministator)
 
-subject_post_save_handler = PermissionsForUserHandler('subject', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-subject_post_delete_handler = PermissionsForUserHandler('subject', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+subject_post_save_handler = PermissionsForUserHandler(
+        content_type_names[1:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+subject_post_delete_handler = PermissionsForUserHandler(
+        content_type_names[1:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
 post_save.connect(subject_post_save_handler, sender=SubjectAdministator)
 post_delete.connect(subject_post_delete_handler, sender=SubjectAdministator)
 
-period_post_save_handler = PermissionsForUserHandler('period', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-period_post_delete_handler = PermissionsForUserHandler('period', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+period_post_save_handler = PermissionsForUserHandler(
+        content_type_names[2:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+period_post_delete_handler = PermissionsForUserHandler(
+        content_type_names[2:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
 post_save.connect(period_post_save_handler, sender=SubjectAdministator)
 post_delete.connect(period_post_delete_handler, sender=SubjectAdministator)
 
-assignment_post_save_handler = PermissionsForUserHandler('assignment', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-assignment_post_delete_handler = PermissionsForUserHandler('assignment', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+assignment_post_save_handler = PermissionsForUserHandler(
+        content_type_names[3:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+assignment_post_delete_handler = PermissionsForUserHandler(
+        content_type_names[3:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
 post_save.connect(assignment_post_save_handler, sender=SubjectAdministator)
 post_delete.connect(assignment_post_delete_handler, sender=SubjectAdministator)
