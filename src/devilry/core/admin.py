@@ -25,7 +25,7 @@ class LimitAccess:
 
 
 
-class BaseNodeAdmin(admin.ModelAdmin, LimitAccess):
+class BaseNodeAdmin(LimitAccess, admin.ModelAdmin):
     list_display = ('short_name', 'long_name', 'get_path')
     search_fields = ['short_name', 'long_name']
 
@@ -89,7 +89,7 @@ class DeliveryStudentInline(admin.TabularInline):
 class DeliveryExaminerInline(admin.TabularInline):
     model = DeliveryExaminer
     extra = 1
-class DeliveryAdmin(admin.ModelAdmin, LimitAccess):
+class DeliveryAdmin(LimitAccess, admin.ModelAdmin):
     inlines = (DeliveryStudentInline, DeliveryExaminerInline)
 
 
