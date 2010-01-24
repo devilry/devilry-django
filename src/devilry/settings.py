@@ -84,4 +84,4 @@ INSTALLED_APPS = (
     'devilry.core',
 )
 
-DEVILRY_DELIVERY_PATH = join(this_dir, "filestore", "deliveries")
+DEVILRY_ADMIN_AUTOPERMISSIONS = ['change', 'add', 'delete']

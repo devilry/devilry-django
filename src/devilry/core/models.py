@@ -1,8 +1,7 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.conf import settings
-
 
 
 
@@ -13,6 +12,10 @@ class BaseNode(models.Model):
 
     class Meta:
         abstract = True
+
+    def get_path(self):
+        return unicode(self)
+    get_path.short_description = 'Path'
 
 
 
@@ -41,6 +44,23 @@ class Node(BaseNode):
             return unicode(self.parent) + "." + self.short_name
         else:
             return self.short_name
+
+    @classmethod
+    def get_pathlist_kw(cls, pathlist):
+        kw = {}
+        key = 'short_name'
+        for short_name in reversed(pathlist):
+            kw[key] = short_name
+            key = 'parent__' + key
+        return kw
+
+    @classmethod
+    def get_by_pathlist(cls, pathlist):
+        return Node.objects.get(**cls.get_pathlist_kw(pathlist))
+
+    @classmethod
+    def get_by_path(cls, path):
+        return cls.get_by_pathlist(path.split('.'))
 
 
 
@@ -92,22 +112,22 @@ class DeliveryExaminer(models.Model):
     examiner = models.ForeignKey(User)
 
 class Delivery(models.Model):
+    class Meta:
+        verbose_name_plural = 'deliveries'
     assignment = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students",
             through=DeliveryStudent)
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners",
             through=DeliveryExaminer)
 
-    #def __unicode__(self):
-    #    return unicode(self.period) + "." + self.short_name
+    def __unicode__(self):
+        return '%s (%s)' % (self.assignment,
+                ', '.join([unicode(x) for x in self.students.all()]))
 
 
 class DeliveryCandidate(models.Model):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
-
-    def get_path(self):
-        return join(settings.DEVILRY_DELIVERY_PATH, str(self.id))
 
 
 class FileMeta(models.Model):
@@ -118,10 +138,59 @@ class FileMeta(models.Model):
 
 
 
-def add_permissions_to_users(sender, **kwargs):
-    if kwargs['created']:
-        instance = kwargs['instance']
-        print dir(instance.user.user_permissions)
-        print instance.user.has_perm('core.change_node')
 
-post_save.connect(add_permissions_to_users, sender=NodeAdministator)
+class PermissionsForUserHandler:
+    def __init__(self, content_type_name, codenames=[], add=True):
+        self.content_type_name = content_type_name
+        self.codenames = codenames
+        if add:
+            self._action = self._add
+        else:
+            self._action = self._remove
+
+
+    def _add(self, permission, instance):
+        try:
+            permission.user_set.get(username=instance.user.username)
+        except User.DoesNotExist, e:
+            permission.user_set.add(instance.user)
+
+    def _remove(self, permission, instance):
+        pass
+
+    def __call__(self, sender, **kwargs):
+        if self._action == self._add and not kwargs.get('created'):
+            return
+        instance = kwargs['instance']
+        for codename in self.codenames:
+            codename = codename="%s_%s" % (codename, self.content_type_name)
+            permission = Permission.objects.get(
+                    content_type__name = self.content_type_name,
+                    codename = codename)
+            self._action(permission, instance)
+
+
+
+#
+# Signal handlers
+#
+
+node_post_save_handler = PermissionsForUserHandler('node', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+node_post_delete_handler = PermissionsForUserHandler('node', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+post_save.connect(node_post_save_handler, sender=NodeAdministator)
+post_delete.connect(node_post_delete_handler, sender=NodeAdministator)
+
+subject_post_save_handler = PermissionsForUserHandler('subject', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+subject_post_delete_handler = PermissionsForUserHandler('subject', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+post_save.connect(subject_post_save_handler, sender=SubjectAdministator)
+post_delete.connect(subject_post_delete_handler, sender=SubjectAdministator)
+
+period_post_save_handler = PermissionsForUserHandler('period', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+period_post_delete_handler = PermissionsForUserHandler('period', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+post_save.connect(period_post_save_handler, sender=SubjectAdministator)
+post_delete.connect(period_post_delete_handler, sender=SubjectAdministator)
+
+assignment_post_save_handler = PermissionsForUserHandler('assignment', settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
+assignment_post_delete_handler = PermissionsForUserHandler('assignment', settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
+post_save.connect(assignment_post_save_handler, sender=SubjectAdministator)
+post_delete.connect(assignment_post_delete_handler, sender=SubjectAdministator)

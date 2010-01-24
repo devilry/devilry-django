@@ -6,7 +6,7 @@ Replace these with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from models import Node, NodeAdministator
 
 
@@ -18,14 +18,31 @@ class SimpleTest(TestCase):
         self.failUnlessEqual(1 + 1, 2)
 
 
+
+class TestNode(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+    def test_get_path(self):
+        print Node.get_pathlist_kw(['uio', 'matnat', 'ifi'])
+        print Node.get_by_pathlist(['uio', 'ifi'])
+
+
 class TestSignals(TestCase):
-    def test_add_permissions_to_users(self):
+    def test_node_post_save_handler(self):
         bart = User.objects.create_user('bart', 'bart@example.com', 'bartman')
         ifi = Node(short_name="ifi", long_name="IFI")
         ifi.save()
-        NodeAdministator(user=bart, node=ifi).save()
-        
-        
+        n = NodeAdministator(user=bart, node=ifi)
+        self.assertRaises(Permission.DoesNotExist, Permission.objects.get,
+                content_type__name = 'node',
+                codename = 'change_node',
+                user=bart)
+        n.save()
+        permission = Permission.objects.get(
+                content_type__name = 'node',
+                codename = 'change_node',
+                user=bart)
+
+
 
 
 #class BasicNodeHierarchy:
