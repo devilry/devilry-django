@@ -6,8 +6,6 @@ from django.db.models import Q
 
 
 
-
-
 class LimitAccess:
     def queryset(self, request):
         """ Limit administrators to superusers, and administators on this
@@ -15,9 +13,9 @@ class LimitAccess:
         if request.user.is_superuser:
             return self.get_modelcls().objects
         else:
-            return self.get_admins(request)
+            return self.get_instances_where_admin(request.user)
 
-    def get_admins(self, request):
+    def get_instances_where_admin(self, user):
         raise NotImplementedError()
 
     def get_modelcls(self):
@@ -37,8 +35,23 @@ class NodeAdmin(BaseNodeAdmin):
     inlines = (NodeAdministatorInline,)
     def get_modelcls(self):
         return Node
-    def get_admins(self, request):
-        return self.get_modelcls().objects.filter(admins=request.user)
+
+
+    @classmethod
+    def get_admnodes(cls, user):
+        admnodes = Node.objects.filter(admins=user)
+        l = []
+        def add_admnodes(admnodes):
+            for a in admnodes.all():
+                l.append(a.id)
+                add_admnodes(a.node_set)
+        add_admnodes(admnodes)
+        return l
+
+    def get_instances_where_admin(self, user):
+        admnodes = NodeAdmin.get_admnodes(user)
+        f = self.get_modelcls().objects.filter(id__in=admnodes)
+        return f
 
 
 class SubjectAdministatorInline(admin.TabularInline):
@@ -48,23 +61,29 @@ class SubjectAdmin(BaseNodeAdmin):
     inlines = (SubjectAdministatorInline,)
     def get_modelcls(self):
         return Subject
-    def get_admins(self, request):
+    def get_instances_where_admin(self, user):
+        admnodes = NodeAdmin.get_admnodes(user)
         return self.get_modelcls().objects.filter(
-                Q(admins=request.user) | Q(parent__admins=request.user))
+                Q(admins=user) | Q(parent__id__in=admnodes))
 
 
 class PeriodAdministatorInline(admin.TabularInline):
     model = PeriodAdministator
     extra = 1
 class PeriodAdmin(BaseNodeAdmin):
+    list_display = ['subject', 'short_name', 'start_time', 'end_time']
+    search_fields = ['short_name', 'long_name', 'subject__short_name']
+    list_filter = ['start_time', 'end_time']
+    ordering = ['subject']
     inlines = (PeriodAdministatorInline,)
     def get_modelcls(self):
         return Period
-    def get_admins(self, request):
+    def get_instances_where_admin(self, user):
+        admnodes = NodeAdmin.get_admnodes(user)
         return self.get_modelcls().objects.filter(
-                Q(admins=request.user) |
-                Q(subject__admins=request.user) |
-                Q(subject__parent__admins=request.user))
+                Q(admins=user) |
+                Q(subject__admins=user) |
+                Q(subject__parent__id__in=admnodes))
 
 
 class AssignmentAdministatorInline(admin.TabularInline):
@@ -74,12 +93,13 @@ class AssignmentAdmin(BaseNodeAdmin):
     inlines = (AssignmentAdministatorInline,)
     def get_modelcls(self):
         return Assignment
-    def get_admins(self, request):
+    def get_instances_where_admin(self, user):
+        admnodes = NodeAdmin.get_admnodes(user)
         return self.get_modelcls().objects.filter(
-                Q(admins=request.user) |
-                Q(period__admins=request.user) |
-                Q(period__subject__admins=request.user) |
-                Q(period__subject__parent__admins=request.user))
+                Q(admins=user) |
+                Q(period__admins=user) |
+                Q(period__subject__admins=user) |
+                Q(period__subject__parent__id__in=admnodes))
 
 
 
@@ -93,12 +113,12 @@ class DeliveryAdmin(LimitAccess, admin.ModelAdmin):
     inlines = (DeliveryStudentInline, DeliveryExaminerInline)
     def get_modelcls(self):
         return Delivery
-    def get_admins(self, request):
+    def get_instances_where_admin(self, user):
         return self.get_modelcls().objects.filter(
-                Q(assignment__admins=request.user) |
-                Q(assignment__period__admins=request.user) |
-                Q(assignment__period__subject__admins=request.user) |
-                Q(assignment__period__subject__parent__admins=request.user))
+                Q(assignment__admins=user) |
+                Q(assignment__period__admins=user) |
+                Q(assignment__period__subject__admins=user) |
+                Q(assignment__period__subject__parent__admins=user))
 
 
 admin.site.register(Node, NodeAdmin)

@@ -31,7 +31,6 @@ class BaseNodeAdministator(models.Model):
 
 
 
-
 class NodeAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Node')
 
@@ -47,6 +46,9 @@ class Node(BaseNode):
 
     @classmethod
     def get_pathlist_kw(cls, pathlist):
+        """ Used by get_by_pathlist() to create the required kwargs for
+        Node.objects.get(). Might be a starting point for more sophisticated
+        queries including paths. """
         kw = {}
         key = 'short_name'
         for short_name in reversed(pathlist):
@@ -56,10 +58,17 @@ class Node(BaseNode):
 
     @classmethod
     def get_by_pathlist(cls, pathlist):
+        """ Get node by path just like get_by_path(), the parameter
+        is a list of node-names instead of a single string. Example:
+            >>> ifi = Node.get_by_pathlist(['uio, 'ifi'])
+        """
         return Node.objects.get(**cls.get_pathlist_kw(pathlist))
 
     @classmethod
     def get_by_path(cls, path):
+        """ Get a node by path. Example:
+            >>> ifi = Node.get_by_path('uio.ifi')
+        """
         return cls.get_by_pathlist(path.split('.'))
 
 
@@ -141,6 +150,7 @@ class FileMeta(models.Model):
 
 class PermissionsForUserHandler:
     def __init__(self, content_type_names=[], codenames=[], add=True):
+        print content_type_names, codenames
         self.content_type_names = content_type_names
         self.codenames = codenames
         if add:
@@ -153,11 +163,13 @@ class PermissionsForUserHandler:
             permission.user_set.get(username=instance.user.username)
         except User.DoesNotExist, e:
             permission.user_set.add(instance.user)
+            print "Added", permission, "TO", instance.user
 
     def _remove(self, permission, instance):
         pass
 
     def __call__(self, sender, **kwargs):
+        print "CALLED"
         if self._action == self._add and not kwargs.get('created'):
             return
         instance = kwargs['instance']
@@ -194,12 +206,12 @@ period_post_save_handler = PermissionsForUserHandler(
         content_type_names[2:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
 period_post_delete_handler = PermissionsForUserHandler(
         content_type_names[2:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
-post_save.connect(period_post_save_handler, sender=SubjectAdministator)
-post_delete.connect(period_post_delete_handler, sender=SubjectAdministator)
+post_save.connect(period_post_save_handler, sender=PeriodAdministator)
+post_delete.connect(period_post_delete_handler, sender=PeriodAdministator)
 
 assignment_post_save_handler = PermissionsForUserHandler(
         content_type_names[3:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
 assignment_post_delete_handler = PermissionsForUserHandler(
         content_type_names[3:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS, add=False)
-post_save.connect(assignment_post_save_handler, sender=SubjectAdministator)
-post_delete.connect(assignment_post_delete_handler, sender=SubjectAdministator)
+post_save.connect(assignment_post_save_handler, sender=AssignmentAdministator)
+post_delete.connect(assignment_post_delete_handler, sender=AssignmentAdministator)

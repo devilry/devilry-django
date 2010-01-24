@@ -44,22 +44,6 @@
     }, 
     {
         "pk": 1, 
-        "model": "core.subjectadministator", 
-        "fields": {
-            "node": 1, 
-            "user": 3
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "core.subjectadministator", 
-        "fields": {
-            "node": 2, 
-            "user": 4
-        }
-    }, 
-    {
-        "pk": 1, 
         "model": "core.subject", 
         "fields": {
             "long_name": "INF1010", 
@@ -78,19 +62,44 @@
     }, 
     {
         "pk": 1, 
-        "model": "core.periodadministator", 
-        "fields": {
-            "node": 1, 
-            "user": 4
-        }
-    }, 
-    {
-        "pk": 1, 
         "model": "core.period", 
         "fields": {
             "long_name": "Spring 2010", 
             "start_time": "2010-01-23 12:33:49", 
             "end_time": "2010-05-20 12:33:51", 
+            "short_name": "spring2010", 
+            "subject": 2
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.period", 
+        "fields": {
+            "long_name": "Spring 2009", 
+            "start_time": "2009-01-24 18:24:36", 
+            "end_time": "2009-05-24 18:24:37", 
+            "short_name": "spring2009", 
+            "subject": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.period", 
+        "fields": {
+            "long_name": "Spring 2009", 
+            "start_time": "2009-01-24 18:25:03", 
+            "end_time": "2009-06-24 18:25:04", 
+            "short_name": "spring2009", 
+            "subject": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.period", 
+        "fields": {
+            "long_name": "Spring 2010", 
+            "start_time": "2010-01-24 18:25:27", 
+            "end_time": "2010-06-24 18:25:30", 
             "short_name": "spring2010", 
             "subject": 1
         }
