@@ -130,7 +130,7 @@ class Delivery(models.Model):
             through=DeliveryExaminer)
 
     def __unicode__(self):
-        return '%s (%s)' % (self.assignment,
+        return u'%s (%s)' % (self.assignment,
                 ', '.join([unicode(x) for x in self.students.all()]))
 
 
@@ -138,10 +138,12 @@ class DeliveryCandidate(models.Model):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
 
+    def __unicode__(self):
+        return u'%s %s' % (self.delivery, self.time_of_delivery)
+
 
 class FileMeta(models.Model):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
-    filename = models.CharField(max_length=500)
     filepath = models.FileField(upload_to="deliveries")
 
 

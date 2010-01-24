@@ -121,11 +121,19 @@ class DeliveryAdmin(LimitAccess, admin.ModelAdmin):
                 Q(assignment__period__subject__parent__admins=user))
 
 
+
+class FileMetaInline(admin.TabularInline):
+    model = FileMeta
+    extra = 1
+class DeliveryCandidateAdmin(admin.ModelAdmin):
+    list_display = ['__unicode__', 'id']
+    inlines = (FileMetaInline,)
+
+
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 
 admin.site.register(Delivery, DeliveryAdmin)
-admin.site.register(DeliveryCandidate)
-admin.site.register(FileMeta)
+admin.site.register(DeliveryCandidate, DeliveryCandidateAdmin)
