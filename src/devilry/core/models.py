@@ -150,7 +150,6 @@ class FileMeta(models.Model):
 
 class PermissionsForUserHandler:
     def __init__(self, content_type_names=[], codenames=[], add=True):
-        print content_type_names, codenames
         self.content_type_names = content_type_names
         self.codenames = codenames
         if add:
@@ -163,13 +162,12 @@ class PermissionsForUserHandler:
             permission.user_set.get(username=instance.user.username)
         except User.DoesNotExist, e:
             permission.user_set.add(instance.user)
-            print "Added", permission, "TO", instance.user
+            #print "Added", permission, "TO", instance.user
 
     def _remove(self, permission, instance):
         pass
 
     def __call__(self, sender, **kwargs):
-        print "CALLED"
         if self._action == self._add and not kwargs.get('created'):
             return
         instance = kwargs['instance']
