@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django import forms
 from models import DeliveryCandidate, FileMeta
 from django.forms.models import inlineformset_factory
+from datetime import datetime
 
 
 def dashboard(request):
@@ -20,15 +21,30 @@ FileMetaForm = inlineformset_factory(DeliveryCandidate, FileMeta)
 
 def deliver(request):
     if request.method == 'POST':
-        #form = DeliveryForm(request.POST)
-        #if form.is_valid():
-        #    return HttpResponseRedirect('thanks')
-        pass
-    else:
-        i = DeliveryCandidate.objects.get(id=1)
-        form = DeliveryCandidateForm(instance=i)
-        formset = FileMetaForm(instance=i)
+        if 'add_file' in request.POST:
+            print "Add file..."
+        else:
+            print 'Deliver...'
+
+        form = DeliveryCandidateForm(request.POST)
+        formset = FileMetaForm(request.POST, request.FILES, instance=form.instance)
         print dir(formset)
+
+        
+        for f in formset.forms:
+            #print dir(f)
+            print f.has_changed()
+        if form.is_valid() and formset.is_valid():
+            form.instance.time_of_delivery = datetime.now()
+            #form.save()
+            #formset.save()
+            return HttpResponse('thanks')
+            #return HttpResponseRedirect('thanks')
+    else:
+        form = DeliveryCandidateForm()
+        #print dir(form.instance)
+        formset = FileMetaForm()
+        #print dir(formset)
     return render_to_response('core/delivery.html', {
         'form': form,
         'formset': formset,
