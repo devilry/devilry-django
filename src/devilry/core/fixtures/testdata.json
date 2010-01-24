@@ -19,8 +19,8 @@
         "pk": 1, 
         "model": "core.node", 
         "fields": {
-            "long_name": "Institutt for informatikk", 
-            "parent": 2, 
+            "long_name": "Department of Informatics", 
+            "parent": 3, 
             "short_name": "ifi"
         }
     }, 
@@ -28,9 +28,18 @@
         "pk": 2, 
         "model": "core.node", 
         "fields": {
-            "long_name": "Universitetet i Oslo", 
+            "long_name": "University of Oslo", 
             "parent": null, 
             "short_name": "uio"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Faculty of Mathematics and Natural Sciences", 
+            "parent": 2, 
+            "short_name": "matnat"
         }
     }, 
     {
@@ -98,6 +107,14 @@
     }, 
     {
         "pk": 1, 
+        "model": "core.deliverystudent", 
+        "fields": {
+            "delivery": 1, 
+            "student": 1
+        }
+    }, 
+    {
+        "pk": 1, 
         "model": "core.delivery", 
         "fields": {
             "assignment": 1
@@ -109,15 +126,6 @@
         "fields": {
             "delivery": 1, 
             "time_of_delivery": "2010-01-23 13:46:31"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "core.filemeta", 
-        "fields": {
-            "filepath": "deliveries/tull.pages", 
-            "delivery_candidate": 1, 
-            "filename": "stuff"
         }
     }
 ]
