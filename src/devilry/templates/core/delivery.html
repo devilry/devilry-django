@@ -1,5 +1,5 @@
 <h1>Deliver</h1>
-<form action="{{ request.path }}" method="post">
+<form enctype="multipart/form-data" action="{{ request.path }}" method="post">
 	<table>
 		{{ form.as_table }}
 		{{ formset.as_table }}

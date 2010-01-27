@@ -16,7 +16,7 @@ class DeliveryCandidateForm(forms.ModelForm):
         exclude = ['time_of_delivery']
 
 
-FileMetaForm = inlineformset_factory(DeliveryCandidate, FileMeta)
+FileMetaForm = inlineformset_factory(DeliveryCandidate, FileMeta, extra=1)
 
 
 def deliver(request):
@@ -30,14 +30,10 @@ def deliver(request):
         formset = FileMetaForm(request.POST, request.FILES, instance=form.instance)
         print dir(formset)
 
-        
-        for f in formset.forms:
-            #print dir(f)
-            print f.has_changed()
         if form.is_valid() and formset.is_valid():
             form.instance.time_of_delivery = datetime.now()
-            #form.save()
-            #formset.save()
+            form.save()
+            formset.save()
             return HttpResponse('thanks')
             #return HttpResponseRedirect('thanks')
     else:
