@@ -13,7 +13,6 @@ nbactions.xml
 *.iml
 *.iws
 *.log
-*.html
 .classpath
 .project
 .settings/
