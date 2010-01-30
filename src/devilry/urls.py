@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     # Example:
     # (r'^devilry/', include('devilry.foo.urls')),
 
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -16,4 +18,5 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
 
     (r'^core/', include('devilry.core.urls')),
+
 )
