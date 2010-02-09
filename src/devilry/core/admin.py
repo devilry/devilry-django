@@ -114,11 +114,12 @@ class DeliveryAdmin(LimitAccess, admin.ModelAdmin):
     def get_modelcls(self):
         return Delivery
     def get_instances_where_admin(self, user):
+        admnodes = NodeAdmin.get_admnodes(user)
         return self.get_modelcls().objects.filter(
                 Q(assignment__admins=user) |
                 Q(assignment__period__admins=user) |
                 Q(assignment__period__subject__admins=user) |
-                Q(assignment__period__subject__parent__admins=user))
+                Q(assignment__period__subject__parent__id__in=admnodes))
 
 
 
