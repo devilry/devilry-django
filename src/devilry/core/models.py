@@ -60,16 +60,37 @@ class Node(BaseNode):
     def get_by_pathlist(cls, pathlist):
         """ Get node by path just like get_by_path(), the parameter
         is a list of node-names instead of a single string. Example:
-            >>> ifi = Node.get_by_pathlist(['uio, 'ifi'])
+            >>> uio = Node(short_name='uio', long_name='UiO')
+            >>> uio.save()
+            >>> ifi = Node(short_name='ifi', long_name='Ifi', parent=uio)
+            >>> ifi.save()
+            >>> ifi
+            <Node: uio.ifi>
+            >>> Node.get_by_pathlist(['uio', 'ifi'])
+            <Node: uio.ifi>
         """
         return Node.objects.get(**cls.get_pathlist_kw(pathlist))
 
     @classmethod
     def get_by_path(cls, path):
-        """ Get a node by path. Example:
-            >>> ifi = Node.get_by_path('uio.ifi')
-        """
+        """ Get a node by path. Just like get_by_pathlist(), but the path is a
+        string where the node-names are separated with '.'. """
         return cls.get_by_pathlist(path.split('.'))
+
+
+    @classmethod
+    def create_by_pathlist(cls, pathlist):
+        """ Create a new node by pathlist, creating all missing parents. """
+        parent = None
+        n = None
+        for i, short_name in enumerate(pathlist):
+            try:
+                n = Node.get_by_pathlist(pathlist[:i+1])
+            except Node.DoesNotExist, e:
+                n = Node(short_name=short_name, long_name=short_name, parent=parent)
+                n.save()
+            parent = n
+        return n
 
 
 

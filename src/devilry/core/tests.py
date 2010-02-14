@@ -10,20 +10,24 @@ from django.contrib.auth.models import User, Permission
 from models import Node, NodeAdministator
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
-
-
-
 class TestNode(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
-    def test_get_path(self):
-        print Node.get_pathlist_kw(['uio', 'matnat', 'ifi'])
-        print Node.get_by_pathlist(['uio', 'ifi'])
+    def test_get_pathlist_kw(self):
+        self.assertEquals(Node.get_pathlist_kw(['uio', 'matnat', 'ifi']),
+                {'parent__short_name': 'matnat', 'parent__parent__short_name': 'uio', 'short_name': 'ifi'})
+
+    def test_get_by_pathlist(self):
+        self.assertEquals(Node.get_by_pathlist(['uio', 'matnat', 'ifi']).short_name, 'ifi')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist, ['uio', 'ifi'])
+
+    def test_get_by_path(self):
+        self.assertEquals(Node.get_by_path('uio.matnat.ifi').short_name, 'ifi')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_path, 'uio.ifi')
+
+    def test_create_by_pathlist(self):
+        n = Node.create_by_pathlist(['this', 'is', 'a', 'test'])
+        self.assertEquals(n.short_name, 'test')
+        Node.get_by_path('this.is.a.test') # Tests if it has been saved
 
 
 class TestSignals(TestCase):
@@ -41,24 +45,3 @@ class TestSignals(TestCase):
                 content_type__name = 'node',
                 codename = 'change_node',
                 user=bart)
-
-
-
-
-#class BasicNodeHierarchy:
-    #def setUp(self):
-        #self.uio = models.Node(name="uio", displayname="UiO")
-        #self.ifi = models.Node(name="ifi", displayname="IFI")
-        ##self.infx = models.
-
-#class TestDelivery(TestCase):
-    #def test_unicode(self):
-
-
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
-
->>> 1 + 1 == 2
-True
-"""}
-
