@@ -1,7 +1,11 @@
+<!-- vim: ft=htmldjango -->
 <h1>Deliver</h1>
 <form enctype="multipart/form-data" action="{{ request.path }}" method="post">
 	<table>
 		{{ form.as_table }}
+		{% for file in filemetas %}
+			<tr><td colspan='2'>{{ file.filepath }}</td></tr>
+		{% endfor %}
 		{{ formset.as_table }}
 	</table>
 
