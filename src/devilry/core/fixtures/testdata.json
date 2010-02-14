@@ -1,18 +1,10 @@
 [
     {
-        "pk": 1, 
-        "model": "core.nodeadministator", 
-        "fields": {
-            "node": 2, 
-            "user": 3
-        }
-    }, 
-    {
         "pk": 2, 
         "model": "core.nodeadministator", 
         "fields": {
             "node": 1, 
-            "user": 2
+            "user": 3
         }
     }, 
     {
@@ -64,10 +56,10 @@
         "pk": 1, 
         "model": "core.period", 
         "fields": {
-            "long_name": "Spring 2010", 
-            "start_time": "2010-01-23 12:33:49", 
-            "end_time": "2010-05-20 12:33:51", 
-            "short_name": "spring2010", 
+            "long_name": "Fall 2010", 
+            "start_time": "2010-08-23 00:00:00", 
+            "end_time": "2010-12-20 00:00:00", 
+            "short_name": "fall2010", 
             "subject": 2
         }
     }, 
@@ -86,10 +78,10 @@
         "pk": 3, 
         "model": "core.period", 
         "fields": {
-            "long_name": "Spring 2009", 
-            "start_time": "2009-01-24 18:25:03", 
-            "end_time": "2009-06-24 18:25:04", 
-            "short_name": "spring2009", 
+            "long_name": "Fall 2009", 
+            "start_time": "2009-08-24 00:00:00", 
+            "end_time": "2009-12-09 00:00:00", 
+            "short_name": "fall2009", 
             "subject": 2
         }
     }, 
@@ -105,6 +97,25 @@
         }
     }, 
     {
+        "pk": 5, 
+        "model": "core.period", 
+        "fields": {
+            "long_name": "Spring 2008", 
+            "start_time": "2008-01-09 00:00:00", 
+            "end_time": "2008-06-15 00:00:00", 
+            "short_name": "spring2008", 
+            "subject": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.assignmentadministator", 
+        "fields": {
+            "node": 1, 
+            "user": 6
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
@@ -112,29 +123,6 @@
             "deadline": "2010-01-23 13:45:10", 
             "period": 1, 
             "short_name": "oblig1"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "core.deliverystudent", 
-        "fields": {
-            "delivery": 1, 
-            "student": 1
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "core.delivery", 
-        "fields": {
-            "assignment": 1
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "core.deliverycandidate", 
-        "fields": {
-            "delivery": 1, 
-            "time_of_delivery": "2010-01-23 13:46:31"
         }
     }
 ]
