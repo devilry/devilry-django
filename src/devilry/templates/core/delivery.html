@@ -1,14 +1,19 @@
-<!-- vim: ft=htmldjango -->
+<!-- vim: ft=htmldjango
+-->
 <h1>Deliver</h1>
-<form enctype="multipart/form-data" action="{{ request.path }}" method="post">
-	<table>
-		{{ form.as_table }}
-		{% for file in filemetas %}
-			<tr><td colspan='2'>{{ file.filepath }}</td></tr>
-		{% endfor %}
-		{{ formset.as_table }}
-	</table>
+<form enctype="multipart/form-data" action="{{ url }}" method="post">
+		{{ form.id }}
+		{{ form.as_p}}
 
-	<input type="submit" name="add_file" value="Add file" />
-	<input type="submit" name="deliver" value="Deliver" />
+
+	{% for file in form.instance.filemeta_set.values %}
+		<p>{{ file.filepath }}</p>
+	{% endfor %}
+
+	{{ formset }}
+
+	<p>
+		<input type="submit" name="add_file" value="Add file" />
+		<input type="submit" name="deliver" value="Deliver" />
+	</p>
 </form>
