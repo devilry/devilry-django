@@ -32,15 +32,21 @@ class TestNode(TestCase):
 
 class TestSignals(TestCase):
     def test_node_post_save_handler(self):
-        bart = User.objects.create_user('bart', 'bart@example.com', 'bartman')
-        ifi = Node(short_name="ifi", long_name="IFI")
-        ifi.save()
-        n = NodeAdministator(user=bart, node=ifi)
-        self.assertRaises(Permission.DoesNotExist, Permission.objects.get,
-                content_type__name = 'node',
-                codename = 'change_node',
-                user=bart)
-        n.save()
+        #bart = User.objects.create_user('bart', 'bart@example.com', 'bartman')
+        #ifi = Node(short_name="ifi", long_name="IFI")
+        #ifi.save()
+        #n = NodeAdministator(user=bart, node=ifi)
+        #self.assertRaises(Permission.DoesNotExist, Permission.objects.get,
+                #content_type__name = 'node',
+                #codename = 'change_node',
+                #user=bart)
+        #n.save()
+        #permission = Permission.objects.get(
+                #content_type__name = 'node',
+                #codename = 'change_node',
+                #user=bart)
+
+        fry = Users.objects.get(username='')
         permission = Permission.objects.get(
                 content_type__name = 'node',
                 codename = 'change_node',
