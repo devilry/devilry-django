@@ -17,6 +17,10 @@ class BaseNode(models.Model):
         return unicode(self)
     get_path.short_description = 'Path'
 
+    def admins_unicode(self):
+        return u', '.join(u.username for u in self.admins.all())
+    admins_unicode.short_description = 'Admins'
+
 
 
 class BaseNodeAdministator(models.Model):
@@ -91,7 +95,6 @@ class Node(BaseNode):
                 n.save()
             parent = n
         return n
-
 
 
 class SubjectAdministator(BaseNodeAdministator):

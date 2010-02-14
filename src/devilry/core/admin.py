@@ -24,7 +24,7 @@ class LimitAccess:
 
 
 class BaseNodeAdmin(LimitAccess, admin.ModelAdmin):
-    list_display = ('short_name', 'long_name', 'get_path')
+    list_display = ('short_name', 'long_name', 'get_path', 'admins_unicode')
     search_fields = ['short_name', 'long_name']
 
 
@@ -71,7 +71,7 @@ class PeriodAdministatorInline(admin.TabularInline):
     model = PeriodAdministator
     extra = 1
 class PeriodAdmin(BaseNodeAdmin):
-    list_display = ['subject', 'short_name', 'start_time', 'end_time']
+    list_display = ['subject', 'short_name', 'start_time', 'end_time', 'admins_unicode']
     search_fields = ['short_name', 'long_name', 'subject__short_name']
     list_filter = ['start_time', 'end_time']
     ordering = ['subject']
