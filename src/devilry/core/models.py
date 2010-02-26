@@ -240,6 +240,14 @@ class Delivery(models.Model):
                 Q(assignment__period__subject__admins=user_obj) |
                 Q(assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
 
+    @classmethod
+    def get_qryargs_where_isstudent(cls, user_obj):
+        return [Q(students=user_obj)]
+
+    @classmethod
+    def get_qryargs_where_isexaminer(cls, user_obj):
+        return [Q(examiners=user_obj)]
+
     def __unicode__(self):
         return u'%s (%s)' % (self.assignment,
                 ', '.join([unicode(x) for x in self.students.all()]))
@@ -256,6 +264,14 @@ class DeliveryCandidate(models.Model):
                 Q(delivery__assignment__period__subject__admins=user_obj) |
                 Q(delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
 
+    @classmethod
+    def get_qryargs_where_isstudent(cls, user_obj):
+        return [Q(delivery__students=user_obj)]
+
+    @classmethod
+    def get_qryargs_where_isexaminer(cls, user_obj):
+        return [Q(delivery__examiners=user_obj)]
+
     def __unicode__(self):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
@@ -264,11 +280,27 @@ class FileMeta(models.Model):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filepath = models.FileField(upload_to="deliveries")
 
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(delivery_candiate__delivery__assignment__admins=user_obj) |
+                Q(delivery_candiate__delivery__assignment__period__admins=user_obj) |
+                Q(delivery_candiate__delivery__assignment__period__subject__admins=user_obj) |
+                Q(delivery_candiate__delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+
+    @classmethod
+    def get_qryargs_where_isstudent(cls, user_obj):
+        return [Q(delivery_candiate__delivery__students=user_obj)]
+
+    @classmethod
+    def get_qryargs_where_isexaminer(cls, user_obj):
+        return [Q(delivery_candiate__delivery__examiners=user_obj)]
 
 
 
 
-for cls in Node, Subject, Period, Assignment, Delivery, DeliveryCandidate:
+for cls in Node, Subject, Period, Assignment:
     cls.adminobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isadmin')
-#Delivery.studentobjects = SecureQuerySetFactory(Delivery, 'get_qryargs_where_isadmin')
-#Delivery.examinerobjects = SecureQuerySetFactory(Delivery, 'examiners')
+for cls in Delivery, DeliveryCandidate, FileMeta:
+    cls.adminobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isadmin')
+    cls.examinerobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isexaminer')
+    cls.studentobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isstudent')

@@ -7,18 +7,20 @@ from django.contrib.auth.models import Permission
 class DevilryPermissions(object):
     """ """
     def has_perm(self, user_obj, perm):
-        #print perm, user_obj
         app_label, codename = perm.split('.', 1)
+        #print perm, app_label, codename
         perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
+        print perminstance, dir(perminstance)
+        #print perminstance.name, perminstance.codename
         model = perminstance.content_type.model_class()
-        if hasattr(model, 'adminobjects'):
-            if model.adminobjects(user_obj).filter().count() > 0:
+        if hasattr(model, 'studentobjects'):
+            if model.studentobjects(user_obj).filter().count() > 0:
                 return True
-        elif hasattr(model, 'examinerobjects'):
+        if hasattr(model, 'examinerobjects'):
             if model.examinerobjects(user_obj).filter().count() > 0:
                 return True
-        elif hasattr(model, 'studentobjects'):
-            if model.studentobjects(user_obj).filter().count() > 0:
+        if hasattr(model, 'adminobjects'):
+            if model.adminobjects(user_obj).filter().count() > 0:
                 return True
         return False
 

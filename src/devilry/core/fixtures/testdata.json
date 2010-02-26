@@ -168,6 +168,14 @@
         }
     }, 
     {
+        "pk": 4, 
+        "model": "core.deliverystudent", 
+        "fields": {
+            "delivery": 2, 
+            "student": 7
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.deliveryexaminer", 
         "fields": {
@@ -195,6 +203,30 @@
         "model": "core.delivery", 
         "fields": {
             "assignment": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.deliverycandidate", 
+        "fields": {
+            "delivery": 1, 
+            "time_of_delivery": "2010-02-26 23:20:19"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.deliverycandidate", 
+        "fields": {
+            "delivery": 2, 
+            "time_of_delivery": "2010-02-26 23:21:14"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.deliverycandidate", 
+        "fields": {
+            "delivery": 2, 
+            "time_of_delivery": "2010-02-26 23:21:19"
         }
     }
 ]

@@ -14,7 +14,9 @@ uio
                 fall2010
                     oblig1
                         delivery by student2 and student3 examinated by teacher1
-                        delivery by student1 examinated by teacher1
+                            1 delivery candidate without any files
+                        delivery by student1 and student2 examinated by teacher1
+                            2 delivery candidates without any files
 
 
 Users

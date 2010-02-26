@@ -79,3 +79,46 @@ class TestDelivery(TestCase):
         uioadmin = User.objects.get(username='uioadmin')
         args = Delivery.get_qryargs_where_isadmin(uioadmin)
         self.assertEquals(Delivery.objects.filter(*args).count(), 2)
+
+    def test_get_qrykw_where_isstudent(self):
+        student2 = User.objects.get(username='student2')
+        args = Delivery.get_qryargs_where_isstudent(student2)
+        self.assertEquals(Delivery.objects.filter(*args).count(), 2)
+
+    def test_get_qrykw_where_isexaminer(self):
+        teacher1 = User.objects.get(username='teacher1')
+        args = Delivery.get_qryargs_where_isexaminer(teacher1)
+        self.assertEquals(Delivery.objects.filter(*args).count(), 2)
+
+
+class TestDeliveryCandidate(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+
+    def test_get_qrykw_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        args = DeliveryCandidate.get_qryargs_where_isadmin(uioadmin)
+        self.assertEquals(DeliveryCandidate.objects.filter(*args).count(), 3)
+
+    def test_get_qrykw_where_isstudent(self):
+        student2 = User.objects.get(username='student2')
+        args = DeliveryCandidate.get_qryargs_where_isstudent(student2)
+        self.assertEquals(DeliveryCandidate.objects.filter(*args).count(), 3)
+
+    def test_get_qrykw_where_isexaminer(self):
+        teacher1 = User.objects.get(username='teacher1')
+        args = DeliveryCandidate.get_qryargs_where_isexaminer(teacher1)
+        self.assertEquals(DeliveryCandidate.objects.filter(*args).count(), 3)
+
+
+
+class TestFileMeta(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+
+    def test_get_qrykw_where_isadmin(self):
+        """ TODO """
+
+    def test_get_qrykw_where_isstudent(self):
+        """ TODO """
+
+    def test_get_qrykw_where_isexaminer(self):
+        """ TODO """
