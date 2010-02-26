@@ -7,14 +7,18 @@ Replace these with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
-from models import Node, NodeAdministator
+from django.db.models import Q
+from models import Node, Subject, Period, Assignment, Delivery, DeliveryCandidate
 
 
 class TestNode(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
+
     def test_get_pathlist_kw(self):
-        self.assertEquals(Node.get_pathlist_kw(['uio', 'matnat', 'ifi']),
-                {'parent__short_name': 'matnat', 'parent__parent__short_name': 'uio', 'short_name': 'ifi'})
+        self.assertEquals(Node.get_pathlist_kw(['uio', 'matnat', 'ifi']), {
+                'short_name': 'ifi',
+                'parent__short_name': 'matnat',
+                'parent__parent__short_name': 'uio'})
 
     def test_get_by_pathlist(self):
         self.assertEquals(Node.get_by_pathlist(['uio', 'matnat', 'ifi']).short_name, 'ifi')
@@ -29,25 +33,49 @@ class TestNode(TestCase):
         self.assertEquals(n.short_name, 'test')
         Node.get_by_path('this.is.a.test') # Tests if it has been saved
 
+    def test_get_nodepks_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        pks = Node.get_nodepks_where_isadmin(uioadmin)
+        pks.sort()
+        self.assertEquals(pks, [1,2,3])
 
-class TestSignals(TestCase):
-    def test_node_post_save_handler(self):
-        #bart = User.objects.create_user('bart', 'bart@example.com', 'bartman')
-        #ifi = Node(short_name="ifi", long_name="IFI")
-        #ifi.save()
-        #n = NodeAdministator(user=bart, node=ifi)
-        #self.assertRaises(Permission.DoesNotExist, Permission.objects.get,
-                #content_type__name = 'node',
-                #codename = 'change_node',
-                #user=bart)
-        #n.save()
-        #permission = Permission.objects.get(
-                #content_type__name = 'node',
-                #codename = 'change_node',
-                #user=bart)
+    def test_get_qryargs_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        args = Node.get_qryargs_where_isadmin(uioadmin)
+        self.assertEquals(Node.objects.filter(*args).count(), 3)
 
-        fry = Users.objects.get(username='')
-        permission = Permission.objects.get(
-                content_type__name = 'node',
-                codename = 'change_node',
-                user=bart)
+
+class TestSubject(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+
+    def test_get_qrykw_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        args = Subject.get_qryargs_where_isadmin(uioadmin)
+        self.assertEquals(Subject.objects.filter(*args).count(), 2)
+
+
+class TestPeriod(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+
+    def test_get_qrykw_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        args = Period.get_qryargs_where_isadmin(uioadmin)
+        self.assertEquals(Period.objects.filter(*args).count(), 5)
+
+
+class TestAssignment(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+
+    def test_get_qrykw_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        args = Assignment.get_qryargs_where_isadmin(uioadmin)
+        self.assertEquals(Assignment.objects.filter(*args).count(), 2)
+
+
+class TestDelivery(TestCase):
+    fixtures = ['testusers.json', 'testdata.json']
+
+    def test_get_qrykw_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        args = Delivery.get_qryargs_where_isadmin(uioadmin)
+        self.assertEquals(Delivery.objects.filter(*args).count(), 2)

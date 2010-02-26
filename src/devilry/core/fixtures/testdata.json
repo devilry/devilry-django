@@ -8,6 +8,14 @@
         }
     }, 
     {
+        "pk": 3, 
+        "model": "core.nodeadministator", 
+        "fields": {
+            "node": 2, 
+            "user": 9
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -111,7 +119,7 @@
         "pk": 1, 
         "model": "core.assignmentadministator", 
         "fields": {
-            "node": 1, 
+            "node": 2, 
             "user": 6
         }
     }, 
@@ -123,6 +131,70 @@
             "deadline": "2010-01-23 13:45:10", 
             "period": 1, 
             "short_name": "oblig1"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.assignment", 
+        "fields": {
+            "long_name": "Oblig2", 
+            "deadline": "2010-02-26 23:05:14", 
+            "period": 2, 
+            "short_name": "oblig2"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.deliverystudent", 
+        "fields": {
+            "delivery": 1, 
+            "student": 7
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.deliverystudent", 
+        "fields": {
+            "delivery": 1, 
+            "student": 8
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.deliverystudent", 
+        "fields": {
+            "delivery": 2, 
+            "student": 6
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.deliveryexaminer", 
+        "fields": {
+            "delivery": 1, 
+            "examiner": 4
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.deliveryexaminer", 
+        "fields": {
+            "delivery": 2, 
+            "examiner": 4
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.delivery", 
+        "fields": {
+            "assignment": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.delivery", 
+        "fields": {
+            "assignment": 1
         }
     }
 ]

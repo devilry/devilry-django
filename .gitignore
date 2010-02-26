@@ -17,3 +17,4 @@ nbactions.xml
 .project
 .settings/
 *.sqlite3
+filestore/

@@ -2,7 +2,33 @@ from django.db.models.signals import post_save, post_delete
 from django.db import models
 from django.contrib.auth.models import User, Permission
 from django.conf import settings
+from django.db.models import Q
 
+
+
+class SecureQuerySet(object):
+    def __init__(self, qryset, model, permcheck_method, user_obj):
+        self.qryset = qryset
+        self.model = model
+        self.user_obj = user_obj
+        self.permcheck_method = permcheck_method
+
+    def filter(self, *args, **kwargs):
+        permcheck_method = getattr(self.model, self.permcheck_method)
+        extraargs = permcheck_method(self.user_obj)
+        extraargs.extend(args)
+        return self.qryset.filter(*extraargs, **kwargs)
+
+
+
+class SecureQuerySetFactory(object):
+    def __init__(self, model, permcheck_method):
+        self.qryset = models.query.QuerySet(model)
+        self.model = model
+        self.permcheck_method = permcheck_method
+
+    def __call__(self, user_obj):
+        return SecureQuerySet(self.qryset, self.model, self.permcheck_method, user_obj)
 
 
 class BaseNode(models.Model):
@@ -21,6 +47,9 @@ class BaseNode(models.Model):
         return u', '.join(u.username for u in self.admins.all())
     admins_unicode.short_description = 'Admins'
 
+    @classmethod
+    def has_change_perm_on_any(cls, user_obj):
+        return cls.objects.filter(admins=user_obj).count() > 0
 
 
 class BaseNodeAdministator(models.Model):
@@ -47,6 +76,39 @@ class Node(BaseNode):
             return unicode(self.parent) + "." + self.short_name
         else:
             return self.short_name
+
+    @classmethod
+    def get_isadmin_kw(cls, node_obj, user_obj):
+        """ Create keywords for a query checking if the given ``user_obj`` is
+        admin on the given node. The query created recurses all the way up to the top
+        of the node hierarchy. """
+        kw = {}
+        key = 'admins'
+        while node_obj != None:
+            kw[key] = user_obj
+            key = 'parent__' + key
+            print node_obj
+            print dir(node_obj)
+            node_obj = node_obj.parent
+        return kw
+
+    @classmethod
+    def get_nodepks_where_isadmin(cls, user_obj):
+        """ Recurse down info all childnodes of the nodes below the nodes
+        where ``user_obj`` is parent, and return the primary key of all these
+        nodes in a list. """
+        admnodes = Node.objects.filter(admins=user_obj)
+        l = []
+        def add_admnodes(admnodes):
+            for a in admnodes.all():
+                l.append(a.pk)
+                add_admnodes(a.node_set)
+        add_admnodes(admnodes)
+        return l
+
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(pk__in=cls.get_nodepks_where_isadmin(user_obj))]
 
     @classmethod
     def get_pathlist_kw(cls, pathlist):
@@ -97,12 +159,17 @@ class Node(BaseNode):
         return n
 
 
+
 class SubjectAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Subject')
 
 class Subject(BaseNode):
     parent = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True, through=SubjectAdministator)
+
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(admins=user_obj) | Q(parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
 
     def __unicode__(self):
         return unicode(self.parent) + "." + self.short_name
@@ -118,6 +185,12 @@ class Period(BaseNode):
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True, through=PeriodAdministator)
 
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(admins=user_obj) |
+                Q(subject__admins=user_obj) |
+                Q(subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+
     def __unicode__(self):
         return unicode(self.subject) + "." + self.short_name
 
@@ -130,6 +203,13 @@ class Assignment(BaseNode):
     period = models.ForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True, through=AssignmentAdministator)
+
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(admins=user_obj) |
+                Q(period__admins=user_obj) |
+                Q(period__subject__admins=user_obj) |
+                Q(period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
 
     def __unicode__(self):
         return unicode(self.period) + "." + self.short_name
@@ -153,6 +233,13 @@ class Delivery(models.Model):
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners",
             through=DeliveryExaminer)
 
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(assignment__admins=user_obj) |
+                Q(assignment__period__admins=user_obj) |
+                Q(assignment__period__subject__admins=user_obj) |
+                Q(assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+
     def __unicode__(self):
         return u'%s (%s)' % (self.assignment,
                 ', '.join([unicode(x) for x in self.students.all()]))
@@ -161,6 +248,13 @@ class Delivery(models.Model):
 class DeliveryCandidate(models.Model):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
+
+    @classmethod
+    def get_qryargs_where_isadmin(cls, user_obj):
+        return [Q(delivery__assignment__admins=user_obj) |
+                Q(delivery__assignment__period__admins=user_obj) |
+                Q(delivery__assignment__period__subject__admins=user_obj) |
+                Q(delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
 
     def __unicode__(self):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
@@ -174,88 +268,7 @@ class FileMeta(models.Model):
 
 
 
-class PermissionsOnAdminSignalFactory(object):
-    """ Makes a callable which iterates over a given set of content-types, and
-    changes the permission a newly registered or unregistered user has on a
-    given BaseNode.
-    """
-    def __init__(self, content_type_names=[], codenames=[]):
-        self.content_type_names = content_type_names
-        self.codenames = codenames
-
-    def _action(self, permission, instance):
-        raise NotImplementedError()
-
-    def __call__(self, sender, **kwargs):
-        instance = kwargs['instance']
-        for content_type_name in self.content_type_names:
-            for codename in self.codenames:
-                codename = codename="%s_%s" % (codename, content_type_name)
-                permission = Permission.objects.get(
-                        content_type__name = content_type_name,
-                        codename = codename)
-                self._action(permission, instance)
-
-class PermissionsOnAdminAddSignalFactory(PermissionsOnAdminSignalFactory):
-    def _action(self, permission, instance):
-        try:
-            permission.user_set.get(username=instance.user.username)
-        except User.DoesNotExist, e:
-            permission.user_set.add(instance.user)
-            print "Added", permission, "TO", instance.user
-
-    def __call__(self, sender, **kwargs):
-        if not kwargs.get('created'):
-            return
-        super(PermissionsOnAdminAddSignalFactory, self).__call__(sender, **kwargs)
-
-class PermissionsOnAdminDelSignalFactory(PermissionsOnAdminSignalFactory):
-    def _action(self, permission, instance):
-        pass
-
-
-
-#
-# Register signal handlers
-#
-content_type_names = ['node', 'subject', 'period', 'assignment', 'delivery']
-
-
-# Signal handlers for NodeAdministator
-node_post_save_handler = PermissionsOnAdminAddSignalFactory(
-        content_type_names, settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_save.connect(node_post_save_handler, sender=NodeAdministator)
-
-node_post_delete_handler = PermissionsOnAdminDelSignalFactory(
-        content_type_names, settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_delete.connect(node_post_delete_handler, sender=NodeAdministator)
-
-
-# Signal handlers for SubjectAdministator
-subject_post_save_handler = PermissionsOnAdminAddSignalFactory(
-        content_type_names[1:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_save.connect(subject_post_save_handler, sender=SubjectAdministator)
-
-subject_post_delete_handler = PermissionsOnAdminDelSignalFactory(
-        content_type_names[1:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_delete.connect(subject_post_delete_handler, sender=SubjectAdministator)
-
-
-# Signal handlers for PeriodAdministator
-period_post_save_handler = PermissionsOnAdminAddSignalFactory(
-        content_type_names[2:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_save.connect(period_post_save_handler, sender=PeriodAdministator)
-
-period_post_delete_handler = PermissionsOnAdminDelSignalFactory(
-        content_type_names[2:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_delete.connect(period_post_delete_handler, sender=PeriodAdministator)
-
-
-# Signal handlers for AssignmentAdministator
-assignment_post_save_handler = PermissionsOnAdminAddSignalFactory(
-        content_type_names[3:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_save.connect(assignment_post_save_handler, sender=AssignmentAdministator)
-
-assignment_post_delete_handler = PermissionsOnAdminDelSignalFactory(
-        content_type_names[3:], settings.DEVILRY_ADMIN_AUTOPERMISSIONS)
-post_delete.connect(assignment_post_delete_handler, sender=AssignmentAdministator)
+for cls in Node, Subject, Period, Assignment, Delivery, DeliveryCandidate:
+    cls.adminobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isadmin')
+#Delivery.studentobjects = SecureQuerySetFactory(Delivery, 'get_qryargs_where_isadmin')
+#Delivery.examinerobjects = SecureQuerySetFactory(Delivery, 'examiners')
