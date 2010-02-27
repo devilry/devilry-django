@@ -20,7 +20,7 @@
         "model": "core.node", 
         "fields": {
             "long_name": "Department of Informatics", 
-            "parent": 3, 
+            "parentnode": 3, 
             "short_name": "ifi"
         }
     }, 
@@ -29,7 +29,7 @@
         "model": "core.node", 
         "fields": {
             "long_name": "University of Oslo", 
-            "parent": null, 
+            "parentnode": null, 
             "short_name": "uio"
         }
     }, 
@@ -38,7 +38,7 @@
         "model": "core.node", 
         "fields": {
             "long_name": "Faculty of Mathematics and Natural Sciences", 
-            "parent": 2, 
+            "parentnode": 2, 
             "short_name": "matnat"
         }
     }, 
@@ -47,7 +47,7 @@
         "model": "core.subject", 
         "fields": {
             "long_name": "INF1010", 
-            "parent": 1, 
+            "parentnode": 1, 
             "short_name": "inf1010"
         }
     }, 
@@ -56,7 +56,7 @@
         "model": "core.subject", 
         "fields": {
             "long_name": "INF1100", 
-            "parent": 1, 
+            "parentnode": 1, 
             "short_name": "inf1100"
         }
     }, 
@@ -68,7 +68,7 @@
             "start_time": "2010-08-23 00:00:00", 
             "end_time": "2010-12-20 00:00:00", 
             "short_name": "fall2010", 
-            "subject": 2
+            "parentnode": 2
         }
     }, 
     {
@@ -79,7 +79,7 @@
             "start_time": "2009-01-24 18:24:36", 
             "end_time": "2009-05-24 18:24:37", 
             "short_name": "spring2009", 
-            "subject": 1
+            "parentnode": 1
         }
     }, 
     {
@@ -90,7 +90,7 @@
             "start_time": "2009-08-24 00:00:00", 
             "end_time": "2009-12-09 00:00:00", 
             "short_name": "fall2009", 
-            "subject": 2
+            "parentnode": 2
         }
     }, 
     {
@@ -101,7 +101,7 @@
             "start_time": "2010-01-24 18:25:27", 
             "end_time": "2010-06-24 18:25:30", 
             "short_name": "spring2010", 
-            "subject": 1
+            "parentnode": 1
         }
     }, 
     {
@@ -112,7 +112,7 @@
             "start_time": "2008-01-09 00:00:00", 
             "end_time": "2008-06-15 00:00:00", 
             "short_name": "spring2008", 
-            "subject": 1
+            "parentnode": 1
         }
     }, 
     {
@@ -129,7 +129,7 @@
         "fields": {
             "long_name": "Obligatory assignment 1", 
             "deadline": "2010-01-23 13:45:10", 
-            "period": 1, 
+            "parentnode": 1, 
             "short_name": "oblig1"
         }
     }, 
@@ -139,7 +139,7 @@
         "fields": {
             "long_name": "Oblig2", 
             "deadline": "2010-02-26 23:05:14", 
-            "period": 2, 
+            "parentnode": 2, 
             "short_name": "oblig2"
         }
     }, 
@@ -195,14 +195,14 @@
         "pk": 1, 
         "model": "core.delivery", 
         "fields": {
-            "assignment": 1
+            "parentnode": 1
         }
     }, 
     {
         "pk": 2, 
         "model": "core.delivery", 
         "fields": {
-            "assignment": 1
+            "parentnode": 1
         }
     }, 
     {

@@ -17,8 +17,8 @@ class TestNode(TestCase):
     def test_get_pathlist_kw(self):
         self.assertEquals(Node.get_pathlist_kw(['uio', 'matnat', 'ifi']), {
                 'short_name': 'ifi',
-                'parent__short_name': 'matnat',
-                'parent__parent__short_name': 'uio'})
+                'parentnode__short_name': 'matnat',
+                'parentnode__parentnode__short_name': 'uio'})
 
     def test_get_by_pathlist(self):
         self.assertEquals(Node.get_by_pathlist(['uio', 'matnat', 'ifi']).short_name, 'ifi')

@@ -22,7 +22,8 @@ class BaseNodeAdmin(admin.ModelAdmin):
             meta = self.model._meta
             perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
             if request.user.has_perm(perm):
-                db_field.rel.limit_choices_to = self.model._parentnode_cls.qry_where_is_admin(request.user)
+                pcls = self.model.parentnode.field.related.parent_model
+                db_field.rel.limit_choices_to = pcls.qry_where_is_admin(request.user)
         return db_field.formfield(**kwargs)
 
 
@@ -31,7 +32,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
             meta = self.model._meta
             perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
             if not self.model.user_has_model_perm(request.user, perm):
-                r = [self.model._parentnode_field]
+                r = ['parentnode']
                 r.extend(self.readonly_fields)
                 print r
                 return r
@@ -68,10 +69,10 @@ class PeriodAdministatorInline(admin.TabularInline):
     model = PeriodAdministator
     extra = 1
 class PeriodAdmin(BaseNodeAdmin):
-    list_display = ['subject', 'short_name', 'start_time', 'end_time', 'admins_unicode']
-    search_fields = ['short_name', 'long_name', 'subject__short_name']
+    list_display = ['parentnode', 'short_name', 'start_time', 'end_time', 'admins_unicode']
+    search_fields = ['short_name', 'long_name', 'parentnode__short_name']
     list_filter = ['start_time', 'end_time']
-    ordering = ['subject']
+    ordering = ['parentnode']
     inlines = (PeriodAdministatorInline,)
 
 

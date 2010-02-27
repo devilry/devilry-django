@@ -7,9 +7,6 @@ from django.db.models import Q
 
 
 class BaseNode(models.Model):
-    _parentnode_cls = None
-    _parentnode_field = None
-
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -31,11 +28,13 @@ class BaseNode(models.Model):
 
     @classmethod
     def user_has_model_perm(cls, user_obj, perm):
-        changeperm = 'core.change_' + cls.__name__.lower()
+        meta = cls._meta
+        changeperm = '%s.%s' % (meta.app_label, meta.get_change_permission())
         if perm == changeperm and cls.admin_changelist_qryset(user_obj).count() > 0:
             return True
 
-        if cls._parentnode_cls and cls._parentnode_cls.admin_changelist_qryset(user_obj).count() > 0:
+        pcls = cls.parentnode.field.related.parent_model
+        if pcls.admin_changelist_qryset(user_obj).count() > 0:
             return True
 
 
@@ -56,13 +55,12 @@ class NodeAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Node')
 
 class Node(BaseNode):
-    _parentnode_field = 'parent'
-    parent = models.ForeignKey('self', blank=True, null=True)
+    parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True, through=NodeAdministator)
 
     def __unicode__(self):
-        if self.parent:
-            return unicode(self.parent) + "." + self.short_name
+        if self.parentnode:
+            return unicode(self.parentnode) + "." + self.short_name
         else:
             return self.short_name
 
@@ -75,14 +73,14 @@ class Node(BaseNode):
         key = 'admins'
         while node_obj != None:
             kw[key] = user_obj
-            key = 'parent__' + key
-            node_obj = node_obj.parent
+            key = 'parentnode__' + key
+            node_obj = node_obj.parentnode
         return kw
 
     @classmethod
     def get_nodepks_where_isadmin(cls, user_obj):
         """ Recurse down info all childnodes of the nodes below the nodes
-        where ``user_obj`` is parent, and return the primary key of all these
+        where ``user_obj`` is admin, and return the primary key of all these
         nodes in a list. """
         admnodes = Node.objects.filter(admins=user_obj)
         l = []
@@ -106,7 +104,7 @@ class Node(BaseNode):
         key = 'short_name'
         for short_name in reversed(pathlist):
             kw[key] = short_name
-            key = 'parent__' + key
+            key = 'parentnode__' + key
         return kw
 
     @classmethod
@@ -115,7 +113,7 @@ class Node(BaseNode):
         is a list of node-names instead of a single string. Example:
             >>> uio = Node(short_name='uio', long_name='UiO')
             >>> uio.save()
-            >>> ifi = Node(short_name='ifi', long_name='Ifi', parent=uio)
+            >>> ifi = Node(short_name='ifi', long_name='Ifi', parentnode=uio)
             >>> ifi.save()
             >>> ifi
             <Node: uio.ifi>
@@ -140,7 +138,7 @@ class Node(BaseNode):
             try:
                 n = Node.get_by_pathlist(pathlist[:i+1])
             except Node.DoesNotExist, e:
-                n = Node(short_name=short_name, long_name=short_name, parent=parent)
+                n = Node(short_name=short_name, long_name=short_name, parentnode=parent)
                 n.save()
             parent = n
         return n
@@ -151,18 +149,15 @@ class SubjectAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Subject')
 
 class Subject(BaseNode):
-    _parentnode_cls = Node
-    _parentnode_field = 'parent'
-
-    parent = models.ForeignKey(Node)
+    parentnode = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True, through=SubjectAdministator)
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
-        return Q(Q(admins=user_obj) | Q(parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+        return Q(Q(admins=user_obj) | Q(parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
-        return unicode(self.parent) + "." + self.short_name
+        return unicode(self.parentnode) + "." + self.short_name
 
 
 
@@ -170,9 +165,7 @@ class PeriodAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Period')
 
 class Period(BaseNode):
-    _parentnode_cls = Subject
-    _parentnode_field = 'subject'
-    subject = models.ForeignKey(Subject)
+    parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True, through=PeriodAdministator)
@@ -181,11 +174,11 @@ class Period(BaseNode):
     @classmethod
     def qry_where_is_admin(cls, user_obj):
         return Q(Q(admins=user_obj) |
-                Q(subject__admins=user_obj) |
-                Q(subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
-        return unicode(self.subject) + "." + self.short_name
+        return unicode(self.parentnode) + "." + self.short_name
 
 
 
@@ -193,22 +186,19 @@ class AssignmentAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Assignment')
 
 class Assignment(BaseNode):
-    _parentnode_cls = Period
-    _parentnode_field = 'period'
-
-    period = models.ForeignKey(Period)
+    parentnode = models.ForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True, through=AssignmentAdministator)
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
         return Q(Q(admins=user_obj) |
-                Q(period__admins=user_obj) |
-                Q(period__subject__admins=user_obj) |
-                Q(period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
-        return unicode(self.period) + "." + self.short_name
+        return unicode(self.parentnode) + "." + self.short_name
 
 
 
@@ -223,7 +213,7 @@ class DeliveryExaminer(models.Model):
 class Delivery(models.Model):
     class Meta:
         verbose_name_plural = 'deliveries'
-    assignment = models.ForeignKey(Assignment)
+    parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students",
             through=DeliveryStudent)
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners",
@@ -231,10 +221,10 @@ class Delivery(models.Model):
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
-        return Q(Q(assignment__admins=user_obj) |
-                Q(assignment__period__admins=user_obj) |
-                Q(assignment__period__subject__admins=user_obj) |
-                Q(assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+        return Q(Q(parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     @classmethod
     def qry_where_is_student(cls, user_obj):
@@ -245,7 +235,7 @@ class Delivery(models.Model):
         return Q(examiners=user_obj)
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.assignment,
+        return u'%s (%s)' % (self.parentnode,
                 ', '.join([unicode(x) for x in self.students.all()]))
 
     @classmethod
@@ -282,10 +272,10 @@ class DeliveryCandidate(models.Model, StudentExaminerMixin):
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
-        return Q(Q(delivery__assignment__admins=user_obj) |
-                Q(delivery__assignment__period__admins=user_obj) |
-                Q(delivery__assignment__period__subject__admins=user_obj) |
-                Q(delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+        return Q(Q(delivery__parentnode__admins=user_obj) |
+                Q(delivery__parentnode__parentnode__admins=user_obj) |
+                Q(delivery__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(delivery__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     @classmethod
     def qry_where_is_student(cls, user_obj):
@@ -305,10 +295,10 @@ class FileMeta(models.Model, StudentExaminerMixin):
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
-        return Q(Q(delivery_candiate__delivery__assignment__admins=user_obj) |
-                Q(delivery_candiate__delivery__assignment__period__admins=user_obj) |
-                Q(delivery_candiate__delivery__assignment__period__subject__admins=user_obj) |
-                Q(delivery_candiate__delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+        return Q(Q(delivery_candiate__delivery__parentnode__admins=user_obj) |
+                Q(delivery_candiate__delivery__parentnode__parentnode__admins=user_obj) |
+                Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     @classmethod
     def qry_where_is_student(cls, user_obj):
