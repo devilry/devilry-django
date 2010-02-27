@@ -7,7 +7,6 @@ from django import forms
 
 
 
-
 class BaseNodeAdmin(admin.ModelAdmin):
     list_display = ('short_name', 'long_name', 'get_path', 'admins_unicode')
     search_fields = ['short_name', 'long_name']
@@ -38,41 +37,6 @@ class BaseNodeAdmin(admin.ModelAdmin):
                 return r
         return self.readonly_fields
 
-    #def has_add_permission(self, request):
-        #"Returns True if the given request has permission to add an object."
-        #return True
-
-    #def has_change_permission(self, request, obj=None):
-        #"""
-        #Returns True if the given request has permission to change the given
-        #Django model instance.
-
-        #If `obj` is None, this should return True if the given request has
-        #permission to change *any* object of the given type.
-        #"""
-        #return True
-
-    #def has_delete_permission(self, request, obj=None):
-        #"""
-        #Returns True if the given request has permission to change the given
-        #Django model instance.
-
-        #If `obj` is None, this should return True if the given request has
-        #permission to delete *any* object of the given type.
-        #"""
-        #return True
-
-    #def get_model_perms(self, request):
-        #"""
-        #Returns a dict of all perms for this model. This dict has the keys
-        #``add``, ``change``, and ``delete`` mapping to the True/False for each
-        #of those actions.
-        #"""
-        #return {
-            #'add': True,
-            #'change': True,
-            #'delete': True,
-        #}
 
 
 class NodeAdministatorInline(admin.TabularInline):
