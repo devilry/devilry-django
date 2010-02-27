@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 
 
@@ -34,7 +35,7 @@ class BaseNode(models.Model):
             return True
 
         pcls = cls.parentnode.field.related.parent_model
-        if pcls.admin_changelist_qryset(user_obj).count() > 0:
+        if pcls != Node and pcls.admin_changelist_qryset(user_obj).count() > 0:
             return True
 
 
@@ -63,6 +64,12 @@ class Node(BaseNode):
             return unicode(self.parentnode) + "." + self.short_name
         else:
             return self.short_name
+
+
+    def clean(self, *args, **kwargs):
+        if self.parentnode == self:
+            raise ValidationError('A node can not be it\'s own parent.')
+        super(Node, self).clean_fields(*args, **kwargs)
 
     @classmethod
     def get_isadmin_kw(cls, node_obj, user_obj):

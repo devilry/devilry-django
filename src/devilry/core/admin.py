@@ -21,7 +21,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
         if request:
             meta = self.model._meta
             perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
-            if request.user.has_perm(perm):
+            if not request.user.is_superuser and request.user.has_perm(perm):
                 pcls = self.model.parentnode.field.related.parent_model
                 db_field.rel.limit_choices_to = pcls.qry_where_is_admin(request.user)
         return db_field.formfield(**kwargs)
@@ -31,7 +31,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
         if obj:
             meta = self.model._meta
             perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
-            if not self.model.user_has_model_perm(request.user, perm):
+            if not request.user.has_perm(perm):
                 r = ['parentnode']
                 r.extend(self.readonly_fields)
                 print r
