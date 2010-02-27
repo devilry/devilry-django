@@ -4,39 +4,65 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
 
 
-class DevilryPermissions(object):
-    """ """
-    def has_perm(self, user_obj, perm):
-        app_label, codename = perm.split('.', 1)
-        #print perm, app_label, codename
-        perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
-        print perminstance, dir(perminstance)
-        #print perminstance.name, perminstance.codename
-        model = perminstance.content_type.model_class()
-        if hasattr(model, 'studentobjects'):
-            if model.studentobjects(user_obj).filter().count() > 0:
-                return True
-        if hasattr(model, 'examinerobjects'):
-            if model.examinerobjects(user_obj).filter().count() > 0:
-                return True
-        if hasattr(model, 'adminobjects'):
-            if model.adminobjects(user_obj).filter().count() > 0:
-                return True
-        return False
+#class DevilryPermissions(object):
+    #""" """
+    #supports_object_permissions = True
+    #def has_perm(self, user_obj, perm, obj=None):
+        #print perm
+        #app_label, codename = perm.split('.', 1)
+        ##print perm, app_label, codename
+        #perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
+        ##print perminstance, dir(perminstance)
+        ##print perminstance.name, perminstance.codename
+        #model = perminstance.content_type.model_class()
+        #if hasattr(model, 'studentobjects'):
+            #if model.studentobjects(user_obj).filter().count() > 0:
+                #return True
+        #if hasattr(model, 'examinerobjects'):
+            #if model.examinerobjects(user_obj).filter().count() > 0:
+                #return True
+        #if hasattr(model, 'adminobjects'):
+            #if model.adminobjects(user_obj).filter().count() > 0:
+                #return True
+        #return False
 
-    def has_module_perms(self, user_obj, app_label):
-        #print user_obj, app_label
-        return True
+    #def has_module_perms(self, user_obj, app_label):
+        ##print user_obj, app_label
+        #return True
 
-    def get_groups_permissions(self, obj = None):
+    #def get_groups_permissions(self, obj = None):
+        #return []
+
+
+
+
+
+class DjangoModelBackend(ModelBackend):
+    supports_object_permissions = True
+
+    def get_group_permissions(self, user_obj, obj=None):
         return []
 
+    def get_all_permissions(self, user_obj, obj=None):
+        return []
+
+    def has_perm(self, user_obj, perm, obj=None):
+        app_label, codename = perm.split('.', 1)
+        perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
+        #print perminstance, dir(perminstance)
+        #print perminstance.name, perminstance.codename
+        model = perminstance.content_type.model_class()
+        if obj and hasattr(obj, 'user_has_obj_perm'):
+            return obj.user_has_obj_perm(user_obj, perm)
+        if hasattr(model, 'user_has_model_perm'):
+            print model, model.user_has_model_perm(user_obj, perm)
+            return model.user_has_model_perm(user_obj, perm)
+        return False
+
+    def has_module_perms(self, user_obj, app_label, obj=None):
+        return True
 
 
-
-
-class DjangoModelBackend(DevilryPermissions, ModelBackend):
-    pass
 
 
 #class SettingsBackend(DevilryPermissions):

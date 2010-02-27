@@ -27,6 +27,13 @@ class BaseNodeAdmin(admin.ModelAdmin):
     list_display = ('short_name', 'long_name', 'get_path', 'admins_unicode')
     search_fields = ['short_name', 'long_name']
 
+    def queryset(self, request):
+        if not request.user.is_superuser and hasattr(self.model, 'admin_changelist_qryset'):
+            return self.model.admin_changelist_qryset(request.user)
+        else:
+            return super(BaseNodeAdmin, self).queryset(request)
+
+
     #def has_add_permission(self, request):
         #"Returns True if the given request has permission to add an object."
         #return True

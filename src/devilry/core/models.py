@@ -5,33 +5,17 @@ from django.conf import settings
 from django.db.models import Q
 
 
+class BaseModel(models.Model):
+    class Meta:
+        abstract = True
 
-class SecureQuerySet(object):
-    def __init__(self, qryset, model, permcheck_method, user_obj):
-        self.qryset = qryset
-        self.model = model
-        self.user_obj = user_obj
-        self.permcheck_method = permcheck_method
-
-    def filter(self, *args, **kwargs):
-        permcheck_method = getattr(self.model, self.permcheck_method)
-        extraargs = permcheck_method(self.user_obj)
-        extraargs.extend(args)
-        return self.qryset.filter(*extraargs, **kwargs)
+    @classmethod
+    def user_has_model_perm(cls, user_obj, perm):
+        return cls.admin_changelist_qryset(user_obj).count() > 0
 
 
 
-class SecureQuerySetFactory(object):
-    def __init__(self, model, permcheck_method):
-        self.qryset = models.query.QuerySet(model)
-        self.model = model
-        self.permcheck_method = permcheck_method
-
-    def __call__(self, user_obj):
-        return SecureQuerySet(self.qryset, self.model, self.permcheck_method, user_obj)
-
-
-class BaseNode(models.Model):
+class BaseNode(BaseModel):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -48,8 +32,8 @@ class BaseNode(models.Model):
     admins_unicode.short_description = 'Admins'
 
     @classmethod
-    def has_change_perm_on_any(cls, user_obj):
-        return cls.objects.filter(admins=user_obj).count() > 0
+    def admin_changelist_qryset(cls, user_obj):
+        return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
 
 class BaseNodeAdministator(models.Model):
@@ -87,8 +71,6 @@ class Node(BaseNode):
         while node_obj != None:
             kw[key] = user_obj
             key = 'parent__' + key
-            print node_obj
-            print dir(node_obj)
             node_obj = node_obj.parent
         return kw
 
@@ -107,8 +89,8 @@ class Node(BaseNode):
         return l
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(pk__in=cls.get_nodepks_where_isadmin(user_obj))]
+    def qry_where_is_admin(cls, user_obj):
+        return Q(pk__in=cls.get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def get_pathlist_kw(cls, pathlist):
@@ -168,8 +150,8 @@ class Subject(BaseNode):
     admins = models.ManyToManyField(User, blank=True, through=SubjectAdministator)
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(admins=user_obj) | Q(parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+    def qry_where_is_admin(cls, user_obj):
+        return Q(Q(admins=user_obj) | Q(parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
         return unicode(self.parent) + "." + self.short_name
@@ -186,10 +168,10 @@ class Period(BaseNode):
     admins = models.ManyToManyField(User, blank=True, through=PeriodAdministator)
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(admins=user_obj) |
+    def qry_where_is_admin(cls, user_obj):
+        return Q(Q(admins=user_obj) |
                 Q(subject__admins=user_obj) |
-                Q(subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+                Q(subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
         return unicode(self.subject) + "." + self.short_name
@@ -205,15 +187,28 @@ class Assignment(BaseNode):
     admins = models.ManyToManyField(User, blank=True, through=AssignmentAdministator)
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(admins=user_obj) |
+    def qry_where_is_admin(cls, user_obj):
+        return Q(Q(admins=user_obj) |
                 Q(period__admins=user_obj) |
                 Q(period__subject__admins=user_obj) |
-                Q(period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+                Q(period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
         return unicode(self.period) + "." + self.short_name
 
+
+
+
+class BaseDeliveryModel(BaseModel):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def admin_changelist_qryset(cls, user_obj):
+        return cls.objects.filter(Q(
+                cls.qry_where_is_student(user_obj)
+                | cls.qry_where_is_examiner(user_obj)
+                | cls.qry_where_is_admin(user_obj)))
 
 
 class DeliveryStudent(models.Model):
@@ -224,7 +219,7 @@ class DeliveryExaminer(models.Model):
     delivery = models.ForeignKey('Delivery')
     examiner = models.ForeignKey(User)
 
-class Delivery(models.Model):
+class Delivery(BaseDeliveryModel):
     class Meta:
         verbose_name_plural = 'deliveries'
     assignment = models.ForeignKey(Assignment)
@@ -234,73 +229,63 @@ class Delivery(models.Model):
             through=DeliveryExaminer)
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(assignment__admins=user_obj) |
+    def qry_where_is_admin(cls, user_obj):
+        return Q(Q(assignment__admins=user_obj) |
                 Q(assignment__period__admins=user_obj) |
                 Q(assignment__period__subject__admins=user_obj) |
-                Q(assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+                Q(assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     @classmethod
-    def get_qryargs_where_isstudent(cls, user_obj):
-        return [Q(students=user_obj)]
+    def qry_where_is_student(cls, user_obj):
+        return Q(students=user_obj)
 
     @classmethod
-    def get_qryargs_where_isexaminer(cls, user_obj):
-        return [Q(examiners=user_obj)]
+    def qry_where_is_examiner(cls, user_obj):
+        return Q(examiners=user_obj)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.assignment,
                 ', '.join([unicode(x) for x in self.students.all()]))
 
 
-class DeliveryCandidate(models.Model):
+class DeliveryCandidate(BaseDeliveryModel):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(delivery__assignment__admins=user_obj) |
+    def qry_where_is_admin(cls, user_obj):
+        return Q(Q(delivery__assignment__admins=user_obj) |
                 Q(delivery__assignment__period__admins=user_obj) |
                 Q(delivery__assignment__period__subject__admins=user_obj) |
-                Q(delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+                Q(delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     @classmethod
-    def get_qryargs_where_isstudent(cls, user_obj):
-        return [Q(delivery__students=user_obj)]
+    def qry_where_is_student(cls, user_obj):
+        return Q(delivery__students=user_obj)
 
     @classmethod
-    def get_qryargs_where_isexaminer(cls, user_obj):
-        return [Q(delivery__examiners=user_obj)]
+    def qry_where_is_examiner(cls, user_obj):
+        return Q(delivery__examiners=user_obj)
 
     def __unicode__(self):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
 
-class FileMeta(models.Model):
+class FileMeta(BaseDeliveryModel):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod
-    def get_qryargs_where_isadmin(cls, user_obj):
-        return [Q(delivery_candiate__delivery__assignment__admins=user_obj) |
+    def qry_where_is_admin(cls, user_obj):
+        return Q(Q(delivery_candiate__delivery__assignment__admins=user_obj) |
                 Q(delivery_candiate__delivery__assignment__period__admins=user_obj) |
                 Q(delivery_candiate__delivery__assignment__period__subject__admins=user_obj) |
-                Q(delivery_candiate__delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))]
+                Q(delivery_candiate__delivery__assignment__period__subject__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
 
     @classmethod
-    def get_qryargs_where_isstudent(cls, user_obj):
-        return [Q(delivery_candiate__delivery__students=user_obj)]
+    def qry_where_is_student(cls, user_obj):
+        return Q(delivery_candiate__delivery__students=user_obj)
 
     @classmethod
-    def get_qryargs_where_isexaminer(cls, user_obj):
-        return [Q(delivery_candiate__delivery__examiners=user_obj)]
-
-
-
-
-for cls in Node, Subject, Period, Assignment:
-    cls.adminobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isadmin')
-for cls in Delivery, DeliveryCandidate, FileMeta:
-    cls.adminobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isadmin')
-    cls.examinerobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isexaminer')
-    cls.studentobjects = SecureQuerySetFactory(cls, 'get_qryargs_where_isstudent')
+    def qry_where_is_examiner(cls, user_obj):
+        return Q(delivery_candiate__delivery__examiners=user_obj)

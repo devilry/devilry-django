@@ -39,86 +39,86 @@ class TestNode(TestCase):
         pks.sort()
         self.assertEquals(pks, [1,2,3])
 
-    def test_get_qryargs_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        args = Node.get_qryargs_where_isadmin(uioadmin)
-        self.assertEquals(Node.objects.filter(*args).count(), 3)
+        qry = Node.qry_where_is_admin(uioadmin)
+        self.assertEquals(Node.objects.filter(qry).count(), 3)
 
 
 class TestSubject(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_get_qrykw_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        args = Subject.get_qryargs_where_isadmin(uioadmin)
-        self.assertEquals(Subject.objects.filter(*args).count(), 2)
+        qry = Subject.qry_where_is_admin(uioadmin)
+        self.assertEquals(Subject.objects.filter(qry).count(), 2)
 
 
 class TestPeriod(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_get_qrykw_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        args = Period.get_qryargs_where_isadmin(uioadmin)
-        self.assertEquals(Period.objects.filter(*args).count(), 5)
+        qry = Period.qry_where_is_admin(uioadmin)
+        self.assertEquals(Period.objects.filter(qry).count(), 5)
 
 
 class TestAssignment(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_get_qrykw_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        args = Assignment.get_qryargs_where_isadmin(uioadmin)
-        self.assertEquals(Assignment.objects.filter(*args).count(), 2)
+        qry = Assignment.qry_where_is_admin(uioadmin)
+        self.assertEquals(Assignment.objects.filter(qry).count(), 2)
 
 
 class TestDelivery(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_get_qrykw_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        args = Delivery.get_qryargs_where_isadmin(uioadmin)
-        self.assertEquals(Delivery.objects.filter(*args).count(), 2)
+        qry = Delivery.qry_where_is_admin(uioadmin)
+        self.assertEquals(Delivery.objects.filter(qry).count(), 2)
 
-    def test_get_qrykw_where_isstudent(self):
+    def test_qry_where_is_student(self):
         student2 = User.objects.get(username='student2')
-        args = Delivery.get_qryargs_where_isstudent(student2)
-        self.assertEquals(Delivery.objects.filter(*args).count(), 2)
+        qry = Delivery.qry_where_is_student(student2)
+        self.assertEquals(Delivery.objects.filter(qry).count(), 2)
 
-    def test_get_qrykw_where_isexaminer(self):
+    def test_qry_where_is_examiner(self):
         teacher1 = User.objects.get(username='teacher1')
-        args = Delivery.get_qryargs_where_isexaminer(teacher1)
-        self.assertEquals(Delivery.objects.filter(*args).count(), 2)
+        qry = Delivery.qry_where_is_examiner(teacher1)
+        self.assertEquals(Delivery.objects.filter(qry).count(), 2)
 
 
 class TestDeliveryCandidate(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_get_qrykw_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        args = DeliveryCandidate.get_qryargs_where_isadmin(uioadmin)
-        self.assertEquals(DeliveryCandidate.objects.filter(*args).count(), 3)
+        qry = DeliveryCandidate.qry_where_is_admin(uioadmin)
+        self.assertEquals(DeliveryCandidate.objects.filter(qry).count(), 3)
 
-    def test_get_qrykw_where_isstudent(self):
+    def test_qry_where_is_student(self):
         student2 = User.objects.get(username='student2')
-        args = DeliveryCandidate.get_qryargs_where_isstudent(student2)
-        self.assertEquals(DeliveryCandidate.objects.filter(*args).count(), 3)
+        qry = DeliveryCandidate.qry_where_is_student(student2)
+        self.assertEquals(DeliveryCandidate.objects.filter(qry).count(), 3)
 
-    def test_get_qrykw_where_isexaminer(self):
+    def test_qry_where_is_examiner(self):
         teacher1 = User.objects.get(username='teacher1')
-        args = DeliveryCandidate.get_qryargs_where_isexaminer(teacher1)
-        self.assertEquals(DeliveryCandidate.objects.filter(*args).count(), 3)
+        qry = DeliveryCandidate.qry_where_is_examiner(teacher1)
+        self.assertEquals(DeliveryCandidate.objects.filter(qry).count(), 3)
 
 
 
 class TestFileMeta(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_get_qrykw_where_isadmin(self):
+    def test_qry_where_is_admin(self):
         """ TODO """
 
-    def test_get_qrykw_where_isstudent(self):
+    def test_qry_where_is_student(self):
         """ TODO """
 
-    def test_get_qrykw_where_isexaminer(self):
+    def test_qry_where_is_examiner(self):
         """ TODO """
