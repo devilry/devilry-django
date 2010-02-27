@@ -7,15 +7,51 @@ from django import forms
 
 
 
-class BaseNodeAdmin(admin.ModelAdmin):
+class InstanceAuthModelAdminMixin(object):
+    """ Mixin for ModelAdmin where the obj-argument in has_change_permission and
+    has_delete_permission is forwarded to the auth backend. Must be mixed in *before*
+    modeladmin. Example::
+        >>> class ExampleModelAdmin(InstanceAuthModelAdmin, admin.ModelAdmin):
+        ...    list_display = ['test', 'field']
+    """
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
+
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+        """
+        opts = self.opts
+        return request.user.has_perm(opts.app_label + '.' + opts.get_change_permission(), obj)
+
+    def has_delete_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
+
+        If `obj` is None, this should return True if the given request has
+        permission to delete *any* object of the given type.
+        """
+        opts = self.opts
+        return request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission(), obj)
+
+
+class InstanceAuthModelAdmin(InstanceAuthModelAdminMixin, admin.ModelAdmin):
+    """ ModelAdmin where the obj-argument in has_change_permission and
+    has_delete_permission is forwarded to the auth backend. """
+
+
+class BaseNodeAdmin(InstanceAuthModelAdmin):
     list_display = ('short_name', 'long_name', 'get_path', 'admins_unicode')
     search_fields = ['short_name', 'long_name']
 
     def queryset(self, request):
-        if not request.user.is_superuser and hasattr(self.model, 'admin_changelist_qryset'):
-            return self.model.admin_changelist_qryset(request.user)
-        else:
+        if not request.user.is_superuser:
             return super(BaseNodeAdmin, self).queryset(request)
+        else:
+            return self.model.qry_where_is_admin(request.user)
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if request:
@@ -34,10 +70,8 @@ class BaseNodeAdmin(admin.ModelAdmin):
             if not request.user.has_perm(perm):
                 r = ['parentnode']
                 r.extend(self.readonly_fields)
-                print r
                 return r
         return self.readonly_fields
-
 
 
 class NodeAdministatorInline(admin.TabularInline):

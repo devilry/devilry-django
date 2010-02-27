@@ -7,7 +7,42 @@ from django.core.exceptions import ValidationError
 
 
 
-class BaseNode(models.Model):
+
+class AuthMixin(object):
+    @classmethod
+    def where_is_admin(cls, user_obj):
+        return cls.objects.filter(cls.qry_where_is_admin(user_obj))
+
+    @classmethod
+    def qry_where_is_admin(cls, user_obj):
+        raise NotImplementedError('Must be implemented in subclass.')
+
+    @classmethod
+    def has_permission(cls, user_obj, perm, obj=None):
+        """ Check permissions for user on class or instance. """
+        raise NotImplementedError('Must be implemented in subclass.')
+
+
+class StudentExaminerAuthMixin(AuthMixin):
+    @classmethod
+    def where_is_student(cls, user_obj):
+        return cls.objects.filter(cls.qry_where_is_student(user_obj))
+
+    @classmethod
+    def where_is_examiner(cls, user_obj):
+        return cls.objects.filter(cls.qry_where_is_examiner(user_obj))
+
+    @classmethod
+    def qry_where_is_student(cls, user_obj):
+        raise NotImplementedError('Must be implemented in subclass.')
+
+    @classmethod
+    def qry_where_is_examiner(cls, user_obj):
+        raise NotImplementedError('Must be implemented in subclass.')
+
+
+
+class BaseNode(models.Model, AuthMixin):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -23,19 +58,19 @@ class BaseNode(models.Model):
         return u', '.join(u.username for u in self.admins.all())
     admins_unicode.short_description = 'Admins'
 
-    @classmethod
-    def admin_changelist_qryset(cls, user_obj):
-        return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
     @classmethod
-    def user_has_model_perm(cls, user_obj, perm):
+    def has_permission(cls, user_obj, perm, obj=None):
         meta = cls._meta
         changeperm = '%s.%s' % (meta.app_label, meta.get_change_permission())
-        if perm == changeperm and cls.admin_changelist_qryset(user_obj).count() > 0:
-            return True
+        if perm == changeperm:
+            if obj:
+                return False
+            elif cls.where_is_admin(user_obj).count() > 0:
+                return True
 
         pcls = cls.parentnode.field.related.parent_model
-        if pcls != Node and pcls.admin_changelist_qryset(user_obj).count() > 0:
+        if pcls != Node and pcls.where_is_admin(user_obj).count() > 0:
             return True
 
 
@@ -217,7 +252,7 @@ class DeliveryExaminer(models.Model):
     delivery = models.ForeignKey('Delivery')
     examiner = models.ForeignKey(User)
 
-class Delivery(models.Model):
+class Delivery(models.Model, StudentExaminerAuthMixin):
     class Meta:
         verbose_name_plural = 'deliveries'
     parentnode = models.ForeignKey(Assignment)
@@ -246,34 +281,17 @@ class Delivery(models.Model):
                 ', '.join([unicode(x) for x in self.students.all()]))
 
     @classmethod
-    def admin_changelist_qryset(cls, user_obj):
+    def where_is_admin(cls, user_obj):
         return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
     @classmethod
-    def user_has_model_perm(cls, user_obj, perm):
-        return cls.admin_changelist_qryset(user_obj).count() > 0
+    def has_permission(cls, user_obj, perm, obj=None):
+        return cls.where_is_admin(user_obj).count() > 0
 
 
 
-class StudentExaminerMixin(object):
-    @classmethod
-    def admin_changelist_qryset(cls, user_obj):
-        return cls.objects.filter(Q(
-                cls.qry_where_is_student(user_obj)
-                | cls.qry_where_is_examiner(user_obj)
-                | cls.qry_where_is_admin(user_obj)))
 
-    @classmethod
-    def user_has_model_perm(cls, user_obj, perm):
-        if cls.objects.filter(cls.qry_where_is_student(user_obj)).count() > 0:
-            return perm.startswith('core.add_')
-
-        qry = Q(cls.qry_where_is_examiner(user_obj) | cls.qry_where_is_admin(user_obj))
-        if cls.objects.filter(qry).count() > 0:
-            return perm.startswith('core.examin_')
-
-
-class DeliveryCandidate(models.Model, StudentExaminerMixin):
+class DeliveryCandidate(models.Model, StudentExaminerAuthMixin):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
 
@@ -295,8 +313,12 @@ class DeliveryCandidate(models.Model, StudentExaminerMixin):
     def __unicode__(self):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
+    @classmethod
+    def has_permission(cls, user_obj, perm, obj=None):
+        return False
 
-class FileMeta(models.Model, StudentExaminerMixin):
+
+class FileMeta(models.Model, StudentExaminerAuthMixin):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filepath = models.FileField(upload_to="deliveries")
 
@@ -314,3 +336,7 @@ class FileMeta(models.Model, StudentExaminerMixin):
     @classmethod
     def qry_where_is_examiner(cls, user_obj):
         return Q(delivery_candiate__delivery__examiners=user_obj)
+
+    @classmethod
+    def has_permission(cls, user_obj, perm, obj=None):
+        return False

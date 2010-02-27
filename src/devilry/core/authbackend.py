@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, check_password
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
+from models import AuthMixin
 
 
 #class DevilryPermissions(object):
@@ -50,10 +51,8 @@ class DjangoModelBackend(ModelBackend):
         app_label, codename = perm.split('.', 1)
         perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
         model = perminstance.content_type.model_class()
-        if obj and hasattr(obj, 'user_has_obj_perm'):
-            return obj.user_has_obj_perm(user_obj, perm)
-        if hasattr(model, 'user_has_model_perm'):
-            return model.user_has_model_perm(user_obj, perm)
+        if hasattr(model, 'has_permission'):
+            return model.has_permission(user_obj, perm, obj)
         return False
 
     def has_module_perms(self, user_obj, app_label, obj=None):
