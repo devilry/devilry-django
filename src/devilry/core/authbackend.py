@@ -49,13 +49,10 @@ class DjangoModelBackend(ModelBackend):
     def has_perm(self, user_obj, perm, obj=None):
         app_label, codename = perm.split('.', 1)
         perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
-        #print perminstance, dir(perminstance)
-        #print perminstance.name, perminstance.codename
         model = perminstance.content_type.model_class()
         if obj and hasattr(obj, 'user_has_obj_perm'):
             return obj.user_has_obj_perm(user_obj, perm)
         if hasattr(model, 'user_has_model_perm'):
-            print model, model.user_has_model_perm(user_obj, perm)
             return model.user_has_model_perm(user_obj, perm)
         return False
 

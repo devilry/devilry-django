@@ -3,23 +3,8 @@ from models import *
         #Delivery, DeliveryCandidate, FileMeta
 from django.contrib import admin
 from django.db.models import Q
+from django import forms
 
-
-
-class LimitAccess:
-    #def queryset(self, request):
-        #""" Limit administrators to superusers, and administators on this
-        #node or any of the parent-nodes. """
-        #if request.user.is_superuser:
-            #return self.get_modelcls().objects
-        #else:
-            #return self.get_instances_where_admin(request.user)
-
-    def get_instances_where_admin(self, user):
-        raise NotImplementedError()
-
-    def get_modelcls(self):
-        raise NotImplementedError()
 
 
 
@@ -33,6 +18,25 @@ class BaseNodeAdmin(admin.ModelAdmin):
         else:
             return super(BaseNodeAdmin, self).queryset(request)
 
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if request:
+            meta = self.model._meta
+            perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
+            if request.user.has_perm(perm):
+                db_field.rel.limit_choices_to = self.model._parentnode_cls.qry_where_is_admin(request.user)
+        return db_field.formfield(**kwargs)
+
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            meta = self.model._meta
+            perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
+            if not self.model.user_has_model_perm(request.user, perm):
+                r = [self.model._parentnode_field]
+                r.extend(self.readonly_fields)
+                print r
+                return r
+        return self.readonly_fields
 
     #def has_add_permission(self, request):
         #"Returns True if the given request has permission to add an object."
@@ -76,9 +80,6 @@ class NodeAdministatorInline(admin.TabularInline):
     extra = 1
 class NodeAdmin(BaseNodeAdmin):
     inlines = (NodeAdministatorInline,)
-    def get_modelcls(self):
-        return Node
-
 
     @classmethod
     def get_admnodes(cls, user):
@@ -91,23 +92,12 @@ class NodeAdmin(BaseNodeAdmin):
         add_admnodes(admnodes)
         return l
 
-    def get_instances_where_admin(self, user):
-        admnodes = NodeAdmin.get_admnodes(user)
-        f = self.get_modelcls().objects.filter(id__in=admnodes)
-        return f
-
 
 class SubjectAdministatorInline(admin.TabularInline):
     model = SubjectAdministator
     extra = 1
 class SubjectAdmin(BaseNodeAdmin):
     inlines = (SubjectAdministatorInline,)
-    def get_modelcls(self):
-        return Subject
-    def get_instances_where_admin(self, user):
-        admnodes = NodeAdmin.get_admnodes(user)
-        return self.get_modelcls().objects.filter(
-                Q(admins=user) | Q(parent__id__in=admnodes))
 
 
 class PeriodAdministatorInline(admin.TabularInline):
@@ -119,30 +109,13 @@ class PeriodAdmin(BaseNodeAdmin):
     list_filter = ['start_time', 'end_time']
     ordering = ['subject']
     inlines = (PeriodAdministatorInline,)
-    def get_modelcls(self):
-        return Period
-    def get_instances_where_admin(self, user):
-        admnodes = NodeAdmin.get_admnodes(user)
-        return self.get_modelcls().objects.filter(
-                Q(admins=user) |
-                Q(subject__admins=user) |
-                Q(subject__parent__id__in=admnodes))
 
 
 class AssignmentAdministatorInline(admin.TabularInline):
     model = AssignmentAdministator
     extra = 1
 class AssignmentAdmin(BaseNodeAdmin):
-    inlines = (AssignmentAdministatorInline,)
-    def get_modelcls(self):
-        return Assignment
-    def get_instances_where_admin(self, user):
-        admnodes = NodeAdmin.get_admnodes(user)
-        return self.get_modelcls().objects.filter(
-                Q(admins=user) |
-                Q(period__admins=user) |
-                Q(period__subject__admins=user) |
-                Q(period__subject__parent__id__in=admnodes))
+    inlines = [AssignmentAdministatorInline]
 
 
 
@@ -152,17 +125,8 @@ class DeliveryStudentInline(admin.TabularInline):
 class DeliveryExaminerInline(admin.TabularInline):
     model = DeliveryExaminer
     extra = 1
-class DeliveryAdmin(LimitAccess, admin.ModelAdmin):
+class DeliveryAdmin(admin.ModelAdmin):
     inlines = (DeliveryStudentInline, DeliveryExaminerInline)
-    def get_modelcls(self):
-        return Delivery
-    def get_instances_where_admin(self, user):
-        admnodes = NodeAdmin.get_admnodes(user)
-        return self.get_modelcls().objects.filter(
-                Q(assignment__admins=user) |
-                Q(assignment__period__admins=user) |
-                Q(assignment__period__subject__admins=user) |
-                Q(assignment__period__subject__parent__id__in=admnodes))
 
 
 

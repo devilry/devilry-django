@@ -5,17 +5,11 @@ from django.conf import settings
 from django.db.models import Q
 
 
-class BaseModel(models.Model):
-    class Meta:
-        abstract = True
 
-    @classmethod
-    def user_has_model_perm(cls, user_obj, perm):
-        return cls.admin_changelist_qryset(user_obj).count() > 0
+class BaseNode(models.Model):
+    _parentnode_cls = None
+    _parentnode_field = None
 
-
-
-class BaseNode(BaseModel):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -35,6 +29,16 @@ class BaseNode(BaseModel):
     def admin_changelist_qryset(cls, user_obj):
         return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
+    @classmethod
+    def user_has_model_perm(cls, user_obj, perm):
+        changeperm = 'core.change_' + cls.__name__.lower()
+        if perm == changeperm and cls.admin_changelist_qryset(user_obj).count() > 0:
+            return True
+
+        if cls._parentnode_cls and cls._parentnode_cls.admin_changelist_qryset(user_obj).count() > 0:
+            return True
+
+
 
 class BaseNodeAdministator(models.Model):
     user = models.ForeignKey(User)
@@ -52,6 +56,7 @@ class NodeAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Node')
 
 class Node(BaseNode):
+    _parentnode_field = 'parent'
     parent = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True, through=NodeAdministator)
 
@@ -146,6 +151,9 @@ class SubjectAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Subject')
 
 class Subject(BaseNode):
+    _parentnode_cls = Node
+    _parentnode_field = 'parent'
+
     parent = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True, through=SubjectAdministator)
 
@@ -162,10 +170,13 @@ class PeriodAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Period')
 
 class Period(BaseNode):
+    _parentnode_cls = Subject
+    _parentnode_field = 'subject'
     subject = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True, through=PeriodAdministator)
+
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
@@ -182,6 +193,9 @@ class AssignmentAdministator(BaseNodeAdministator):
     node = models.ForeignKey('Assignment')
 
 class Assignment(BaseNode):
+    _parentnode_cls = Period
+    _parentnode_field = 'period'
+
     period = models.ForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True, through=AssignmentAdministator)
@@ -198,19 +212,6 @@ class Assignment(BaseNode):
 
 
 
-
-class BaseDeliveryModel(BaseModel):
-    class Meta:
-        abstract = True
-
-    @classmethod
-    def admin_changelist_qryset(cls, user_obj):
-        return cls.objects.filter(Q(
-                cls.qry_where_is_student(user_obj)
-                | cls.qry_where_is_examiner(user_obj)
-                | cls.qry_where_is_admin(user_obj)))
-
-
 class DeliveryStudent(models.Model):
     delivery = models.ForeignKey('Delivery')
     student = models.ForeignKey(User)
@@ -219,7 +220,7 @@ class DeliveryExaminer(models.Model):
     delivery = models.ForeignKey('Delivery')
     examiner = models.ForeignKey(User)
 
-class Delivery(BaseDeliveryModel):
+class Delivery(models.Model):
     class Meta:
         verbose_name_plural = 'deliveries'
     assignment = models.ForeignKey(Assignment)
@@ -247,8 +248,35 @@ class Delivery(BaseDeliveryModel):
         return u'%s (%s)' % (self.assignment,
                 ', '.join([unicode(x) for x in self.students.all()]))
 
+    @classmethod
+    def admin_changelist_qryset(cls, user_obj):
+        return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
-class DeliveryCandidate(BaseDeliveryModel):
+    @classmethod
+    def user_has_model_perm(cls, user_obj, perm):
+        return cls.admin_changelist_qryset(user_obj).count() > 0
+
+
+
+class StudentExaminerMixin(object):
+    @classmethod
+    def admin_changelist_qryset(cls, user_obj):
+        return cls.objects.filter(Q(
+                cls.qry_where_is_student(user_obj)
+                | cls.qry_where_is_examiner(user_obj)
+                | cls.qry_where_is_admin(user_obj)))
+
+    @classmethod
+    def user_has_model_perm(cls, user_obj, perm):
+        if cls.objects.filter(cls.qry_where_is_student(user_obj)).count() > 0:
+            return perm.startswith('core.add_')
+
+        qry = Q(cls.qry_where_is_examiner(user_obj) | cls.qry_where_is_admin(user_obj))
+        if cls.objects.filter(qry).count() > 0:
+            return perm.startswith('core.examin_')
+
+
+class DeliveryCandidate(models.Model, StudentExaminerMixin):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
 
@@ -271,7 +299,7 @@ class DeliveryCandidate(BaseDeliveryModel):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
 
-class FileMeta(BaseDeliveryModel):
+class FileMeta(models.Model, StudentExaminerMixin):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filepath = models.FileField(upload_to="deliveries")
 
