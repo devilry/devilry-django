@@ -203,7 +203,7 @@ class Assignment(BaseNode):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-class Delivery(models.Model, CoreAuthMixin):
+class DeliveryGroup(models.Model, CoreAuthMixin):
     class Meta:
         verbose_name_plural = 'deliveries'
     parentnode = models.ForeignKey(Assignment)
@@ -212,7 +212,7 @@ class Delivery(models.Model, CoreAuthMixin):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        return Delivery.objects.filter(
+        return DeliveryGroup.objects.filter(
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__parentnode__admins=user_obj) |
@@ -221,11 +221,11 @@ class Delivery(models.Model, CoreAuthMixin):
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return Delivery.objects.filter(students=user_obj)
+        return DeliveryGroup.objects.filter(students=user_obj)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return Delivery.objects.filter(examiners=user_obj)
+        return DeliveryGroup.objects.filter(examiners=user_obj)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode,
@@ -244,7 +244,7 @@ class Delivery(models.Model, CoreAuthMixin):
 
 
 class DeliveryCandidate(models.Model, CoreAuthMixin):
-    delivery = models.ForeignKey(Delivery)
+    delivery = models.ForeignKey(DeliveryGroup)
     time_of_delivery = models.DateTimeField()
 
     @classmethod

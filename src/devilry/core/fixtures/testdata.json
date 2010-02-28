@@ -144,7 +144,7 @@
     }, 
     {
         "pk": 1, 
-        "model": "core.delivery", 
+        "model": "core.deliverygroup", 
         "fields": {
             "students": [
                 6, 
@@ -158,7 +158,7 @@
     }, 
     {
         "pk": 2, 
-        "model": "core.delivery", 
+        "model": "core.deliverygroup", 
         "fields": {
             "students": [
                 7, 

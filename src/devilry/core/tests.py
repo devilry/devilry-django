@@ -8,7 +8,7 @@ Replace these with more appropriate tests for your application.
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from django.db.models import Q
-from models import Node, Subject, Period, Assignment, Delivery, DeliveryCandidate
+from models import Node, Subject, Period, Assignment, DeliveryGroup, DeliveryCandidate
 
 
 class TestNode(TestCase):
@@ -85,15 +85,15 @@ class TestDelivery(TestCase):
 
     def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        self.assertEquals(Delivery.where_is_admin(uioadmin).count(), 2)
+        self.assertEquals(DeliveryGroup.where_is_admin(uioadmin).count(), 2)
 
     def test_where_is_student(self):
         student2 = User.objects.get(username='student2')
-        self.assertEquals(Delivery.where_is_student(student2).count(), 2)
+        self.assertEquals(DeliveryGroup.where_is_student(student2).count(), 2)
 
     def test_where_is_examiner(self):
         teacher2 = User.objects.get(username='teacher2')
-        self.assertEquals(Delivery.where_is_examiner(teacher2).count(), 2)
+        self.assertEquals(DeliveryGroup.where_is_examiner(teacher2).count(), 2)
 
 
 class TestDeliveryCandidate(TestCase):

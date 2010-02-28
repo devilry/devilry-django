@@ -1,6 +1,6 @@
 from models import *
 #from models import Node, Subject, Period, Assignment, \
-        #Delivery, DeliveryCandidate, FileMeta
+        #DeliveryGroup, DeliveryCandidate, FileMeta
 from django.contrib import admin
 from django.db.models import Q
 from django import forms
@@ -125,5 +125,5 @@ admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 
-admin.site.register(Delivery, DeliveryAdmin)
+admin.site.register(DeliveryGroup, DeliveryAdmin)
 admin.site.register(DeliveryCandidate, DeliveryCandidateAdmin)
