@@ -15,6 +15,7 @@ class DjangoModelBackend(ModelBackend):
         return []
 
     def has_perm(self, user_obj, perm, obj=None):
+        print perm
         app_label, codename = perm.split('.', 1)
         perminstance = Permission.objects.get(codename=codename, content_type__app_label=app_label)
         model = perminstance.content_type.model_class()

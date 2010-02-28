@@ -1,0 +1,38 @@
+{% extends "admin/app_index.html" %} 
+{% load i18n %} 
+
+
+{% block content %}
+<div id="content-main">
+{% for app in app_list %}
+		<div class="module">
+		<table summary="{% blocktrans with app.name as name %}Models available in the {{ name }} application.{% endblocktrans %}">
+		<caption><a href="{{ app.app_url }}" class="section">{% blocktrans with app.name as name %}{{ name }}{% endblocktrans %}</a></caption>
+		{% for model in app.models %}
+				<tr>
+					<th scope="row">{{ model.name }}</th>
+
+				{% if model.perms.add %}
+						<td><a href="{{ model.admin_url }}add/" class="addlink">{% trans 'Add' %}</a></td>
+				{% else %}
+						<td>&nbsp;</td>
+				{% endif %}
+
+				{% if model.perms.student %}
+						<td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Show' %}</a></td>
+				{% else %}
+						<td>&nbsp;</td>
+				{% endif %}
+
+				{% if model.perms.change %}
+						<td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Administer' %}</a></td>
+				{% else %}
+						<td>&nbsp;</td>
+				{% endif %}
+				</tr>
+		{% endfor %}
+		</table>
+		</div>
+{% endfor %}
+</div>
+{% endblock %}

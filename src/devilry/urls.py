@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from core import userview
+from devilry.core import userview
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
