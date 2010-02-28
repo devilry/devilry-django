@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django import forms
 from django.db import models
-from models import DeliveryCandidate, FileMeta, DeliveryGroup
+from models import Delivery, FileMeta, DeliveryGroup
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -14,11 +14,11 @@ def dashboard(request):
     return HttpResponse('Should display a listing of courses and stuff like that!')
 
 
-FileMetaForm = inlineformset_factory(DeliveryCandidate, FileMeta, extra=1)
+FileMetaForm = inlineformset_factory(Delivery, FileMeta, extra=1)
 
 class DeliveryCandidateForm(forms.ModelForm):
     class Meta:
-        model = DeliveryCandidate
+        model = Delivery
         exclude = ['time_of_delivery', 'delivery']
 
 
@@ -27,7 +27,7 @@ def deliver(request, deliveryid):
     filemetas = []
     if request.method == 'POST':
         delivery = DeliveryGroup.objects.get(id=deliveryid)
-        #dc = DeliveryCandidate(time_of_delivery = datetime.now(),
+        #dc = Delivery(time_of_delivery = datetime.now(),
             #delivery=delivery)
         form = DeliveryCandidateForm(request.POST)
         form.instance.delivery = delivery
@@ -78,7 +78,7 @@ def create_delivery(request, deliveryid, deliverycand_id=None):
     form = DeliveryCandidateForm(request.POST)
     form = DeliveryCandidateForm(request.POST)
     if deliverycand_id != None:
-        deliverycand = get_object_or_404(DeliveryCandidate, pk=deliverycand_id)
+        deliverycand = get_object_or_404(Delivery, pk=deliverycand_id)
         form.instance = deliverycand
     form.instance.delivery = delivery
     formset = FileMetaForm(request.POST, request.FILES, instance=form.instance)

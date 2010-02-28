@@ -172,25 +172,25 @@
     }, 
     {
         "pk": 1, 
-        "model": "core.deliverycandidate", 
+        "model": "core.delivery", 
         "fields": {
-            "delivery": 1, 
+            "delivery_group": 1, 
             "time_of_delivery": "2010-02-26 23:20:19"
         }
     }, 
     {
         "pk": 2, 
-        "model": "core.deliverycandidate", 
+        "model": "core.delivery", 
         "fields": {
-            "delivery": 2, 
+            "delivery_group": 2, 
             "time_of_delivery": "2010-02-26 23:21:14"
         }
     }, 
     {
         "pk": 3, 
-        "model": "core.deliverycandidate", 
+        "model": "core.delivery", 
         "fields": {
-            "delivery": 2, 
+            "delivery_group": 2, 
             "time_of_delivery": "2010-02-26 23:21:19"
         }
     }

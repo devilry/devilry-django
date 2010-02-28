@@ -205,7 +205,7 @@ class Assignment(BaseNode):
 
 class DeliveryGroup(models.Model, CoreAuthMixin):
     class Meta:
-        verbose_name_plural = 'deliveries'
+        verbose_name_plural = 'Delivery groups'
     parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
@@ -243,48 +243,48 @@ class DeliveryGroup(models.Model, CoreAuthMixin):
 
 
 
-class DeliveryCandidate(models.Model, CoreAuthMixin):
-    delivery = models.ForeignKey(DeliveryGroup)
+class Delivery(models.Model, CoreAuthMixin):
+    delivery_group = models.ForeignKey(DeliveryGroup)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        return DeliveryCandidate.objects.filter(
-                Q(delivery__parentnode__admins=user_obj) |
-                Q(delivery__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        return Delivery.objects.filter(
+                Q(delivery_group__parentnode__admins=user_obj) |
+                Q(delivery_group__parentnode__parentnode__admins=user_obj) |
+                Q(delivery_group__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(delivery_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return DeliveryCandidate.objects.filter(delivery__students=user_obj)
+        return Delivery.objects.filter(delivery_group__students=user_obj)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return DeliveryCandidate.objects.filter(delivery__examiners=user_obj)
+        return Delivery.objects.filter(delivery_group__examiners=user_obj)
 
     def __unicode__(self):
-        return u'%s %s' % (self.delivery, self.time_of_delivery)
+        return u'%s %s' % (self.delivery_group, self.time_of_delivery)
 
 
 class FileMeta(models.Model, CoreAuthMixin):
-    delivery_candidate = models.ForeignKey(DeliveryCandidate)
+    delivery_group = models.ForeignKey(Delivery)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod
     def where_is_admin(cls, user_obj):
         return FileMeta.objects.filter(
-                Q(delivery_candiate__delivery__parentnode__admins=user_obj) |
-                Q(delivery_candiate__delivery__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
-        ).distic()
+                Q(delivery_group__delivery__parentnode__admins=user_obj) |
+                Q(delivery_group__delivery__parentnode__parentnode__admins=user_obj) |
+                Q(delivery_group__delivery__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(delivery_group__delivery__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        ).distinct()
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return FileMeta.objects.filter(delivery_candiate__delivery__students=user_obj)
+        return FileMeta.objects.filter(delivery_group__delivery__students=user_obj)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return FileMeta.objects.filter(delivery_candiate__delivery__examiners=user_obj)
+        return FileMeta.objects.filter(delivery_group__delivery__examiners=user_obj)
