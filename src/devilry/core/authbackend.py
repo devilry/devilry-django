@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import User, check_password
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
-from models import AuthMixin
 
 
 #class DevilryPermissions(object):

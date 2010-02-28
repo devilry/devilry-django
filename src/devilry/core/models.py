@@ -9,7 +9,7 @@ from django import forms
 
 
 
-class AuthMixinForeignKey(models.ForeignKey):
+class PermMixinForeignKey(models.ForeignKey):
     def formfield(self, user_obj=None, **kwargs):
         if user_obj == None:
             return models.query.EmptyQuerySet()
@@ -24,7 +24,7 @@ class AuthMixinForeignKey(models.ForeignKey):
         return super(models.ForeignKey, self).formfield(**defaults)
 
 
-class AuthMixin(object):
+class PermMixin(object):
     @classmethod
     def get_changelist(cls, user_obj):
         raise NotImplementedError('get_changelist must be implemented in subclass.')
@@ -45,7 +45,7 @@ class AuthMixin(object):
         return False
 
 
-class CoreAuthMixin(AuthMixin):
+class CorePermMixin(PermMixin):
     @classmethod
     def get_changelist(cls, user_obj):
         return cls.where_is_admin(user_obj)
@@ -53,7 +53,7 @@ class CoreAuthMixin(AuthMixin):
 
 
 
-class BaseNode(models.Model, CoreAuthMixin):
+class BaseNode(models.Model, CorePermMixin):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -86,7 +86,7 @@ class BaseNode(models.Model, CoreAuthMixin):
 
 
 class Node(BaseNode):
-    parentnode = AuthMixinForeignKey('self', blank=True, null=True)
+    parentnode = PermMixinForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
     def __unicode__(self):
@@ -168,7 +168,7 @@ class Node(BaseNode):
         return n
 
 class Subject(BaseNode):
-    parentnode = AuthMixinForeignKey(Node)
+    parentnode = PermMixinForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
@@ -183,7 +183,7 @@ class Subject(BaseNode):
 
 
 class Period(BaseNode):
-    parentnode = AuthMixinForeignKey(Subject)
+    parentnode = PermMixinForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
@@ -202,7 +202,7 @@ class Period(BaseNode):
 
 
 class Assignment(BaseNode):
-    parentnode = AuthMixinForeignKey(Period)
+    parentnode = PermMixinForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
@@ -219,10 +219,10 @@ class Assignment(BaseNode):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-class DeliveryGroup(models.Model, CoreAuthMixin):
+class DeliveryGroup(models.Model, CorePermMixin):
     class Meta:
         verbose_name_plural = 'Delivery groups'
-    parentnode = AuthMixinForeignKey(Assignment)
+    parentnode = PermMixinForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
 
@@ -259,8 +259,8 @@ class DeliveryGroup(models.Model, CoreAuthMixin):
 
 
 
-class Delivery(models.Model, CoreAuthMixin):
-    delivery_group = AuthMixinForeignKey(DeliveryGroup)
+class Delivery(models.Model, CorePermMixin):
+    delivery_group = PermMixinForeignKey(DeliveryGroup)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
@@ -284,8 +284,8 @@ class Delivery(models.Model, CoreAuthMixin):
         return u'%s %s' % (self.delivery_group, self.time_of_delivery)
 
 
-class FileMeta(models.Model, CoreAuthMixin):
-    delivery = AuthMixinForeignKey(Delivery)
+class FileMeta(models.Model, CorePermMixin):
+    delivery = PermMixinForeignKey(Delivery)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod

@@ -1,6 +1,6 @@
 from models import (Node, Subject, Period, Assignment,
         DeliveryGroup, Delivery, FileMeta)
-from models import AuthMixinForeignKey
+from models import PermMixinForeignKey
 from django.contrib import admin
 from django.db.models import Q
 from django.db import models
@@ -54,7 +54,7 @@ class InstanceAuthModelAdminMixin(object):
 
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        if isinstance(db_field, AuthMixinForeignKey):
+        if isinstance(db_field, PermMixinForeignKey):
             return db_field.formfield(request.user, **kwargs)
         return db_field.formfield(**kwargs)
 
@@ -63,7 +63,7 @@ class InstanceAuthModelAdminMixin(object):
         if obj:
             r = []
             for field in iter(obj._meta.fields):
-                if isinstance(field, AuthMixinForeignKey):
+                if isinstance(field, PermMixinForeignKey):
                     parent_model = field.related.parent_model
                     if is_authmixin_model(parent_model):
                         r.append(field.name)
