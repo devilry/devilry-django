@@ -1,10 +1,15 @@
-from models import *
-#from models import Node, Subject, Period, Assignment, \
-        #DeliveryGroup, Delivery, FileMeta
+from models import (Node, Subject, Period, Assignment,
+        DeliveryGroup, Delivery, FileMeta)
+from models import AuthMixinForeignKey
 from django.contrib import admin
 from django.db.models import Q
+from django.db import models
 from django import forms
 
+
+
+def is_authmixin_model(modelcls):
+    return hasattr(modelcls, 'get_changelist')
 
 
 class InstanceAuthModelAdminMixin(object):
@@ -29,7 +34,7 @@ class InstanceAuthModelAdminMixin(object):
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
         """
-        print 'has_change_permission', obj
+        #print 'has_change_permission', obj
         opts = self.opts
         return request.user.has_perm(
                 opts.app_label + '.' + opts.get_change_permission(), obj)
@@ -42,10 +47,29 @@ class InstanceAuthModelAdminMixin(object):
         If `obj` is None, this should return True if the given request has
         permission to delete *any* object of the given type.
         """
-        print 'has_delete_permission', obj
+        #print 'has_delete_permission', obj
         opts = self.opts
         return request.user.has_perm(
                 opts.app_label + '.' + opts.get_delete_permission(), obj)
+
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if isinstance(db_field, AuthMixinForeignKey):
+            return db_field.formfield(request.user, **kwargs)
+        return db_field.formfield(**kwargs)
+
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            r = []
+            for field in iter(obj._meta.fields):
+                if isinstance(field, AuthMixinForeignKey):
+                    parent_model = field.related.parent_model
+                    if is_authmixin_model(parent_model):
+                        r.append(field.name)
+            r.extend(self.readonly_fields)
+            return r
+        return self.readonly_fields
 
 
 
@@ -57,26 +81,6 @@ class InstanceAuthModelAdmin(InstanceAuthModelAdminMixin, admin.ModelAdmin):
 class BaseNodeAdmin(InstanceAuthModelAdmin):
     list_display = ('short_name', 'long_name', 'get_path')
     search_fields = ['short_name', 'long_name']
-
-    #def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        #if request:
-            #meta = self.model._meta
-            #perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
-            #if not request.user.is_superuser and request.user.has_perm(perm):
-                #pcls = self.model.parentnode.field.related.parent_model
-                #db_field.rel.limit_choices_to = pcls.qry_where_is_admin(request.user)
-        #return db_field.formfield(**kwargs)
-
-
-    #def get_readonly_fields(self, request, obj=None):
-        #if obj:
-            #meta = self.model._meta
-            #perm = '%s.%s' % (meta.app_label, meta.get_add_permission())
-            #if not request.user.has_perm(perm):
-                #r = ['parentnode']
-                #r.extend(self.readonly_fields)
-                #return r
-        #return self.readonly_fields
 
 
 class NodeAdmin(BaseNodeAdmin):
@@ -107,7 +111,7 @@ class PeriodAdmin(BaseNodeAdmin):
 class AssignmentAdmin(BaseNodeAdmin):
     pass
 
-class DeliveryAdmin(InstanceAuthModelAdmin):
+class DeliveryGroupAdmin(InstanceAuthModelAdmin):
     pass
 
 
@@ -115,7 +119,7 @@ class DeliveryAdmin(InstanceAuthModelAdmin):
 class FileMetaInline(admin.TabularInline):
     model = FileMeta
     extra = 1
-class DeliveryCandidateAdmin(admin.ModelAdmin):
+class DeliveryAdmin(InstanceAuthModelAdmin):
     list_display = ['__unicode__', 'id']
     inlines = (FileMetaInline,)
 
@@ -125,5 +129,5 @@ admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 
-admin.site.register(DeliveryGroup, DeliveryAdmin)
-admin.site.register(Delivery, DeliveryCandidateAdmin)
+admin.site.register(DeliveryGroup, DeliveryGroupAdmin)
+admin.site.register(Delivery, DeliveryAdmin)

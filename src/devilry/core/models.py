@@ -4,8 +4,24 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from django import forms
 
 
+
+
+class AuthMixinForeignKey(models.ForeignKey):
+    def formfield(self, user_obj=None, **kwargs):
+        if user_obj == None:
+            return models.query.EmptyQuerySet()
+        db = kwargs.pop('using', None)
+        qry = self.related.parent_model.get_changelist(user_obj)
+        defaults = {
+            'form_class': forms.ModelChoiceField,
+            'queryset': qry,
+            'to_field_name': self.rel.field_name,
+        }
+        defaults.update(kwargs)
+        return super(models.ForeignKey, self).formfield(**defaults)
 
 
 class AuthMixin(object):
@@ -70,7 +86,7 @@ class BaseNode(models.Model, CoreAuthMixin):
 
 
 class Node(BaseNode):
-    parentnode = models.ForeignKey('self', blank=True, null=True)
+    parentnode = AuthMixinForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
     def __unicode__(self):
@@ -152,7 +168,7 @@ class Node(BaseNode):
         return n
 
 class Subject(BaseNode):
-    parentnode = models.ForeignKey(Node)
+    parentnode = AuthMixinForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
@@ -167,7 +183,7 @@ class Subject(BaseNode):
 
 
 class Period(BaseNode):
-    parentnode = models.ForeignKey(Subject)
+    parentnode = AuthMixinForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
@@ -186,7 +202,7 @@ class Period(BaseNode):
 
 
 class Assignment(BaseNode):
-    parentnode = models.ForeignKey(Period)
+    parentnode = AuthMixinForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
@@ -206,7 +222,7 @@ class Assignment(BaseNode):
 class DeliveryGroup(models.Model, CoreAuthMixin):
     class Meta:
         verbose_name_plural = 'Delivery groups'
-    parentnode = models.ForeignKey(Assignment)
+    parentnode = AuthMixinForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
 
@@ -244,7 +260,7 @@ class DeliveryGroup(models.Model, CoreAuthMixin):
 
 
 class Delivery(models.Model, CoreAuthMixin):
-    delivery_group = models.ForeignKey(DeliveryGroup)
+    delivery_group = AuthMixinForeignKey(DeliveryGroup)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
@@ -269,7 +285,7 @@ class Delivery(models.Model, CoreAuthMixin):
 
 
 class FileMeta(models.Model, CoreAuthMixin):
-    delivery = models.ForeignKey(Delivery)
+    delivery = AuthMixinForeignKey(Delivery)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod
