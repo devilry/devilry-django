@@ -15,6 +15,12 @@ class InstanceAuthModelAdminMixin(object):
         ...    list_display = ['test', 'field']
     """
 
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return super(BaseNodeAdmin, self).queryset(request)
+        else:
+            return self.model.get_changelist(request.user)
+
     def has_change_permission(self, request, obj=None):
         """
         Returns True if the given request has permission to change the given
@@ -23,8 +29,10 @@ class InstanceAuthModelAdminMixin(object):
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
         """
+        print 'has_change_permission', obj
         opts = self.opts
-        return request.user.has_perm(opts.app_label + '.' + opts.get_change_permission(), obj)
+        return request.user.has_perm(
+                opts.app_label + '.' + opts.get_change_permission(), obj)
 
     def has_delete_permission(self, request, obj=None):
         """
@@ -34,8 +42,11 @@ class InstanceAuthModelAdminMixin(object):
         If `obj` is None, this should return True if the given request has
         permission to delete *any* object of the given type.
         """
+        print 'has_delete_permission', obj
         opts = self.opts
-        return request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission(), obj)
+        return request.user.has_perm(
+                opts.app_label + '.' + opts.get_delete_permission(), obj)
+
 
 
 class InstanceAuthModelAdmin(InstanceAuthModelAdminMixin, admin.ModelAdmin):

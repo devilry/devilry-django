@@ -14,6 +14,10 @@ from models import Node, Subject, Period, Assignment, Delivery, DeliveryCandidat
 class TestNode(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
+    def setUp(self):
+        self.ifi = Node.objects.get(pk=1)
+        self.uio = Node.objects.get(pk=2)
+
     def test_get_pathlist_kw(self):
         self.assertEquals(Node.get_pathlist_kw(['uio', 'matnat', 'ifi']), {
                 'short_name': 'ifi',
@@ -43,6 +47,14 @@ class TestNode(TestCase):
         uioadmin = User.objects.get(username='uioadmin')
         qry = Node.qry_where_is_admin(uioadmin)
         self.assertEquals(Node.objects.filter(qry).count(), 3)
+
+    def test_is_admin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        ifiadmin = User.objects.get(username='ifiadmin')
+        teacher1 = User.objects.get(username='teacher1')
+        self.assertTrue(self.ifi.is_admin(uioadmin))
+        self.assertTrue(self.ifi.is_admin(ifiadmin))
+        self.assertFalse(self.ifi.is_admin(teacher1))
 
 
 class TestSubject(TestCase):

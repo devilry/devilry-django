@@ -10,20 +10,37 @@ from django.core.exceptions import ValidationError
 
 class AuthMixin(object):
     @classmethod
-    def where_is_admin(cls, user_obj):
+    def get_changelist(cls, user_obj):
+        raise NotImplementedError('get_changelist must be implemented in subclass.')
+
+    @classmethod
+    def has_obj_permission(cls, user_obj, perm, obj):
+        """ Check permissions for user on the given object of this model. """
+        raise NotImplementedError('has_obj_permission must be implemented in subclass.')
+
+    @classmethod
+    def has_model_permission(cls, user_obj, perm):
+        """
+        Check permissions for user on this model. When object/instance
+        permission is required, `has_obj_permission`_ is called instead.
+        """
+        if 'change_' in perm:
+            return cls.get_changelist(user_obj).count() != 0
+        return False
+
+
+class NodeAuthMixin(AuthMixin):
+    @classmethod
+    def get_changelist(cls, user_obj):
         return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
     @classmethod
     def qry_where_is_admin(cls, user_obj):
         raise NotImplementedError('Must be implemented in subclass.')
 
-    @classmethod
-    def has_permission(cls, user_obj, perm, obj=None):
-        """ Check permissions for user on class or instance. """
-        raise NotImplementedError('Must be implemented in subclass.')
 
 
-class StudentExaminerAuthMixin(AuthMixin):
+class StudentExaminerAuthMixin(NodeAuthMixin):
     @classmethod
     def where_is_student(cls, user_obj):
         return cls.objects.filter(cls.qry_where_is_student(user_obj))
@@ -42,7 +59,7 @@ class StudentExaminerAuthMixin(AuthMixin):
 
 
 
-class BaseNode(models.Model, AuthMixin):
+class BaseNode(models.Model, NodeAuthMixin):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -58,21 +75,20 @@ class BaseNode(models.Model, AuthMixin):
         return u', '.join(u.username for u in self.admins.all())
     admins_unicode.short_description = 'Admins'
 
+    def is_admin(self, user_obj):
+        if self.admins.filter(pk=user_obj.pk):
+            return True
+        elif self.parentnode:
+            return self.parentnode.is_admin(user_obj)
+        else:
+            return False
 
     @classmethod
-    def has_permission(cls, user_obj, perm, obj=None):
-        meta = cls._meta
-        changeperm = '%s.%s' % (meta.app_label, meta.get_change_permission())
-        if perm == changeperm:
-            if obj:
-                return False
-            elif cls.where_is_admin(user_obj).count() > 0:
-                return True
-
-        pcls = cls.parentnode.field.related.parent_model
-        if pcls != Node and pcls.where_is_admin(user_obj).count() > 0:
-            return True
-
+    def has_obj_permission(cls, user_obj, perm, obj):
+        if 'change_' in perm:
+            return obj.is_admin(user_obj)
+        elif obj.parentnode and 'delete_' in perm:
+            return obj.parentnode.is_admin(user_obj)
 
 
 class BaseNodeAdministator(models.Model):
@@ -105,19 +121,6 @@ class Node(BaseNode):
         if self.parentnode == self:
             raise ValidationError('A node can not be it\'s own parent.')
         super(Node, self).clean_fields(*args, **kwargs)
-
-    @classmethod
-    def get_isadmin_kw(cls, node_obj, user_obj):
-        """ Create keywords for a query checking if the given ``user_obj`` is
-        admin on the given node. The query created recurses all the way up to the top
-        of the node hierarchy. """
-        kw = {}
-        key = 'admins'
-        while node_obj != None:
-            kw[key] = user_obj
-            key = 'parentnode__' + key
-            node_obj = node_obj.parentnode
-        return kw
 
     @classmethod
     def get_nodepks_where_isadmin(cls, user_obj):
@@ -284,9 +287,9 @@ class Delivery(models.Model, StudentExaminerAuthMixin):
     def where_is_admin(cls, user_obj):
         return cls.objects.filter(cls.qry_where_is_admin(user_obj))
 
-    @classmethod
-    def has_permission(cls, user_obj, perm, obj=None):
-        return cls.where_is_admin(user_obj).count() > 0
+    #@classmethod
+    #def has_model_permission(cls, user_obj, perm):
+        #return cls.where_is_admin(user_obj).count() > 0
 
 
 
@@ -313,10 +316,6 @@ class DeliveryCandidate(models.Model, StudentExaminerAuthMixin):
     def __unicode__(self):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
-    @classmethod
-    def has_permission(cls, user_obj, perm, obj=None):
-        return False
-
 
 class FileMeta(models.Model, StudentExaminerAuthMixin):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
@@ -336,7 +335,3 @@ class FileMeta(models.Model, StudentExaminerAuthMixin):
     @classmethod
     def qry_where_is_examiner(cls, user_obj):
         return Q(delivery_candiate__delivery__examiners=user_obj)
-
-    @classmethod
-    def has_permission(cls, user_obj, perm, obj=None):
-        return False
