@@ -197,7 +197,7 @@ class Assignment(BaseNode):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-class DeliveryGroup(models.Model, CorePermMixin):
+class AssignmentGroup(models.Model, CorePermMixin):
     class Meta:
         verbose_name_plural = 'Delivery groups'
     parentnode = authmodel.ForeignKey(Assignment)
@@ -206,7 +206,7 @@ class DeliveryGroup(models.Model, CorePermMixin):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        return DeliveryGroup.objects.filter(
+        return AssignmentGroup.objects.filter(
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__parentnode__admins=user_obj) |
@@ -215,11 +215,11 @@ class DeliveryGroup(models.Model, CorePermMixin):
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return DeliveryGroup.objects.filter(students=user_obj)
+        return AssignmentGroup.objects.filter(students=user_obj)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return DeliveryGroup.objects.filter(examiners=user_obj)
+        return AssignmentGroup.objects.filter(examiners=user_obj)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode,
@@ -231,28 +231,28 @@ class DeliveryGroup(models.Model, CorePermMixin):
 
 
 class Delivery(models.Model, CorePermMixin):
-    delivery_group = authmodel.ForeignKey(DeliveryGroup)
+    assignment_group = authmodel.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
     def where_is_admin(cls, user_obj):
         return Delivery.objects.filter(
-                Q(delivery_group__parentnode__admins=user_obj) |
-                Q(delivery_group__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_group__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(assignment_group__parentnode__admins=user_obj) |
+                Q(assignment_group__parentnode__parentnode__admins=user_obj) |
+                Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return Delivery.objects.filter(delivery_group__students=user_obj)
+        return Delivery.objects.filter(assignment_group__students=user_obj)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return Delivery.objects.filter(delivery_group__examiners=user_obj)
+        return Delivery.objects.filter(assignment_group__examiners=user_obj)
 
     def __unicode__(self):
-        return u'%s %s' % (self.delivery_group, self.time_of_delivery)
+        return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
 
 class FileMeta(models.Model, CorePermMixin):
@@ -262,16 +262,16 @@ class FileMeta(models.Model, CorePermMixin):
     @classmethod
     def where_is_admin(cls, user_obj):
         return FileMeta.objects.filter(
-                Q(delivery__delivery_group__parentnode__admins=user_obj) |
-                Q(delivery__delivery_group__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__delivery_group__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__delivery_group__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(delivery__assignment_group__parentnode__admins=user_obj) |
+                Q(delivery__assignment_group__parentnode__parentnode__admins=user_obj) |
+                Q(delivery__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(delivery__assignment_group__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return FileMeta.objects.filter(delivery_group__delivery__students=user_obj)
+        return FileMeta.objects.filter(assignment_group__delivery__students=user_obj)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return FileMeta.objects.filter(delivery_group__delivery__examiners=user_obj)
+        return FileMeta.objects.filter(assignment_group__delivery__examiners=user_obj)

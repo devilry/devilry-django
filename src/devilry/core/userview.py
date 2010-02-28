@@ -1,15 +1,15 @@
 from django.contrib import admin
 from devilry.auth import authadmin
-from models import DeliveryGroup, Delivery, FileMeta
+from models import AssignmentGroup, Delivery, FileMeta
 
 
 
 
 class DeliveryAdmin(authadmin.ModelAdmin):
-    list_display = ['time_of_delivery', 'delivery_group']
+    list_display = ['time_of_delivery', 'assignment_group']
 
     def assignment(self, obj):
-        return obj.delivery_group.parentnode
+        return obj.assignment_group.parentnode
 
     def queryset(self, request):
         return self.model.get_changelist(request.user)

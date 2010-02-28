@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django import forms
 from django.db import models
-from models import Delivery, FileMeta, DeliveryGroup
+from models import Delivery, FileMeta, AssignmentGroup
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -26,7 +26,7 @@ class DeliveryCandidateForm(forms.ModelForm):
 def deliver(request, deliveryid):
     filemetas = []
     if request.method == 'POST':
-        delivery = DeliveryGroup.objects.get(id=deliveryid)
+        delivery = AssignmentGroup.objects.get(id=deliveryid)
         #dc = Delivery(time_of_delivery = datetime.now(),
             #delivery=delivery)
         form = DeliveryCandidateForm(request.POST)
@@ -74,7 +74,7 @@ def create_delivery(request, deliveryid, deliverycand_id=None):
     if request.method != 'POST' and deliverycand_id==None:
         raise Http404()
 
-    delivery = get_object_or_404(DeliveryGroup, pk=deliveryid)
+    delivery = get_object_or_404(AssignmentGroup, pk=deliveryid)
     form = DeliveryCandidateForm(request.POST)
     form = DeliveryCandidateForm(request.POST)
     if deliverycand_id != None:

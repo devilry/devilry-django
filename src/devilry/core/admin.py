@@ -1,5 +1,5 @@
 from models import (Node, Subject, Period, Assignment,
-        DeliveryGroup, Delivery, FileMeta)
+        AssignmentGroup, Delivery, FileMeta)
 from django.contrib import admin
 from django.db.models import Q
 from django.db import models
@@ -59,5 +59,5 @@ admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 
-admin.site.register(DeliveryGroup, DeliveryGroupAdmin)
+admin.site.register(AssignmentGroup, DeliveryGroupAdmin)
 admin.site.register(Delivery, DeliveryAdmin)

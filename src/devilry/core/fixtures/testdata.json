@@ -144,7 +144,7 @@
     }, 
     {
         "pk": 1, 
-        "model": "core.deliverygroup", 
+        "model": "core.assignmentgroup", 
         "fields": {
             "students": [
                 6, 
@@ -158,7 +158,7 @@
     }, 
     {
         "pk": 2, 
-        "model": "core.deliverygroup", 
+        "model": "core.assignmentgroup", 
         "fields": {
             "students": [
                 7, 
@@ -174,7 +174,7 @@
         "pk": 1, 
         "model": "core.delivery", 
         "fields": {
-            "delivery_group": 1, 
+            "assignment_group": 1, 
             "time_of_delivery": "2010-02-26 23:20:19"
         }
     }, 
@@ -182,7 +182,7 @@
         "pk": 2, 
         "model": "core.delivery", 
         "fields": {
-            "delivery_group": 2, 
+            "assignment_group": 2, 
             "time_of_delivery": "2010-02-26 23:21:14"
         }
     }, 
@@ -190,7 +190,7 @@
         "pk": 3, 
         "model": "core.delivery", 
         "fields": {
-            "delivery_group": 2, 
+            "assignment_group": 2, 
             "time_of_delivery": "2010-02-26 23:21:19"
         }
     }
