@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from core import userview
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -14,9 +15,8 @@ urlpatterns = patterns('',
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
+    (r'^userview/', include(userview.site.urls)),
 
     (r'^core/', include('devilry.core.urls')),
-
 )
