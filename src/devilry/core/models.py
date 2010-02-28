@@ -32,30 +32,8 @@ class AuthMixin(object):
 class NodeAuthMixin(AuthMixin):
     @classmethod
     def get_changelist(cls, user_obj):
-        return cls.objects.filter(cls.qry_where_is_admin(user_obj))
+        return cls.where_is_admin(user_obj)
 
-    @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        raise NotImplementedError('Must be implemented in subclass.')
-
-
-
-class StudentExaminerAuthMixin(NodeAuthMixin):
-    @classmethod
-    def where_is_student(cls, user_obj):
-        return cls.objects.filter(cls.qry_where_is_student(user_obj))
-
-    @classmethod
-    def where_is_examiner(cls, user_obj):
-        return cls.objects.filter(cls.qry_where_is_examiner(user_obj))
-
-    @classmethod
-    def qry_where_is_student(cls, user_obj):
-        raise NotImplementedError('Must be implemented in subclass.')
-
-    @classmethod
-    def qry_where_is_examiner(cls, user_obj):
-        raise NotImplementedError('Must be implemented in subclass.')
 
 
 
@@ -91,24 +69,9 @@ class BaseNode(models.Model, NodeAuthMixin):
             return obj.parentnode.is_admin(user_obj)
 
 
-class BaseNodeAdministator(models.Model):
-    user = models.ForeignKey(User)
-
-    class Meta:
-        abstract = True
-        unique_together = (('user', 'node'))
-
-    def __unicode__(self):
-        return self.node.short_name + " -- " + self.user.username
-
-
-
-class NodeAdministator(BaseNodeAdministator):
-    node = models.ForeignKey('Node')
-
 class Node(BaseNode):
     parentnode = models.ForeignKey('self', blank=True, null=True)
-    admins = models.ManyToManyField(User, blank=True, through=NodeAdministator)
+    admins = models.ManyToManyField(User, blank=True)
 
     def __unicode__(self):
         if self.parentnode:
@@ -137,8 +100,8 @@ class Node(BaseNode):
         return l
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(pk__in=cls.get_nodepks_where_isadmin(user_obj))
+    def where_is_admin(cls, user_obj):
+        return Node.objects.filter(pk__in=cls.get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def get_pathlist_kw(cls, pathlist):
@@ -188,150 +151,130 @@ class Node(BaseNode):
             parent = n
         return n
 
-
-
-class SubjectAdministator(BaseNodeAdministator):
-    node = models.ForeignKey('Subject')
-
 class Subject(BaseNode):
     parentnode = models.ForeignKey(Node)
-    admins = models.ManyToManyField(User, blank=True, through=SubjectAdministator)
+    admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(Q(admins=user_obj) | Q(parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+    def where_is_admin(cls, user_obj):
+        return Subject.objects.filter(
+                Q(admins__pk=user_obj.pk)
+                | Q(parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))).distinct()
 
     def __unicode__(self):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-
-class PeriodAdministator(BaseNodeAdministator):
-    node = models.ForeignKey('Period')
 
 class Period(BaseNode):
     parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    admins = models.ManyToManyField(User, blank=True, through=PeriodAdministator)
+    admins = models.ManyToManyField(User, blank=True)
 
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(Q(admins=user_obj) |
+    def where_is_admin(cls, user_obj):
+        return Period.objects.filter(
+                Q(admins=user_obj) |
                 Q(parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        ).distinct()
 
     def __unicode__(self):
         return unicode(self.parentnode) + "." + self.short_name
 
-
-
-class AssignmentAdministator(BaseNodeAdministator):
-    node = models.ForeignKey('Assignment')
 
 class Assignment(BaseNode):
     parentnode = models.ForeignKey(Period)
     deadline = models.DateTimeField()
-    admins = models.ManyToManyField(User, blank=True, through=AssignmentAdministator)
+    admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(Q(admins=user_obj) |
+    def where_is_admin(cls, user_obj):
+        return Assignment.objects.filter(
+                Q(admins=user_obj) |
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        ).distinct()
 
     def __unicode__(self):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-
-class DeliveryStudent(models.Model):
-    delivery = models.ForeignKey('Delivery')
-    student = models.ForeignKey(User)
-
-class DeliveryExaminer(models.Model):
-    delivery = models.ForeignKey('Delivery')
-    examiner = models.ForeignKey(User)
-
-class Delivery(models.Model, StudentExaminerAuthMixin):
+class Delivery(models.Model):
     class Meta:
         verbose_name_plural = 'deliveries'
     parentnode = models.ForeignKey(Assignment)
-    students = models.ManyToManyField(User, blank=True, related_name="students",
-            through=DeliveryStudent)
-    examiners = models.ManyToManyField(User, blank=True, related_name="examiners",
-            through=DeliveryExaminer)
+    students = models.ManyToManyField(User, blank=True, related_name="students")
+    examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(Q(parentnode__admins=user_obj) |
+    def where_is_admin(cls, user_obj):
+        return Delivery.objects.filter(
+                Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        ).distinct()
 
     @classmethod
-    def qry_where_is_student(cls, user_obj):
-        return Q(students=user_obj)
+    def where_is_student(cls, user_obj):
+        return Delivery.objects.filter(students=user_obj)
 
     @classmethod
-    def qry_where_is_examiner(cls, user_obj):
-        return Q(examiners=user_obj)
+    def where_is_examiner(cls, user_obj):
+        return Delivery.objects.filter(examiners=user_obj)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode,
                 ', '.join([unicode(x) for x in self.students.all()]))
 
-    @classmethod
-    def where_is_admin(cls, user_obj):
-        return cls.objects.filter(cls.qry_where_is_admin(user_obj))
-
-    #@classmethod
-    #def has_model_permission(cls, user_obj, perm):
-        #return cls.where_is_admin(user_obj).count() > 0
 
 
-
-
-class DeliveryCandidate(models.Model, StudentExaminerAuthMixin):
+class DeliveryCandidate(models.Model):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(Q(delivery__parentnode__admins=user_obj) |
+    def where_is_admin(cls, user_obj):
+        return DeliveryCandidate.objects.filter(
+                Q(delivery__parentnode__admins=user_obj) |
                 Q(delivery__parentnode__parentnode__admins=user_obj) |
                 Q(delivery__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(delivery__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        ).distinct()
 
     @classmethod
-    def qry_where_is_student(cls, user_obj):
-        return Q(delivery__students=user_obj)
+    def where_is_student(cls, user_obj):
+        return DeliveryCandidate.objects.filter(delivery__students=user_obj)
 
     @classmethod
-    def qry_where_is_examiner(cls, user_obj):
-        return Q(delivery__examiners=user_obj)
+    def where_is_examiner(cls, user_obj):
+        return DeliveryCandidate.objects.filter(delivery__examiners=user_obj)
 
     def __unicode__(self):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
 
-class FileMeta(models.Model, StudentExaminerAuthMixin):
+class FileMeta(models.Model):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod
-    def qry_where_is_admin(cls, user_obj):
-        return Q(Q(delivery_candiate__delivery__parentnode__admins=user_obj) |
+    def where_is_admin(cls, user_obj):
+        return FileMeta.objects.filter(
+                Q(delivery_candiate__delivery__parentnode__admins=user_obj) |
                 Q(delivery_candiate__delivery__parentnode__parentnode__admins=user_obj) |
                 Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj)))
+                Q(delivery_candiate__delivery__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+        ).distic()
 
     @classmethod
-    def qry_where_is_student(cls, user_obj):
-        return Q(delivery_candiate__delivery__students=user_obj)
+    def where_is_student(cls, user_obj):
+        return FileMeta.objects.filter(delivery_candiate__delivery__students=user_obj)
 
     @classmethod
-    def qry_where_is_examiner(cls, user_obj):
-        return Q(delivery_candiate__delivery__examiners=user_obj)
+    def where_is_examiner(cls, user_obj):
+        return FileMeta.objects.filter(delivery_candiate__delivery__examiners=user_obj)

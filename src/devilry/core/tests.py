@@ -43,10 +43,9 @@ class TestNode(TestCase):
         pks.sort()
         self.assertEquals(pks, [1,2,3])
 
-    def test_qry_where_is_admin(self):
+    def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        qry = Node.qry_where_is_admin(uioadmin)
-        self.assertEquals(Node.objects.filter(qry).count(), 3)
+        self.assertEquals(Node.where_is_admin(uioadmin).count(), 3)
 
     def test_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
@@ -60,66 +59,57 @@ class TestNode(TestCase):
 class TestSubject(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_qry_where_is_admin(self):
+    def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        qry = Subject.qry_where_is_admin(uioadmin)
-        self.assertEquals(Subject.objects.filter(qry).count(), 2)
+        self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
 
 class TestPeriod(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_qry_where_is_admin(self):
+    def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        qry = Period.qry_where_is_admin(uioadmin)
-        self.assertEquals(Period.objects.filter(qry).count(), 5)
+        self.assertEquals(Period.where_is_admin(uioadmin).count(), 5)
 
 
 class TestAssignment(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_qry_where_is_admin(self):
+    def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        qry = Assignment.qry_where_is_admin(uioadmin)
-        self.assertEquals(Assignment.objects.filter(qry).count(), 2)
+        self.assertEquals(Assignment.where_is_admin(uioadmin).count(), 2)
 
 
 class TestDelivery(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_qry_where_is_admin(self):
+    def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        qry = Delivery.qry_where_is_admin(uioadmin)
-        self.assertEquals(Delivery.objects.filter(qry).count(), 2)
+        self.assertEquals(Delivery.where_is_admin(uioadmin).count(), 2)
 
-    def test_qry_where_is_student(self):
+    def test_where_is_student(self):
         student2 = User.objects.get(username='student2')
-        qry = Delivery.qry_where_is_student(student2)
-        self.assertEquals(Delivery.objects.filter(qry).count(), 2)
+        self.assertEquals(Delivery.where_is_student(student2).count(), 2)
 
-    def test_qry_where_is_examiner(self):
-        teacher1 = User.objects.get(username='teacher1')
-        qry = Delivery.qry_where_is_examiner(teacher1)
-        self.assertEquals(Delivery.objects.filter(qry).count(), 2)
+    def test_where_is_examiner(self):
+        teacher2 = User.objects.get(username='teacher2')
+        self.assertEquals(Delivery.where_is_examiner(teacher2).count(), 2)
 
 
 class TestDeliveryCandidate(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
-    def test_qry_where_is_admin(self):
+    def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        qry = DeliveryCandidate.qry_where_is_admin(uioadmin)
-        self.assertEquals(DeliveryCandidate.objects.filter(qry).count(), 3)
+        self.assertEquals(DeliveryCandidate.where_is_admin(uioadmin).count(), 3)
 
-    def test_qry_where_is_student(self):
+    def test_where_is_student(self):
         student2 = User.objects.get(username='student2')
-        qry = DeliveryCandidate.qry_where_is_student(student2)
-        self.assertEquals(DeliveryCandidate.objects.filter(qry).count(), 3)
+        self.assertEquals(DeliveryCandidate.where_is_student(student2).count(), 3)
 
-    def test_qry_where_is_examiner(self):
-        teacher1 = User.objects.get(username='teacher1')
-        qry = DeliveryCandidate.qry_where_is_examiner(teacher1)
-        self.assertEquals(DeliveryCandidate.objects.filter(qry).count(), 3)
+    def test_where_is_examiner(self):
+        teacher2 = User.objects.get(username='teacher2')
+        self.assertEquals(DeliveryCandidate.where_is_examiner(teacher2).count(), 3)
 
 
 

@@ -13,9 +13,9 @@ uio
                 fall2009
                 fall2010
                     oblig1
-                        delivery by student2 and student3 examinated by teacher1
+                        delivery by student2 and student3 examinated by teacher2
                             1 delivery candidate without any files
-                        delivery by student1 and student2 examinated by teacher1
+                        delivery by student1 and student2 examinated by teacher2
                             2 delivery candidates without any files
 
 
@@ -38,12 +38,12 @@ teacher1
     ``uio.matnat.ifi.inf1100``.
     Is staff.
 teacher2
-    Subject administrator on ``uio.matnat.ifi.inf1100``.
+    Subject administrator on ``uio.matnat.ifi.inf1010``.
     Is staff.
 student1
-    Assignment administrator on ``uio.matnat.ifi.inf1010.fall2009.oblig2``.
+    Assignment administrator on ``uio.matnat.ifi.inf1100.fall2010.oblig1``.
     Is staff.
 student2
-    No rights and no connections to anything yet.
+    Is staff.
 student3
-    No rights and no connections to anything yet.
+    Is staff.
