@@ -29,7 +29,7 @@ class AuthMixin(object):
         return False
 
 
-class NodeAuthMixin(AuthMixin):
+class CoreAuthMixin(AuthMixin):
     @classmethod
     def get_changelist(cls, user_obj):
         return cls.where_is_admin(user_obj)
@@ -37,7 +37,7 @@ class NodeAuthMixin(AuthMixin):
 
 
 
-class BaseNode(models.Model, NodeAuthMixin):
+class BaseNode(models.Model, CoreAuthMixin):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -203,7 +203,7 @@ class Assignment(BaseNode):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-class Delivery(models.Model):
+class Delivery(models.Model, CoreAuthMixin):
     class Meta:
         verbose_name_plural = 'deliveries'
     parentnode = models.ForeignKey(Assignment)
@@ -231,9 +231,19 @@ class Delivery(models.Model):
         return u'%s (%s)' % (self.parentnode,
                 ', '.join([unicode(x) for x in self.students.all()]))
 
+    @classmethod
+    def has_obj_permission(cls, user_obj, perm, obj):
+        if 'change_' in perm:
+            return obj.is_admin(user_obj)
+        elif obj.parentnode and 'delete_' in perm:
+            return obj.parentnode.is_admin(user_obj)
+
+    def is_admin(self, user_obj):
+        return self.parentnode.is_admin(user_obj)
 
 
-class DeliveryCandidate(models.Model):
+
+class DeliveryCandidate(models.Model, CoreAuthMixin):
     delivery = models.ForeignKey(Delivery)
     time_of_delivery = models.DateTimeField()
 
@@ -258,7 +268,7 @@ class DeliveryCandidate(models.Model):
         return u'%s %s' % (self.delivery, self.time_of_delivery)
 
 
-class FileMeta(models.Model):
+class FileMeta(models.Model, CoreAuthMixin):
     delivery_candidate = models.ForeignKey(DeliveryCandidate)
     filepath = models.FileField(upload_to="deliveries")
 

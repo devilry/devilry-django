@@ -21,31 +21,31 @@ class InstanceAuthModelAdminMixin(object):
         else:
             return self.model.get_changelist(request.user)
 
-    #def has_change_permission(self, request, obj=None):
-        #"""
-        #Returns True if the given request has permission to change the given
-        #Django model instance.
+    def has_change_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
 
-        #If `obj` is None, this should return True if the given request has
-        #permission to change *any* object of the given type.
-        #"""
-        #print 'has_change_permission', obj
-        #opts = self.opts
-        #return request.user.has_perm(
-                #opts.app_label + '.' + opts.get_change_permission(), obj)
+        If `obj` is None, this should return True if the given request has
+        permission to change *any* object of the given type.
+        """
+        print 'has_change_permission', obj
+        opts = self.opts
+        return request.user.has_perm(
+                opts.app_label + '.' + opts.get_change_permission(), obj)
 
-    #def has_delete_permission(self, request, obj=None):
-        #"""
-        #Returns True if the given request has permission to change the given
-        #Django model instance.
+    def has_delete_permission(self, request, obj=None):
+        """
+        Returns True if the given request has permission to change the given
+        Django model instance.
 
-        #If `obj` is None, this should return True if the given request has
-        #permission to delete *any* object of the given type.
-        #"""
-        #print 'has_delete_permission', obj
-        #opts = self.opts
-        #return request.user.has_perm(
-                #opts.app_label + '.' + opts.get_delete_permission(), obj)
+        If `obj` is None, this should return True if the given request has
+        permission to delete *any* object of the given type.
+        """
+        print 'has_delete_permission', obj
+        opts = self.opts
+        return request.user.has_perm(
+                opts.app_label + '.' + opts.get_delete_permission(), obj)
 
 
 
@@ -107,7 +107,7 @@ class PeriodAdmin(BaseNodeAdmin):
 class AssignmentAdmin(BaseNodeAdmin):
     pass
 
-class DeliveryAdmin(admin.ModelAdmin):
+class DeliveryAdmin(InstanceAuthModelAdmin):
     pass
 
 
