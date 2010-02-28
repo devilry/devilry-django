@@ -269,16 +269,16 @@ class Delivery(models.Model, CoreAuthMixin):
 
 
 class FileMeta(models.Model, CoreAuthMixin):
-    delivery_group = models.ForeignKey(Delivery)
+    delivery = models.ForeignKey(Delivery)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod
     def where_is_admin(cls, user_obj):
         return FileMeta.objects.filter(
-                Q(delivery_group__delivery__parentnode__admins=user_obj) |
-                Q(delivery_group__delivery__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_group__delivery__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery_group__delivery__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(delivery__delivery_group__parentnode__admins=user_obj) |
+                Q(delivery__delivery_group__parentnode__parentnode__admins=user_obj) |
+                Q(delivery__delivery_group__parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(delivery__delivery_group__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     @classmethod
