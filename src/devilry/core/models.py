@@ -4,7 +4,6 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
-from django import forms
 from devilry.auth import authmodel
 
 
@@ -12,7 +11,10 @@ from devilry.auth import authmodel
 class CorePermMixin(authmodel.PermMixin):
     @classmethod
     def get_changelist(cls, user_obj):
-        return cls.where_is_admin(user_obj)
+        if user_obj.is_superuser:
+            return cls.objects.all()
+        else:
+            return cls.where_is_admin(user_obj)
 
 
 class BaseNode(models.Model, CorePermMixin):
@@ -39,13 +41,6 @@ class BaseNode(models.Model, CorePermMixin):
         else:
             return False
 
-    @classmethod
-    def has_obj_permission(cls, user_obj, perm, obj):
-        if 'change_' in perm:
-            return obj.is_admin(user_obj)
-        elif obj.parentnode and 'delete_' in perm:
-            return obj.parentnode.is_admin(user_obj)
-
 
 class Node(BaseNode):
     parentnode = authmodel.ForeignKey('self', blank=True, null=True)
@@ -58,10 +53,31 @@ class Node(BaseNode):
             return self.short_name
 
 
+
+    def iter_childnodes(self):
+        for node in self.node_set.all():
+            yield node
+            for c in node.iter_childnodes():
+                yield c
+
     def clean(self, *args, **kwargs):
+        if self.parentnode == None:
+            q = Node.objects.filter(parentnode=None)
+            if q.count() == 0:
+                raise ValidationError('At least one node *must* be root.')
+            else:
+                if q.all()[0] != self:
+                    raise ValidationError('Only one node can be the root node.')
+
         if self.parentnode == self:
             raise ValidationError('A node can not be it\'s own parent.')
-        super(Node, self).clean_fields(*args, **kwargs)
+
+        for node in self.iter_childnodes():
+            if node == self.parentnode:
+                raise ValidationError('A node can not be the child of one of it\'s own children.')
+
+
+        super(Node, self).clean(*args, **kwargs)
 
     @classmethod
     def get_nodepks_where_isadmin(cls, user_obj):
@@ -208,13 +224,6 @@ class DeliveryGroup(models.Model, CorePermMixin):
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode,
                 ', '.join([unicode(x) for x in self.students.all()]))
-
-    @classmethod
-    def has_obj_permission(cls, user_obj, perm, obj):
-        if 'change_' in perm:
-            return obj.is_admin(user_obj)
-        elif obj.parentnode and 'delete_' in perm:
-            return obj.parentnode.is_admin(user_obj)
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)

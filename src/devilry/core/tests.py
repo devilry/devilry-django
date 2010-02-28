@@ -8,7 +8,9 @@ Replace these with more appropriate tests for your application.
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 from models import Node, Subject, Period, Assignment, DeliveryGroup, Delivery
+
 
 
 class TestNode(TestCase):
@@ -54,6 +56,35 @@ class TestNode(TestCase):
         self.assertTrue(self.ifi.is_admin(uioadmin))
         self.assertTrue(self.ifi.is_admin(ifiadmin))
         self.assertFalse(self.ifi.is_admin(teacher1))
+
+    def test_iter_childnodes(self):
+        c = [node for node in self.uio.iter_childnodes()]
+        self.assertEquals(len(c), 2)
+
+    def test_clean_parent_is_child(self):
+        """ Can not be child of it's own child. """
+        self.uio.parentnode = self.ifi
+        self.assertRaises(ValidationError, self.uio.clean)
+
+    def test_clean_parent_is_self(self):
+        """ Can not be child of itself. """
+        self.uio.parentnode = self.uio
+        self.assertRaises(ValidationError, self.uio.clean)
+
+    def test_clean_parent_none(self):
+        """ Only one node can be root. """
+        self.ifi.parentnode = None
+        self.assertRaises(ValidationError, self.ifi.clean)
+
+
+class TestNodeNoFixture(TestCase):
+    def test_clean_noroot(self):
+        """ At least one node *must* be root. """
+        uio = Node()
+        uio.short_name = 'uio'
+        uio.long_name = 'uio'
+        uio.parent = None
+        self.assertRaises(ValidationError, uio.clean)
 
 
 class TestSubject(TestCase):

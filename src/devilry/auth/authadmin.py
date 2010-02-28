@@ -11,10 +11,7 @@ class ModelAdminMixin(object):
     """
 
     def queryset(self, request):
-        if request.user.is_superuser:
-            return self.model.objects.all()
-        else:
-            return self.model.get_changelist(request.user)
+        return self.model.get_changelist(request.user)
 
     def has_change_permission(self, request, obj=None):
         """
@@ -37,7 +34,7 @@ class ModelAdminMixin(object):
         If `obj` is None, this should return True if the given request has
         permission to delete *any* object of the given type.
         """
-        #print 'has_delete_permission', obj
+        print 'has_delete_permission', obj
         opts = self.opts
         return request.user.has_perm(
                 opts.app_label + '.' + opts.get_delete_permission(), obj)
@@ -52,11 +49,10 @@ class ModelAdminMixin(object):
     def get_readonly_fields(self, request, obj=None):
         if obj:
             r = []
-            for field in iter(obj._meta.fields):
-                if isinstance(field, authmodel.ForeignKey):
-                    parent_model = field.related.parent_model
-                    if authmodel.PermMixin.is_permmixin_model(parent_model):
-                        r.append(field.name)
+            for field in obj.iter_authmodel_fks():
+                parent_model = field.related.parent_model
+                if parent_model.get_changelist(request.user).count() == 0:
+                    r.append(field.name)
             r.extend(self.readonly_fields)
             return r
         return self.readonly_fields

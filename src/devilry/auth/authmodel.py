@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 
 
@@ -9,7 +10,18 @@ class PermMixin(object):
     @classmethod
     def has_obj_permission(cls, user_obj, perm, obj):
         """ Check permissions for user on the given object of this model. """
-        raise NotImplementedError('has_obj_permission must be implemented in subclass.')
+        if 'change_' in perm:
+            return cls.get_changelist(user_obj).filter(pk=obj.pk).count() > 0
+        elif 'delete_' in perm:
+            for field in cls.iter_authmodel_fks():
+                qry = field.related.parent_model.get_changelist(user_obj)
+                if qry.count() == 0:
+                    return False
+                elif qry.count() == 1:
+                    if qry.all()[0] == obj:
+                        return False
+            return True
+        return False
 
     @classmethod
     def has_model_permission(cls, user_obj, perm):
@@ -24,6 +36,13 @@ class PermMixin(object):
     @staticmethod
     def is_permmixin_model(modelcls):
         return hasattr(modelcls, 'get_changelist')
+
+
+    @classmethod
+    def iter_authmodel_fks(cls):
+        for field in iter(cls._meta.fields):
+            if isinstance(field, ForeignKey):
+                yield field
 
 
 class ForeignKey(models.ForeignKey):
