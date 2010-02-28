@@ -72,7 +72,7 @@ MIDDLEWARE_CLASSES = (
 #ADMIN_PASSWORD = 'sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4'
 AUTHENTICATION_BACKENDS = (
     #'devilry.core.authbackend.SettingsBackend',
-    'devilry.core.authbackend.DjangoModelBackend',
+    'devilry.auth.backend.DjangoModelBackend',
 )
 
 ROOT_URLCONF = 'devilry.urls'

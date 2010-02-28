@@ -5,52 +5,14 @@ from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django import forms
+from devilry.auth import authmodel
 
 
 
-
-class PermMixinForeignKey(models.ForeignKey):
-    def formfield(self, user_obj=None, **kwargs):
-        if user_obj == None:
-            return models.query.EmptyQuerySet()
-        db = kwargs.pop('using', None)
-        qry = self.related.parent_model.get_changelist(user_obj)
-        defaults = {
-            'form_class': forms.ModelChoiceField,
-            'queryset': qry,
-            'to_field_name': self.rel.field_name,
-        }
-        defaults.update(kwargs)
-        return super(models.ForeignKey, self).formfield(**defaults)
-
-
-class PermMixin(object):
-    @classmethod
-    def get_changelist(cls, user_obj):
-        raise NotImplementedError('get_changelist must be implemented in subclass.')
-
-    @classmethod
-    def has_obj_permission(cls, user_obj, perm, obj):
-        """ Check permissions for user on the given object of this model. """
-        raise NotImplementedError('has_obj_permission must be implemented in subclass.')
-
-    @classmethod
-    def has_model_permission(cls, user_obj, perm):
-        """
-        Check permissions for user on this model. When object/instance
-        permission is required, `has_obj_permission`_ is called instead.
-        """
-        if 'change_' in perm:
-            return cls.get_changelist(user_obj).count() != 0
-        return False
-
-
-class CorePermMixin(PermMixin):
+class CorePermMixin(authmodel.PermMixin):
     @classmethod
     def get_changelist(cls, user_obj):
         return cls.where_is_admin(user_obj)
-
-
 
 
 class BaseNode(models.Model, CorePermMixin):
@@ -86,7 +48,7 @@ class BaseNode(models.Model, CorePermMixin):
 
 
 class Node(BaseNode):
-    parentnode = PermMixinForeignKey('self', blank=True, null=True)
+    parentnode = authmodel.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
     def __unicode__(self):
@@ -168,7 +130,7 @@ class Node(BaseNode):
         return n
 
 class Subject(BaseNode):
-    parentnode = PermMixinForeignKey(Node)
+    parentnode = authmodel.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
@@ -183,7 +145,7 @@ class Subject(BaseNode):
 
 
 class Period(BaseNode):
-    parentnode = PermMixinForeignKey(Subject)
+    parentnode = authmodel.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
@@ -202,7 +164,7 @@ class Period(BaseNode):
 
 
 class Assignment(BaseNode):
-    parentnode = PermMixinForeignKey(Period)
+    parentnode = authmodel.ForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
@@ -222,7 +184,7 @@ class Assignment(BaseNode):
 class DeliveryGroup(models.Model, CorePermMixin):
     class Meta:
         verbose_name_plural = 'Delivery groups'
-    parentnode = PermMixinForeignKey(Assignment)
+    parentnode = authmodel.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
 
@@ -260,7 +222,7 @@ class DeliveryGroup(models.Model, CorePermMixin):
 
 
 class Delivery(models.Model, CorePermMixin):
-    delivery_group = PermMixinForeignKey(DeliveryGroup)
+    delivery_group = authmodel.ForeignKey(DeliveryGroup)
     time_of_delivery = models.DateTimeField()
 
     @classmethod
@@ -285,7 +247,7 @@ class Delivery(models.Model, CorePermMixin):
 
 
 class FileMeta(models.Model, CorePermMixin):
-    delivery = PermMixinForeignKey(Delivery)
+    delivery = authmodel.ForeignKey(Delivery)
     filepath = models.FileField(upload_to="deliveries")
 
     @classmethod

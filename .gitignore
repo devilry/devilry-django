@@ -18,3 +18,5 @@ nbactions.xml
 .settings/
 *.sqlite3
 filestore/
+tags
+.ropeproject/
