@@ -257,7 +257,8 @@ class Delivery(models.Model, CorePermMixin):
 
 class FileMeta(models.Model, CorePermMixin):
     delivery = authmodel.ForeignKey(Delivery)
-    filepath = models.FileField(upload_to="deliveries")
+    filesize = models.PositiveIntegerField()
+    filepath = models.CharField(max_length = 255)
 
     @classmethod
     def where_is_admin(cls, user_obj):

@@ -1,0 +1,27 @@
+{% extends "devilry/base_jquery.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+{% blocktrans with assignment_group.parentnode.short_name as assignment_short_name %}
+Deliver {{ assignment_short_name }}
+{% endblocktrans %}
+{% endblock %}
+
+{% block heading %}
+{% blocktrans with assignment_group.parentnode as assignment_path %}
+Deliver {{ assignment_path }}
+{% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+<form enctype="multipart/form-data"
+    action="{% url add-delivery assignment_group.id %}"
+    method="post">
+
+  {{ form }}
+	<p>
+		<input type="submit" name="deliver" value="Deliver" />
+	</p>
+</form>
+{% endblock %}
