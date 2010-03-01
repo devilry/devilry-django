@@ -84,6 +84,8 @@ TEMPLATE_DIRS = (
     join(this_dir, 'templates')
 )
 
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,6 +94,16 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
     'django.contrib.admindocs',
     'devilry.core',
+    'devilry.studentview',
 )
 
-DEVILRY_ADMIN_AUTOPERMISSIONS = ['change', 'add', 'delete']
+
+DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
+DEVILRY_RESOURCES_URL = '/resources'
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth", 
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    'devilry.core.templatecontext.template_variables',
+)

@@ -1,0 +1,21 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+		{% block headextra %}{% endblock %}
+	</head>
+	<body>
+		{% block prebody %}{% endblock %}
+		{% block body %}
+		<div id='header'>
+			<h1>{% block heading %}{% endblock %}</h1>
+			{% block headerextra %}{% endblock %}
+		</div>
+		<div id='content'>
+			{% block content %}{% endblock %}
+		</div>
+		{% endblock body %}
+		{% block postbody %}{% endblock %}
+	</body>
+</html>

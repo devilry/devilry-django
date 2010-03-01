@@ -1,0 +1,43 @@
+{% extends "devilry/base_jquery.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Deliveries" %}{% endblock %}
+{% block heading %}{% trans "Deliveries" %}{% endblock %}
+
+{% block headextra %}
+{{ block.super }}
+
+<script type="text/javascript">
+  $(document).ready(function() { 
+      $("#list_deliveries").tablesorter(); 
+  }); 
+</script>          
+{% endblock %}
+
+{% block content %}
+
+
+<table class='tablesorter' id='list_deliveries'>
+  <thead>
+    <tr>
+      <th>{% trans "Assignment" %}</th>
+      <th>{% trans "Group members" %}</th>
+      <th>{% trans "Time of delivery" %}</th>
+    </tr>
+  </thead>
+  {% for delivery in deliveries %}
+  <tr>
+    <td>
+      <a href='{% url show-delivery delivery.id %}'>
+        {{ delivery.assignment_group.parentnode }}
+      </a>
+    </td>
+    <td>
+      {{ delivery.assignment_group.students.all|join:", " }}
+    </td>
+    <td>{{ delivery.time_of_delivery }}</td>
+  </tr>
+  {% endfor %}
+<table>
+{% endblock %}
