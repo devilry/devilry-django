@@ -83,3 +83,22 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 	background-color: #ddb;
 }
 
+
+/***********************************************************
+ * form
+ **********************************************************/
+
+.smallpreview {
+	width: 250px;
+	float: right;
+	border: 1px solid #aaa;
+	color: #555;
+	padding: 10px;
+}
+.smallpreview input[type='submit']{
+	background-color: #eee;
+	border: 1px solid #aaa;
+}
+
+.mainsubmit {
+}

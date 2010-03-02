@@ -19,9 +19,8 @@ Deliver {{ assignment_path }}
     action="{% url add-delivery assignment_group.id %}"
     method="post">
 
-
   {% if existing_formset.forms %}
-    <div id='existing'>
+    <div id='existing' class='smallpreview'>
       <table>
         {{ existing_formset.management_form }}
         {% for form in existing_formset.forms %}
@@ -46,7 +45,8 @@ Deliver {{ assignment_path }}
     </div>
   </div>
 
-  <div class='submit'>
+
+  <div class='mainsubmit'>
     <input type="submit" name="deliver" value="{% trans "Deliver" %}" />
   </div>
 </form>
