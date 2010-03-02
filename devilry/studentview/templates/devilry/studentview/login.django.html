@@ -1,0 +1,23 @@
+{% extends "devilry/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Nodes" %}{% endblock %}
+{% block heading %}{% trans "Nodes" %}{% endblock %}
+
+{% block content %}
+
+{% if login_failed %}
+	<p class='error'>{% trans "Invalid username or password." %}</p>
+{% endif %}
+
+<form method='post' action='{% url login %}'>
+	<table>
+		{{ form.as_table}}
+	</table>
+	<p>
+		<input type='submit' name='login' value='{% trans "Log in" %}'/>
+	</p>
+</form>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends BASE_TEMPLATE %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Admin dashboard" %}{% endblock %}
+{% block heading %}{% trans "Admin dashboard" %}{% endblock %}
+
+{% block content %}
+<ul id='actionlist'>
+  {% if nodes.all.count %}
+    <li><a href='{% url list-nodes %}'>Nodes</a></li>
+  {% endif %}
+
+  {% if subjects.all.count %}
+    <li><a href='{% url list-subjects %}'>Subjects</a></li>
+  {% endif %}
+
+  {% if periods.all.count %}
+    <li><a href='{% url list-periods%}'>Periods</a></li>
+  {% endif %}
+
+  {% if assignments.all.count %}
+    <li><a href='{% url list-assignments%}'>Assignments</a></li>
+  {% endif %}
+</ul>
+{% endblock %}

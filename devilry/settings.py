@@ -112,3 +112,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
+LOGIN_URL = '/studentview/login'
+
+BASE_TEMPLATE = 'devilry/base.django.html'

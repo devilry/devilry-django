@@ -1,0 +1,16 @@
+{% extends "devilry/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit " %}{{ nodeform.instance }}{% endblock %}
+{% block heading %}{% trans "Edit " %}{{ nodeform.instance }}{% endblock %}
+
+{% block content %}
+
+{% block links %}
+<p>Back to <a href='{% url admin %}'>admin dashboard</a>.</p>
+{% endblock %}
+
+{% block admincontent %}{% endblock %}
+
+{% endblock %}
