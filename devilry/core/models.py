@@ -240,17 +240,12 @@ class Delivery(models.Model, CorePermMixin):
     time_of_delivery = models.DateTimeField(null=True, default=None)
     store = load_deliverystore_backend()
 
-
     @classmethod
     def begin(cls, assignment_group):
         d = Delivery()
         d.assignment_group = assignment_group
         d.save()
         return d
-
-    def finish(self):
-        self.time_of_delivery = datetime.now()
-        self.save()
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -271,3 +266,10 @@ class Delivery(models.Model, CorePermMixin):
 
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
+
+    def finish(self):
+        self.time_of_delivery = datetime.now()
+        self.save()
+
+    def filenames(self):
+        return self.store.filenames(self)
