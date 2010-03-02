@@ -2,7 +2,7 @@ from django.utils.importlib import import_module
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from os.path import join, exists
-from os import mkdir
+from os import mkdir, listdir, remove
 from StringIO import StringIO
 
 
@@ -38,6 +38,21 @@ class FsDeliveryStore(object):
         if not exists(dirpath):
             mkdir(dirpath)
         return open(join(dirpath, filename), 'wb')
+
+    def remove(self, delivery_obj, filename):
+        dirpath = self._get_dirpath(delivery_obj)
+        remove(join(dirpath, filename))
+
+    def clear(self, delivery_obj):
+        for filename in self.filenames(delivery_obj):
+            self.remove(delivery_obj, filename)
+
+    def filenames(self, delivery_obj):
+        dirpath = self._get_dirpath(delivery_obj)
+        if exists(dirpath):
+            return listdir(dirpath)
+        else:
+            return []
 
 
 class MemoryDeliveryStore(object):
