@@ -230,6 +230,9 @@ class AssignmentGroup(models.Model, CorePermMixin):
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
 
+    def is_student(self, user_obj):
+        return self.students.filter(id=user_obj.id).count() > 0
+
 
 
 class Delivery(models.Model, CorePermMixin):

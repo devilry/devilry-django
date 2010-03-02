@@ -1,7 +1,7 @@
 from os.path import basename
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
@@ -15,8 +15,11 @@ def list_deliveries(request):
 
 @login_required
 def show_delivery(request, delivery_id):
+    delivery = get_object_or_404(Delivery, pk=delivery_id)
+    if not delivery.assignment_group.is_student(request.user):
+        return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/studentview/show_delivery.django.html', {
-        'delivery': get_object_or_404(Delivery, pk=delivery_id),
+        'delivery': delivery,
         }, context_instance=RequestContext(request))
 
 
@@ -26,6 +29,8 @@ class UploadFileForm(forms.Form):
 @login_required
 def add_delivery(request, assignment_group_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignment_group_id)
+    if not assignment_group.is_student(request.user):
+        return HttpResponseForbidden("Forbidden")
     sessionkey = 'add_delivery-delivery_id'
     delivery_id = request.session.get(sessionkey)
     if request.method == 'POST':
@@ -61,6 +66,8 @@ def add_delivery(request, assignment_group_id):
 @login_required
 def successful_delivery(request, delivery_id):
     delivery = get_object_or_404(Delivery, pk=delivery_id)
+    if not delivery.assignment_group.is_student(request.user):
+        return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/studentview/successful_delivery.django.html', {
         'delivery': delivery,
         }, context_instance=RequestContext(request))
