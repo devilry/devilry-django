@@ -1,4 +1,4 @@
-{% extends "devilry/base_jquery.django.html" %}
+{% extends "devilry/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -21,7 +21,8 @@ Deliver {{ assignment_path }}
 
   {{ form }}
 	<p>
-		<input type="submit" name="deliver" value="Deliver" />
+    <input type="submit" name="addfile" value="{% trans "Add file" %}" />
+    <input type="submit" name="deliver" value="{% trans "Deliver" %}" />
 	</p>
 </form>
 {% endblock %}

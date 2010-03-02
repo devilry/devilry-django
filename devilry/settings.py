@@ -107,3 +107,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     'devilry.core.templatecontext.template_variables',
 )
+
+
+
+DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
+DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')

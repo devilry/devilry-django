@@ -3,6 +3,15 @@
 <html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
 		<title>{% block title %}{% endblock %}</title>
+    {% block jquery %}
+      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery.js"></script>          
+      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery.tablesorter.js"></script>          
+    {% endblock %}
+    {% block css %}
+      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/tablesorter.css" />
+    {% endblock %}
+		{% block customjs %}{% endblock %}
+		{% block customcss %}{% endblock %}
 		{% block headextra %}{% endblock %}
 	</head>
 	<body>
@@ -13,7 +22,7 @@
 			{% block headerextra %}{% endblock %}
 		</div>
 		<div id='content'>
-			{% block content %}{% endblock %}
+      {% block content %}{% endblock %}
 		</div>
 		{% endblock body %}
 		{% block postbody %}{% endblock %}

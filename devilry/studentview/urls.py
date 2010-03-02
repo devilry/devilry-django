@@ -1,10 +1,12 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('devilry.studentview',
-    url(r'^list_deliveries/$',
-        'views.list_deliveries', name='list_deliveries'),
-    url(r'^show_delivery/(?P<delivery_id>\d+)$',
+    url(r'^list-deliveries/$',
+        'views.list_deliveries', name='list-deliveries'),
+    url(r'^show-delivery/(?P<delivery_id>\d+)$',
         'views.show_delivery', name='show-delivery'),
-    url(r'^add_delivery/(?P<assignment_group_id>\d+)$',
+    url(r'^add-delivery/(?P<assignment_group_id>\d+)$',
         'views.add_delivery', name='add-delivery'),
+    url(r'^successful-delivery/(?P<delivery_id>\d+)$',
+        'views.successful_delivery', name='successful-delivery'),
 )

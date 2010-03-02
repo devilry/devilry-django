@@ -1,13 +1,11 @@
-{% extends "devilry/base_jquery.django.html" %}
+{% extends "devilry/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block title %}{% trans "Deliveries" %}{% endblock %}
 {% block heading %}{% trans "Deliveries" %}{% endblock %}
 
-{% block headextra %}
-{{ block.super }}
-
+{% block customjs %}
 <script type="text/javascript">
   $(document).ready(function() { 
       $("#list_deliveries").tablesorter(); 

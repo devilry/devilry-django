@@ -17,7 +17,6 @@ urlpatterns = patterns('',
 
     (r'^admin/', include(admin.site.urls)),
     (r'^studentview/', include('devilry.studentview.urls')),
-    (r'^core/', include('devilry.core.urls')),
 
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.DEVILRY_RESOURCES_ROOT}),

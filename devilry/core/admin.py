@@ -1,5 +1,5 @@
 from models import (Node, Subject, Period, Assignment,
-        AssignmentGroup, Delivery, FileMeta)
+        AssignmentGroup, Delivery)
 from django.contrib import admin
 from django.db.models import Q
 from django.db import models
@@ -45,13 +45,8 @@ class DeliveryGroupAdmin(authadmin.ModelAdmin):
     pass
 
 
-
-class FileMetaInline(admin.TabularInline):
-    model = FileMeta
-    extra = 1
 class DeliveryAdmin(authadmin.ModelAdmin):
     list_display = ['__unicode__', 'id']
-    inlines = (FileMetaInline,)
 
 
 admin.site.register(Node, NodeAdmin)

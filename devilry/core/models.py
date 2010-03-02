@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.db import models
 from django.contrib.auth.models import User, Permission
@@ -5,6 +6,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from devilry.auth import authmodel
+from deliverystore import load_deliverystore_backend
 
 
 
@@ -232,7 +234,20 @@ class AssignmentGroup(models.Model, CorePermMixin):
 
 class Delivery(models.Model, CorePermMixin):
     assignment_group = authmodel.ForeignKey(AssignmentGroup)
-    time_of_delivery = models.DateTimeField()
+    time_of_delivery = models.DateTimeField(null=True, default=None)
+    store = load_deliverystore_backend()
+
+
+    @classmethod
+    def begin(cls, assignment_group):
+        d = Delivery()
+        d.assignment_group = assignment_group
+        d.save()
+        return d
+
+    def finish(self):
+        self.time_of_delivery = datetime.now()
+        self.save()
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -253,26 +268,3 @@ class Delivery(models.Model, CorePermMixin):
 
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
-
-
-class FileMeta(models.Model, CorePermMixin):
-    delivery = authmodel.ForeignKey(Delivery)
-    filesize = models.PositiveIntegerField()
-    filepath = models.CharField(max_length = 255)
-
-    @classmethod
-    def where_is_admin(cls, user_obj):
-        return FileMeta.objects.filter(
-                Q(delivery__assignment_group__parentnode__admins=user_obj) |
-                Q(delivery__assignment_group__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(delivery__assignment_group__parentnode__parentnode__parentnode__parent__pk__in=Node.get_nodepks_where_isadmin(user_obj))
-        ).distinct()
-
-    @classmethod
-    def where_is_student(cls, user_obj):
-        return FileMeta.objects.filter(assignment_group__delivery__students=user_obj)
-
-    @classmethod
-    def where_is_examiner(cls, user_obj):
-        return FileMeta.objects.filter(assignment_group__delivery__examiners=user_obj)
