@@ -1,0 +1,85 @@
+body {
+	font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #eee;
+}
+
+#header {
+	background-color: #000;
+	color #ccc;
+	padding: 15px 71px 15px 71px;
+}
+#header h1 {
+	color: #fff;
+	margin: 0;
+	padding: 0;
+	font-size: 1.8em;
+	font-family: "Georgia", sans-serif;
+}
+
+#content {
+	margin: 0 50px 0 50px;
+	padding: 20px;
+	border: 1px solid #aaa;
+	background-color: #fff;
+	border-top: none;
+	font-size: 0.8em;
+}
+
+#footer {
+	color #999;
+	padding: 5px 71px 5px 71px;
+	text-align: right;
+}
+#footer a {color: #999;}
+#footer a:hover {color: #777;}
+#footer ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#footer li {
+	display: inline-block;
+	margin-left: 20px;
+	font-size: 0.8em;
+}
+
+/***********************************************************
+ * tablesorter plugin
+ **********************************************************/
+table.tablesorter {
+	background-color: #000;
+	font-size: 1.0em;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #eee;
+	font-size: 1.0em;
+	padding: 3px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody td {
+	padding: 3px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+	background-color: #ddb;
+}
+
