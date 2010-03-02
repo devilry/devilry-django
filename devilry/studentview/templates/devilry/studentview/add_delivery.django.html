@@ -19,32 +19,14 @@ Deliver {{ assignment_path }}
     action="{% url add-delivery assignment_group.id %}"
     method="post">
 
-  {% if existing_formset.forms %}
-    <div id='existing' class='smallpreview'>
-      <table>
-        {{ existing_formset.management_form }}
-        {% for form in existing_formset.forms %}
-          <tr>
-            <td>{{ form.DELETE }}</td>
-            <td>{{ form.filename }}</td>
-          </tr>
-        {% endfor %}
-      </table>
-      <div class='extra_submit'>
-        <input type="submit" name="delete" value="{% trans "Delete selected" %}" />
-      </div>
-    </div>
-  {% endif %}
-
-  <div id='addfile'>
-    <table>
-      {{ formset }}
-    </table>
-    <div class='extra_submit'>
-      <input type="submit" name="addfile" value="{% trans "Add file" %}" />
-    </div>
-  </div>
-
+  <table>
+    {{ formset.management_form }}
+    {% for form in formset.forms %}
+    <tr>
+      <td>{{ form.file }}</td>
+    </tr>
+    {% endfor %}
+  </table>
 
   <div class='mainsubmit'>
     <input type="submit" name="deliver" value="{% trans "Deliver" %}" />

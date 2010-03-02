@@ -6,13 +6,7 @@
 {% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
 
 {% block content %}
-<h2>{% trans "Time of delivery" %}</h2>
-{{ delivery.time_of_delivery }}
-
-<h2>{% trans "Files" %}</h2>
-<ul>
-{% for filename in delivery.filenames %}
-  <li>{{ filename }}</li>
-{% endfor %}
-</ul>
+<a href='{% url add-delivery assignmentgroup.id %}'>
+	{% trans "Add delivery" %}
+</a>
 {% endblock %}
