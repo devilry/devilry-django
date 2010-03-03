@@ -4,32 +4,19 @@ from django.contrib import admin
 from django.db.models import Q
 from django.db import models
 from django import forms
-from devilry.auth import authadmin
 
 
 
-class BaseNodeAdmin(authadmin.ModelAdmin):
+class BaseNodeAdmin(admin.ModelAdmin):
     list_display = ('short_name', 'long_name', 'get_path')
     search_fields = ['short_name', 'long_name']
 
 
 class NodeAdmin(BaseNodeAdmin):
-
-    @classmethod
-    def get_admnodes(cls, user):
-        admnodes = Node.objects.filter(admins=user)
-        l = []
-        def add_admnodes(admnodes):
-            for a in admnodes.all():
-                l.append(a.id)
-                add_admnodes(a.node_set)
-        add_admnodes(admnodes)
-        return l
-
+    pass
 
 class SubjectAdmin(BaseNodeAdmin):
     pass
-
 
 class PeriodAdmin(BaseNodeAdmin):
     list_display = ['parentnode', 'short_name', 'start_time', 'end_time', 'admins_unicode']
@@ -41,11 +28,11 @@ class PeriodAdmin(BaseNodeAdmin):
 class AssignmentAdmin(BaseNodeAdmin):
     pass
 
-class DeliveryGroupAdmin(authadmin.ModelAdmin):
+class DeliveryGroupAdmin(admin.ModelAdmin):
     pass
 
 
-class DeliveryAdmin(authadmin.ModelAdmin):
+class DeliveryAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'id']
 
 

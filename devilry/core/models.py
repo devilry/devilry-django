@@ -5,21 +5,11 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
-from devilry.auth import authmodel
 from deliverystore import load_deliverystore_backend
 
 
 
-class CorePermMixin(authmodel.PermMixin):
-    @classmethod
-    def get_changelist(cls, user_obj):
-        if user_obj.is_superuser:
-            return cls.objects.all()
-        else:
-            return cls.where_is_admin(user_obj)
-
-
-class BaseNode(models.Model, CorePermMixin):
+class BaseNode(models.Model):
     short_name = models.SlugField(max_length=20,
             help_text=u"Only numbers, letters, '_' and '-'.")
     long_name = models.CharField(max_length=100)
@@ -45,7 +35,7 @@ class BaseNode(models.Model, CorePermMixin):
 
 
 class Node(BaseNode):
-    parentnode = authmodel.ForeignKey('self', blank=True, null=True)
+    parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
     def __unicode__(self):
@@ -148,7 +138,7 @@ class Node(BaseNode):
         return n
 
 class Subject(BaseNode):
-    parentnode = authmodel.ForeignKey(Node)
+    parentnode = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
@@ -163,7 +153,7 @@ class Subject(BaseNode):
 
 
 class Period(BaseNode):
-    parentnode = authmodel.ForeignKey(Subject)
+    parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
@@ -182,7 +172,7 @@ class Period(BaseNode):
 
 
 class Assignment(BaseNode):
-    parentnode = authmodel.ForeignKey(Period)
+    parentnode = models.ForeignKey(Period)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
@@ -199,10 +189,10 @@ class Assignment(BaseNode):
         return unicode(self.parentnode) + "." + self.short_name
 
 
-class AssignmentGroup(models.Model, CorePermMixin):
+class AssignmentGroup(models.Model):
     class Meta:
         verbose_name_plural = 'Delivery groups'
-    parentnode = authmodel.ForeignKey(Assignment)
+    parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
 
@@ -235,8 +225,8 @@ class AssignmentGroup(models.Model, CorePermMixin):
 
 
 
-class Delivery(models.Model, CorePermMixin):
-    assignment_group = authmodel.ForeignKey(AssignmentGroup)
+class Delivery(models.Model):
+    assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField(null=True, default=None)
     store = load_deliverystore_backend()
 
