@@ -11,8 +11,8 @@
 
 <h2>{% trans "Files" %}</h2>
 <ul>
-{% for filename in delivery.filenames %}
-  <li>{{ filename }}</li>
+{% for filemeta in delivery.filemeta_set.all %}
+  <li>{{ filemeta.filename }}</li>
 {% endfor %}
 </ul>
 {% endblock %}

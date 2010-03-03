@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django import forms
 from django.forms.formsets import formset_factory
 from devilry.core.models import (Delivery, AssignmentGroup,
-        Node, Subject, Period, Assignment)
+        Node, Subject, Period, Assignment, FileMeta)
 from django.contrib.auth import authenticate, login, logout
 from devilry.core.widgets import ReadOnlyWidget
 
@@ -183,10 +183,7 @@ def add_delivery(request, assignment_group_id):
             delivery = Delivery.begin(assignment_group)
             for f in request.FILES.values():
                 filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
-                out = Delivery.store.write_open(delivery, filename)
-                for chunk in f.chunks():
-                    out.write(chunk)
-                out.close()
+                FileMeta.create(delivery, filename, f.chunks())
             delivery.finish()
             return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
     else:

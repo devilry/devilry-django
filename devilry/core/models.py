@@ -19,11 +19,9 @@ class BaseNode(models.Model):
 
     def get_path(self):
         return unicode(self)
-    get_path.short_description = 'Path'
 
     def admins_unicode(self):
         return u', '.join(u.username for u in self.admins.all())
-    admins_unicode.short_description = 'Admins'
 
     def is_admin(self, user_obj):
         if self.admins.filter(pk=user_obj.pk):
@@ -32,6 +30,11 @@ class BaseNode(models.Model):
             return self.parentnode.is_admin(user_obj)
         else:
             return False
+
+    @classmethod
+    def where_is_admin(cls, user_obj):
+        """ Get all nodes where `user_obj` is admin. """
+        raise NotImplementedError()
 
 
 class Node(BaseNode):
@@ -43,7 +46,6 @@ class Node(BaseNode):
             return unicode(self.parentnode) + "." + self.short_name
         else:
             return self.short_name
-
 
 
     def iter_childnodes(self):
@@ -72,10 +74,9 @@ class Node(BaseNode):
         super(Node, self).clean(*args, **kwargs)
 
     @classmethod
-    def get_nodepks_where_isadmin(cls, user_obj):
-        """ Recurse down info all childnodes of the nodes below the nodes
-        where ``user_obj`` is admin, and return the primary key of all these
-        nodes in a list. """
+    def _get_nodepks_where_isadmin(cls, user_obj):
+        """ Get a list with the primary key of all nodes where the given
+        `user_obj` is admin. """
         admnodes = Node.objects.filter(admins=user_obj)
         l = []
         def add_admnodes(admnodes):
@@ -87,10 +88,10 @@ class Node(BaseNode):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        return Node.objects.filter(pk__in=cls.get_nodepks_where_isadmin(user_obj))
+        return Node.objects.filter(pk__in=cls._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
-    def get_pathlist_kw(cls, pathlist):
+    def _get_pathlist_kw(cls, pathlist):
         """ Used by get_by_pathlist() to create the required kwargs for
         Node.objects.get(). Might be a starting point for more sophisticated
         queries including paths. """
@@ -114,18 +115,19 @@ class Node(BaseNode):
             >>> Node.get_by_pathlist(['uio', 'ifi'])
             <Node: uio.ifi>
         """
-        return Node.objects.get(**cls.get_pathlist_kw(pathlist))
+        return Node.objects.get(**cls._get_pathlist_kw(pathlist))
 
     @classmethod
     def get_by_path(cls, path):
-        """ Get a node by path. Just like get_by_pathlist(), but the path is a
+        """ Get a node by path. Just like `get_by_pathlist`, but the path is a
         string where the node-names are separated with '.'. """
         return cls.get_by_pathlist(path.split('.'))
 
 
     @classmethod
     def create_by_pathlist(cls, pathlist):
-        """ Create a new node by pathlist, creating all missing parents. """
+        """ Create a new node from the path given in `nodelist`, creating all
+        missing parents. """
         parent = None
         n = None
         for i, short_name in enumerate(pathlist):
@@ -137,6 +139,13 @@ class Node(BaseNode):
             parent = n
         return n
 
+    @classmethod
+    def create_by_path(cls, path):
+        """ Just like `get_by_pathlist`, but the path is a string where each `short_name`
+        is separated by '.', instead of a list. """
+        return cls.get_by_pathlist(path.split('.'))
+
+
 class Subject(BaseNode):
     parentnode = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
@@ -145,7 +154,7 @@ class Subject(BaseNode):
     def where_is_admin(cls, user_obj):
         return Subject.objects.filter(
                 Q(admins__pk=user_obj.pk)
-                | Q(parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))).distinct()
+                | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
 
     def __unicode__(self):
         return unicode(self.parentnode) + "." + self.short_name
@@ -164,7 +173,7 @@ class Period(BaseNode):
         return Period.objects.filter(
                 Q(admins=user_obj) |
                 Q(parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     def __unicode__(self):
@@ -182,7 +191,7 @@ class Assignment(BaseNode):
                 Q(admins=user_obj) |
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     def __unicode__(self):
@@ -202,7 +211,7 @@ class AssignmentGroup(models.Model):
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     @classmethod
@@ -228,7 +237,6 @@ class AssignmentGroup(models.Model):
 class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField(null=True, default=None)
-    store = load_deliverystore_backend()
 
     @classmethod
     def begin(cls, assignment_group):
@@ -243,7 +251,7 @@ class Delivery(models.Model):
                 Q(assignment_group__parentnode__admins=user_obj) |
                 Q(assignment_group__parentnode__parentnode__admins=user_obj) |
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node.get_nodepks_where_isadmin(user_obj))
+                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
     @classmethod
@@ -261,5 +269,40 @@ class Delivery(models.Model):
         self.time_of_delivery = datetime.now()
         self.save()
 
-    def filenames(self):
-        return self.store.filenames(self)
+
+    def add_file(self, filename, iterable_data):
+        filemeta = cls()
+        filemeta.delivery = self
+        filemeta.filename = filename
+        filemeta.size = 0
+        filemeta.save()
+        f = cls.store.write_open(filemeta)
+        filemeta.save()
+        for data in iterable_data:
+            f.write(data)
+            filemeta.size += len(data)
+        f.close()
+        filemeta.save()
+        return filemeta
+
+class FileMeta(models.Model):
+    delivery = models.ForeignKey(Delivery)
+    filename = models.CharField(max_length=255)
+    size = models.IntegerField()
+
+    store = load_deliverystore_backend()
+
+
+    def remove_file(self):
+        return self.store.remove(self, filemeta_obj.filename)
+
+    def read_open(self):
+        return self.store.read_open(self.delivery, self.filename)
+
+
+def filemeta_deleted_handler(sender, **kwargs):
+    filemeta = kwargs['instance']
+    filemeta.remove_file()
+
+from django.db.models.signals import pre_delete
+pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)

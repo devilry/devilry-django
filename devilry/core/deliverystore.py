@@ -23,6 +23,8 @@ def load_deliverystore_backend():
     return cls()
 
 
+
+
 class FsDeliveryStore(object):
     def __init__(self):
         self.root = settings.DELIVERY_STORE_ROOT
@@ -30,44 +32,18 @@ class FsDeliveryStore(object):
     def _get_dirpath(self, delivery_obj):
         return join(self.root, str(delivery_obj.pk))
 
-    def read_open(self, delivery_obj, filename):
-        return open(join(self._get_dirpath(delivery_obj), filename), 'rb')
+    def _get_filepath(self, filemeta_obj):
+        return join(self._get_dirpath(filemeta_obj.delivery), str(filemeta_obj.pk))
 
-    def write_open(self, delivery_obj, filename):
-        dirpath = self._get_dirpath(delivery_obj)
+    def read_open(self, filemeta_obj):
+        return open(self._get_filepath(filemeta_obj), 'rb')
+
+    def write_open(self, filemeta_obj):
+        dirpath = self._get_dirpath(filemeta_obj.delivery)
         if not exists(dirpath):
             mkdir(dirpath)
-        return open(join(dirpath, filename), 'wb')
+        return open(self._get_filepath(filemeta_obj), 'wb')
 
-    def remove(self, delivery_obj, filename):
-        dirpath = self._get_dirpath(delivery_obj)
-        remove(join(dirpath, filename))
-
-    def clear(self, delivery_obj):
-        for filename in self.filenames(delivery_obj):
-            self.remove(delivery_obj, filename)
-
-    def filenames(self, delivery_obj):
-        dirpath = self._get_dirpath(delivery_obj)
-        if exists(dirpath):
-            return listdir(dirpath)
-        else:
-            return []
-
-
-class MemoryDeliveryStore(object):
-    def __init__(self):
-        self._files = {}
-
-    def _get_dir(self, delivery_obj):
-        return self._files[delivery.pk]
-
-    def read_open(self, delivery_obj, filename):
-        return self._files[delivery.pk][filename]
-
-    def write_open(self, delivery_obj, filename):
-        if not delivery_obj.pk in self._files:
-            self._files[delivery_obj.pk] = {}
-        d = self._files[delivery_obj.pk][filename]
-        d[filename] = StringIO()
-        return d[filename]
+    def remove(self, filemeta_obj):
+        filepath = self._get_filepath(filemeta_obj)
+        remove(fileath)

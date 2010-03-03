@@ -21,7 +21,7 @@ class TestNode(TestCase):
         self.uio = Node.objects.get(pk=2)
 
     def test_get_pathlist_kw(self):
-        self.assertEquals(Node.get_pathlist_kw(['uio', 'matnat', 'ifi']), {
+        self.assertEquals(Node._get_pathlist_kw(['uio', 'matnat', 'ifi']), {
                 'short_name': 'ifi',
                 'parentnode__short_name': 'matnat',
                 'parentnode__parentnode__short_name': 'uio'})
@@ -41,7 +41,7 @@ class TestNode(TestCase):
 
     def test_get_nodepks_where_isadmin(self):
         uioadmin = User.objects.get(username='uioadmin')
-        pks = Node.get_nodepks_where_isadmin(uioadmin)
+        pks = Node._get_nodepks_where_isadmin(uioadmin)
         pks.sort()
         self.assertEquals(pks, [1,2,3])
 
