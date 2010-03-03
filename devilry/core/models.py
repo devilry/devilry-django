@@ -236,12 +236,15 @@ class AssignmentGroup(models.Model):
 
 class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup)
-    time_of_delivery = models.DateTimeField(null=True, default=None)
+    time_of_delivery = models.DateTimeField()
+    successful = models.BooleanField(blank=True, default=False)
 
     @classmethod
     def begin(cls, assignment_group):
         d = Delivery()
         d.assignment_group = assignment_group
+        d.time_of_delivery = datetime.now()
+        d.successful = False
         d.save()
         return d
 
@@ -256,27 +259,30 @@ class Delivery(models.Model):
 
     @classmethod
     def where_is_student(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__students=user_obj)
+        return Delivery.objects.filter(assignment_group__students=user_obj,
+                successful=True)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__examiners=user_obj)
+        return Delivery.objects.filter(assignment_group__examiners=user_obj,
+                successful=True)
 
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
     def finish(self):
         self.time_of_delivery = datetime.now()
+        self.successful = True
         self.save()
 
 
     def add_file(self, filename, iterable_data):
-        filemeta = cls()
+        filemeta = FileMeta()
         filemeta.delivery = self
         filemeta.filename = filename
         filemeta.size = 0
         filemeta.save()
-        f = cls.store.write_open(filemeta)
+        f = FileMeta.store.write_open(filemeta)
         filemeta.save()
         for data in iterable_data:
             f.write(data)

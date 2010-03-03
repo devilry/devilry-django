@@ -65,6 +65,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
 )
 
 
@@ -92,7 +93,9 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
     'django.contrib.admindocs',
     'devilry.core',
+    'devilry.ui',
     'devilry.studentview',
+    'devilry.adminview',
 )
 
 
@@ -110,6 +113,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-LOGIN_URL = '/studentview/login'
+LOGIN_URL = '/ui/login'
 
 BASE_TEMPLATE = 'devilry/base.django.html'
