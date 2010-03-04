@@ -4,15 +4,17 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('admin'))
+    return HttpResponseRedirect(reverse('login'))
 
 
 class LoginForm(forms.Form):
     username = forms.CharField()
-    next = forms.CharField(widget=forms.HiddenInput)
+    next = forms.CharField(widget=forms.HiddenInput,
+            required=False)
     password = forms.CharField(widget=forms.PasswordInput)
 
 def login_view(request):
@@ -26,7 +28,8 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(form.cleaned_data['next'])
+                    next = form.cleaned_data.get('next') or settings.DEVILRY_MAIN_PAGE
+                    return HttpResponseRedirect(next)
                 else:
                     return HttpResponseForbidden("Acount is not active")
             else:

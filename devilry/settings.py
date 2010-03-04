@@ -84,6 +84,8 @@ TEMPLATE_DIRS = (
 )
 
 
+LOGIN_URL = '/ui/login'
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -113,6 +115,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-LOGIN_URL = '/ui/login'
+DEVILRY_MAIN_PAGE = '/studentview/'
 
 BASE_TEMPLATE = 'devilry/base.django.html'

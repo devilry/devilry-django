@@ -1,12 +1,35 @@
-{% extends "devilry/base.django.html" %}
+{% extends "devilry/studentview/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block title %}
+  {% trans "Student dashboard" %}
 {% endblock %}
 
 {% block heading %}
+  {% trans "Student dashboard" %}
 {% endblock %}
 
-{% block content %}
+{% block breadcrumbs-content %}
+<li>{% trans "Home" %}</li>
+{% endblock %}
+
+{% block main %}
+
+<div class='dashboard_box visible' id='active_assignments'>
+  <h2>{% trans "Active assignments" %}</h2>
+  <ul>
+  {% for assignment_group in active %}
+  <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
+
+<div class='dashboard_box hidden' id='other'>
+  <h2>{% trans "Other" %}</h2>
+  <ul>
+    <!--<li><a href=''></a></li>-->
+  </ul>
+</div>
+
 {% endblock %}

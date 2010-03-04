@@ -84,6 +84,27 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 }
 
 
+
+
+
+ul#breadcrumbs {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul#breadcrumbs li {
+	margin: 0 6px 0 0;
+	padding: 0;
+	font-size: 0.9em;
+	color: #999;
+	display: inline-block;
+}
+ul#breadcrumbs a {
+	color: #999;
+}
+
+
 /***********************************************************
  * form
  **********************************************************/

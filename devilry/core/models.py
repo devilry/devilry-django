@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from deliverystore import load_deliverystore_backend
+from django.utils.translation import ugettext as _
 
 
 
@@ -157,7 +158,7 @@ class Subject(BaseNode):
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
 
     def __unicode__(self):
-        return unicode(self.parentnode) + "." + self.short_name
+        return self.short_name
 
 
 
@@ -177,7 +178,7 @@ class Period(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return unicode(self.parentnode) + "." + self.short_name
+        return unicode(self.parentnode) + " - " + self.short_name
 
 
 class Assignment(BaseNode):
@@ -196,15 +197,15 @@ class Assignment(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return unicode(self.parentnode) + "." + self.short_name
+        return unicode(self.parentnode) + " - " + self.short_name
 
 
 class AssignmentGroup(models.Model):
-    class Meta:
-        verbose_name_plural = 'Delivery groups'
     parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
+    is_open = models.BooleanField(blank=True, default=True,
+            help_text = _('If this is checked, the group can add deliveries.'))
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -220,8 +221,22 @@ class AssignmentGroup(models.Model):
         return AssignmentGroup.objects.filter(students=user_obj)
 
     @classmethod
+    def published_where_is_student(cls, user_obj):
+        return cls.where_is_student(user_obj).filter(
+                parentnode__publishing_time__lt = datetime.now())
+
+    @classmethod
+    def get_active(cls, user_obj):
+        now = datetime.now()
+        return cls.published_where_is_student(user_obj).filter(
+                parentnode__parentnode__start_time__lt = now,
+                parentnode__parentnode__end_time__gt = now)
+
+
+    @classmethod
     def where_is_examiner(cls, user_obj):
         return AssignmentGroup.objects.filter(examiners=user_obj)
+
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode,
@@ -233,12 +248,23 @@ class AssignmentGroup(models.Model):
     def is_student(self, user_obj):
         return self.students.filter(id=user_obj.id).count() > 0
 
+    def get_status(self):
+        if self.delivery_set.all().count() == 0:
+            return _('No deliveries')
+        else:
+            qry = self.delivery_set.filter(grade__isnull=False)
+            if qry.count() == 0:
+                return _('Not corrected')
+            else:
+                return qry.aggregate(models.Max('time_of_delivery')).grade
 
 
 class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
     successful = models.BooleanField(blank=True, default=False)
+    grade = models.CharField(max_length=20, blank=True, null=True)
+    feedback = models.TextField(blank=True, null=True, default='')
 
     @classmethod
     def begin(cls, assignment_group):
@@ -308,8 +334,8 @@ class FileMeta(models.Model):
 
 
 def filemeta_deleted_handler(sender, **kwargs):
-    filemeta = kwargs['instance']
-    filemeta.remove_file()
+   filemeta = kwargs['instance']
+   filemeta.remove_file()
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)

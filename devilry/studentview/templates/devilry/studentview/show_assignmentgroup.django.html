@@ -2,11 +2,50 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
-{% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
+{% block title %}{{ assignment_group.parentnode.short_name }}{% endblock %}
+{% block heading %}{{ assignment_group.parentnode }}{% endblock %}
+
+{% block breadcrumbs-content %}
+{{ block.super }}
+<li>:: {% trans "Assignment information" %}</li>
+{% endblock %}
 
 {% block content %}
-<a href='{% url add-delivery assignmentgroup.id %}'>
-	{% trans "Add delivery" %}
-</a>
+
+
+<table class='vertical_infotable'>
+  <tr>
+    <th>{% trans "Deadline" %}:</th>
+    <td>{{ assignment_group.parentnode.deadline }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Status" %}:</th>
+    <td>{{ assignment_group.get_status }}</td>
+  </tr>
+  {% if assignment_group.students.count > 1 %}
+    <tr>
+      <th>{% trans "Group members" %}:</th>
+      <td>{{ assignment_group.students.all|join:", " }} </td>
+    </tr>
+  {% endif %}
+</table>
+
+
+{% if assignment_group.is_open %}
+  <p>
+    <a href='{% url add-delivery assignment_group.id %}'>{% trans "Add delivery" %}</a>
+  </p>
+{% endif %}
+
+<ul id='delivery-list'>
+{% for delivery in assignment_group.delivery_set.all %}
+  <li>
+    <a href='{% url show-delivery delivery.id %}'>
+      {{ delivery.time_of_delivery }}
+    </a>
+  </li>
+{% endfor %}
+</ul>
+
+
 {% endblock %}

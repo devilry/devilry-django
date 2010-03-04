@@ -1,5 +1,6 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load i18n %}
 <html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
 		<title>{% block title %}{% endblock %}</title>
@@ -21,6 +22,11 @@
 		<div id='header'>
 			<h1>{% block heading %}{% endblock %}</h1>
 			{% block headerextra %}{% endblock %}
+      {% block breadcrumbs %}
+        <ul id='breadcrumbs'>
+          {% block breadcrumbs-content %}{% endblock %}
+        </ul>
+      {% endblock %}
 		</div>
 		<div id='content'>
       {% block content %}{% endblock %}
@@ -33,6 +39,7 @@
     <div id='footer'>
       <ul>
         {% block footerlist_extra %}{% endblock %}
+        <li><a href='{% url logout %}'>{% trans "Log out" %}</a></li>
         <li><a href='http://devilry.github.com'>Devilry</a></li>
       </ul>
     </div>

@@ -152,6 +152,7 @@
                 6, 
                 7
             ], 
+            "is_open": true, 
             "examiners": [
                 5
             ], 
@@ -166,37 +167,11 @@
                 7, 
                 8
             ], 
+            "is_open": true, 
             "examiners": [
                 5
             ], 
             "parentnode": 1
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "core.delivery", 
-        "fields": {
-            "successful": true, 
-            "time_of_delivery": "2010-02-26 23:20:19", 
-            "assignment_group": 1
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "core.delivery", 
-        "fields": {
-            "successful": true, 
-            "time_of_delivery": "2010-02-26 23:21:14", 
-            "assignment_group": 2
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "core.delivery", 
-        "fields": {
-            "successful": true, 
-            "time_of_delivery": "2010-02-26 23:21:19", 
-            "assignment_group": 2
         }
     }
 ]

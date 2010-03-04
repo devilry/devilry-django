@@ -22,11 +22,11 @@ def list_assignmentgroups(request):
 
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
-    assignmentgroup = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
-    if not assignmentgroup.is_student(request.user):
+    assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
+    if not assignment_group.is_student(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/studentview/show_assignmentgroup.django.html', {
-        'assignmentgroup': assignmentgroup,
+        'assignment_group': assignment_group,
         }, context_instance=RequestContext(request))
 
 
@@ -49,6 +49,8 @@ def show_delivery(request, delivery_id):
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
+
+
 
 @login_required
 @transaction.autocommit
@@ -86,6 +88,7 @@ def successful_delivery(request, delivery_id):
 
 @login_required
 def main(request):
-    return render_to_response('devilry/studentview/main.django.html',
-            context_instance=RequestContext(request))
-
+    active = AssignmentGroup.where_is_student(request.user)
+    return render_to_response('devilry/studentview/main.django.html', {
+            'active': active,
+            }, context_instance=RequestContext(request))
