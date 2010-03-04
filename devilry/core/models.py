@@ -183,6 +183,7 @@ class Period(BaseNode):
 class Assignment(BaseNode):
     parentnode = models.ForeignKey(Period)
     deadline = models.DateTimeField()
+    publishing_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod

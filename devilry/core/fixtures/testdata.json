@@ -122,24 +122,26 @@
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
+            "short_name": "oblig1", 
+            "publishing_time": "2010-01-01 00:00:00", 
+            "parentnode": 1, 
             "long_name": "Obligatory assignment 1", 
             "admins": [
                 6
             ], 
-            "deadline": "2010-01-23 13:45:10", 
-            "parentnode": 1, 
-            "short_name": "oblig1"
+            "deadline": "2010-01-23 13:45:10"
         }
     }, 
     {
         "pk": 2, 
         "model": "core.assignment", 
         "fields": {
+            "short_name": "oblig2", 
+            "publishing_time": "2010-01-01 00:00:00", 
+            "parentnode": 2, 
             "long_name": "Oblig2", 
             "admins": [], 
-            "deadline": "2010-02-26 23:05:14", 
-            "parentnode": 2, 
-            "short_name": "oblig2"
+            "deadline": "2010-02-26 23:05:14"
         }
     }, 
     {
@@ -174,24 +176,27 @@
         "pk": 1, 
         "model": "core.delivery", 
         "fields": {
-            "assignment_group": 1, 
-            "time_of_delivery": "2010-02-26 23:20:19"
+            "successful": true, 
+            "time_of_delivery": "2010-02-26 23:20:19", 
+            "assignment_group": 1
         }
     }, 
     {
         "pk": 2, 
         "model": "core.delivery", 
         "fields": {
-            "assignment_group": 2, 
-            "time_of_delivery": "2010-02-26 23:21:14"
+            "successful": true, 
+            "time_of_delivery": "2010-02-26 23:21:14", 
+            "assignment_group": 2
         }
     }, 
     {
         "pk": 3, 
         "model": "core.delivery", 
         "fields": {
-            "assignment_group": 2, 
-            "time_of_delivery": "2010-02-26 23:21:19"
+            "successful": true, 
+            "time_of_delivery": "2010-02-26 23:21:19", 
+            "assignment_group": 2
         }
     }
 ]
