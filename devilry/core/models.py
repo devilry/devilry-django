@@ -107,6 +107,7 @@ class Node(BaseNode):
     def get_by_pathlist(cls, pathlist):
         """ Get node by path just like get_by_path(), the parameter
         is a list of node-names instead of a single string. Example:
+        
             >>> uio = Node(short_name='uio', long_name='UiO')
             >>> uio.save()
             >>> ifi = Node(short_name='ifi', long_name='Ifi', parentnode=uio)
@@ -216,6 +217,7 @@ class AssignmentGroup(models.Model):
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
+
 
     @classmethod
     def where_is_admin(cls, user_obj):
