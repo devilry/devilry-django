@@ -1,0 +1,200 @@
+[
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2010-03-05 16:53:42", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "drift", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 17:23:45", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "ifiadmin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 17:35:39", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "teacher1", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 18:07:12", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "teacher2", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 18:07:12", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "student1", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 18:07:04", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "student2", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 18:07:04", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "student3", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-01-24 18:07:04", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7b509$a73b4c9c803a2d5224c98f51f29630e77dce1ef4", 
+            "email": "mail@example.com", 
+            "date_joined": "2010-01-23 09:32:37"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "uioadmin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2010-02-26 23:21:54", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a5503$1b396ca5149fa094829d86cb6924c2970b881d82", 
+            "email": "", 
+            "date_joined": "2010-02-26 22:27:51"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "examiner1", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-03-05 16:53:52", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$b8154$e955d58cf812ef3cb40788bdc6472d107afee81a", 
+            "email": "", 
+            "date_joined": "2010-03-05 16:53:52"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "examiner2", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-03-05 16:54:03", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$2c178$b02865f8883eb753cc6419cd95d7fe7f9a6bf9f5", 
+            "email": "", 
+            "date_joined": "2010-03-05 16:54:03"
+        }
+    }
+]
