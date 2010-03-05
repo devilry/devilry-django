@@ -205,6 +205,9 @@ class Assignment(BaseNode):
             assignmentgroup_set__examiners=user_obj
             ).distinct()
 
+    def assignment_groups_where_is_examiner(self, user_obj):
+        return self.assignmentgroup_set.filter(examiners=user_obj)
+ 
 
 
 class AssignmentGroup(models.Model):
@@ -244,6 +247,7 @@ class AssignmentGroup(models.Model):
     def where_is_examiner(cls, user_obj):
         return AssignmentGroup.objects.filter(examiners=user_obj)
 
+    
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode,
