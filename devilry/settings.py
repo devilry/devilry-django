@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'devilry.core',
     'devilry.ui',
     'devilry.studentview',
+    'devilry.examinerview',
     'devilry.adminview',
 )
 
