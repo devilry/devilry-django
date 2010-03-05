@@ -39,7 +39,7 @@
     <div id='footer'>
       <ul>
         {% block footerlist_extra %}{% endblock %}
-        <li><a href='{% url logout %}'>{% trans "Log out" %}</a></li>
+        <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
         <li><a href='http://devilry.github.com'>Devilry</a></li>
       </ul>
     </div>
