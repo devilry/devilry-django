@@ -145,6 +145,30 @@
         }
     }, 
     {
+        "pk": 3, 
+        "model": "core.assignment", 
+        "fields": {
+            "short_name": "oblig2", 
+            "publishing_time": "2010-03-31 06:00:00", 
+            "parentnode": 4, 
+            "long_name": "Oblig 2", 
+            "admins": [], 
+            "deadline": "2010-03-16 00:00:00"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.assignment", 
+        "fields": {
+            "short_name": "oblig1", 
+            "publishing_time": "2010-03-30 06:00:00", 
+            "parentnode": 4, 
+            "long_name": "Oblig 1", 
+            "admins": [], 
+            "deadline": "2010-03-23 06:00:00"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
@@ -173,6 +197,67 @@
                 10
             ], 
             "parentnode": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6, 
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 4
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 3
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 3
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                8
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 3
         }
     }
 ]
