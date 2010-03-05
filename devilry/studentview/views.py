@@ -66,7 +66,7 @@ def add_delivery(request, assignment_group_id):
                 filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
                 delivery.add_file(filename, f.chunks())
             delivery.finish()
-            return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
+            return HttpResponseRedirect(reverse('devilry.studentview.views.successful_delivery', args=(delivery.id,)))
     else:
         formset = UploadFileFormSet()
 

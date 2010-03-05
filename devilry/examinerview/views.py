@@ -12,23 +12,37 @@ from devilry.core.widgets import ReadOnlyWidget
 from django.db import transaction
 
 
+
+@login_required
+def list_assignments(request):
+    #assignment = get_object_or_404(Assignment, pk=assignment_id)
+    assignments = Assignment.where_is_examiner(request.user)
+
+    if assignments.count() == 0:
+        return HttpResponseForbidden("You are not registered as examiner on any assignments.")
+    return render_to_response('devilry/examinerview/show_assignments.django.html', {
+        'assignments': assignments,
+        }, context_instance=RequestContext(request))
+
+
+@login_required
+def list_assignmentgroups(request, assignment_id):
+    assignment = get_object_or_404(Assignment, pk=assignment_id)
+    assignment_groups = assignment.assignment_groups_where_is_examiner(request.user)
+    
+    return render_to_response('devilry/examinerview/list_assignmentgroups.django.html', {
+        'assignment_groups': assignment_groups,
+        }, context_instance=RequestContext(request))
+
+"""
 @login_required
 def list_assignmentgroups(request):
     return render_to_response('devilry/examinerview/list_assignmentgroups.django.html', {
         'assignment_groups': AssignmentGroup.where_is_student(request.user),
         }, context_instance=RequestContext(request))
+"""
 
 
-where_is_examiner
-
-@login_required
-def show_assignments(request, assignment_id):
-    assignment = get_object_or_404(Assignment, pk=assignment_id)
-    if not assignment.is_examiner(request.user):
-        return HttpResponseForbidden("Forbidden")
-    return render_to_response('devilry/examinerview/show_assignments.django.html', {
-        'assignment': assignment,
-        }, context_instance=RequestContext(request))
 
 
 @login_required
@@ -62,6 +76,12 @@ class UploadFileForm(forms.Form):
 UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
 
+class CorrectForm(forms.ModelForm):
+    class Meta:
+        model = Delivery
+        fields = ('grade', 'feedback')
+
+
 
 @login_required
 @transaction.autocommit
@@ -69,22 +89,21 @@ def correct_delivery(request, delivery_id):
     delivery = get_object_or_404(Delivery, pk=delivery_id)
 
     if not delivery.assignment_group.is_examiner(request.user):
+        print "forbidden"
         return HttpResponseForbidden("Forbidden")
+    
     if request.method == 'POST':
-        formset = UploadFileFormSet(request.POST, request.FILES)
-        if formset.is_valid():
-            delivery = Delivery.begin(assignment_group)
-            for f in request.FILES.values():
-                filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
-                delivery.add_file(filename, f.chunks())
-            delivery.finish()
-            return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
+        form = CorrectForm(request.POST, instance=delivery)
+        if form.is_valid():
+            form.save()
+            #return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
     else:
-        formset = UploadFileFormSet()
+        form = CorrectForm(instance=delivery)
 
-    return render_to_response('devilry/studentview/add_delivery.django.html', {
-        'assignment_group': assignment_group,
-        'formset': formset,
+    return render_to_response('devilry/examinerview/correct_delivery.django.html', {
+        'delivery': delivery,
+        'assignment_group': delivery.assignment_group,
+       'form': form,
         }, context_instance=RequestContext(request))
 
 
@@ -102,7 +121,24 @@ def successful_delivery(request, delivery_id):
 
 @login_required
 def main(request):
-    active = AssignmentGroup.where_is_examiner(request.user)
+    assignment_pks = AssignmentGroup.where_is_examiner(request.user).values("parentnode").distinct().query
+    assignments = Assignment.objects.filter(pk__in=assignment_pks)
     return render_to_response('devilry/examinerview/main.django.html', {
-            'active': active,
+            'assignments': assignments,
             }, context_instance=RequestContext(request))
+
+
+from django.http import HttpResponse
+from django.core.servers.basehttp import FileWrapper
+
+
+@login_required
+def download_file(request, filemeta_id):
+    filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
+    response = HttpResponse(FileWrapper(
+            file(filemeta.store._get_filepath(filemeta))), content_type='application/zip')
+    response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
+    response['Content-Length'] = filemeta.size
+
+    return response
+

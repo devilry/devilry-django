@@ -18,7 +18,7 @@ Successful delivery of {{ assignment }}.
 </p>
 
 <ul class='actionlist'>
-	<li><a href='{% url show-delivery delivery.pk %}'>{% trans "Show delivery" %}</a></li>
-	<li><a href='{% url list-deliveries %}'>{% trans "List all of my deliveries" %}</a></li>
+	<li><a href='{% url devilry.studentview.views.show_delivery delivery.pk %}'>{% trans "Show delivery" %}</a></li>
+	<li><a href='{% url devilry.studentview.views.list_deliveries %}'>{% trans "List all of my deliveries" %}</a></li>
 </ul>
 {% endblock %}

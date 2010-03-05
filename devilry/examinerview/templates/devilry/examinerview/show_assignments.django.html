@@ -19,8 +19,8 @@
 <div class='dashboard_box visible' id='active_assignments'>
   <h2>{% trans "Active assignments" %}</h2>
   <ul>
-  {% for assignment in active %}
-  <li><a href='{% url show-assignments assignment.id %}'>{{ assignment.parentnode }}</a></li>
+  {% for assignment in assignments %}
+  <li><a href='{% url show-assignment-groups assignment.id %}'>{{ assignment.parentnode }}</a></li>
   {% endfor %}
   </ul>
 </div>

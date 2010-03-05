@@ -1,19 +1,62 @@
-{% extends "devilry/adminview/base.django.html" %}
+{% extends "devilry/ui/show_delivery_base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block title %}{% trans "Edit " %}{% endblock %}
 {% block heading %}{% trans "Edit " %}{% endblock %}
 
-{% block admincontent %}
+
+{% block content %}
+
+<table class='vertical_infotable'>
+  <tr>
+    <th>{% trans "Time of delivery" %}:</th>
+    <td>{{ delivery.time_of_delivery }}</td>
+  </tr>
+  {% if assignment_group.students.count > 1 %}
+    <tr>
+      <th>{% trans "Group members" %}:</th>
+      <td>{{ assignment_group.students.all|join:", " }} </td>
+    </tr>
+  {% endif %}
+</table>
+
+<h2>{% trans "Files" %}</h2>
+<ul>
+{% for filemeta in delivery.filemeta_set.all %}
+  <li> <a href='{% url download-file filemeta.id %}'>{{ filemeta.filename }}</a>  ({{ filemeta.size }} bytes) </li>
+
+{% endfor %}
+</ul>
+
+
+
+{% if delivery.grade %}
+<h2>{% trans "Grade" %}</h2>
+   <p>
+	 {{ delivery.grade }}
+   </p>
+{% endif %}
+
+{% if delivery.feedback %}
+<h2>{% trans "Feedback" %}</h2>
+   <p>
+	 {{ delivery.feedback }}
+   </p>
+{% endif %}
+
+
 
 {% if message %}
 	<p>{{ message }}</p>
 {% endif %}
 
-<form method='post' action='{{ post_url }}'>
+
+<h1>{% trans "Edit" %}</h1
+
+<form method='post' action='{% url correct-delivery delivery.id %}'>
 	<table>
-	{{ nodeform.as_table }}
+	{{ form.as_table }}
 	</table>
 	<p>
 		<input type='submit' name='save' value='Save'/>
