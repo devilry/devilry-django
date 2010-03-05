@@ -111,7 +111,7 @@ class TestAssignment(TestCase):
         self.assertEquals(Assignment.where_is_admin(uioadmin).count(), 2)
 
 
-class TestDelivery(TestCase):
+class TestAssignmentGroup(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
     def test_where_is_admin(self):
@@ -127,7 +127,7 @@ class TestDelivery(TestCase):
         self.assertEquals(AssignmentGroup.where_is_examiner(teacher2).count(), 2)
 
 
-class TestDeliveryCandidate(TestCase):
+class TestDelivery(TestCase):
     fixtures = ['testusers.json', 'testdata.json']
 
     def test_where_is_admin(self):
@@ -142,16 +142,3 @@ class TestDeliveryCandidate(TestCase):
         teacher2 = User.objects.get(username='teacher2')
         self.assertEquals(Delivery.where_is_examiner(teacher2).count(), 3)
 
-
-
-class TestFileMeta(TestCase):
-    fixtures = ['testusers.json', 'testdata.json']
-
-    def test_qry_where_is_admin(self):
-        """ TODO """
-
-    def test_qry_where_is_student(self):
-        """ TODO """
-
-    def test_qry_where_is_examiner(self):
-        """ TODO """
