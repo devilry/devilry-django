@@ -199,6 +199,13 @@ class Assignment(BaseNode):
     def __unicode__(self):
         return unicode(self.parentnode) + " - " + self.short_name
 
+    @classmethod
+    def where_is_examiner(cls, user_obj):
+        return Assignment.objects.filter(
+            assignmentgroup_set__examiners=user_obj
+            ).distinct()
+
+
 
 class AssignmentGroup(models.Model):
     parentnode = models.ForeignKey(Assignment)
@@ -246,7 +253,11 @@ class AssignmentGroup(models.Model):
         return self.parentnode.is_admin(user_obj)
 
     def is_student(self, user_obj):
-        return self.students.filter(id=user_obj.id).count() > 0
+        return self.students.filter(pk=user_obj.pk).count() > 0
+
+    def is_examiner(self, user_obj):
+        """ Return True if user is examiner on this assignment group """
+        return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_status(self):
         if self.delivery_set.all().count() == 0:
@@ -257,7 +268,8 @@ class AssignmentGroup(models.Model):
                 return _('Not corrected')
             else:
                 return qry.aggregate(models.Max('time_of_delivery')).grade
-
+            
+    
 
 class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup)
