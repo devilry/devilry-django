@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.forms.formsets import formset_factory
-from devilry.core.models import (Delivery, AssignmentGroup,
+from devilry.core.models import (Delivery, DeliveryFeedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 from devilry.core.widgets import ReadOnlyWidget
 from django.db import transaction
@@ -79,7 +79,7 @@ UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 class CorrectForm(forms.ModelForm):
     class Meta:
         model = DeliveryFeedback
-        fields = ('grade', 'feedback', 'feedback_format', 'feedback_published')
+        fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
 
 
 
@@ -92,18 +92,21 @@ def correct_delivery(request, delivery_id):
         print "forbidden"
         return HttpResponseForbidden("Forbidden")
     
+    if delivery.feedback == None:
+        delivery.feedback = DeliveryFeedback()
+
     if request.method == 'POST':
-        form = CorrectForm(request.POST, instance=delivery)
+        form = CorrectForm(request.POST, instance=delivery.feedback)
         if form.is_valid():
             form.save()
             #return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
     else:
-        form = CorrectForm(instance=delivery)
+        form = CorrectForm(instance=delivery.feedback)
 
     return render_to_response('devilry/examinerview/correct_delivery.django.html', {
         'delivery': delivery,
         'assignment_group': delivery.assignment_group,
-        'text_format': delivery.feedback_format,
+        
         'form': form,
         }, context_instance=RequestContext(request))
 

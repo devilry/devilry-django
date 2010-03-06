@@ -17,34 +17,9 @@
 {% include "devilry/ui/show_delivery_base.django.html" %}
 
 
-{% if delivery.grade %}
-<h2>{% trans "Grade" %}</h2>
-   <p>
-	 {{ delivery.grade }}
-   </p>
-{% endif %}
-
-
-{% if delivery.feedback %}
-<h2>{% trans "Feedback" %}</h2>
-   <p>
-	 
-	 {% filter restructuredtext %}
-	 {{ delivery.feedback }}
-    {% endfilter %}
-
-   </p>
-{% endif %}
-
-
-{% if message %}
-	<p>{{ message }}</p>
-{% endif %}
-
-
 <h1>{% trans "Edit" %}</h1
 
-<form method='post' action='{% url correct-delivery delivery.id %}'>
+<form method='post' action='{% url devilry.examinerview.views.correct_delivery delivery.id %}'>
 	<table>
 	{{ form.as_table }}
 	</table>
