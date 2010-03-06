@@ -276,18 +276,7 @@ class AssignmentGroup(models.Model):
                 return qry.annotate(models.Max('time_of_delivery'))[0].feedback.grade
 
 
-text_formats = (
-    ('text', 'Text'),
-    ('restructuredtext', 'ReStructured Text'),
-    ('markdown', 'Markdown'),
-    ('textile', 'Textile'),
-)
 
-class DeliveryFeedback(models.Model):
-    grade = models.CharField(max_length=20, blank=True, null=True)
-    feedback_text = models.TextField(blank=True, null=True, default='')
-    feedback_format = models.CharField(max_length=20, choices=text_formats)
-    feedback_published = models.BooleanField(blank=True, default=False)
 
 
 class Delivery(models.Model):
@@ -295,7 +284,6 @@ class Delivery(models.Model):
     time_of_delivery = models.DateTimeField()
     delivered_by = models.ForeignKey(User)
     successful = models.BooleanField(blank=True, default=False)
-    feedback = models.OneToOneField(DeliveryFeedback, blank=True, null=True)
 
     @classmethod
     def begin(cls, assignment_group, user_obj):
@@ -349,6 +337,21 @@ class Delivery(models.Model):
         f.close()
         filemeta.save()
         return filemeta
+
+
+class Feedback(models.Model):
+    text_formats = (
+       ('text', 'Text'),
+       ('restructuredtext', 'ReStructured Text'),
+       ('markdown', 'Markdown'),
+       ('textile', 'Textile'),
+    )
+    grade = models.CharField(max_length=20, blank=True, null=True)
+    feedback_text = models.TextField(blank=True, null=True, default='')
+    feedback_format = models.CharField(max_length=20, choices=text_formats)
+    feedback_published = models.BooleanField(blank=True, default=False)
+    delivery = models.OneToOneField(Delivery, blank=True, null=True)
+
 
 class FileMeta(models.Model):
     delivery = models.ForeignKey(Delivery)

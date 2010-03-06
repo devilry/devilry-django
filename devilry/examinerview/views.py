@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.forms.formsets import formset_factory
-from devilry.core.models import (Delivery, DeliveryFeedback, AssignmentGroup,
+from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 from devilry.core.widgets import ReadOnlyWidget
 from django.db import transaction
@@ -71,42 +71,39 @@ def show_delivery(request, delivery_id):
         }, context_instance=RequestContext(request))
 
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
-UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
 
 class CorrectForm(forms.ModelForm):
     class Meta:
-        model = DeliveryFeedback
+        model = Feedback
         fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
 
 
 
 @login_required
-@transaction.autocommit
 def correct_delivery(request, delivery_id):
     delivery = get_object_or_404(Delivery, pk=delivery_id)
 
     if not delivery.assignment_group.is_examiner(request.user):
-        print "forbidden"
         return HttpResponseForbidden("Forbidden")
     
-    if delivery.feedback == None:
-        delivery.feedback = DeliveryFeedback()
+    try:
+        feedback = delivery.feedback
+    except Feedback.DoesNotExist, e:
+        feedback = Feedback()
 
     if request.method == 'POST':
-        form = CorrectForm(request.POST, instance=delivery.feedback)
+        form = CorrectForm(request.POST, instance=feedback)
         if form.is_valid():
+            form.instance.delivery = delivery
             form.save()
-            #return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
+            return HttpResponseRedirect(
+                    reverse(__name__ + '.correct_delivery', args=(delivery.id,)))
     else:
-        form = CorrectForm(instance=delivery.feedback)
+        form = CorrectForm(instance=feedback)
 
     return render_to_response('devilry/examinerview/correct_delivery.django.html', {
         'delivery': delivery,
-        'assignment_group': delivery.assignment_group,
-        
         'form': form,
         }, context_instance=RequestContext(request))
 

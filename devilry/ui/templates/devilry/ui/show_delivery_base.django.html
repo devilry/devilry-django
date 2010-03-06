@@ -12,10 +12,10 @@
   </tr>
 
 
-  {% if assignment_group.students.count > 1 %}
+  {% if delivery.assignment_group.students.count > 1 %}
     <tr>
       <th>{% trans "Group members" %}:</th>
-      <td>{{ assignment_group.students.all|join:", " }} </td>
+      <td>{{ devlivery.assignment_group.students.all|join:", " }} </td>
     </tr>
   {% endif %}
 
