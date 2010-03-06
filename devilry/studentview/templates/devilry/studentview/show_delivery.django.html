@@ -5,14 +5,8 @@
 {% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
 {% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
 
-{% block content %}
-<h2>{% trans "Time of delivery" %}</h2>
-{{ delivery.time_of_delivery }}
+{% block main %}
 
-<h2>{% trans "Files" %}</h2>
-<ul>
-{% for filemeta in delivery.filemeta_set.all %}
-  <li>{{ filemeta.filename }}</li>
-{% endfor %}
-</ul>
+{% include "devilry/ui/show_delivery_base.django.html" %}
+
 {% endblock %}

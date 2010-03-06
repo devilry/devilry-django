@@ -1,25 +1,22 @@
-{% extends "devilry/ui/base.django.html" %}
-{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
-{% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
+<table class='vertical_infotable'>
+  <tr>
+    <th>{% trans "Time of delivery" %}:</th>
+    <td>{{ delivery.time_of_delivery }}</td>
+  </tr>
+  {% if assignment_group.students.count > 1 %}
+    <tr>
+      <th>{% trans "Group members" %}:</th>
+      <td>{{ assignment_group.students.all|join:", " }} </td>
+    </tr>
+  {% endif %}
+</table>
 
-{% block main %}
-<h2>{% trans "Time of delivery" %}</h2>
-{{ delivery.time_of_delivery }}
-
-<h2>{% trans "Filess" %}</h2>
+<h2>{% trans "Files" %}</h2>
 <ul>
 {% for filemeta in delivery.filemeta_set.all %}
-  <li>{{ filemeta.filename }}</li>
+  <li> <a href='{% url download-file filemeta.id %}'>{{ filemeta.filename }}</a>  ({{ filemeta.size }} bytes) </li>
+
 {% endfor %}
 </ul>
-
-{% endblock %}
-
-
-{% block content %}
-laban
-
-{% endblock %}

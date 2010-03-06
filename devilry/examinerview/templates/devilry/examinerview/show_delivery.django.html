@@ -1,12 +1,16 @@
-{% extends "devilry/ui/show_delivery_base.django.html" %}
-{% comment %} {% extends "devilry/examinerview/base.django.html" %} {% endcomment %}
+{% extends "devilry/examinerview/examiner.base.django.html" %}
+
+
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
 {% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
 
-{% block content %}
+
+{% include "devilry/ui/show_delivery_base.django.html" %}
+
+{% block main %}
 <h2>{% trans "Time of delivery" %}</h2>
 {{ delivery.time_of_delivery }}
 
