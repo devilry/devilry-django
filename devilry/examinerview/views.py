@@ -79,7 +79,7 @@ UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 class CorrectForm(forms.ModelForm):
     class Meta:
         model = DeliveryFeedback
-        fields = ('grade', 'feedback', 'feedback_format', 'feedback_published')
+        fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
 
 
 
@@ -92,13 +92,16 @@ def correct_delivery(request, delivery_id):
         print "forbidden"
         return HttpResponseForbidden("Forbidden")
     
+    if delivery.feedback == None:
+        delivery.feedback = DeliveryFeedback()
+
     if request.method == 'POST':
-        form = CorrectForm(request.POST, instance=delivery)
+        form = CorrectForm(request.POST, instance=delivery.feedback)
         if form.is_valid():
             form.save()
             #return HttpResponseRedirect(reverse('successful-delivery', args=(delivery.id,)))
     else:
-        form = CorrectForm(instance=delivery)
+        form = CorrectForm(instance=delivery.feedback)
 
     return render_to_response('devilry/examinerview/correct_delivery.django.html', {
         'delivery': delivery,
