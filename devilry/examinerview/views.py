@@ -78,8 +78,8 @@ UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
 class CorrectForm(forms.ModelForm):
     class Meta:
-        model = Delivery
-        fields = ('grade', 'feedback', 'feedback_format')
+        model = DeliveryFeedback
+        fields = ('grade', 'feedback', 'feedback_format', 'feedback_published')
 
 
 
