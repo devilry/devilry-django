@@ -286,18 +286,18 @@ text_formats = (
 class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
-    delivered_by = models.TextField(blank=False, null=False)
+    delivered_by = models.ForeignKey(User)
     successful = models.BooleanField(blank=True, default=False)
     grade = models.CharField(max_length=20, blank=True, null=True)
     feedback = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats)
 
     @classmethod
-    def begin(cls, assignment_group, user):
+    def begin(cls, assignment_group, user_obj):
         d = Delivery()
         d.assignment_group = assignment_group
         d.time_of_delivery = datetime.now()
-        d.delivered_by = user
+        d.delivered_by = user_obj
         d.successful = False
         d.save()
         return d
