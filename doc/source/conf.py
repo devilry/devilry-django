@@ -17,7 +17,7 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.append(os.path.abspath('.'))
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../../'))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.settings'
 
@@ -37,7 +37,7 @@ source_suffix = '.rst'
 source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = 'toc'
 
 # General information about the project.
 project = u'Devilry'

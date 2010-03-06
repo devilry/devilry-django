@@ -1,20 +1,20 @@
-.. Devilry documentation master file, created by
-   sphinx-quickstart on Sun Feb 14 16:55:38 2010.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. _index:
 
+===================================
 Welcome to Devilry's documentation!
 ===================================
 
-.. toctree::
-   :maxdepth: 2
+Users
+=====
+TODO
 
-   core.models
+Administrators
+==============
+TODO
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Developers
+==========
 
+If you wish to extend Devilry, or contribute to the Devilry projects, check out
+the :ref:`developer documentation <developer-index>`.
