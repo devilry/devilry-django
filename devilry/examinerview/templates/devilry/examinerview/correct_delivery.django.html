@@ -21,7 +21,7 @@
    <p>
 	 
 	 {% filter restructuredtext %}
-	 {{ delivery.feedback }}
+	 {{ delivery.feedback.feedback_text }}
     {% endfilter %}
 
    </p>
@@ -35,7 +35,7 @@
 
 <h1>{% trans "Edit" %}</h1
 
-<form method='post' action='{% url correct-delivery delivery.id %}'>
+<form method='post' action='{% url devilry.examinerview.views.correct_delivery delivery.id %}'>
 	<table>
 	{{ form.as_table }}
 	</table>
