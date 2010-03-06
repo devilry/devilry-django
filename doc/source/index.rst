@@ -1,20 +1,10 @@
 .. _index:
 
-===================================
-Welcome to Devilry's documentation!
-===================================
 
-Users
-=====
-TODO
+=============
+About devilry
+=============
 
-Administrators
-==============
-TODO
-
-
-Developers
-==========
-
-If you wish to extend Devilry, or contribute to the Devilry projects, check out
-the :ref:`developer documentation <developer-index>`.
+Devilry is a system for handing in electronic deliveries. The system is
+designed to be flexible and customizable so that many different needs can be
+met. The system is meant for all types of electronic deliveries.

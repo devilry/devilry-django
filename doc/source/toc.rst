@@ -1,10 +1,11 @@
 .. _toc:
 
-=================
-Table of contents
-=================
+=======
+Sitemap
+=======
 
 .. toctree::
    :maxdepth: 2
 
+   index
    developer/toc
