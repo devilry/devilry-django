@@ -269,7 +269,7 @@ class AssignmentGroup(models.Model):
         if self.delivery_set.all().count() == 0:
             return _('No deliveries')
         else:
-            qry = self.delivery_set.filter(grade__isnull=False)
+            qry = self.delivery_set.filter(feedback__isnull=False)
             if qry.count() == 0:
                 return _('Not corrected')
             else:
