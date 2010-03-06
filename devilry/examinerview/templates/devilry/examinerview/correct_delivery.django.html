@@ -16,15 +16,6 @@
 
 {% include "devilry/ui/show_delivery_base.django.html" %}
 
-
-{% if delivery.grade %}
-<h2>{% trans "Grade" %}</h2>
-   <p>
-	 {{ delivery.grade }}
-   </p>
-{% endif %}
-
-
 {% if delivery.feedback %}
 <h2>{% trans "Feedback" %}</h2>
    <p>
