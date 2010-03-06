@@ -99,7 +99,8 @@ INSTALLED_APPS = (
     'devilry.studentview',
     'devilry.examinerview',
     'devilry.adminview',
-)
+    'django.contrib.markup', 
+    )
 
 
 DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
