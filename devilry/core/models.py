@@ -285,7 +285,7 @@ text_formats = (
 
 class DeliveryFeedback(models.Model):
     grade = models.CharField(max_length=20, blank=True, null=True)
-    feedback = models.TextField(blank=True, null=True, default='')
+    feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats)
     feedback_published = models.BooleanField(blank=True, default=False)
 
