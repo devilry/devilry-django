@@ -16,22 +16,6 @@
 
 {% include "devilry/ui/show_delivery_base.django.html" %}
 
-{% if delivery.feedback %}
-<h2>{% trans "Feedback" %}</h2>
-   <p>
-	 
-	 {% filter restructuredtext %}
-	 {{ delivery.feedback.feedback_text }}
-    {% endfilter %}
-
-   </p>
-{% endif %}
-
-
-{% if message %}
-	<p>{{ message }}</p>
-{% endif %}
-
 
 <h1>{% trans "Edit" %}</h1
 

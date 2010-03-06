@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load markup %}
 
 <table class='vertical_infotable'>
   <tr>
@@ -40,6 +41,17 @@
 {% endif %}
 
 </table>
+
+{% if delivery.feedback %}
+<h2>{% trans "Feedback" %}</h2>
+   <p>
+	 
+	 {% filter restructuredtext %}
+	 {{ delivery.feedback.feedback_text }}
+    {% endfilter %}
+
+   </p>
+{% endif %}
 
 <h2>{% trans "Files" %}</h2>
 <ul>
