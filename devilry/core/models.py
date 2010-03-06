@@ -273,8 +273,8 @@ class AssignmentGroup(models.Model):
             if qry.count() == 0:
                 return _('Not corrected')
             else:
-                return qry.aggregate(models.Max('time_of_delivery')).grade
-            
+                return qry.annotate(models.Max('time_of_delivery'))[0].grade
+
 
 text_formats = (
     ('text', 'Text'),
