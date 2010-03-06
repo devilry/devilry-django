@@ -47,14 +47,10 @@
 <h2>{% trans "Feedback" %}</h2>
    <p>
 	 
-	 
-
-	 {% filter {{ text_format }} %}
+	 {% filter restructuredtext %}
 	 {{ delivery.feedback }}
     {% endfilter %}
 
-
-		 {{ delivery.feedback }}
    </p>
 {% endif %}
 
