@@ -22,7 +22,7 @@
     <th>{% trans "Status" %}:</th>
     <td>
  
-      {% if delivery.grade %}
+      {% if delivery.feedback.grade %}
        Corrected
 
       {% else %}
@@ -32,10 +32,10 @@
     </td>
   </tr>
 
- {% if delivery.grade %}
+ {% if delivery.feedback.grade %}
    <tr>
     <th>{% trans "Grade" %}:</th>
-    <td> {{ delivery.grade }} </td>
+    <td> {{ delivery.feedback.grade }} </td>
   </tr>
 {% endif %}
 
