@@ -79,7 +79,7 @@ UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 class CorrectForm(forms.ModelForm):
     class Meta:
         model = Delivery
-        fields = ('grade', 'feedback')
+        fields = ('grade', 'feedback', 'feedback_format')
 
 
 
@@ -103,7 +103,8 @@ def correct_delivery(request, delivery_id):
     return render_to_response('devilry/examinerview/correct_delivery.django.html', {
         'delivery': delivery,
         'assignment_group': delivery.assignment_group,
-       'form': form,
+        'text_format': delivery.feedback_format,
+        'form': form,
         }, context_instance=RequestContext(request))
 
 

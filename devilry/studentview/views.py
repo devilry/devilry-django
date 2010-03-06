@@ -61,7 +61,7 @@ def add_delivery(request, assignment_group_id):
     if request.method == 'POST':
         formset = UploadFileFormSet(request.POST, request.FILES)
         if formset.is_valid():
-            delivery = Delivery.begin(assignment_group)
+            delivery = Delivery.begin(assignment_group, request.user)
             for f in request.FILES.values():
                 filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
                 delivery.add_file(filename, f.chunks())

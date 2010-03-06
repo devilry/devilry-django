@@ -27,7 +27,7 @@
   {% for delivery in deliveries %}
   <tr>
     <td>
-      <a href='{% url show-delivery delivery.id %}'>
+      <a href='{% url devilry.studentview.views.show_delivery delivery.id %}'>
         {{ delivery.assignment_group.parentnode }}
       </a>
     </td>
