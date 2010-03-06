@@ -283,15 +283,19 @@ text_formats = (
     ('textile', 'Textile'),
 )
 
+class DeliveryFeedback(models.Model):
+    grade = models.CharField(max_length=20, blank=True, null=True)
+    feedback = models.TextField(blank=True, null=True, default='')
+    feedback_format = models.CharField(max_length=20, choices=text_formats)
+    feedback_published = models.BooleanField(blank=True, default=False)
+
+
 class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
     delivered_by = models.ForeignKey(User)
     successful = models.BooleanField(blank=True, default=False)
-    grade = models.CharField(max_length=20, blank=True, null=True)
-    feedback = models.TextField(blank=True, null=True, default='')
-    feedback_format = models.CharField(max_length=20, choices=text_formats)
-    feedback_published = models.BooleanField(blank=True, default=False)
+    feedback = models.OneToOneField(DeliveryFeedback, blank=True, null=True)
 
     @classmethod
     def begin(cls, assignment_group, user_obj):
