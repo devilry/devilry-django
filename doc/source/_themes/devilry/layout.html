@@ -1,7 +1,14 @@
-{% extends "!layout.html" %}
+{% extends "basic/layout.html" %}
 
 {% block rootrellink %}
 	<li><a href="{{ pathto('index') }}">About</a>&nbsp;|&nbsp;</li>
 	<li><a href="{{ pathto('developer/index') }}">Developer</a>&nbsp;|&nbsp;</li>
 	<li><a href="{{ pathto('toc') }}">Site map</a></li>
+{% endblock %}
+
+{%- block header %}
+<div id='projectinfo'>
+	<h1 id='projectname'>Devilry</h1>
+	<div id='projectversion'>Version {{ version }}</div>
+</div>
 {% endblock %}
