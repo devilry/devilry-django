@@ -12,11 +12,24 @@ from django.utils.translation import ugettext as _
 
 class BaseNode(models.Model):
     """
+    The base class of the Devilry hierarchy. Implements basic functionality
+    used by the other Node classes. An instance of this class typically 
+    represents the institution running Devilry, i.e. The University of Oslo
 
     .. attribute:: short_name
 
-        A ``dajngo.db.models.SlugField`` with max 20 characters. Only numbers,
+        A ``django.db.models.SlugField`` with max 20 characters. Only numbers,
         letters, '_' and '-'.
+
+    .. attribute:: long_name
+
+        A ``django.db.models.CharField`` with max 100 characters. Gives a longer 
+        description than :attr:`short_name`
+        
+
+    .. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield
+    .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
+
     """
 
 
@@ -51,6 +64,7 @@ class BaseNode(models.Model):
 
 
 class Node(BaseNode):
+    
     parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
