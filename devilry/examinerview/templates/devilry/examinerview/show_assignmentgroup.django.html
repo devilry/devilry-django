@@ -39,12 +39,12 @@
       {{ delivery.time_of_delivery }}
     </a>
 
-	{% if delivery.grade %}
-	    ({{ delivery.grade }})
+	{% if delivery.feedback.grade %}
+	    ({{ delivery.feedback.grade }})
 	{% endif %}
 
 	{% if delivery.feedback %}
-	   <p>{{ delivery.feedback }}</p>
+	   <p>{{ delivery.feedback.feedback_text }}</p>
 	{% endif %}
 
 

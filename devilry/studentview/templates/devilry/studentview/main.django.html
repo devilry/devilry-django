@@ -20,7 +20,7 @@
   <h2>{% trans "Active assignments" %}</h2>
   <ul>
 
-  {% for course in courses %}
+  {% for course in active_courses %}
      <li>{{ course }} </li>
 
      <ul>
@@ -44,9 +44,24 @@
 </div>
 
 <div class='dashboard_box hidden' id='other'>
-  <h2>{% trans "Other" %}</h2>
+  <h2>{% trans "History" %}</h2>
   <ul>
-    <!--<li><a href=''></a></li>-->
+	{% for course in all_courses %}
+     <li>{{ course }} </li>
+
+     <ul>
+	    {% for period in course %}
+           <li>{{ period }} </li>
+		    <ul>
+	           {% for assignment_group in period %}
+               <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> </li>
+               {% endfor %}
+	        </ul>
+		   
+        {% endfor %}
+	 </ul>
+
+  {% endfor %}
   </ul>
 </div>
 

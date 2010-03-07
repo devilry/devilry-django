@@ -89,15 +89,17 @@ def successful_delivery(request, delivery_id):
 @login_required
 def main(request):
     
-    assignment_groups = AssignmentGroup.where_is_student(request.user)
-        
-    courses = group_assignments(assignment_groups)
+    #assignment_groups = AssignmentGroup.where_is_student(request.user)
+    active_assignment_groups = AssignmentGroup.get_active(request.user)
+    active_courses = group_assignments(active_assignment_groups)
 
-    print courses
+    all_assignment_groups = AssignmentGroup.where_is_student(request.user)
+    all_courses = group_assignments(all_assignment_groups)
+
 
     return render_to_response('devilry/studentview/main.django.html', {
-            'assignment_groups': assignment_groups,
-            'courses': courses,
+            'active_courses': active_courses,
+            'all_courses': all_courses,
             }, context_instance=RequestContext(request))
 
 
