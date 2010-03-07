@@ -7,8 +7,9 @@ Devilry developer documentation
 Developing devilry
 ==================
 
-    * :ref:`developer-toc`
-    * :ref:`developer-howto-documentation`
+* *Documenting devilry:*
+  :ref:`developer-howto-documentation`
+
 
 
 Extending devilry
