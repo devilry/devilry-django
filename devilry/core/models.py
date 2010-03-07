@@ -15,7 +15,8 @@ class BaseNode(models.Model):
 
     .. attribute:: short_name
 
-        A SlugField with max 20 characters. Only numbers, letters, '_' and '-'.
+        A ``dajngo.db.models.SlugField`` with max 20 characters. Only numbers,
+        letters, '_' and '-'.
     """
 
 
@@ -203,8 +204,8 @@ class Period(BaseNode):
 
 class Assignment(BaseNode):
     parentnode = models.ForeignKey(Period)
-    deadline = models.DateTimeField()
     publishing_time = models.DateTimeField()
+    deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
