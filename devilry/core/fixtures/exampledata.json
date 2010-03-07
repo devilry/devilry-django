@@ -62,12 +62,12 @@
         "pk": 1, 
         "model": "core.period", 
         "fields": {
-            "short_name": "fall2010", 
-            "start_time": "2010-08-23 00:00:00", 
+            "short_name": "2010-2040", 
+            "start_time": "2010-01-01 00:00:00", 
             "parentnode": 2, 
-            "long_name": "Fall 2010", 
+            "long_name": "Year 2010-2040", 
             "admins": [], 
-            "end_time": "2010-12-20 00:00:00"
+            "end_time": "2040-01-01 00:00:00"
         }
     }, 
     {
@@ -79,7 +79,7 @@
             "parentnode": 1, 
             "long_name": "Spring 2009", 
             "admins": [], 
-            "end_time": "2009-05-24 18:24:37"
+            "end_time": "2009-06-24 18:24:37"
         }
     }, 
     {
@@ -98,12 +98,12 @@
         "pk": 4, 
         "model": "core.period", 
         "fields": {
-            "short_name": "spring2010", 
-            "start_time": "2010-01-24 18:25:27", 
+            "short_name": "2010-2030", 
+            "start_time": "2010-01-01 00:00:00", 
             "parentnode": 1, 
-            "long_name": "Spring 2010", 
+            "long_name": "Year 2010-2030", 
             "admins": [], 
-            "end_time": "2010-06-24 18:25:30"
+            "end_time": "2030-01-01 00:00:00"
         }
     }, 
     {
@@ -129,7 +129,7 @@
             "admins": [
                 6
             ], 
-            "deadline": "2010-01-23 13:45:10"
+            "deadline": "2040-01-01 00:00:00"
         }
     }, 
     {
@@ -149,11 +149,11 @@
         "model": "core.assignment", 
         "fields": {
             "short_name": "oblig2", 
-            "publishing_time": "2010-03-31 06:00:00", 
+            "publishing_time": "2010-02-01 06:00:00", 
             "parentnode": 4, 
             "long_name": "Oblig 2", 
             "admins": [], 
-            "deadline": "2010-03-16 00:00:00"
+            "deadline": "2029-03-16 00:00:00"
         }
     }, 
     {
@@ -161,11 +161,11 @@
         "model": "core.assignment", 
         "fields": {
             "short_name": "oblig1", 
-            "publishing_time": "2010-03-30 06:00:00", 
+            "publishing_time": "2010-03-01 06:00:00", 
             "parentnode": 4, 
             "long_name": "Oblig 1", 
             "admins": [], 
-            "deadline": "2010-03-23 06:00:00"
+            "deadline": "2029-05-01 12:00:00"
         }
     }, 
     {
@@ -258,6 +258,91 @@
                 11
             ], 
             "parentnode": 3
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-07 17:40:53", 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-07 17:41:05", 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-07 17:41:40", 
+            "assignment_group": 3
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-07 17:42:01", 
+            "assignment_group": 4
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 1, 
+            "size": 5, 
+            "filename": "tull.txt"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 1, 
+            "size": 6, 
+            "filename": "stuff.txt"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 2, 
+            "size": 6, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 3, 
+            "size": 6, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 4, 
+            "size": 6, 
+            "filename": "stuff.txt"
         }
     }
 ]
