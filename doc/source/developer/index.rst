@@ -1,23 +1,33 @@
 .. _developer-index:
 
-===============================
-Devilry developer documentation
-===============================
+=======================
+Developer documentation
+=======================
+
+Extending devilry
+=================
+
+* **API reference:**
+
+  * :ref:`ref-devilry.core.models`
+  * :ref:`ref-devilry.core.utils`
+
+
 
 Developing devilry
 ==================
 
-* *Documenting devilry:*
-  :ref:`developer-howto-documentation`
-
-
-
-Extending devilry
-=================
-TODO
+* :ref:`developer-howto-documentation`
 
 
 More help
 =========
 
-Looking for specific information? Try :ref:`developer-toc` or :ref:`genindex`.
+Looking for specific information? Try the :ref:`genindex`.
+
+
+.. toctree::
+    :hidden:
+
+    ref/index
+    howto/index

@@ -11,9 +11,20 @@ from django.utils.translation import ugettext as _
 
 
 class BaseNode(models.Model):
+    """
+
+    .. attribute:: short_name
+
+        A SlugField with max 20 characters. Only numbers, letters, '_' and '-'.
+    """
+
+
     short_name = models.SlugField(max_length=20,
-            help_text=u"Only numbers, letters, '_' and '-'.")
-    long_name = models.CharField(max_length=100)
+            verbose_name = _('Short name'),
+            help_text=_("Max 20 characters. Only numbers, letters, '_' and '-'."))
+    long_name = models.CharField(max_length=100,
+            verbose_name='Long name',
+            help_text=_('A longer name, more descriptive than "Short name".'))
 
     class Meta:
         abstract = True
@@ -41,6 +52,11 @@ class BaseNode(models.Model):
 class Node(BaseNode):
     parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
+
+    class Meta:
+        verbose_name = _('Node')
+        verbose_name_plural = _('Nodes')
+
 
     def __unicode__(self):
         if self.parentnode:
