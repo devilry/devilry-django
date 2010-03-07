@@ -107,12 +107,12 @@ def main(request):
             }, context_instance=RequestContext(request))
 
 
-class Course:
+class Course(object):
 
-    assignment_groups = list()
+    def __init__(self):
+        self.assignment_groups = list()
     
     def add_course(self, assignment_group):
-        print type(self.assignment_groups)
         self.assignment_groups.append(assignment_group)
 
     def assignment_groups(self):
