@@ -11,6 +11,14 @@ from django.utils.translation import ugettext as _
 
 
 class BaseNode(models.Model):
+    """
+
+    .. attribute:: short_name
+
+        A SlugField with max 20 characters. Only numbers, letters, '_' and '-'.
+    """
+
+
     short_name = models.SlugField(max_length=20,
             verbose_name = _('Short name'),
             help_text=_("Max 20 characters. Only numbers, letters, '_' and '-'."))
