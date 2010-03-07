@@ -19,6 +19,24 @@
 <div class='dashboard_box visible' id='active_assignments'>
   <h2>{% trans "Active assignments" %}</h2>
   <ul>
+
+  {% for course in courses %}
+     <li>{{ course }} </li>
+
+     <ul>
+	    {% for period in course %}
+           <li>{{ period }} </li>
+		    <ul>
+	           {% for assignment_group in period %}
+               <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> </li>
+               {% endfor %}
+	        </ul>
+		   
+        {% endfor %}
+	 </ul>
+
+  {% endfor %}
+
   {% for assignment_group in assignment_groups %}
   <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
   {% endfor %}
