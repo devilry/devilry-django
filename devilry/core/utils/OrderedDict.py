@@ -2,11 +2,9 @@ from UserDict import DictMixin
 
 class OrderedDict(dict, DictMixin):
     """ OrderedDict implementation which works just like OrderedDict
-    in python >2.7. See:
-    `http://docs.python.org/dev/library/collections.html#collections.OrderedDict`_
+    in python >2.7. See: http://docs.python.org/dev/library/collections.html#collections.OrderedDict
 
-    Released under the MIT license
-    ==============================
+    **Released under the MIT license**
 
     Copyright (c) 2009 Raymond Hettinger
 

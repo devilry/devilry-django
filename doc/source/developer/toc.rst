@@ -1,10 +1,13 @@
 .. _`developer-toc`:
 
-=============
-Developer API
-=============
+=========
+Developer
+=========
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   ref/core.models
+    index
+    ref/toc
+    howto/toc
+
