@@ -181,6 +181,9 @@ class Period(BaseNode):
     def __unicode__(self):
         return unicode(self.parentnode) + " - " + self.short_name
 
+    def str(self):
+        return str(self.parentnode) + " - " + self.short_name
+
 
 class Assignment(BaseNode):
     parentnode = models.ForeignKey(Period)
@@ -374,3 +377,6 @@ def filemeta_deleted_handler(sender, **kwargs):
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
+
+
+

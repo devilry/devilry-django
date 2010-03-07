@@ -88,7 +88,32 @@ def successful_delivery(request, delivery_id):
 
 @login_required
 def main(request):
-    active = AssignmentGroup.where_is_student(request.user)
+    
+    assignment_groups = AssignmentGroup.where_is_student(request.user)
+        
+    dict = {}
+
+    for group in assignment_groups:
+        
+        if not dict.has_key(group.parentnode.parentnode.str()):
+            dict[group.parentnode.parentnode.str()] = Course()
+
+        dict[group.parentnode.parentnode.str()].add_course(group)
+    
+
     return render_to_response('devilry/studentview/main.django.html', {
-            'active': active,
+            'assignment_groups': assignment_groups,
+            'courses': dict.values(),
             }, context_instance=RequestContext(request))
+
+
+class Course:
+
+    assignment_groups = list()
+    
+    def add_course(self, assignment_group):
+        print type(self.assignment_groups)
+        self.assignment_groups.append(assignment_group)
+
+    def assignment_groups(self):
+        self.assignment_groups.iter()
