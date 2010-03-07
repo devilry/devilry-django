@@ -86,72 +86,28 @@ def successful_delivery(request, delivery_id):
         }, context_instance=RequestContext(request))
 
 
+from devilry.core.utils.GroupAssignments import group_assignments 
+
 @login_required
 def main(request):
     
-    #assignment_groups = AssignmentGroup.where_is_student(request.user)
     active_assignment_groups = AssignmentGroup.get_active(request.user)
     active_courses = group_assignments(active_assignment_groups)
 
     all_assignment_groups = AssignmentGroup.where_is_student(request.user)
     all_courses = group_assignments(all_assignment_groups)
 
-
     return render_to_response('devilry/studentview/main.django.html', {
             'active_courses': active_courses,
-            'all_courses': all_courses,
             }, context_instance=RequestContext(request))
 
 
-def group_assignments(assignment_groups):
+@login_required
+def show_history(request):
     
-    dict = OrderedDict()
+    all_assignment_groups = AssignmentGroup.where_is_student(request.user)
+    all_courses = group_assignments(all_assignment_groups)
 
-    for group in assignment_groups:
-        
-        if not dict.has_key(group.parentnode.parentnode.parentnode):
-            subject = Subject(group.parentnode.parentnode.parentnode.short_name)
-            dict[group.parentnode.parentnode.parentnode] = subject
-
-        dict[group.parentnode.parentnode.parentnode].add_period(group)
-
-    return dict.values()
-
-
-from devilry.core.utils import OrderedDict
-
-class Subject(object):
-
-    def __init__(self, name):
-        self.periods = OrderedDict()
-        self.name = name
-            
-    def __str__(self):
-        return self.name
-
-    def add_period(self, assignment_group):
-        
-        if not self.periods.has_key(assignment_group.parentnode.parentnode):
-            period = Period(assignment_group.parentnode.parentnode.short_name)
-            self.periods[assignment_group.parentnode.parentnode] = period
-
-        self.periods[assignment_group.parentnode.parentnode].add_assignment(assignment_group)
-
-    def __iter__(self):
-        return iter(self.periods.values())
-
-
-class Period(object):
-
-    def __init__(self, name):
-        self.assignments = list()
-        self.name = name
-    
-    def __str__(self):
-        return self.name
-
-    def add_assignment(self, assignment_group):
-        self.assignments.append(assignment_group)
-
-    def __iter__(self):
-        return iter(self.assignments)
+    return render_to_response('devilry/studentview/history.django.html', {
+            'all_courses': all_courses,
+            }, context_instance=RequestContext(request))

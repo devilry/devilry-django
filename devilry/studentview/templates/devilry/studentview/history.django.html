@@ -11,17 +11,19 @@
 {% endblock %}
 
 {% block breadcrumbs-content %}
-<li>{% trans "Home" %}</li>
+
+{{ block.super }}
+<li>:: {% trans "History" %}</li>
 {% endblock %}
+
 
 {% block main %}
 
-<div class='dashboard_box visible' id='active_assignments'>
-  <h2>{% trans "Active assignments" %}</h2>
+<div class='dashboard_box hidden' id='other'>
+  <h2>{% trans "History" %}</h2>
   <ul>
-
-  {% for course in active_courses %}
-    
+	{% for course in all_courses %}
+          
 	    {% for period in course %}
            <li>{{ course }} - {{ period }} </li>
 		    <ul>
@@ -31,17 +33,9 @@
 	        </ul>
 		   
         {% endfor %}
-	
-  {% endfor %}
-
-  {% for assignment_group in assignment_groups %}
-  <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
+	 
   {% endfor %}
   </ul>
-</div>
-
-<div class='dashboard_box hidden' id='other'>
-  <a href='{% url devilry.studentview.views.show_history %}'>History</a>
 </div>
 
 {% endblock %}
