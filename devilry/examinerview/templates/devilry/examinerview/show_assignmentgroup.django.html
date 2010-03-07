@@ -22,6 +22,14 @@
     <th>{% trans "Status" %}:</th>
     <td>{{ assignment_group.get_status }}</td>
   </tr>
+
+  {% if assignment_group.get_grade %}
+  <tr>
+    <th>{% trans "Grade" %}:</th>
+    <td>{{ assignment_group.get_grade }}</td>
+  </tr> 
+  {% endif %}
+
   {% if assignment_group.students.count > 1 %}
     <tr>
       <th>{% trans "Group members" %}:</th>
@@ -44,11 +52,10 @@
 	{% endif %}
 
 	{% if delivery.feedback %}
-	   <p>{{ delivery.feedback.feedback_text }}</p>
+	   <pre>{{ delivery.feedback.feedback_text }}
+       </pre>
 	{% endif %}
 
-
-	 
 
   </li>
 {% endfor %}

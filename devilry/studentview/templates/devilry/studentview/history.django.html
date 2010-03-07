@@ -28,7 +28,16 @@
            <li>{{ course }} - {{ period }} </li>
 		    <ul>
 	           {% for assignment_group in period %}
-               <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> </li>
+               <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> 
+
+{% if assignment_group.get_grade %}
+   ({{ assignment_group.get_grade }})
+
+{% else %}
+({{ assignment_group.get_status }})
+
+{% endif %}
+ </li>
                {% endfor %}
 	        </ul>
 		   
