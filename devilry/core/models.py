@@ -221,6 +221,8 @@ class Assignment(BaseNode):
     publishing_time = models.DateTimeField()
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
+    feedback_plugin = models.CharField(max_length=200,
+            default='devilry.examinerview.feedback_view.FeedbackView')
 
     @classmethod
     def where_is_admin(cls, user_obj):
