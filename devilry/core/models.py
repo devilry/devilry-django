@@ -229,8 +229,21 @@ class Period(BaseNode):
     at a university. 
 
     .. attribute:: parentnode
+
         A django.db.models.ForeignKey that points to the parent node,
         which is always a Subject.
+
+    .. attribute:: start_time
+
+        A django.db.models.DateTimeField representing the starting time of the period.
+    
+    .. attribute:: end_time 
+
+        A django.db.models.DateTimeField representing the ending time of the period.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField that holds all the admins of the Node.
 
 
     """
@@ -256,6 +269,29 @@ class Period(BaseNode):
 
 
 class Assignment(BaseNode):
+    """
+    Represents one assignment for a given period in a given subject. May consist
+    of several parts, which means that several exercises can be given as one 
+    Assignment.
+
+    .. attribute:: parentnode
+
+        A django.db.models.ForeignKey that points to the parent node,
+        which is always a Subject.
+
+    .. attribute:: start_time
+
+        A django.db.models.DateTimeField representing the starting time of the period.
+    
+    .. attribute:: end_time 
+
+        A django.db.models.DateTimeField representing the ending time of the period.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField that holds all the admins of the Node.
+
+
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
     deadline = models.DateTimeField()
