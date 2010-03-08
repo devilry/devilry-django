@@ -52,7 +52,7 @@ AssignmentGroup
 Delivery
 --------
 
-.. autoclass:: devilry.core.models.AssignmentGroup
+.. autoclass:: devilry.core.models.Delivery
     :members:
     :show-inheritance:
 
