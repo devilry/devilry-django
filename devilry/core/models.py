@@ -23,7 +23,7 @@ class BaseNode(models.Model):
 
     .. attribute:: long_name
 
-        A ``django.db.models.CharField`` with max 100 characters. Gives a longer 
+        A django.db.models.CharField_ with max 100 characters. Gives a longer 
         description than :attr:`short_name`
         
 
@@ -70,12 +70,16 @@ class Node(BaseNode):
 
     .. attribute:: parentnode
         
-        A django.db.models.ForeignKey that points to the parent node, which
-        is always a Node.
+        A django.db.models.ForeignKey_ that points to the parent node, which
+        is always a `Node`_.
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField that holds all the admins of the Node
+        A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
+
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
 
     """
     parentnode = models.ForeignKey('self', blank=True, null=True)
@@ -199,12 +203,15 @@ class Subject(BaseNode):
     
     .. attribute:: parentnode
         
-        A django.db.models.ForeignKey that points to the parent node,
-        which is always a Node.
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always a `Node`_.
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField that holds all the admins of the Node
+        A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
 
     """
     
@@ -230,20 +237,24 @@ class Period(BaseNode):
 
     .. attribute:: parentnode
 
-        A django.db.models.ForeignKey that points to the parent node,
+        A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Subject`_.
 
     .. attribute:: start_time
 
-        A django.db.models.DateTimeField representing the starting time of the period.
+        A django.db.models.DateTimeField_ representing the starting time of the period.
     
     .. attribute:: end_time 
 
-        A django.db.models.DateTimeField representing the ending time of the period.
+        A django.db.models.DateTimeField_ representing the ending time of the period.
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField that holds all the admins of the Node.
+        A django.db.models.ManyToManyField_ that holds all the admins of the node.
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
 
 
     """
@@ -276,21 +287,33 @@ class Assignment(BaseNode):
 
     .. attribute:: parentnode
 
-        A django.db.models.ForeignKey that points to the parent node,
-        which is always a Subject.
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always a `Period`_.
 
-    .. attribute:: start_time
+    .. attribute:: publishing_time 
 
-        A django.db.models.DateTimeField representing the starting time of the period.
+        A django.db.models.DateTimeField_ representing the publishing time of
+        the assignment.
     
-    .. attribute:: end_time 
+    .. attribute:: deadline
 
-        A django.db.models.DateTimeField representing the ending time of the period.
+        A django.db.models.DateTimeField_ representing the deadline of the assignment.
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField that holds all the admins of the Node.
+        A django.db.models.ManyToManyField_ that holds all the admins of the Node.
 
+    .. attribute:: feedback_plugin
+
+        A django.db.models.CharField_ that holds the current feedback plugin used.
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+    .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
+
+
+    """
 
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
@@ -323,6 +346,36 @@ class Assignment(BaseNode):
 
 
 class AssignmentGroup(models.Model):
+    """
+    Represents a student or a group of students. 
+
+    .. attribute:: parentnode
+
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always an `Assignment`_.
+
+    .. attribute:: students
+
+        A django.db.models.ManyToManyField_ that holds the student(s) that have
+        handed in the assignment
+
+    .. attribute:: examiners
+        
+        A django.db.models.ManyToManyField_ that holds the examiner(s) that are
+        to correct and grade the assignment.
+
+    .. attribute:: is_open
+
+        A django.db.models.BooleanField_ that tells you if the group can add
+        deliveries or not.
+
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
+
+
+    """
     parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
@@ -389,8 +442,36 @@ class AssignmentGroup(models.Model):
 
 
 
-
 class Delivery(models.Model):
+    """
+    A class representing a given delivery from an `AssignmentGroup`_. In some cases,
+    a group are allowed to hand in several deliveries per assignment.
+
+    .. attribute:: assignment_group
+
+        A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_ that
+        handed in the Delivery.
+
+    .. attribute:: time_of_delivery
+
+        A django.db.models.DateTimeField_ that holds the date and time the Delivery
+        was uploaded.
+
+    .. attribute:: delivered_by
+
+        A django.db.models.ForeignKey_ pointing to the user that uploaded the Delivery
+
+    .. attribute:: successful
+
+        A django.db.models.BooleanField_ telling whether or not the Delivery was
+        successfully uploaded.
+    
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
+    
+    """
+    
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
     delivered_by = models.ForeignKey(User)
@@ -451,6 +532,35 @@ class Delivery(models.Model):
 
 
 class Feedback(models.Model):
+    """
+    Represents the feedback for a given `Delivery`_.
+
+    .. attribute:: grade
+
+        A django.db.models.Charfield representing the grade given for the Delivery.
+
+    .. attribute:: feedback_text
+
+        A django.db.models.TextField that holds the feedback text given by the examiner.
+
+    .. attribute:: feedback_format
+
+        A django.db.models.CharField that holds the format of the feedback text.
+
+    .. attribute:: feedback_published
+
+        A django.db.models.BooleanField that tells if the feedback is published or not. 
+        This allows editing and saving the feedback before publishing it. Is useful for
+        exams and other assignments when feedback and grading is published simultaneously
+        for all Deliveries.
+
+    .. attribute:: delivery
+
+        A django.db.models.OneToOneField that points to the `Delivery`_ to be given
+        feedback.
+
+    """
+    
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
