@@ -13,8 +13,8 @@ from django.utils.translation import ugettext as _
 class BaseNode(models.Model):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
-    used by the other Node classes. An instance of this class typically 
-    represents the institution running Devilry, i.e. The University of Oslo
+    used by the other Node classes. Is typically subclassed rather than 
+    instantiated. 
 
     .. attribute:: short_name
 
@@ -64,7 +64,20 @@ class BaseNode(models.Model):
 
 
 class Node(BaseNode):
-    
+    """
+    This class is typically used to represent a hierarchy of institutions, 
+    faculties and departments. 
+
+    .. attribute:: parentnode
+        
+        A django.db.models.ForeignKey that points to the parent node, which
+        is always a Node.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField that holds all the admins of the Node
+
+    """
     parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
@@ -180,9 +193,25 @@ class Node(BaseNode):
 
 
 class Subject(BaseNode):
+    """
+    This class represents a subject. This may be either a full course,
+    or one part of a course, if it is divided into parallell courses.
+    
+    .. attribute:: parentnode
+        
+        A django.db.models.ForeignKey that points to the parent node,
+        which is always a Node.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField that holds all the admins of the Node
+
+    """
+    
+    
     parentnode = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
-
+    
     @classmethod
     def where_is_admin(cls, user_obj):
         return Subject.objects.filter(
@@ -195,6 +224,16 @@ class Subject(BaseNode):
 
 
 class Period(BaseNode):
+    """
+    A Period represents a period of time, for example a half-year term
+    at a university. 
+
+    .. attribute:: parentnode
+        A django.db.models.ForeignKey that points to the parent node,
+        which is always a Subject.
+
+
+    """
     parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
