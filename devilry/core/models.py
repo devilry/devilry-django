@@ -18,7 +18,7 @@ class BaseNode(models.Model):
 
     .. attribute:: short_name
 
-        A ``django.db.models.SlugField`` with max 20 characters. Only numbers,
+        A django.db.models.SlugField_ with max 20 characters. Only numbers,
         letters, '_' and '-'.
 
     .. attribute:: long_name
@@ -231,7 +231,7 @@ class Period(BaseNode):
     .. attribute:: parentnode
 
         A django.db.models.ForeignKey that points to the parent node,
-        which is always a Subject.
+        which is always a `Subject`_.
 
     .. attribute:: start_time
 
