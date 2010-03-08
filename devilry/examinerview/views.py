@@ -81,7 +81,7 @@ class CorrectForm(forms.ModelForm):
 
 
 @login_required
-def correct_delivery(request, delivery_id):
+def correct_delivery_old(request, delivery_id):
     delivery = get_object_or_404(Delivery, pk=delivery_id)
 
     if not delivery.assignment_group.is_examiner(request.user):
@@ -108,6 +108,51 @@ def correct_delivery(request, delivery_id):
         }, context_instance=RequestContext(request))
 
 
+class CorrectDelivery(object):
+    def __call__(self, request, delivery_obj):
+        try:
+            feedback_obj = delivery_obj.feedback
+        except Feedback.DoesNotExist, e:
+            feedback_obj = Feedback(delivery=delivery_obj)
+
+        form = self.create_form_obj(request, feedback_obj)
+        if request.method == 'POST':
+            if form.is_valid():
+                return self.save(form)
+
+        return self.render_view(request, form)
+
+    def create_form_obj(self, request, feeback_obj):
+        class CorrectForm(forms.ModelForm):
+            class Meta:
+                model = Feedback
+                fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
+        if request.method == 'POST':
+            return CorrectForm(request.POST, instance=feeback_obj)
+        else:
+            return CorrectForm(instance=feeback_obj)
+
+    def save(self, form):
+        form.save()
+        return self.redirect_after_successful_save(form)
+
+    def redirect_after_successful_save(self, form):
+        return HttpResponseRedirect(
+                reverse(__name__ + '.correct_delivery',
+                    args=(form.instance.delivery.id,)))
+
+    def render_view(self, request, form):
+        return render_to_response('devilry/examinerview/correct_delivery.django.html', {
+            'delivery': form.instance.delivery,
+            'form': form,
+            }, context_instance=RequestContext(request))
+
+@login_required
+def correct_delivery(request, delivery_id):
+    delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
+    if not delivery_obj.assignment_group.is_examiner(request.user):
+        return HttpResponseForbidden("Forbidden")
+    return CorrectDelivery()(request, delivery_obj)
 
 
 @login_required
