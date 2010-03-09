@@ -99,6 +99,8 @@ INSTALLED_APPS = (
     'devilry.studentview',
     'devilry.examinerview',
     'devilry.adminview',
+    'devilry.addons.grade_approved',
+    'devilry.addons.grade_default',
     'django.contrib.markup', 
     )
 

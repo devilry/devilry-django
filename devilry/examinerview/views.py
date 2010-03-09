@@ -8,7 +8,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
-from devilry.core.widgets import ReadOnlyWidget
+from devilry.core import gradeplugin_registry
 from django.db import transaction
 
 
@@ -76,41 +76,14 @@ def show_delivery(request, delivery_id):
 
 
 
-class CorrectForm(forms.ModelForm):
-    class Meta:
-        model = Feedback
-        fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
-
-
 
 @login_required
 def correct_delivery(request, delivery_id):
-    delivery = get_object_or_404(Delivery, pk=delivery_id)
-
-    if not delivery.assignment_group.is_examiner(request.user):
+    delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
+    if not delivery_obj.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
-    
-    try:
-        feedback = delivery.feedback
-    except Feedback.DoesNotExist, e:
-        feedback = Feedback()
-
-    if request.method == 'POST':
-        form = CorrectForm(request.POST, instance=feedback)
-        if form.is_valid():
-            form.instance.delivery = delivery
-            form.save()
-            return HttpResponseRedirect(
-                    reverse(__name__ + '.correct_delivery', args=(delivery.id,)))
-    else:
-        form = CorrectForm(instance=feedback)
-
-    return render_to_response('devilry/examinerview/correct_delivery.django.html', {
-        'delivery': delivery,
-        'form': form,
-        }, context_instance=RequestContext(request))
-
-
+    key = delivery_obj.assignment_group.parentnode.grade_plugin
+    return gradeplugin_registry.get(key).view(request, delivery_obj)
 
 
 @login_required
@@ -151,4 +124,3 @@ def download_file(request, filemeta_id):
     response['Content-Length'] = filemeta.size
 
     return response
-

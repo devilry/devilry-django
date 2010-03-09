@@ -5,18 +5,32 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
-from deliverystore import load_deliverystore_backend
 from django.utils.translation import ugettext as _
+from deliverystore import load_deliverystore_backend
+import gradeplugin_registry
 
 
 
 class BaseNode(models.Model):
     """
+    The base class of the Devilry hierarchy. Implements basic functionality
+    used by the other Node classes. Is typically subclassed rather than 
+    instantiated. 
 
     .. attribute:: short_name
 
-        A ``dajngo.db.models.SlugField`` with max 20 characters. Only numbers,
+        A django.db.models.SlugField_ with max 20 characters. Only numbers,
         letters, '_' and '-'.
+
+    .. attribute:: long_name
+
+        A django.db.models.CharField_ with max 100 characters. Gives a longer 
+        description than :attr:`short_name`
+        
+
+    .. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield
+    .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
+
     """
 
 
@@ -51,6 +65,24 @@ class BaseNode(models.Model):
 
 
 class Node(BaseNode):
+    """
+    This class is typically used to represent a hierarchy of institutions, 
+    faculties and departments. 
+
+    .. attribute:: parentnode
+        
+        A django.db.models.ForeignKey_ that points to the parent node, which
+        is always a `Node`_.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
+
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+
+    """
     parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
@@ -166,9 +198,28 @@ class Node(BaseNode):
 
 
 class Subject(BaseNode):
+    """
+    This class represents a subject. This may be either a full course,
+    or one part of a course, if it is divided into parallell courses.
+    
+    .. attribute:: parentnode
+        
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always a `Node`_.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+
+    """
+    
+    
     parentnode = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
-
+    
     @classmethod
     def where_is_admin(cls, user_obj):
         return Subject.objects.filter(
@@ -181,6 +232,33 @@ class Subject(BaseNode):
 
 
 class Period(BaseNode):
+    """
+    A Period represents a period of time, for example a half-year term
+    at a university. 
+
+    .. attribute:: parentnode
+
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always a `Subject`_.
+
+    .. attribute:: start_time
+
+        A django.db.models.DateTimeField_ representing the starting time of the period.
+    
+    .. attribute:: end_time 
+
+        A django.db.models.DateTimeField_ representing the ending time of the period.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField_ that holds all the admins of the node.
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+
+
+    """
     parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -203,10 +281,47 @@ class Period(BaseNode):
 
 
 class Assignment(BaseNode):
+    """
+    Represents one assignment for a given period in a given subject. May consist
+    of several parts, which means that several exercises can be given as one 
+    Assignment.
+
+    .. attribute:: parentnode
+
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always a `Period`_.
+
+    .. attribute:: publishing_time 
+
+        A django.db.models.DateTimeField_ representing the publishing time of
+        the assignment.
+    
+    .. attribute:: deadline
+
+        A django.db.models.DateTimeField_ representing the deadline of the assignment.
+
+    .. attribute:: admins
+        
+        A django.db.models.ManyToManyField_ that holds all the admins of the Node.
+
+    .. attribute:: feedback_plugin
+
+        A django.db.models.CharField_ that holds the current feedback plugin used.
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+    .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
+
+
+    """
+
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
+    grade_plugin = models.CharField(max_length=100,
+            choices=gradeplugin_registry.KeyLabelIterable())
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -232,6 +347,36 @@ class Assignment(BaseNode):
 
 
 class AssignmentGroup(models.Model):
+    """
+    Represents a student or a group of students. 
+
+    .. attribute:: parentnode
+
+        A django.db.models.ForeignKey_ that points to the parent node,
+        which is always an `Assignment`_.
+
+    .. attribute:: students
+
+        A django.db.models.ManyToManyField_ that holds the student(s) that have
+        handed in the assignment
+
+    .. attribute:: examiners
+        
+        A django.db.models.ManyToManyField_ that holds the examiner(s) that are
+        to correct and grade the assignment.
+
+    .. attribute:: is_open
+
+        A django.db.models.BooleanField_ that tells you if the group can add
+        deliveries or not.
+
+
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
+
+
+    """
     parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
@@ -308,8 +453,36 @@ class AssignmentGroup(models.Model):
 
 
 
-
 class Delivery(models.Model):
+    """
+    A class representing a given delivery from an `AssignmentGroup`_. In some cases,
+    a group are allowed to hand in several deliveries per assignment.
+
+    .. attribute:: assignment_group
+
+        A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_ that
+        handed in the Delivery.
+
+    .. attribute:: time_of_delivery
+
+        A django.db.models.DateTimeField_ that holds the date and time the Delivery
+        was uploaded.
+
+    .. attribute:: delivered_by
+
+        A django.db.models.ForeignKey_ pointing to the user that uploaded the Delivery
+
+    .. attribute:: successful
+
+        A django.db.models.BooleanField_ telling whether or not the Delivery was
+        successfully uploaded.
+    
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
+    
+    """
+    
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
     delivered_by = models.ForeignKey(User)
@@ -369,18 +542,56 @@ class Delivery(models.Model):
         return filemeta
 
 
+
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
 class Feedback(models.Model):
+    """
+    Represents the feedback for a given `Delivery`_.
+
+    .. attribute:: grade
+
+        A django.db.models.Charfield representing the grade given for the Delivery.
+
+    .. attribute:: feedback_text
+
+        A django.db.models.TextField that holds the feedback text given by the examiner.
+
+    .. attribute:: feedback_format
+
+        A django.db.models.CharField that holds the format of the feedback text.
+
+    .. attribute:: feedback_published
+
+        A django.db.models.BooleanField that tells if the feedback is published or not. 
+        This allows editing and saving the feedback before publishing it. Is useful for
+        exams and other assignments when feedback and grading is published simultaneously
+        for all Deliveries.
+
+    .. attribute:: delivery
+
+        A django.db.models.OneToOneField that points to the `Delivery`_ to be given
+        feedback.
+
+    """
+    
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
        ('markdown', 'Markdown'),
        ('textile', 'Textile'),
     )
-    grade = models.CharField(max_length=20, blank=True, null=True)
     feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats)
     feedback_published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery, blank=True, null=True)
+
+    grade_type = models.ForeignKey(ContentType)
+    grade_object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
+
+
 
 
 class FileMeta(models.Model):
