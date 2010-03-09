@@ -321,7 +321,6 @@ class Assignment(BaseNode):
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,
-            default='feedback_default:charfieldgrade',
             choices=gradeplugin_registry.KeyLabelIterable())
 
     @classmethod
