@@ -6,59 +6,54 @@ from devilry.core.models import Feedback
 from django import forms
 
 
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ('feedback_text', 'feedback_format', 'feedback_published')
 
-class FeedbackView(object):
-    @classmethod
-    def _get_key(cls):
-        return '%s.%s' % (cls.__module__, cls.__name__)
+def parse_feedback_form(request, delivery_obj, prefix='feedback'):
+    try:
+        feedback_obj = delivery_obj.feedback
+    except Feedback.DoesNotExist, e:
+        feedback_obj = Feedback(delivery=delivery_obj)
 
-    @classmethod
-    def create_view(cls, request, delivery_obj):
-        try:
-            feedback_obj = delivery_obj.feedback
-        except Feedback.DoesNotExist, e:
-            feedback_obj = Feedback(delivery=delivery_obj)
+    if request.method == 'POST':
+        return FeedbackForm(request.POST, instance=feedback_obj, prefix=prefix)
+    else:
+        return FeedbackForm(instance=feedback_obj, prefix=prefix)
 
-        form = cls.create_form_obj(request, feedback_obj)
-        if request.method == 'POST':
-            if form.is_valid():
-                return cls.save(form)
+def redirect_after_successful_save(delivery_obj):
+    return HttpResponseRedirect(
+            reverse('devilry.examinerview.views.correct_delivery',
+                args=(delivery_obj.id,)))
 
-        formdict = {'delivery': delivery_obj, 'form': form}
-        return cls.render_view(request, form, formdict)
-
-    @classmethod
-    def render_view(cls, request, form, formdict):
-        return render_to_response('devilry/examinerview/correct_delivery.django.html',
-            formdict, context_instance=RequestContext(request))
-
-    @classmethod
-    def redirect_after_successful_save(cls, form):
-        return HttpResponseRedirect(
-                reverse('devilry.examinerview.views.correct_delivery',
-                    args=(form.instance.delivery.id,)))
-
-    @classmethod
-    def create_form_obj(cls, request, feeback_obj):
-        class CorrectForm(forms.ModelForm):
-            class Meta:
-                model = Feedback
-                fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
-        if request.method == 'POST':
-            return CorrectForm(request.POST, instance=feeback_obj)
-        else:
-            return CorrectForm(instance=feeback_obj)
-
-    @classmethod
-    def save(cls, form):
-        form.save()
-        return cls.redirect_after_successful_save(form)
+def render_default_response(request, delivery_obj, feedback_form, grade_form):
+    return render_to_response('devilry/examinerview/correct_delivery.django.html', {
+            'delivery': delivery_obj,
+            'feedback_form': feedback_form,
+            'grade_form': grade_form,
+        }, context_instance=RequestContext(request))
 
 
-_registry = {}
-def register(cls):
-    print cls._get_key()
-    _registry[cls._get_key()] = cls
+def view_shortcut(request, delivery_obj, model_cls, form_cls):
+    feedback_form = parse_feedback_form(request, delivery_obj)
+    feedback_obj = feedback_form.instance
+    if feedback_obj.content_object:
+        grade_obj = feedback_obj.content_object
+    else:
+        grade_obj = model_cls()
 
-def get(name):
-    return _registry[name]
+    if request.method == 'POST':
+        grade_form = form_cls(request.POST, instance=grade_obj, prefix='grade')
+    else:
+        grade_form = form_cls(instance=grade_obj, prefix='grade')
+
+    if request.method == 'POST':
+        if feedback_form.is_valid() and grade_form.is_valid():
+            grade_form.save()
+            feedback_form.instance.content_object = grade_form.instance
+            feedback_form.save()
+            return redirect_after_successful_save(delivery_obj)
+
+    return render_default_response(request, delivery_obj,
+            feedback_form, grade_form)

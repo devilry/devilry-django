@@ -9,6 +9,7 @@ from django.forms.formsets import formset_factory
 from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 from devilry.core.widgets import ReadOnlyWidget
+from devilry.core import gradeplugin_registry
 from django.db import transaction
 
 
@@ -73,15 +74,14 @@ def show_delivery(request, delivery_id):
 
 
 
-import feedback_view
 
 @login_required
 def correct_delivery(request, delivery_id):
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
     if not delivery_obj.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
-    key = delivery_obj.assignment_group.parentnode.feedback_plugin
-    return feedback_view.get(key).create_view(request, delivery_obj)
+    key = delivery_obj.assignment_group.parentnode.grade_plugin
+    return gradeplugin_registry.get(key).view(request, delivery_obj)
 
 
 @login_required

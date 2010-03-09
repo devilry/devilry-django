@@ -5,8 +5,9 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
-from deliverystore import load_deliverystore_backend
 from django.utils.translation import ugettext as _
+from deliverystore import load_deliverystore_backend
+import gradeplugin_registry
 
 
 
@@ -319,8 +320,9 @@ class Assignment(BaseNode):
     publishing_time = models.DateTimeField()
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
-    feedback_plugin = models.CharField(max_length=200,
-            default='devilry.examinerview.feedback_view.FeedbackView')
+    grade_plugin = models.CharField(max_length=100,
+            default='feedback_default:charfieldgrade',
+            choices=gradeplugin_registry.KeyLabelIterable())
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -531,6 +533,10 @@ class Delivery(models.Model):
         return filemeta
 
 
+
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
@@ -567,11 +573,16 @@ class Feedback(models.Model):
        ('markdown', 'Markdown'),
        ('textile', 'Textile'),
     )
-    grade = models.CharField(max_length=20, blank=True, null=True)
     feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats)
     feedback_published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery, blank=True, null=True)
+
+    grade_type = models.ForeignKey(ContentType)
+    grade_object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
+
+
 
 
 class FileMeta(models.Model):
