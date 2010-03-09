@@ -8,7 +8,6 @@ from django import forms
 from django.forms.formsets import formset_factory
 from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
-from devilry.core.widgets import ReadOnlyWidget
 from devilry.core import gradeplugin_registry
 from django.db import transaction
 
