@@ -22,6 +22,21 @@
   {% for assignment in assignments %}
   <li><a href='{% url list-assignmentgroups assignment.id %}'>{{ assignment }}</a></li>
   {% endfor %}
+  
+
+  {% for course in courses %}
+  {% for period in course %}
+  <li>{{ course }} - {{ period }} </li>
+  <ul>
+	{% for assignment_group in period %}
+    <li><a href='{% url list-assignmentgroups assignment_group.id %}'>{{ assignment_group.short_name }}</a> 
+	  	</li>
+    {% endfor %}
+  </ul>
+  
+  {% endfor %}
+  {% endfor %}
+
   </ul>
 </div>
 
