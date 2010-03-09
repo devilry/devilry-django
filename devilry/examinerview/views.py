@@ -17,10 +17,12 @@ from django.db import transaction
 def list_assignments(request):
     #assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignments = Assignment.where_is_examiner(request.user)
+    all_courses = group_assignments(assignments)
 
     if assignments.count() == 0:
         return HttpResponseForbidden("You are not registered as examiner on any assignments.")
     return render_to_response('devilry/examinerview/show_assignments.django.html', {
+        'assignments': assignments,
         'assignments': assignments,
         }, context_instance=RequestContext(request))
 
@@ -32,6 +34,7 @@ def list_assignmentgroups(request, assignment_id):
     
     return render_to_response('devilry/examinerview/list_assignmentgroups.django.html', {
         'assignment_groups': assignment_groups,
+        'course_name' : assignment_groups[0].parentnode.parentnode.parentnode.short_name,
         }, context_instance=RequestContext(request))
 
 """
@@ -120,12 +123,18 @@ def successful_delivery(request, delivery_id):
         }, context_instance=RequestContext(request))
 
 
+from devilry.core.utils.GroupAssignments import group_assignments 
+
 @login_required
 def main(request):
     assignment_pks = AssignmentGroup.where_is_examiner(request.user).values("parentnode").distinct().query
     assignments = Assignment.objects.filter(pk__in=assignment_pks)
+    
+    courses = group_assignments(assignments)
+
     return render_to_response('devilry/examinerview/main.django.html', {
             'assignments': assignments,
+            'courses': courses,
             }, context_instance=RequestContext(request))
 
 
