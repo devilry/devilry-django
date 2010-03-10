@@ -91,11 +91,11 @@ from devilry.core.utils.GroupAssignments import group_assignments
 @login_required
 def choose_assignment(request):
     
-    active_assignment_groups = AssignmentGroup.get_active(request.user)
+    active_assignment_groups = AssignmentGroup.active_where_is_student(request.user)
     active_courses = group_assignments(active_assignment_groups)
 
     all_assignment_groups = AssignmentGroup.where_is_student(request.user)
-    all_courses = group_assignments(all_assignment_groups)
+    all_subjects = group_assignments(all_assignment_groups)
 
     return render_to_response('devilry/addons/studentview/choose_assignment.django.html', {
             'active_courses': active_courses,
@@ -104,10 +104,9 @@ def choose_assignment(request):
 
 @login_required
 def show_history(request):
-    
-    all_assignment_groups = AssignmentGroup.where_is_student(request.user)
-    all_courses = group_assignments(all_assignment_groups)
+    old_assignment_groups = AssignmentGroup.old_where_is_student(request.user)
+    old_subjects = group_assignments(old_assignment_groups)
 
     return render_to_response('devilry/addons/studentview/history.django.html', {
-            'all_courses': all_courses,
+            'old_subjects': old_subjects,
             }, context_instance=RequestContext(request))

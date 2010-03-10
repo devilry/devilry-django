@@ -403,11 +403,17 @@ class AssignmentGroup(models.Model):
                 parentnode__publishing_time__lt = datetime.now())
 
     @classmethod
-    def get_active(cls, user_obj):
+    def active_where_is_student(cls, user_obj):
         now = datetime.now()
         return cls.published_where_is_student(user_obj).filter(
                 parentnode__parentnode__start_time__lt = now,
                 parentnode__parentnode__end_time__gt = now)
+
+    @classmethod
+    def old_where_is_student(cls, user_obj):
+        now = datetime.now()
+        return cls.published_where_is_student(user_obj).filter(
+                parentnode__parentnode__end_time__lt = now)
 
 
     @classmethod

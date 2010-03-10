@@ -2,14 +2,6 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block breadcrumbs-content %}
-<li>
-  <a href='{% url devilry.addons.studentview.views.choose_assignment %}'>
-    {% trans "Choose assignment" %}
-  </a>
-</li>
-{% endblock %}
-
 {% block content %}
   {% block main %}{% endblock %}
 {% endblock %}
