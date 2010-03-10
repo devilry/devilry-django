@@ -16,45 +16,71 @@
 		{% block headextra %}{% endblock %}
 	</head>
 	<body>
-		{% block prebody %}{% endblock %}
-    
-    {% block body %}
-		<div id='header'>
-			<h1>{% block heading %}{% endblock %}</h1>
-			{% block headerextra %}{% endblock %}
-      {% block breadcrumbs %}
-        <ul id='breadcrumbs'>
-          {% block breadcrumbs-content %}{% endblock %}
-        </ul>
+    <div id='branding'>
+      {% block logo %}
+        <div id='logo'>
+          <div id='logo-maintext'>Devilry</div>
+          <div id='logo-subtext'>
+            <a href='http://devilry.github.com'>http://devilry.github.com</a>
+          </div>
+        </div>
       {% endblock %}
-		</div>
-		<div id='messages'>
-      {% block messages %}
-        {% if messages %}
-          <ul>
-          {% for message_class, message in messages %}
-            {% block message %}
-              <li class='{{ message_class }}'>{{ message }}</li>
-            {% endblock %}
-          {% endfor %}
-          </ul>
-        {% endif %}
-      {% endblock %}
-		</div>
-		<div id='content'>
-      {% block content %}{% endblock %}
-		</div>
-		{% endblock body %}
-    
-    {% block postbody %}{% endblock %}
+    </div>
+
+
+    <div id='topbar'>
+    {% block breadcrumbs %}
+      <ul id='breadcrumbs'>
+        {% block breadcrumbs-content %}{% endblock %}
+      </ul>
+      <ul id='links'>
+        {% block links %}
+          <li><a href='/'>{% trans "Home" %}</a></li>
+          {% if user.is_authenticated %}
+            <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
+          {% endif %}
+          {% block links-extra %}{% endblock %}
+        {% endblock %}
+      </ul>
+    {% endblock %}
+    </div>
+
+    <div id='page'>
+    {% block page %}
+      {% block sidebar %}{% endblock %}
+
+      <div id='heading'>
+        <h1>{% block heading %}{% endblock %}</h1>
+        <div id='belowheading'>
+          {% block belowheading %}{% endblock %}
+        </div>
+      </div>
+
+      <div id='messages'>
+        {% block messages %}
+          {% if messages %}
+            <ul>
+            {% for message_class, message in messages %}
+              {% block message %}
+                <li class='{{ message_class }}'>{{ message }}</li>
+              {% endblock %}
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endblock %}
+      </div>
+
+      <div id='content'>
+        {% block content %}{% endblock %}
+      </div>
+    {% endblock page %}
+    </div>
+
     
     {% block footer %}
     <div id='footer'>
-      <ul>
-        {% block footerlist_extra %}{% endblock %}
-        <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
-        <li><a href='http://devilry.github.com'>Devilry</a></li>
-      </ul>
+      <p><a href='http://devilry.github.com'>Devilry</a> is a open source
+      general purpose delivery system.</p>
     </div>
     {% endblock %}
 	</body>

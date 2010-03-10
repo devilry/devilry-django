@@ -6,12 +6,26 @@
 {% trans "Add delivery" %}
 {% endblock %}
 
+
+{% block breadcrumbs-content %}
+{{ block.super }}
+<li>::</li>
+<li>Add delivery</li>
+{% endblock %}
+
 {% block heading %}
 {% trans "Add delivery" %}
 {% endblock %}
 
 
+{% block sidebar %}
+<div id='sidebar' class='assignment_group_info'>
+  {% include "devilry/addons/studentview/include/assignment_group_info.django.html" %}
+</div>
+{% endblock %}
+
 {% block content %}
+
 <form enctype="multipart/form-data"
     action="{% url devilry.addons.studentview.views.add_delivery assignment_group.id %}"
     method="post" id='add_delivery-form'>
@@ -30,8 +44,4 @@
   </div>
 </form>
 
-
-<div id='add_delivery-assignment_group_info' class='assignment_group_info'>
-  {% include "devilry/addons/studentview/include/assignment_group_info.django.html" %}
-</div>
 {% endblock %}
