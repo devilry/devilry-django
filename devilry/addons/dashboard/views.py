@@ -39,8 +39,10 @@ from devilry.core.utils.GroupAssignments import group_assignments
 @login_required
 def main(request):
 
+    print "dashbaord main"
+
     values = dashboardplugin_registry.values()
-    
-    return render_to_response('addons/dashboard/main.django.html', {
-            'apps': values,
+                                  
+    return render_to_response('devilry/dashboard/main.django.html', {
+            'applications': values,
             }, context_instance=RequestContext(request))
