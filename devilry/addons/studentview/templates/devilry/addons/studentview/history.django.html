@@ -1,0 +1,54 @@
+{% extends "devilry/addons/studentview/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "History browser" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "History browser" %}
+{% endblock %}
+
+{% block breadcrumbs-content %}
+
+{{ block.super }}
+<li>{% trans "History browser" %}</li>
+{% endblock %}
+
+{% block sidebar %}
+<div id='sidebar' class='assignment_group_info'>
+  <div class='section related'>
+    <h2>{% trans "Related" %}</h2>
+    <p>
+      {% url devilry.addons.studentview.views.choose_assignment as active_assignments_url%}
+      {% blocktrans %}
+        You can add deliveries and deliveries on active assignments
+        <a href='{{ active_assignments_url }}'>here</a>.
+      {% endblocktrans %}
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block main %}
+
+<ul>
+{% for subject in old_subjects %}
+  {% for period in subject %}
+    <li>{{ subject }} - {{ period }} </li>
+    <ul>
+    {% for assignment_group in period %}
+      <li>
+        <a href='{% url devilry.addons.studentview.views.show_assignmentgroup assignment_group.id %}'>
+          {{ assignment_group.parentnode.short_name }}
+        </a>
+      </li>
+    {% endfor %}
+    </ul>
+  {% endfor %}
+{% endfor %}
+</ul>
+
+{% endblock %}

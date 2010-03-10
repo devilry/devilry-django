@@ -1,125 +1,182 @@
 body {
-	font-family: sans-serif;
+	font-family: "Tahoma", "Geneva", sans-serif;
 	margin: 0;
 	padding: 0;
-	background-color: #eee;
+	background-color: #222;
+	background-image: url("theme-bg.gif");
 }
 
-#header {
-	background-color: #000;
-	color #ccc;
-	padding: 15px 71px 15px 71px;
-}
-#header h1 {
-	color: #fff;
-	margin: 0;
+
+
+
+/*@import "tablesorter.css";*/
+
+
+/***********************************************************
+ * Branding
+ **********************************************************/
+
+#branding {
+	width: 700px;
 	padding: 0;
-	font-size: 1.8em;
-	font-family: "Georgia", sans-serif;
-}
-
-#content {
-	margin: 0 50px 0 50px;
-	padding: 20px;
-	border: 1px solid #aaa;
-	background-color: #fff;
-	border-top: none;
-	font-size: 0.8em;
-}
-
-#footer {
-	color #999;
-	padding: 5px 71px 5px 71px;
+	margin: 20px auto 20px auto;
 	text-align: right;
 }
-#footer a {color: #999;}
-#footer a:hover {color: #777;}
-#footer ul {
+
+#logo-maintext {
+	color: #6d3939;
+	font-size: 35px;
+	font-family: "Arial Black", sans-serif;
+	font-weight: bold;
+}
+#logo-subtext {
+	font-family: "Arial Black", sans-serif;
+}
+#logo-subtext a {
+	color: #555;
+	text-decoration: none;
+}
+#logo-subtext a:hover {
+	color: #ccc;
+}
+
+/***********************************************************
+ * Topbar
+ **********************************************************/
+
+#topbar {
+	background-color: #000;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	width: 700px;
+	margin: 0 auto 0 auto;
+	padding: 10px 40px 10px 40px;
+}
+
+#topbar ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
-#footer li {
+#topbar li {
+	font-size: 0.8em;
 	display: inline-block;
+	padding: 0;
+	margin: 0 6px 0 0;
+	color: #888;
+}
+#topbar a {
+	color: #888;
+}
+
+#topbar ul#breadcrumbs {
+	float: right;
+}
+
+
+/***********************************************************
+ * Page
+ **********************************************************/
+
+#page {
+	clear: both;
+	background-color: #fff;
+	width: 700px;
+	padding: 20px 20px 20px 20px;
+	margin: 0 auto 0 auto;
+}
+
+
+
+/***********************************************************
+ * Page sidebar
+ **********************************************************/
+#sidebar {
+	width: 200px;
+	font-size: 0.8em;
+	float: right;
+	margin: 0 -70px 0 0;
+}
+#sidebar a {
+	color: #acc2d6;
+}
+#sidebar a:visited {
+	color: #acacd6;
+}
+#sidebar .section {
+	background-color: #fff;
+	margin-bottom: 20px;
+	padding: 15px;
+	background-color: #303030;
+	color: #ccc;
+}
+#sidebar .section:first-child {
+	/*background-color: #44513c;*/
+	/*color: #c3d0bb;*/
+	background-color: #2b4358;
+	color: #dfe8ef;
+}
+#sidebar .section h2 {
+	font-size: 1.6em;
+	font-family: "Arial Black", sans-serif;
+	margin: 0 0 10px 0;
+}
+#sidebar dt {
+	margin-top: 3px;
+	font-style: italic;
+}
+#sidebar dd {
 	margin-left: 20px;
+}
+#sidebar ul {
+	margin: 4px 0 0 4px;
+	padding: 0;
+	list-style: disc url(listbullet.png) inside;
+}
+
+
+/***********************************************************
+ * Page heading
+ **********************************************************/
+#heading h1 {
+	color: #111;
+	margin: 0 0 20px 0;
+	padding: 0;
+	font-size: 1.6em;
+	font-family: "Century Gothic", sans-serif;
+	font-weight: normal;
+}
+
+
+/***********************************************************
+ * Page content
+ **********************************************************/
+
+#content {
 	font-size: 0.8em;
 }
 
-/***********************************************************
- * tablesorter plugin
- **********************************************************/
-table.tablesorter {
-	background-color: #000;
-	font-size: 1.0em;
-	width: 100%;
-	text-align: left;
-}
-table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-	background-color: #eee;
-	font-size: 1.0em;
-	padding: 3px;
-}
-table.tablesorter thead tr .header {
-	background-image: url(bg.gif);
-	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;
-}
-table.tablesorter tbody td {
-	padding: 3px;
-	background-color: #FFF;
-	vertical-align: top;
-}
-table.tablesorter tbody tr.odd td {
-	background-color:#F0F0F6;
-}
-table.tablesorter thead tr .headerSortUp {
-	background-image: url(asc.gif);
-}
-table.tablesorter thead tr .headerSortDown {
-	background-image: url(desc.gif);
-}
-table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-	background-color: #ddb;
-}
-
-
-
-
-
-ul#breadcrumbs {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-ul#breadcrumbs li {
-	margin: 0 6px 0 0;
-	padding: 0;
-	font-size: 0.9em;
-	color: #999;
-	display: inline-block;
-}
-ul#breadcrumbs a {
-	color: #999;
-}
 
 
 /***********************************************************
- * form
+ * Footer
  **********************************************************/
 
-.smallpreview {
-	width: 250px;
-	float: right;
-	border: 1px solid #aaa;
+#footer {
+	color #666;
+	text-align: right;
+	clear: both;
+	width: 700px;
+	padding: 20px 20px 20px 20px;
+	margin: 0 auto 0 auto;
+	font-size: 0.8em;
 	color: #555;
-	padding: 10px;
+	text-align: center;
 }
-.smallpreview input[type='submit']{
-	background-color: #eee;
-	border: 1px solid #aaa;
+#footer a {
+	color: #555;
 }
-
-.mainsubmit {
+#footer a:hover {
+	color: #ccc;
 }

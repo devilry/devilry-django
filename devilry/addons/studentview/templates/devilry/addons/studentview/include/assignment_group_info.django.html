@@ -1,0 +1,38 @@
+{% load i18n %}
+
+
+<div class='section' id='assignment_group-info'>
+	<h2>{% trans "About" %}</h2>
+	<dl>
+		<dt>{% trans "Subject" %}:</dt>
+		<dd>{{ assignment_group.parentnode.parentnode }}</dd>
+
+		<dt>{% trans "Name" %}:</dt>
+		<dd>{{ assignment_group.parentnode.long_name }}</dd>
+
+		<dt>{% trans "Deadline" %}:</dt>
+		<dd>{{ assignment_group.parentnode.deadline }}</dd>
+
+		<dt>{% trans "Status" %}:</dt>
+		<dd>{{ assignment_group.get_status }}</dd>
+
+		{% if assignment_group.students.count > 1 %}
+			<dt>{% trans "Group members" %}:</dt>
+			<dd>{{ assignment_group.students.all|join:", " }} </dd>
+		{% endif %}
+	</dl>
+</div>
+
+
+<div class='section'>
+	<h2>{% trans "Current deliveries" %}</h2>
+	<ul id='assignment_group-deliveries'>
+	{% for delivery in assignment_group.delivery_set.all %}
+		<li>
+			<a href='{% url devilry.addons.studentview.views.show_delivery delivery.id %}'>
+				{{ delivery.time_of_delivery }}
+			</a>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
