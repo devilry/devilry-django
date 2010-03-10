@@ -20,7 +20,7 @@
   <h2>{% trans "Dashboard" %}</h2>
   <ul>
   {% for app in applications %}
-  <li><a href='{% url list-assignmentgroups assignment.id %}'>{{ assignment }}</a></li>
+  <li><a href="{{ app.url }}"> {{ app.label }} </a></li>
   {% endfor %}
   
   </ul>
