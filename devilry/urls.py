@@ -19,7 +19,7 @@ urlpatterns = patterns('',
 
     (r'^admin/', include(admin.site.urls)),
     (r'^ui/', include('devilry.ui.urls')),
-    (r'^studentview/', include('devilry.studentview.urls')),
+    (r'^studentview/', include('devilry.addons.studentview.urls')),
     (r'^examinerview/', include('devilry.examinerview.urls')),
     (r'^adminview/', include('devilry.adminview.urls')),
 

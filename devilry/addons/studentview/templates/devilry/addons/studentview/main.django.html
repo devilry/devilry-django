@@ -1,4 +1,4 @@
-{% extends "devilry/studentview/base.django.html" %}
+{% extends "devilry/addons/studentview/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -42,7 +42,7 @@
 </div>
 
 <div class='dashboard_box hidden' id='other'>
-  <a href='{% url devilry.studentview.views.show_history %}'>History</a>
+  <a href='{% url devilry.addons.studentview.views.show_history %}'>History</a>
 </div>
 
 {% endblock %}

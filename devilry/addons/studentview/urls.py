@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 
 
-urlpatterns = patterns('devilry.studentview',
+urlpatterns = patterns('devilry.addons.studentview',
     url(r'^$',
         'views.main', name='main'),
 
