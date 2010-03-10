@@ -1,0 +1,40 @@
+{% load i18n %}
+
+
+<h2>{% trans "About" %}</h2>
+<table id='assignment_group-infotable'>
+  <tr>
+    <th>{% trans "Subject" %}:</th>
+    <td>{{ assignment_group.parentnode.parentnode }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Name" %}:</th>
+    <td>{{ assignment_group.parentnode.long_name }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Deadline" %}:</th>
+    <td>{{ assignment_group.parentnode.deadline }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Status" %}:</th>
+    <td>{{ assignment_group.get_status }}</td>
+  </tr>
+  {% if assignment_group.students.count > 1 %}
+    <tr>
+      <th>{% trans "Group members" %}:</th>
+      <td>{{ assignment_group.students.all|join:", " }} </td>
+    </tr>
+  {% endif %}
+</table>
+
+
+<h2>{% trans "Current deliveries" %}</h2>
+<ul id='assignment_group-deliveries'>
+{% for delivery in assignment_group.delivery_set.all %}
+  <li>
+    <a href='{% url devilry.addons.studentview.views.show_delivery delivery.id %}'>
+      {{ delivery.time_of_delivery }}
+    </a>
+  </li>
+{% endfor %}
+</ul>
