@@ -8,7 +8,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
-from devilry.core import gradeplugin_registry
+from devilry.core.widgets import ReadOnlyWidget
 from django.db import transaction
 
 
@@ -34,7 +34,6 @@ def list_assignmentgroups(request, assignment_id):
     
     return render_to_response('devilry/examinerview/list_assignmentgroups.django.html', {
         'assignment_groups': assignment_groups,
-        'course_name' : assignment_groups[0].parentnode.parentnode.parentnode.short_name,
         }, context_instance=RequestContext(request))
 
 """
@@ -76,14 +75,41 @@ def show_delivery(request, delivery_id):
 
 
 
+class CorrectForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ('grade', 'feedback_text', 'feedback_format', 'feedback_published')
+
+
 
 @login_required
 def correct_delivery(request, delivery_id):
-    delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
-    if not delivery_obj.assignment_group.is_examiner(request.user):
+    delivery = get_object_or_404(Delivery, pk=delivery_id)
+
+    if not delivery.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
-    key = delivery_obj.assignment_group.parentnode.grade_plugin
-    return gradeplugin_registry.get(key).view(request, delivery_obj)
+    
+    try:
+        feedback = delivery.feedback
+    except Feedback.DoesNotExist, e:
+        feedback = Feedback()
+
+    if request.method == 'POST':
+        form = CorrectForm(request.POST, instance=feedback)
+        if form.is_valid():
+            form.instance.delivery = delivery
+            form.save()
+            return HttpResponseRedirect(
+                    reverse(__name__ + '.correct_delivery', args=(delivery.id,)))
+    else:
+        form = CorrectForm(instance=feedback)
+
+    return render_to_response('devilry/examinerview/correct_delivery.django.html', {
+        'delivery': delivery,
+        'form': form,
+        }, context_instance=RequestContext(request))
+
+
 
 
 @login_required
@@ -96,18 +122,12 @@ def successful_delivery(request, delivery_id):
         }, context_instance=RequestContext(request))
 
 
-from devilry.core.utils.GroupAssignments import group_assignments 
-
 @login_required
 def main(request):
     assignment_pks = AssignmentGroup.where_is_examiner(request.user).values("parentnode").distinct().query
     assignments = Assignment.objects.filter(pk__in=assignment_pks)
-    
-    courses = group_assignments(assignments)
-
     return render_to_response('devilry/examinerview/main.django.html', {
             'assignments': assignments,
-            'courses': courses,
             }, context_instance=RequestContext(request))
 
 
@@ -124,3 +144,4 @@ def download_file(request, filemeta_id):
     response['Content-Length'] = filemeta.size
 
     return response
+

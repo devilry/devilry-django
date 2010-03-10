@@ -1,0 +1,54 @@
+{% extends "devilry/studentview/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Student dashboard" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "Student dashboard" %}
+{% endblock %}
+
+{% block breadcrumbs-content %}
+<li>{% trans "Home" %}</li>
+{% endblock %}
+
+{% block main %}
+
+<div class='dashboard_box visible' id='active_assignments'>
+  <h2>{% trans "Active assignments" %}</h2>
+  <ul>
+	{% with "stuff" as viewname %}
+	{% for course in active_courses %}
+    {% for period in course %}
+    <li>{{ course }} - {{ period }} </li>
+    <ul>
+      {% for assignment_group in period %}
+      <li>
+        <a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a>
+        {% if assignment_group.get_grade %}
+		({{ assignment_group.get_grade }})
+		{% else %}
+		({{ assignment_group.get_status }})
+		{% endif %}
+
+      </li>
+      {% endfor %}
+    </ul>
+    {% endfor %}
+	{% endfor %}
+	{% endwith %}
+	  
+	
+  {% for assignment_group in assignment_groups %}
+  <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
+
+<div class='dashboard_box hidden' id='other'>
+  <a href='{% url devilry.studentview.views.show_history %}'>History</a>
+</div>
+
+{% endblock %}

@@ -11,32 +11,18 @@
 {% endblock %}
 
 {% block breadcrumbs-content %}
-<li>{% trans "Home" %}</li>
+<li>{% trans "Dashboard" %}</li>
 {% endblock %}
 
 {% block main %}
 
 <div class='dashboard_box visible' id='active_assignments'>
-  <h2>{% trans "Active assignments" %}</h2>
+  <h2>{% trans "Dashboard" %}</h2>
   <ul>
-  {% for assignment in assignments %}
+  {% for app in applications %}
   <li><a href='{% url list-assignmentgroups assignment.id %}'>{{ assignment }}</a></li>
   {% endfor %}
   
-
-  {% for course in courses %}
-  {% for period in course %}
-  <li>{{ course }} - {{ period }} </li>
-  <ul>
-	{% for assignment_group in period %}
-    <li><a href='{% url list-assignmentgroups assignment_group.id %}'>{{ assignment_group.short_name }}</a> 
-	  	</li>
-    {% endfor %}
-  </ul>
-  
-  {% endfor %}
-  {% endfor %}
-
   </ul>
 </div>
 

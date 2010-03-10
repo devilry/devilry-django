@@ -444,6 +444,16 @@ class AssignmentGroup(models.Model):
             if qry.count() == 0:
                 return _('Not corrected')
             else:
+                return _('Corrected')
+
+    def get_grade(self):
+        if self.delivery_set.all().count() == 0:
+            return None
+        else:
+            qry = self.delivery_set.filter(feedback__isnull=False)
+            if qry.count() == 0:
+                return None
+            else:
                 return qry.annotate(models.Max('time_of_delivery'))[0].feedback.grade
 
 

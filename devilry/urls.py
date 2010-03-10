@@ -5,6 +5,8 @@ from devilry.core import pluginloader
 from django.contrib import admin
 admin.autodiscover()
 
+print "pluginloader.autodiscover"
+
 pluginloader.autodiscover()
 
 urlpatterns = patterns('',
@@ -22,7 +24,7 @@ urlpatterns = patterns('',
     (r'^studentview/', include('devilry.addons.studentview.urls')),
     (r'^examinerview/', include('devilry.examinerview.urls')),
     (r'^adminview/', include('devilry.adminview.urls')),
-
+    (r'^dashboard/', include('devilry.addons.dashboard.urls')),
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.DEVILRY_RESOURCES_ROOT}),
 )
