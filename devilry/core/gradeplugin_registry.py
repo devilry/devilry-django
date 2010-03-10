@@ -11,7 +11,6 @@ class RegistryItem(object):
 _registry = {}
 def register(view, model_cls, description):
     r = RegistryItem(view, model_cls, description)
-    print r.get_key()
     _registry[r.get_key()] = r
 
 def get(key):
