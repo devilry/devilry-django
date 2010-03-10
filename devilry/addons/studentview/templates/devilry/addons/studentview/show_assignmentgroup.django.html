@@ -2,12 +2,11 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{{ assignment_group.parentnode.short_name }}{% endblock %}
-{% block heading %}{{ assignment_group.parentnode }}{% endblock %}
+{% block title %}{% trans "Assignment information" %}{% endblock %}
+{% block heading %}{% trans "Assignment information" %}{% endblock %}
 
 {% block breadcrumbs-content %}
-{{ block.super }}
-<li>:: {% trans "Assignment information" %}</li>
+<li>{% trans "Assignment information" %}</li>
 {% endblock %}
 
 {% block content %}
@@ -31,21 +30,21 @@
 </table>
 
 
-{% if assignment_group.is_open %}
-  <p>
-    <a href='{% url devilry.addons.studentview.views.add_delivery assignment_group.id %}'>{% trans "Add delivery" %}</a>
-  </p>
+<h2>Deliveries</h2>
+{% if assignment_group.delivery_set.all.count == 0 %}
+  <p>{% trans "No deliveries" %}</p>
+{% else %}
+  <ul>
+  {% for delivery in assignment_group.delivery_set.all %}
+    <li>
+      <a href='{% url devilry.addons.studentview.views.show_delivery delivery.id %}'>
+        {{ delivery.time_of_delivery }}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
 {% endif %}
 
-<ul id='delivery-list'>
-{% for delivery in assignment_group.delivery_set.all %}
-  <li>
-    <a href='{% url devilry.addons.studentview.views.show_delivery delivery.id %}'>
-      {{ delivery.time_of_delivery }}
-    </a>
-  </li>
-{% endfor %}
-</ul>
 
 
 {% endblock %}
