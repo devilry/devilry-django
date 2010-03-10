@@ -28,7 +28,7 @@
            <li>{{ course }} - {{ period }} </li>
 		    <ul>
 	           {% for assignment_group in period %}
-               <li><a href='{% url show-assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> </li>
+               <li><a href='{% url devilry.addons.studentview.views.show_assignmentgroup assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> </li>
                {% endfor %}
 	        </ul>
 		   

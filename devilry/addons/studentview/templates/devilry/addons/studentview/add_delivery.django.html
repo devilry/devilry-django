@@ -16,7 +16,7 @@ Deliver {{ assignment_path }}
 
 {% block content %}
 <form enctype="multipart/form-data"
-    action="{% url add-delivery assignment_group.id %}"
+    action="{% url devilry.addons.studentview.views.add_delivery assignment_group.id %}"
     method="post">
 
   <table>

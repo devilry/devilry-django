@@ -33,14 +33,14 @@
 
 {% if assignment_group.is_open %}
   <p>
-    <a href='{% url add-delivery assignment_group.id %}'>{% trans "Add delivery" %}</a>
+    <a href='{% url devilry.addons.studentview.views.add_delivery assignment_group.id %}'>{% trans "Add delivery" %}</a>
   </p>
 {% endif %}
 
 <ul id='delivery-list'>
 {% for delivery in assignment_group.delivery_set.all %}
   <li>
-    <a href='{% url devilry.studentview.views.show_delivery delivery.id %}'>
+    <a href='{% url devilry.addons.studentview.views.show_delivery delivery.id %}'>
       {{ delivery.time_of_delivery }}
     </a>
   </li>
