@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     (r'^examinerview/', include('devilry.addons.examinerview.urls')),
     (r'^adminview/', include('devilry.adminview.urls')),
     (r'^dashboard/', include('devilry.addons.dashboard.urls')),
+    (r'^', include('devilry.addons.dashboard.urls')),
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.DEVILRY_RESOURCES_ROOT}),
 )
