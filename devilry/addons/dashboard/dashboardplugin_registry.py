@@ -6,16 +6,12 @@ class RegistryItem(object):
         self.icon = icon
         self.description = description
 
-    def get_key(self):
-        return '%s' % (key)
-
 _registry = {}
 
 def register(key, label, url, icon, description, *arguments, **keywords):
     r = RegistryItem(key, label, url, icon, description)
-    print r.get_key()
     print "%s %s %s %s %s" % (key, label, url, icon, description)
-    _registry[r.get_key()] = r
+    _registry[r.key] = r
 
 def get(key):
     return _registry[key]
