@@ -3,21 +3,18 @@
 {% load i18n %}
 
 {% block title %}
-{% blocktrans with assignment_group.parentnode.short_name as assignment_short_name %}
-Deliver {{ assignment_short_name }}
-{% endblocktrans %}
+{% trans "Add delivery" %}
 {% endblock %}
 
 {% block heading %}
-{% blocktrans with assignment_group.parentnode as assignment_path %}
-Deliver {{ assignment_path }}
-{% endblocktrans %}
+{% trans "Add delivery" %}
 {% endblock %}
+
 
 {% block content %}
 <form enctype="multipart/form-data"
     action="{% url devilry.addons.studentview.views.add_delivery assignment_group.id %}"
-    method="post">
+    method="post" id='add_delivery-form'>
 
   <table>
     {{ formset.management_form }}
@@ -32,4 +29,9 @@ Deliver {{ assignment_path }}
     <input type="submit" name="deliver" value="{% trans "Deliver" %}" />
   </div>
 </form>
+
+
+<div id='add_delivery-assignment_group_info' class='assignment_group_info'>
+  {% include "devilry/addons/studentview/include/assignment_group_info.django.html" %}
+</div>
 {% endblock %}

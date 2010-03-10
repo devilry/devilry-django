@@ -28,6 +28,19 @@
         </ul>
       {% endblock %}
 		</div>
+		<div id='messages'>
+      {% block messages %}
+        {% if messages %}
+          <ul>
+          {% for message_class, message in messages %}
+            {% block message %}
+              <li class='{{ message_class }}'>{{ message }}</li>
+            {% endblock %}
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endblock %}
+		</div>
 		<div id='content'>
       {% block content %}{% endblock %}
 		</div>

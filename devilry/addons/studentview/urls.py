@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 
 
 urlpatterns = patterns('devilry.addons.studentview',
-    (r'^$', 'views.main'),
+    (r'^choose-assignment/$', 'views.choose_assignment'),
     (r'^list-assignmentgroups/$', 'views.list_assignmentgroups'),
     (r'^show-assignment-group/(?P<assignmentgroup_id>\d+)$', 'views.show_assignmentgroup'),
 
