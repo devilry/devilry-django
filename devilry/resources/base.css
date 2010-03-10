@@ -129,6 +129,11 @@ body {
 #sidebar dd {
 	margin-left: 20px;
 }
+#sidebar ul {
+	margin: 4px 0 0 4px;
+	padding: 0;
+	list-style: disc url(listbullet.png) inside;
+}
 
 
 /***********************************************************
