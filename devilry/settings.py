@@ -97,7 +97,7 @@ INSTALLED_APPS = (
     'devilry.core',
     'devilry.ui',
     'devilry.addons.studentview',
-    'devilry.examinerview',
+    'devilry.addons.examinerview',
     'devilry.adminview',
     'devilry.addons.grade_approved',
     'devilry.addons.grade_default',
@@ -120,6 +120,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-DEVILRY_MAIN_PAGE = '/studentview/'
+DEVILRY_MAIN_PAGE = '/dashboard/'
 
 BASE_TEMPLATE = 'devilry/base.django.html'
