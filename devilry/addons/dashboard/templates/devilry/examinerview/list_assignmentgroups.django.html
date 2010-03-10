@@ -1,0 +1,24 @@
+{% extends "devilry/examinerview/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Assignments" %}{% endblock %}
+{% block heading %}{% trans "Assignments" %}{% endblock %}
+
+{% block breadcrumbs-content %}
+
+{{ block.super }}
+<li>:: {% trans "Assignments" %} - {{ course_name }} </li>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<ul>
+{% for assignmentgroup in assignment_groups.all %}
+	<li><a href='{% url show-assignmentgroup assignmentgroup.id %}'>{{ assignmentgroup }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
