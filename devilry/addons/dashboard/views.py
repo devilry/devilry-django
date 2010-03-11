@@ -41,8 +41,8 @@ def main(request):
 
     print "dashbaord main"
 
-    values = dashboardplugin_registry.values()
+    values_iterator = dashboardplugin_registry.iter_values()
                                   
     return render_to_response('devilry/dashboard/main.django.html', {
-            'applications': values,
+            'applications': values_iterator,
             }, context_instance=RequestContext(request))
