@@ -11,13 +11,13 @@ from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
 from devilry.core import gradeplugin_registry
 from django.db import transaction
 
+from devilry.core.utils.GroupAssignments import group_assignments, group_assignmentgroups 
 
 
 @login_required
 def list_assignments(request):
-    #assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignments = Assignment.where_is_examiner(request.user)
-    all_courses = group_assignments(assignments)
+    all_courses = group_assignmentgroups(assignments)
 
     if assignments.count() == 0:
         return HttpResponseForbidden("You are not registered as examiner on any assignments.")
@@ -36,16 +36,6 @@ def list_assignmentgroups(request, assignment_id):
         'assignment_groups': assignment_groups,
         'course_name' : assignment_groups[0].parentnode.parentnode.parentnode.short_name,
         }, context_instance=RequestContext(request))
-
-"""
-@login_required
-def list_assignmentgroups(request):
-    return render_to_response('devilry/examinerview/list_assignmentgroups.django.html', {
-        'assignment_groups': AssignmentGroup.where_is_student(request.user),
-        }, context_instance=RequestContext(request))
-"""
-
-
 
 
 @login_required
@@ -75,8 +65,6 @@ def show_delivery(request, delivery_id):
 
 
 
-
-
 @login_required
 def correct_delivery(request, delivery_id):
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
@@ -86,17 +74,7 @@ def correct_delivery(request, delivery_id):
     return gradeplugin_registry.get(key).view(request, delivery_obj)
 
 
-@login_required
-def successful_delivery(request, delivery_id):
-    delivery = get_object_or_404(Delivery, pk=delivery_id)
-    if not delivery.assignment_group.is_student(request.user):
-        return HttpResponseForbidden("Forbidden")
-    return render_to_response('devilry/examinerview/successful_delivery.django.html', {
-        'delivery': delivery,
-        }, context_instance=RequestContext(request))
 
-
-from devilry.core.utils.GroupAssignments import group_assignments 
 
 @login_required
 def main(request):
