@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# To use this script, you must first checkout
+# git@github.com:devilry/devilry.github.com.git
+# into this directory (it should be in doc/devilry.github.com).
+#
+# The script depends on sphinxtogithub (http://github.com/michaeljones/sphinx-to-github)
+# to prepare the sphinx output for github pages.
+#
+# After running this script, you must manually commit and push
+# devilry.github.com. Note that there is a delay of max 10 minutes
+# before the website is updated after you push.
+
+VERSION=dev
+REPODIR=devilry.github.com
+OUTDIR=$REPODIR/$VERSION
+INDIR=build/html
+
+
+make clean html
+rm -rf $OUTDIR
+cp -r $INDIR $OUTDIR
+sphinxtogithub $OUTDIR
+cd $REPODIR; git add $VERSION; cd ..
