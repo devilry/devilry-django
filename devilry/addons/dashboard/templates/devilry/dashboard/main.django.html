@@ -17,7 +17,7 @@
 
 <div id='dashboard_box'>
   <ul>
-  {% for app in applications %}
+	{% for app in applications %}
     <li><a href="{{ app.url }}"> {{ app.label }} </a></li>
   {% endfor %}
   </ul>

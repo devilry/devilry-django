@@ -38,10 +38,12 @@ from devilry.core.utils.GroupAssignments import group_assignments
 
 @login_required
 def main(request):
+    
+    is_student = AssignmentGroup.where_is_student(request.user).count() > 0
+    is_examiner = AssignmentGroup.where_is_examiner(request.user).count() > 0
+    is_admin = Assignment.where_is_admin(request.user).count() > 0
 
-    print "dashbaord main"
-
-    values_iterator = dashboardplugin_registry.iter_values()
+    values_iterator = dashboardplugin_registry.iter_values(student=is_student, examiner=is_examiner, admin=is_admin)
                                   
     return render_to_response('devilry/dashboard/main.django.html', {
             'applications': values_iterator,
