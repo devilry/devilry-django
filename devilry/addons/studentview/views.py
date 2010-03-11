@@ -80,10 +80,10 @@ def add_delivery(request, assignment_group_id, messages=None):
         }, context_instance=RequestContext(request))
 
 
-def successful_delivery(request, delivery_id):
+def successful_delivery(request, assignment_group_id):
     messages = UiMessages()
     messages.add_info(_('Successful delivery'))
-    return add_delivery(request, delivery_id, messages)
+    return add_delivery(request, assignment_group_id, messages)
 
 
 from devilry.core.utils.GroupAssignments import group_assignments 

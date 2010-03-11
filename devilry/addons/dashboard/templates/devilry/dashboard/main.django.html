@@ -1,35 +1,25 @@
-{% extends "devilry/examinerview/base.django.html" %}
+{% extends "devilry/dashboard/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block title %}
-  {% trans "Examiner dashboard" %}
+  {% trans "Dashboard" %}
 {% endblock %}
 
 {% block heading %}
-  {% trans "Examiner dashboard" %}
+  {% trans "Dashboard" %}
 {% endblock %}
 
-{% block breadcrumbs-content %}
-<li>{% trans "Dashboard" %}</li>
+{% block breadcrumbs %}
 {% endblock %}
 
 {% block main %}
 
-<div class='dashboard_box visible' id='active_assignments'>
-  <h2>{% trans "Dashboard" %}</h2>
+<div id='dashboard_box'>
   <ul>
   {% for app in applications %}
-  <li><a href="{{ app.url }}"> {{ app.label }} </a></li>
+    <li><a href="{{ app.url }}"> {{ app.label }} </a></li>
   {% endfor %}
-  
-  </ul>
-</div>
-
-<div class='dashboard_box hidden' id='other'>
-  <h2>{% trans "Other" %}</h2>
-  <ul>
-    <!--<li><a href=''></a></li>-->
   </ul>
 </div>
 
