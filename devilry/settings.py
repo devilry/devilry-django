@@ -98,7 +98,7 @@ INSTALLED_APPS = (
     'devilry.ui',
     'devilry.addons.studentview',
     'devilry.addons.examinerview',
-    'devilry.adminview',
+    'devilry.addons.adminview',
     'devilry.addons.grade_approved',
     'devilry.addons.grade_default',
     'devilry.addons.dashboard',
