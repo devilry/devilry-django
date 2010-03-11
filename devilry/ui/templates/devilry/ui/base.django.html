@@ -29,13 +29,16 @@
 
 
     <div id='topbar'>
-    {% block breadcrumbs %}
+    {% block topbar %}
       <ul id='breadcrumbs'>
-        {% block breadcrumbs-content %}{% endblock %}
+        {% block breadcrumbs %}
+          <li><a href='/'>{% trans "Dashboard" %}</a></li>
+          <li>::</li>
+        {% endblock %}
       </ul>
+
       <ul id='links'>
         {% block links %}
-          <li><a href='/'>{% trans "Home" %}</a></li>
           {% if user.is_authenticated %}
             <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
           {% endif %}

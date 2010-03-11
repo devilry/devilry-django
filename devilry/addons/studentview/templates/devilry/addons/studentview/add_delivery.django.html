@@ -7,7 +7,8 @@
 {% endblock %}
 
 
-{% block breadcrumbs-content %}
+{% block breadcrumbs %}
+{{ block.super }}
 <li>
   <a href='{% url devilry.addons.studentview.views.choose_assignment %}'>
     {% trans "Choose assignment" %}

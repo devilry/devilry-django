@@ -52,6 +52,7 @@ body {
 	width: 700px;
 	margin: 0 auto 0 auto;
 	padding: 10px 40px 10px 40px;
+	min-height: 20px;
 }
 
 #topbar ul {
