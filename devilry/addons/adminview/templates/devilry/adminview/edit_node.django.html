@@ -2,10 +2,18 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "Edit " %}{% endblock %}
-{% block heading %}{% trans "Edit " %}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block heading %}{{ title }}{% endblock %}
 
-{% block admincontent %}
+
+{% block admin-breadcrumbs %}
+  {{ block.super }}
+  <li><a href='../'>{{ model_plural_name|capfirst }}</a></li>
+  <li>::</li>
+  <li>{{ title }}</li>
+{% endblock %}
+
+{% block main %}
 
 {% if message %}
 	<p>{{ message }}</p>

@@ -2,15 +2,15 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "Edit " %}{{ nodeform.instance }}{% endblock %}
-{% block heading %}{% trans "Edit " %}{{ nodeform.instance }}{% endblock %}
 
-{% block content %}
-
-{% block links %}
-<p>Back to <a href='{% url main %}'>admin dashboard</a>.</p>
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% block admin-breadcrumbs %}
+    <li><a href='{% url devilry.addons.adminview.views.main %}'>{% trans "Admin dashboard" %}</a></li>
+    <li>::</li>
+  {% endblock %}
 {% endblock %}
 
-{% block admincontent %}{% endblock %}
-
+{% block content %}
+  {% block main %}{% endblock %}
 {% endblock %}

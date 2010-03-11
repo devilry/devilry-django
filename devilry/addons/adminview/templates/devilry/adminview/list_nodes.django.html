@@ -2,10 +2,15 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "List nodes" %}{% endblock %}
-{% block heading %}{% trans "List nodes" %}{% endblock %}
+{% block title %}{{ model_plural_name|capfirst }}{% endblock %}
+{% block heading %}{{ model_plural_name|capfirst }}{% endblock %}
 
-{% block admincontent %}
+{% block admin-breadcrumbs %}
+  {{ block.super }}
+  <li>{{ model_plural_name|capfirst }}</li>
+{% endblock %}
+
+{% block main %}
 <p>
   <a href='add'>{% trans "Create new" %}</a>
 </p>

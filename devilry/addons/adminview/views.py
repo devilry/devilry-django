@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.forms.formsets import formset_factory
+from django.utils.translation import ugettext as _
 from devilry.core.models import (Delivery, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 
@@ -51,7 +52,16 @@ def edit_node_generic(request, nodecls, parentnodecls, view_name, node_id=None):
             message = nodecls._meta.verbose_name + ' saved'
     else:
         nodeform = NodeForm(instance=node)
+
+    d = {'model_name': nodecls._meta.verbose_name}
+    if node_id:
+        title = _('Edit %(model_name)s' % d)
+    else:
+        title = _('New %(model_name)s') % d
+
     return render_to_response('devilry/adminview/edit_node.django.html', {
+        'title': title,
+        'model_plural_name': nodecls._meta.verbose_name_plural,
         'nodeform': nodeform,
         'message': message,
         'post_url': post_url,
@@ -78,6 +88,7 @@ def edit_assignment(request, node_id=None):
 
 def list_nodes_generic(request, nodecls):
     return render_to_response('devilry/adminview/list_nodes.django.html', {
+        'model_plural_name': nodecls._meta.verbose_name_plural,
         'nodes': nodecls.where_is_admin(request.user),
         }, context_instance=RequestContext(request))
 

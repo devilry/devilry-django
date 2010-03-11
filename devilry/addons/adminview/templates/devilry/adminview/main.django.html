@@ -5,7 +5,13 @@
 {% block title %}{% trans "Admin dashboard" %}{% endblock %}
 {% block heading %}{% trans "Admin dashboard" %}{% endblock %}
 
-{% block content %}
+
+{% block admin-breadcrumbs %}
+  <li>{% trans "Admin dashboard" %}</li>
+{% endblock %}
+
+
+{% block main %}
 <ul id='actionlist'>
   {% if nodes.all.count %}
     <li><a href='{% url list-nodes %}'>Nodes</a></li>
