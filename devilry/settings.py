@@ -120,6 +120,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-DEVILRY_MAIN_PAGE = '/dashboard/'
-
+DEVILRY_MAIN_PAGE = '/'
 BASE_TEMPLATE = 'devilry/base.django.html'
