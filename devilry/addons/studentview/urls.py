@@ -9,5 +9,5 @@ urlpatterns = patterns('devilry.addons.studentview',
     (r'^successful-delivery/(?P<assignment_group_id>\d+)$', 'views.successful_delivery'),
 
     (r'^show-history/$', 'views.show_history'),
-    (r'^show-assignment-group/(?P<assignmentgroup_id>\d+)$', 'views.show_assignmentgroup'),
+    (r'^show-assignmentgroup/(?P<assignmentgroup_id>\d+)$', 'views.show_assignmentgroup'),
 )
