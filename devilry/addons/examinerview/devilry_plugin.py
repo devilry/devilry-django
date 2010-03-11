@@ -4,5 +4,7 @@ from devilry.addons.dashboard.dashboardplugin_registry import register
 register('correctdelivery_key', 
          'Correct Delivery', 
          '/examinerview/', 
-         'ikon.png', 
-         description = _('Correct delivery.'))
+         description = _('Correct delivery.')
+         icon='ikon.png',
+         examiner_access=True,
+         )
