@@ -15,9 +15,7 @@ urlpatterns = patterns('devilry.addons.examinerview',
         'views.show_delivery', name='show-delivery'),
     url(r'^correct-delivery/(?P<delivery_id>\d+)$',
         'views.correct_delivery', name='correct-delivery'),
-    url(r'^successful-delivery/(?P<delivery_id>\d+)$',
-        'views.successful_delivery', name='successful-delivery'),
-
+    
     url(r'^list_assignmentgroups/(?P<assignment_id>\d+)$',
         'views.list_assignmentgroups', name='list-assignmentgroups'),
     

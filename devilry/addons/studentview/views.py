@@ -86,7 +86,8 @@ def successful_delivery(request, assignment_group_id):
     return add_delivery(request, assignment_group_id, messages)
 
 
-from devilry.core.utils.GroupAssignments import group_assignments 
+from devilry.core.utils.GroupNodes import group_assignments, group_assignmentgroups
+#from devilry.core.utils.GroupAssignments import group_assignments, group_assignmentgroups
 
 @login_required
 def choose_assignment(request):

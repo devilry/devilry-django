@@ -122,3 +122,5 @@ DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 DEVILRY_MAIN_PAGE = '/'
 BASE_TEMPLATE = 'devilry/base.django.html'
+
+MEDIA_ICONS_URL = 'media/icons/'
