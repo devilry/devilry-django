@@ -1,10 +1,10 @@
 class PluginItem(object):
 
-    def __init__(self, key, label, url, description, icon, student_access, examiner_access, admin_access):
+    def __init__(self, key, label, url, description, iconurl, student_access, examiner_access, admin_access):
         self.key = key
         self.label = label
         self.url = url
-        self.icon = icon
+        self.icon = key + ".png"
         self.description = description
         self.student_access = student_access
         self.examiner_access = examiner_access
