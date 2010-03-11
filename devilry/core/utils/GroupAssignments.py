@@ -1,10 +1,26 @@
 from devilry.core.utils import OrderedDict
 
-def group_assignments(assignment_groups):
+
+def group_assignmentgroups(assignment_groups):
     
     dict = OrderedDict()
 
     for group in assignment_groups:
+        
+        if not dict.has_key(group.parentnode.parentnode.parentnode):
+            subject = Subject(group.parentnode.parentnode.parentnode.short_name)
+            dict[group.parentnode.parentnode.parentnode] = subject
+
+        dict[group.parentnode.parentnode.parentnode].add_period(group)
+
+    return dict.values()
+
+
+def group_assignments(assignments):
+    
+    dict = OrderedDict()
+
+    for group in assignments:
         
         if not dict.has_key(group.parentnode.parentnode.parentnode):
             subject = Subject(group.parentnode.parentnode.parentnode.short_name)
