@@ -7,11 +7,18 @@ Developer documentation
 Extending devilry
 =================
 
-* **API reference:**
 
-  * :ref:`ref-devilry.core.models`
-  * :ref:`ref-devilry.core.utils`
+Plugins
+-------
 
+* **The basics:** :ref:`developer-howto-plugins`
+* **Grade plugins:** :ref:`Overview <developer-howto-grade-plugins>`
+
+
+Api refererence
+---------------
+
+* **Core:** :ref:`devilry.core.models <ref-devilry.core.models>` | :ref:`devilry.core.utils <ref-devilry.core.utils>`
 
 
 Developing devilry

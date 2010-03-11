@@ -20,7 +20,7 @@ The devilry data-model file, devilry.core.models.py_, is a good example.
 
 
 How documentation is organized
-------------------------------
+==============================
 
 Documentation lives ``doc/``. The sources are in ``doc/source``, and the
 sources are organized like this:

@@ -7,3 +7,5 @@ How-to's
     :maxdepth: 2
 
     documentation
+    plugins
+    grade-plugins
