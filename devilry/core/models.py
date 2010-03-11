@@ -609,7 +609,7 @@ class FileMeta(models.Model):
 
 
     def remove_file(self):
-        return self.store.remove(self, filemeta_obj.filename)
+        return self.store.remove(self)
 
     def read_open(self):
         return self.store.read_open(self.delivery, self.filename)

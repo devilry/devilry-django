@@ -46,4 +46,9 @@ class FsDeliveryStore(object):
 
     def remove(self, filemeta_obj):
         filepath = self._get_filepath(filemeta_obj)
-        remove(fileath)
+
+        try:
+            remove(filepath)
+        except:
+            pass
+        
