@@ -7,6 +7,13 @@ How to write a plugin
 
 A plugin is basically just a normal Django application. The only thing making
 it a *pugin* is that it integrates itself into the Devilry system in some way.
+
+
+Setting up your testsite
+========================
+
+** This section is not correct/complete yet.**
+
 In this *howto* we assume you have created a django site, ``mysite/``, and 
 and that your plugin is a application in this site called ``myplugin``. It should
 look something like this::
@@ -34,7 +41,7 @@ First initialize the plugin system by adding::
     from devilry.core import pluginloader
     pluginloader.autodiscover()
 
-to your ``urls.py``, making it look something like this::
+to your ``mysite/urls.py``, making it look something like this::
 
     from django.conf.urls.defaults import *
 
