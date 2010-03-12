@@ -14,8 +14,8 @@ import gradeplugin_registry
 class BaseNode(models.Model):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
-    used by the other Node classes. Is typically subclassed rather than 
-    instantiated. 
+    used by the other Node classes. This is a abstract datamodel, so it
+    is never used directly.
 
     .. attribute:: short_name
 
