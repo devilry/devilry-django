@@ -59,6 +59,20 @@
         }
     }, 
     {
+        "pk": 3, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF2100 - Programmeringslaboratorium", 
+            "admins": [
+                3, 
+                4, 
+                5
+            ], 
+            "parentnode": 1, 
+            "short_name": "inf2100"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.period", 
         "fields": {
@@ -119,16 +133,34 @@
         }
     }, 
     {
+        "pk": 6, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "h2010", 
+            "start_time": "2010-03-11 21:33:00", 
+            "parentnode": 3, 
+            "long_name": "H\u00f8st 2010", 
+            "admins": [
+                1, 
+                3, 
+                4
+            ], 
+            "end_time": "2010-12-11 21:33:01"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
             "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "oblig1", 
+            "short_name": "week1", 
             "publishing_time": "2010-01-01 00:00:00", 
             "parentnode": 1, 
-            "long_name": "Obligatory assignment 1", 
+            "long_name": "Week 1", 
             "admins": [
-                6
+                3, 
+                4, 
+                5
             ], 
             "deadline": "2040-01-01 00:00:00"
         }
@@ -170,6 +202,130 @@
             "long_name": "Oblig 1", 
             "admins": [], 
             "deadline": "2029-05-01 12:00:00"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "Oblig1", 
+            "publishing_time": "2010-03-10 20:22:00", 
+            "parentnode": 5, 
+            "long_name": "Obligatory assignment 1", 
+            "admins": [
+                3
+            ], 
+            "deadline": "2010-03-12 20:23:00"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "week2", 
+            "publishing_time": "2010-03-11 21:19:27", 
+            "parentnode": 3, 
+            "long_name": "Week 2", 
+            "admins": [
+                4, 
+                5
+            ], 
+            "deadline": "2010-03-15 21:19:20"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "week1", 
+            "publishing_time": "2010-03-11 21:21:34", 
+            "parentnode": 3, 
+            "long_name": "Week 1", 
+            "admins": [
+                4
+            ], 
+            "deadline": "2010-03-14 21:21:35"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "del0", 
+            "publishing_time": "2010-03-11 21:34:04", 
+            "parentnode": 6, 
+            "long_name": "Del 0", 
+            "admins": [
+                4, 
+                5
+            ], 
+            "deadline": "2010-09-11 21:34:05"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "del1", 
+            "publishing_time": "2010-03-11 21:34:49", 
+            "parentnode": 6, 
+            "long_name": "Del 1", 
+            "admins": [
+                4, 
+                5
+            ], 
+            "deadline": "2010-10-11 21:34:51"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "del2", 
+            "publishing_time": "2010-03-11 21:35:09", 
+            "parentnode": 6, 
+            "long_name": "Del 2", 
+            "admins": [
+                4, 
+                5
+            ], 
+            "deadline": "2010-11-11 21:35:10"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig2", 
+            "publishing_time": "2008-03-11 21:38:03", 
+            "parentnode": 5, 
+            "long_name": "Oblig 2", 
+            "admins": [
+                6
+            ], 
+            "deadline": "2008-03-11 21:38:04"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig1", 
+            "publishing_time": "2008-03-11 21:39:43", 
+            "parentnode": 5, 
+            "long_name": "Oblig 1", 
+            "admins": [
+                6
+            ], 
+            "deadline": "2008-03-11 23:39:43"
         }
     }, 
     {
@@ -265,13 +421,164 @@
         }
     }, 
     {
-        "pk": 1, 
-        "model": "core.delivery", 
+        "pk": 7, 
+        "model": "core.assignmentgroup", 
         "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-07 17:40:53", 
-            "assignment_group": 1
+            "students": [
+                4, 
+                5, 
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 5
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 6
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 6
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                8
+            ], 
+            "is_open": true, 
+            "examiners": [
+                11
+            ], 
+            "parentnode": 6
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 7
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                11
+            ], 
+            "parentnode": 7
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6, 
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 8
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                8
+            ], 
+            "is_open": true, 
+            "examiners": [
+                11
+            ], 
+            "parentnode": 8
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6, 
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 9
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6, 
+                7
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 10
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 11
         }
     }, 
     {
@@ -280,8 +587,8 @@
         "fields": {
             "delivered_by": 6, 
             "successful": true, 
-            "time_of_delivery": "2010-03-07 17:41:05", 
-            "assignment_group": 1
+            "time_of_delivery": "2010-03-11 20:40:53", 
+            "assignment_group": 7
         }
     }, 
     {
@@ -290,8 +597,8 @@
         "fields": {
             "delivered_by": 6, 
             "successful": true, 
-            "time_of_delivery": "2010-03-07 17:41:40", 
-            "assignment_group": 3
+            "time_of_delivery": "2010-03-11 21:05:03", 
+            "assignment_group": 7
         }
     }, 
     {
@@ -300,53 +607,92 @@
         "fields": {
             "delivered_by": 6, 
             "successful": true, 
-            "time_of_delivery": "2010-03-07 17:42:01", 
-            "assignment_group": 4
+            "time_of_delivery": "2010-03-11 21:24:57", 
+            "assignment_group": 11
         }
     }, 
     {
-        "pk": 1, 
-        "model": "core.filemeta", 
+        "pk": 5, 
+        "model": "core.delivery", 
         "fields": {
-            "delivery": 1, 
-            "size": 5, 
-            "filename": "tull.txt"
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-11 21:26:56", 
+            "assignment_group": 8
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-11 21:29:08", 
+            "assignment_group": 8
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-11 21:40:48", 
+            "assignment_group": 17
         }
     }, 
     {
         "pk": 2, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 1, 
-            "size": 6, 
-            "filename": "stuff.txt"
-        }
-    }, 
-    {
-        "pk": 3, 
         "model": "core.filemeta", 
         "fields": {
             "delivery": 2, 
-            "size": 6, 
-            "filename": "hello.txt"
+            "size": 3102, 
+            "filename": "nude.txt"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 3, 
+            "size": 75605, 
+            "filename": "Wife-shop-alone.jpg"
         }
     }, 
     {
         "pk": 4, 
         "model": "core.filemeta", 
         "fields": {
-            "delivery": 3, 
-            "size": 6, 
-            "filename": "hello.txt"
+            "delivery": 4, 
+            "size": 40062, 
+            "filename": "fail-owned-cuyama-fail.jpg"
         }
     }, 
     {
         "pk": 5, 
         "model": "core.filemeta", 
         "fields": {
-            "delivery": 4, 
-            "size": 6, 
-            "filename": "stuff.txt"
+            "delivery": 5, 
+            "size": 140931, 
+            "filename": "calculus-fail.jpg"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 6, 
+            "size": 48255, 
+            "filename": "dating_pools.png"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 7, 
+            "size": 4648, 
+            "filename": "License.txt"
         }
     }
 ]
