@@ -93,7 +93,6 @@ body {
 }
 
 
-
 /***********************************************************
  * Page sidebar
  **********************************************************/
@@ -152,6 +151,39 @@ body {
 	font-family: "Century Gothic", sans-serif;
 	font-weight: normal;
 }
+
+
+/***********************************************************
+ * Page messages
+ **********************************************************/
+#messages ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#messages li {
+	padding: 5px;
+	font-size: 0.8em;
+	margin: 10px 0 10px 0;
+}
+#messages li.success_message{
+	border: 1px solid #315C00;
+	background-color: #BFFF75;
+}
+#messages li.info_message {
+	border: 1px solid #808000;
+	background-color: #FFFFCC;
+}
+#messages li.warning_message {
+	border: 1px solid #B34700;
+	background-color: #FFB380;
+}
+#messages li.error_message {
+	border: 3px solid #000;
+	background-color: #CC0000;
+}
+
 
 
 /***********************************************************

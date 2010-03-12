@@ -63,9 +63,15 @@
         {% block messages %}
           {% if messages %}
             <ul>
-            {% for message_class, message in messages %}
+            {% for message_class, raw_html, message in messages %}
               {% block message %}
-                <li class='{{ message_class }}'>{{ message }}</li>
+                <li class='{{ message_class }}'>
+                  {% if raw_html %}
+                    {{ message|safe }}
+                  {% else %}
+                    {{ message }}
+                  {% endif %}
+                </li>
               {% endblock %}
             {% endfor %}
             </ul>

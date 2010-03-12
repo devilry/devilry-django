@@ -8,7 +8,8 @@ from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext as _
 from devilry.core.models import (Delivery, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
-
+from devilry.ui.messages import UiMessages
+from devilry.core import gradeplugin_registry
 
 
 @login_required
@@ -27,15 +28,17 @@ class EditNodeBase(object):
 
     def __init__(self, request, node_id):
         self.request = request
+        self.messages = UiMessages()
+        self.parent_model = self.MODEL_CLASS.parentnode.field.related.parent_model
 
         if node_id == None:
+            self.is_new = True
             self.node = self.MODEL_CLASS()
         else:
+            self.is_new = False
             self.node = get_object_or_404(self.MODEL_CLASS, pk=node_id)
-        if not self.node.can_save(request.user):
-            return HttpResponseForbidden("Forbidden")
 
-        if self.node.pk == None:
+        if self.is_new:
             self.post_url = reverse('add-' + self.VIEW_NAME)
         else:
             self.post_url = reverse('edit-' + self.VIEW_NAME, args=(str(self.node.pk)))
@@ -43,36 +46,39 @@ class EditNodeBase(object):
 
     def create_form(self):
         class NodeForm(forms.ModelForm):
-            parentnode = forms.ModelChoiceField(required=False,
-                    queryset = self.MODEL_CLASS.where_is_admin(self.request.user))
+            parentnode = forms.ModelChoiceField(required=True,
+                    queryset = self.parent_model.where_is_admin(self.request.user))
             class Meta:
                 model = self.MODEL_CLASS
         return NodeForm
 
 
     def create_view(self):
+        if not self.node.can_save(self.request.user):
+            return HttpResponseForbidden("Forbidden")
+
         model_name = self.MODEL_CLASS._meta.verbose_name
+        model_name_dict = {'model_name': model_name}
         form_cls = self.create_form()
-        message = None
+
         if self.request.POST:
             nodeform = form_cls(self.request.POST, instance=self.node)
             if nodeform.is_valid():
                 nodeform.save()
-                message = model_name + ' saved'
+                self.messages.add_success('Save successful')
         else:
             nodeform = form_cls(instance=self.node)
 
-        d = {'model_name': model_name}
         if self.node.id == None:
-            title = _('New %(model_name)s') % d
+            title = _('New %(model_name)s') % model_name_dict
         else:
-            title = _('Edit %(model_name)s' % d)
+            title = _('Edit %(model_name)s' % model_name_dict)
 
         return render_to_response('devilry/adminview/edit_node.django.html', {
             'title': title,
             'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
             'nodeform': nodeform,
-            'message': message,
+            'messages': self.messages,
             'post_url': self.post_url,
             }, context_instance=RequestContext(self.request))
 
@@ -100,6 +106,34 @@ class EditPeriod(EditNodeBase):
 class EditAssignment(EditNodeBase):
     VIEW_NAME = 'assignment'
     MODEL_CLASS = Assignment
+
+    def create_form(self):
+        Form = super(EditAssignment, self).create_form()
+        if self.is_new:
+            Form = super(EditAssignment, self).create_form()
+        else:
+            class Form(forms.ModelForm):
+                parentnode = forms.ModelChoiceField(required=True,
+                        queryset = self.parent_model.where_is_admin(self.request.user))
+                class Meta:
+                    model = self.MODEL_CLASS
+                    exclude = ['grade_plugin']
+        return Form
+
+    def create_view(self):
+        gradeplugin = gradeplugin_registry.get(self.node.grade_plugin)
+        msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
+                'grade-plugin. You cannot change grade-plugin on an ' \
+                'existing assignment.' % {'gradeplugin_label': gradeplugin.label})
+        if gradeplugin.admin_url_callback:
+            url = gradeplugin.admin_url_callback(self.node.id)
+            msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
+                    'to administer the plugin.' % {'gradeplugin_admin_url': url})
+            self.messages.add_info('%s %s' % (msg, msg2), raw_html=True)
+        else:
+            self.messages.add_info(msg, raw_html=True)
+
+        return super(EditAssignment, self).create_view()
 
 
 @login_required

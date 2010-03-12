@@ -81,7 +81,7 @@ class BaseNode(models.Model):
                 return False
             # Must be admin on "parentnode" class to be permitted
             parentcls = self.__class__.parentnode.field.related.parent_model
-            return parentcls.where_is_admin(user_obj).count() == 0
+            return parentcls.where_is_admin(user_obj).count() != 0
         elif self.is_admin(user_obj):
             return True
         else:
