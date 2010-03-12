@@ -11,9 +11,9 @@ how to write *restructured text* and how to use the Sphinx-specific
 The most relevant Sphinx documentation if you are just documenting a python
 module is:
 
-    * `reStructuredText Primer <http://sphinx.pocoo.org/rest.html>`_
-    * `Module-specific markup <http://sphinx.pocoo.org/markup/desc.html>`_
-    * `Include documentation from docstrings <http://sphinx.pocoo.org/ext/autodoc.html>`_
+* `reStructuredText Primer <http://sphinx.pocoo.org/rest.html>`_
+* `Module-specific markup <http://sphinx.pocoo.org/markup/desc.html>`_
+* `Include documentation from docstrings <http://sphinx.pocoo.org/ext/autodoc.html>`_
 
 You can find lots of examples in the `devilry sourcecode`_.
 The devilry data-model file, devilry.core.models.py_, is a good example.
@@ -25,11 +25,15 @@ How documentation is organized
 Documentation lives ``doc/``. The sources are in ``doc/source``, and the
 sources are organized like this:
 
+* ``source/index.rst`` --- Frontpage.
+* ``source/contents.rst`` --- Table of contents.
+* ``source/documentation.rst`` --- The documentation index page.
 * ``source/developer`` --- Developer documentation.
     * ``ref/`` --- Module API reference.
     * ``howto/`` --- How-to's. 
-* ``source/user`` --- User documentation.
-* ``source/admin`` --- Administrator documentation.
+
+
+
 
 
 .. _Sphinx: http://sphinx.pocoo.org/
