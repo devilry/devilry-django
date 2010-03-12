@@ -26,11 +26,16 @@ class BaseNode(models.Model):
 
         A django.db.models.CharField_ with max 100 characters. Gives a longer 
         description than :attr:`short_name`
-        
 
     .. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield
     .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
-
+    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
+    .. _django.db.models.OneToOneField: http://docs.djangoproject.com/en/dev/ref/models/fields/#onetoonefield
+    .. _django.db.models.TextField: http://docs.djangoproject.com/en/dev/ref/models/fields/#textfield
+    .. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
     """
 
 
@@ -51,6 +56,11 @@ class BaseNode(models.Model):
         return u', '.join(u.username for u in self.admins.all())
 
     def is_admin(self, user_obj):
+        """ Check if the given user is admin on this node or any parentnode.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: bool
+        """
         if self.admins.filter(pk=user_obj.pk):
             return True
         elif self.parentnode:
@@ -58,9 +68,28 @@ class BaseNode(models.Model):
         else:
             return False
 
+    def can_save(self, user_obj):
+        """ Check if the give user has permission to save this node.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: bool
+        """
+        if user_obj.is_superuser:
+            return True
+        if self.id == None:
+            if self.__class__ == Node:
+                return False
+            # Must be admin on "parentnode" class to be permitted
+            parentcls = self.__class__.parentnode.field.related.parent_model
+            return parentcls.where_is_admin(user_obj).count() == 0
+        elif self.is_admin(user_obj):
+            return True
+        else:
+            return False
+
+
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Get all nodes where `user_obj` is admin. """
         raise NotImplementedError()
 
 
@@ -77,11 +106,6 @@ class Node(BaseNode):
     .. attribute:: admins
         
         A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
-
-
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
-
     """
     parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
@@ -138,6 +162,11 @@ class Node(BaseNode):
 
     @classmethod
     def where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all Nodes where the given user is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return Node.objects.filter(pk__in=cls._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
@@ -210,10 +239,6 @@ class Subject(BaseNode):
     .. attribute:: admins
         
         A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
-
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
-
     """
     
     
@@ -222,6 +247,11 @@ class Subject(BaseNode):
     
     @classmethod
     def where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all Subjects where the given user is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return Subject.objects.filter(
                 Q(admins__pk=user_obj.pk)
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
@@ -252,12 +282,6 @@ class Period(BaseNode):
     .. attribute:: admins
         
         A django.db.models.ManyToManyField_ that holds all the admins of the node.
-
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
-    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
-
-
     """
     parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
@@ -267,6 +291,11 @@ class Period(BaseNode):
 
     @classmethod
     def where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all Periods where the given user is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return Period.objects.filter(
                 Q(admins=user_obj) |
                 Q(parentnode__admins=user_obj) |
@@ -307,13 +336,6 @@ class Assignment(BaseNode):
     .. attribute:: feedback_plugin
 
         A django.db.models.CharField_ that holds the current feedback plugin used.
-
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
-    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
-    .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
-
-
     """
 
     parentnode = models.ForeignKey(Period)
@@ -325,6 +347,11 @@ class Assignment(BaseNode):
 
     @classmethod
     def where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all Assignments where the given user is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return Assignment.objects.filter(
                 Q(admins=user_obj) |
                 Q(parentnode__admins=user_obj) |
@@ -369,13 +396,6 @@ class AssignmentGroup(models.Model):
 
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
-
-
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
-    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
-
-
     """
     parentnode = models.ForeignKey(Assignment)
     students = models.ManyToManyField(User, blank=True, related_name="students")
@@ -386,6 +406,11 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all AssignmentGroups where the given user is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return AssignmentGroup.objects.filter(
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__admins=user_obj) |
@@ -482,11 +507,6 @@ class Delivery(models.Model):
 
         A django.db.models.BooleanField_ telling whether or not the Delivery was
         successfully uploaded.
-    
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
-    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
-    
     """
     
     assignment_group = models.ForeignKey(AssignmentGroup)
@@ -506,6 +526,11 @@ class Delivery(models.Model):
 
     @classmethod
     def where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all Deliveries where the given user is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return Delivery.objects.filter(
                 Q(assignment_group__parentnode__admins=user_obj) |
                 Q(assignment_group__parentnode__parentnode__admins=user_obj) |
@@ -558,26 +583,26 @@ class Feedback(models.Model):
 
     .. attribute:: grade
 
-        A django.db.models.Charfield representing the grade given for the Delivery.
+        A django.db.models.Charfield_ representing the grade given for the Delivery.
 
     .. attribute:: feedback_text
 
-        A django.db.models.TextField that holds the feedback text given by the examiner.
+        A django.db.models.TextField_ that holds the feedback text given by the examiner.
 
     .. attribute:: feedback_format
 
-        A django.db.models.CharField that holds the format of the feedback text.
+        A django.db.models.CharField_ that holds the format of the feedback text.
 
     .. attribute:: feedback_published
 
-        A django.db.models.BooleanField that tells if the feedback is published or not. 
+        A django.db.models.BooleanField_ that tells if the feedback is published or not. 
         This allows editing and saving the feedback before publishing it. Is useful for
         exams and other assignments when feedback and grading is published simultaneously
         for all Deliveries.
 
     .. attribute:: delivery
 
-        A django.db.models.OneToOneField that points to the `Delivery`_ to be given
+        A django.db.models.OneToOneField_ that points to the `Delivery`_ to be given
         feedback.
 
     """
@@ -621,6 +646,4 @@ def filemeta_deleted_handler(sender, **kwargs):
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
-
-
 

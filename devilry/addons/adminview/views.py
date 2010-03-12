@@ -22,36 +22,27 @@ def main(request):
 
 
 
-def edit_node_generic(request, nodecls, parentnodecls, view_name, node_id=None):
-    class NodeForm(forms.ModelForm):
-        parentnode = forms.ModelChoiceField(
-                queryset = parentnodecls.where_is_admin(request.user),
-                empty_label = "(Nothing)")
-        class Meta:
-            model = nodecls
+def edit_node_generic(request, nodecls, parentnodecls, view_name,
+        form_cls, node_id=None):
 
     message = None
     if node_id == None:
-        if not request.user.is_superuser:
-            if nodecls == Node:
-                return HttpResponseForbidden("Forbidden")
-            elif parentnodecls.where_is_admin(request.user).count() == 0:
-                return HttpResponseForbidden("Forbidden")
         node = nodecls()
         post_url = reverse('add-' + view_name)
     else:
         node = get_object_or_404(nodecls, pk=node_id)
-        if not node.is_admin(request.user):
-            return HttpResponseForbidden("Forbidden")
         post_url = reverse('edit-' + view_name, args=(str(node.pk)))
 
+    if not node.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+
     if request.POST:
-        nodeform = NodeForm(request.POST, instance=node)
+        nodeform = form_cls(request.POST, instance=node)
         if nodeform.is_valid():
             nodeform.save()
             message = nodecls._meta.verbose_name + ' saved'
     else:
-        nodeform = NodeForm(instance=node)
+        nodeform = form_cls(instance=node)
 
     d = {'model_name': nodecls._meta.verbose_name}
     if node_id:
@@ -67,21 +58,46 @@ def edit_node_generic(request, nodecls, parentnodecls, view_name, node_id=None):
         'post_url': post_url,
         }, context_instance=RequestContext(request))
 
+
+
 @login_required
 def edit_node(request, node_id=None):
-    return edit_node_generic(request, Node, Node, 'node', node_id)
+    class NodeForm(forms.ModelForm):
+        parentnode = forms.ModelChoiceField(required=False,
+                queryset = Node.where_is_admin(request.user))
+        class Meta:
+            model = Node
+    return edit_node_generic(request, Node, Node, 'node', NodeForm, node_id)
 
 @login_required
 def edit_subject(request, node_id=None):
-    return edit_node_generic(request, Subject, Node, 'subject', node_id)
+    class SubjectForm(forms.ModelForm):
+        parentnode = forms.ModelChoiceField(
+                queryset = Node.where_is_admin(request.user))
+        class Meta:
+            model = Subject
+    return edit_node_generic(request, Subject, Node, 'subject', SubjectForm,
+            node_id)
 
 @login_required
 def edit_period(request, node_id=None):
-    return edit_node_generic(request, Period, Subject, 'period', node_id)
+    class PeriodForm(forms.ModelForm):
+        parentnode = forms.ModelChoiceField(
+                queryset = Subject.where_is_admin(request.user))
+        class Meta:
+            model = Period
+    return edit_node_generic(request, Period, Subject, 'period', PeriodForm,
+            node_id)
 
 @login_required
 def edit_assignment(request, node_id=None):
-    return edit_node_generic(request, Assignment, Period, 'assignment', node_id)
+    class AssignmentForm(forms.ModelForm):
+        parentnode = forms.ModelChoiceField(
+                queryset = Period.where_is_admin(request.user))
+        class Meta:
+            model = Assignment
+    return edit_node_generic(request, Assignment, Period, 'assignment',
+            AssignmentForm, node_id)
 
 
 
