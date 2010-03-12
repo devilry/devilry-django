@@ -43,7 +43,7 @@
       {% for assignment_group in assignment %}
       
 	  <li>
-        <a href='{% url devilry.addons.studentview.views.show_assignmentgroup assignment_group.id %}'>
+        <a href='{% url devilry.addons.studentview.views.show_assignmentgroup assignment_group.node.id %}'>
           {{ assignment }}
         </a>
       </li>
