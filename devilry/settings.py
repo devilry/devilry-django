@@ -101,6 +101,7 @@ INSTALLED_APPS = (
     'devilry.addons.adminview',
     'devilry.addons.grade_approved',
     'devilry.addons.grade_default',
+    'devilry.addons.grade_schema',
     'devilry.addons.dashboard',
     'django.contrib.markup', 
     )

@@ -16,7 +16,7 @@ def register(view, model_cls, label, description, admin_url_callback=None):
     _registry[r.get_key()] = r
 
 def get(key):
-    return _registry.get(key)
+    return _registry[key]
 
 class KeyLabelIterable(object):
     def __iter__(self):

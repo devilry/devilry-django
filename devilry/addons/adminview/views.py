@@ -26,9 +26,11 @@ class EditNodeBase(object):
     VIEW_NAME = None
     MODEL_CLASS = None
 
-    def __init__(self, request, node_id):
+    def __init__(self, request, node_id, successful_save=True):
         self.request = request
         self.messages = UiMessages()
+        if successful_save:
+            self.messages.add_success(_('Save successful'))
         self.parent_model = self.MODEL_CLASS.parentnode.field.related.parent_model
 
         if node_id == None:
@@ -39,10 +41,9 @@ class EditNodeBase(object):
             self.node = get_object_or_404(self.MODEL_CLASS, pk=node_id)
 
         if self.is_new:
-            self.post_url = reverse('add-' + self.VIEW_NAME)
+            self.post_url = self.get_reverse_url()
         else:
-            self.post_url = reverse('edit-' + self.VIEW_NAME, args=(str(self.node.pk)))
-
+            self.post_url = self.get_reverse_url(str(self.node.pk))
 
     def create_form(self):
         class NodeForm(forms.ModelForm):
@@ -51,6 +52,10 @@ class EditNodeBase(object):
             class Meta:
                 model = self.MODEL_CLASS
         return NodeForm
+
+
+    def get_reverse_url(self, *args):
+        return reverse(__name__ + '.edit_' + self.VIEW_NAME, args=args)
 
 
     def create_view(self):
@@ -65,7 +70,8 @@ class EditNodeBase(object):
             nodeform = form_cls(self.request.POST, instance=self.node)
             if nodeform.is_valid():
                 nodeform.save()
-                self.messages.add_success('Save successful')
+                success_url = self.get_reverse_url(str(self.node.pk))
+                return HttpResponseRedirect(success_url)
         else:
             nodeform = form_cls(instance=self.node)
 
@@ -121,37 +127,37 @@ class EditAssignment(EditNodeBase):
         return Form
 
     def create_view(self):
-        gradeplugin = gradeplugin_registry.get(self.node.grade_plugin)
-        msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
-                'grade-plugin. You cannot change grade-plugin on an ' \
-                'existing assignment.' % {'gradeplugin_label': gradeplugin.label})
-        if gradeplugin.admin_url_callback:
-            url = gradeplugin.admin_url_callback(self.node.id)
-            msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
-                    'to administer the plugin.' % {'gradeplugin_admin_url': url})
-            self.messages.add_info('%s %s' % (msg, msg2), raw_html=True)
-        else:
-            self.messages.add_info(msg, raw_html=True)
-
+        if not self.is_new:
+            gradeplugin = gradeplugin_registry.get(self.node.grade_plugin)
+            msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
+                    'grade-plugin. You cannot change grade-plugin on an ' \
+                    'existing assignment.' % {'gradeplugin_label': gradeplugin.label})
+            if gradeplugin.admin_url_callback:
+                url = gradeplugin.admin_url_callback(self.node.id)
+                msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
+                        'to administer the plugin.' % {'gradeplugin_admin_url': url})
+                self.messages.add_info('%s %s' % (msg, msg2), raw_html=True)
+            else:
+                self.messages.add_info(msg, raw_html=True)
         return super(EditAssignment, self).create_view()
 
 
 @login_required
-def edit_node(request, node_id=None):
-    return EditNode(request, node_id).create_view()
+def edit_node(request, node_id=None, successful_save=False):
+    return EditNode(request, node_id, successful_save).create_view()
 
 
 @login_required
-def edit_subject(request, node_id=None):
-    return EditSubject(request, node_id).create_view()
+def edit_subject(request, node_id=None, successful_save=False):
+    return EditSubject(request, node_id, successful_save).create_view()
 
 @login_required
-def edit_period(request, node_id=None):
-    return EditPeriod(request, node_id).create_view()
+def edit_period(request, node_id=None, successful_save=False):
+    return EditPeriod(request, node_id, successful_save).create_view()
 
 @login_required
-def edit_assignment(request, node_id=None):
-    return EditAssignment(request, node_id).create_view()
+def edit_assignment(request, node_id=None, successful_save=False):
+    return EditAssignment(request, node_id, successful_save).create_view()
 
 
 
