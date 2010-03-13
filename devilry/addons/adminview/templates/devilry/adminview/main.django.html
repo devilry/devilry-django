@@ -14,19 +14,19 @@
 {% block main %}
 <ul id='actionlist'>
   {% if nodes.all.count %}
-    <li><a href='{% url list-nodes %}'>Nodes</a></li>
+    <li><a href='{% url devilry.addons.adminview.views.list_nodes %}'>Nodes</a></li>
   {% endif %}
 
   {% if subjects.all.count %}
-    <li><a href='{% url list-subjects %}'>Subjects</a></li>
+    <li><a href='{% url devilry.addons.adminview.views.list_subjects %}'>Subjects</a></li>
   {% endif %}
 
   {% if periods.all.count %}
-    <li><a href='{% url list-periods%}'>Periods</a></li>
+    <li><a href='{% url devilry.addons.adminview.views.list_periods %}'>Periods</a></li>
   {% endif %}
 
   {% if assignments.all.count %}
-    <li><a href='{% url list-assignments%}'>Assignments</a></li>
+    <li><a href='{% url devilry.addons.adminview.views.list_assignments %}'>Assignments</a></li>
   {% endif %}
 </ul>
 {% endblock %}

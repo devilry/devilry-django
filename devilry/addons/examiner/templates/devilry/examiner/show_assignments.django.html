@@ -1,0 +1,55 @@
+{% extends "devilry/examiner/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Examiner dashboard" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "Examiner dashboard" %}
+{% endblock %}
+
+{% block breadcrumbs-content %}
+<li>{% trans "Home" %}</li>
+{% endblock %}
+
+{% block main %}
+
+<div class='dashboard_box visible' id='active_assignments'>
+  <h2>{% trans "Active assignments" %}</h2>
+  <ul>
+  {% for assignment in assignments %}
+  <li><a href='{% url devilry-examiner-show_assignment-groups assignment.id %}'>{{ assignment.parentnode }}</a></li>
+  {% endfor %}
+  </ul>
+
+  {% for course in active_courses %}
+  {% for period in course %}
+  <li>{{ course }} - {{ period }} </li>
+  <ul>
+	{% for assignment_group in period %}
+    <li><a href='{% url devilry-examiner-show_assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> 
+	  
+	  {% if assignment_group.get_grade %}
+	  ({{ assignment_group.get_grade }})
+	  {% else %}
+	  ({{ assignment_group.get_status }})
+	  {% endif %}
+	</li>
+    {% endfor %}
+  </ul>
+  
+  {% endfor %}
+  {% endfor %}
+  
+</div>
+
+<div class='dashboard_box hidden' id='other'>
+  <h2>{% trans "Other" %}</h2>
+  <ul>
+    <!--<li><a href=''></a></li>-->
+  </ul>
+</div>
+
+{% endblock %}
