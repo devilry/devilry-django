@@ -14,6 +14,9 @@ class Entry(models.Model):
     text = models.TextField()
     max_points = models.IntegerField()
 
+    def __unicode__(self):
+        return self.text
+
 class SchemaGradeResult(models.Model):
     entry = models.ForeignKey(Entry)
     delivery = models.OneToOneField(Delivery)

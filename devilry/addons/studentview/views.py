@@ -69,7 +69,7 @@ def add_delivery(request, assignment_group_id, messages=None):
             delivery.finish()
             return HttpResponseRedirect(
                     reverse('devilry.addons.studentview.views.successful_delivery',
-                        args=(assignment_group_id)))
+                        args=[assignment_group_id]))
     else:
         formset = UploadFileFormSet()
 
