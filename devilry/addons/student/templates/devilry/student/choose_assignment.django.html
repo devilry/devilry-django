@@ -1,0 +1,59 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Choose assignment" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "Choose assignment" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li>{% trans "Choose assignment" %}</li>
+{% endblock %}
+
+
+{% block sidebar %}
+<div id='sidebar' class='assignment_group_info'>
+  <div class='section related'>
+    <h2>{% trans "Related" %}</h2>
+    <p>
+      {% url devilry-student-show_history as history_url%}
+      {% blocktrans %}
+        <a href='{{ history_url }}'>The history browser</a> allows you to browse
+        old deliveries.
+      {% endblocktrans %}
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block main %}
+
+<ul>
+{% for subject in subjects %}
+  {% for period in subject %}
+    <li>{{ subject }} - {{ period }} </li>
+    <ul>
+	  {% for assignment in period %}
+        {% for assignment_group in assignment %}
+        <li>
+          <a href='{% url devilry-student-add_delivery assignment_group.node.id %}'>
+			{{ assignment.get_name }}
+          </a>
+		</li>
+		{% endfor %}
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endfor %}
+
+{% for assignment_group in assignment_groups %}
+  <li><a href='{% url devilry-student-show_assignmentgroup assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

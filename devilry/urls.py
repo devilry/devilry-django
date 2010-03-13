@@ -19,10 +19,10 @@ urlpatterns = patterns('',
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    (r'^admin/', include(admin.site.urls)),
+    (r'^superadmin/', include(admin.site.urls)),
     (r'^ui/', include('devilry.ui.urls')),
-    (r'^studentview/', include('devilry.addons.studentview.urls')),
-    (r'^examinerview/', include('devilry.addons.examinerview.urls')),
+    (r'^student/', include('devilry.addons.student.urls')),
+    (r'^examiner/', include('devilry.addons.examiner.urls')),
     (r'^adminview/', include('devilry.addons.adminview.urls')),
     (r'^dashboard/', include('devilry.addons.dashboard.urls')),
     (r'^grade_schema/', include('devilry.addons.grade_schema.urls')),

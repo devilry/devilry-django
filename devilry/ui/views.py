@@ -1,10 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django import forms
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core.servers.basehttp import FileWrapper
+from devilry.core.models import FileMeta
+
 
 def logout_view(request):
     logout(request)
@@ -40,3 +44,14 @@ def login_view(request):
         'form': form,
         'login_failed': login_failed,
         }, context_instance=RequestContext(request))
+
+
+@login_required
+def download_file(request, filemeta_id):
+    filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
+    response = HttpResponse(FileWrapper(
+            file(filemeta.store._get_filepath(filemeta))), content_type='application/zip')
+    response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
+    response['Content-Length'] = filemeta.size
+
+    return response

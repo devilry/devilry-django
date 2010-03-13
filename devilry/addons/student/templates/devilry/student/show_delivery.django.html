@@ -1,0 +1,23 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
+{% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+
+<li><a href='{% url devilry-student-show_history %}'>{% trans "History browser" %}</a></li>
+<li>::</li>
+<li><a href='{% url devilry-student-show_assignmentgroup delivery.assignment_group.id %}'>{% trans "Assignment information" %}</a></li>
+<li>::</li>
+
+<li>{% trans "Delivery information" %}</li>
+{% endblock %}
+
+{% block main %}
+
+{% include "devilry/ui/include/show_delivery_default.django.html" %}
+
+{% endblock %}

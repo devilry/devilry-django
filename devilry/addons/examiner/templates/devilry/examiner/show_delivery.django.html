@@ -1,0 +1,29 @@
+{% extends "devilry/examiner/examiner.base.django.html" %}
+
+
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
+{% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
+
+
+{% include "devilry/ui/include/show_delivery_default.django.html" %}
+
+{% block main %}
+<h2>{% trans "Time of delivery" %}</h2>
+{{ delivery.time_of_delivery }}
+
+<h2>{% trans "Filess" %}</h2>
+<ul>
+{% for filemeta in delivery.filemeta_set.all %}
+  <li>{{ filemeta.filename }}</li>
+{% endfor %}
+</ul>
+
+<p>
+   <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>{% trans "Correct" %}</a>
+</p>
+{% endblock %}
+
+
