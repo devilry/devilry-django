@@ -14,7 +14,7 @@ from devilry.core import gradeplugin_registry
 
 @login_required
 def main(request):
-    return render_to_response('devilry/adminview/main.django.html', {
+    return render_to_response('devilry/admin/main.django.html', {
         'nodes': Node.where_is_admin(request.user),
         'subjects': Subject.where_is_admin(request.user),
         'periods': Period.where_is_admin(request.user),
@@ -80,7 +80,7 @@ class EditNodeBase(object):
         else:
             title = _('Edit %(model_name)s' % model_name_dict)
 
-        return render_to_response('devilry/adminview/edit_node.django.html', {
+        return render_to_response('devilry/admin/edit_node.django.html', {
             'title': title,
             'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
             'nodeform': nodeform,
@@ -163,7 +163,7 @@ def edit_assignment(request, node_id=None, successful_save=False):
 
 
 def list_nodes_generic(request, nodecls):
-    return render_to_response('devilry/adminview/list_nodes.django.html', {
+    return render_to_response('devilry/admin/list_nodes.django.html', {
         'model_plural_name': nodecls._meta.verbose_name_plural,
         'nodes': nodecls.where_is_admin(request.user),
         }, context_instance=RequestContext(request))

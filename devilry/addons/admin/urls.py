@@ -11,7 +11,7 @@ for x in ('node', 'subject', 'period', 'assignment'):
         url(r'^%ss/$' % x, 'views.list_%ss' % x,
             name='devilry-admin-list_%ss' % x)]
 
-urlpatterns = patterns('devilry.addons.adminview',
-    (r'^$', 'views.main'),
+urlpatterns = patterns('devilry.addons.admin',
+    url(r'^$', 'views.main',  name='devilry-admin-main'),
     *generic_urls
 )

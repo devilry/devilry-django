@@ -1,13 +1,13 @@
-{% extends "devilry/adminview/base.django.html" %}
+{% extends "devilry/admin/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='{% url devilry.addons.adminview.views.list_assignments %}'>{% trans "Assignments" %}</a></li>
+  <li><a href='{% url devilry-admin-list_assignments %}'>{% trans "Assignments" %}</a></li>
   <li>::</li>
-  <li><a href='{% url devilry.addons.adminview.views.edit_assignment assignment.id %}'>{{ assignment.short_name }}</a></li>
+  <li><a href='{% url devilry-admin-edit_assignment assignment.id %}'>{{ assignment.short_name }}</a></li>
   <li>::</li>
 	<li>{% trans "Grade plugin" %}</li>
 {% endblock %}
@@ -17,7 +17,7 @@
 
 {% block content %}
 
-{% url devilry.addons.adminview.views.edit_assignment assignment.id as assignment_editor_url %}
+{% url devilry-admin-edit_assignment assignment.id as assignment_editor_url %}
 <p>{% blocktrans %}<a href='{{ assignment_editor_url }}'>Click here</a> to return to the assignment editor.{% endblocktrans %}</p>
 
 {% block main %}{% endblock %}
