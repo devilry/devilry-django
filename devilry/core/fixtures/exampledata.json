@@ -329,6 +329,19 @@
         }
     }, 
     {
+        "pk": 13, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_schema:schemagraderesults", 
+            "short_name": "stuff", 
+            "publishing_time": "2010-01-10 00:00:00", 
+            "parentnode": 1, 
+            "long_name": "Stuff", 
+            "admins": [], 
+            "deadline": "2010-12-10 00:00:00"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
@@ -582,6 +595,20 @@
         }
     }, 
     {
+        "pk": 18, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 13
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "core.delivery", 
         "fields": {
@@ -642,6 +669,16 @@
         }
     }, 
     {
+        "pk": 8, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-03-14 03:02:17", 
+            "assignment_group": 18
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "core.filemeta", 
         "fields": {
@@ -693,6 +730,15 @@
             "delivery": 7, 
             "size": 4648, 
             "filename": "License.txt"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 8, 
+            "size": 3102, 
+            "filename": "nude.txt"
         }
     }
 ]

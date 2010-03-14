@@ -6,9 +6,6 @@ from devilry.core.models import Assignment, Delivery
 class SchemaGrade(models.Model):
     assignment = models.OneToOneField(Assignment, primary_key=True)
 
-    def __unicode__(self):
-        return unicode(self.entry_set.count())
-
 class Entry(models.Model):
     schema = models.ForeignKey(SchemaGrade)
     text = models.TextField()
@@ -17,7 +14,13 @@ class Entry(models.Model):
     def __unicode__(self):
         return self.text
 
-class SchemaGradeResult(models.Model):
+
+class SchemaGradeResults(models.Model):
+    def __unicode__(self):
+        return unicode(self.result_set.count())
+    
+
+class Result(models.Model):
+    results = models.ForeignKey(SchemaGradeResults)
     entry = models.ForeignKey(Entry)
-    delivery = models.OneToOneField(Delivery)
     points = models.IntegerField()

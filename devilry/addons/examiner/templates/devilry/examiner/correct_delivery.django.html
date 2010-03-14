@@ -16,19 +16,24 @@
 
 {% include "devilry/ui/include/show_delivery_default.django.html" %}
 
-
-<h1>{% trans "Edit" %}</h1
-
 {% block form %}
 <form method='post' action='{% url devilry-examiner-correct_delivery delivery.id %}'>
-	<table>
-    {% block grade_form %}
-      {{ grade_form.as_table }}
-    {% endblock %}
-    {% block feedback_form %}
-      {{ feedback_form.as_table }}
-    {% endblock %}
-	</table>
+  {% block formfields %}
+    <h2>{% trans "Grade" %}</h2>
+    <table>
+      {% block grade_form %}
+        {{ grade_form.as_table }}
+      {% endblock %}
+    </table>
+
+    <h2>{% trans "Feedback" %}</h2>
+    <table>
+      {% block feedback_form %}
+        {{ feedback_form.as_table }}
+      {% endblock %}
+    </table>
+  {% endblock formfields %}
+  
 	<p>
 		<input type='submit' name='save' value='Save'/>
 	</p>
