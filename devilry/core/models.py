@@ -340,6 +340,7 @@ class Assignment(BaseNode):
 
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
+    anonymous = models.BooleanField(default=False)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,
@@ -373,6 +374,17 @@ class Assignment(BaseNode):
  
 
 
+
+class Candidate(models.Model):
+    
+    #assignmentgroup = models.ForeignKey(AssignmentGroupr)
+    student = models.OneToOneField(User, blank=True, related_name="students")
+    candidate_id = models.CharField(max_length=10)
+
+    def __unicode__(self):
+        return unicode(self.student)
+
+
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
@@ -398,7 +410,9 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
-    students = models.ManyToManyField(User, blank=True, related_name="students")
+    #students = models.ManyToManyField(User, blank=True, related_name="students")
+    students = models.ManyToManyField(Candidate, blank=True)
+    #students = models.ManyToOneField(Candidate)
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
@@ -624,7 +638,6 @@ class Feedback(models.Model):
     grade_type = models.ForeignKey(ContentType)
     grade_object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
-
 
 
 

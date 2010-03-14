@@ -1,5 +1,5 @@
 from models import (Node, Subject, Period, Assignment,
-        AssignmentGroup, Delivery, FileMeta)
+        AssignmentGroup, Candidate, Delivery, FileMeta)
 from django.contrib import admin
 from django.db.models import Q
 from django.db import models
@@ -25,6 +25,15 @@ class PeriodAdmin(BaseNodeAdmin):
     ordering = ['parentnode']
 
 
+class CandidateInline(admin.TabularInline):
+    model = Candidate
+
+
+class AssignmentGroupAdmin(admin.ModelAdmin):
+    #list_display = ['parentnode']
+    inlines = [CandidateInline]
+
+
 class FileMetaInline(admin.TabularInline):
     model = FileMeta
     extra = 1
@@ -39,5 +48,5 @@ admin.site.register(Node, NodeAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment)
-admin.site.register(AssignmentGroup)
+admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
 admin.site.register(Delivery, DeliveryAdmin)
