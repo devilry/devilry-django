@@ -6,7 +6,7 @@
 {% block breadcrumbs %}
   {{ block.super }}
   {% block admin-breadcrumbs %}
-    <li><a href='{% url devilry.addons.adminview.views.main %}'>{% trans "Admin dashboard" %}</a></li>
+    <li><a href='{% url devilry-admin-main %}'>{% trans "Admin dashboard" %}</a></li>
     <li>::</li>
   {% endblock %}
 {% endblock %}

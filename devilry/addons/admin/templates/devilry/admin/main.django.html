@@ -1,4 +1,4 @@
-{% extends "devilry/adminview/base.django.html" %}
+{% extends "devilry/admin/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -14,19 +14,19 @@
 {% block main %}
 <ul id='actionlist'>
   {% if nodes.all.count %}
-    <li><a href='{% url devilry.addons.adminview.views.list_nodes %}'>Nodes</a></li>
+    <li><a href='{% url devilry-admin-list_nodes %}'>Nodes</a></li>
   {% endif %}
 
   {% if subjects.all.count %}
-    <li><a href='{% url devilry.addons.adminview.views.list_subjects %}'>Subjects</a></li>
+    <li><a href='{% url devilry-admin-list_subjects %}'>Subjects</a></li>
   {% endif %}
 
   {% if periods.all.count %}
-    <li><a href='{% url devilry.addons.adminview.views.list_periods %}'>Periods</a></li>
+    <li><a href='{% url devilry-admin-list_periods %}'>Periods</a></li>
   {% endif %}
 
   {% if assignments.all.count %}
-    <li><a href='{% url devilry.addons.adminview.views.list_assignments %}'>Assignments</a></li>
+    <li><a href='{% url devilry-admin-list_assignments %}'>Assignments</a></li>
   {% endif %}
 </ul>
 {% endblock %}
