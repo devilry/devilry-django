@@ -376,10 +376,9 @@ class Assignment(BaseNode):
 
 
 class Candidate(models.Model):
-    
-    #assignmentgroup = models.ForeignKey(AssignmentGroupr)
-    student = models.OneToOneField(User, blank=True, related_name="students")
-    candidate_id = models.CharField(max_length=10)
+    student = models.ForeignKey(User)
+    assignment_group = models.ForeignKey('AssignmentGroup')
+    candidate_id = models.CharField(max_length=10, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.student)
@@ -411,7 +410,7 @@ class AssignmentGroup(models.Model):
     """
     parentnode = models.ForeignKey(Assignment)
     #students = models.ManyToManyField(User, blank=True, related_name="students")
-    students = models.ManyToManyField(Candidate, blank=True)
+    students = models.ManyToManyField(User, blank=True, through=Candidate)
     #students = models.ManyToOneField(Candidate)
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
