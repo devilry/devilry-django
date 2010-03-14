@@ -1,3 +1,6 @@
+@import "forms.css";
+
+
 body {
 	font-family: "Tahoma", "Geneva", sans-serif;
 	margin: 0;
@@ -8,8 +11,6 @@ body {
 
 
 
-
-/*@import "tablesorter.css";*/
 
 
 /***********************************************************

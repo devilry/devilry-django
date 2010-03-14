@@ -1,6 +1,66 @@
-/***********************************************************
- * forms
- **********************************************************/
+fieldset {
+	border: 1px solid #aaa;
+	padding: 0;
+	margin: 0 0 15px 0;
+}
 
-.mainsubmit {
+
+fieldset h2.legend {
+	padding: 5px 15px 5px 15px;
+	margin: 0;
+	font-weight: bold;
+	border: none;
+	background-color: #333;
+	color: #fff;
+	font-size: 1.2em;
+}
+
+fieldset ol.form-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+fieldset li.form-li {
+	margin: 0;
+	padding: 5px 15px 5px 15px;
+	border-top: 1px solid #eee;
+}
+
+fieldset label {
+	color: #333;
+}
+
+fieldset li.form-li-required label {
+	font-weight: bold;
+}
+
+
+fieldset.stdfieldset label {
+	display: inline-block;
+	width: 130px;
+}
+
+fieldset.stdfieldset label:after {
+	content: ':';
+}
+
+fieldset ul.errorlist {
+	list-style: none;
+	margin: 0 0 5px 0;
+	padding: 0;
+}
+
+fieldset li.form-li-errors {
+	background-color: rgb(255, 255, 204);
+}
+
+fieldset ul.errorlist li {
+	padding: 5px;
+	background-color: red;
+	color: #fff;
+}
+
+fieldset p.form-help {
+	color: #777;
 }

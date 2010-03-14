@@ -1,0 +1,20 @@
+<ol class='form-list'>
+{% for field in form %}
+	<li class="form-li{% if field.errors %} form-li-errors{% endif %}{% if field.field.required %} form-li-required{% endif %} {{ field.name }}">
+		{{ field.errors }}
+		{% if field.is_checkbox %}
+			{{ field }}{{ field.label_tag }}
+		{% else %}
+			{{ field.label_tag }}
+			{% if field.is_readonly %}
+				<div class='readonly-field'>{{ field.contents }}</div>
+			{% else %}
+				{{ field }}
+			{% endif %}
+		{% endif %}
+		{% if field.help_text %}
+			<p class="form-help">{{ field.help_text|safe }}</p>
+		{% endif %}
+	</li>
+{% endfor %}
+</ol>
