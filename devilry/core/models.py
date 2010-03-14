@@ -410,9 +410,7 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
-    #students = models.ManyToManyField(User, blank=True, related_name="students")
     students = models.ManyToManyField(Candidate, blank=True)
-    #students = models.ManyToOneField(Candidate)
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
