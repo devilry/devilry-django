@@ -29,7 +29,7 @@
 	<ul id='assignment_group-deliveries'>
 	{% for delivery in assignment_group.delivery_set.all %}
 		<li>
-			<a href='{% url devilry.addons.studentview.views.show_delivery delivery.id %}'>
+			<a href='{% url devilry-student-show_delivery delivery.id %}'>
 				{{ delivery.time_of_delivery }}
 			</a>
 		</li>

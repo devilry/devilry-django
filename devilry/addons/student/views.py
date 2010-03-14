@@ -68,7 +68,7 @@ def add_delivery(request, assignment_group_id, messages=None):
                 delivery.add_file(filename, f.chunks())
             delivery.finish()
             return HttpResponseRedirect(
-                    reverse('devilry.addons.student.views.successful_delivery',
+                    reverse('devilry-student-successful_delivery',
                         args=[assignment_group_id]))
     else:
         formset = UploadFileFormSet()
