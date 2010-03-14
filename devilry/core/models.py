@@ -378,7 +378,7 @@ class Assignment(BaseNode):
 class Candidate(models.Model):
     student = models.ForeignKey(User)
     assignment_group = models.ForeignKey('AssignmentGroup')
-    candidate_id = models.CharField(max_length=10, blank=True, null=True)
+    candidate_id = models.CharField(max_length=30, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.student)
@@ -409,7 +409,7 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
-    students = models.ManyToManyField(User, blank=True, through=Candidate)
+    students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
