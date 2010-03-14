@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from devilry.addons.examinerview import feedback_view
+from devilry.addons.examiner import feedback_view
 from models import SchemaGrade, Entry, SchemaGradeResult
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseModelFormSet

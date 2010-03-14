@@ -46,7 +46,7 @@ class Node(object):
         if hasattr(self.node, 'long_name'):
             return self.node.long_name
         else:
-            return "no_name"
+            return self.node.__unicode__()
 
     def get_name(self):
         return self.__unicode__()
@@ -70,4 +70,5 @@ class Node(object):
 
 def print_tree(node):
     for child in node:
-        print_tree(child)
+         print child.get_name()
+         print_tree(child)

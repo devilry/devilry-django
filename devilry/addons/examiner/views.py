@@ -11,7 +11,7 @@ from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
 from devilry.core import gradeplugin_registry
 from django.db import transaction
 
-from devilry.core.utils.GroupAssignments import group_assignments, group_assignmentgroups 
+from devilry.core.utils.GroupNodes import group_assignments, group_assignmentgroups 
 
 from django.http import HttpResponse
 from django.core.servers.basehttp import FileWrapper
@@ -34,9 +34,12 @@ def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignment_groups = assignment.assignment_groups_where_is_examiner(request.user)
     
+    grouped_assignmentgroups = group_assignmentgroups(assignment_groups)
+
     return render_to_response('devilry/examiner/list_assignmentgroups.django.html', {
-        'assignment_groups': assignment_groups,
-        'course_name' : assignment_groups[0].parentnode.parentnode.parentnode.short_name,
+        'grouped_assignmentgroups': grouped_assignmentgroups,
+        'course_name' : assignment_groups[0].parentnode.parentnode.parentnode.long_name,
+        'assignment': assignment_groups[0].parentnode,
         }, context_instance=RequestContext(request))
 
 
@@ -79,14 +82,19 @@ def correct_delivery(request, delivery_id):
 
 
 @login_required
-def main(request):
+def choose_assignment(request):
     assignment_pks = AssignmentGroup.where_is_examiner(request.user).values("parentnode").distinct().query
     assignments = Assignment.objects.filter(pk__in=assignment_pks)
     
     courses = group_assignments(assignments)
 
-    return render_to_response('devilry/examiner/main.django.html', {
-            'assignments': assignments,
+    print "Print tree:"
+    from devilry.core.utils.GroupNodes import print_tree
+    
+    #print_tree(courses)
+    print "render"
+
+    return render_to_response('devilry/examiner/choose_assignment.django.html', {
             'courses': courses,
             }, context_instance=RequestContext(request))
 

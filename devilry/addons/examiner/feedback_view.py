@@ -24,11 +24,11 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
 
 def redirect_after_successful_save(delivery_obj):
     return HttpResponseRedirect(
-            reverse('devilry.examinerview.views.correct_delivery',
+            reverse('devilry.examiner.views.correct_delivery',
                 args=(delivery_obj.id,)))
 
 def render_default_response(request, delivery_obj, feedback_form, grade_form):
-    return render_to_response('devilry/examinerview/correct_delivery.django.html', {
+    return render_to_response('devilry/examiner/correct_delivery.django.html', {
             'delivery': delivery_obj,
             'feedback_form': feedback_form,
             'grade_form': grade_form,

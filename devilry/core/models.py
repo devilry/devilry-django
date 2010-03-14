@@ -303,10 +303,10 @@ class Period(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return unicode(self.parentnode) + " - " + self.short_name
+        return self.short_name
 
     def str(self):
-        return str(self.parentnode) + " - " + self.short_name
+        return self.short_name
 
 
 class Assignment(BaseNode):
@@ -448,8 +448,11 @@ class AssignmentGroup(models.Model):
     
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.parentnode,
+        return u'%s (%s)' % (self.parentnode.long_name,
                 ', '.join([unicode(x) for x in self.students.all()]))
+    
+    def get_students(self):
+        return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)

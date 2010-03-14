@@ -5,10 +5,17 @@
 {% block title %}{{ assignment_group.parentnode.short_name }}{% endblock %}
 {% block heading %}{{ assignment_group.parentnode }}{% endblock %}
 
-{% block breadcrumbs-content %}
+{% block breadcrumbs %}
 {{ block.super }}
-<li>:: {% trans "Assignment information" %}</li>
+
+<li><a href='{% url devilry-examiner-choose_assignment %}'>{% trans "Choose assignment" %}</a></li>
+<li>::</li>
+<li><a href='{% url devilry-examiner-list_assignmentgroups assignment_group.parentnode.id %}'>{% trans "Assignments" %} 
+                 - {{ assignment_group.parentnode.parentnode.parentnode.long_name }}</a></li>
+<li>::</li>
+<li>{% trans "Assignment information" %}</li>
 {% endblock %}
+
 
 {% block content %}
 

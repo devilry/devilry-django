@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from devilry.addons.examinerview.feedback_view import view_shortcut
+from devilry.addons.examiner.feedback_view import view_shortcut
 from models import CharFieldGrade
 
 

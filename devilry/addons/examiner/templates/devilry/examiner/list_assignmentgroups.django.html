@@ -3,22 +3,31 @@
 {% load i18n %}
 
 {% block title %}{% trans "Assignments" %}{% endblock %}
-{% block heading %}{% trans "Assignments" %}{% endblock %}
+{% block heading %}{% trans "Assignments" %} - {{ course_name }} {% endblock %}
 
-{% block breadcrumbs-content %}
-
+{% block breadcrumbs %}
 {{ block.super }}
-<li>:: {% trans "Assignments" %} - {{ course_name }} </li>
 
+<li><a href='{% url devilry-examiner-choose_assignment %}'>{% trans "Choose assignment" %}</a></li>
+<li>::</li>
+<li> {% trans "Assignments" %} - {{ assignment.parentnode.parentnode.long_name }} </li>
 {% endblock %}
 
 
 {% block content %}
 
-
 <ul>
-{% for assignmentgroup in assignment_groups.all %}
-	<li><a href='{% url devilry-examiner-show_assignmentgroup assignmentgroup.id %}'>{{ assignmentgroup }}</a></li>
+{% for subject in grouped_assignmentgroups %}
+  {% for period in subject %}
+    {% for assignment in period %}
+      <li> {{ subject }} - {{ period }} - {{ assignment }}</li>  
+        <ul>
+	      {% for assignment_group in assignment %}
+	      <li><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.node.id %}'>{{ assignment_group.node.get_students }}</a></li>
+          {% endfor %}
+		</ul>
+    {% endfor %}
+  {% endfor %}
 {% endfor %}
 </ul>
 {% endblock %}
