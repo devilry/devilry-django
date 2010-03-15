@@ -5,8 +5,9 @@
 	<head>
 		<title>{% block title %}{% endblock %}</title>
     {% block jquery %}
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery.js"></script>          
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery.tablesorter.js"></script>          
+      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery.js"></script>          
+      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui.js"></script>          
+      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/jquery-ui.css" />
     {% endblock %}
     {% block basecss %}
       <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />

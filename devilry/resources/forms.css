@@ -5,7 +5,7 @@ fieldset {
 }
 
 
-fieldset h2.legend {
+h2.legend {
 	padding: 5px 15px 5px 15px;
 	margin: 0;
 	font-weight: bold;
@@ -15,52 +15,75 @@ fieldset h2.legend {
 	font-size: 1.2em;
 }
 
-fieldset ol.form-list {
+ol.form-list {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-fieldset li.form-li {
+li.form-li {
 	margin: 0;
 	padding: 5px 15px 5px 15px;
 	border-top: 1px solid #eee;
 }
 
-fieldset label {
+label {
 	color: #333;
 }
 
-fieldset li.form-li-required label {
+li.form-li-required label {
 	font-weight: bold;
 }
 
-
-fieldset.stdfieldset label {
-	display: inline-block;
-	width: 130px;
-}
-
-fieldset.stdfieldset label:after {
-	content: ':';
-}
-
-fieldset ul.errorlist {
+ul.errorlist {
 	list-style: none;
 	margin: 0 0 5px 0;
 	padding: 0;
 }
 
-fieldset li.form-li-errors {
+li.form-li-errors {
 	background-color: rgb(255, 255, 204);
 }
 
-fieldset ul.errorlist li {
+ul.errorlist li {
 	padding: 5px;
 	background-color: red;
 	color: #fff;
 }
 
-fieldset p.form-help {
+p.form-help {
 	color: #777;
 }
+
+span.devilry-date-format, span.devilry-time-format {
+	color: #666;
+}
+
+
+
+
+
+/*******************************************
+ * stdfieldset
+ * - A "normal" fieldset with somewhat short labels.
+ *******************************************/
+
+fieldset.stdfieldset label {
+	display: block;
+	width: 130px;
+	float: left;
+}
+fieldset.stdfieldset label:after {
+	content: ':';
+}
+fieldset.stdfieldset .form-field {
+	margin-left: 140px;
+}
+fieldset.stdfieldset p.form-help {
+	margin: 5px 0 0 140px;
+	color: #777;
+}
+
+
+
+.ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 0.8em; }

@@ -10,6 +10,7 @@ from devilry.core.models import (Delivery, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 from devilry.ui.messages import UiMessages
 from devilry.core import gradeplugin_registry
+from devilry.ui.widgets import DevilryDateTimeWidget
 
 
 @login_required
@@ -114,16 +115,18 @@ class EditAssignment(EditNodeBase):
     MODEL_CLASS = Assignment
 
     def create_form(self):
-        Form = super(EditAssignment, self).create_form()
-        if self.is_new:
-            Form = super(EditAssignment, self).create_form()
-        else:
-            class Form(forms.ModelForm):
-                parentnode = forms.ModelChoiceField(required=True,
-                        queryset = self.parent_model.where_is_admin(self.request.user))
-                class Meta:
-                    model = self.MODEL_CLASS
-                    exclude = ['grade_plugin']
+        class Form(forms.ModelForm):
+            parentnode = forms.ModelChoiceField(required=True,
+                    queryset = Period.where_is_admin(self.request.user))
+            class Meta:
+                model = Assignment
+                fields = ['parentnode', 'short_name', 'long_name', 'publishing_time', 'deadline', 'admins']
+                if self.is_new:
+                    fields.append('grade_plugin')
+                widgets = {
+                    'publishing_time': DevilryDateTimeWidget,
+                    'deadline': DevilryDateTimeWidget,
+                }
         return Form
 
     def create_view(self):
