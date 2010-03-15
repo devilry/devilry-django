@@ -31,19 +31,18 @@
 
     <div id='topbar'>
     {% block topbar %}
-      <ul id='breadcrumbs'>
-        {% block breadcrumbs %}
-        <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
-          <li>::</li>
-        {% endblock %}
-      </ul>
-
       <ul id='links'>
         {% block links %}
           {% if user.is_authenticated %}
             <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
           {% endif %}
           {% block links-extra %}{% endblock %}
+        {% endblock %}
+      </ul>
+      <ul id='breadcrumbs'>
+        {% block breadcrumbs %}
+        <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
+          <li>::</li>
         {% endblock %}
       </ul>
     {% endblock %}
