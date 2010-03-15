@@ -13,18 +13,38 @@
 
 {% block content %}
 
-<ul>
 {% for subject in grouped_assignmentgroups %}
   {% for period in subject %}
     {% for assignment in period %}
-      <li> {{ subject }} - {{ period }} - {{ assignment }}</li>  
+      <h2> {{ subject }} - {{ period }} - {{ assignment }}</h2>
         <ul>
-	      {% for assignment_group in assignment %}
-	      <li><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.node.id %}'>{{ assignment_group.node.get_students }}</a></li>
-          {% endfor %}
-		</ul>
+        {% for assignment_group in assignment %}
+          <li><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.node.id %}'>
+            {{ assignment_group.node.get_students }}
+          </a></li>
+        {% endfor %}
+        </ul>
     {% endfor %}
   {% endfor %}
 {% endfor %}
-</ul>
+
+
+<table class='horizontal_ordered_table'>
+  <thead>
+    <tr>
+      <th>{% trans "Group members" %}</th>
+      <th>{% trans "Deliveries" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for assignment_group in assignment_groups %}
+      <tr>
+        <td><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.id %}'>
+          {{ assignment_group.get_students }}
+        </a></td>
+        <td>{{ assignment_group.get_number_of_deliveries }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

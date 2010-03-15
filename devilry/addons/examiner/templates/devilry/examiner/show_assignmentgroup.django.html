@@ -21,7 +21,9 @@
   $(function() {
     $(".accordion").accordion({
       autoHeight: false,
-      navigation: true
+      navigation: true,
+      collapsible: true,
+      active: false,
     });
   });
 </script>
@@ -53,37 +55,39 @@
 </table>
 
 
-<h2>Deliveries</h2>
-<div class="accordion">
-{% for delivery in assignment_group.delivery_set.all %}
-  <h3><a href="#">
-    {{ delivery.time_of_delivery }}
-    {% spaceless %}
-      (
-      {% if delivery.feedback %}
-        {{ delivery.feedback.get_grade }}
-      {% else %}
-        {% trans "Not corrected" %}
-      {% endif %}
-      )
-    {% endspaceless %}
-  </a></h3>
-  <div>
-    <p>
-      <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
+{% if assignment_group.get_number_of_deliveries > 0 %}
+  <h2>{% trans "Deliveries" %}</h2>
+  <div class="accordion">
+  {% for delivery in assignment_group.delivery_set.all %}
+    <h3><a href="#">
+      {{ delivery.time_of_delivery }}
+      {% spaceless %}
+        (
         {% if delivery.feedback %}
-          {% trans "Edit feedback" %}
+          {{ delivery.feedback.get_grade }}
         {% else %}
-          {% trans "Create feedback" %}
+          {% trans "Not corrected" %}
         {% endif %}
-      </a>
-    </p>
-    {% if delivery.feedback %}
-      {% include "devilry/ui/include/show_feedback.django.html" %}
-    {% endif %}
+        )
+      {% endspaceless %}
+    </a></h3>
+    <div>
+      <p>
+        <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
+          {% if delivery.feedback %}
+            {% trans "Edit feedback" %}
+          {% else %}
+            {% trans "Create feedback" %}
+          {% endif %}
+        </a>
+      </p>
+      {% if delivery.feedback %}
+        {% include "devilry/ui/include/show_feedback.django.html" %}
+      {% endif %}
+    </div>
+  {% endfor %}
   </div>
-{% endfor %}
-</div>
+{% endif %}
 
 
 {% endblock %}

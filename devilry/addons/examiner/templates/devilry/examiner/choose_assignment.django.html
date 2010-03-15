@@ -17,17 +17,15 @@
 
 {% block main %}
 
-<ul id='active_assignments'>
-  {% for course in courses %}
-    {% for period in course %}
-      <li>{{ course }} - {{ period }} </li>
-      <ul>
-        {% for assignment in period %}
-          <li><a href='{% url devilry-examiner-list_assignmentgroups assignment.node.id %}'>{{ assignment }}</a> </li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
+{% for subject in subjects %}
+  {% for period in subject %}
+    <h2>{{ subject }} - {{ period }}</h2>
+    <ul>
+      {% for assignment in period %}
+        <li><a href='{% url devilry-examiner-list_assignmentgroups assignment.node.id %}'>{{ assignment }}</a> </li>
+      {% endfor %}
+    </ul>
   {% endfor %}
-</ul>
+{% endfor %}
 
 {% endblock %}

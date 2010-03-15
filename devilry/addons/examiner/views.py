@@ -25,7 +25,6 @@ def list_assignments(request):
         return HttpResponseForbidden("You are not registered as examiner on any assignments.")
     return render_to_response('devilry/examiner/show_assignments.django.html', {
         'assignments': assignments,
-        'assignments': assignments,
         }, context_instance=RequestContext(request))
 
 
@@ -34,11 +33,8 @@ def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignment_groups = assignment.assignment_groups_where_is_examiner(request.user)
     
-    grouped_assignmentgroups = group_assignmentgroups(assignment_groups)
-
     return render_to_response('devilry/examiner/list_assignmentgroups.django.html', {
-        'grouped_assignmentgroups': grouped_assignmentgroups,
-        'course_name' : assignment_groups[0].parentnode.parentnode.parentnode.long_name,
+        'assignment_groups': assignment_groups,
         'assignment': assignment_groups[0].parentnode,
         }, context_instance=RequestContext(request))
 
@@ -76,16 +72,9 @@ def choose_assignment(request):
     assignment_pks = AssignmentGroup.where_is_examiner(request.user).values("parentnode").distinct().query
     assignments = Assignment.objects.filter(pk__in=assignment_pks)
     
-    courses = group_assignments(assignments)
-
-    print "Print tree:"
-    from devilry.core.utils.GroupNodes import print_tree
-    
-    #print_tree(courses)
-    print "render"
-
+    subjects = group_assignments(assignments)
     return render_to_response('devilry/examiner/choose_assignment.django.html', {
-            'courses': courses,
+            'subjects': subjects,
             }, context_instance=RequestContext(request))
 
 

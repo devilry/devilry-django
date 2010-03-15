@@ -219,12 +219,18 @@ h2 {
 	font-family: "Georgia", serif;
 	font-size: 1.4em;
 	font-weight: normal;
+	margin: 30px 0 10px 0;
 }
 
 h3 {
 	font-family: "Century Gothic", sans-serif;
 	font-size: 1.1em;
 	font-weight: bold;
+}
+
+ul {
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 
 #page-footer {
@@ -263,6 +269,25 @@ table.vertical_infotable span.filesize {
 	color: #666;
 	font-size: 0.8em;
 }
+
+
+table.horizontal_ordered_table {
+	border-collapse:collapse;
+	border: 1px solid #ddd;
+	margin: 15px 0 15px 0;
+}
+table.horizontal_ordered_table th {
+	text-align: left;
+	font-weight: normal;
+	background-color: #eee;
+	padding: 6px 4px;
+	border: 1px solid #ddd;
+}
+table.horizontal_ordered_table td {
+	padding: 4px;
+	border: 1px solid #ddd;
+}
+
 
 /***********************************************************
  * Restructured text feedback

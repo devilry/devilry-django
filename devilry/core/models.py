@@ -485,6 +485,8 @@ class AssignmentGroup(models.Model):
                 return qry.annotate(models.Max('time_of_delivery'))[0].feedback.get_grade()
 
 
+    def get_number_of_deliveries(self):
+        return self.delivery_set.all().count()
 
 
 class Delivery(models.Model):
