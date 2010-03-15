@@ -148,12 +148,12 @@ body {
  * Page heading
  **********************************************************/
 #heading h1 {
-	color: #111;
-	margin: 0 0 20px 0;
-	padding: 0;
-	font-size: 1.6em;
+	color: #6d3939;
+	font-size: 2.0em;
+	/*font-family: "Georgia", serif;*/
 	font-family: "Century Gothic", sans-serif;
 	font-weight: normal;
+	margin: 0 0 20px 0;
 }
 
 
@@ -198,6 +198,80 @@ body {
 	font-size: 0.8em;
 }
 
+#content h1 { /* Just to avoid using it by mistake */
+	display: none;
+}
+
+h2 {
+	font-family: "Georgia", serif;
+	font-size: 1.4em;
+	font-weight: normal;
+}
+
+h3 {
+	font-family: "Century Gothic", sans-serif;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#page-footer {
+	clear: both;
+}
+
+#content dt {
+	margin-top: 3px;
+	font-style: italic;
+}
+#content dd {
+	margin-left: 20px;
+}
+
+table.vertical_infotable {
+	border-collapse:collapse;
+	border: 1px solid #ddd;
+}
+table.vertical_infotable th {
+	text-align: right;
+	font-weight: normal;
+	background-color: #eee;
+}
+table.vertical_infotable td,
+table.vertical_infotable th {
+	padding: 2px 6px;
+	border: 1px solid #ddd;
+}
+table.vertical_infotable ul.files-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+table.vertical_infotable span.filesize {
+	color: #666;
+	font-size: 0.8em;
+}
+
+/***********************************************************
+ * Restructured text feedback
+ **********************************************************/
+.restructuredtext-feedback {
+	border: 1px solid #ddd;
+	background-color: #eee;
+	padding: 10px;
+	color: #333;
+}
+.restructuredtext-feedback h1 {
+	font-size: 2.0em;
+}
+.restructuredtext-feedback h2 {
+	font-size: 1.6em;
+	font-weight: normal;
+}
+.restructuredtext-feedback h3 {
+	font-size: 1.2em;
+	font-weight: normal;
+	font-style: italic;
+}
+
 
 
 /***********************************************************
@@ -220,4 +294,15 @@ body {
 }
 #footer a:hover {
 	color: #ccc;
+}
+
+
+
+/*******************************
+ * jquery UI extra
+ *******************************/
+
+.ui-widget {
+	font-family: "Tahoma", "Geneva", sans-serif;
+	font-size: 1.0em;
 }

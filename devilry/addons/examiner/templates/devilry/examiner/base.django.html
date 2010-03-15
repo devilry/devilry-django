@@ -2,8 +2,10 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block breadcrumbs-content %}
-<li><a href='{% url devilry.addons.examiner.views.main %}'>{% trans "Examiner home" %}</a></li>
+{% block breadcrumbs %}
+{{ block.super }}
+<li><a href='{% url devilry-examiner-choose_assignment%}'>{% trans "Correct deliveries" %}</a></li>
+<li>::</li>
 {% endblock %}
 
 {% block content %}

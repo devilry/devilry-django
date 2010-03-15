@@ -1,23 +1,31 @@
 {% extends "devilry/examiner/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
+{% load markup %}
 
 {% block title %}{{ assignment_group.parentnode.short_name }}{% endblock %}
 {% block heading %}{{ assignment_group.parentnode }}{% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
-
-<li><a href='{% url devilry-examiner-choose_assignment %}'>{% trans "Choose assignment" %}</a></li>
+<li><a href='{% url devilry-examiner-list_assignmentgroups assignment_group.parentnode.id %}'>
+{{ assignment_group.parentnode }}</a></li>
 <li>::</li>
-<li><a href='{% url devilry-examiner-list_assignmentgroups assignment_group.parentnode.id %}'>{% trans "Assignments" %} 
-                 - {{ assignment_group.parentnode.parentnode.parentnode.long_name }}</a></li>
-<li>::</li>
-<li>{% trans "Assignment information" %}</li>
+<li>{{ assignment_group.get_students }}</li>
 {% endblock %}
 
 
 {% block content %}
+{% include "devilry/ui/include/accordion-js.django.html" %}
+
+<script type="text/javascript">
+  $(function() {
+    $(".accordion").accordion({
+      autoHeight: false,
+      navigation: true
+    });
+  });
+</script>
 
 
 <table class='vertical_infotable'>
@@ -47,26 +55,40 @@
 
 
 <h2>Deliveries</h2>
-<ul id='delivery-list'>
+<div class="accordion">
 {% for delivery in assignment_group.delivery_set.all %}
-  <li>
-    <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
-      {{ delivery.time_of_delivery }}
-    </a>
-
-	{% if delivery.feedback.grade %}
-	    ({{ delivery.feedback.grade }})
-	{% endif %}
-
-	{% if delivery.feedback %}
-	   <pre>{{ delivery.feedback.feedback_text }}
-       </pre>
-	{% endif %}
-
-
-  </li>
+  <h3><a href="#">
+    {{ delivery.time_of_delivery }}
+    {% spaceless %}
+      (
+      {% if delivery.feedback %}
+        {{ delivery.feedback.get_grade }}
+      {% else %}
+        {% trans "Not corrected" %}
+      {% endif %}
+      )
+    {% endspaceless %}
+  </a></h3>
+  <div>
+    <p>
+      <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
+        {% if delivery.feedback %}
+          {% trans "Edit feedback" %}
+        {% else %}
+          {% trans "Create feedback" %}
+        {% endif %}
+      </a>
+    </p>
+    {% if delivery.feedback %}
+      {% spaceless %}
+        <div class='{{ delivery.feedback.feedback_format }}-feedback'>
+          {{ delivery.feedback.feedback_text|restructuredtext }}
+        </div>
+      {% endspaceless %}
+    {% endif %}
+  </div>
 {% endfor %}
-</ul>
+</div>
 
 
 {% endblock %}

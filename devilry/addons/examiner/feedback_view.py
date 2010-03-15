@@ -10,6 +10,9 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ('feedback_text', 'feedback_format', 'feedback_published')
+        widgets = {
+                'feedback_text': forms.Textarea(attrs={'cols': 60, 'rows': 25})
+        }
 
 def parse_feedback_form(request, delivery_obj, prefix='feedback'):
     try:

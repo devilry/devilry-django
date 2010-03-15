@@ -1,18 +1,19 @@
 fieldset {
 	border: 1px solid #aaa;
 	padding: 0;
-	margin: 0 0 15px 0;
+	margin: 15px 0 15px 0;
 }
 
 
-h2.legend {
-	padding: 5px 15px 5px 15px;
-	margin: 0;
-	font-weight: bold;
+fieldset h2.legend {
+	padding: 3px 10px 3px 10px;
+	margin: 0 -1px 0 -1px;
 	border: none;
 	background-color: #333;
 	color: #fff;
-	font-size: 1.2em;
+	font-family: "Century Gothic", sans-serif;
+	font-size: 1.0em;
+	font-weight: bold;
 }
 
 ol.form-list {
@@ -23,8 +24,8 @@ ol.form-list {
 
 li.form-li {
 	margin: 0;
-	padding: 5px 15px 5px 15px;
-	border-top: 1px solid #eee;
+	padding: 5px 10px 5px 10px;
+	border-top: 1px solid #ddd;
 }
 
 label {
@@ -89,7 +90,3 @@ fieldset.stdfieldset p.form-help {
 	margin: 5px 0 0 140px;
 	color: #777;
 }
-
-
-
-.ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 0.8em; }

@@ -303,7 +303,7 @@ class Period(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return self.short_name
+        return u"%s / %s" % (self.parentnode, self.short_name)
 
     def str(self):
         return self.short_name
@@ -360,7 +360,7 @@ class Assignment(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return unicode(self.parentnode) + " - " + self.short_name
+        return u"%s / %s" % (self.parentnode, self.short_name)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
@@ -482,7 +482,7 @@ class AssignmentGroup(models.Model):
             if qry.count() == 0:
                 return None
             else:
-                return qry.annotate(models.Max('time_of_delivery'))[0].feedback.grade
+                return qry.annotate(models.Max('time_of_delivery'))[0].feedback.get_grade()
 
 
 
@@ -624,6 +624,9 @@ class Feedback(models.Model):
     grade_type = models.ForeignKey(ContentType)
     grade_object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
+
+    def get_grade(self):
+        return unicode(self.content_object)
 
 
 
