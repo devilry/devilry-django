@@ -59,16 +59,6 @@ def list_deliveries(request):
         'deliveries': Delivery.where_is_student(request.user),
         }, context_instance=RequestContext(request))
 
-@login_required
-def show_delivery(request, delivery_id):
-    delivery = get_object_or_404(Delivery, pk=delivery_id)
-    if not delivery.assignment_group.is_student(request.user):
-        return HttpResponseForbidden("Forbidden")
-    return render_to_response('devilry/examiner/show_delivery.django.html', {
-        'delivery': delivery,
-        }, context_instance=RequestContext(request))
-
-
 
 @login_required
 def correct_delivery(request, delivery_id):

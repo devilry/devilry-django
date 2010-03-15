@@ -11,38 +11,23 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li>{% trans "Choose assignment" %}</li>
+<li>{% trans "Correct deliveries" %}</a>
 {% endblock %}
 
 
 {% block main %}
 
-<div class='dashboard_box visible' id='active_assignments'>
-  <h2>{% trans "Active assignments" %}</h2>
-  <ul>
-  
+<ul id='active_assignments'>
   {% for course in courses %}
-
-  {% for period in course %}
-  <li>{{ course }} - {{ period }} </li>
-  <ul>
-	{% for assignment in period %}
-	  <li><a href='{% url devilry-examiner-list_assignmentgroups assignment.node.id %}'>{{ assignment }}</a> </li>
+    {% for period in course %}
+      <li>{{ course }} - {{ period }} </li>
+      <ul>
+        {% for assignment in period %}
+          <li><a href='{% url devilry-examiner-list_assignmentgroups assignment.node.id %}'>{{ assignment }}</a> </li>
+        {% endfor %}
+      </ul>
     {% endfor %}
-  </ul>
-  
   {% endfor %}
-  {% endfor %}
-
-  </ul>
-</div>
-
-<div class='dashboard_box hidden' id='other'>
-  <h2>{% trans "Other" %}</h2>
-  <ul>
-    <!--<li><a href=''></a></li>-->
-  </ul>
-</div>
+</ul>
 
 {% endblock %}

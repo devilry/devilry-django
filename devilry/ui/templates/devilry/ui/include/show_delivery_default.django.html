@@ -3,37 +3,37 @@
 {% load markup %}
 
 <table class='vertical_infotable'>
-	<tr>
-		<th>{% trans "Time of delivery" %}</th>
-		<td>{{ delivery.time_of_delivery }}</td>
-	</tr>
-	<tr>
-		<th>{% trans "Delivered by" %}</th>
-		<td>{{ delivery.delivered_by.username }}</td>
-	</tr>
+  <tr>
+    <th>{% trans "Time of delivery" %}</th>
+    <td>{{ delivery.time_of_delivery }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Delivered by" %}</th>
+    <td>{{ delivery.delivered_by.username }}</td>
+  </tr>
 
-	{% if delivery.assignment_group.students.count > 1 %}
-		<tr>
-			<th>{% trans "Group members" %}</th>
-			<td>{{ devlivery.assignment_group.students.all|join:", " }} </td>
-		</tr>
-	{% endif %}
+  {% if delivery.assignment_group.students.count > 1 %}
+    <tr>
+      <th>{% trans "Group members" %}</th>
+      <td>{{ devlivery.assignment_group.students.all|join:", " }} </td>
+    </tr>
+  {% endif %}
 
-	<tr>
-		<th>{% trans "Status" %}</th>
-		<td>
-			{% if delivery.feedback %}
-			  {% trans "Corrected" %}
-			{% else %}
-			  {% trans "Not corrected" %}
-			{% endif %}
-		</td>
-	</tr>
+  <tr>
+    <th>{% trans "Status" %}</th>
+    <td>
+      {% if delivery.feedback %}
+        {% trans "Corrected" %}
+      {% else %}
+        {% trans "Not corrected" %}
+      {% endif %}
+    </td>
+  </tr>
 
   {% if delivery.feedback %}
-	  <tr>
-	    <th>{% trans "Grade" %}</th>
-		  <td> {{ delivery.feedback.get_grade }} </td>
+    <tr>
+      <th>{% trans "Grade" %}</th>
+      <td> {{ delivery.feedback.get_grade }} </td>
     </tr>
   {% endif %}
 
@@ -43,7 +43,7 @@
       <ul class='files-list'>
       {% for filemeta in delivery.filemeta_set.all %}
         <li>
-          <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>	
+          <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>  
           <span class='filesize'>({{ filemeta.size }} bytes)</span>
         </li>
       {% endfor %}
@@ -51,13 +51,3 @@
     </td>
   </tr>
 </table>
-
-
-{% if delivery.feedback.feedback_text %}
-<h2>{% trans "Feedback" %}</h2>
-{% spaceless %}
-  <div class='{{ delivery.feedback.feedback_format }}-feedback'>
-    {{ delivery.feedback.feedback_text|restructuredtext }}
-  </div>
-{% endspaceless %}
-{% endif %}

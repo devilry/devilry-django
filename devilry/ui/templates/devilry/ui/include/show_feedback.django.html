@@ -1,0 +1,6 @@
+{% load markup %}
+{% spaceless %}
+  <div class='{{ delivery.feedback.feedback_format }}-feedback'>
+    {{ delivery.feedback.feedback_text|restructuredtext }}
+  </div>
+{% endspaceless %}

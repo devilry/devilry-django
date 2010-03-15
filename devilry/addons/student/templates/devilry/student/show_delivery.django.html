@@ -19,5 +19,9 @@
 {% block main %}
 
 {% include "devilry/ui/include/show_delivery_default.django.html" %}
+{% if delivery.feedback.feedback_text %}
+  <h2>{% trans "Feedback" %}</h2>
+  {% include "devilry/ui/include/show_feedback.django.html" %}
+{% endif %}
 
 {% endblock %}

@@ -6,7 +6,7 @@ class ApprovedGrade(models.Model):
     approved = models.BooleanField(blank=True, default=False)
 
     def __unicode__(self):
-        if self.grade:
+        if self.approved:
             return _('Approved')
         else:
             return _('Not approved')

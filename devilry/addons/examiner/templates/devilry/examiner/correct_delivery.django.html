@@ -19,6 +19,8 @@
 
 {% block main %}
 
+{% include "devilry/ui/include/show_delivery_default.django.html" %}
+
 <script type="text/javascript">
   $(function() {
     $("#tabs").tabs();
@@ -29,7 +31,9 @@
 <div id='tabs'>
   <ul>
     <li><a href="#tab-1">{% trans "Edit" %}</a></li>
-    <li><a href="#tab-2">{% trans "What the student see" %}</a></li>
+    {% if delivery.feedback %}
+      <li><a href="#tab-2">{% trans "Feedback text preview" %}</a></li>
+    {% endif %}
   </ul>
 
   <div id='tab-1'>
@@ -61,9 +65,12 @@
     {% endblock form %}
   </div>
 
-  <div id='tab-2'>
-    {% include "devilry/ui/include/show_delivery_default.django.html" %}
-  </div>
+  {% if delivery.feedback %}
+    <div id='tab-2'>
+      <p>{% trans "Preview of the currently saved feedback text." %}</p>
+      {% include "devilry/ui/include/show_feedback.django.html" %}
+    </div>
+  {% endif %}
 </div>
 
 {% endblock main %}

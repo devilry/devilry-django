@@ -93,7 +93,7 @@ body {
 	width: 200px;
 	font-size: 0.8em;
 	float: right;
-	margin: 0 -70px 0 0;
+	margin: 45px -70px 0 0;
 }
 #sidebar a {
 	color: #acc2d6;
@@ -215,10 +215,6 @@ body {
 	font-size: 0.8em;
 }
 
-#content h1 { /* Just to avoid using it by mistake */
-	display: none;
-}
-
 h2 {
 	font-family: "Georgia", serif;
 	font-size: 1.4em;
@@ -246,6 +242,7 @@ h3 {
 table.vertical_infotable {
 	border-collapse:collapse;
 	border: 1px solid #ddd;
+	margin: 15px 0 15px 0;
 }
 table.vertical_infotable th {
 	text-align: right;
