@@ -33,16 +33,11 @@
     {% block topbar %}
       <ul id='links'>
         {% block links %}
+          <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
           {% if user.is_authenticated %}
             <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
           {% endif %}
           {% block links-extra %}{% endblock %}
-        {% endblock %}
-      </ul>
-      <ul id='breadcrumbs'>
-        {% block breadcrumbs %}
-          <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
-          <li>::</li>
         {% endblock %}
       </ul>
     {% endblock %}
@@ -51,6 +46,12 @@
     <div id='page'>
     {% block page %}
       {% block sidebar %}{% endblock %}
+
+      <div id='breadcrumbs'>
+        <ul>
+          {% block breadcrumbs %}{% endblock %}
+        </ul>
+      </div>
 
       <div id='heading'>
         <h1>{% block heading %}{% endblock %}</h1>

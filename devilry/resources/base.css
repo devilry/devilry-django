@@ -47,36 +47,26 @@ body {
 
 #topbar {
 	background-color: #000;
-	-webkit-border-radius: 15px;
-	-moz-border-radius: 15px;
-	border-radius: 15px;
 	width: 700px;
 	margin: 0 auto 0 auto;
-	padding: 5px 40px 10px 40px;
-	min-height: 15px;
+	padding: 5px 20px 10px 20px;
 }
 
 #topbar ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	text-align: right;
 }
 #topbar li {
 	font-size: 11px;
 	display: inline-block;
 	padding: 0;
-	margin: 0;
+	margin: 0 0 0 20px;
 	color: #888;
 }
 #topbar a {
 	color: #888;
-}
-
-/*#topbar ul#breadcrumbs {*/
-	/*float: right;*/
-/*}*/
-#topbar ul#links {
-	float: right;
 }
 
 
@@ -88,14 +78,13 @@ body {
 	clear: both;
 	background-color: #fff;
 	width: 700px;
-	padding: 20px 20px 20px 20px;
+	padding: 0 20px 20px 20px;
 	margin: 0 auto 0 auto;
 	-moz-border-radius-bottomleft: 10px;
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px;
 	-webkit-border-bottom-right-radius: 10px;
 }
-
 
 /***********************************************************
  * Page sidebar
@@ -145,6 +134,34 @@ body {
 
 
 /***********************************************************
+ * Page breadcrumbs
+ **********************************************************/
+
+#breadcrumbs {
+	background-color: #eee;
+	border-bottom: 1px solid #ddd;
+	margin: 0 -20px 0 -20px;
+	padding: 5px 20px 10px 20px;
+}
+
+#breadcrumbs ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#breadcrumbs li {
+	font-size: 11px;
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	color: #777;
+}
+#breadcrumbs a {
+	color: #777;
+}
+
+
+/***********************************************************
  * Page heading
  **********************************************************/
 #heading h1 {
@@ -153,7 +170,7 @@ body {
 	/*font-family: "Georgia", serif;*/
 	font-family: "Century Gothic", sans-serif;
 	font-weight: normal;
-	margin: 0 0 20px 0;
+	margin: 20px 0 20px 0;
 }
 
 
