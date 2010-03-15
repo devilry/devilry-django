@@ -409,7 +409,7 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
-    students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
+    #students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
@@ -464,6 +464,7 @@ class AssignmentGroup(models.Model):
     
     def get_students(self):
         return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
+        #return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
