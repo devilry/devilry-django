@@ -409,7 +409,10 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
+<<<<<<< HEAD:devilry/core/models.py
     #students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
+=======
+>>>>>>> 03084f9b64e0119162a6de53922970823b64eb15:devilry/core/models.py
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
