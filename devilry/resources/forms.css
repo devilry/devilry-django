@@ -59,7 +59,13 @@ span.devilry-date-format, span.devilry-time-format {
 	color: #666;
 }
 
+.submit-row-right {
+	float: right;
+}
 
+.form-link-as-button a {
+	text-decoration: none;
+}
 
 
 

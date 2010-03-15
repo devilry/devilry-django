@@ -110,6 +110,20 @@ class EditPeriod(EditNodeBase):
     VIEW_NAME = 'period'
     MODEL_CLASS = Period
 
+    def create_form(self):
+        class Form(forms.ModelForm):
+            parentnode = forms.ModelChoiceField(required=True,
+                    queryset = Subject.where_is_admin(self.request.user))
+            class Meta:
+                model = Period
+                fields = ['parentnode', 'short_name', 'long_name', 'start_time', 'end_time', 'admins']
+                widgets = {
+                    'start_time': DevilryDateTimeWidget,
+                    'end_time': DevilryDateTimeWidget,
+                }
+        return Form
+
+
 class EditAssignment(EditNodeBase):
     VIEW_NAME = 'assignment'
     MODEL_CLASS = Assignment
