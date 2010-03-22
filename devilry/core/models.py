@@ -619,7 +619,7 @@ class Feedback(models.Model):
        ('textile', 'Textile'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
-    feedback_format = models.CharField(max_length=20, choices=text_formats)
+    feedback_format = models.CharField(max_length=20, choices=text_formats, default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery, blank=True, null=True)
 
