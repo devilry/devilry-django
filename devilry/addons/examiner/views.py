@@ -16,17 +16,6 @@ from devilry.core.utils.GroupNodes import group_assignments, group_assignmentgro
 from django.http import HttpResponse
 from django.core.servers.basehttp import FileWrapper
 
-@login_required
-def list_assignments(request):
-    assignments = Assignment.where_is_examiner(request.user)
-    all_courses = group_assignmentgroups(assignments)
-
-    if assignments.count() == 0:
-        return HttpResponseForbidden("You are not registered as examiner on any assignments.")
-    return render_to_response('devilry/examiner/show_assignments.django.html', {
-        'assignments': assignments,
-        }, context_instance=RequestContext(request))
-
 
 @login_required
 def list_assignmentgroups(request, assignment_id):
@@ -48,14 +37,6 @@ def show_assignmentgroup(request, assignmentgroup_id):
         'assignment_group': assignment_group,
         }, context_instance=RequestContext(request))
 
-
-@login_required
-def list_deliveries(request):
-    return render_to_response('devilry/studentview/list_deliveries.django.html', {
-        'deliveries': Delivery.where_is_student(request.user),
-        }, context_instance=RequestContext(request))
-
-
 @login_required
 def correct_delivery(request, delivery_id):
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
@@ -66,10 +47,9 @@ def correct_delivery(request, delivery_id):
 
 
 
-
 @login_required
 def choose_assignment(request):
-    assignment_pks = AssignmentGroup.where_is_examiner(request.user).values("parentnode").distinct().query
+    assignment_pks = AssignmentGroup.active_where_is_examiner(request.user).values("parentnode").distinct().query
     assignments = Assignment.objects.filter(pk__in=assignment_pks)
     
     subjects = group_assignments(assignments)

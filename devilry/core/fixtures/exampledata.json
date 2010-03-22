@@ -329,16 +329,16 @@
         }
     }, 
     {
-        "pk": 13, 
+        "pk": 14, 
         "model": "core.assignment", 
         "fields": {
-            "grade_plugin": "grade_schema:schemagraderesults", 
-            "short_name": "stuff", 
-            "publishing_time": "2010-01-10 00:00:00", 
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "week2", 
+            "publishing_time": "2010-03-17 10:00:00", 
             "parentnode": 1, 
-            "long_name": "Stuff", 
+            "long_name": "Week 2", 
             "admins": [], 
-            "deadline": "2010-12-10 00:00:00"
+            "deadline": "2010-06-17 14:00:00"
         }
     }, 
     {
@@ -592,6 +592,21 @@
                 10
             ], 
             "parentnode": 11
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "students": [
+                6
+            ], 
+            "is_open": true, 
+            "examiners": [
+                10, 
+                11
+            ], 
+            "parentnode": 14
         }
     }, 
     {

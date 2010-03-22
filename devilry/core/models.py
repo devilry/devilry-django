@@ -445,6 +445,17 @@ class AssignmentGroup(models.Model):
     def where_is_examiner(cls, user_obj):
         return AssignmentGroup.objects.filter(examiners=user_obj)
 
+    @classmethod
+    def published_where_is_examiner(cls, user_obj):
+        return cls.where_is_examiner(user_obj).filter(
+                parentnode__publishing_time__lt = datetime.now())
+
+    @classmethod
+    def active_where_is_examiner(cls, user_obj):
+        now = datetime.now()
+        return cls.published_where_is_examiner(user_obj).filter(
+                parentnode__parentnode__start_time__lt = now,
+                parentnode__parentnode__end_time__gt = now)
     
 
     def __unicode__(self):
