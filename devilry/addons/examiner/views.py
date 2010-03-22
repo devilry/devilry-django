@@ -76,15 +76,3 @@ def choose_assignment(request):
     return render_to_response('devilry/examiner/choose_assignment.django.html', {
             'subjects': subjects,
             }, context_instance=RequestContext(request))
-
-
-
-@login_required
-def download_file(request, filemeta_id):
-    filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
-    response = HttpResponse(FileWrapper(
-            file(filemeta.store._get_filepath(filemeta))), content_type='application/zip')
-    response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
-    response['Content-Length'] = filemeta.size
-
-    return response

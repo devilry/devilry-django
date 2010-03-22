@@ -1,3 +1,4 @@
+from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django import forms
@@ -46,11 +47,22 @@ def login_view(request):
         }, context_instance=RequestContext(request))
 
 
+#@login_required
+#def download_file(request, filemeta_id):
+    #filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
+    #response = HttpResponse(FileWrapper(
+            #file(filemeta.store._get_filepath(filemeta))), content_type='application/zip')
+    #response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
+    #response['Content-Length'] = filemeta.size
+
+    #return response
+
 @login_required
 def download_file(request, filemeta_id):
     filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
     response = HttpResponse(FileWrapper(
-            file(filemeta.store._get_filepath(filemeta))), content_type='application/zip')
+            file(filemeta.store._get_filepath(filemeta))),
+            content_type=guess_type(filemeta.filename)[0])
     response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
     response['Content-Length'] = filemeta.size
 
