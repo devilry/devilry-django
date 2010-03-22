@@ -34,10 +34,16 @@ class DeliveryAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'id']
     inlines = [FileMetaInline]
 
+class AssignmentGroupAdmin(BaseNodeAdmin):
+    list_display = ['parentnode', 'get_students', 'get_examiners']
+    search_fields = [
+            'parentnode__short_name', 'parentnode__parentnode__short_name', 'parentnode__parentnode__parentnode__short_name']
+    ordering = ['parentnode']
+
 
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment)
-admin.site.register(AssignmentGroup)
+admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
 admin.site.register(Delivery, DeliveryAdmin)

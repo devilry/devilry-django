@@ -453,6 +453,11 @@ class AssignmentGroup(models.Model):
     
     def get_students(self):
         return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
+    get_students.short_description = _('Students')
+
+    def get_examiners(self):
+        return u'%s' % (', '.join([unicode(x) for x in self.examiners.all()]))
+    get_examiners.short_description = _('Examiners')
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
