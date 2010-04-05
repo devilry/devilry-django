@@ -8,12 +8,12 @@
 {% block breadcrumbs %}
 {{ block.super }}
 
-<li><a href='{% url devilry-student-show_history %}'>{% trans "History browser" %}</a></li>
+<li><a href='{% url devilry-student-show_history %}'>{% trans "History" %}</a></li>
 <li>::</li>
-<li><a href='{% url devilry-student-show_assignmentgroup delivery.assignment_group.id %}'>{% trans "Assignment information" %}</a></li>
+<li><a href='{% url devilry-student-show_assignmentgroup delivery.assignment_group.id %}'>{{ delivery.assignment_group.parentnode }}</a></li>
 <li>::</li>
 
-<li>{% trans "Delivery information" %}</li>
+<li>{{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</li>
 {% endblock %}
 
 {% block main %}

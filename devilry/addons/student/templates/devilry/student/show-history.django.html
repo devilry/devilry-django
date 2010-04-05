@@ -1,0 +1,38 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "History" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "History" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li>{% trans "History" %}</li>
+{% endblock %}
+
+{% block sidebar %}
+<div id='sidebar' class='assignment_group_info'>
+  <div class='section related'>
+    <h2>{% trans "Related" %}</h2>
+    <p>
+      {% url devilry-student-add_delivery_choose_assignment as add_delivery_url %}
+      {% blocktrans %}
+        You can add deliveries on active assignments
+        <a href='{{ add_delivery_url }}'>here</a>.
+      {% endblocktrans %}
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block main %}
+
+{% include "devilry/ui/include/assignment_group_chooser.django.html" %}
+
+{% endblock %}

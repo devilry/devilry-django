@@ -5,9 +5,6 @@ from devilry.core import pluginloader
 from django.contrib import admin
 admin.autodiscover()
 
-print "pluginloader.autodiscover"
-
-pluginloader.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
@@ -30,3 +27,7 @@ urlpatterns = patterns('',
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.DEVILRY_RESOURCES_ROOT}),
 )
+
+
+# Must be after url-loading to allow plugins to use reverse()
+pluginloader.autodiscover()

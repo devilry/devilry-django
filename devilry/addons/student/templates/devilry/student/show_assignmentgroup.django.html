@@ -2,15 +2,15 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "Assignment information" %}{% endblock %}
-{% block heading %}{% trans "Assignment information" %}{% endblock %}
+{% block title %}{{ assignment_group.parentnode }}{% endblock %}
+{% block heading %}{{ assignment_group.parentnode }}{% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
 
-<li><a href='{% url devilry-student-show_history %}'>{% trans "History browser" %}</a></li>
+<li><a href='{% url devilry-student-show_history %}'>{% trans "History" %}</a></li>
 <li>::</li>
-<li>{% trans "Assignment information" %}</li>
+<li>{{ assignment_group.parentnode }}</li>
 {% endblock %}
 
 
