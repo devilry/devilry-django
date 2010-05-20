@@ -1,0 +1,9 @@
+<html>
+	<body>
+		<h1>XML-RPC Methods:</h1>
+		{% for name, docs in docs %}
+			<h2>{{name}}(...)</h2>
+			<pre>{{ docs }}</pre>
+		{% endfor %}
+	</body>
+</html>

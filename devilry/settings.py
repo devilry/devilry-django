@@ -103,6 +103,7 @@ INSTALLED_APPS = (
     'devilry.addons.grade_default',
     'devilry.addons.grade_schema',
     'devilry.addons.dashboard',
+    'devilry.addons.xmlrpc',
     'django.contrib.markup', 
     )
 
