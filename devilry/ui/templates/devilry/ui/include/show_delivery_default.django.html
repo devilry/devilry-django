@@ -5,7 +5,7 @@
 <table class='vertical_infotable'>
   <tr>
     <th>{% trans "Time of delivery" %}</th>
-    <td>{{ delivery.time_of_delivery }}</td>
+    <td>{{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
   </tr>
   <tr>
     <th>{% trans "Delivered by" %}</th>

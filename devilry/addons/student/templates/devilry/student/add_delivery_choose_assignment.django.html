@@ -1,0 +1,38 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Add delivery - Choose assignment" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "Add delivery - Choose assignment" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li>{% trans "Add delivery" %}</li>
+{% endblock %}
+
+
+{% block sidebar %}
+<div id='sidebar' class='assignment_group_info'>
+  <div class='section related'>
+    <h2>{% trans "Related" %}</h2>
+    <p>
+      {% url devilry-student-show_history as history_url%}
+      {% blocktrans %}
+        <a href='{{ history_url }}'>The history browser</a> allows you to browse
+        old deliveries.
+      {% endblocktrans %}
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block main %}
+
+{% include "devilry/ui/include/assignment_group_chooser.django.html" %}
+
+{% endblock %}

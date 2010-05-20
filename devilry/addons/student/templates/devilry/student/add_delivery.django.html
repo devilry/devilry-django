@@ -3,24 +3,25 @@
 {% load i18n %}
 
 {% block title %}
-{% trans "Add delivery" %}
+{% trans "Deliver" %} :: {{ assignment_group.parentnode.parentnode }}
+{% endblock %}
+
+{% block heading %}
+{% trans "Deliver" %} :: {{ assignment_group.parentnode.parentnode }}
 {% endblock %}
 
 
 {% block breadcrumbs %}
 {{ block.super }}
 <li>
-  <a href='{% url devilry-student-choose_assignment %}'>
-    {% trans "Choose assignment" %}
+  <a href='{% url devilry-student-add_delivery_choose_assignment %}'>
+    {% trans "Deliver" %}
   </a>
 </li>
 <li>::</li>
-<li>Add delivery</li>
+<li>{{ assignment_group.parentnode.parentnode }}</li>
 {% endblock %}
 
-{% block heading %}
-{% trans "Add delivery" %}
-{% endblock %}
 
 
 {% block sidebar %}
