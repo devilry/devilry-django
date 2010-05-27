@@ -28,12 +28,6 @@ class PeriodAdmin(BaseNodeAdmin):
 class CandidateInline(admin.TabularInline):
     model = Candidate
 
-
-class AssignmentGroupAdmin(admin.ModelAdmin):
-    #list_display = ['parentnode']
-    inlines = [CandidateInline]
-
-
 class FileMetaInline(admin.TabularInline):
     model = FileMeta
     extra = 1
@@ -43,6 +37,12 @@ class DeliveryAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'id']
     inlines = [FileMetaInline]
 
+class AssignmentGroupAdmin(BaseNodeAdmin):
+    list_display = ['parentnode', 'get_students', 'get_examiners']
+    search_fields = [
+            'parentnode__short_name', 'parentnode__parentnode__short_name', 'parentnode__parentnode__parentnode__short_name']
+    ordering = ['parentnode']
+    inlines = [CandidateInline]
 
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Subject, SubjectAdmin)

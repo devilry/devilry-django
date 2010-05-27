@@ -303,7 +303,7 @@ class Period(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return self.short_name
+        return u"%s / %s" % (self.parentnode, self.short_name)
 
     def str(self):
         return self.short_name
@@ -361,7 +361,7 @@ class Assignment(BaseNode):
         ).distinct()
 
     def __unicode__(self):
-        return unicode(self.parentnode) + " - " + self.short_name
+        return u"%s / %s" % (self.parentnode, self.short_name)
 
     @classmethod
     def where_is_examiner(cls, user_obj):
@@ -378,6 +378,8 @@ class Assignment(BaseNode):
 class Candidate(models.Model):
     student = models.ForeignKey(User)
     assignment_group = models.ForeignKey('AssignmentGroup')
+
+    # TODO unique within assignment
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
 
     def __unicode__(self):
@@ -409,10 +411,9 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
-<<<<<<< HEAD:devilry/core/models.py
-    #students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
-=======
->>>>>>> 03084f9b64e0119162a6de53922970823b64eb15:devilry/core/models.py
+
+    students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
+
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
@@ -459,6 +460,17 @@ class AssignmentGroup(models.Model):
     def where_is_examiner(cls, user_obj):
         return AssignmentGroup.objects.filter(examiners=user_obj)
 
+    @classmethod
+    def published_where_is_examiner(cls, user_obj):
+        return cls.where_is_examiner(user_obj).filter(
+                parentnode__publishing_time__lt = datetime.now())
+
+    @classmethod
+    def active_where_is_examiner(cls, user_obj):
+        now = datetime.now()
+        return cls.published_where_is_examiner(user_obj).filter(
+                parentnode__parentnode__start_time__lt = now,
+                parentnode__parentnode__end_time__gt = now)
     
 
     def __unicode__(self):
@@ -467,7 +479,11 @@ class AssignmentGroup(models.Model):
     
     def get_students(self):
         return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
-        #return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
+    get_students.short_description = _('Students')
+
+    def get_examiners(self):
+        return u'%s' % (', '.join([unicode(x) for x in self.examiners.all()]))
+    get_examiners.short_description = _('Examiners')
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
@@ -497,9 +513,12 @@ class AssignmentGroup(models.Model):
             if qry.count() == 0:
                 return None
             else:
-                return qry.annotate(models.Max('time_of_delivery'))[0].feedback.grade
+                return qry.annotate(models.Max('time_of_delivery'))[0].feedback.get_grade()
 
 
+
+    def get_number_of_deliveries(self):
+        return self.delivery_set.all().count()
 
 
 class Delivery(models.Model):
@@ -632,13 +651,16 @@ class Feedback(models.Model):
        ('textile', 'Textile'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
-    feedback_format = models.CharField(max_length=20, choices=text_formats)
+    feedback_format = models.CharField(max_length=20, choices=text_formats, default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery, blank=True, null=True)
 
     grade_type = models.ForeignKey(ContentType)
     grade_object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
+
+    def get_grade(self):
+        return unicode(self.content_object)
 
 
 
