@@ -1,1 +1,2 @@
 - Make subject short_name unique and lowercase.
+- Same on assignmentgroups?
