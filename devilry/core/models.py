@@ -340,6 +340,7 @@ class Assignment(BaseNode):
 
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
+    anonymous = models.BooleanField(default=False)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,
@@ -373,6 +374,18 @@ class Assignment(BaseNode):
  
 
 
+
+class Candidate(models.Model):
+    student = models.ForeignKey(User)
+    assignment_group = models.ForeignKey('AssignmentGroup')
+
+    # TODO unique within assignment
+    candidate_id = models.CharField(max_length=30, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.student)
+
+
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
@@ -398,7 +411,9 @@ class AssignmentGroup(models.Model):
         deliveries or not.
     """
     parentnode = models.ForeignKey(Assignment)
-    students = models.ManyToManyField(User, blank=True, related_name="students")
+
+    students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
+
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
@@ -500,6 +515,9 @@ class AssignmentGroup(models.Model):
             else:
                 return qry.annotate(models.Max('time_of_delivery'))[0].feedback.get_grade()
 
+
+    def get_number_of_deliveries(self):
+        return self.delivery_set.all().count()
 
     def get_number_of_deliveries(self):
         return self.delivery_set.all().count()
@@ -645,8 +663,6 @@ class Feedback(models.Model):
 
     def get_grade(self):
         return unicode(self.content_object)
-
-
 
 
 class FileMeta(models.Model):

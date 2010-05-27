@@ -327,6 +327,7 @@
             ], 
             "deadline": "2008-03-11 23:39:43"
         }
+<<<<<<< HEAD
     }, 
     {
         "pk": 14, 
@@ -722,5 +723,8 @@
             "size": 4648, 
             "filename": "License.txt"
         }
+=======
+>>>>>>> student-candidate
     }
+  
 ]
