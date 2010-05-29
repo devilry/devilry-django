@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/12299/django/trunk/django/contrib/admin/media/css
+END
+login.css
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/9463/django/trunk/django/contrib/admin/media/css/login.css
+END
+base.css
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/12297/django/trunk/django/contrib/admin/media/css/base.css
+END
+ie.css
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/12297/django/trunk/django/contrib/admin/media/css/ie.css
+END
+rtl.css
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/12297/django/trunk/django/contrib/admin/media/css/rtl.css
+END
+changelists.css
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/12298/django/trunk/django/contrib/admin/media/css/changelists.css
+END
+forms.css
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/12299/django/trunk/django/contrib/admin/media/css/forms.css
+END
+widgets.css
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/12297/django/trunk/django/contrib/admin/media/css/widgets.css
+END
+dashboard.css
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/9463/django/trunk/django/contrib/admin/media/css/dashboard.css
+END
