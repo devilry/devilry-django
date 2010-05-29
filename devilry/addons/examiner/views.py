@@ -16,6 +16,7 @@ def list_assignmentgroups(request, assignment_id):
     
     return render_to_response('devilry/examiner/list_assignmentgroups.django.html', {
         'assignment_groups': assignment_groups,
+        # TODO: This will not work when the list is empty - fix when tests are ready
         'assignment': assignment_groups[0].parentnode,
         }, context_instance=RequestContext(request))
 
