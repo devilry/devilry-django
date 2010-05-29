@@ -1,22 +1,63 @@
+import xmlrpclib
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
 from django.template import loader, Context
 
 
+
+class XmlRpcDispatcher(SimpleXMLRPCDispatcher):
+    def _marshaled_dispatch(self, data, request):
+        """Dispatches an XML-RPC method from marshalled (XML) data.
+
+        This is a copy of SimpleXMLRPCDispatcher._marshaled_dispatch, but with
+        the `dispatch_method`-argument removed, and the `request`-argument added.
+
+        The motivation for this method is to make the django HttpRequest object
+        available as the first parameter to all xmlrpc-functions.
+
+        :param request: A django.http.HttpRequest object.
+        """
+        try:
+            params, method = xmlrpclib.loads(data)
+
+            # generate response
+            p = [request]
+            p.extend(params)
+            response = self._dispatch(method, p)
+
+            # wrap response in a singleton tuple
+            response = (response,)
+            response = xmlrpclib.dumps(response, methodresponse=1,
+                    allow_none=self.allow_none, encoding=self.encoding)
+        except Fault, fault:
+            response = xmlrpclib.dumps(fault, allow_none=self.allow_none,
+                    encoding=self.encoding)
+        except:
+            # report exception back to server
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            response = xmlrpclib.dumps(
+                xmlrpclib.Fault(1, "%s:%s" % (exc_type, exc_value)),
+                encoding=self.encoding, allow_none=self.allow_none,
+                )
+
+        return response
+
+
 class XmlRpc(object):
     def __init__(self):
-        self.dispatcher = SimpleXMLRPCDispatcher()
+        self.dispatcher = XmlRpcDispatcher()
 
     def __call__(self, request):
         """Dispatch XML-RPC requests."""
         if request.method == 'POST':
-            # Process XML-RPC call
+            # XMLRPC
             response = HttpResponse(mimetype='text/xml')
-            response.write(self.dispatcher._marshaled_dispatch(request.raw_post_data))
+            result = self.dispatcher._marshaled_dispatch(request.raw_post_data, request)
+            response.write(result)
             response['Content-length'] = str(len(response.content))
             return response
         else:
-            # Show documentation on available methods
+            # Documentation
             response = HttpResponse()
             t = loader.get_template('devilry/ui/xmlrpcdoc.django.html')
             docs = [(m, self.dispatcher.system_methodHelp(m))
