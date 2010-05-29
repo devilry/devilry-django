@@ -18,7 +18,7 @@ _registry = {}
 
 def register(key, label, url, description, icon=None, student_access=False, examiner_access=False, admin_access=False):
     r = PluginItem(key, label, url, description, icon, student_access, examiner_access, admin_access)
-    print "%s %s %s %s %s" % (key, label, url, icon, description)
+    #print "%s %s %s %s %s" % (key, label, url, icon, description)
     _registry[r.key] = r
 
 
