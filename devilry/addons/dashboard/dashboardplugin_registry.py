@@ -5,7 +5,11 @@ class PluginItem(object):
     def __init__(self, key, label, url, description, iconurl, student_access, examiner_access, admin_access):
         self.key = key
         self.label = label
-        self.url = settings.DEVILRY_MAIN_PAGE + url
+
+        if settings.DEVILRY_MAIN_PAGE.endswith('/'):
+            self.url = settings.DEVILRY_MAIN_PAGE[:-1] + url
+        else:
+            self.url = settings.DEVILRY_MAIN_PAGE + url
         self.icon = key + ".png"
         self.description = description
         self.student_access = student_access
