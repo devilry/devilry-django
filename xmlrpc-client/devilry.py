@@ -2,12 +2,11 @@
 
 from xmlrpclib import ServerProxy, Error
 from sys import exit
-from cookie_transport import CookieTransport
+from cookie_transport import CookieTransport, SafeCookieTransport
 
 # TODO: make sure SESSION_COOKIE_SECURE is enabled by default or something
 #       see: http://docs.djangoproject.com/en/dev/topics/http/sessions/#settings
 
-# TODO: Note SafeTransport is for https.. Maybe make CookieTransport into a mixin?
 
 
 
@@ -15,9 +14,10 @@ USER_DISABLED = 1
 SUCCESSFUL_LOGIN = 2
 LOGIN_FAILED = 3
 
-host = "http://localhost:8000/xmlrpc/"
+#host = "http://localhost:8000/xmlrpc/"
+host = "https://localhost/django/example/xmlrpc/"
 #server = ServerProxy(host)
-server = ServerProxy(host, transport=CookieTransport())
+server = ServerProxy(host, transport=SafeCookieTransport())
 
 
 try:

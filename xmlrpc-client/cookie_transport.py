@@ -7,14 +7,14 @@ from os.path import isfile
 COOKIEFILE = "cookies.txt"
 
 
-class CookieResponse(object):
+class _CookieResponse(object):
     def __init__(self, response):
         self.response = response
     def info(self):
         return self.response
 
 
-class CookieRequest(object):
+class _CookieRequest(object):
     def __init__(self, connection, urltype, host, path):
         self.connection = connection
         self.urltype = urltype
@@ -43,16 +43,13 @@ class CookieRequest(object):
         self.connection.putheader(key, header)
 
 
-class CookieTransport(xmlrpclib.Transport):
+class CookieTransportMixin(object):
 
     user_agent = 'devilry-rpc-client (http://devilry.github.com)'
+    urltype = 'http'
 
-    def __init__(self, SESSION_ID_STRING='sessionid'):
+    def __init__(self):
         xmlrpclib.Transport.__init__(self)
-        self.mycookies=None
-        #self.mysessid="fc1718e8e58d41133fefea184695d02f"
-        self.mysessid=None
-        self.SESSION_ID_STRING = SESSION_ID_STRING
 
     def request(self, host, handler, request_body, verbose=0):
         """ issue XML-RPC request """
@@ -70,7 +67,7 @@ class CookieTransport(xmlrpclib.Transport):
         self.send_host(h, host)
 
         # Add cookie headers
-        cookie_request = CookieRequest(h, 'http', host, handler)
+        cookie_request = _CookieRequest(h, 'http', host, handler)
         cj.add_cookie_header(cookie_request)
 
         self.send_user_agent(h)
@@ -93,8 +90,17 @@ class CookieTransport(xmlrpclib.Transport):
             sock = None
 
         # Set cookies if any Set-Cookie headers in response
-        cookie_response = CookieResponse(headers)
+        cookie_response = _CookieResponse(headers)
         cj.extract_cookies(cookie_response, cookie_request)
         cj.save(COOKIEFILE)
 
         return self._parse_response(h.getfile(), sock)
+
+
+class CookieTransport(CookieTransportMixin, xmlrpclib.Transport):
+    """ Unprotected HTTP XMLRPC transport with cookie support. """
+
+
+class SafeCookieTransport(CookieTransportMixin, xmlrpclib.SafeTransport):
+    """ Unprotected HTTP XMLRPC transport with cookie support. """
+    urltype = 'https'
