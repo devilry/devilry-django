@@ -1,0 +1,9 @@
+# Example apache mod_wsgi configuration for devilry
+# /mnt/hgfs/code/devilry-django/ is the path to the devilry-django repo root.
+
+<Directory /mnt/hgfs/code/devilry-django/devilry>
+	Options FollowSymLinks Indexes
+	Allow from all
+</Directory>
+WSGIScriptAliasMatch ^/django/([^/]+) /mnt/hgfs/code/devilry-django/wsgi/$1.wsgi
+Alias /devilry-resources/ /mnt/hgfs/code/devilry-django/devilry/resources/
