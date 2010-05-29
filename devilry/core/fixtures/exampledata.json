@@ -162,7 +162,8 @@
                 4, 
                 5
             ], 
-            "deadline": "2040-01-01 00:00:00"
+            "deadline": "2040-01-01 00:00:00", 
+            "anonymous": false
         }
     }, 
     {
@@ -175,7 +176,8 @@
             "parentnode": 2, 
             "long_name": "Oblig2", 
             "admins": [], 
-            "deadline": "2010-02-26 23:05:14"
+            "deadline": "2010-02-26 23:05:14", 
+            "anonymous": false
         }
     }, 
     {
@@ -188,7 +190,8 @@
             "parentnode": 4, 
             "long_name": "Oblig 2", 
             "admins": [], 
-            "deadline": "2029-03-16 00:00:00"
+            "deadline": "2029-03-16 00:00:00", 
+            "anonymous": false
         }
     }, 
     {
@@ -201,7 +204,8 @@
             "parentnode": 4, 
             "long_name": "Oblig 1", 
             "admins": [], 
-            "deadline": "2029-05-01 12:00:00"
+            "deadline": "2029-05-01 12:00:00", 
+            "anonymous": false
         }
     }, 
     {
@@ -216,7 +220,8 @@
             "admins": [
                 3
             ], 
-            "deadline": "2010-03-12 20:23:00"
+            "deadline": "2010-03-12 20:23:00", 
+            "anonymous": false
         }
     }, 
     {
@@ -232,7 +237,8 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-03-15 21:19:20"
+            "deadline": "2010-03-15 21:19:20", 
+            "anonymous": false
         }
     }, 
     {
@@ -247,7 +253,8 @@
             "admins": [
                 4
             ], 
-            "deadline": "2010-03-14 21:21:35"
+            "deadline": "2010-03-14 21:21:35", 
+            "anonymous": false
         }
     }, 
     {
@@ -263,7 +270,8 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-09-11 21:34:05"
+            "deadline": "2010-09-11 21:34:05", 
+            "anonymous": false
         }
     }, 
     {
@@ -279,7 +287,8 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-10-11 21:34:51"
+            "deadline": "2010-10-11 21:34:51", 
+            "anonymous": false
         }
     }, 
     {
@@ -295,7 +304,8 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-11-11 21:35:10"
+            "deadline": "2010-11-11 21:35:10", 
+            "anonymous": false
         }
     }, 
     {
@@ -310,7 +320,8 @@
             "admins": [
                 6
             ], 
-            "deadline": "2008-03-11 21:38:04"
+            "deadline": "2008-03-11 21:38:04", 
+            "anonymous": false
         }
     }, 
     {
@@ -325,34 +336,80 @@
             "admins": [
                 6
             ], 
-            "deadline": "2008-03-11 23:39:43"
+            "deadline": "2008-03-11 23:39:43", 
+            "anonymous": false
         }
     }, 
     {
-        "pk": 14, 
-        "model": "core.assignment", 
+        "pk": 1, 
+        "model": "core.candidate", 
         "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "week2", 
-            "publishing_time": "2010-03-17 10:00:00", 
-            "parentnode": 1, 
-            "long_name": "Week 2", 
-            "admins": [], 
-            "deadline": "2010-06-17 14:00:00"
+            "candidate_id": "", 
+            "student": 6, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 7, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 7, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 8, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 6, 
+            "assignment_group": 3
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 7, 
+            "assignment_group": 4
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 8, 
+            "assignment_group": 5
         }
     }, 
     {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "students": [
-                6, 
-                7
-            ], 
             "is_open": true, 
             "examiners": [
-                10, 
-                11
+                10
             ], 
             "parentnode": 1
         }
@@ -361,10 +418,6 @@
         "pk": 2, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "students": [
-                7, 
-                8
-            ], 
             "is_open": true, 
             "examiners": [
                 10
@@ -376,351 +429,33 @@
         "pk": 3, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "students": [
-                6, 
-                7
-            ], 
             "is_open": true, 
             "examiners": [
-                10, 
-                11
+                10
             ], 
-            "parentnode": 4
+            "parentnode": 1
         }
     }, 
     {
         "pk": 4, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "students": [
-                6
-            ], 
             "is_open": true, 
             "examiners": [
-                10, 
-                11
+                10
             ], 
-            "parentnode": 3
+            "parentnode": 1
         }
     }, 
     {
         "pk": 5, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "students": [
-                7
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10, 
-                11
-            ], 
-            "parentnode": 3
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                8
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10, 
-                11
-            ], 
-            "parentnode": 3
-        }
-    }, 
-    {
-        "pk": 7, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                4, 
-                5, 
-                6
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10, 
-                11
-            ], 
-            "parentnode": 5
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6
-            ], 
             "is_open": true, 
             "examiners": [
                 10
             ], 
-            "parentnode": 6
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                7
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10, 
-                11
-            ], 
-            "parentnode": 6
-        }
-    }, 
-    {
-        "pk": 10, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                8
-            ], 
-            "is_open": true, 
-            "examiners": [
-                11
-            ], 
-            "parentnode": 6
-        }
-    }, 
-    {
-        "pk": 11, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10
-            ], 
-            "parentnode": 7
-        }
-    }, 
-    {
-        "pk": 12, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                7
-            ], 
-            "is_open": true, 
-            "examiners": [
-                11
-            ], 
-            "parentnode": 7
-        }
-    }, 
-    {
-        "pk": 13, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6, 
-                7
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10
-            ], 
-            "parentnode": 8
-        }
-    }, 
-    {
-        "pk": 14, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                8
-            ], 
-            "is_open": true, 
-            "examiners": [
-                11
-            ], 
-            "parentnode": 8
-        }
-    }, 
-    {
-        "pk": 15, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6, 
-                7
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10
-            ], 
-            "parentnode": 9
-        }
-    }, 
-    {
-        "pk": 16, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6, 
-                7
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10
-            ], 
-            "parentnode": 10
-        }
-    }, 
-    {
-        "pk": 17, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10
-            ], 
-            "parentnode": 11
-        }
-    }, 
-    {
-        "pk": 18, 
-        "model": "core.assignmentgroup", 
-        "fields": {
-            "students": [
-                6
-            ], 
-            "is_open": true, 
-            "examiners": [
-                10, 
-                11
-            ], 
-            "parentnode": 14
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-11 20:40:53", 
-            "assignment_group": 7
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-11 21:05:03", 
-            "assignment_group": 7
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-11 21:24:57", 
-            "assignment_group": 11
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-11 21:26:56", 
-            "assignment_group": 8
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-11 21:29:08", 
-            "assignment_group": 8
-        }
-    }, 
-    {
-        "pk": 7, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-03-11 21:40:48", 
-            "assignment_group": 17
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 2, 
-            "size": 3102, 
-            "filename": "nude.txt"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 3, 
-            "size": 75605, 
-            "filename": "Wife-shop-alone.jpg"
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 4, 
-            "size": 40062, 
-            "filename": "fail-owned-cuyama-fail.jpg"
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 5, 
-            "size": 140931, 
-            "filename": "calculus-fail.jpg"
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 6, 
-            "size": 48255, 
-            "filename": "dating_pools.png"
-        }
-    }, 
-    {
-        "pk": 7, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 7, 
-            "size": 4648, 
-            "filename": "License.txt"
+            "parentnode": 1
         }
     }
 ]
