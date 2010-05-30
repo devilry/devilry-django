@@ -16,12 +16,14 @@ class XmlRpc(object):
         method = u.getmethodname()
         func = self.dispatch.get(method)
         if func is not None:
-            result = func(request, *args)
-            xml = xmlrpclib.dumps((result,), methodresponse=1)
+            try:
+                result = func(request, *args)
+                xml = xmlrpclib.dumps((result,), methodresponse=1)
+            except Exception, e:
+                xml = xmlrpclib.dumps(xmlrpclib.Fault(-32400, 'system error: %s' % e), methodresponse=1)
         else:
-            xml = xmlrpclib.dumps(
-                    xmlrpclib.Fault(-32601, 'method unknown: %s' % method),
-                    methodresponse=1)
+            xml = xmlrpclib.dumps(xmlrpclib.Fault(-32601, 'method unknown: %s' % method), methodresponse=1)
+
         return HttpResponse(xml, mimetype='text/xml; charset=utf-8')
 
     def htmldocs(self, request):
