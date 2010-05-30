@@ -14,10 +14,11 @@ USER_DISABLED = 1
 SUCCESSFUL_LOGIN = 2
 LOGIN_FAILED = 3
 
-#host = "http://localhost:8000/xmlrpc/"
-host = "https://localhost/django/example/xmlrpc/"
-#server = ServerProxy(host)
-server = ServerProxy(host, transport=SafeCookieTransport())
+#host = "https://localhost/django/example/xmlrpc/"
+#server = ServerProxy(host, transport=SafeCookieTransport())
+
+host = "http://localhost:8000/xmlrpc/"
+server = ServerProxy(host, transport=CookieTransport())
 
 
 try:
