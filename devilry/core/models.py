@@ -122,6 +122,7 @@ class Node(BaseNode):
             return self.short_name
 
 
+    # TODO: iter_childnodes seems to include the parentnode in node_set.all(), which gives the wrong result.
     def iter_childnodes(self):
         for node in self.node_set.all():
             yield node
@@ -131,19 +132,15 @@ class Node(BaseNode):
     def clean(self, *args, **kwargs):
         if self.parentnode == None:
             q = Node.objects.filter(parentnode=None)
-            if q.count() == 0:
-                raise ValidationError('At least one node *must* be root.')
-            else:
-                if q.all()[0] != self:
-                    raise ValidationError('Only one node can be the root node.')
+            if q.count() != 0:
+                raise ValidationError('Only one node can be the root node.')
 
         if self.parentnode == self:
             raise ValidationError('A node can not be it\'s own parent.')
 
-        for node in self.iter_childnodes():
-            if node == self.parentnode:
-                raise ValidationError('A node can not be the child of one of it\'s own children.')
-
+        #for node in self.iter_childnodes():
+            #if node == self.parentnode:
+                #raise ValidationError('A node can not be the child of one of it\'s own children.')
 
         super(Node, self).clean(*args, **kwargs)
 
@@ -171,7 +168,7 @@ class Node(BaseNode):
 
     @classmethod
     def _get_pathlist_kw(cls, pathlist):
-        """ Used by get_by_pathlist() to create the required kwargs for
+        """ Used by get_by_pathlist to create the required kwargs for
         Node.objects.get(). Might be a starting point for more sophisticated
         queries including paths. """
         kw = {}
@@ -183,24 +180,21 @@ class Node(BaseNode):
 
     @classmethod
     def get_by_pathlist(cls, pathlist):
-        """ Get node by path just like get_by_path(), the parameter
-        is a list of node-names instead of a single string. Example:
+        """ Get node by pathlist.
         
-            >>> uio = Node(short_name='uio', long_name='UiO')
-            >>> uio.save()
-            >>> ifi = Node(short_name='ifi', long_name='Ifi', parentnode=uio)
-            >>> ifi.save()
-            >>> ifi
-            <Node: uio.ifi>
-            >>> Node.get_by_pathlist(['uio', 'ifi'])
-            <Node: uio.ifi>
+        :param pathlist: A list of node-names, like ``['uio', 'ifi']``.
+        :return: A Node-object.
         """
         return Node.objects.get(**cls._get_pathlist_kw(pathlist))
 
     @classmethod
     def get_by_path(cls, path):
-        """ Get a node by path. Just like `get_by_pathlist`, but the path is a
-        string where the node-names are separated with '.'. """
+        """ Get a node by path.
+        
+        :param path: Node-names separated by '.', like ``'uio.ifi'``.
+        :type path: str
+        :return: A Node-object.
+        """
         return cls.get_by_pathlist(path.split('.'))
 
 
