@@ -4,9 +4,6 @@ from cookielib import LWPCookieJar
 from os.path import isfile
 
 
-COOKIEFILE = "cookies.txt"
-
-
 class _CookieResponse(object):
     def __init__(self, response):
         self.response = response
@@ -48,7 +45,8 @@ class CookieTransportMixin(object):
     user_agent = 'devilry-rpc-client (http://devilry.github.com)'
     urltype = 'http'
 
-    def __init__(self):
+    def __init__(self, cookiefile):
+        self.cookiefile = cookiefile
         xmlrpclib.Transport.__init__(self)
 
     def request(self, host, handler, request_body, verbose=0):
@@ -56,8 +54,8 @@ class CookieTransportMixin(object):
 
         # Load cookies from file
         cj = LWPCookieJar()
-        if isfile(COOKIEFILE):
-            cj.load(COOKIEFILE)
+        if isfile(self.cookiefile):
+            cj.load(self.cookiefile)
 
         h = self.make_connection(host)
         if verbose:
@@ -92,7 +90,7 @@ class CookieTransportMixin(object):
         # Set cookies if any Set-Cookie headers in response
         cookie_response = _CookieResponse(headers)
         cj.extract_cookies(cookie_response, cookie_request)
-        cj.save(COOKIEFILE)
+        cj.save(self.cookiefile)
 
         return self._parse_response(h.getfile(), sock)
 

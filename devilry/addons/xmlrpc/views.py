@@ -52,11 +52,10 @@ def sum(request, a, b):
 def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignment_groups = assignment.assignment_groups_where_is_examiner(request.user)
-    if assignment_groups:
-        assignment = assignment_groups[0].parentnode
-    else:
-        assignment = None
 
-    return dict(
-        assignment = assignment,
-        assignment_groups = assignment_groups)
+    assignment_groups = [{
+            'id': a.id,
+            'students': a.get_students(),
+            'number_of_deliveries': a.get_number_of_deliveries()}
+        for a in assignment_groups]
+    return assignment_groups

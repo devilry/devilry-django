@@ -18,11 +18,13 @@ class XmlRpc(object):
         if func is not None:
             try:
                 result = func(request, *args)
-                xml = xmlrpclib.dumps((result,), methodresponse=1)
+                xml = xmlrpclib.dumps((result,), methodresponse=1, allow_none=True)
             except Exception, e:
-                xml = xmlrpclib.dumps(xmlrpclib.Fault(-32400, 'system error: %s' % e), methodresponse=1)
+                xml = xmlrpclib.dumps(
+                        xmlrpclib.Fault(-32400, 'system error: %s' % e), methodresponse=1)
         else:
-            xml = xmlrpclib.dumps(xmlrpclib.Fault(-32601, 'method unknown: %s' % method), methodresponse=1)
+            xml = xmlrpclib.dumps(
+                    xmlrpclib.Fault(-32601, 'method unknown: %s' % method), methodresponse=1)
 
         return HttpResponse(xml, mimetype='text/xml; charset=utf-8')
 
