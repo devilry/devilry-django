@@ -519,9 +519,6 @@ class AssignmentGroup(models.Model):
     def get_number_of_deliveries(self):
         return self.delivery_set.all().count()
 
-    def get_number_of_deliveries(self):
-        return self.delivery_set.all().count()
-
 
 class Delivery(models.Model):
     """
