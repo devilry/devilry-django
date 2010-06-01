@@ -11,6 +11,12 @@ import gradeplugin_registry
 
 
 
+# TODO: Subject.short_name unique for efficiency and because it is common at universities. Other schools can prefix to make it unique in any case.
+# TODO: Paths should be something like get_full_path() and get_unique_path(), where the latter considers Subject.short_name as unique
+# TODO: indexes
+# TODO: A common interface defining and documenting common properties like is_admin() ?
+
+
 class BaseNode(models.Model):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
@@ -51,9 +57,13 @@ class BaseNode(models.Model):
 
     def get_path(self):
         return unicode(self)
+    get_path.short_description = _('Path')
 
-    def admins_unicode(self):
-        return u', '.join(u.username for u in self.admins.all())
+    def get_admins(self):
+        """ Get a string with the username of all administrators on this node separated
+        by comma and a space like: ``"uioadmin, ifiadmin, superuser"``. """
+        return u', '.join([u.username for u in self.admins.all()])
+    get_admins.short_description = _('Administrators')
 
     def is_admin(self, user_obj):
         """ Check if the given user is admin on this node or any parentnode.
@@ -61,12 +71,14 @@ class BaseNode(models.Model):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: bool
         """
-        if self.admins.filter(pk=user_obj.pk):
-            return True
-        elif self.parentnode:
-            return self.parentnode.is_admin(user_obj)
+        try:
+            self.admins.get(pk=user_obj.pk)
+        except User.DoesNotExist, e:
+            if self.parentnode:
+                return self.parentnode.is_admin(user_obj)
         else:
-            return False
+            return True
+        return False
 
     def can_save(self, user_obj):
         """ Check if the give user has permission to save this node.
@@ -472,11 +484,11 @@ class AssignmentGroup(models.Model):
                 ', '.join([unicode(x) for x in self.students.all()]))
     
     def get_students(self):
-        return u'%s' % (', '.join([unicode(x) for x in self.students.all()]))
+        return u'%s' % (', '.join([unicode(x) for x in self.students.all()])) # TODO: this seems too much code.. see get_admins
     get_students.short_description = _('Students')
 
     def get_examiners(self):
-        return u'%s' % (', '.join([unicode(x) for x in self.examiners.all()]))
+        return u'%s' % (', '.join([unicode(x) for x in self.examiners.all()])) # TODO: this seems too much code.. see get_admins
     get_examiners.short_description = _('Examiners')
 
     def is_admin(self, user_obj):

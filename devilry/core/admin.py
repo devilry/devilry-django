@@ -19,7 +19,7 @@ class SubjectAdmin(BaseNodeAdmin):
     pass
 
 class PeriodAdmin(BaseNodeAdmin):
-    list_display = ['parentnode', 'short_name', 'start_time', 'end_time', 'admins_unicode']
+    list_display = ['parentnode', 'short_name', 'start_time', 'end_time', 'get_admins']
     search_fields = ['short_name', 'long_name', 'parentnode__short_name']
     list_filter = ['start_time', 'end_time']
     ordering = ['parentnode']

@@ -12,12 +12,26 @@ from django.core.exceptions import ValidationError
 from models import Node, Subject, Period, Assignment, AssignmentGroup, Delivery
 
 
+
+class TestBaseNode(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json']
+
+    
+
 class TestNode(TestCase):
     fixtures = ['testusers.json', 'testnodes.json']
 
     def setUp(self):
-        self.ifi = Node.objects.get(pk=1)
-        self.uio = Node.objects.get(pk=2)
+        self.uioadmin = User.objects.get(username='uioadmin')
+        self.ifiadmin = User.objects.get(username='ifiadmin')
+        self.uio = Node.objects.get(pk=1)
+        self.ifi = Node.objects.get(pk=2)
+
+    def test_is_admin(self):
+        self.assertTrue(self.uio.is_admin(self.uioadmin))
+        self.assertFalse(self.uio.is_admin(self.ifiadmin))
+        self.assertTrue(self.ifi.is_admin(self.uioadmin))
+        self.assertTrue(self.ifi.is_admin(self.ifiadmin))
 
     def test_get_pathlist_kw(self):
         self.assertEquals(Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
@@ -26,12 +40,13 @@ class TestNode(TestCase):
                 'parentnode__parentnode__short_name': 'deepdummy1',
                 'parentnode__parentnode__parentnode__short_name': 'uio'})
 
+
 #class TestNode(TestCase):
     #fixtures = ['testusers.json', 'testdata.json']
 
     #def setUp(self):
-        #self.ifi = Node.objects.get(pk=1)
-        #self.uio = Node.objects.get(pk=2)
+        #self.uio = Node.objects.get(pk=1)
+        #self.ifi = Node.objects.get(pk=2)
 
     #def test_get_pathlist_kw(self):
         #self.assertEquals(Node._get_pathlist_kw(['uio', 'matnat', 'ifi']), {
