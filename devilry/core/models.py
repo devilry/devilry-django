@@ -14,10 +14,20 @@ import gradeplugin_registry
 # TODO: Subject.short_name unique for efficiency and because it is common at universities. Other schools can prefix to make it unique in any case.
 # TODO: Paths should be something like get_full_path() and get_unique_path(), where the latter considers Subject.short_name as unique
 # TODO: indexes
-# TODO: A common interface defining and documenting common properties like is_admin() ?
+# TODO: Complete/extend and document CommonInterface.
+# TODO: Clean up the __unicode__ mess with paths.
 
 
-class BaseNode(models.Model):
+class CommonInterface(object):
+
+    @classmethod
+    def where_is_admin(cls, user_obj):
+        """ Get all objects of this type where the given user is admin. """
+        raise NotImplementedError()
+    
+
+
+class BaseNode(models.Model, CommonInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
     used by the other Node classes. This is a abstract datamodel, so it
@@ -55,13 +65,17 @@ class BaseNode(models.Model):
     class Meta:
         abstract = True
 
+
     def get_path(self):
         return unicode(self)
     get_path.short_description = _('Path')
 
     def get_admins(self):
         """ Get a string with the username of all administrators on this node separated
-        by comma and a space like: ``"uioadmin, ifiadmin, superuser"``. """
+        by comma and a space like: ``"uioadmin, superuser"``.
+        
+        Note that admins on parentnode(s) is not included.
+        """
         return u', '.join([u.username for u in self.admins.all()])
     get_admins.short_description = _('Administrators')
 
@@ -80,8 +94,25 @@ class BaseNode(models.Model):
             return True
         return False
 
+
+    def _can_save_id_none(self, user_obj):
+        """ Used by all except Node, which overrides. """
+        return self.parentnode.is_admin(user_obj)
+        
+
     def can_save(self, user_obj):
-        """ Check if the give user has permission to save this node.
+        """ Check if the give user has permission to save (or create) this node.
+
+        A user can create a new node if it:
+
+            - Is a superuser.
+            - Is admin on any parentnode.
+
+        A user can save if it:
+
+            - Is a superuser.
+            - Is admin on any parentnode.
+            - Is admin on the node.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: bool
@@ -89,20 +120,11 @@ class BaseNode(models.Model):
         if user_obj.is_superuser:
             return True
         if self.id == None:
-            if self.__class__ == Node:
-                return False
-            # Must be admin on "parentnode" class to be permitted
-            parentcls = self.__class__.parentnode.field.related.parent_model
-            return parentcls.where_is_admin(user_obj).count() != 0
+            return self._can_save_id_none(user_obj)
         elif self.is_admin(user_obj):
             return True
         else:
             return False
-
-
-    @classmethod
-    def where_is_admin(cls, user_obj):
-        raise NotImplementedError()
 
 
 class Node(BaseNode):
@@ -127,21 +149,35 @@ class Node(BaseNode):
         verbose_name_plural = _('Nodes')
 
 
+    def _can_save_id_none(self, user_obj):
+        return False
+
     def __unicode__(self):
+        return self.get_path()
+
+    def get_path(self):
         if self.parentnode:
-            return unicode(self.parentnode) + "." + self.short_name
+            return self.parentnode.get_path() + "." + self.short_name
         else:
             return self.short_name
 
 
-    # TODO: iter_childnodes seems to include the parentnode in node_set.all(), which gives the wrong result.
     def iter_childnodes(self):
-        for node in self.node_set.all():
+        for node in Node.objects.filter(parentnode=self):
             yield node
             for c in node.iter_childnodes():
                 yield c
 
     def clean(self, *args, **kwargs):
+        """Validate the node.
+
+        Raises ValidationError if:
+
+            - ``parentnode`` is None, and the node-hierarchy already hase a rootnode.
+            - The node is it's own parent.
+            - The node is the child of itself or one of its childnodes.
+
+        """
         if self.parentnode == None:
             q = Node.objects.filter(parentnode=None)
             if q.count() != 0:
@@ -150,9 +186,9 @@ class Node(BaseNode):
         if self.parentnode == self:
             raise ValidationError('A node can not be it\'s own parent.')
 
-        #for node in self.iter_childnodes():
-            #if node == self.parentnode:
-                #raise ValidationError('A node can not be the child of one of it\'s own children.')
+        for node in self.iter_childnodes():
+            if node == self.parentnode:
+                raise ValidationError('A node can not be the child of one of it\'s own children.')
 
         super(Node, self).clean(*args, **kwargs)
 

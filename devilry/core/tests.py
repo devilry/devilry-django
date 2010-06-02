@@ -14,14 +14,11 @@ from models import Node, Subject, Period, Assignment, AssignmentGroup, Delivery
 
 
 class TestBaseNode(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json']
-
-    
-
-class TestNode(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json']
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json']
 
     def setUp(self):
+        self.thesuperuser= User.objects.get(username='thesuperuser')
+        self.uioadmin = User.objects.get(username='uioadmin')
         self.uioadmin = User.objects.get(username='uioadmin')
         self.ifiadmin = User.objects.get(username='ifiadmin')
         self.uio = Node.objects.get(pk=1)
@@ -33,7 +30,78 @@ class TestNode(TestCase):
         self.assertTrue(self.ifi.is_admin(self.uioadmin))
         self.assertTrue(self.ifi.is_admin(self.ifiadmin))
 
-    #def test_get_admins(self):
+    def test_get_admins(self):
+        def split_and_sort(admins):
+            l = admins.split(', ')
+            l.sort()
+            return ', '.join(l)
+        self.assertEquals(self.uio.get_admins(), 'uioadmin')
+        self.assertEquals(split_and_sort(self.ifi.get_admins()), 'ifiadmin, ifitechsupport')
+
+    def test_can_save(self):
+        self.assertTrue(self.uio.can_save(self.uioadmin))
+        self.assertFalse(self.uio.can_save(self.ifiadmin))
+        self.assertTrue(self.ifi.can_save(self.ifiadmin))
+        self.assertTrue(self.ifi.can_save(self.uioadmin))
+        self.assertTrue(Node().can_save(self.thesuperuser))
+
+    def test_can_save_id_none(self):
+        deepdummy1 = Node.objects.get(pk=4)
+        self.assertTrue(Subject(parentnode=deepdummy1).can_save(self.uioadmin))
+        self.assertFalse(Subject(parentnode=deepdummy1).can_save(self.ifiadmin))
+
+
+
+class TestNode(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json']
+
+    def setUp(self):
+        self.uioadmin = User.objects.get(username='uioadmin')
+        self.ifiadmin = User.objects.get(username='ifiadmin')
+        self.uio = Node.objects.get(pk=1)
+        self.ifi = Node.objects.get(pk=2)
+        self.deepdummy1 = Node.objects.get(pk=4)
+        self.deepdummy3 = Node.objects.get(pk=6)
+
+    def test_can_save(self):
+        self.assertFalse(Node().can_save(self.ifiadmin))
+
+    def test_unicode(self):
+        self.assertEquals(unicode(self.deepdummy3), 'uio.deepdummy1.deepdummy2.deepdummy3')
+
+    def test_get_path(self):
+        self.assertEquals(self.uio.get_path(), 'uio')
+        self.assertEquals(self.ifi.get_path(), 'uio.ifi')
+        self.assertEquals(self.deepdummy3.get_path(), 'uio.deepdummy1.deepdummy2.deepdummy3')
+
+    def test_iter_childnodes(self):
+        self.assertEquals([n.short_name for n in self.deepdummy1.iter_childnodes()],
+                [u'deepdummy2', u'deepdummy3'])
+
+        lst = [n.short_name for n in self.uio.iter_childnodes()]
+        lst.sort()
+        self.assertEquals(lst,
+                [u'deepdummy1', u'deepdummy2', u'deepdummy3', u'fys', u'ifi'])
+
+
+    def test_clean_parent_is_child(self):
+        """ Can not be child of it's own child. """
+        self.uio.parentnode = self.ifi
+        self.assertRaises(ValidationError, self.uio.clean)
+
+    def test_clean_parent_is_self(self):
+        """ Can not be child of itself. """
+        self.uio.parentnode = self.uio
+        self.assertRaises(ValidationError, self.uio.clean)
+
+    def test_clean_parent_none(self):
+        """ Only one node can be root. """
+        self.ifi.parentnode = None
+        self.assertRaises(ValidationError, self.ifi.clean)
+
+    def test_clean_noerrors(self):
+        self.ifi.clean()
+
 
     def test_get_pathlist_kw(self):
         self.assertEquals(Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
@@ -50,12 +118,6 @@ class TestNode(TestCase):
     #def setUp(self):
         #self.uio = Node.objects.get(pk=1)
         #self.ifi = Node.objects.get(pk=2)
-
-    #def test_get_pathlist_kw(self):
-        #self.assertEquals(Node._get_pathlist_kw(['uio', 'matnat', 'ifi']), {
-                #'short_name': 'ifi',
-                #'parentnode__short_name': 'matnat',
-                #'parentnode__parentnode__short_name': 'uio'})
 
     #def test_get_by_pathlist(self):
         #self.assertEquals(Node.get_by_pathlist(['uio', 'matnat', 'ifi']).short_name, 'ifi')
@@ -88,24 +150,6 @@ class TestNode(TestCase):
         #self.assertTrue(self.ifi.is_admin(ifiadmin))
         #self.assertFalse(self.ifi.is_admin(teacher1))
 
-    #def test_iter_childnodes(self):
-        #c = [node for node in self.uio.iter_childnodes()]
-        #self.assertEquals(len(c), 2)
-
-    #def test_clean_parent_is_child(self):
-        #""" Can not be child of it's own child. """
-        #self.uio.parentnode = self.ifi
-        #self.assertRaises(ValidationError, self.uio.clean)
-
-    #def test_clean_parent_is_self(self):
-        #""" Can not be child of itself. """
-        #self.uio.parentnode = self.uio
-        #self.assertRaises(ValidationError, self.uio.clean)
-
-    #def test_clean_parent_none(self):
-        #""" Only one node can be root. """
-        #self.ifi.parentnode = None
-        #self.assertRaises(ValidationError, self.ifi.clean)
 
 
 #class TestNodeNoFixture(TestCase):

@@ -8,7 +8,7 @@ from django import forms
 
 
 class BaseNodeAdmin(admin.ModelAdmin):
-    list_display = ('short_name', 'long_name', 'get_path')
+    list_display = ('short_name', 'long_name', 'get_path', 'get_admins')
     search_fields = ['short_name', 'long_name']
 
 

@@ -17,6 +17,7 @@
         "fields": {
             "long_name": "Institutt for informatikk", 
             "admins": [
+                2, 
                 3
             ], 
             "parentnode": 1, 
