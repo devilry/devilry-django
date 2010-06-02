@@ -33,12 +33,15 @@ class TestNode(TestCase):
         self.assertTrue(self.ifi.is_admin(self.uioadmin))
         self.assertTrue(self.ifi.is_admin(self.ifiadmin))
 
+    #def test_get_admins(self):
+
     def test_get_pathlist_kw(self):
         self.assertEquals(Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
                 'short_name': 'deepdummy3',
                 'parentnode__short_name': 'deepdummy2',
                 'parentnode__parentnode__short_name': 'deepdummy1',
                 'parentnode__parentnode__parentnode__short_name': 'uio'})
+
 
 
 #class TestNode(TestCase):
