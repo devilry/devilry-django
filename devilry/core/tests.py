@@ -195,12 +195,36 @@ class TestPeriod(TestCase):
         self.assertEquals(Period.where_is_admin(uioadmin).count(), 2)
 
 
-#class TestAssignment(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
+class TestAssignment(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json', 'testassignments.json',
+            'testassignmentgroups.json']
 
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(Assignment.where_is_admin(uioadmin).count(), 2)
+    def test_unique(self):
+        n = Assignment(parentnode=Period.objects.get(short_name='looong'),
+                short_name='oblig1', long_name='O1',
+                publishing_time=datetime.now(),
+                deadline=datetime.now())
+        self.assertRaises(IntegrityError, n.save)
+
+    def test_where_is_admin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        self.assertEquals(Assignment.where_is_admin(uioadmin).count(), 2)
+
+    def test_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        q = Assignment.where_is_examiner(examiner1)
+        self.assertEquals(q[0].short_name, 'oblig1')
+        self.assertEquals(q.count(), 1)
+
+    def test_assignment_groups_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        examiner2 = User.objects.get(username='examiner2')
+        oblig1 = Assignment.objects.get(id=1)
+        self.assertEquals(3,
+                oblig1.assignment_groups_where_is_examiner(examiner2)[0].id)
+        self.assertEquals(2,
+                oblig1.assignment_groups_where_is_examiner(examiner1).count())
 
 
 #class TestAssignmentGroup(TestCase):

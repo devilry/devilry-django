@@ -439,11 +439,23 @@ class Assignment(models.Model, BaseNode):
 
     @classmethod
     def where_is_examiner(cls, user_obj):
+        """ Get all assignments where the given ``user_obj`` is examiner on one
+        of its assignment groups.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return Assignment.objects.filter(
-            assignmentgroup_set__examiners=user_obj
+            assignmentgroup__examiners=user_obj
             ).distinct()
 
     def assignment_groups_where_is_examiner(self, user_obj):
+        """ Get all assignment groups within this assignment where the given
+        ``user_obj`` is examiner.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return self.assignmentgroup_set.filter(examiners=user_obj)
  
 

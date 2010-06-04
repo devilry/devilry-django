@@ -160,5 +160,41 @@
             "email": "", 
             "date_joined": "2010-02-26 22:27:51"
         }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "examiner1", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-06-05 00:56:22", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7611d$8e15f11bed92bd5580ac2e1fe850e1ae8ed0ccbc", 
+            "email": "", 
+            "date_joined": "2010-06-05 00:56:22"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "examiner2", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2010-06-05 00:56:30", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$3da0c$60825c97577c9e28077f73384bf172b91292740a", 
+            "email": "", 
+            "date_joined": "2010-06-05 00:56:30"
+        }
     }
 ]

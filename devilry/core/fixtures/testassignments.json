@@ -1,0 +1,30 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig1", 
+            "publishing_time": "2010-06-05 00:31:42", 
+            "parentnode": 1, 
+            "long_name": "Obligatory assignment one", 
+            "admins": [], 
+            "deadline": "2109-06-05 00:31:43", 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig2", 
+            "publishing_time": "2010-06-05 01:07:59", 
+            "parentnode": 1, 
+            "long_name": "Obligatory assignment two", 
+            "admins": [], 
+            "deadline": "2010-06-05 01:08:01", 
+            "anonymous": false
+        }
+    }
+]
