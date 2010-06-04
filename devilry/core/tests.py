@@ -8,7 +8,9 @@ Replace these with more appropriate tests for your application.
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from django.db.models import Q
+from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+
 from models import Node, Subject, Period, Assignment, AssignmentGroup, Delivery
 
 
@@ -63,6 +65,12 @@ class TestNode(TestCase):
         self.deepdummy1 = Node.objects.get(pk=4)
         self.deepdummy3 = Node.objects.get(pk=6)
 
+    def test_unique(self):
+        n = Node(parentnode=self.deepdummy1, short_name='ifi', long_name='Ifi')
+        n.save()
+        n.parentnode = self.uio
+        self.assertRaises(IntegrityError, n.save)
+
     def test_can_save(self):
         self.assertFalse(Node().can_save(self.ifiadmin))
 
@@ -78,10 +86,9 @@ class TestNode(TestCase):
         self.assertEquals([n.short_name for n in self.deepdummy1.iter_childnodes()],
                 [u'deepdummy2', u'deepdummy3'])
 
-        lst = [n.short_name for n in self.uio.iter_childnodes()]
-        lst.sort()
-        self.assertEquals(lst,
-                [u'deepdummy1', u'deepdummy2', u'deepdummy3', u'fys', u'ifi'])
+        s = set([n.short_name for n in self.uio.iter_childnodes()])
+        self.assertEquals(s,
+                set([u'deepdummy1', u'deepdummy2', u'deepdummy3', u'fys', u'ifi']))
 
     def test_clean_parent_is_child(self):
         """ Can not be child of it's own child. """
@@ -133,29 +140,12 @@ class TestNode(TestCase):
         self.assertEquals(n.short_name, 'test')
         Node.get_by_path('this.is.a.test') # Tests if it has been saved
 
-
-#class TestNode(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
-
-    #def setUp(self):
-        #self.uio = Node.objects.get(pk=1)
-        #self.ifi = Node.objects.get(pk=2)
+    def test_get_nodepks_where_isadmin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        pks = Node._get_nodepks_where_isadmin(uioadmin)
+        self.assertEquals(set(pks), set([1,2,3,4,5,6]))
 
 
-    #def test_get_nodepks_where_isadmin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #pks = Node._get_nodepks_where_isadmin(uioadmin)
-        #pks.sort()
-        #self.assertEquals(pks, [1,2,3])
-
-
-    #def test_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #ifiadmin = User.objects.get(username='ifiadmin')
-        #teacher1 = User.objects.get(username='teacher1')
-        #self.assertTrue(self.ifi.is_admin(uioadmin))
-        #self.assertTrue(self.ifi.is_admin(ifiadmin))
-        #self.assertFalse(self.ifi.is_admin(teacher1))
 
 
 

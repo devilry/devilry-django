@@ -164,6 +164,7 @@ class Node(models.Model, BaseNode):
     class Meta:
         verbose_name = _('Node')
         verbose_name_plural = _('Nodes')
+        unique_together = ('short_name', 'parentnode')
 
 
     def _can_save_id_none(self, user_obj):
