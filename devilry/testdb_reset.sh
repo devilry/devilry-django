@@ -8,3 +8,4 @@ python manage.py loaddata -v0 testsubjects
 python manage.py loaddata -v0 testperiods
 python manage.py loaddata -v0 testassignments
 python manage.py loaddata -v0 testassignmentgroups
+python manage.py loaddata -v0 testcandidates

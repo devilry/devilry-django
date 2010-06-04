@@ -227,20 +227,26 @@ class TestAssignment(TestCase):
                 oblig1.assignment_groups_where_is_examiner(examiner1).count())
 
 
-#class TestAssignmentGroup(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
+class TestAssignmentGroup(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json', 'testassignments.json',
+            'testassignmentgroups.json', 'testcandidates.json']
 
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(AssignmentGroup.where_is_admin(uioadmin).count(), 2)
+    def test_where_is_admin(self):
+        uioadmin = User.objects.get(username='teacher1')
+        self.assertEquals(AssignmentGroup.where_is_admin(uioadmin).count(), 3)
 
-    #def test_where_is_student(self):
-        #student2 = User.objects.get(username='student2')
-        #self.assertEquals(AssignmentGroup.where_is_student(student2).count(), 2)
+    def test_where_is_student(self):
+        student2 = User.objects.get(username='student2')
+        student3 = User.objects.get(username='student3')
+        self.assertEquals(AssignmentGroup.where_is_student(student2).count(), 1)
+        self.assertEquals(AssignmentGroup.where_is_student(student3).count(), 2)
 
-    #def test_where_is_examiner(self):
-        #teacher2 = User.objects.get(username='teacher2')
-        #self.assertEquals(AssignmentGroup.where_is_examiner(teacher2).count(), 2)
+    def test_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        examiner2 = User.objects.get(username='examiner2')
+        self.assertEquals(AssignmentGroup.where_is_examiner(examiner2).count(), 1)
+        self.assertEquals(AssignmentGroup.where_is_examiner(examiner1).count(), 2)
 
 
 #class TestDelivery(TestCase):

@@ -498,7 +498,8 @@ class AssignmentGroup(models.Model):
     """
     parentnode = models.ForeignKey(Assignment)
 
-    students = models.ManyToManyField(User, blank=True, through=Candidate, related_name='candidates')
+    students = models.ManyToManyField(User, blank=True, through=Candidate,
+            related_name='candidates')
 
     examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
@@ -507,7 +508,8 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all AssignmentGroups where the given user is admin.
+        """ Returns a QuerySet matching all AssignmentGroups where the
+        given user is admin.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
