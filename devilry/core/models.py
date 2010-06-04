@@ -44,7 +44,7 @@ class ShortNameField(models.SlugField):
         super(ShortNameField, self).__init__(*args, **kw)
 
 
-class LongNameField(models.SlugField):
+class LongNameField(models.CharField):
     def __init__(self, *args, **kwargs):
         kw = dict(max_length=100,
             verbose_name='Long name',
@@ -296,6 +296,12 @@ class Subject(models.Model, BaseNode):
         
         A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
     """
+
+    class Meta:
+        verbose_name = _('Subject')
+        verbose_name_plural = _('Subjects')
+        unique_together = ('short_name', 'parentnode')
+
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
     parentnode = models.ForeignKey(Node)
@@ -339,6 +345,12 @@ class Period(models.Model, BaseNode):
         
         A django.db.models.ManyToManyField_ that holds all the admins of the node.
     """
+
+    class Meta:
+        verbose_name = _('Period')
+        verbose_name_plural = _('Periods')
+        unique_together = ('short_name', 'parentnode')
+
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Subject)
@@ -362,9 +374,6 @@ class Period(models.Model, BaseNode):
 
     def __unicode__(self):
         return u"%s / %s" % (self.parentnode, self.short_name)
-
-    def str(self):
-        return self.short_name
 
 
 class Assignment(models.Model, BaseNode):
@@ -395,6 +404,11 @@ class Assignment(models.Model, BaseNode):
 
         A django.db.models.CharField_ that holds the current feedback plugin used.
     """
+
+    class Meta:
+        verbose_name = _('Assignment')
+        verbose_name_plural = _('Assignments')
+        unique_together = ('short_name', 'parentnode')
 
     short_name = ShortNameField()
     long_name = LongNameField()

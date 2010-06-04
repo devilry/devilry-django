@@ -5,6 +5,8 @@ unittest). These will both pass when you run "manage.py test".
 Replace these with more appropriate tests for your application.
 """
 
+from datetime import datetime
+
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from django.db.models import Q
@@ -177,12 +179,20 @@ class TestSubject(TestCase):
 
 
 
-#class TestPeriod(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
+class TestPeriod(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json']
 
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(Period.where_is_admin(uioadmin).count(), 5)
+    def test_unique(self):
+        n = Period(parentnode=Subject.objects.get(short_name='inf1100'),
+                short_name='old', long_name='Old',
+                start_time=datetime.now(),
+                end_time=datetime.now())
+        self.assertRaises(IntegrityError, n.save)
+
+    def test_where_is_admin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        self.assertEquals(Period.where_is_admin(uioadmin).count(), 2)
 
 
 #class TestAssignment(TestCase):
