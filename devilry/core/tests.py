@@ -83,7 +83,6 @@ class TestNode(TestCase):
         self.assertEquals(lst,
                 [u'deepdummy1', u'deepdummy2', u'deepdummy3', u'fys', u'ifi'])
 
-
     def test_clean_parent_is_child(self):
         """ Can not be child of it's own child. """
         self.uio.parentnode = self.ifi
@@ -94,14 +93,20 @@ class TestNode(TestCase):
         self.uio.parentnode = self.uio
         self.assertRaises(ValidationError, self.uio.clean)
 
-    def test_clean_parent_none(self):
-        """ Only one node can be root. """
-        self.ifi.parentnode = None
-        self.assertRaises(ValidationError, self.ifi.clean)
-
     def test_clean_noerrors(self):
         self.ifi.clean()
 
+    def test_create_multiple_roots(self):
+        n = Node(short_name='test', long_name='Test', parentnode=None)
+        n.clean()
+        n.save()
+        n2 = Node(short_name='test2', long_name='Test2', parentnode=None)
+        n2.clean()
+        n2.save()
+
+    def test_where_is_admin(self):
+        self.assertEquals(Node.where_is_admin(self.uioadmin).count(), 6)
+        self.assertEquals(Node.where_is_admin(self.ifiadmin).count(), 1)
 
     def test_get_pathlist_kw(self):
         self.assertEquals(Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
@@ -110,6 +115,23 @@ class TestNode(TestCase):
                 'parentnode__parentnode__short_name': 'deepdummy1',
                 'parentnode__parentnode__parentnode__short_name': 'uio'})
 
+    def test_get_by_pathlist(self):
+        self.assertEquals(Node.get_by_pathlist(['uio', 'deepdummy1', 'deepdummy2']).short_name, 'deepdummy2')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist, ['uio', 'deepdummy1', 'nonode'])
+
+    def test_get_by_path(self):
+        self.assertEquals(Node.get_by_path('uio.deepdummy1.deepdummy2').short_name, 'deepdummy2')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_path, 'uio.deepdummy1.nonode')
+
+    def test_create_by_pathlist(self):
+        n = Node.create_by_pathlist(['this', 'is', 'a', 'test'])
+        self.assertEquals(n.short_name, 'test')
+        Node.get_by_path('this.is.a.test') # Tests if it has been saved
+
+    def test_create_by_path(self):
+        n = Node.create_by_path('this.is.a.test')
+        self.assertEquals(n.short_name, 'test')
+        Node.get_by_path('this.is.a.test') # Tests if it has been saved
 
 
 #class TestNode(TestCase):
@@ -119,18 +141,6 @@ class TestNode(TestCase):
         #self.uio = Node.objects.get(pk=1)
         #self.ifi = Node.objects.get(pk=2)
 
-    #def test_get_by_pathlist(self):
-        #self.assertEquals(Node.get_by_pathlist(['uio', 'matnat', 'ifi']).short_name, 'ifi')
-        #self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist, ['uio', 'ifi'])
-
-    #def test_get_by_path(self):
-        #self.assertEquals(Node.get_by_path('uio.matnat.ifi').short_name, 'ifi')
-        #self.assertRaises(Node.DoesNotExist, Node.get_by_path, 'uio.ifi')
-
-    #def test_create_by_pathlist(self):
-        #n = Node.create_by_pathlist(['this', 'is', 'a', 'test'])
-        #self.assertEquals(n.short_name, 'test')
-        #Node.get_by_path('this.is.a.test') # Tests if it has been saved
 
     #def test_get_nodepks_where_isadmin(self):
         #uioadmin = User.objects.get(username='uioadmin')
@@ -138,9 +148,6 @@ class TestNode(TestCase):
         #pks.sort()
         #self.assertEquals(pks, [1,2,3])
 
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(Node.where_is_admin(uioadmin).count(), 3)
 
     #def test_is_admin(self):
         #uioadmin = User.objects.get(username='uioadmin')

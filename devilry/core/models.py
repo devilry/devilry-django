@@ -27,7 +27,34 @@ class CommonInterface(object):
     
 
 
-class BaseNode(models.Model, CommonInterface):
+
+class ShortNameField(models.SlugField):
+    """ Short name field used by several of the core models.
+
+    We have a hierarchy of objects with a short name, but they are not strictly
+    equal (eg. we cannot use a superclass because Subject has a unique short_name).
+    """
+    def __init__(self, *args, **kwargs):
+        kw = dict(
+            max_length = 20,
+            verbose_name = _('Short name'),
+            db_index = True,
+            help_text=_("Max 20 characters. Only numbers, letters, '_' and '-'."))
+        kw.update(kwargs)
+        super(ShortNameField, self).__init__(*args, **kw)
+
+
+class LongNameField(models.SlugField):
+    def __init__(self, *args, **kwargs):
+        kw = dict(max_length=100,
+            verbose_name='Long name',
+            db_index = True,
+            help_text=_('A longer name, more descriptive than "Short name".'))
+        kw.update(kwargs)
+        super(LongNameField, self).__init__(*args, **kw)
+
+
+class BaseNode(CommonInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
     used by the other Node classes. This is a abstract datamodel, so it
@@ -53,18 +80,6 @@ class BaseNode(models.Model, CommonInterface):
     .. _django.db.models.TextField: http://docs.djangoproject.com/en/dev/ref/models/fields/#textfield
     .. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
     """
-
-
-    short_name = models.SlugField(max_length=20,
-            verbose_name = _('Short name'),
-            help_text=_("Max 20 characters. Only numbers, letters, '_' and '-'."))
-    long_name = models.CharField(max_length=100,
-            verbose_name='Long name',
-            help_text=_('A longer name, more descriptive than "Short name".'))
-
-    class Meta:
-        abstract = True
-
 
     def get_path(self):
         return unicode(self)
@@ -127,7 +142,7 @@ class BaseNode(models.Model, CommonInterface):
             return False
 
 
-class Node(BaseNode):
+class Node(models.Model, BaseNode):
     """
     This class is typically used to represent a hierarchy of institutions, 
     faculties and departments. 
@@ -141,6 +156,8 @@ class Node(BaseNode):
         
         A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
     """
+    short_name = ShortNameField()
+    long_name = LongNameField()
     parentnode = models.ForeignKey('self', blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True)
 
@@ -169,26 +186,22 @@ class Node(BaseNode):
                 yield c
 
     def clean(self, *args, **kwargs):
-        """Validate the node.
+        """Validate the node, making sure it does not do something stupid.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
 
         Raises ValidationError if:
 
-            - ``parentnode`` is None, and the node-hierarchy already hase a rootnode.
             - The node is it's own parent.
             - The node is the child of itself or one of its childnodes.
-
         """
-        if self.parentnode == None:
-            q = Node.objects.filter(parentnode=None)
-            if q.count() != 0:
-                raise ValidationError('Only one node can be the root node.')
-
         if self.parentnode == self:
-            raise ValidationError('A node can not be it\'s own parent.')
+            raise ValidationError(_('A node can not be it\'s own parent.'))
 
         for node in self.iter_childnodes():
             if node == self.parentnode:
-                raise ValidationError('A node can not be the child of one of it\'s own children.')
+                raise ValidationError(_('A node can not be the child of one of it\'s own children.'))
 
         super(Node, self).clean(*args, **kwargs)
 
@@ -265,10 +278,10 @@ class Node(BaseNode):
     def create_by_path(cls, path):
         """ Just like `get_by_pathlist`, but the path is a string where each `short_name`
         is separated by '.', instead of a list. """
-        return cls.get_by_pathlist(path.split('.'))
+        return cls.create_by_pathlist(path.split('.'))
 
 
-class Subject(BaseNode):
+class Subject(models.Model, BaseNode):
     """
     This class represents a subject. This may be either a full course,
     or one part of a course, if it is divided into parallell courses.
@@ -282,8 +295,8 @@ class Subject(BaseNode):
         
         A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
     """
-    
-    
+    short_name = ShortNameField(unique=True)
+    long_name = LongNameField()
     parentnode = models.ForeignKey(Node)
     admins = models.ManyToManyField(User, blank=True)
     
@@ -303,7 +316,7 @@ class Subject(BaseNode):
 
 
 
-class Period(BaseNode):
+class Period(models.Model, BaseNode):
     """
     A Period represents a period of time, for example a half-year term
     at a university. 
@@ -325,6 +338,8 @@ class Period(BaseNode):
         
         A django.db.models.ManyToManyField_ that holds all the admins of the node.
     """
+    short_name = ShortNameField()
+    long_name = LongNameField()
     parentnode = models.ForeignKey(Subject)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -351,7 +366,7 @@ class Period(BaseNode):
         return self.short_name
 
 
-class Assignment(BaseNode):
+class Assignment(models.Model, BaseNode):
     """
     Represents one assignment for a given period in a given subject. May consist
     of several parts, which means that several exercises can be given as one 
@@ -380,6 +395,8 @@ class Assignment(BaseNode):
         A django.db.models.CharField_ that holds the current feedback plugin used.
     """
 
+    short_name = ShortNameField()
+    long_name = LongNameField()
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
     anonymous = models.BooleanField(default=False)
