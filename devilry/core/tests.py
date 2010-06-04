@@ -38,7 +38,8 @@ class TestBaseNode(TestCase):
             l.sort()
             return ', '.join(l)
         self.assertEquals(self.uio.get_admins(), 'uioadmin')
-        self.assertEquals(split_and_sort(self.ifi.get_admins()), 'ifiadmin, ifitechsupport')
+        self.assertEquals(split_and_sort(self.ifi.get_admins()),
+                'ifiadmin, ifitechsupport')
 
     def test_can_save(self):
         self.assertTrue(self.uio.can_save(self.uioadmin))
@@ -75,12 +76,14 @@ class TestNode(TestCase):
         self.assertFalse(Node().can_save(self.ifiadmin))
 
     def test_unicode(self):
-        self.assertEquals(unicode(self.deepdummy3), 'uio.deepdummy1.deepdummy2.deepdummy3')
+        self.assertEquals(unicode(self.deepdummy3),
+                'uio.deepdummy1.deepdummy2.deepdummy3')
 
     def test_get_path(self):
         self.assertEquals(self.uio.get_path(), 'uio')
         self.assertEquals(self.ifi.get_path(), 'uio.ifi')
-        self.assertEquals(self.deepdummy3.get_path(), 'uio.deepdummy1.deepdummy2.deepdummy3')
+        self.assertEquals(self.deepdummy3.get_path(),
+                'uio.deepdummy1.deepdummy2.deepdummy3')
 
     def test_iter_childnodes(self):
         self.assertEquals([n.short_name for n in self.deepdummy1.iter_childnodes()],
@@ -116,19 +119,25 @@ class TestNode(TestCase):
         self.assertEquals(Node.where_is_admin(self.ifiadmin).count(), 1)
 
     def test_get_pathlist_kw(self):
-        self.assertEquals(Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
+        self.assertEquals(
+                Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
                 'short_name': 'deepdummy3',
                 'parentnode__short_name': 'deepdummy2',
                 'parentnode__parentnode__short_name': 'deepdummy1',
                 'parentnode__parentnode__parentnode__short_name': 'uio'})
 
     def test_get_by_pathlist(self):
-        self.assertEquals(Node.get_by_pathlist(['uio', 'deepdummy1', 'deepdummy2']).short_name, 'deepdummy2')
-        self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist, ['uio', 'deepdummy1', 'nonode'])
+        self.assertEquals(
+                Node.get_by_pathlist(['uio', 'deepdummy1', 'deepdummy2']).short_name,
+                'deepdummy2')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist,
+                ['uio', 'deepdummy1', 'nonode'])
 
     def test_get_by_path(self):
-        self.assertEquals(Node.get_by_path('uio.deepdummy1.deepdummy2').short_name, 'deepdummy2')
-        self.assertRaises(Node.DoesNotExist, Node.get_by_path, 'uio.deepdummy1.nonode')
+        self.assertEquals(Node.get_by_path('uio.deepdummy1.deepdummy2').short_name,
+                'deepdummy2')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_path,
+                'uio.deepdummy1.nonode')
 
     def test_create_by_pathlist(self):
         n = Node.create_by_pathlist(['this', 'is', 'a', 'test'])
@@ -147,24 +156,25 @@ class TestNode(TestCase):
 
 
 
+class TestSubject(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json']
 
+    def test_unique(self):
+        s = Subject(parentnode=Node.objects.get(short_name='ifi'),
+                short_name='inf1060', long_name='INF1060')
+        self.assertRaises(IntegrityError, s.save)
 
-#class TestNodeNoFixture(TestCase):
-    #def test_clean_noroot(self):
-        #""" At least one node *must* be root. """
-        #uio = Node()
-        #uio.short_name = 'uio'
-        #uio.long_name = 'uio'
-        #uio.parent = None
-        #self.assertRaises(ValidationError, uio.clean)
+    def test_unique2(self):
+        s = Subject(parentnode=Node.objects.get(short_name='uio'),
+                short_name='inf1060', long_name='INF1060')
+        self.assertRaises(IntegrityError, s.save)
 
+    def test_where_is_admin(self):
+        uioadmin = User.objects.get(username='uioadmin')
+        teacher1 = User.objects.get(username='teacher1')
+        self.assertEquals(Subject.where_is_admin(teacher1).count(), 1)
+        self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
-#class TestSubject(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
-
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
 
 #class TestPeriod(TestCase):
