@@ -127,6 +127,3 @@ BASE_TEMPLATE = 'devilry/base.django.html'
 
 MEDIA_ICONS_URL = 'media/icons/'
 JQUERY_UI_THEME = 'blitzer'
-
-
-TEST_RUNNER = 'devilry.core.testrunner.CoverageTestRunner'
