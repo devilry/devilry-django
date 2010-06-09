@@ -16,6 +16,7 @@ import gradeplugin_registry
 # TODO: indexes
 # TODO: Complete/extend and document CommonInterface.
 # TODO: Clean up the __unicode__ mess with paths.
+# TODO: Check that the *_where_* methods in AssignmentGroup are needed/appropriate
 
 
 class CommonInterface(object):
@@ -501,7 +502,8 @@ class AssignmentGroup(models.Model):
     students = models.ManyToManyField(User, blank=True, through=Candidate,
             related_name='candidates')
 
-    examiners = models.ManyToManyField(User, blank=True, related_name="examiners")
+    examiners = models.ManyToManyField(User, blank=True,
+            related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
 
@@ -601,7 +603,8 @@ class AssignmentGroup(models.Model):
             if qry.count() == 0:
                 return None
             else:
-                return qry.annotate(models.Max('time_of_delivery'))[0].feedback.get_grade()
+                return qry.annotate(
+                        models.Max('time_of_delivery'))[0].feedback.get_grade()
 
 
     def get_number_of_deliveries(self):
