@@ -19,7 +19,8 @@ class SubjectAdmin(BaseNodeAdmin):
     pass
 
 class PeriodAdmin(BaseNodeAdmin):
-    list_display = ['parentnode', 'short_name', 'start_time', 'end_time', 'get_admins']
+    list_display = ['parentnode', 'short_name', 'start_time', 'end_time',
+            'get_admins']
     search_fields = ['short_name', 'long_name', 'parentnode__short_name']
     list_filter = ['start_time', 'end_time']
     ordering = ['parentnode']
@@ -32,6 +33,11 @@ class FileMetaInline(admin.TabularInline):
     model = FileMeta
     extra = 1
 
+class AssignmentAdmin(admin.ModelAdmin):
+    list_display = ['short_name', 'long_name', 'get_path', 'grade_plugin',
+            'publishing_time', 'deadline', 'get_admins']
+    search_fields = ['short_name', 'long_name', 'parentnode__short_name',
+            'parentnode__parentnode__short_name']
 
 class DeliveryAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'id']
@@ -39,14 +45,15 @@ class DeliveryAdmin(admin.ModelAdmin):
 
 class AssignmentGroupAdmin(BaseNodeAdmin):
     list_display = ['parentnode', 'get_students', 'get_examiners']
-    search_fields = [
-            'parentnode__short_name', 'parentnode__parentnode__short_name', 'parentnode__parentnode__parentnode__short_name']
+    search_fields = ['parentnode__short_name',
+            'parentnode__parentnode__short_name',
+            'parentnode__parentnode__parentnode__short_name']
     ordering = ['parentnode']
     inlines = [CandidateInline]
 
 admin.site.register(Node, NodeAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Period, PeriodAdmin)
-admin.site.register(Assignment)
+admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
 admin.site.register(Delivery, DeliveryAdmin)
