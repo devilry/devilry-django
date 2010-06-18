@@ -208,8 +208,8 @@ class TestAssignment(TestCase):
         self.assertRaises(IntegrityError, n.save)
 
     def test_where_is_admin(self):
-        uioadmin = User.objects.get(username='uioadmin')
-        self.assertEquals(Assignment.where_is_admin(uioadmin).count(), 2)
+        ifiadmin = User.objects.get(username='ifiadmin')
+        self.assertEquals(Assignment.where_is_admin(ifiadmin).count(), 3)
 
     def test_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
@@ -233,23 +233,103 @@ class TestAssignmentGroup(TestCase):
             'testassignmentgroups.json', 'testcandidates.json']
 
     def test_where_is_admin(self):
-        uioadmin = User.objects.get(username='teacher1')
-        self.assertEquals(3, AssignmentGroup.where_is_admin(uioadmin).count())
+        teacher1 = User.objects.get(username='teacher1')
+        self.assertEquals(5, AssignmentGroup.where_is_admin(teacher1).count())
 
     def test_where_is_student(self):
         student2 = User.objects.get(username='student2')
-        student3 = User.objects.get(username='student3')
+        student1 = User.objects.get(username='student1')
         self.assertEquals(1, AssignmentGroup.where_is_student(student2).count())
-        self.assertEquals(2, AssignmentGroup.where_is_student(student3).count())
+        self.assertEquals(3, AssignmentGroup.where_is_student(student1).count())
+
+    def test_published_where_is_student(self):
+        student2 = User.objects.get(username='student2')
+        student3 = User.objects.get(username='student3')
+        self.assertEquals(1,
+                AssignmentGroup.published_where_is_student(student2).count())
+        self.assertEquals(2,
+                AssignmentGroup.published_where_is_student(student3).count())
+
+    def test_active_where_is_student(self):
+        student2 = User.objects.get(username='student2')
+        student3 = User.objects.get(username='student3')
+        self.assertEquals(1,
+                AssignmentGroup.active_where_is_student(student2).count())
+        self.assertEquals(2,
+                AssignmentGroup.active_where_is_student(student3).count())
+
+    def test_old_where_is_student(self):
+        student1 = User.objects.get(username='student1')
+        student4 = User.objects.get(username='student4')
+        self.assertEquals(2,
+                AssignmentGroup.old_where_is_student(student1).count())
+        self.assertEquals(1,
+                AssignmentGroup.old_where_is_student(student4).count())
+
 
     def test_where_is_examiner(self):
-        examiner1 = User.objects.get(username='examiner1')
         examiner2 = User.objects.get(username='examiner2')
+        examiner4 = User.objects.get(username='examiner4')
         self.assertEquals(1,
                 AssignmentGroup.where_is_examiner(examiner2).count())
         self.assertEquals(2,
-                AssignmentGroup.where_is_examiner(examiner1).count())
+                AssignmentGroup.where_is_examiner(examiner4).count())
 
+    def test_published_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        examiner2 = User.objects.get(username='examiner2')
+        self.assertEquals(1,
+                AssignmentGroup.published_where_is_examiner(examiner2).count())
+        self.assertEquals(2,
+                AssignmentGroup.published_where_is_examiner(examiner1).count())
+
+    def test_active_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        examiner2 = User.objects.get(username='examiner2')
+        self.assertEquals(1,
+                AssignmentGroup.active_where_is_examiner(examiner2).count())
+        self.assertEquals(2,
+                AssignmentGroup.active_where_is_examiner(examiner1).count())
+
+    def test_old_where_is_examiner(self):
+        examiner3 = User.objects.get(username='examiner3')
+        examiner4 = User.objects.get(username='examiner4')
+        self.assertEquals(1,
+                AssignmentGroup.old_where_is_examiner(examiner4).count())
+        self.assertEquals(2,
+                AssignmentGroup.old_where_is_examiner(examiner3).count())
+
+
+    def test_get_students(self):
+        a = AssignmentGroup.objects.get(id=5)
+        self.assertEquals('student1, student4', a.get_students())
+
+    def test_get_examiners(self):
+        a = AssignmentGroup.objects.get(id=5)
+        self.assertEquals('examiner3, examiner4', a.get_examiners())
+
+    def test_is_admin(self):
+        teacher1 = User.objects.get(username='teacher1')
+        student1 = User.objects.get(username='student1')
+        uioadmin = User.objects.get(username='uioadmin')
+        a = AssignmentGroup.objects.get(id=1)
+        self.assertTrue(a.is_admin(teacher1))
+        self.assertFalse(a.is_admin(student1))
+        self.assertTrue(a.is_admin(uioadmin))
+
+    def test_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        examiner2 = User.objects.get(username='examiner2')
+        a = AssignmentGroup.objects.get(id=1)
+        self.assertTrue(a.is_examiner(examiner1))
+        self.assertFalse(a.is_examiner(examiner2))
+
+    def test_is_student(self):
+        student1 = User.objects.get(username='student1')
+        student2 = User.objects.get(username='student2')
+        a = AssignmentGroup.objects.get(id=1)
+        self.assertTrue(a.is_student(student1))
+        self.assertFalse(a.is_student(student2))
 
 
 #class TestDelivery(TestCase):

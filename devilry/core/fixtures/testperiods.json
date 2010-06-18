@@ -16,11 +16,11 @@
         "model": "core.period", 
         "fields": {
             "short_name": "old", 
-            "start_time": "2010-06-05 00:15:36", 
+            "start_time": "2010-01-05 00:00:00", 
             "parentnode": 1, 
             "long_name": "A old period", 
             "admins": [], 
-            "end_time": "2010-06-05 00:15:38"
+            "end_time": "2010-06-10 00:00:00"
         }
     }
 ]

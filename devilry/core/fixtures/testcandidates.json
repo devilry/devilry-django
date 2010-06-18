@@ -34,5 +34,32 @@
             "student": 8, 
             "assignment_group": 3
         }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 6, 
+            "assignment_group": 4
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 6, 
+            "assignment_group": 5
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 12, 
+            "assignment_group": 5
+        }
     }
 ]

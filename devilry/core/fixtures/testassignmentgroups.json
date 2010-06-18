@@ -27,9 +27,33 @@
         "fields": {
             "is_open": true, 
             "examiners": [
-                11
+                11, 
+                14
             ], 
             "parentnode": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "examiners": [
+                13
+            ], 
+            "parentnode": 3
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "examiners": [
+                13, 
+                14
+            ], 
+            "parentnode": 3
         }
     }
 ]

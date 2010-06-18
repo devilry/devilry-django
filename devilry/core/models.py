@@ -415,7 +415,7 @@ class Assignment(models.Model, BaseNode):
         A django.db.models.ManyToManyField_ that holds all the admins of the
         Node.
 
-    .. attribute:: feedback_plugin
+    .. attribute:: grade_plugin
 
         A django.db.models.CharField_ that holds the current feedback plugin
         used.
@@ -488,6 +488,7 @@ class Candidate(models.Model):
         return unicode(self.student)
 
 
+# TODO: Constraint: cannot be examiner and student on the same assignment?
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
@@ -585,14 +586,13 @@ class AssignmentGroup(models.Model):
         the given user is student.
 
         A active AssignmentGroup is a assignment group where
-        ``Assignment.publishing_time`` and ``Period..end_time``
-        is in the past.
+        ``Period.end_time`` is in the past.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
         now = datetime.now()
-        return cls.published_where_is_student(user_obj).filter(
+        return cls.where_is_student(user_obj).filter(
                 parentnode__parentnode__end_time__lt = now)
 
 
@@ -612,16 +612,26 @@ class AssignmentGroup(models.Model):
                 parentnode__parentnode__start_time__lt = now,
                 parentnode__parentnode__end_time__gt = now)
     
+    @classmethod
+    def old_where_is_examiner(cls, user_obj):
+        now = datetime.now()
+        return cls.where_is_examiner(user_obj).filter(
+                parentnode__parentnode__end_time__lt = now)
+
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.long_name,
                 ', '.join([unicode(x) for x in self.students.all()]))
     
     def get_students(self):
+        """ Get a string contaning all students in the group separated by
+        comma (``','``). """
         return u'%s' % (', '.join([unicode(x) for x in self.students.all()])) # TODO: this seems too much code.. see get_admins
     get_students.short_description = _('Students')
 
     def get_examiners(self):
+        """ Get a string contaning all examiners in the group separated by
+        comma (``','``). """
         return u'%s' % (', '.join([unicode(x) for x in self.examiners.all()])) # TODO: this seems too much code.. see get_admins
     get_examiners.short_description = _('Examiners')
 
