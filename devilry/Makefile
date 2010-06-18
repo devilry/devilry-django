@@ -1,3 +1,18 @@
+help:
+	@echo "Targets:"
+	@echo "  test:               Run tests with coverage."
+	@echo "  html-testreport     Create a test coverage report. Depends on 'test'."
+	@echo "  create-exampledata  Create example fixtures from db.sqlite3."
+	@echo "  reset-exampledb     Reset db.sqlite3 from the example fixtures."
+	@echo "  create-testdata     Create test fixtures from db.sqlite3."
+	@echo "  reset-testdb        Reset db.sqlite3 from the test fixtures."
+	@echo ""
+	@echo "EXAMPLE DATA AND TEST DATA"
+	@echo "Test data is for the testcases, and must not be changed without careful "
+	@echo "consideration. 'Example' data is used when working with UI-design or"
+	@echo "just to show of Devilry, and it can be changed and extended without"
+	@echo "affecting anything."
+
 test: test-core
 
 test-core:
