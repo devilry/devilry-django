@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from django.db.models.signals import post_save, post_delete
 from django.db import models
 from django.contrib.auth.models import User, Permission
@@ -6,6 +7,9 @@ from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
 from deliverystore import load_deliverystore_backend
 import gradeplugin_registry
 
@@ -32,8 +36,9 @@ class CommonInterface(object):
 class ShortNameField(models.SlugField):
     """ Short name field used by several of the core models.
 
-    We have a hierarchy of objects with a short name, but they are not strictly
-    equal (eg. we cannot use a superclass because Subject has a unique short_name).
+    We have a hierarchy of objects with a short name, but they are not
+    strictly equal (eg. we cannot use a superclass because Subject has a
+    unique short_name).
     """
     def __init__(self, *args, **kwargs):
         kw = dict(
@@ -87,8 +92,8 @@ class BaseNode(CommonInterface):
     get_path.short_description = _('Path')
 
     def get_admins(self):
-        """ Get a string with the username of all administrators on this node separated
-        by comma and a space like: ``"uioadmin, superuser"``.
+        """ Get a string with the username of all administrators on this node
+        separated by comma and a space like: ``"uioadmin, superuser"``.
         
         Note that admins on parentnode(s) is not included.
         """
@@ -155,7 +160,8 @@ class Node(models.Model, BaseNode):
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
+        A django.db.models.ManyToManyField_ that holds all the admins of the
+        `Node`_.
     """
     short_name = ShortNameField()
     long_name = LongNameField()
@@ -222,7 +228,8 @@ class Node(models.Model, BaseNode):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Nodes where the given user is admin.
+        """ Returns a QuerySet matching all Nodes where the given user is
+        admin.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -278,8 +285,8 @@ class Node(models.Model, BaseNode):
 
     @classmethod
     def create_by_path(cls, path):
-        """ Just like `get_by_pathlist`, but the path is a string where each `short_name`
-        is separated by '.', instead of a list. """
+        """ Just like `get_by_pathlist`, but the path is a string where each
+        `short_name` is separated by '.', instead of a list. """
         return cls.create_by_pathlist(path.split('.'))
 
 
@@ -295,7 +302,8 @@ class Subject(models.Model, BaseNode):
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField_ that holds all the admins of the `Node`_.
+        A django.db.models.ManyToManyField_ that holds all the admins of the
+        `Node`_.
     """
 
     class Meta:
@@ -336,15 +344,18 @@ class Period(models.Model, BaseNode):
 
     .. attribute:: start_time
 
-        A django.db.models.DateTimeField_ representing the starting time of the period.
+        A django.db.models.DateTimeField_ representing the starting time of
+        the period.
     
     .. attribute:: end_time 
 
-        A django.db.models.DateTimeField_ representing the ending time of the period.
+        A django.db.models.DateTimeField_ representing the ending time of
+        the period.
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField_ that holds all the admins of the node.
+        A django.db.models.ManyToManyField_ that holds all the admins of the
+        node.
     """
 
     class Meta:
@@ -377,6 +388,7 @@ class Period(models.Model, BaseNode):
         return u"%s / %s" % (self.parentnode, self.short_name)
 
 
+# TODO: Constraint publishing_time by start_time and end_time
 class Assignment(models.Model, BaseNode):
     """
     Represents one assignment for a given period in a given subject. May consist
@@ -395,15 +407,18 @@ class Assignment(models.Model, BaseNode):
     
     .. attribute:: deadline
 
-        A django.db.models.DateTimeField_ representing the deadline of the assignment.
+        A django.db.models.DateTimeField_ representing the deadline of the
+        assignment.
 
     .. attribute:: admins
         
-        A django.db.models.ManyToManyField_ that holds all the admins of the Node.
+        A django.db.models.ManyToManyField_ that holds all the admins of the
+        Node.
 
     .. attribute:: feedback_plugin
 
-        A django.db.models.CharField_ that holds the current feedback plugin used.
+        A django.db.models.CharField_ that holds the current feedback plugin
+        used.
     """
 
     class Meta:
@@ -525,15 +540,40 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def where_is_student(cls, user_obj):
+        """ Returns a QuerySet matching all AssignmentGroups where the
+        given user is student.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return AssignmentGroup.objects.filter(students=user_obj)
 
     @classmethod
     def published_where_is_student(cls, user_obj):
+        """ Returns a QuerySet matching all published AssignmentGroups where
+        the given user is student.
+
+        A published AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` is in the past.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return cls.where_is_student(user_obj).filter(
                 parentnode__publishing_time__lt = datetime.now())
 
     @classmethod
     def active_where_is_student(cls, user_obj):
+        """ Returns a QuerySet matching all active AssignmentGroups where
+        the given user is student.
+
+        A active AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` is in the past and current time is
+        between ``Period.start_time`` and ``Period.end_time``.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         now = datetime.now()
         return cls.published_where_is_student(user_obj).filter(
                 parentnode__parentnode__start_time__lt = now,
@@ -541,6 +581,16 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def old_where_is_student(cls, user_obj):
+        """ Returns a QuerySet matching all active AssignmentGroups where
+        the given user is student.
+
+        A active AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` and ``Period..end_time``
+        is in the past.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         now = datetime.now()
         return cls.published_where_is_student(user_obj).filter(
                 parentnode__parentnode__end_time__lt = now)
@@ -613,22 +663,24 @@ class AssignmentGroup(models.Model):
 
 class Delivery(models.Model):
     """
-    A class representing a given delivery from an `AssignmentGroup`_. In some cases,
-    a group are allowed to hand in several deliveries per assignment.
+    A class representing a given delivery from an `AssignmentGroup`_. In
+    some cases, a group are allowed to hand in several deliveries per
+    assignment.
 
     .. attribute:: assignment_group
 
-        A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_ that
-        handed in the Delivery.
+        A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
+        that handed in the Delivery.
 
     .. attribute:: time_of_delivery
 
-        A django.db.models.DateTimeField_ that holds the date and time the Delivery
-        was uploaded.
+        A django.db.models.DateTimeField_ that holds the date and time the
+        Delivery was uploaded.
 
     .. attribute:: delivered_by
 
-        A django.db.models.ForeignKey_ pointing to the user that uploaded the Delivery
+        A django.db.models.ForeignKey_ pointing to the user that uploaded
+        the Delivery
 
     .. attribute:: successful
 
@@ -653,7 +705,8 @@ class Delivery(models.Model):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Deliveries where the given user is admin.
+        """ Returns a QuerySet matching all Deliveries where the given user
+        is admin.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -701,36 +754,36 @@ class Delivery(models.Model):
 
 
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
-
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
 
     .. attribute:: grade
 
-        A django.db.models.Charfield_ representing the grade given for the Delivery.
+        A django.db.models.Charfield_ representing the grade given for the
+        Delivery.
 
     .. attribute:: feedback_text
 
-        A django.db.models.TextField_ that holds the feedback text given by the examiner.
+        A django.db.models.TextField_ that holds the feedback text given by
+        the examiner.
 
     .. attribute:: feedback_format
 
-        A django.db.models.CharField_ that holds the format of the feedback text.
+        A django.db.models.CharField_ that holds the format of the feedback
+        text.
 
     .. attribute:: feedback_published
 
-        A django.db.models.BooleanField_ that tells if the feedback is published or not. 
-        This allows editing and saving the feedback before publishing it. Is useful for
-        exams and other assignments when feedback and grading is published simultaneously
-        for all Deliveries.
+        A django.db.models.BooleanField_ that tells if the feedback is
+        published or not. This allows editing and saving the feedback before
+        publishing it. Is useful for exams and other assignments when
+        feedback and grading is published simultaneously for all Deliveries.
 
     .. attribute:: delivery
 
-        A django.db.models.OneToOneField_ that points to the `Delivery`_ to be given
-        feedback.
+        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
+        be given feedback.
 
     """
     
@@ -741,7 +794,8 @@ class Feedback(models.Model):
        ('textile', 'Textile'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
-    feedback_format = models.CharField(max_length=20, choices=text_formats, default=text_formats[0])
+    feedback_format = models.CharField(max_length=20, choices=text_formats,
+            default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery, blank=True, null=True)
 
@@ -774,4 +828,3 @@ def filemeta_deleted_handler(sender, **kwargs):
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
-
