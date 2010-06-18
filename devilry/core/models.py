@@ -626,13 +626,13 @@ class AssignmentGroup(models.Model):
     def get_students(self):
         """ Get a string contaning all students in the group separated by
         comma (``','``). """
-        return u'%s' % (', '.join([unicode(x) for x in self.students.all()])) # TODO: this seems too much code.. see get_admins
+        return u', '.join([u.username for u in self.students.all()])
     get_students.short_description = _('Students')
 
     def get_examiners(self):
         """ Get a string contaning all examiners in the group separated by
         comma (``','``). """
-        return u'%s' % (', '.join([unicode(x) for x in self.examiners.all()])) # TODO: this seems too much code.. see get_admins
+        return u', '.join([u.username for u in self.examiners.all()])
     get_examiners.short_description = _('Examiners')
 
     def is_admin(self, user_obj):
