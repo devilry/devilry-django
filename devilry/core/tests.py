@@ -398,6 +398,9 @@ class TestDelivery(TestCase):
             'testassignmentgroups.json', 'testcandidates.json',
             'testdeliveries.json']
 
+    def setUp(self):
+        FileMeta.storage_backend = MemoryDeliveryStore()
+
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')
         self.assertEquals(Delivery.where_is_admin(teacher1).count(), 3)
@@ -407,11 +410,42 @@ class TestDelivery(TestCase):
         assignmentgroup = AssignmentGroup.objects.get(id=1)
         d = Delivery.begin(assignmentgroup, student1)
         self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertEquals(d.delivered_by, student1)
         self.assertFalse(d.successful)
 
         d.finish()
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
+
+    def test_delivery_with_files(self):
+        student1 = User.objects.get(username='student1')
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        d = Delivery.begin(assignmentgroup, student1)
+        d.add_file('hello.txt', ['hello', ' cruel', ' world!'])
+        d.add_file('test.txt', ['test'])
+        d.finish()
+        hello = d.filemeta_set.get(filename='hello.txt')
+        self.assertEquals(hello.read_open().read(), 'hello cruel world!')
+        test = d.filemeta_set.get(filename='test.txt')
+        self.assertEquals(test.read_open().read(), 'test')
+
+    def test_remove_file_from_filemeta(self):
+        student1 = User.objects.get(username='student1')
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        d = Delivery.begin(assignmentgroup, student1)
+        test = d.add_file('test.txt', ['test'])
+        test.remove_file()
+        self.assertRaises(FileNotFoundError, test.remove_file)
+
+    def test_remove_filemeta(self):
+        student1 = User.objects.get(username='student1')
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        d = Delivery.begin(assignmentgroup, student1)
+        test = d.add_file('test.txt', ['test'])
+        self.assertTrue(test.file_exists())
+        test.delete()
+        self.assertFalse(test.file_exists())
+
 
 
 class TestMemoryDeliveryStore(TestCase):
@@ -430,31 +464,33 @@ class TestMemoryDeliveryStore(TestCase):
         self.filemeta.filename = 'test.txt'
 
     def test_readwrite(self):
-        store = self.get_storageobj()
-        w = store.write_open(self.filemeta)
+        storage_backend = self.get_storageobj()
+        self.assertFalse(w.exists(self.filemeta))
+        w = storage_backend.write_open(self.filemeta)
         w.write('hello')
         w.close()
-        r = store.read_open(self.filemeta)
+        self.assertTrue(w.exists(self.filemeta))
+        r = storage_backend.read_open(self.filemeta)
         self.assertEquals(r.read(), 'hello')
 
     def test_writemany(self):
-        store = self.get_storageobj()
-        w = store.write_open(self.filemeta)
+        storage_backend = self.get_storageobj()
+        w = storage_backend.write_open(self.filemeta)
         w.write('hello')
         w.write(' world')
         w.write('!')
         w.close()
-        r = store.read_open(self.filemeta)
+        r = storage_backend.read_open(self.filemeta)
         self.assertEquals(r.read(), 'hello world!')
 
-
     def test_readwrite(self):
-        store = self.get_storageobj()
-        w = store.write_open(self.filemeta)
+        storage_backend = self.get_storageobj()
+        w = storage_backend.write_open(self.filemeta)
         w.write('hello')
         w.close()
-        store.remove(self.filemeta)
-        self.assertRaises(FileNotFoundError, store.remove, self.filemeta)
+        storage_backend.remove(self.filemeta)
+        self.assertRaises(FileNotFoundError, storage_backend.remove,
+                self.filemeta)
 
 
 class TestFsDeliveryStore(TestMemoryDeliveryStore):
