@@ -86,10 +86,17 @@ class BaseNode(CommonInterface):
     .. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
     """
 
-    def get_path(self):
-        return unicode(self)
-    get_path.short_description = _('Path')
+    def __unicode__(self):
+        return self.get_path()
 
+    def get_path(self):
+        return self.parentnode.get_path() + "." + self.short_name
+    get_path.short_description = _('Path')
+    
+    def get_unique_path(self):
+        return self.parentnode.get_path() + "." + self.short_name
+    get_path.short_description = _('Unique Path')
+    
     def get_admins(self):
         """ Get a string with the username of all administrators on this node
         separated by comma and a space like: ``"uioadmin, superuser"``.
@@ -172,19 +179,14 @@ class Node(models.Model, BaseNode):
         verbose_name_plural = _('Nodes')
         unique_together = ('short_name', 'parentnode')
 
-
     def _can_save_id_none(self, user_obj):
         return False
-
-    def __unicode__(self):
-        return self.get_path()
 
     def get_path(self):
         if self.parentnode:
             return self.parentnode.get_path() + "." + self.short_name
         else:
             return self.short_name
-
 
     def iter_childnodes(self):
         for node in Node.objects.filter(parentnode=self):
@@ -326,10 +328,9 @@ class Subject(models.Model, BaseNode):
                 Q(admins__pk=user_obj.pk)
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
 
-    def __unicode__(self):
+    def get_path(self):
+        """ Only return short name for subject """
         return self.short_name
-
-
 
 class Period(models.Model, BaseNode):
     """
@@ -382,9 +383,6 @@ class Period(models.Model, BaseNode):
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
-
-    def __unicode__(self):
-        return u"%s / %s" % (self.parentnode, self.short_name)
 
 
 # TODO: Constraint publishing_time by start_time and end_time
@@ -449,9 +447,6 @@ class Assignment(models.Model, BaseNode):
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    def __unicode__(self):
-        return u"%s / %s" % (self.parentnode, self.short_name)
-
     @classmethod
     def where_is_examiner(cls, user_obj):
         """ Get all assignments where the given ``user_obj`` is examiner on one
@@ -472,8 +467,6 @@ class Assignment(models.Model, BaseNode):
         :rtype: QuerySet
         """
         return self.assignmentgroup_set.filter(examiners=user_obj)
- 
-
 
 
 class Candidate(models.Model):
@@ -482,9 +475,12 @@ class Candidate(models.Model):
 
     # TODO unique within assignment
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
-
+    
     def __unicode__(self):
-        return unicode(self.student)
+        if self.assignment_group.parent.anonymous:
+            return unicode(self.candidate_id)
+        else:
+            return unicode(self.student)
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignment?
@@ -617,9 +613,8 @@ class AssignmentGroup(models.Model):
         return cls.where_is_examiner(user_obj).filter(
                 parentnode__parentnode__end_time__lt = now)
 
-
     def __unicode__(self):
-        return u'%s (%s)' % (self.parentnode.long_name,
+        return u'%s (%s)' % (self.parentnode.get_path(),
                 ', '.join([unicode(x) for x in self.students.all()]))
     
     def get_students(self):
