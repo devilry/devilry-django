@@ -61,6 +61,10 @@ class DeliveryStoreInterface(object):
         """
         raise NotImplementedError()
 
+    def exists(self, filemeta_obj):
+        """ Return True if the file exists, False if not. """
+        raise NotImplementedError()
+
 
 class FsDeliveryStore(DeliveryStoreInterface):
     def __init__(self, root=None):
@@ -87,6 +91,10 @@ class FsDeliveryStore(DeliveryStoreInterface):
             raise FileNotFoundError('File not found: %s' % filepath)
         remove(filepath)
 
+    def exists(self, filemeta_obj):
+        filepath = self._get_filepath(filemeta_obj)
+        return exists(filepath)
+
 
 class MemoryDeliveryStore(DeliveryStoreInterface):
     """ Memory file storage ONLY FOR TESTING.
@@ -112,6 +120,9 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
         return w
 
     def remove(self, filemeta_obj):
-        if not  filemeta_obj.id in self.files:
+        if not filemeta_obj.id in self.files:
             raise FileNotFoundError()
         del self.files[filemeta_obj.id]
+
+    def exists(self, filemeta_obj):
+        return filemeta_obj.id in self.files

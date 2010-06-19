@@ -778,7 +778,7 @@ class Delivery(models.Model):
         filemeta.filename = filename
         filemeta.size = 0
         filemeta.save()
-        f = FileMeta.store.write_open(filemeta)
+        f = FileMeta.storage_backend.write_open(filemeta)
         filemeta.save()
         for data in iterable_data:
             f.write(data)
@@ -847,21 +847,29 @@ class FileMeta(models.Model):
     filename = models.CharField(max_length=255)
     size = models.IntegerField()
 
-    store = load_deliverystore_backend()
+    storage_backend = load_deliverystore_backend()
+
+    class Meta:
+        verbose_name = _('FileMeta')
+        verbose_name_plural = _('FileMetas')
+        unique_together = ('delivery', 'filename')
 
     def remove_file(self):
-        return self.store.remove(self)
+        return self.storage_backend.remove(self)
+
+    def file_exists(self):
+        return self.storage_backend.exists(self)
 
     def read_open(self):
-        return self.store.read_open(self.delivery, self.filename)
+        return self.storage_backend.read_open(self)
 
     def __unicode__(self):
         return self.filename
 
 
 def filemeta_deleted_handler(sender, **kwargs):
-   filemeta = kwargs['instance']
-   filemeta.remove_file()
+    filemeta = kwargs['instance']
+    filemeta.remove_file()
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
