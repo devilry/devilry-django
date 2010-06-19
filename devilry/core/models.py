@@ -730,8 +730,8 @@ class Delivery(models.Model):
 
     .. attribute:: successful
 
-        A django.db.models.BooleanField_ telling whether or not the Delivery was
-        successfully uploaded.
+        A django.db.models.BooleanField_ telling whether or not the Delivery
+        was successfully uploaded.
     """
     
     assignment_group = models.ForeignKey(AssignmentGroup)
@@ -768,16 +768,6 @@ class Delivery(models.Model):
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    @classmethod
-    def where_is_student(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__students=user_obj,
-                successful=True)
-
-    @classmethod
-    def where_is_examiner(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__examiners=user_obj,
-                successful=True)
-
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
@@ -785,7 +775,6 @@ class Delivery(models.Model):
         self.time_of_delivery = datetime.now()
         self.successful = True
         self.save()
-
 
     def add_file(self, filename, iterable_data):
         filemeta = FileMeta()

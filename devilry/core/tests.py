@@ -380,18 +380,24 @@ class TestAssignmentGroup(TestCase):
         self.assertFalse(a.is_student(student2))
 
 
-#class TestDelivery(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
+class TestDelivery(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json', 'testassignments.json',
+            'testassignmentgroups.json', 'testcandidates.json',
+            'testdeliveries.json']
 
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(Delivery.where_is_admin(uioadmin).count(), 3)
+    def test_where_is_admin(self):
+        teacher1 = User.objects.get(username='teacher1')
+        self.assertEquals(Delivery.where_is_admin(teacher1).count(), 3)
 
-    #def test_where_is_student(self):
-        #student2 = User.objects.get(username='student2')
-        #self.assertEquals(Delivery.where_is_student(student2).count(), 3)
+    
+    def test_delivery(self):
+        student1 = User.objects.get(username='student1')
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        d = Delivery.begin(assignmentgroup, student1)
+        self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertFalse(d.successful)
 
-    #def test_where_is_examiner(self):
-        #teacher2 = User.objects.get(username='teacher2')
-        #self.assertEquals(Delivery.where_is_examiner(teacher2).count(), 3)
-
+        d.finish()
+        self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertTrue(d.successful)

@@ -29,6 +29,7 @@ create-testdata:
 	python manage.py dumpdata core.assignment --indent=4 > core/fixtures/testassignments.json
 	python manage.py dumpdata core.assignmentgroup --indent=4 > core/fixtures/testassignmentgroups.json
 	python manage.py dumpdata core.candidate --indent=4 > core/fixtures/testcandidates.json
+	python manage.py dumpdata core.delivery --indent=4 > core/fixtures/testdeliveries.json
 
 reset-testdb:
 	rm -i db.sqlite3
@@ -40,6 +41,7 @@ reset-testdb:
 	python manage.py loaddata -v0 testassignments
 	python manage.py loaddata -v0 testassignmentgroups
 	python manage.py loaddata -v0 testcandidates
+	python manage.py loaddata -v0 testdeliveries
 
 create-exampledata:
 	python manage.py dumpdata core --indent=4 > core/fixtures/exampledata.json
