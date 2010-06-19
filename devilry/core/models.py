@@ -398,7 +398,6 @@ class Period(models.Model, BaseNode):
             raise ValidationError(_('Start time must be before end time.'))
 
 
-# TODO: Constraint publishing_time by start_time and end_time
 class Assignment(models.Model, BaseNode):
     """
     Represents one assignment for a given period in a given subject. May consist
@@ -516,14 +515,14 @@ class Candidate(models.Model):
     student = models.ForeignKey(User)
     assignment_group = models.ForeignKey('AssignmentGroup')
 
-    # TODO unique within assignment
+    # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.student)
 
 
-# TODO: Constraint: cannot be examiner and student on the same assignment?
+# TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
@@ -837,7 +836,7 @@ class Feedback(models.Model):
         be given feedback.
 
     """
-    
+
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
