@@ -15,12 +15,11 @@ import gradeplugin_registry
 
 
 
-# TODO: Subject.short_name unique for efficiency and because it is common at universities. Other schools can prefix to make it unique in any case.
 # TODO: Paths should be something like get_full_path() and get_unique_path(), where the latter considers Subject.short_name as unique
 # TODO: indexes
 # TODO: Complete/extend and document CommonInterface.
 # TODO: Clean up the __unicode__ mess with paths.
-# TODO: Check that the *_where_* methods in AssignmentGroup are needed/appropriate
+# TODO: short_name ignorecase match on save.
 
 
 class CommonInterface(object):
@@ -309,7 +308,6 @@ class Subject(models.Model, BaseNode):
     class Meta:
         verbose_name = _('Subject')
         verbose_name_plural = _('Subjects')
-        unique_together = ('short_name', 'parentnode')
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
@@ -318,7 +316,8 @@ class Subject(models.Model, BaseNode):
     
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Subjects where the given user is admin.
+        """ Returns a QuerySet matching all Subjects where the given user is
+        admin.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -626,7 +625,7 @@ class AssignmentGroup(models.Model):
     def get_students(self):
         """ Get a string contaning all students in the group separated by
         comma (``','``). """
-        return u', '.join([u.username for u in self.students.all()])
+        return u', '.join([unicode(u) for u in self.students.all()])
     get_students.short_description = _('Students')
 
     def get_examiners(self):
