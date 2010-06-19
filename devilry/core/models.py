@@ -93,9 +93,9 @@ class BaseNode(CommonInterface):
         return self.parentnode.get_path() + "." + self.short_name
     get_path.short_description = _('Path')
     
-    def get_unique_path(self):
+    def get_full_path(self):
         return self.parentnode.get_path() + "." + self.short_name
-    get_path.short_description = _('Unique Path')
+    get_full_path.short_description = _('Unique Path')
     
     def get_admins(self):
         """ Get a string with the username of all administrators on this node
@@ -188,6 +188,10 @@ class Node(models.Model, BaseNode):
         else:
             return self.short_name
 
+    def get_full_path(self):
+        return self.get_path()
+    get_full_path.short_description = BaseNode.get_full_path.short_description
+    
     def iter_childnodes(self):
         for node in Node.objects.filter(parentnode=self):
             yield node
@@ -512,11 +516,19 @@ class Candidate(models.Model):
     # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
     
-    def __unicode__(self):
-        if self.assignment_group.parent.anonymous:
+    def get_identifier(self):
+        """
+        Gives the identifier of the candidate. When the Assignment is anyonymous
+        the candidate_id is returned. Else, the student name is returned. This 
+        method should always be used when retrieving the candidate identifier.
+        """
+        if self.assignment_group.parentnode.anonymous:
             return unicode(self.candidate_id)
         else:
-            return unicode(self.student)
+            return unicode(self.student.username)
+    
+    def __unicode__(self):
+        return self.get_identifier()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
