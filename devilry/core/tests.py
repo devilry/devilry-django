@@ -332,6 +332,13 @@ class TestAssignmentGroup(TestCase):
         self.assertFalse(a.is_student(student2))
 
 
+class TestCandidate(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json', 'testassignments.json',
+            'testassignmentgroups.json', 'testcandidates.json']
+    
+
+
 #class TestDelivery(TestCase):
     #fixtures = ['testusers.json', 'testdata.json']
 
