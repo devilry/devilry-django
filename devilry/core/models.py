@@ -385,7 +385,18 @@ class Period(models.Model, BaseNode):
         ).distinct()
 
 
-# TODO: Constraint publishing_time by start_time and end_time
+    def clean(self, *args, **kwargs):
+        """Validate the period.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if start_time is after end_time.
+        """
+        if self.start_time > self.end_time:
+            raise ValidationError(_('Start time must be before end time.'))
+
+
 class Assignment(models.Model, BaseNode):
     """
     Represents one assignment for a given period in a given subject. May consist
@@ -468,12 +479,37 @@ class Assignment(models.Model, BaseNode):
         """
         return self.assignmentgroup_set.filter(examiners=user_obj)
 
+    def clean(self, *args, **kwargs):
+        """Validate the assignment.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - deadline is before publishing_time.
+            - deadline or publishing_time is not between
+              ``Period.start_time`` and ``Period.end_time``.
+        """
+        if self.deadline < self.publishing_time:
+            raise ValidationError(_('Publishing time must be before deadline.'))
+        if self.publishing_time < self.parentnode.start_time  or \
+                self.publishing_time > self.parentnode.end_time:
+            raise ValidationError(
+                    _("Publishing time must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.parentnode))))
+        if self.deadline > self.parentnode.end_time:
+            raise ValidationError(
+                    _("Deadline must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.parentnode))))
+        super(Assignment, self).clean(*args, **kwargs)
+
 
 class Candidate(models.Model):
     student = models.ForeignKey(User)
     assignment_group = models.ForeignKey('AssignmentGroup')
 
-    # TODO unique within assignment
+    # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
     
     def __unicode__(self):
@@ -483,7 +519,7 @@ class Candidate(models.Model):
             return unicode(self.student)
 
 
-# TODO: Constraint: cannot be examiner and student on the same assignment?
+# TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
@@ -690,8 +726,8 @@ class Delivery(models.Model):
 
     .. attribute:: successful
 
-        A django.db.models.BooleanField_ telling whether or not the Delivery was
-        successfully uploaded.
+        A django.db.models.BooleanField_ telling whether or not the Delivery
+        was successfully uploaded.
     """
     
     assignment_group = models.ForeignKey(AssignmentGroup)
@@ -728,16 +764,6 @@ class Delivery(models.Model):
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    @classmethod
-    def where_is_student(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__students=user_obj,
-                successful=True)
-
-    @classmethod
-    def where_is_examiner(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__examiners=user_obj,
-                successful=True)
-
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
@@ -745,7 +771,6 @@ class Delivery(models.Model):
         self.time_of_delivery = datetime.now()
         self.successful = True
         self.save()
-
 
     def add_file(self, filename, iterable_data):
         filemeta = FileMeta()
@@ -796,7 +821,7 @@ class Feedback(models.Model):
         be given feedback.
 
     """
-    
+
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
@@ -824,12 +849,14 @@ class FileMeta(models.Model):
 
     store = load_deliverystore_backend()
 
-
     def remove_file(self):
         return self.store.remove(self)
 
     def read_open(self):
         return self.store.read_open(self.delivery, self.filename)
+
+    def __unicode__(self):
+        return self.filename
 
 
 def filemeta_deleted_handler(sender, **kwargs):

@@ -6,6 +6,8 @@ Replace these with more appropriate tests for your application.
 """
 
 from datetime import datetime
+from tempfile import mkdtemp
+from shutil import rmtree
 
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
@@ -13,7 +15,10 @@ from django.db.models import Q
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from models import Node, Subject, Period, Assignment, AssignmentGroup, Delivery
+from models import Node, Subject, Period, Assignment, AssignmentGroup, \
+        Delivery, FileMeta, Feedback, Candidate
+from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
+        FileNotFoundError
 
 
 
@@ -194,6 +199,14 @@ class TestPeriod(TestCase):
         uioadmin = User.objects.get(username='uioadmin')
         self.assertEquals(Period.where_is_admin(uioadmin).count(), 2)
 
+    def test_clean(self):
+        p = Period.objects.get(id=1)
+        p.start_time = datetime(2010, 1, 1)
+        p.end_time = datetime(2011, 1, 1)
+        p.clean()
+        p.start_time = datetime(2012, 1, 1)
+        self.assertRaises(ValidationError, p.clean)
+
 
 class TestAssignment(TestCase):
     fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
@@ -225,6 +238,46 @@ class TestAssignment(TestCase):
                 oblig1.assignment_groups_where_is_examiner(examiner2)[0].id)
         self.assertEquals(2,
                 oblig1.assignment_groups_where_is_examiner(examiner1).count())
+
+    def test_clean_publishing_time_vs_deadline(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.publishing_time = datetime(2011, 12, 24)
+        oblig1.deadline = datetime(2012, 1, 1)
+        oblig1.clean()
+        oblig1.publishing_time = datetime(2012, 12, 24)
+        oblig1.deadline = datetime(2011, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
+    def test_clean_publishing_time_before(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        oblig1.deadline = datetime(2010, 5, 5)
+        oblig1.clean()
+        oblig1.publishing_time = datetime(2009, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
+    def test_clean_publishing_time_after(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        oblig1.deadline = datetime(2010, 5, 5)
+        oblig1.clean()
+        oblig1.publishing_time = datetime(2012, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
+    def test_clean_deadline_after(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        oblig1.deadline = datetime(2010, 5, 5)
+        oblig1.clean()
+        oblig1.deadline = datetime(2012, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
 
 
 class TestAssignmentGroup(TestCase):
@@ -339,18 +392,78 @@ class TestCandidate(TestCase):
     
 
 
-#class TestDelivery(TestCase):
-    #fixtures = ['testusers.json', 'testdata.json']
+class TestDelivery(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json', 'testassignments.json',
+            'testassignmentgroups.json', 'testcandidates.json',
+            'testdeliveries.json']
 
-    #def test_where_is_admin(self):
-        #uioadmin = User.objects.get(username='uioadmin')
-        #self.assertEquals(Delivery.where_is_admin(uioadmin).count(), 3)
+    def test_where_is_admin(self):
+        teacher1 = User.objects.get(username='teacher1')
+        self.assertEquals(Delivery.where_is_admin(teacher1).count(), 3)
 
-    #def test_where_is_student(self):
-        #student2 = User.objects.get(username='student2')
-        #self.assertEquals(Delivery.where_is_student(student2).count(), 3)
+    def test_delivery(self):
+        student1 = User.objects.get(username='student1')
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        d = Delivery.begin(assignmentgroup, student1)
+        self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertFalse(d.successful)
 
-    #def test_where_is_examiner(self):
-        #teacher2 = User.objects.get(username='teacher2')
-        #self.assertEquals(Delivery.where_is_examiner(teacher2).count(), 3)
+        d.finish()
+        self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertTrue(d.successful)
 
+
+class TestMemoryDeliveryStore(TestCase):
+    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
+            'testperiods.json', 'testassignments.json',
+            'testassignmentgroups.json', 'testcandidates.json',
+            'testdeliveries.json']
+
+    def get_storageobj(self):
+        return MemoryDeliveryStore()
+
+    def setUp(self):
+        self.filemeta = FileMeta()
+        self.filemeta.delivery = Delivery.objects.get(id=1)
+        self.filemeta.size = 0
+        self.filemeta.filename = 'test.txt'
+
+    def test_readwrite(self):
+        store = self.get_storageobj()
+        w = store.write_open(self.filemeta)
+        w.write('hello')
+        w.close()
+        r = store.read_open(self.filemeta)
+        self.assertEquals(r.read(), 'hello')
+
+    def test_writemany(self):
+        store = self.get_storageobj()
+        w = store.write_open(self.filemeta)
+        w.write('hello')
+        w.write(' world')
+        w.write('!')
+        w.close()
+        r = store.read_open(self.filemeta)
+        self.assertEquals(r.read(), 'hello world!')
+
+
+    def test_readwrite(self):
+        store = self.get_storageobj()
+        w = store.write_open(self.filemeta)
+        w.write('hello')
+        w.close()
+        store.remove(self.filemeta)
+        self.assertRaises(FileNotFoundError, store.remove, self.filemeta)
+
+
+class TestFsDeliveryStore(TestMemoryDeliveryStore):
+    def setUp(self):
+        self.root = mkdtemp()
+        super(TestFsDeliveryStore, self).setUp()
+
+    def get_storageobj(self):
+        return FsDeliveryStore(self.root)
+
+    def tearDown(self):
+        rmtree(self.root)
