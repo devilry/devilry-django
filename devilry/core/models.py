@@ -671,6 +671,8 @@ class AssignmentGroup(models.Model):
         return self.delivery_set.all().count()
 
 
+# TODO: Constraint: Can only be delivered by a person in the assignment group?
+#                   Or maybe an administrator?
 class Delivery(models.Model):
     """
     A class representing a given delivery from an `AssignmentGroup`_. In
@@ -702,6 +704,10 @@ class Delivery(models.Model):
     time_of_delivery = models.DateTimeField()
     delivered_by = models.ForeignKey(User)
     successful = models.BooleanField(blank=True, default=False)
+
+    class Meta:
+        verbose_name = _('Delivery')
+        verbose_name_plural = _('Deliveries')
 
     @classmethod
     def begin(cls, assignment_group, user_obj):
