@@ -386,6 +386,17 @@ class Period(models.Model, BaseNode):
     def __unicode__(self):
         return u"%s / %s" % (self.parentnode, self.short_name)
 
+    def clean(self, *args, **kwargs):
+        """Validate the period.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if start_time is after end_time.
+        """
+        if self.start_time > self.end_time:
+            raise ValidationError(_('Start time must be before end time.'))
+
 
 # TODO: Constraint publishing_time by start_time and end_time
 class Assignment(models.Model, BaseNode):
@@ -472,7 +483,32 @@ class Assignment(models.Model, BaseNode):
         :rtype: QuerySet
         """
         return self.assignmentgroup_set.filter(examiners=user_obj)
- 
+
+    def clean(self, *args, **kwargs):
+        """Validate the assignment.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - deadline is before publishing_time.
+            - deadline or publishing_time is not between
+              ``Period.start_time`` and ``Period.end_time``.
+        """
+        if self.deadline < self.publishing_time:
+            raise ValidationError(_('Publishing time must be before deadline.'))
+        if self.publishing_time < self.parentnode.start_time  or \
+                self.publishing_time > self.parentnode.end_time:
+            raise ValidationError(
+                    _("Publishing time must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.parentnode))))
+        if self.deadline > self.parentnode.end_time:
+            raise ValidationError(
+                    _("Deadline must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.parentnode))))
+        super(Assignment, self).clean(*args, **kwargs)
+
 
 
 

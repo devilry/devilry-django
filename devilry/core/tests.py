@@ -194,6 +194,14 @@ class TestPeriod(TestCase):
         uioadmin = User.objects.get(username='uioadmin')
         self.assertEquals(Period.where_is_admin(uioadmin).count(), 2)
 
+    def test_clean(self):
+        p = Period.objects.get(id=1)
+        p.start_time = datetime(2010, 1, 1)
+        p.end_time = datetime(2011, 1, 1)
+        p.clean()
+        p.start_time = datetime(2012, 1, 1)
+        self.assertRaises(ValidationError, p.clean)
+
 
 class TestAssignment(TestCase):
     fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
@@ -225,6 +233,46 @@ class TestAssignment(TestCase):
                 oblig1.assignment_groups_where_is_examiner(examiner2)[0].id)
         self.assertEquals(2,
                 oblig1.assignment_groups_where_is_examiner(examiner1).count())
+
+    def test_clean_publishing_time_vs_deadline(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.publishing_time = datetime(2011, 12, 24)
+        oblig1.deadline = datetime(2012, 1, 1)
+        oblig1.clean()
+        oblig1.publishing_time = datetime(2012, 12, 24)
+        oblig1.deadline = datetime(2011, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
+    def test_clean_publishing_time_before(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        oblig1.deadline = datetime(2010, 5, 5)
+        oblig1.clean()
+        oblig1.publishing_time = datetime(2009, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
+    def test_clean_publishing_time_after(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        oblig1.deadline = datetime(2010, 5, 5)
+        oblig1.clean()
+        oblig1.publishing_time = datetime(2012, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
+    def test_clean_deadline_after(self):
+        oblig1 = Assignment.objects.get(id=1)
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        oblig1.deadline = datetime(2010, 5, 5)
+        oblig1.clean()
+        oblig1.deadline = datetime(2012, 1, 1)
+        self.assertRaises(ValidationError, oblig1.clean)
+
 
 
 class TestAssignmentGroup(TestCase):
