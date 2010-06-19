@@ -94,7 +94,7 @@ class BaseNode(CommonInterface):
     get_path.short_description = _('Path')
     
     def get_full_path(self):
-        return self.parentnode.get_path() + "." + self.short_name
+        return self.parentnode.get_full_path() + "." + self.short_name
     get_full_path.short_description = _('Unique Path')
     
     def get_admins(self):
@@ -336,6 +336,7 @@ class Subject(models.Model, BaseNode):
         """ Only return short name for subject """
         return self.short_name
 
+
 class Period(models.Model, BaseNode):
     """
     A Period represents a period of time, for example a half-year term
@@ -529,6 +530,25 @@ class Candidate(models.Model):
     
     def __unicode__(self):
         return self.get_identifier()
+
+    def clean(self, *args, **kwargs):
+        """Validate the assignment.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - candidate id is empty on anonymous assignment.
+        
+        """
+        if self.assignment_group.parentnode.anonymous:
+            if not self.candidate_id:
+                raise ValidationError(
+                    _("Candidate id cannot be empty when assignment is anonymous.)"))
+        
+        super(Candidate, self).clean(*args, **kwargs)
+
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -837,12 +857,14 @@ class Feedback(models.Model):
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
+       ('markdown', 'Markdown'),
+       ('textile', 'Textile'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats,
             default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
-    delivery = models.OneToOneField(Delivery)
+    delivery = models.OneToOneField(Delivery, blank=True, null=True)
 
     grade_type = models.ForeignKey(ContentType)
     grade_object_id = models.PositiveIntegerField()

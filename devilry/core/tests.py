@@ -182,6 +182,13 @@ class TestSubject(TestCase):
         self.assertEquals(Subject.where_is_admin(teacher1).count(), 1)
         self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
+    def test_get_path(self):
+        inf1100 = Subject.objects.get(id=1)
+        self.assertEquals(inf1100.get_path(), 'inf1100')
+
+    def test_get_full_path(self):
+        inf1100 = Subject.objects.get(id=1)
+        self.assertEquals(inf1100.get_full_path(), 'uio.ifi.inf1100')
 
 
 class TestPeriod(TestCase):
@@ -277,7 +284,14 @@ class TestAssignment(TestCase):
         oblig1.clean()
         oblig1.deadline = datetime(2012, 1, 1)
         self.assertRaises(ValidationError, oblig1.clean)
+        
+    def test_get_path(self):
+        oblig1 = Assignment.objects.get(id=1)
+        self.assertEquals(oblig1.get_path(), 'inf1100.looong.oblig1')
 
+    def test_get_full_path(self):
+        oblig1 = Assignment.objects.get(id=1)
+        self.assertEquals(oblig1.get_full_path(), 'uio.ifi.inf1100.looong.oblig1')
 
 
 class TestAssignmentGroup(TestCase):
