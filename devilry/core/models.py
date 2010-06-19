@@ -853,12 +853,14 @@ class FileMeta(models.Model):
 
     store = load_deliverystore_backend()
 
-
     def remove_file(self):
         return self.store.remove(self)
 
     def read_open(self):
         return self.store.read_open(self.delivery, self.filename)
+
+    def __unicode__(self):
+        return self.filename
 
 
 def filemeta_deleted_handler(sender, **kwargs):
