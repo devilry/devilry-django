@@ -1,0 +1,32 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-06-19 14:47:29", 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 7, 
+            "successful": false, 
+            "time_of_delivery": "2010-06-19 16:31:37", 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": false, 
+            "time_of_delivery": "2010-06-19 16:36:57", 
+            "assignment_group": 1
+        }
+    }
+]

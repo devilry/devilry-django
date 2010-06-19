@@ -15,12 +15,11 @@ import gradeplugin_registry
 
 
 
-# TODO: Subject.short_name unique for efficiency and because it is common at universities. Other schools can prefix to make it unique in any case.
 # TODO: Paths should be something like get_full_path() and get_unique_path(), where the latter considers Subject.short_name as unique
 # TODO: indexes
 # TODO: Complete/extend and document CommonInterface.
 # TODO: Clean up the __unicode__ mess with paths.
-# TODO: Check that the *_where_* methods in AssignmentGroup are needed/appropriate
+# TODO: short_name ignorecase match on save.
 
 
 class CommonInterface(object):
@@ -87,10 +86,17 @@ class BaseNode(CommonInterface):
     .. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
     """
 
-    def get_path(self):
-        return unicode(self)
-    get_path.short_description = _('Path')
+    def __unicode__(self):
+        return self.get_path()
 
+    def get_path(self):
+        return self.parentnode.get_path() + "." + self.short_name
+    get_path.short_description = _('Path')
+    
+    def get_full_path(self):
+        return self.parentnode.get_path() + "." + self.short_name
+    get_full_path.short_description = _('Unique Path')
+    
     def get_admins(self):
         """ Get a string with the username of all administrators on this node
         separated by comma and a space like: ``"uioadmin, superuser"``.
@@ -173,12 +179,8 @@ class Node(models.Model, BaseNode):
         verbose_name_plural = _('Nodes')
         unique_together = ('short_name', 'parentnode')
 
-
     def _can_save_id_none(self, user_obj):
         return False
-
-    def __unicode__(self):
-        return self.get_path()
 
     def get_path(self):
         if self.parentnode:
@@ -186,7 +188,10 @@ class Node(models.Model, BaseNode):
         else:
             return self.short_name
 
-
+    def get_full_path(self):
+        return self.get_path()
+    get_full_path.short_description = BaseNode.get_full_path.short_description
+    
     def iter_childnodes(self):
         for node in Node.objects.filter(parentnode=self):
             yield node
@@ -309,7 +314,6 @@ class Subject(models.Model, BaseNode):
     class Meta:
         verbose_name = _('Subject')
         verbose_name_plural = _('Subjects')
-        unique_together = ('short_name', 'parentnode')
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
@@ -318,7 +322,8 @@ class Subject(models.Model, BaseNode):
     
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Subjects where the given user is admin.
+        """ Returns a QuerySet matching all Subjects where the given user is
+        admin.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -327,10 +332,9 @@ class Subject(models.Model, BaseNode):
                 Q(admins__pk=user_obj.pk)
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
 
-    def __unicode__(self):
+    def get_path(self):
+        """ Only return short name for subject """
         return self.short_name
-
-
 
 class Period(models.Model, BaseNode):
     """
@@ -384,11 +388,19 @@ class Period(models.Model, BaseNode):
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    def __unicode__(self):
-        return u"%s / %s" % (self.parentnode, self.short_name)
+
+    def clean(self, *args, **kwargs):
+        """Validate the period.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if start_time is after end_time.
+        """
+        if self.start_time > self.end_time:
+            raise ValidationError(_('Start time must be before end time.'))
 
 
-# TODO: Constraint publishing_time by start_time and end_time
 class Assignment(models.Model, BaseNode):
     """
     Represents one assignment for a given period in a given subject. May consist
@@ -450,9 +462,6 @@ class Assignment(models.Model, BaseNode):
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    def __unicode__(self):
-        return u"%s / %s" % (self.parentnode, self.short_name)
-
     @classmethod
     def where_is_examiner(cls, user_obj):
         """ Get all assignments where the given ``user_obj`` is examiner on one
@@ -473,22 +482,56 @@ class Assignment(models.Model, BaseNode):
         :rtype: QuerySet
         """
         return self.assignmentgroup_set.filter(examiners=user_obj)
- 
 
+    def clean(self, *args, **kwargs):
+        """Validate the assignment.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - deadline is before publishing_time.
+            - deadline or publishing_time is not between
+              ``Period.start_time`` and ``Period.end_time``.
+        """
+        if self.deadline < self.publishing_time:
+            raise ValidationError(_('Publishing time must be before deadline.'))
+        if self.publishing_time < self.parentnode.start_time  or \
+                self.publishing_time > self.parentnode.end_time:
+            raise ValidationError(
+                    _("Publishing time must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.parentnode))))
+        if self.deadline > self.parentnode.end_time:
+            raise ValidationError(
+                    _("Deadline must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.parentnode))))
+        super(Assignment, self).clean(*args, **kwargs)
 
 
 class Candidate(models.Model):
     student = models.ForeignKey(User)
     assignment_group = models.ForeignKey('AssignmentGroup')
 
-    # TODO unique within assignment
+    # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
-
+    
+    def get_identifier(self):
+        """
+        Gives the identifier of the candidate. When the Assignment is anyonymous
+        the candidate_id is returned. Else, the student name is returned. This 
+        method should always be used when retrieving the candidate identifier.
+        """
+        if self.assignment_group.parentnode.anonymous:
+            return unicode(self.candidate_id)
+        else:
+            return unicode(self.student.username)
+    
     def __unicode__(self):
-        return unicode(self.student)
+        return self.get_identifier()
 
 
-# TODO: Constraint: cannot be examiner and student on the same assignment?
+# TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
@@ -618,15 +661,14 @@ class AssignmentGroup(models.Model):
         return cls.where_is_examiner(user_obj).filter(
                 parentnode__parentnode__end_time__lt = now)
 
-
     def __unicode__(self):
-        return u'%s (%s)' % (self.parentnode.long_name,
+        return u'%s (%s)' % (self.parentnode.get_path(),
                 ', '.join([unicode(x) for x in self.students.all()]))
     
     def get_students(self):
         """ Get a string contaning all students in the group separated by
         comma (``','``). """
-        return u', '.join([u.username for u in self.students.all()])
+        return u', '.join([unicode(u) for u in self.students.all()])
     get_students.short_description = _('Students')
 
     def get_examiners(self):
@@ -696,8 +738,8 @@ class Delivery(models.Model):
 
     .. attribute:: successful
 
-        A django.db.models.BooleanField_ telling whether or not the Delivery was
-        successfully uploaded.
+        A django.db.models.BooleanField_ telling whether or not the Delivery
+        was successfully uploaded.
     """
     
     assignment_group = models.ForeignKey(AssignmentGroup)
@@ -734,16 +776,6 @@ class Delivery(models.Model):
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    @classmethod
-    def where_is_student(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__students=user_obj,
-                successful=True)
-
-    @classmethod
-    def where_is_examiner(cls, user_obj):
-        return Delivery.objects.filter(assignment_group__examiners=user_obj,
-                successful=True)
-
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
@@ -752,14 +784,13 @@ class Delivery(models.Model):
         self.successful = True
         self.save()
 
-
     def add_file(self, filename, iterable_data):
         filemeta = FileMeta()
         filemeta.delivery = self
         filemeta.filename = filename
         filemeta.size = 0
         filemeta.save()
-        f = FileMeta.store.write_open(filemeta)
+        f = FileMeta.storage_backend.write_open(filemeta)
         filemeta.save()
         for data in iterable_data:
             f.write(data)
@@ -802,18 +833,16 @@ class Feedback(models.Model):
         be given feedback.
 
     """
-    
+
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
-       ('markdown', 'Markdown'),
-       ('textile', 'Textile'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats,
             default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
-    delivery = models.OneToOneField(Delivery, blank=True, null=True)
+    delivery = models.OneToOneField(Delivery)
 
     grade_type = models.ForeignKey(ContentType)
     grade_object_id = models.PositiveIntegerField()
@@ -828,19 +857,29 @@ class FileMeta(models.Model):
     filename = models.CharField(max_length=255)
     size = models.IntegerField()
 
-    store = load_deliverystore_backend()
+    storage_backend = load_deliverystore_backend()
 
+    class Meta:
+        verbose_name = _('FileMeta')
+        verbose_name_plural = _('FileMetas')
+        unique_together = ('delivery', 'filename')
 
     def remove_file(self):
-        return self.store.remove(self)
+        return self.storage_backend.remove(self)
+
+    def file_exists(self):
+        return self.storage_backend.exists(self)
 
     def read_open(self):
-        return self.store.read_open(self.delivery, self.filename)
+        return self.storage_backend.read_open(self)
+
+    def __unicode__(self):
+        return self.filename
 
 
 def filemeta_deleted_handler(sender, **kwargs):
-   filemeta = kwargs['instance']
-   filemeta.remove_file()
+    filemeta = kwargs['instance']
+    filemeta.remove_file()
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
