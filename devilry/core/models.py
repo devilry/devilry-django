@@ -837,14 +837,12 @@ class Feedback(models.Model):
     text_formats = (
        ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
-       ('markdown', 'Markdown'),
-       ('textile', 'Textile'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats,
             default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
-    delivery = models.OneToOneField(Delivery, blank=True, null=True)
+    delivery = models.OneToOneField(Delivery)
 
     grade_type = models.ForeignKey(ContentType)
     grade_object_id = models.PositiveIntegerField()

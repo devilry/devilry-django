@@ -1,0 +1,18 @@
+1 - Tingang som er viktig lizzm
+
+Her kommer det masse viktige spørmål.
+Skikkelig viktig lizzm!
+
+# En kommentar fra retter
+1.1 Er dette
+   ok?
+   [ failed ]      # passed or failed
+   [failed/passed (failed)]
+
+1.2 Grade?
+   [a]             # One of f, e, d, c, b, a
+   [f/e/d/c/b/a]
+
+1.3 Points:
+   [5]             # 1-100
+   [0-100]
