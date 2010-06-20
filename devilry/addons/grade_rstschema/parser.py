@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from docutils.parsers.rst import Parser, directives
 from docutils.utils import new_document
 from docutils import nodes
@@ -31,7 +33,6 @@ class Appraisal(Directive):
             'default': directives.unchanged_required}
     has_content = False
 
-
     def run(self):
         #if not 'possible-values' in self.options:
         #    raise self.error("':possible-values: <definition>' is required.")
@@ -42,14 +43,9 @@ class Appraisal(Directive):
         return [node]
 
 
-class AppraisalCollector(object):
-    def __init__(self, document):
-        self.document = document
-        self.lst = []
 
-    def dispatch_visit(self, node):
-        if node.tagname == 'appraisal':
-            self.lst.append(node)
+def split_format(format_string):
+    return format_string.split('/')
 
 
 def parse_string(rst):
@@ -61,8 +57,6 @@ def parse_string(rst):
     parser.parse(rst, document)
     return document
 
-
-
 def format_text(rst):
     r = re.sub(
             r"\n\n\.\. appraisal::\s+(\S+)\s+:default:\s*(\S+).*",
@@ -70,13 +64,45 @@ def format_text(rst):
             rst, re.MULTILINE)
     r = re.sub(
             r"\n\n\.\. appraisal::\s+(\S+)",
-            r"\n[[[  ]]]",
+            r" [\1]\n[[[  ]]]",
             r, re.MULTILINE)
     return r
 
+#def extract_text_input(text):
+    #return re.findall(r"\[\[\[\s*(.*?)\s*\]\]\]", text)
 
-def extract_text_input(text):
-    return re.findall(r"\[\[\[\s*(.*?)\s*\]\]\]", text)
+
+
+class AppraisalCollector(object):
+    def __init__(self, document, input):
+        self.document = document
+        self.appraisals = []
+        #self.errors = []
+        #self.appraisal_index = 0
+        #self.input = input
+
+    def dispatch_visit(self, node):
+        if node.tagname == 'appraisal':
+            #i = self.input[self.appraisal_index]
+            fmt = node.attributes['format']
+            node.fmt_list = split_format(fmt)
+            #if not i in node.fmt_list:
+                #self.errors.append('Invalid input: "%s". Valid values: %s' % (
+                    #i, fmt))
+            self.appraisals.append(node)
+            #self.appraisal_index += 1
+
+def extract_appraisals(document):
+    ac = AppraisalCollector(document)
+    document.walk(ac)
+    return ac.appraisals
+
+def validate_text_input(text, appraisals):
+    for node in ac.appraisals:
+        print node
+    if len(input) != len(ac.appraisals):
+        raise SystemExit('Invalid input length.')
+
 
 
 if __name__ == "__main__":
@@ -84,7 +110,6 @@ if __name__ == "__main__":
     from docutils.parsers.rst import directives
     from docutils.core import publish_from_doctree
     import re
-
 
     def show_help():
         print "Usage:"
@@ -100,7 +125,6 @@ if __name__ == "__main__":
     definition_file = sys.argv[2]
     rst = open(definition_file, 'rb').read()
     document = parse_string(rst)
-    #print document.pformat()
 
     if action == 'create':
         fmt = sys.argv[3]
@@ -109,25 +133,13 @@ if __name__ == "__main__":
             print p
         elif fmt == 'text':
             print format_text(rst)
+            #print document.pformat()
         else:
             show_help()
-
     elif action == 'validate':
         text_file = sys.argv[3]
         text = open(text_file, 'rb').read()
-        ac = AppraisalCollector(document) 
-        document.walk(ac)
-        result = extract_text_input(text)
-        if len(result) != len(ac.lst):
-            raise SystemExit('Invalid input length.')
-        s = 0
-        for i, a in enumerate(ac.lst):
-            r = result[i]
-            fmt = a.attributes['format']
-            fmt_list = fmt.split('/')
-            if not r in fmt_list:
-                raise SystemExit('Invalid input: "%s". Valid values: %s' % (r,
-                    fmt))
-
+        appraisals = extract_appraisals(document)
+        validate_text_input(text, appraisals)
     else:
         show_help()
