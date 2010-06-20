@@ -10,13 +10,10 @@ The link layer is *the hardest part* of the assignment, so you should
 *not* require complete perfection to give full score.
 
 How do you rate the quality of the link-layer implementation?
+[[[  ]]]
 
-.. appraisal:: 0-5
-
-Does package format contain all the required header-fields?
-
-.. appraisal:: no/yes
-    :default: yes
+Does package format contain all the required header-fields? [no/yes]
+[[[ yes ]]]
 
 
 Code quality
@@ -27,10 +24,8 @@ and organize their code in a sane manner. So full score should not
 be given lightly.
 
 Would you say the code is easy to read?
+[[[  ]]]
 
-.. appraisal:: no/somewhat/yes
+Have the students split the code over multiple files in a sane manner? [no/somewhat/yes]
+[[[ yes ]]]
 
-Have the students split the code over multiple files in a sane manner?
-
-.. appraisal:: no/somewhat/yes
-    :default: yes
