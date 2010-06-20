@@ -5,15 +5,17 @@ This is a *test*.
 
 How do you rate the quality of the link-layer implementation?
 
-.. appraisal::
-    :possible-values: 0-5
+.. appraisal:: 0-5
     :default: 3
 
 Correct file format?
 
-.. appraisal::
-    :possible-values: no/yes
+.. appraisal:: no/yes
     :default: yes
+
+Without default.
+
+.. appraisal:: 0-100
 
 Hi
 --

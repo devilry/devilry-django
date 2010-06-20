@@ -28,22 +28,21 @@ class appraisal(nodes.Element): pass
 
 class Appraisal(Directive):
 
-    required_arguments = 0
-    optional_arguments = 1
+    required_arguments = 1
+    optional_arguments = 0
     final_argument_whitespace = False
     option_spec = {
-            'possible-values': directives.unchanged_required,
+            #'possible-values': directives.unchanged_required,
             'default': directives.unchanged_required}
     has_content = False
 
 
     def run(self):
-        if not 'possible-values' in self.options:
-            raise self.error("':possible-values: <definition>' is required.")
+        #if not 'possible-values' in self.options:
+        #    raise self.error("':possible-values: <definition>' is required.")
 
-        if self.arguments:
-            value = directives.unchanged_required(self.arguments[0])
-            self.options['value'] = value
+        value = directives.unchanged_required(self.arguments[0])
+        self.options['format'] = value
         node = appraisal(rawsource='', **self.options)
         return [node]
 directives.register_directive('appraisal', Appraisal)
@@ -80,3 +79,16 @@ p = publish_from_doctree(document, writer=SchemaHTMLWriter())
 ac = AppraisalCollector(document) 
 document.walk(ac)
 print ac.lst
+
+
+import re
+
+pass1 = re.sub(
+        r"\n\n\.\. appraisal::\s+(\S+)\s+:default:\s*(\S+).*",
+        r" [\1]\n[[[ \2 ]]]",
+        rst, re.MULTILINE)
+pass2 = re.sub(
+        r"\n\n\.\. appraisal::\s+(\S+)",
+        r"\n[[[  ]]]",
+        pass1, re.MULTILINE)
+print pass2
