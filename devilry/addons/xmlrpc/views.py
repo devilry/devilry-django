@@ -1,7 +1,7 @@
 from os.path import basename
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib import auth
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
@@ -28,10 +28,10 @@ LOGIN_FAILED = 3
 
 @rpc.rpcdec()
 def login(request, username, password):
-    user = authenticate(username=username, password=password)
+    user = auth.authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
-            django_login(request, user)
+            auth.login(request, user)
             return SUCCESSFUL_LOGIN
         else:
             return USER_DISABLED
@@ -40,10 +40,18 @@ def login(request, username, password):
 
 
 @rpc.rpcdec()
+def logout(request, username, password):
+    auth.logout(request)
+
+
+@rpc.rpcdec()
 @login_required
 def sum(request, a, b):
-    """ Returns the sum of *a* and *b*. """
-    return "Hello %s: %d" % (request.user, a + b)
+    """ A simple function used only for debugging.
+
+    :return: The sum of *a* and *b* in a string with some extra information.
+    """
+    return "Hello %s. %d+%d == %d" % (request.user, a, b, a + b)
 
 
 
