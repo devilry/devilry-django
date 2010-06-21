@@ -16,6 +16,9 @@ class AbstractSpec(object):
     def __str__(self):
         return self.specstring
 
+    def create_html_formfield(self, field, field_id, htmltranslator):
+        htmltranslator.body.append('<input name="%s" size="10" />' % field_id)
+
 
 class NumberRangeSpec(AbstractSpec):
     patt = re.compile(r"\s*\d+-\d+\s*")
@@ -59,6 +62,18 @@ class SequenceSpec(AbstractSpec):
         else:
             raise ValueError('Must be one of: %(values)s' % dict(
                 values='/'.join(self.valid_values)))
+
+    def create_html_formfield(self, field, field_id, htmltranslator):
+        htmltranslator.body.append('<select name="%s">' % field_id)
+        for value in self.valid_values:
+            selected = ""
+            if field.default and value == field.default:
+                selected = ' selected="selected"'
+            htmltranslator.body.append('<option value="%s"%s>%s</option>' % (
+                value, selected, value))
+        htmltranslator.body.append('</select>')
+
+        
 
 
 class Spec(object):

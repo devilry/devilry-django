@@ -21,6 +21,7 @@ class Field(Directive):
         self.options['spec'] = spec
         node = field(rawsource='', **self.options)
         node.spec = Spec.parse(spec)
+        node.default = self.options.get('default')
         return [node]
 
 

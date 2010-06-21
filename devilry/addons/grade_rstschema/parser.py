@@ -8,8 +8,9 @@ def rstdoc_from_string(rst):
     parser = Parser()
     document = new_document("string")
     document.settings.tab_width = 4
-    document.settings.pep_references = 1
-    document.settings.rfc_references = 1
+    document.settings.pep_references = False
+    document.settings.rfc_references = False
+    document.settings.embed_stylesheet = False
     parser.parse(rst, document)
     return document
 
@@ -18,8 +19,8 @@ def rstdoc_from_string(rst):
 if __name__ == "__main__":
     import sys
     from docutils.parsers.rst import directives
-    from docutils.core import publish_from_doctree
     import text
+    import html
     import field
 
     def show_help():
@@ -35,12 +36,11 @@ if __name__ == "__main__":
     action = sys.argv[1]
     definition_file = sys.argv[2]
     rst = open(definition_file, 'rb').read()
-    document = rstdoc_from_string(rst)
 
     if action == 'create':
         fmt = sys.argv[3]
         if fmt == 'html':
-            p = publish_from_doctree(document, writer=SchemaHTMLWriter())
+            p = html.input_form(rst)
             print p
         elif fmt == 'text':
             print text.examiner_format(rst)
@@ -48,6 +48,7 @@ if __name__ == "__main__":
             show_help()
 
     elif action == 'validate':
+        document = rstdoc_from_string(rst)
         input_file = sys.argv[3]
         input = open(input_file, 'rb').read()
         input = text.strip_messages(input)
