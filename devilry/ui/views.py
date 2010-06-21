@@ -57,6 +57,7 @@ def login_view(request):
 
     #return response
 
+# TODO: Should this be available to anyone, or maybe only examiners and admins?
 @login_required
 def download_file(request, filemeta_id):
     filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
