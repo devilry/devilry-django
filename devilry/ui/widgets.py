@@ -46,19 +46,20 @@ class DevilryDateTimeWidget(forms.SplitDateTimeWidget):
 
 
 class DevilryMultiSelectFew(forms.TextInput):
+    class Media:
+        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_user_field.js",)
+                
     def __init__(self, attrs={}):
         widgets = [DevilryMultiSelectFew]
         attrs["size"] = 60
+        attrs["class"] = "devilry_multiselect_few"
         super(DevilryMultiSelectFew, self).__init__(attrs)
     
     def render(self, name, value, attrs=None):
-        #print "value:", type(value)
         qry = User.objects.filter(pk__in=value).all()
-        #value = ", ".join([str(x) for x in value])
         value = ", ".join([u.username for u in qry])
         return super(DevilryMultiSelectFew, self).render(name, value, attrs)
-        #print "type:", type(widget)
-        #return mark_safe(widget)
+       
 
 
 
