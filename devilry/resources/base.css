@@ -356,3 +356,15 @@ table.horizontal_ordered_table td {
 	font-family: "Tahoma", "Geneva", sans-serif;
 	font-size: 1.0em;
 }
+
+a.autocomplete_item span {
+	display: block;
+}
+
+span.autocomplete_item_desc {
+	font-size: 1.0em;
+}
+
+span.autocomplete_item_desc {
+	font-size: 0.8em;
+}
