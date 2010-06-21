@@ -11,11 +11,11 @@ The link layer is *the hardest part* of the assignment, so you should
 
 How do you rate the quality of the link-layer implementation?
 
-.. appraisal:: 0-5
+.. field:: 0-5
 
 Does package format contain all the required header-fields?
 
-.. appraisal:: no/yes
+.. field:: no/yes
     :default: yes
 
 
@@ -28,9 +28,9 @@ be given lightly.
 
 Would you say the code is easy to read?
 
-.. appraisal:: no/somewhat/yes
+.. field:: no/somewhat/yes
 
 Have the students split the code over multiple files in a sane manner?
 
-.. appraisal:: no/somewhat/yes
+.. field:: no/somewhat/yes
     :default: yes

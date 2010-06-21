@@ -6,11 +6,13 @@ from django.template import RequestContext
 from django import forms
 from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext as _
+
 from devilry.core.models import (Delivery, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 from devilry.ui.messages import UiMessages
 from devilry.core import gradeplugin_registry
-from devilry.ui.widgets import DevilryDateTimeWidget
+from devilry.ui.widgets import DevilryDateTimeWidget, DevilryMultiSelectFew
+from devilry.ui.fields import MultiSelectCharField
 
 
 @login_required
@@ -124,14 +126,17 @@ class EditPeriod(EditNodeBase):
         return Form
 
 
+
 class EditAssignment(EditNodeBase):
     VIEW_NAME = 'assignment'
     MODEL_CLASS = Assignment
-
+    
     def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Period.where_is_admin(self.request.user))
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
+            
             class Meta:
                 model = Assignment
                 fields = ['parentnode', 'short_name', 'long_name', 'publishing_time', 'deadline', 'admins']
@@ -140,6 +145,7 @@ class EditAssignment(EditNodeBase):
                 widgets = {
                     'publishing_time': DevilryDateTimeWidget,
                     'deadline': DevilryDateTimeWidget,
+                    'admins': DevilryMultiSelectFew,
                 }
         return Form
 

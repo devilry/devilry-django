@@ -8,8 +8,12 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.servers.basehttp import FileWrapper
-from devilry.core.models import FileMeta
+from django.contrib.auth.models import User
+from django.core import serializers
+from django.utils.simplejson import JSONEncoder
+from django.db.models import Q
 
+from devilry.core.models import FileMeta
 
 def logout_view(request):
     logout(request)
@@ -67,3 +71,35 @@ def download_file(request, filemeta_id):
     response['Content-Length'] = filemeta.size
 
     return response
+
+def get_description(u):
+    desc = ""
+    if u.first_name:
+        desc += u.first_name + " "
+    if u.last_name:
+        desc += u.last_name  + " "
+    if u.email:
+        desc += "&lt;" + u.email+ "&gt;"
+    return desc
+
+
+# TODO: Should this be available to anyone, or maybe only examiners and admins?
+@login_required
+def user_json(request):
+    term = request.GET['term']
+    qry = User.objects.filter(Q(username__istartswith=term) | 
+                              Q(first_name__istartswith=term) | 
+                              Q(last_name__istartswith=term))
+    
+    l = [dict(id=u.id, value=u.username, label=u.username, 
+              desc=get_description(u)) for u in qry]
+    data = JSONEncoder().encode(l)
+
+    #data = serializers.serialize("json", qry, fields=("id", "username"))
+    
+    #data = serializers.serialize("json", ["bendiko", "espeak", "laban"])
+    response = HttpResponse(data, content_type="text/plain")
+    return response
+
+
+    
