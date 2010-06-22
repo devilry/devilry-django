@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
 
-urlpatterns = patterns('devilry.addons.xmlrpc',
+urlpatterns = patterns('devilry.xmlrpc',
     url(r'^$', 'views.rpc'),
 )
