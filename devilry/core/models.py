@@ -688,7 +688,7 @@ class AssignmentGroup(models.Model):
     def get_students(self):
         """ Get a string contaning all students in the group separated by
         comma (``','``). """
-        return u', '.join([unicode(u) for u in self.students.all()])
+        return u', '.join([unicode(u) for u in self.candidate_set.all()])
     get_students.short_description = _('Students')
 
     def get_examiners(self):

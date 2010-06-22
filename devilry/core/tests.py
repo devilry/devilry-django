@@ -366,10 +366,14 @@ class TestAssignmentGroup(TestCase):
         self.assertEquals(2,
                 AssignmentGroup.old_where_is_examiner(examiner3).count())
 
-
     def test_get_students(self):
-        a = AssignmentGroup.objects.get(id=5)
-        self.assertEquals('student1, student4', a.get_students())
+        g = AssignmentGroup.objects.get(id=5)
+        self.assertEquals('student1, student4', g.get_students())
+        a = Assignment.objects.get(id=3)
+        a.anonymous = True
+        a.save()
+        g = AssignmentGroup.objects.get(id=5)
+        self.assertEquals('1, 4', g.get_students())
 
     def test_get_examiners(self):
         a = AssignmentGroup.objects.get(id=5)
