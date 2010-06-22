@@ -297,9 +297,6 @@ class Node(models.Model, BaseNode):
 
 class Subject(models.Model, BaseNode):
     """
-    This class represents a subject. This may be either a full course,
-    or one part of a course, if it is divided into parallell courses.
-    
     .. attribute:: parentnode
         
         A django.db.models.ForeignKey_ that points to the parent node,

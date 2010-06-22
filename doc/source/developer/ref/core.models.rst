@@ -4,12 +4,14 @@
 :mod:`devilry.core.models` --- Devilry core datastructure
 =========================================================
 
+
 BaseNode and children
 =====================
 
 Most of the core models inherit from the BaseNode class, and we refer to them
 all as nodes. Since we also have a class named ``Node``, this might be a bit
 confusing, but the context should always make the distinction clear.
+
 
 BaseNode
 --------

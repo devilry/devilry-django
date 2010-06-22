@@ -6,4 +6,7 @@ Devilry documentation contents
 
 .. toctree::
 
+    index
+    overview
+    documentation
     developer/contents
