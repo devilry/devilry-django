@@ -41,10 +41,11 @@ class FileMetaInline(admin.TabularInline):
 
 class AssignmentAdmin(admin.ModelAdmin):
     list_display = ['short_name', 'long_name', 'get_path', 'grade_plugin',
-            'publishing_time', 'deadline', 'get_admins', 'id']
+            'anonymous', 'id', 
+            'publishing_time', 'deadline', 'get_admins']
     search_fields = ['id', 'short_name', 'long_name', 'parentnode__short_name',
             'parentnode__parentnode__short_name', 'admins__username']
-    list_filter = ['publishing_time', 'deadline']
+    list_filter = ['publishing_time', 'deadline', 'anonymous']
     date_hierarchy = 'publishing_time'
 
 
