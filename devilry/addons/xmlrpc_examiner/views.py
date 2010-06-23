@@ -9,7 +9,7 @@ from devilry.xmlrpc.xmlrpc import XmlRpc
 rpc = XmlRpc('examiner', 'devilry-xmlrpc-examiner')
 
 
-@rpc.rpcdec()
+@rpc.rpcdec('assignment_id')
 @login_required
 def list_assignmentgroups(request, assignment_id):
     """ Get a list (xmlrpc array) containing all assignment-groups where the

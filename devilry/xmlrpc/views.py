@@ -5,15 +5,19 @@ from xmlrpc import XmlRpc
 
 
 USER_DISABLED = 1
-SUCCESSFUL_LOGIN = 2
-LOGIN_FAILED = 3
+LOGIN_FAILED = 2
+SUCCESSFUL_LOGIN = 3
 rpc = XmlRpc('login', 'devilry-xmlrpc-login')
 
 
-@rpc.rpcdec()
+@rpc.rpcdec('username, password')
 def login(request, username, password):
     """ Authenticate with the django server and begin a HTTP cookie-based
-    session. """
+    session.
+    
+    :return: *1* if the user is disabled, *2* if login failed and *3*
+             on successful login.
+    """
     user = auth.authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
@@ -32,7 +36,7 @@ def logout(request):
     auth.logout(request)
 
 
-@rpc.rpcdec()
+@rpc.rpcdec('a, b')
 @login_required
 def sum(request, a, b):
     """ A simple function used only for debugging and testing.

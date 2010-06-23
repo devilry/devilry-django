@@ -26,8 +26,11 @@
 {% block content %}
 <h1>XML-RPC - {{name}}</h1>
 <h2>Functions</h2>
-{% for name, docs in docs %}
-	<h3>{{name}}(...)</h3>
-	<div class="function-docs">{{ docs|restructuredtext }}</div>
+{% for name, argnames, docs in docs %}
+<div class='xmlrpc-function'>
+<h3>{{name}}(<em>{{argnames}}</em>):</h3>
+	<div class="xmlrpc-function-docs">{{ docs|restructuredtext }}</div>
 {% endfor %}
+</div>
+
 {% endblock %}

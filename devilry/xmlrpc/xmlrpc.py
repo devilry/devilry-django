@@ -9,6 +9,7 @@ from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 
 
+import inspect
 
 
 def normalize_docstring(docstring):
@@ -24,13 +25,13 @@ class XmlRpc(object):
     xmlrpcs = {}
 
     def __init__(self, name, viewname):
+        self.argnames = {}
         if name in self.__class__.xmlrpcs:
             raise ValueError("'%s' is already registered as a XmlRpc." % name)
         self.name = name
         self.viewname = viewname
         self.__class__.xmlrpcs[name] = self
         self.dispatch = {}
-
 
     def get_url(self):
         return reverse(self.viewname)
@@ -59,7 +60,7 @@ class XmlRpc(object):
         return HttpResponse(xml, mimetype='text/xml; charset=utf-8')
 
     def htmldocs(self, request):
-        docs = [(name, normalize_docstring(f.__doc__))
+        docs = [(name, self.argnames[name], normalize_docstring(f.__doc__))
                 for name, f in self.dispatch.iteritems()]
         return render_to_response('devilry/xmlrpc/xmlrpcdoc.django.html', {
             'name': self.name,
@@ -73,14 +74,14 @@ class XmlRpc(object):
         else:
             return self.htmldocs(request)
 
-    def rpcdec(self, name=None):
+    def rpcdec(self, argnames=""):
         """ A decorator for XML-RPC functions.
         
-        :param name: The name of the exported xmlrpc function. If None, the
-                     function name is used.
-        :type name: str or None
+        :param argnames: A string containing arguments for the html
+                         documentation.
         """
         def register_xmlrpc(func):
-            self.dispatch[name or func.__name__] = func
+            self.dispatch[func.__name__] = func
+            self.argnames[func.__name__] = argnames
             return func
         return register_xmlrpc

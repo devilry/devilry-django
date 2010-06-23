@@ -368,3 +368,16 @@ span.autocomplete_item_desc {
 span.autocomplete_item_desc {
 	font-size: 0.8em;
 }
+
+
+/*******************************
+ * XML-RPC
+ *******************************/
+
+.xmlrpc-function h3 em {
+	font-weight: normal;
+}
+
+.xmlrpc-function-docs {
+	margin-left: 20px;
+}

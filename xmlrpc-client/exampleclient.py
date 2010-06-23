@@ -11,8 +11,8 @@ from cookie_transport import CookieTransport, SafeCookieTransport
 
 
 USER_DISABLED = 1
-SUCCESSFUL_LOGIN = 2
-LOGIN_FAILED = 3
+LOGIN_FAILED = 2
+SUCCESSFUL_LOGIN = 3
 
 #host = "https://localhost/django/example/xmlrpc/"
 #server = ServerProxy(host, transport=SafeCookieTransport())
