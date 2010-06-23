@@ -16,8 +16,7 @@ def list_assignmentgroups(request, assignment_id):
     
     return render_to_response('devilry/examiner/list_assignmentgroups.django.html', {
         'assignment_groups': assignment_groups,
-        # TODO: This will not work when the list is empty - fix when tests are ready
-        'assignment': assignment_groups[0].parentnode,
+        'assignment': assignment,
         }, context_instance=RequestContext(request))
 
 
@@ -42,7 +41,8 @@ def correct_delivery(request, delivery_id):
 
 @login_required
 def choose_assignment(request):
-    assignment_pks = AssignmentGroup.active_where_is_examiner(request.user).values("parentnode").distinct().query
+    assignment_pks = AssignmentGroup.active_where_is_examiner(
+            request.user).values("parentnode").distinct().query
     assignments = Assignment.objects.filter(pk__in=assignment_pks)
     
     subjects = group_assignments(assignments)
