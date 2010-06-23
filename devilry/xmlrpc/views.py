@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 
-from devilry.core.xmlrpc import XmlRpc
+from xmlrpc import XmlRpc
 
 
 USER_DISABLED = 1
 SUCCESSFUL_LOGIN = 2
 LOGIN_FAILED = 3
-rpc = XmlRpc()
+rpc = XmlRpc('login', 'devilry-xmlrpc-login')
 
 
 @rpc.rpcdec()
@@ -35,7 +35,7 @@ def logout(request):
 @rpc.rpcdec()
 @login_required
 def sum(request, a, b):
-    """ A simple function used only for debugging.
+    """ A simple function used only for debugging and testing.
 
     :return: The sum of *a* and *b* in a string with some extra information.
     """

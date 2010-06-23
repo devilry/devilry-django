@@ -3,10 +3,10 @@ from django.shortcuts import get_object_or_404
 from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
         Node, Subject, Period, Assignment, FileMeta)
 
-from devilry.core.xmlrpc import XmlRpc
+from devilry.xmlrpc.xmlrpc import XmlRpc
 
 
-rpc = XmlRpc()
+rpc = XmlRpc('examiner', 'devilry-xmlrpc-examiner')
 
 
 @rpc.rpcdec()
@@ -20,9 +20,11 @@ def list_assignmentgroups(request, assignment_id):
 
         id
             A number identifying the assignment-group.
+
         students
             List of the usernames/candiatenumber of all the students on the
             group.
+
         number_of_deliveries
             The number of deliveries on the group.
     """
