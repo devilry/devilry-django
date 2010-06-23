@@ -658,15 +658,40 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def where_is_examiner(cls, user_obj):
+        """ Returns a QuerySet matching all AssignmentGroups where the
+        given user is examiner.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return AssignmentGroup.objects.filter(examiners=user_obj)
 
     @classmethod
     def published_where_is_examiner(cls, user_obj):
+        """ Returns a QuerySet matching all published AssignmentGroups where
+        the given user is examiner.
+
+        A published AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` is in the past.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         return cls.where_is_examiner(user_obj).filter(
                 parentnode__publishing_time__lt = datetime.now())
 
     @classmethod
     def active_where_is_examiner(cls, user_obj):
+        """ Returns a QuerySet matching all active AssignmentGroups where
+        the given user is examiner.
+
+        A active AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` is in the past and current time is
+        between ``Period.start_time`` and ``Period.end_time``.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         now = datetime.now()
         return cls.published_where_is_examiner(user_obj).filter(
                 parentnode__parentnode__start_time__lt = now,
@@ -674,6 +699,15 @@ class AssignmentGroup(models.Model):
     
     @classmethod
     def old_where_is_examiner(cls, user_obj):
+        """ Returns a QuerySet matching all active AssignmentGroups where
+        the given user is examiner.
+
+        A active AssignmentGroup is a assignment group where
+        ``Period.end_time`` is in the past.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
         now = datetime.now()
         return cls.where_is_examiner(user_obj).filter(
                 parentnode__parentnode__end_time__lt = now)
@@ -682,8 +716,9 @@ class AssignmentGroup(models.Model):
         return u'%s (%s)' % (self.parentnode.get_path(),
                 ', '.join([unicode(x) for x in self.students.all()]))
     
+    # TODO: should this be changed to get_candidates? Admin interface should be able to get students without any anonymity
     def get_students(self):
-        """ Get a string contaning all students in the group separated by
+        """ Get a string containing all students in the group separated by
         comma (``','``). """
         return u', '.join([unicode(u) for u in self.candidate_set.all()])
     get_students.short_description = _('Students')
