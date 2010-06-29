@@ -2,11 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.template import RequestContext
-from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
-        Node, Subject, Period, Assignment, FileMeta)
-from devilry.core import gradeplugin_registry
 
-from devilry.core.utils.GroupNodes import group_assignments, group_assignmentgroups 
+from devilry.core.models import Delivery, AssignmentGroup, Assignment
+from devilry.core import gradeplugin_registry
+from devilry.core.utils.GroupNodes import group_assignments
 
 
 @login_required
@@ -14,13 +13,11 @@ def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignment_groups = assignment.assignment_groups_where_is_examiner(
             request.user)
-    
     return render_to_response(
             'devilry/examiner/list_assignmentgroups.django.html', {
                 'assignment_groups': assignment_groups,
                 'assignment': assignment,
             }, context_instance=RequestContext(request))
-
 
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
@@ -40,12 +37,9 @@ def correct_delivery(request, delivery_id):
     key = delivery_obj.assignment_group.parentnode.grade_plugin
     return gradeplugin_registry.get(key).view(request, delivery_obj)
 
-
-
 @login_required
 def choose_assignment(request):
     assignments = Assignment.active_where_is_examiner(request.user)
-    
     subjects = group_assignments(assignments)
     return render_to_response(
             'devilry/examiner/choose_assignment.django.html', {
