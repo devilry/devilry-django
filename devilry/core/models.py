@@ -608,6 +608,20 @@ class AssignmentGroup(models.Model):
         return AssignmentGroup.objects.filter(students=user_obj)
 
     @classmethod
+    def published_where_is_student(cls, user_obj):
+        """ Returns a QuerySet matching all published AssignmentGroups where
+        the given user is student.
+
+        A published AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` is in the past.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return cls.where_is_student(user_obj).filter(
+                parentnode__publishing_time__lt = datetime.now())
+
+    @classmethod
     def active_where_is_student(cls, user_obj):
         """ Returns a QuerySet matching all active AssignmentGroups where
         the given user is student.
@@ -620,8 +634,7 @@ class AssignmentGroup(models.Model):
         :rtype: QuerySet
         """
         now = datetime.now()
-        return cls.where_is_student(user_obj).filter(
-                parentnode__publishing_time__lt = datetime.now(),
+        return cls.published_where_is_student(user_obj).filter(
                 parentnode__parentnode__start_time__lt = now,
                 parentnode__parentnode__end_time__gt = now)
 
@@ -652,6 +665,20 @@ class AssignmentGroup(models.Model):
         return AssignmentGroup.objects.filter(examiners=user_obj)
 
     @classmethod
+    def published_where_is_examiner(cls, user_obj):
+        """ Returns a QuerySet matching all published AssignmentGroups where
+        the given user is examiner.
+
+        A published AssignmentGroup is a assignment group where
+        ``Assignment.publishing_time`` is in the past.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return cls.where_is_examiner(user_obj).filter(
+                parentnode__publishing_time__lt = datetime.now())
+
+    @classmethod
     def active_where_is_examiner(cls, user_obj):
         """ Returns a QuerySet matching all active AssignmentGroups where
         the given user is examiner.
@@ -664,8 +691,7 @@ class AssignmentGroup(models.Model):
         :rtype: QuerySet
         """
         now = datetime.now()
-        return cls.where_is_examiner(user_obj).filter(
-                parentnode__publishing_time__lt = datetime.now(),
+        return cls.published_where_is_examiner(user_obj).filter(
                 parentnode__parentnode__start_time__lt = now,
                 parentnode__parentnode__end_time__gt = now)
     
