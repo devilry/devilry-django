@@ -15,10 +15,8 @@ import gradeplugin_registry
 
 
 
-# TODO: Paths should be something like get_full_path() and get_unique_path(), where the latter considers Subject.short_name as unique
 # TODO: indexes
 # TODO: Complete/extend and document CommonInterface.
-# TODO: Clean up the __unicode__ mess with paths.
 # TODO: short_name ignorecase match on save.
 
 
@@ -716,11 +714,26 @@ class AssignmentGroup(models.Model):
         return u'%s (%s)' % (self.parentnode.get_path(),
                 ', '.join([unicode(x) for x in self.students.all()]))
     
-    # TODO: should this be changed to get_candidates? Admin interface should be able to get students without any anonymity
     def get_students(self):
         """ Get a string containing all students in the group separated by
-        comma (``','``). """
-        return u', '.join([unicode(u) for u in self.candidate_set.all()])
+        comma and a space, like: ``superman, spiderman, batman``.
+
+        **WARNING:** You should never use this method when the user is not
+        an administrator. Use :meth:`get_candidates`
+        instead.
+        """
+        return u', '.join(
+                [c.student.username for c in self.candidate_set.all()])
+    get_students.short_description = _('Students')
+
+    def get_candidates(self):
+        """ Get a string containing all candiates in the group separated by
+        comma and a space, like: ``superman, spiderman, batman`` for normal
+        assignments, and something like: ``321, 1533, 111`` for anonymous
+        assignments.
+        """
+        return u', '.join(
+                [c.get_identifier() for c in self.candidate_set.all()])
     get_students.short_description = _('Students')
 
     def get_examiners(self):

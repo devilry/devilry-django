@@ -375,11 +375,15 @@ class TestAssignmentGroup(TestCase):
     def test_get_students(self):
         g = AssignmentGroup.objects.get(id=5)
         self.assertEquals('student1, student4', g.get_students())
+
+    def test_get_candidates(self):
+        g = AssignmentGroup.objects.get(id=5)
+        self.assertEquals('student1, student4', g.get_candidates())
         a = Assignment.objects.get(id=3)
         a.anonymous = True
         a.save()
         g = AssignmentGroup.objects.get(id=5)
-        self.assertEquals('1, 4', g.get_students())
+        self.assertEquals('1, 4', g.get_candidates())
 
     def test_get_examiners(self):
         a = AssignmentGroup.objects.get(id=5)
