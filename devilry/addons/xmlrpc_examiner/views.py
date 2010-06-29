@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
-        Node, Subject, Period, Assignment, FileMeta)
 
+from devilry.core.models import Assignment
 from devilry.xmlrpc.xmlrpc import XmlRpc
 
 
