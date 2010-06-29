@@ -315,14 +315,6 @@ class TestAssignmentGroup(TestCase):
         self.assertEquals(1, AssignmentGroup.where_is_student(student2).count())
         self.assertEquals(3, AssignmentGroup.where_is_student(student1).count())
 
-    def test_published_where_is_student(self):
-        student2 = User.objects.get(username='student2')
-        student3 = User.objects.get(username='student3')
-        self.assertEquals(1,
-                AssignmentGroup.published_where_is_student(student2).count())
-        self.assertEquals(2,
-                AssignmentGroup.published_where_is_student(student3).count())
-
     def test_active_where_is_student(self):
         student2 = User.objects.get(username='student2')
         student3 = User.objects.get(username='student3')
@@ -347,14 +339,6 @@ class TestAssignmentGroup(TestCase):
                 AssignmentGroup.where_is_examiner(examiner2).count())
         self.assertEquals(2,
                 AssignmentGroup.where_is_examiner(examiner4).count())
-
-    def test_published_where_is_examiner(self):
-        examiner1 = User.objects.get(username='examiner1')
-        examiner2 = User.objects.get(username='examiner2')
-        self.assertEquals(1,
-                AssignmentGroup.published_where_is_examiner(examiner2).count())
-        self.assertEquals(2,
-                AssignmentGroup.published_where_is_examiner(examiner1).count())
 
     def test_active_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
