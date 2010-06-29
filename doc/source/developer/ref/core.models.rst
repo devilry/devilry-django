@@ -9,83 +9,88 @@
 .. currentmodule:: devilry.core.models
 
 
-BaseNode and children
-=====================
-
-Most of the core models inherit from the BaseNode class, and we refer to them
-all as nodes. Since we also have a class named ``Node``, this might be a bit
-confusing, but the context should always make the distinction clear.
+Check out the :ref:`overview` if you need a simple overview of the different
+components.
 
 
 BaseNode
---------
+===========================================================
 
 .. autoclass:: devilry.core.models.BaseNode
-    :members:
-    :show-inheritance:
-
+    :no-members:
+    :no-inherited-members:
 
 Node
-----
+===========================================================
 
 .. autoclass:: devilry.core.models.Node
     :members:
+    :inherited-members:
     :show-inheritance:
 
 
 Subject
--------
+===========================================================
 
 .. autoclass:: devilry.core.models.Subject
     :members:
+    :inherited-members:
     :show-inheritance:
 
 Period
-------
+===========================================================
 
 .. autoclass:: devilry.core.models.Period
-    :members:
-    :show-inheritance:
 
 Assignment
-----------
+===========================================================
+
+Represents one assignment within a given Period_ in a given Subject_. Each
+assignment contains one AssignmentGroup_ for each student or group of students
+permitted to submit deliveries.
+
+.. _assignment-classifications:
+
+We have three main classifications of assignments:
+
+1. A *old assignment* is a assignment where ``Period.end_time`` is in the past.
+2. A *published assignment* is a assignment where ``publishing_time`` is in the past.
+3. A *active assignment* is a assignment where ``publishing_time`` is in the
+   past and current time is before ``Period.end_time``.
+
 
 .. autoclass:: devilry.core.models.Assignment
     :members:
+    :inherited-members:
     :show-inheritance:
+    :member-order: bysource
 
-
-Other
-=====
-
-These models do not inherit from ``BaseNode``, but they are still a part of the
-hierarchy through their connection to ``Assignment`` (direct or indirect).
 
 AssignmentGroup
----------------
+===========================================================
 
 .. autoclass:: devilry.core.models.AssignmentGroup
     :members:
-    :show-inheritance:
+    :inherited-members:
 
 Feeback
--------
+===========================================================
 
 .. autoclass:: devilry.core.models.Feedback
     :members:
-    :show-inheritance:
+    :inherited-members:
 
 Delivery
---------
+===========================================================
 
 .. autoclass:: devilry.core.models.Delivery
     :members:
-    :show-inheritance:
+    :inherited-members:
 
 
 FileMeta
---------
+===========================================================
 
 .. autoclass:: devilry.core.models.FileMeta
     :members:
-    :show-inheritance:
+    :inherited-members:

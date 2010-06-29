@@ -5,7 +5,7 @@ unittest). These will both pass when you run "manage.py test".
 Replace these with more appropriate tests for your application.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from tempfile import mkdtemp
 from shutil import rmtree
 
@@ -239,8 +239,68 @@ class TestAssignment(TestCase):
     def test_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         q = Assignment.where_is_examiner(examiner1)
-        self.assertEquals(q[0].short_name, 'oblig1')
         self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'oblig1')
+        ag = AssignmentGroup.objects.get(pk=4)
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Assignment.where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 2)
+
+    def test_published_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        q = Assignment.published_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'oblig1')
+
+        ag = AssignmentGroup.objects.get(pk=4)
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Assignment.published_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 2)
+
+        ag.parentnode.publishing_time = datetime.now() + timedelta(10)
+        ag.parentnode.save()
+        q = Assignment.published_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+
+    def test_active_where_is_examiner(self):
+        future = datetime.now() + timedelta(10)
+        examiner1 = User.objects.get(username='examiner1')
+        q = Assignment.active_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'oblig1')
+
+        ag = AssignmentGroup.objects.get(pk=4)
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Assignment.active_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+        ag.parentnode.parentnode.end_time = future
+        ag.parentnode.parentnode.save()
+        self.assertEquals(q.count(), 2)
+
+        ag.parentnode.publishing_time = future
+        ag.parentnode.save()
+        q = Assignment.active_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+
+    def test_old_where_is_examiner(self):
+        past = datetime.now() - timedelta(10)
+        examiner3 = User.objects.get(username='examiner3')
+        q = Assignment.old_where_is_examiner(examiner3)
+        self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'oldone')
+
+        ag = AssignmentGroup.objects.get(pk=1)
+        ag.examiners.add(examiner3)
+        ag.save()
+        q = Assignment.old_where_is_examiner(examiner3)
+        self.assertEquals(q.count(), 1)
+        ag.parentnode.parentnode.end_time = past
+        ag.parentnode.parentnode.save()
+        self.assertEquals(q.count(), 2)
+
 
     def test_assignment_groups_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')

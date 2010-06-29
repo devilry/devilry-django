@@ -397,10 +397,6 @@ class Period(models.Model, BaseNode):
 
 class Assignment(models.Model, BaseNode):
     """
-    Represents one assignment for a given period in a given subject. May consist
-    of several parts, which means that several exercises can be given as one 
-    Assignment.
-
     .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
@@ -456,6 +452,7 @@ class Assignment(models.Model, BaseNode):
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
+
     @classmethod
     def where_is_examiner(cls, user_obj):
         """ Get all assignments where the given ``user_obj`` is examiner on one
@@ -467,6 +464,53 @@ class Assignment(models.Model, BaseNode):
         return Assignment.objects.filter(
             assignmentgroup__examiners=user_obj
             ).distinct()
+
+    @classmethod
+    def published_where_is_examiner(cls, user_obj):
+        """ Get all :ref:`published <assignment-classifications>`
+        assignments where the given ``user_obj`` is examiner on one of its
+        assignment groups.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return Assignment.objects.filter(
+            publishing_time__lt = datetime.now(),
+            assignmentgroup__examiners=user_obj
+            ).distinct()
+
+    @classmethod
+    def active_where_is_examiner(cls, user_obj):
+        """ Get all :ref:`active <assignment-classifications>` assignments 
+        where the given ``user_obj`` is examiner on one of its assignment
+        groups.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        now = datetime.now()
+        return Assignment.objects.filter(
+            publishing_time__lt = now,
+            parentnode__end_time__gt = now,
+            assignmentgroup__examiners=user_obj
+            ).distinct()
+
+    @classmethod
+    def old_where_is_examiner(cls, user_obj):
+        """ Get all :ref:`old <assignment-classifications>` assignments
+        where the given ``user_obj`` is examiner on one of its assignment
+        groups.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        now = datetime.now()
+        return Assignment.objects.filter(
+            parentnode__end_time__lt = now,
+            assignmentgroup__examiners=user_obj
+            ).distinct()
+
+
 
     def assignment_groups_where_is_examiner(self, user_obj):
         """ Get all assignment groups within this assignment where the given
@@ -485,8 +529,8 @@ class Assignment(models.Model, BaseNode):
 
         Raises ValidationError if:
 
-            - deadline is before publishing_time.
-            - deadline or publishing_time is not between
+            - ``deadline`` is before ``publishing_time``.
+            - ``deadline`` or ``publishing_time`` is not between
               ``Period.start_time`` and ``Period.end_time``.
         """
         if self.deadline < self.publishing_time:
@@ -572,7 +616,7 @@ class AssignmentGroup(models.Model):
     parentnode = models.ForeignKey(Assignment)
 
     students = models.ManyToManyField(User, blank=True, through=Candidate,
-            related_name='candidates')
+            related_name='students')
 
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
@@ -607,11 +651,9 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def published_where_is_student(cls, user_obj):
-        """ Returns a QuerySet matching all published AssignmentGroups where
-        the given user is student.
-
-        A published AssignmentGroup is a assignment group where
-        ``Assignment.publishing_time`` is in the past.
+        """ Returns a QuerySet matching all :ref:`published
+        <assignment-classifications>` assignment groups where the given user
+        is student.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -621,12 +663,9 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def active_where_is_student(cls, user_obj):
-        """ Returns a QuerySet matching all active AssignmentGroups where
-        the given user is student.
-
-        A active AssignmentGroup is a assignment group where
-        ``Assignment.publishing_time`` is in the past and current time is
-        between ``Period.start_time`` and ``Period.end_time``.
+        """ Returns a QuerySet matching all :ref:`active
+        <assignment-classifications>` assignment groups where the given user
+        is student.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -638,11 +677,9 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def old_where_is_student(cls, user_obj):
-        """ Returns a QuerySet matching all active AssignmentGroups where
-        the given user is student.
-
-        A active AssignmentGroup is a assignment group where
-        ``Period.end_time`` is in the past.
+        """ Returns a QuerySet matching all :ref:`old
+        <assignment-classifications>` assignment groups where the given user
+        is student.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -664,11 +701,9 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def published_where_is_examiner(cls, user_obj):
-        """ Returns a QuerySet matching all published AssignmentGroups where
-        the given user is examiner.
-
-        A published AssignmentGroup is a assignment group where
-        ``Assignment.publishing_time`` is in the past.
+        """ Returns a QuerySet matching all :ref:`published
+        <assignment-classifications>` assignment groups where the given user
+        is examiner.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -678,28 +713,22 @@ class AssignmentGroup(models.Model):
 
     @classmethod
     def active_where_is_examiner(cls, user_obj):
-        """ Returns a QuerySet matching all active AssignmentGroups where
-        the given user is examiner.
-
-        A active AssignmentGroup is a assignment group where
-        ``Assignment.publishing_time`` is in the past and current time is
-        between ``Period.start_time`` and ``Period.end_time``.
+        """ Returns a QuerySet matching all :ref:`active
+        <assignment-classifications>` assignment groups where the given user
+        is examiner.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
         now = datetime.now()
         return cls.published_where_is_examiner(user_obj).filter(
-                parentnode__parentnode__start_time__lt = now,
                 parentnode__parentnode__end_time__gt = now)
     
     @classmethod
     def old_where_is_examiner(cls, user_obj):
-        """ Returns a QuerySet matching all active AssignmentGroups where
-        the given user is examiner.
-
-        A active AssignmentGroup is a assignment group where
-        ``Period.end_time`` is in the past.
+        """ Returns a QuerySet matching all :ref:`old
+        <assignment-classifications>` assignment groups where the given user
+        is examiner.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet

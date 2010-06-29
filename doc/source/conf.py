@@ -195,3 +195,8 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+
+# Autodoc
+autodoc_member_order = 'bysource'
+autodoc_default_flags = ['members', 'inherited-members', 'show-inheritance']
