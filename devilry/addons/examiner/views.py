@@ -12,12 +12,14 @@ from devilry.core.utils.GroupNodes import group_assignments, group_assignmentgro
 @login_required
 def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
-    assignment_groups = assignment.assignment_groups_where_is_examiner(request.user)
+    assignment_groups = assignment.assignment_groups_where_is_examiner(
+            request.user)
     
-    return render_to_response('devilry/examiner/list_assignmentgroups.django.html', {
-        'assignment_groups': assignment_groups,
-        'assignment': assignment,
-        }, context_instance=RequestContext(request))
+    return render_to_response(
+            'devilry/examiner/list_assignmentgroups.django.html', {
+                'assignment_groups': assignment_groups,
+                'assignment': assignment,
+            }, context_instance=RequestContext(request))
 
 
 @login_required
@@ -25,9 +27,10 @@ def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
-    return render_to_response('devilry/examiner/show_assignmentgroup.django.html', {
-        'assignment_group': assignment_group,
-        }, context_instance=RequestContext(request))
+    return render_to_response(
+            'devilry/examiner/show_assignmentgroup.django.html', {
+                'assignment_group': assignment_group,
+            }, context_instance=RequestContext(request))
 
 @login_required
 def correct_delivery(request, delivery_id):
@@ -41,11 +44,10 @@ def correct_delivery(request, delivery_id):
 
 @login_required
 def choose_assignment(request):
-    assignment_pks = AssignmentGroup.active_where_is_examiner(
-            request.user).values("parentnode").distinct().query
-    assignments = Assignment.objects.filter(pk__in=assignment_pks)
+    assignments = Assignment.active_where_is_examiner(request.user)
     
     subjects = group_assignments(assignments)
-    return render_to_response('devilry/examiner/choose_assignment.django.html', {
-            'subjects': subjects,
+    return render_to_response(
+            'devilry/examiner/choose_assignment.django.html', {
+                'subjects': subjects,
             }, context_instance=RequestContext(request))
