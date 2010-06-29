@@ -6,7 +6,7 @@ from testhelpers import get_serverproxy, XmlRpcAssertsMixin
 
 
 class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
-    fixtures = ['testusers.json']
+    fixtures = ['tests/xmlrpc/users.json']
     def setUp(self):
         self.s = get_serverproxy(Client(), '/xmlrpc/')
 

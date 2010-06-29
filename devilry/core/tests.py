@@ -10,20 +10,19 @@ from tempfile import mkdtemp
 from shutil import rmtree
 
 from django.test import TestCase
-from django.contrib.auth.models import User, Permission
-from django.db.models import Q
+from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
-        Delivery, FileMeta, Feedback, Candidate
+        Delivery, FileMeta, Candidate
 from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
         FileNotFoundError
 
 
 
 class TestBaseNode(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects']
 
     def setUp(self):
         self.thesuperuser= User.objects.get(username='thesuperuser')
@@ -63,7 +62,7 @@ class TestBaseNode(TestCase):
 
 
 class TestNode(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes']
 
     def setUp(self):
         self.uioadmin = User.objects.get(username='uioadmin')
@@ -93,7 +92,8 @@ class TestNode(TestCase):
                 'uio.deepdummy1.deepdummy2.deepdummy3')
 
     def test_iter_childnodes(self):
-        self.assertEquals([n.short_name for n in self.deepdummy1.iter_childnodes()],
+        self.assertEquals(
+                [n.short_name for n in self.deepdummy1.iter_childnodes()],
                 [u'deepdummy2', u'deepdummy3'])
 
         s = set([n.short_name for n in self.uio.iter_childnodes()])
@@ -126,22 +126,27 @@ class TestNode(TestCase):
         self.assertEquals(Node.where_is_admin(self.ifiadmin).count(), 1)
 
     def test_get_pathlist_kw(self):
-        self.assertEquals(
-                Node._get_pathlist_kw(['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']), {
+        expected = {
                 'short_name': 'deepdummy3',
                 'parentnode__short_name': 'deepdummy2',
                 'parentnode__parentnode__short_name': 'deepdummy1',
-                'parentnode__parentnode__parentnode__short_name': 'uio'})
+                'parentnode__parentnode__parentnode__short_name': 'uio'
+                }
+        self.assertEquals(expected,
+                Node._get_pathlist_kw(
+                    ['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']))
 
     def test_get_by_pathlist(self):
         self.assertEquals(
-                Node.get_by_pathlist(['uio', 'deepdummy1', 'deepdummy2']).short_name,
+                Node.get_by_pathlist(
+                    ['uio', 'deepdummy1', 'deepdummy2']).short_name,
                 'deepdummy2')
         self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist,
                 ['uio', 'deepdummy1', 'nonode'])
 
     def test_get_by_path(self):
-        self.assertEquals(Node.get_by_path('uio.deepdummy1.deepdummy2').short_name,
+        self.assertEquals(
+                Node.get_by_path('uio.deepdummy1.deepdummy2').short_name,
                 'deepdummy2')
         self.assertRaises(Node.DoesNotExist, Node.get_by_path,
                 'uio.deepdummy1.nonode')
@@ -164,7 +169,7 @@ class TestNode(TestCase):
 
 
 class TestSubject(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects']
 
     def test_unique(self):
         s = Subject(parentnode=Node.objects.get(short_name='ifi'),
@@ -192,8 +197,8 @@ class TestSubject(TestCase):
 
 
 class TestPeriod(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
+            'tests/core/periods']
 
     def test_unique(self):
         n = Period(parentnode=Subject.objects.get(short_name='inf1100'),
@@ -216,9 +221,9 @@ class TestPeriod(TestCase):
 
 
 class TestAssignment(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json', 'testassignments.json',
-            'testassignmentgroups.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
+            'tests/core/periods', 'tests/core/assignments',
+            'tests/core/assignmentgroups']
 
     def test_unique(self):
         n = Assignment(parentnode=Period.objects.get(short_name='looong'),
@@ -291,13 +296,14 @@ class TestAssignment(TestCase):
 
     def test_get_full_path(self):
         oblig1 = Assignment.objects.get(id=1)
-        self.assertEquals(oblig1.get_full_path(), 'uio.ifi.inf1100.looong.oblig1')
+        self.assertEquals(oblig1.get_full_path(),
+                'uio.ifi.inf1100.looong.oblig1')
 
 
 class TestAssignmentGroup(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json', 'testassignments.json',
-            'testassignmentgroups.json', 'testcandidates.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
+            'tests/core/periods', 'tests/core/assignments',
+            'tests/core/assignmentgroups', 'tests/core/candidates']
 
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')
@@ -404,9 +410,9 @@ class TestAssignmentGroup(TestCase):
 
 
 class TestCandidate(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json', 'testassignments.json',
-            'testassignmentgroups.json', 'testcandidates.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
+            'tests/core/periods', 'tests/core/assignments',
+            'tests/core/assignmentgroups', 'tests/core/candidates']
     
     def test_non_anonymous(self):
         assignmentgroup1 = AssignmentGroup.objects.get(id=1)
@@ -423,10 +429,10 @@ class TestCandidate(TestCase):
         
 
 class TestDelivery(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json', 'testassignments.json',
-            'testassignmentgroups.json', 'testcandidates.json',
-            'testdeliveries.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
+            'tests/core/periods', 'tests/core/assignments',
+            'tests/core/assignmentgroups', 'tests/core/candidates',
+            'tests/core/deliveries']
 
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')
@@ -438,17 +444,16 @@ class TestDelivery(TestCase):
         d = Delivery.begin(assignmentgroup, student1)
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertFalse(d.successful)
-
         d.finish()
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
 
 
 class TestMemoryDeliveryStore(TestCase):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json', 'testassignments.json',
-            'testassignmentgroups.json', 'testcandidates.json',
-            'testdeliveries.json']
+    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
+            'tests/core/periods', 'tests/core/assignments',
+            'tests/core/assignmentgroups', 'tests/core/candidates',
+            'tests/core/deliveries']
 
     def get_storageobj(self):
         return MemoryDeliveryStore()
@@ -476,7 +481,6 @@ class TestMemoryDeliveryStore(TestCase):
         w.close()
         r = store.read_open(self.filemeta)
         self.assertEquals(r.read(), 'hello world!')
-
 
     def test_readwrite(self):
         store = self.get_storageobj()

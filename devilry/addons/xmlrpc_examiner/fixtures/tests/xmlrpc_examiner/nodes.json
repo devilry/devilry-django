@@ -1,0 +1,67 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "UiO", 
+            "admins": [
+                9
+            ], 
+            "parentnode": null, 
+            "short_name": "uio"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Institutt for informatikk", 
+            "admins": [
+                2, 
+                3
+            ], 
+            "parentnode": 1, 
+            "short_name": "ifi"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Fysisk institutt", 
+            "admins": [], 
+            "parentnode": 1, 
+            "short_name": "fys"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Deep dummy One", 
+            "admins": [], 
+            "parentnode": 1, 
+            "short_name": "deepdummy1"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Deep dummy Two", 
+            "admins": [], 
+            "parentnode": 4, 
+            "short_name": "deepdummy2"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Deep dummy Three", 
+            "admins": [], 
+            "parentnode": 5, 
+            "short_name": "deepdummy3"
+        }
+    }
+]

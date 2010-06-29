@@ -1,0 +1,65 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "1", 
+            "student": 6, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "2", 
+            "student": 7, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "3", 
+            "student": 8, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "3", 
+            "student": 8, 
+            "assignment_group": 3
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "1", 
+            "student": 6, 
+            "assignment_group": 4
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "1", 
+            "student": 6, 
+            "assignment_group": 5
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "4", 
+            "student": 12, 
+            "assignment_group": 5
+        }
+    }
+]

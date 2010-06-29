@@ -6,10 +6,14 @@ from devilry.core.models import Assignment
 
 
 class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
-    fixtures = ['testusers.json', 'testnodes.json', 'testsubjects.json',
-            'testperiods.json', 'testassignments.json',
-            'testassignmentgroups.json', 'testcandidates.json',
-            'testdeliveries.json']
+    fixtures = ['tests/xmlrpc_examiner/users.json',
+            'tests/xmlrpc_examiner/nodes.json',
+            'tests/xmlrpc_examiner/subjects.json',
+            'tests/xmlrpc_examiner/periods.json',
+            'tests/xmlrpc_examiner/assignments.json',
+            'tests/xmlrpc_examiner/assignmentgroups.json',
+            'tests/xmlrpc_examiner/candidates.json',
+            'tests/xmlrpc_examiner/deliveries.json']
 
     def setUp(self):
         self.client = Client()
