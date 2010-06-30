@@ -4,10 +4,12 @@ import sys
 import logging
 import getpass
 from ConfigParser import ConfigParser
-from xmlrpclib import ServerProxy, Error
+from xmlrpclib import ServerProxy
 from optparse import OptionParser
 from os.path import exists, join, dirname
 from os import mkdir, getcwd
+from cookielib import LWPCookieJar
+from os.path import isfile
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 
@@ -165,6 +167,27 @@ class ListAssignmentGroups(Command):
                     group['number_of_deliveries'])
 
 
+class GetFile(Command):
+    name = 'get-file'
+    description = 'Get file.'
+    args_help = '<file-id>'
+    path = '/xmlrpc_examiner/'
+
+    def command(self):
+        self.validate_argslen(1)
+        server = self.get_server()
+        file_id = int(self.args[0])
+        print file_id
+        import urllib2
+        cj = LWPCookieJar()
+        if isfile(self.get_cookiepath()):
+            cj.load(self.get_cookiepath())
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        f = opener.open("http://localhost:8000/ui/download-file/1")
+        print f.read()
+        
+
+
 class Init(Command):
     name = 'init'
     description = 'Initialize.'
@@ -225,6 +248,7 @@ DEFAULT_COMMANDS = (
     Init,
     Login,
     ListAssignmentGroups,
+    GetFile,
 )
 
 if __name__ == '__main__':

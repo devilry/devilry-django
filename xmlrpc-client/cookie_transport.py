@@ -1,5 +1,4 @@
 import xmlrpclib
-from urllib2 import Request
 from cookielib import LWPCookieJar
 from os.path import isfile
 
