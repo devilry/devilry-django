@@ -62,7 +62,10 @@ class Command(object):
         self.config.set('settings', key, value)
 
     def get_config(self, key):
-        return self.config.get('settings', key) + self.path
+        return self.config.get('settings', key)
+
+    def get_url(self):
+        return self.get_config('url') + self.urlpath
 
     def find_confdir(self):
         path = getcwd()
@@ -117,7 +120,7 @@ class Command(object):
         return join(self.get_configdir(), 'cookies.txt')
 
     def get_server(self):
-        url = self.get_config('url')
+        url = self.get_url()
         if url.startswith('https'):
             transport=SafeCookieTransport(self.get_cookiepath())
         else:
@@ -130,7 +133,7 @@ class Login(Command):
     name = 'login'
     description ='Login to the devilry server.' 
     args_help = '<url>'
-    path = '/xmlrpc/'
+    urlpath = '/xmlrpc/'
 
     def add_options(self):
         self.add_user_option()
@@ -154,7 +157,7 @@ class ListAssignmentGroups(Command):
     name = 'list-assignment-groups'
     description = 'List assignment groups on a given assignment.'
     args_help = '<assignment-id>'
-    path = '/xmlrpc_examiner/'
+    urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         self.validate_argslen(1)
@@ -171,7 +174,7 @@ class GetFile(Command):
     name = 'get-file'
     description = 'Get file.'
     args_help = '<file-id>'
-    path = '/xmlrpc_examiner/'
+    urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         self.validate_argslen(1)
