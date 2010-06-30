@@ -71,13 +71,16 @@ in the Devilry xmlrpc-client_.
 
 
 
-Writing unit tests
-##################
 
-TODO
+Other stuff
+###########
 
+For examples of how to:
 
-Functions with arguments and more
-#################################
+- write unit-tests.
+- document arguments and constraints
 
-TODO
+You should check out the sourcecode for `devilry.addons.xmlrpc_examiner`_.
+
+.. _`devilry.addons.xmlrpc_examiner`:
+    http://github.com/devilry/devilry-django/tree/master/devilry/addons/xmlrpc_examiner
