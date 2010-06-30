@@ -1,2 +1,0 @@
-#LWP-Cookies-2.0
-Set-Cookie3: sessionid=e61933df71a1ab1d2cacd8bfb4cafa70; path="/"; domain="localhost.local"; path_spec; expires="2010-06-12 17:26:50Z"; version=0

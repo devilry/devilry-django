@@ -24,3 +24,5 @@ doc/build/
 doc/devilry.github.com/
 .coverage
 coverage_html_report/
+cookies.txt
+.devilry/

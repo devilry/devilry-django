@@ -52,8 +52,27 @@ At last we need to add the ``rpc`` object to ``urls.py``:
 .. literalinclude:: /../../devilry/addons/xmlrpc_examiner/urls.py
 
 
+Check if it is working
+----------------------
+
+To find out if it is working, just start the django test server and visit
+http://localhost:8000/xmlrpc. The xmlrpc, in this case ``"examiner"`` should be
+in the menu, and clicking on it will take you to it's documentation.
+
+
 Usage
 -----
+
+To connect to this xmlrpc you will need a xmlrpc client with cookies (and SSL
+for production use). A example of this can be found in *exampleclient.py* found
+in the Devilry xmlrpc-client_.
+
+.. _xmlrpc-client: http://github.com/devilry/devilry-django/tree/master/xmlrpc-client/
+
+
+
+Writing unit tests
+##################
 
 TODO
 
