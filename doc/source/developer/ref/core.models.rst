@@ -73,17 +73,18 @@ AssignmentGroup
     :members:
     :inherited-members:
 
-Feeback
-===========================================================
-
-.. autoclass:: devilry.core.models.Feedback
-    :members:
-    :inherited-members:
-
 Delivery
 ===========================================================
 
 .. autoclass:: devilry.core.models.Delivery
+    :members:
+    :inherited-members:
+
+
+Feeback
+===========================================================
+
+.. autoclass:: devilry.core.models.Feedback
     :members:
     :inherited-members:
 
