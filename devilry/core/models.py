@@ -836,7 +836,7 @@ class Delivery(models.Model):
     
     assignment_group = models.ForeignKey(AssignmentGroup)
     time_of_delivery = models.DateTimeField()
-    delivered_by = models.ForeignKey(User)
+    delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
 
     class Meta:
