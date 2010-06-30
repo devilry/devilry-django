@@ -1,2 +1,10 @@
-- Make subject short_name unique and lowercase.
-- Same on assignmentgroups?
+- Notion of failed and passed in grade plugins.
+- More than one try:
+    - As it is, this already works because deadline is soft.
+    - Proposed improvement:
+        - AssignmentGroup has a list of deadlines.
+        - The first deadline gets copied from Assignment.deadline
+        - All deadlines except the first:
+            - can be added by examiners or admins depending on the options set
+              for the assignment.
+            - have a connection to a disapproved delivery+feedback.
