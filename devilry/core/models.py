@@ -807,16 +807,6 @@ class Delivery(models.Model):
         ordering = ['-time_of_delivery']
 
     @classmethod
-    def begin(cls, assignment_group, user_obj):
-        d = Delivery()
-        d.assignment_group = assignment_group
-        d.time_of_delivery = datetime.now()
-        d.delivered_by = user_obj
-        d.successful = False
-        d.save()
-        return d
-
-    @classmethod
     def where_is_admin(cls, user_obj):
         """ Returns a QuerySet matching all Deliveries where the given user
         is admin.
@@ -831,15 +821,36 @@ class Delivery(models.Model):
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
-    def __unicode__(self):
-        return u'%s %s' % (self.assignment_group, self.time_of_delivery)
+    @classmethod
+    def begin(cls, assignment_group, user_obj):
+        """ Begin delivery.
 
-    def finish(self):
-        self.time_of_delivery = datetime.now()
-        self.successful = True
-        self.save()
+        Creates a delivery with ``time_of_delivery`` set to current time,
+        ``delivered_by`` set to the given ``user_obj``, ``assignment_group``
+        set to the given ``assignment_group`` and successful set to
+        ``false``.
+
+        This should be followed up by one or more calls to :ref:`add_file`
+        on the returned FileMeta-object, and completed by calling
+        :ref:`finish`.
+        """
+        d = Delivery()
+        d.assignment_group = assignment_group
+        d.time_of_delivery = datetime.now()
+        d.delivered_by = user_obj
+        d.successful = False
+        d.save()
+        return d
 
     def add_file(self, filename, iterable_data):
+        """ Add a file to the delivery.
+        
+        :param filename:
+            A filename as defined in :ref:`FileMeta`.
+        :param iterable_data:
+            A iterable yielding data that can be written to file using the
+            write() method of a storage backend (byte strings).
+        """
         filemeta = FileMeta()
         filemeta.delivery = self
         filemeta.filename = filename
@@ -853,6 +864,15 @@ class Delivery(models.Model):
         f.close()
         filemeta.save()
         return filemeta
+
+    def finish(self):
+        """ Finish the delivery. """
+        self.time_of_delivery = datetime.now()
+        self.successful = True
+        self.save()
+
+    def __unicode__(self):
+        return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
 
 
@@ -917,6 +937,7 @@ class FileMeta(models.Model):
         verbose_name = _('FileMeta')
         verbose_name_plural = _('FileMetas')
         unique_together = ('delivery', 'filename')
+        ordering = ['filename']
 
     def remove_file(self):
         return self.storage_backend.remove(self)

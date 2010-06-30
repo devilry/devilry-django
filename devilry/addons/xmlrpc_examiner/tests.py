@@ -4,7 +4,8 @@ from django.test import TestCase
 from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
-from devilry.core.models import Assignment
+from devilry.core.models import Assignment, Delivery, FileMeta
+from devilry.core.deliverystore import MemoryDeliveryStore
 
 
 class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
@@ -50,3 +51,22 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         a.save()
         lst = self.s.list_assignmentgroups(1)
         self.assertEquals(lst[1]['students'], ['2', '3'])
+
+    def test_list_deliveries(self):
+        FileMeta.storage_backend = MemoryDeliveryStore()
+        self.assertLoginRequired(self.s.list_deliveries, 1)
+        self.login(self.client, 'examiner1')
+        d = Delivery.objects.get(pk=3)
+        d.add_file('test.txt', ['test'])
+        d.add_file('test2.txt', ['test2'])
+        d.finish()
+        lst = self.s.list_deliveries(1)
+        self.assertEquals(len(lst), 2)
+        self.assertEquals(lst[0]['id'], 3)
+        self.assertTrue(
+                lst[0]['time_of_delivery']
+                > lst[1]['time_of_delivery'])
+        filemetas = lst[0]['filemetas']
+        self.assertEquals(len(filemetas), 2)
+        self.assertEquals(['test.txt', 'test2.txt'],
+                [f['filename'] for f in filemetas])
