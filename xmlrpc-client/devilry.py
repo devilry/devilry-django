@@ -60,7 +60,7 @@ class Command(object):
         self.config.set('settings', key, value)
 
     def get_config(self, key):
-        return self.config.get('settings', key)
+        return self.config.get('settings', key) + self.path
 
     def find_confdir(self):
         path = getcwd()
@@ -128,6 +128,7 @@ class Login(Command):
     name = 'login'
     description ='Login to the devilry server.' 
     args_help = '<url>'
+    path = '/xmlrpc/'
 
     def add_options(self):
         self.add_user_option()
@@ -151,6 +152,7 @@ class ListAssignmentGroups(Command):
     name = 'list-assignment-groups'
     description = 'List assignment groups on a given assignment.'
     args_help = '<assignment-id>'
+    path = '/xmlrpc_examiner/'
 
     def command(self):
         self.validate_argslen(1)
@@ -158,7 +160,9 @@ class ListAssignmentGroups(Command):
         assignment_id = int(self.args[0])
         groups = server.list_assignmentgroups(assignment_id)
         for group in groups:
-            print "%(id)15d : %(students)s (%(number_of_deliveries)d deliveries)" % group
+            print "%15d : %s (%d deliveries)" % (group['id'],
+                    ', '.join(group['students']),
+                    group['number_of_deliveries'])
 
 
 class Init(Command):
