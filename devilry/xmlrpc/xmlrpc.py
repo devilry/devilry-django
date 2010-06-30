@@ -15,7 +15,6 @@ class RpcFuncInfo(object):
         self.func = func
         self.argnames = argnames
         self.constraints = constraints
-        print self.name, self.constraints
 
     def get_docstring(self):
         doc = self.func.__doc__.split('\n')
@@ -25,13 +24,28 @@ class RpcFuncInfo(object):
 
 
 class XmlRpc(object):
+    """ Represents a xmlrpc. """
     xmlrpcs = {}
 
-    def __init__(self, name, viewname):
+    def __init__(self, name, viewname, docs=''):
+        """
+        Raises ``ValueError`` if *name* is not unique.
+
+        :param name:
+            A unique name for this xmlrpc.
+        :param viewname:
+            Name of the view (you define this when you add the object to
+            your urls. Must be something that
+            ``django.core.urlresolvers.reverse`` can handle.
+        :param docs:
+            A reStructuredText string displayed at the top of the HTML
+            documentation.
+        """
         self.argnames = {}
         if name in self.__class__.xmlrpcs:
             raise ValueError("'%s' is already registered as a XmlRpc." % name)
         self.name = name
+        self.docs = docs
         self.viewname = viewname
         self.__class__.xmlrpcs[name] = self
         self.dispatch = {}
@@ -66,6 +80,7 @@ class XmlRpc(object):
     def htmldocs(self, request):
         return render_to_response('devilry/xmlrpc/xmlrpcdoc.django.html', {
             'name': self.name,
+            'docs': self.docs,
             'funcinfo': self.dispatch.values(),
             'xmlrpcs': self.__class__.xmlrpcs
             }, context_instance=RequestContext(request))

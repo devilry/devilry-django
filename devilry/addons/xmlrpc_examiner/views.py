@@ -2,10 +2,12 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 
 from devilry.core.models import Assignment, AssignmentGroup
-from devilry.xmlrpc.xmlrpc import XmlRpc
+from devilry.xmlrpc import XmlRpc
 
 
-rpc = XmlRpc('examiner', 'devilry-xmlrpc-examiner')
+doc = """The functions required to do the most common operations required by
+a examiner."""
+rpc = XmlRpc('examiner', 'devilry-xmlrpc-examiner', doc)
 
 
 @rpc.rpcdec_login_required()

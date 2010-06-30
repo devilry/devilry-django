@@ -34,7 +34,8 @@ def logout(request):
 
 @rpc.rpcdec_login_required('a, b')
 def sum(request, a, b):
-    """ A simple function used only for debugging and testing.
+    """ A simple function used only for debugging and testing. Useful when
+    testing a xmlrpc implementation.
 
     :return: The sum of *a* and *b* in a string with some extra information.
     """

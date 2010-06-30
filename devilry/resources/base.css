@@ -374,12 +374,11 @@ span.autocomplete_item_desc {
  * XML-RPC
  *******************************/
 
-.xmlrpc-function h3 em {
-	font-weight: normal;
+.xmlrpc-docs {
 }
 
-.xmlrpc-function-docs {
-	margin-left: 20px;
+.xmlrpc-function h3 em {
+	font-weight: normal;
 }
 
 table.xmlrpc-function-constraints {
@@ -394,4 +393,8 @@ table.xmlrpc-function-constraints ul {
 }
 table.xmlrpc-function-constraints li {
 	font-style: italic;
+}
+
+.xmlrpc-function-docs {
+	margin-left: 20px;
 }

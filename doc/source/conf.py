@@ -200,3 +200,4 @@ latex_documents = [
 # Autodoc
 autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'inherited-members', 'show-inheritance']
+autoclass_content = 'both'

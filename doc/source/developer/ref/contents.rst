@@ -7,3 +7,4 @@ API reference
 
     core.models
     core.utils
+    xmlrpc

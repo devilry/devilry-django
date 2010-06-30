@@ -9,3 +9,4 @@ How-to's
     documentation
     plugins
     grade-plugins
+    xmlrpc

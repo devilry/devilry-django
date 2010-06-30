@@ -25,6 +25,11 @@
 
 {% block content %}
 <h1>XML-RPC - {{name}}</h1>
+
+{% if docs %}
+	<div class="xmlrpc-docs">{{ docs|restructuredtext }}</div>
+{% endif %}
+
 <h2>Functions</h2>
 {% for f in funcinfo %}
 	<div class='xmlrpc-function'>
