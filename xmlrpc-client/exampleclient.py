@@ -3,9 +3,6 @@
 from xmlrpclib import ServerProxy, Error
 from cookie_transport import CookieTransport, SafeCookieTransport
 
-# TODO: make sure SESSION_COOKIE_SECURE is enabled by default or something
-#       see: http://docs.djangoproject.com/en/dev/topics/http/sessions/#settings
-
 USER_DISABLED = 1
 LOGIN_FAILED = 2
 SUCCESSFUL_LOGIN = 3

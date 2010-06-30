@@ -3,6 +3,7 @@
 import sys
 import logging
 import getpass
+import urllib2
 from ConfigParser import ConfigParser
 from xmlrpclib import ServerProxy
 from optparse import OptionParser
@@ -10,6 +11,7 @@ from os.path import exists, join, dirname
 from os import mkdir, getcwd
 from cookielib import LWPCookieJar
 from os.path import isfile
+from urlparse import urljoin
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 
@@ -65,7 +67,7 @@ class Command(object):
         return self.config.get('settings', key)
 
     def get_url(self):
-        return self.get_config('url') + self.urlpath
+        return self.get_config('url')
 
     def find_confdir(self):
         path = getcwd()
@@ -120,14 +122,13 @@ class Command(object):
         return join(self.get_configdir(), 'cookies.txt')
 
     def get_server(self):
-        url = self.get_url()
+        url = urljoin(self.get_url(), self.urlpath)
         if url.startswith('https'):
             transport=SafeCookieTransport(self.get_cookiepath())
         else:
             transport=CookieTransport(self.get_cookiepath())
         return ServerProxy(url, transport=transport)
     
-
 
 class Login(Command):
     name = 'login'
@@ -170,9 +171,9 @@ class ListAssignmentGroups(Command):
                     group['number_of_deliveries'])
 
 
-class GetFile(Command):
-    name = 'get-file'
-    description = 'Get file.'
+class GetDeliveries(Command):
+    name = 'get-deliveries'
+    description = 'Get deliveries.'
     args_help = '<file-id>'
     urlpath = '/xmlrpc_examiner/'
 
@@ -180,15 +181,12 @@ class GetFile(Command):
         self.validate_argslen(1)
         server = self.get_server()
         file_id = int(self.args[0])
-        print file_id
-        import urllib2
         cj = LWPCookieJar()
         if isfile(self.get_cookiepath()):
             cj.load(self.get_cookiepath())
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        f = opener.open("http://localhost:8000/ui/download-file/1")
+        f = opener.open(urljoin(self.get_url(), "/ui/download-file/1"))
         print f.read()
-        
 
 
 class Init(Command):
@@ -253,7 +251,7 @@ DEFAULT_COMMANDS = (
     Init,
     Login,
     ListAssignmentGroups,
-    GetFile,
+    GetDeliveries,
 )
 
 if __name__ == '__main__':
