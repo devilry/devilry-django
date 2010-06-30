@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.test import TestCase
 from django.test.client import Client
 
@@ -12,6 +14,26 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
     def setUp(self):
         self.client = Client()
         self.s = get_serverproxy(self.client, '/xmlrpc_examiner/')
+
+    def test_list_active_assignments(self):
+        self.assertLoginRequired(self.s.list_active_assignments)
+        self.login(self.client, 'examiner4')
+        lst = self.s.list_active_assignments()
+        self.assertEquals(len(lst), 1)
+        o1 = lst[0]
+        oblig1 = Assignment.objects.get(id=1)
+        self.assertEquals(o1['id'], 1)
+        self.assertEquals(o1['short_name'], oblig1.short_name)
+        self.assertEquals(o1['long_name'], oblig1.long_name)
+        self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
+        self.assertEquals(o1['deadline'], oblig1.deadline)
+
+        future = datetime.now() + timedelta(10)
+        oldone = Assignment.objects.get(id=3)
+        oldone.parentnode.end_time = future
+        oldone.parentnode.save()
+        lst = self.s.list_active_assignments()
+        self.assertEquals(len(lst), 2)
 
     def test_list_assignmentgroups(self):
         self.assertLoginRequired(self.s.list_assignmentgroups, 1)
