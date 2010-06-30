@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 
 from xmlrpc import XmlRpc
@@ -28,16 +27,12 @@ def login(request, username, password):
     else:
         return LOGIN_FAILED
 
-
-@rpc.rpcdec()
-@login_required
+@rpc.rpcdec_login_required()
 def logout(request):
     """ End a active session. """
     auth.logout(request)
 
-
-@rpc.rpcdec('a, b')
-@login_required
+@rpc.rpcdec_login_required('a, b')
 def sum(request, a, b):
     """ A simple function used only for debugging and testing.
 

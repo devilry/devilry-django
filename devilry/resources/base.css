@@ -381,3 +381,17 @@ span.autocomplete_item_desc {
 .xmlrpc-function-docs {
 	margin-left: 20px;
 }
+
+table.xmlrpc-function-constraints {
+	margin-left: 20px;
+}
+table.xmlrpc-function-constraints td:first-child {
+	background-color: #E6E600;
+	font-weight: bold;
+}
+table.xmlrpc-function-constraints ul {
+	padding-left: 20px;
+}
+table.xmlrpc-function-constraints li {
+	font-style: italic;
+}

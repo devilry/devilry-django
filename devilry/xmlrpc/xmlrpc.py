@@ -1,25 +1,28 @@
 import xmlrpclib
 import textwrap
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 
 from django.http import HttpResponse
-from django.template import loader, Context
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 
 
-import inspect
 
+class RpcFuncInfo(object):
+    def __init__(self, func, argnames, constraints):
+        self.name = func.__name__
+        self.func = func
+        self.argnames = argnames
+        self.constraints = constraints
+        print self.name, self.constraints
 
-def normalize_docstring(docstring):
-    """ Prepare docstring for parsing by the django 'restructuredtext'
-    filter.
-    """
-    doc = docstring.split('\n')
-    first_line = doc[0].strip()
-    rest = textwrap.dedent('\n'.join(doc[1:]))
-    return first_line + '\n' + rest
+    def get_docstring(self):
+        doc = self.func.__doc__.split('\n')
+        first_line = doc[0].strip()
+        rest = textwrap.dedent('\n'.join(doc[1:]))
+        return first_line + '\n' + rest
+
 
 class XmlRpc(object):
     xmlrpcs = {}
@@ -42,8 +45,9 @@ class XmlRpc(object):
         p.close()
         args = u.close()
         method = u.getmethodname()
-        func = self.dispatch.get(method)
-        if func is not None:
+        funcinfo = self.dispatch.get(method)
+        if funcinfo is not None:
+            func = funcinfo.func
             try:
                 result = func(request, *args)
                 xml = xmlrpclib.dumps((result,), methodresponse=1,
@@ -60,11 +64,9 @@ class XmlRpc(object):
         return HttpResponse(xml, mimetype='text/xml; charset=utf-8')
 
     def htmldocs(self, request):
-        docs = [(name, self.argnames[name], normalize_docstring(f.__doc__))
-                for name, f in self.dispatch.iteritems()]
         return render_to_response('devilry/xmlrpc/xmlrpcdoc.django.html', {
             'name': self.name,
-            'docs': docs,
+            'funcinfo': self.dispatch.values(),
             'xmlrpcs': self.__class__.xmlrpcs
             }, context_instance=RequestContext(request))
 
@@ -74,14 +76,37 @@ class XmlRpc(object):
         else:
             return self.htmldocs(request)
 
-    def rpcdec(self, argnames=""):
+    def rpcdec(self, argnames="", constraints=[]):
         """ A decorator for XML-RPC functions.
         
-        :param argnames: A string containing arguments for the html
-                         documentation.
+        **Note**: the arguments are only for documentation.
+
+        :param argnames:
+            A string containing arguments for the html documentation.
+        :param constraints:
+            A list informing the user of extra constraints, like required
+            permissions.
         """
         def register_xmlrpc(func):
-            self.dispatch[func.__name__] = func
-            self.argnames[func.__name__] = argnames
+            self.dispatch[func.__name__] = RpcFuncInfo(func, argnames,
+                    constraints)
             return func
+        return register_xmlrpc
+
+    def rpcdec_login_required(self, argnames="", constraints=[]):
+        """ Shortcut for::
+            
+            @rpcdec(argnames, ['Login required'])
+            @django.contrib.auth.decorators.login_required
+
+        Note that the constraint, 'Login requred', is inserted first in
+        constraints, so you can add more constrains just like with
+        :ref:`rpcdec`.
+        """
+        constraints = ['Login required'] + constraints
+        def register_xmlrpc(func):
+            f = login_required(func)
+            self.dispatch[func.__name__] = RpcFuncInfo(f, argnames,
+                    constraints)
+            return f
         return register_xmlrpc

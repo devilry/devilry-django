@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 
@@ -9,10 +8,7 @@ from devilry.xmlrpc.xmlrpc import XmlRpc
 rpc = XmlRpc('examiner', 'devilry-xmlrpc-examiner')
 
 
-datetime_format = '%Y-%m-%d %H:%M:%S'
-
-@rpc.rpcdec()
-@login_required
+@rpc.rpcdec_login_required()
 def list_active_assignments(request):
     """ Get a list (xmlrpc array) containing all active assignments where the
     authenticated user is examiner.
@@ -47,8 +43,7 @@ def list_active_assignments(request):
     return result
 
 
-@rpc.rpcdec('assignment_id')
-@login_required
+@rpc.rpcdec_login_required('assignment_id')
 def list_assignmentgroups(request, assignment_id):
     """ Get a list (xmlrpc array) containing all assignment-groups within
     the given assignment where the authenticated user is examiner.
@@ -77,8 +72,8 @@ def list_assignmentgroups(request, assignment_id):
     return assignment_groups
 
 
-@rpc.rpcdec('assignmentgroup_id')
-@login_required
+@rpc.rpcdec_login_required('assignmentgroup_id',
+        ['The authenticated user must be examiner on the assignment group'])
 def list_deliveries(request, assignmentgroup_id):
     """ Get a list (xmlrpc array) containing all deliveries within
     the given assignment group.

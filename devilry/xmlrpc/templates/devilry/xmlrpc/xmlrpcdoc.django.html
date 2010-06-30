@@ -26,11 +26,25 @@
 {% block content %}
 <h1>XML-RPC - {{name}}</h1>
 <h2>Functions</h2>
-{% for name, argnames, docs in docs %}
-<div class='xmlrpc-function'>
-<h3>{{name}}(<em>{{argnames}}</em>):</h3>
-	<div class="xmlrpc-function-docs">{{ docs|restructuredtext }}</div>
+{% for f in funcinfo %}
+	<div class='xmlrpc-function'>
+		<h3>{{f.name}}(<em>{{f.argnames}}</em>):</h3>
+		{% if f.constraints %}
+			<table class="xmlrpc-function-constraints">
+				<tr>
+					<td>Constraints:</td>
+					<td>
+						<ul>
+							{% for constraint in f.constraints %}
+								<li>{{ constraint }}</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			</table>
+		{% endif %}
+		<div class="xmlrpc-function-docs">{{ f.get_docstring|restructuredtext }}</div>
+	</div>
 {% endfor %}
-</div>
 
 {% endblock %}
