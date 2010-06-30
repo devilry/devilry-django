@@ -201,7 +201,9 @@ class Init(Command):
 
     def command(self):
         if self.find_confdir():
-            raise SystemExit('You are in a existing Devilry directory tree. Initialization aborted.')
+            raise SystemExit(
+                    'You are in a existing Devilry directory tree. '\
+                    'Initialization aborted.')
         self.validate_argslen(1)
 
         mkdir('.devilry')
