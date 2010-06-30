@@ -64,8 +64,9 @@ def login_view(request):
 @login_required
 def download_file(request, filemeta_id):
     filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
+    # TODO: make this work on any storage backend
     response = HttpResponse(FileWrapper(
-            file(filemeta.store._get_filepath(filemeta))),
+            file(filemeta.storage_backend._get_filepath(filemeta))),
             content_type=guess_type(filemeta.filename)[0])
     response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
     response['Content-Length'] = filemeta.size
