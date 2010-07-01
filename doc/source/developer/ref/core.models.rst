@@ -18,24 +18,17 @@ BaseNode
 
 .. autoclass:: devilry.core.models.BaseNode
     :no-members:
-    :no-inherited-members:
 
 Node
 ===========================================================
 
 .. autoclass:: devilry.core.models.Node
-    :members:
-    :inherited-members:
-    :show-inheritance:
 
 
 Subject
 ===========================================================
 
 .. autoclass:: devilry.core.models.Subject
-    :members:
-    :inherited-members:
-    :show-inheritance:
 
 Period
 ===========================================================
@@ -60,38 +53,38 @@ We have three main classifications of assignments:
 
 
 .. autoclass:: devilry.core.models.Assignment
-    :members:
-    :inherited-members:
-    :show-inheritance:
-    :member-order: bysource
 
 
 AssignmentGroup
 ===========================================================
 
 .. autoclass:: devilry.core.models.AssignmentGroup
-    :members:
-    :inherited-members:
 
 Delivery
 ===========================================================
 
+You will normally not create Delivery-objects manually, but rather
+use :meth:`Delivery.begin`, :meth:`~Delivery.add_file` and
+:meth:`~Delivery.finish` like this::
+
+    delivery = Delivery.begin(myassignmentgroup, currentuser)
+    delivery.add_file('hello.txt', ['hello', 'world'])
+    delivery.add_file('example.py', ['print "hello world"])
+    delivery.finish()
+
+The input to :meth:`add_file` will normally be a file-like object,
+but as shown above it can be anything you want.
+
 .. autoclass:: devilry.core.models.Delivery
-    :members:
-    :inherited-members:
 
 
 Feeback
 ===========================================================
 
 .. autoclass:: devilry.core.models.Feedback
-    :members:
-    :inherited-members:
 
 
 FileMeta
 ===========================================================
 
 .. autoclass:: devilry.core.models.FileMeta
-    :members:
-    :inherited-members:

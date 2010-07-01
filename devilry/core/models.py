@@ -777,10 +777,7 @@ class AssignmentGroup(models.Model):
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
 class Delivery(models.Model):
-    """
-    A class representing a given delivery from an `AssignmentGroup`_. In
-    some cases, a group are allowed to hand in several deliveries per
-    assignment.
+    """ A class representing a given delivery from an `AssignmentGroup`_.
 
     :var assignment_group:
         A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
@@ -830,9 +827,9 @@ class Delivery(models.Model):
         set to the given ``assignment_group`` and successful set to
         ``false``.
 
-        This should be followed up by one or more calls to :ref:`add_file`
+        This should be followed up by one or more calls to :meth:`add_file`
         on the returned FileMeta-object, and completed by calling
-        :ref:`finish`.
+        :meth:`finish`.
         """
         d = Delivery()
         d.assignment_group = assignment_group
@@ -846,7 +843,7 @@ class Delivery(models.Model):
         """ Add a file to the delivery.
         
         :param filename:
-            A filename as defined in :ref:`FileMeta`.
+            A filename as defined in :class:`FileMeta`.
         :param iterable_data:
             A iterable yielding data that can be written to file using the
             write() method of a storage backend (byte strings).
@@ -866,7 +863,8 @@ class Delivery(models.Model):
         return filemeta
 
     def finish(self):
-        """ Finish the delivery. """
+        """ Finish the delivery by updating the time of delivery, marking it
+        as successful and saving. """
         self.time_of_delivery = datetime.now()
         self.successful = True
         self.save()
@@ -940,12 +938,21 @@ class FileMeta(models.Model):
         ordering = ['filename']
 
     def remove_file(self):
+        """
+        Remove the file for the :ref:`ref-devilry.core.deliverystore`.
+        """
         return self.storage_backend.remove(self)
 
     def file_exists(self):
+        """
+        Check if the file exists in the :ref:`ref-devilry.core.deliverystore`.
+        """
         return self.storage_backend.exists(self)
 
     def read_open(self):
+        """
+        Open file for reading using the :ref:`ref-devilry.core.deliverystore`.
+        """
         return self.storage_backend.read_open(self)
 
     def __unicode__(self):
