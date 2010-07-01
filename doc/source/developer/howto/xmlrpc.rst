@@ -44,6 +44,7 @@ Then we decorate our function with ``rpc.rpcdec_login_required``::
     @rpc.rpcdec_login_required()
     def list_deliveries(request, assignmentgroup_id):
         ...
+
 Urls
 ----
 
