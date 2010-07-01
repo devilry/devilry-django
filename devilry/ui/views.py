@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.servers.basehttp import FileWrapper
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.utils.simplejson import JSONEncoder
 from django.db.models import Q
 
@@ -50,23 +49,13 @@ def login_view(request):
         'login_failed': login_failed,
         }, context_instance=RequestContext(request))
 
-
-#@login_required
-#def download_file(request, filemeta_id):
-    #filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
-    #response = HttpResponse(FileWrapper(
-            #file(filemeta.store._get_filepath(filemeta))), content_type='application/zip')
-    #response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
-    #response['Content-Length'] = filemeta.size
-
-    #return response
-
 @login_required
 def download_file(request, filemeta_id):
     filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
     # TODO: make this work on any storage backend
-    response = HttpResponse(FileWrapper(
-            file(filemeta.storage_backend._get_filepath(filemeta))),
+    # TODO: restrict to admins and examiners and students on the AssignmentGroup
+    response = HttpResponse(
+            FileWrapper(filemeta.read_open()),
             content_type=guess_type(filemeta.filename)[0])
     response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
     response['Content-Length'] = filemeta.size
@@ -83,7 +72,6 @@ def get_description(u):
         desc += "&lt;" + u.email+ "&gt;"
     return desc
 
-
 # TODO: Should this be available to anyone, or maybe only examiners and admins?
 @login_required
 def user_json(request):
@@ -95,12 +83,5 @@ def user_json(request):
     l = [dict(id=u.id, value=u.username, label=u.username, 
               desc=get_description(u)) for u in qry]
     data = JSONEncoder().encode(l)
-
-    #data = serializers.serialize("json", qry, fields=("id", "username"))
-    
-    #data = serializers.serialize("json", ["bendiko", "espeak", "laban"])
     response = HttpResponse(data, content_type="text/plain")
     return response
-
-
-    

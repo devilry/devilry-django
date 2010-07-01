@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from os.path import join, exists
 from os import mkdir, remove
 from StringIO import StringIO
-import anydbm
+import dumbdbm
 
 
 def load_deliverystore_backend():
@@ -34,6 +34,13 @@ def load_deliverystore_backend():
 class FileNotFoundError(Exception):
     """ Exception to be raised when the remove method of a DeliveryStore
     does not find the given file. """
+    def __init__(self, filemeta_obj):
+        self.filemeta_obj = filemeta_obj
+
+    def __str__(self):
+        return "File not found: %s:%s" % (
+                self.filemeta_obj.delivery,
+                self.filemeta_obj.filename)
 
 
 class MemFile(StringIO):
@@ -91,7 +98,7 @@ class DeliveryStoreInterface(object):
 
 
 class FsDeliveryStore(DeliveryStoreInterface):
-    """ Filesystem-based delivery store suitable for production use.
+    """ Filesystem-based DeliveryStore suitable for production use.
 
     It stores files in a filesystem hierarcy with one directory for each
     Delivery, with the delivery-id as name. In each delivery-directory, the
@@ -112,7 +119,10 @@ class FsDeliveryStore(DeliveryStoreInterface):
                 str(filemeta_obj.pk))
 
     def read_open(self, filemeta_obj):
-        return open(self._get_filepath(filemeta_obj), 'rb')
+        filepath = self._get_filepath(filemeta_obj)
+        if not exists(filepath):
+            raise FileNotFoundError(filemeta_obj)
+        return open(filepath, 'rb')
 
     def write_open(self, filemeta_obj):
         dirpath = self._get_dirpath(filemeta_obj.delivery)
@@ -123,7 +133,7 @@ class FsDeliveryStore(DeliveryStoreInterface):
     def remove(self, filemeta_obj):
         filepath = self._get_filepath(filemeta_obj)
         if not exists(filepath):
-            raise FileNotFoundError('File not found: %s' % filepath)
+            raise FileNotFoundError(filemeta_obj)
         remove(filepath)
 
     def exists(self, filemeta_obj):
@@ -131,9 +141,8 @@ class FsDeliveryStore(DeliveryStoreInterface):
         return exists(filepath)
 
 
-class AnyDbmDeliveryStore(DeliveryStoreInterface):
-    """AnyDbm file storage ONLY FOR TESTING."""
-
+class DbmDeliveryStore(DeliveryStoreInterface):
+    """Dbm DeliveryStore ONLY FOR TESTING."""
 
     class FileWriter(object):
         def __init__(self, dbm, key):
@@ -148,35 +157,50 @@ class AnyDbmDeliveryStore(DeliveryStoreInterface):
             self.dbm[self.key] = self.data.getvalue()
             self.dbm.close()
 
-    def __init__(self, filename=None):
-        self.filename = filename or settings.DELIVERY_STORE_ANYDBM_FILENAME
+    def __init__(self, filename=None, dbm=dumbdbm):
+        """
+        :param filename:
+            The dbm-file where files are stored. Defaults to
+            the value of the ``DELIVERY_STORE_DBM_FILENAME``-setting.
+        :param dbm:
+            The dbm implementation. This defaults to :mod:`dumbdbm` for
+            portability of the data-files because this DeliveryStore is
+            primarly for development and database storage in the devilry
+            git-repo. But the parameter is provided to make it really easy
+            to create a DeliveryStore using a more efficient dbm, like gdbm.
+        """
+        self.dbm = dbm
+        self.filename = filename or settings.DELIVERY_STORE_DBM_FILENAME
 
     def _get_key(self, filemeta_obj):
-        return filemeta_obj.pk
+        return str(filemeta_obj.pk)
 
     def read_open(self, filemeta_obj):
-        data = anydbm.open(self.filename, 'r')[self._get_key(filemeta_obj)]
+        try:
+            data = self.dbm.open(self.filename, 'r')[self._get_key(filemeta_obj)]
+        except KeyError, e:
+            raise FileNotFoundError(filemeta_obj)
         return MemFile(data)
 
     def write_open(self, filemeta_obj):
-        dbm = anydbm.open(self.filename, 'c')
-        return AnyDbmDeliveryStore.FileWriter(dbm,
+        dbm = self.dbm.open(self.filename, 'c')
+        return DbmDeliveryStore.FileWriter(dbm,
                 self._get_key(filemeta_obj))
 
     def remove(self, filemeta_obj):
-        dbm = anydbm.open(self.filename, 'c')
+        dbm = self.dbm.open(self.filename, 'c')
         key = self._get_key(filemeta_obj)
         if not key in dbm:
-            raise FileNotFoundError()
+            raise FileNotFoundError(filemeta_obj)
         del dbm[key]
 
     def exists(self, filemeta_obj):
-        dbm = anydbm.open(self.filename, 'c')
+        dbm = self.dbm.open(self.filename, 'c')
         return self._get_key(filemeta_obj) in dbm
 
 
 class MemoryDeliveryStore(DeliveryStoreInterface):
-    """ Memory file storage ONLY FOR TESTING.
+    """ Memory-base DeliveryStore ONLY FOR TESTING.
 
     This is only for testing, and it does not handle parallel access.
     Suitable for unittesting.
@@ -185,7 +209,10 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
         self.files = {}
 
     def read_open(self, filemeta_obj):
-        f = self.files[filemeta_obj.id]
+        try:
+            f = self.files[filemeta_obj.id]
+        except KeyError, e:
+            raise FileNotFoundError(filemeta_obj)
         f.seek(0)
         return f
 
@@ -196,7 +223,7 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
 
     def remove(self, filemeta_obj):
         if not filemeta_obj.id in self.files:
-            raise FileNotFoundError()
+            raise FileNotFoundError(filemeta_obj)
         del self.files[filemeta_obj.id]
 
     def exists(self, filemeta_obj):

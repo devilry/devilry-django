@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from deliverystore import load_deliverystore_backend
+from deliverystore import load_deliverystore_backend, FileNotFoundError
 import gradeplugin_registry
 
 
@@ -1025,7 +1025,11 @@ class FileMeta(models.Model):
 
 def filemeta_deleted_handler(sender, **kwargs):
     filemeta = kwargs['instance']
-    filemeta.remove_file()
+    try:
+        filemeta.remove_file()
+    except FileNotFoundError, e:
+        # TODO: We should have some way of cleaning files which have no corresponding FileMeta from DeliveryStores (could happen if the disk is not mounted when this kicks in..
+        pass
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)

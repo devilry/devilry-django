@@ -121,8 +121,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 
 
-DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
-DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
+#DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
+#DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
+DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
+DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore.dbm')
+
 DEVILRY_MAIN_PAGE = '/'
 BASE_TEMPLATE = 'devilry/base.django.html'
 

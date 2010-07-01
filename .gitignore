@@ -26,3 +26,4 @@ doc/devilry.github.com/
 coverage_html_report/
 cookies.txt
 .devilry/
+*.bak

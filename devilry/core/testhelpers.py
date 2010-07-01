@@ -48,6 +48,7 @@ class TestDeliveryStoreMixin(object):
     def test_readwrite(self):
         store = self.get_storageobj()
         self.assertFalse(store.exists(self.filemeta))
+        self.assertRaises(FileNotFoundError, store.read_open, self.filemeta)
         w = store.write_open(self.filemeta)
         w.write('hello')
         w.close()

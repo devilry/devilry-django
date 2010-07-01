@@ -18,7 +18,7 @@ from django.core.exceptions import ValidationError
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
         Delivery, Candidate
 from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
-    AnyDbmDeliveryStore
+    DbmDeliveryStore
 from testhelpers import TestDeliveryStoreMixin
 
 
@@ -530,13 +530,13 @@ class TestFsDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def tearDown(self):
         rmtree(self.root)
 
-class TestAnyDbmDeliveryStore(TestDeliveryStoreMixin, TestCase):
+class TestDbmDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def setUp(self):
         self.root = mkdtemp()
-        super(TestAnyDbmDeliveryStore, self).setUp()
+        super(TestDbmDeliveryStore, self).setUp()
 
     def get_storageobj(self):
-        return AnyDbmDeliveryStore(join(self.root, 'test.dbm'))
+        return DbmDeliveryStore(join(self.root, 'test.dbm'))
 
     def tearDown(self):
         rmtree(self.root)
