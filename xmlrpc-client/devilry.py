@@ -185,7 +185,8 @@ class GetDeliveries(Command):
         if isfile(self.get_cookiepath()):
             cj.load(self.get_cookiepath())
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        f = opener.open(urljoin(self.get_url(), "/ui/download-file/1"))
+        f = opener.open(urljoin(self.get_url(), "/ui/download-file/" +
+            file_id))
         print f.read()
 
 
