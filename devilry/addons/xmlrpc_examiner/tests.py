@@ -53,7 +53,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(lst[1]['students'], ['2', '3'])
 
     def test_list_deliveries(self):
-        FileMeta.storage_backend = MemoryDeliveryStore()
+        FileMeta.deliverystore = MemoryDeliveryStore()
         self.assertLoginRequired(self.s.list_deliveries, 1)
         self.login(self.client, 'examiner1')
         d = Delivery.objects.get(pk=3)
