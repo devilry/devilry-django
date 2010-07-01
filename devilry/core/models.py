@@ -61,22 +61,16 @@ class BaseNode(CommonInterface):
     used by the other Node classes. This is a abstract datamodel, so it
     is never used directly.
 
-    :var short_name:
+
+   .. attribute:: short_name
+
         A django.db.models.SlugField_ with max 20 characters. Only numbers,
         letters, '_' and '-'.
-    :var long_name:
-        A django.db.models.CharField_ with max 100 characters. Gives a longer 
-        description than :attr:`short_name`
 
-    .. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield
-    .. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
-    .. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
-    .. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
-    .. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
-    .. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
-    .. _django.db.models.OneToOneField: http://docs.djangoproject.com/en/dev/ref/models/fields/#onetoonefield
-    .. _django.db.models.TextField: http://docs.djangoproject.com/en/dev/ref/models/fields/#textfield
-    .. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
+   .. attribute:: long_name
+
+        A django.db.models.CharField_ with max 100 characters. Gives a longer 
+        description than :attr:`short_name`.
     """
 
     def __unicode__(self):
@@ -153,10 +147,14 @@ class Node(models.Model, BaseNode):
     This class is typically used to represent a hierarchy of institutions, 
     faculties and departments.
 
-    :var parentnode:        
+
+   .. attribute:: parentnode
+
         A django.db.models.ForeignKey_ that points to the parent node, which
         is always a `Node`_.
-    :var admins:        
+
+   .. attribute:: admins
+
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
     """
@@ -288,10 +286,14 @@ class Node(models.Model, BaseNode):
 
 class Subject(models.Model, BaseNode):
     """
-    :var parentnode:        
+
+   .. attribute:: parentnode
+
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Node`_.
-    :var admins:        
+
+   .. attribute:: admins
+
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
     """
@@ -327,16 +329,24 @@ class Period(models.Model, BaseNode):
     A Period represents a period of time, for example a half-year term
     at a university.
 
-    :var parentnode:
+
+   .. attribute:: parentnode
+
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Subject`_.
-    :var start_time:
+
+   .. attribute:: start_time
+
         A django.db.models.DateTimeField_ representing the starting time of
         the period.
-    :var end_time: 
+
+   .. attribute:: end_time
+
         A django.db.models.DateTimeField_ representing the ending time of
         the period.
-    :var admins:        
+
+   .. attribute:: admins
+
         A django.db.models.ManyToManyField_ that holds all the admins of the
         node.
     """
@@ -382,19 +392,29 @@ class Period(models.Model, BaseNode):
 
 class Assignment(models.Model, BaseNode):
     """
-    :var parentnode:
+
+   .. attribute:: parentnode
+
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Period`_.
-    :var publishing_time: 
+
+   .. attribute:: publishing_time
+
         A django.db.models.DateTimeField_ representing the publishing time of
         the assignment.
-    :var deadline:
+
+   .. attribute:: deadline
+
         A django.db.models.DateTimeField_ representing the deadline of the
         assignment.
-    :var admins:        
+
+   .. attribute:: admins
+
         A django.db.models.ManyToManyField_ that holds all the admins of the
         Node.
-    :var grade_plugin:
+
+   .. attribute:: grade_plugin
+
         A django.db.models.CharField_ that holds the current feedback plugin
         used.
     """
@@ -569,16 +589,24 @@ class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
 
-    :var parentnode:
+
+   .. attribute:: parentnode
+
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
-    :var students:
+
+   .. attribute:: students
+
         A django.db.models.ManyToManyField_ that holds the student(s) that have
         handed in the assignment
-    :var examiners:        
+
+   .. attribute:: examiners
+
         A django.db.models.ManyToManyField_ that holds the examiner(s) that are
         to correct and grade the assignment.
-    :var is_open:
+
+   .. attribute:: is_open
+
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
     """
@@ -779,16 +807,24 @@ class AssignmentGroup(models.Model):
 class Delivery(models.Model):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
-    :var assignment_group:
+
+   .. attribute:: assignment_group
+
         A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
         that handed in the Delivery.
-    :var time_of_delivery:
+
+   .. attribute:: time_of_delivery
+
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
-    :var delivered_by:
+
+   .. attribute:: delivered_by
+
         A django.db.models.ForeignKey_ pointing to the user that uploaded
         the Delivery
-    :var successful:
+
+   .. attribute:: successful
+
         A django.db.models.BooleanField_ telling whether or not the Delivery
         was successfully uploaded.
     """
@@ -853,7 +889,7 @@ class Delivery(models.Model):
         filemeta.filename = filename
         filemeta.size = 0
         filemeta.save()
-        f = FileMeta.storage_backend.write_open(filemeta)
+        f = FileMeta.deliverystore.write_open(filemeta)
         filemeta.save()
         for data in iterable_data:
             f.write(data)
@@ -878,21 +914,31 @@ class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
 
-    :var grade:
+
+   .. attribute:: grade
+
         A django.db.models.Charfield_ representing the grade given for the
         Delivery.
-    :var feedback_text:
+
+   .. attribute:: feedback_text
+
         A django.db.models.TextField_ that holds the feedback text given by
         the examiner.
-    :var feedback_format:
+
+   .. attribute:: feedback_format
+
         A django.db.models.CharField_ that holds the format of the feedback
         text.
-    :var feedback_published:
+
+   .. attribute:: feedback_published
+
         A django.db.models.BooleanField_ that tells if the feedback is
         published or not. This allows editing and saving the feedback before
         publishing it. Is useful for exams and other assignments when
         feedback and grading is published simultaneously for all Deliveries.
-    :var delivery:
+
+   .. attribute:: delivery
+
         A django.db.models.OneToOneField_ that points to the `Delivery`_ to
         be given feedback.
 
@@ -920,16 +966,28 @@ class FileMeta(models.Model):
     """
     Represents the metadata for a file belonging to a `Delivery`_.
 
-    :var delivery: A django.db.models.OneToOneField_ that points to the
-       `Delivery`_ to be given feedback.
-    :var filename: Name of the file.
-    :var size: Size of the file in bytes.
+   .. attribute:: delivery
+
+        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
+        be given feedback.
+
+   .. attribute:: filename
+
+        Name of the file.
+
+   .. attribute:: size
+
+        Size of the file in bytes.
+
+   .. attribute:: deliverystore
+
+        The current :ref:`DeliveryStore <ref-devilry.core.deliverystore>`.
     """
     delivery = models.ForeignKey(Delivery)
     filename = models.CharField(max_length=255)
     size = models.IntegerField()
 
-    storage_backend = load_deliverystore_backend()
+    deliverystore = load_deliverystore_backend()
 
     class Meta:
         verbose_name = _('FileMeta')
@@ -939,21 +997,27 @@ class FileMeta(models.Model):
 
     def remove_file(self):
         """
-        Remove the file for the :ref:`ref-devilry.core.deliverystore`.
+        Remove the file using the
+        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method
+        of the :attr:`deliverystore`.
         """
-        return self.storage_backend.remove(self)
+        return self.deliverystore.remove(self)
 
     def file_exists(self):
         """
-        Check if the file exists in the :ref:`ref-devilry.core.deliverystore`.
+        Check if the file exists using the
+        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method
+        of the :attr:`deliverystore`.
         """
-        return self.storage_backend.exists(self)
+        return self.deliverystore.exists(self)
 
     def read_open(self):
         """
-        Open file for reading using the :ref:`ref-devilry.core.deliverystore`.
+        Open file for reading using the
+        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method
+        of the :attr:`deliverystore`.
         """
-        return self.storage_backend.read_open(self)
+        return self.deliverystore.read_open(self)
 
     def __unicode__(self):
         return self.filename

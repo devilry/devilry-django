@@ -88,3 +88,15 @@ FileMeta
 ===========================================================
 
 .. autoclass:: devilry.core.models.FileMeta
+
+
+
+.. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield
+.. _django.db.models.CharField: http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield
+.. _django.db.models.ForeignKey: http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey
+.. _django.db.models.ManyToManyField: http://docs.djangoproject.com/en/dev/ref/models/fields/#manytomanyfield
+.. _django.db.models.DateTimeField: http://docs.djangoproject.com/en/dev/ref/models/fields/#datetimefield
+.. _django.db.models.BooleanField: http://docs.djangoproject.com/en/dev/ref/models/fields/#booleanfield
+.. _django.db.models.OneToOneField: http://docs.djangoproject.com/en/dev/ref/models/fields/#onetoonefield
+.. _django.db.models.TextField: http://docs.djangoproject.com/en/dev/ref/models/fields/#textfield
+.. _django.contrib.auth.models.User: http://docs.djangoproject.com/en/dev/topics/auth/#users
