@@ -7,4 +7,5 @@ API reference
 
     core.models
     core.utils
+    core.deliverystore
     xmlrpc

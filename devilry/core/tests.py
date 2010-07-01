@@ -8,6 +8,7 @@ Replace these with more appropriate tests for your application.
 from datetime import datetime, timedelta
 from tempfile import mkdtemp
 from shutil import rmtree
+from os.path import join
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -15,10 +16,10 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
-        Delivery, FileMeta, Candidate
+        Delivery, Candidate
 from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
-        FileNotFoundError
-
+    AnyDbmDeliveryStore
+from testhelpers import TestDeliveryStoreMixin
 
 
 class TestBaseNode(TestCase):
@@ -513,55 +514,29 @@ class TestDelivery(TestCase):
         self.assertTrue(d.successful)
 
 
-class TestMemoryDeliveryStore(TestCase):
-    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
-            'tests/core/periods', 'tests/core/assignments',
-            'tests/core/assignmentgroups', 'tests/core/candidates',
-            'tests/core/deliveries']
-
+class TestMemoryDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def get_storageobj(self):
         return MemoryDeliveryStore()
 
-    def setUp(self):
-        self.filemeta = FileMeta()
-        self.filemeta.delivery = Delivery.objects.get(id=1)
-        self.filemeta.size = 0
-        self.filemeta.filename = 'test.txt'
 
-    def test_readwrite(self):
-        store = self.get_storageobj()
-        w = store.write_open(self.filemeta)
-        w.write('hello')
-        w.close()
-        r = store.read_open(self.filemeta)
-        self.assertEquals(r.read(), 'hello')
-
-    def test_writemany(self):
-        store = self.get_storageobj()
-        w = store.write_open(self.filemeta)
-        w.write('hello')
-        w.write(' world')
-        w.write('!')
-        w.close()
-        r = store.read_open(self.filemeta)
-        self.assertEquals(r.read(), 'hello world!')
-
-    def test_readwrite(self):
-        store = self.get_storageobj()
-        w = store.write_open(self.filemeta)
-        w.write('hello')
-        w.close()
-        store.remove(self.filemeta)
-        self.assertRaises(FileNotFoundError, store.remove, self.filemeta)
-
-
-class TestFsDeliveryStore(TestMemoryDeliveryStore):
+class TestFsDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def setUp(self):
         self.root = mkdtemp()
         super(TestFsDeliveryStore, self).setUp()
 
     def get_storageobj(self):
         return FsDeliveryStore(self.root)
+
+    def tearDown(self):
+        rmtree(self.root)
+
+class TestAnyDbmDeliveryStore(TestDeliveryStoreMixin, TestCase):
+    def setUp(self):
+        self.root = mkdtemp()
+        super(TestAnyDbmDeliveryStore, self).setUp()
+
+    def get_storageobj(self):
+        return AnyDbmDeliveryStore(join(self.root, 'test.dbm'))
 
     def tearDown(self):
         rmtree(self.root)

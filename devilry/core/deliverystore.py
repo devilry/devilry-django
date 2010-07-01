@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from os.path import join, exists
 from os import mkdir, remove
 from StringIO import StringIO
-from zipfile import ZipFile
+import anydbm
 
 
 def load_deliverystore_backend():
@@ -36,21 +36,33 @@ class FileNotFoundError(Exception):
     does not find the given file. """
 
 
+class MemFile(StringIO):
+    def close(self):
+        pass
+
+
 class DeliveryStoreInterface(object):
+    """ The interface all deliverystores must implement. All methods raise
+    ``NotImplementedError``. """
+
     # TODO: read_open when file does not exist?
     def read_open(self, filemeta_obj):
         """ Return a file-like object opened for reading.
         
-        The returned object must at have close() and read() methods as
-        defined by the documentation of the standard python file-class.
+        The returned object must have ``close()`` and ``read()`` methods
+        as defined by the documentation of the standard python file-class.
+
+        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.
         """
         raise NotImplementedError()
 
     def write_open(self, filemeta_obj):
         """ Return a file-like object opened for writing.
         
-        The returned object must at have close() and write() methods as
+        The returned object must have ``close()`` and ``write()`` methods as
         defined by the documentation of the standard python file-class.
+
+        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.
         """
         raise NotImplementedError()
 
@@ -65,11 +77,16 @@ class DeliveryStoreInterface(object):
 
         The calling function has to check for FileNotFoundError and
         handle any other error.
+
+        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.
         """
         raise NotImplementedError()
 
     def exists(self, filemeta_obj):
-        """ Return True if the file exists, False if not. """
+        """ Return ``True`` if the file exists, ``False`` if not.
+        
+        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.
+        """
         raise NotImplementedError()
 
 
@@ -81,6 +98,10 @@ class FsDeliveryStore(DeliveryStoreInterface):
     files are stored by FileMeta id.
     """
     def __init__(self, root=None):
+        """
+        :param root: The root-directory where files are stored. Defaults to
+            the value of the ``DELIVERY_STORE_ROOT``-setting.
+        """
         self.root = root or settings.DELIVERY_STORE_ROOT
 
     def _get_dirpath(self, delivery_obj):
@@ -110,57 +131,56 @@ class FsDeliveryStore(DeliveryStoreInterface):
         return exists(filepath)
 
 
-class ZipFileDeliveryStore(DeliveryStoreInterface):
-    """ZipFile file storage ONLY FOR TESTING."""
+class AnyDbmDeliveryStore(DeliveryStoreInterface):
+    """AnyDbm file storage ONLY FOR TESTING."""
 
 
     class FileWriter(object):
-        def __init__(self, zf, path):
-            self.zf = zf
-            self.path = path
+        def __init__(self, dbm, key):
+            self.dbm = dbm
+            self.key = key
+            self.data = StringIO()
 
-        def write(self):
-            pass
+        def write(self, s):
+            self.data.write(s)
+
+        def close(self):
+            self.dbm[self.key] = self.data.getvalue()
+            self.dbm.close()
 
     def __init__(self, filename=None):
-        self.filename = filename or settings.DELIVERY_STORE_ZIPFILENAME
+        self.filename = filename or settings.DELIVERY_STORE_ANYDBM_FILENAME
 
-    def _get_dirpath(self, delivery_obj):
-        return join('zipstore', str(delivery_obj.pk))
-
-    def _get_filepath(self, filemeta_obj):
-        return join(self._get_dirpath(filemeta_obj.delivery),
-                str(filemeta_obj.pk))
+    def _get_key(self, filemeta_obj):
+        return filemeta_obj.pk
 
     def read_open(self, filemeta_obj):
-        return ZipFile(self.filename, 'r').open(
-                self._get_filepath(filemeta_obj), 'r')
+        data = anydbm.open(self.filename, 'r')[self._get_key(filemeta_obj)]
+        return MemFile(data)
 
     def write_open(self, filemeta_obj):
-        path = self._get_filepath(filemeta_obj)
-        z = ZipFile(self.filename, 'a')
+        dbm = anydbm.open(self.filename, 'c')
+        return AnyDbmDeliveryStore.FileWriter(dbm,
+                self._get_key(filemeta_obj))
 
-    #def remove(self, filemeta_obj):
-        #filepath = self._get_filepath(filemeta_obj)
-        #if not exists(filepath):
-            #raise FileNotFoundError('File not found: %s' % filepath)
-        #remove(filepath)
+    def remove(self, filemeta_obj):
+        dbm = anydbm.open(self.filename, 'c')
+        key = self._get_key(filemeta_obj)
+        if not key in dbm:
+            raise FileNotFoundError()
+        del dbm[key]
 
-    #def exists(self, filemeta_obj):
-        #filepath = self._get_filepath(filemeta_obj)
-        #return exists(filepath)
+    def exists(self, filemeta_obj):
+        dbm = anydbm.open(self.filename, 'c')
+        return self._get_key(filemeta_obj) in dbm
 
 
 class MemoryDeliveryStore(DeliveryStoreInterface):
     """ Memory file storage ONLY FOR TESTING.
 
     This is only for testing, and it does not handle parallel access.
+    Suitable for unittesting.
     """
-
-    class MemFile(StringIO):
-        def close(self):
-            pass
-
     def __init__(self):
         self.files = {}
 
@@ -170,7 +190,7 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
         return f
 
     def write_open(self, filemeta_obj):
-        w = MemoryDeliveryStore.MemFile()
+        w = MemFile()
         self.files[filemeta_obj.id] = w
         return w
 
