@@ -262,28 +262,6 @@ class Node(models.Model, BaseNode):
         return cls.get_by_pathlist(path.split('.'))
 
 
-    @classmethod
-    def create_by_pathlist(cls, pathlist):
-        """ Create a new node from the path given in `nodelist`, creating all
-        missing parents. """
-        parent = None
-        n = None
-        for i, short_name in enumerate(pathlist):
-            try:
-                n = Node.get_by_pathlist(pathlist[:i+1])
-            except Node.DoesNotExist, e:
-                n = Node(short_name=short_name, long_name=short_name, parentnode=parent)
-                n.save()
-            parent = n
-        return n
-
-    @classmethod
-    def create_by_path(cls, path):
-        """ Just like `get_by_pathlist`, but the path is a string where each
-        `short_name` is separated by '.', instead of a list. """
-        return cls.create_by_pathlist(path.split('.'))
-
-
 class Subject(models.Model, BaseNode):
     """
 

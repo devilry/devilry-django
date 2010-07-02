@@ -152,16 +152,6 @@ class TestNode(TestCase):
         self.assertRaises(Node.DoesNotExist, Node.get_by_path,
                 'uio.deepdummy1.nonode')
 
-    def test_create_by_pathlist(self):
-        n = Node.create_by_pathlist(['this', 'is', 'a', 'test'])
-        self.assertEquals(n.short_name, 'test')
-        Node.get_by_path('this.is.a.test') # Tests if it has been saved
-
-    def test_create_by_path(self):
-        n = Node.create_by_path('this.is.a.test')
-        self.assertEquals(n.short_name, 'test')
-        Node.get_by_path('this.is.a.test') # Tests if it has been saved
-
     def test_get_nodepks_where_isadmin(self):
         uioadmin = User.objects.get(username='uioadmin')
         pks = Node._get_nodepks_where_isadmin(uioadmin)
