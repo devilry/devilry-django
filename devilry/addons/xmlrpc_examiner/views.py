@@ -38,6 +38,7 @@ def list_active_assignments(request):
             'id': a.id,
             'short_name': a.short_name,
             'long_name': a.long_name,
+            'path': a.get_path(),
             'publishing_time': a.publishing_time,
             'deadline': a.deadline,
             }

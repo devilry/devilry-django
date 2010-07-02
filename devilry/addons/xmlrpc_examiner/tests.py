@@ -26,6 +26,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(o1['id'], 1)
         self.assertEquals(o1['short_name'], oblig1.short_name)
         self.assertEquals(o1['long_name'], oblig1.long_name)
+        self.assertEquals(o1['path'], oblig1.get_path())
         self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
         self.assertEquals(o1['deadline'], oblig1.deadline)
 
