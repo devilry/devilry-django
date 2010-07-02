@@ -8,9 +8,9 @@ from ConfigParser import ConfigParser
 from xmlrpclib import ServerProxy
 from optparse import OptionParser
 from os.path import exists, join, dirname
-from os import mkdir, getcwd
+from os import mkdir, getcwd, makedirs
 from cookielib import LWPCookieJar
-from os.path import isfile
+from os.path import isfile, isdir
 from urlparse import urljoin
 
 from cookie_transport import CookieTransport, SafeCookieTransport
@@ -32,7 +32,7 @@ SUCCESSFUL_LOGIN = 3
 #host = "http://localhost:8000/xmlrpc/"
 
 
-TIME_FORMAT = '%Y-%m-%d %H:%M'
+DATETIME_FORMAT = '%Y-%m-%d_%H:%M:%S'
 
 
 
@@ -49,6 +49,9 @@ class Command(object):
         self.op.add_option("-q", "--quiet", action="store_const",
             const=logging.ERROR, dest="loglevel", default=logging.INFO,
             help="Don't show extra information (only errors).")
+        self.op.add_option("-d", "--debug", action="store_const",
+            const=logging.DEBUG, dest="loglevel",
+            help="Show all output, for debugging.")
         self.add_options()
         self.read_config()
 
@@ -130,7 +133,7 @@ class Command(object):
             transport=SafeCookieTransport(self.get_cookiepath())
         else:
             transport=CookieTransport(self.get_cookiepath())
-        return ServerProxy(url, transport=transport, use_datetime=True)
+        return ServerProxy(url, transport=transport)
     
 
 class Login(Command):
@@ -174,40 +177,74 @@ class ListAssignmentGroups(Command):
                     group['number_of_deliveries'])
 
 
+
 class GetDeliveries(Command):
     name = 'get-deliveries'
     description = 'Get deliveries.'
-    args_help = '<assignment-id>'
     urlpath = '/xmlrpc_examiner/'
+    bufsize = 65536
 
     def command(self):
-        self.validate_argslen(1)
         cj = LWPCookieJar()
         if isfile(self.get_cookiepath()):
             cj.load(self.get_cookiepath())
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
         server = self.get_server()
-        assignment_id = int(self.args[0])
-        for group in server.list_assignmentgroups(assignment_id):
-            print
-            print "###################################################"
-            print "%d : %s (%d deliveries)" % (group['id'],
-                    ', '.join(group['students']),
-                    group['number_of_deliveries'])
-            print "###################################################"
-            for d in server.list_deliveries(group['id']):
-                print
-                t = d['time_of_delivery']
-                print t.value
-                print "%d - %s" % (d['id'], t)
-                for filemeta in d['filemetas']:
-                    print "*** %s ***" % filemeta['filename']
-                    url = urljoin(self.get_url(),
-                        "/ui/download-file/%s" % filemeta['id'])
-                    print url
-                    f = opener.open(url)
-                    print f.read()
+        for assignment in server.list_active_assignments():
+            assignmentdir = '%(path)s_id-%(id)d' % assignment
+            if isdir(assignmentdir):
+                logging.debug('%s already exists' % assignmentdir)
+            else:
+                logging.info('+ %s' % assignmentdir)
+                makedirs(assignmentdir)
+
+            for group in server.list_assignmentgroups(assignment['id']):
+                number_of_deliveries = group['number_of_deliveries']
+                groupname = "%s_id-%d" % ('-'.join(group['students']),
+                        group['id'])
+                groupdir = join(assignmentdir, groupname)
+                if number_of_deliveries == 0:
+                    logging.warning('Group "%s" has no deliveries' %
+                            groupdir)
+                    continue
+                if isdir(groupdir):
+                    logging.debug('%s already exists' % groupdir)
+                else:
+                    logging.info('+ %s' % groupdir)
+                    makedirs(groupdir)
+
+                for d in server.list_deliveries(group['id']):
+                    time_of_delivery = d['time_of_delivery'].strftime(
+                            DATETIME_FORMAT)
+                    deliveryname = "%s_id-%d" % (time_of_delivery, d['id'])
+                    deliverydir = join(groupdir, deliveryname)
+                    if isdir(deliverydir):
+                        logging.debug('%s already exists' % deliverydir)
+                    else:
+                        logging.info('+ %s' % deliverydir)
+                        makedirs(deliverydir)
+
+                    for filemeta in d['filemetas']:
+                        filename = filemeta['filename'] 
+                        filepath = join(deliverydir, filename)
+                        if isfile(filepath):
+                            logging.debug('%s already exists' % filepath)
+                        else:
+                            logging.info('+ %s' % filepath)
+                            url = urljoin(self.get_url(),
+                                "/ui/download-file/%s" % filemeta['id'])
+                            logging.debug('Downloading file: %s' % url)
+                            size = filemeta['size']
+                            left_bytes = size
+                            input = opener.open(url)
+                            output = open(filepath, 'wb')
+                            while left_bytes > 0:
+                                out = input.read(self.bufsize)
+                                left_bytes -= len(out)
+                                output.write(out)
+                            input.close()
+                            output.close()
 
 
 class Init(Command):

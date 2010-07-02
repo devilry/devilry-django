@@ -96,8 +96,8 @@ def list_deliveries(request, assignmentgroup_id):
 
         filemetas
             List (xmlrpc array) containing a dict (xmlrpc structure) for
-            each filemeta attached to the delivery. Each dict has a ``id``
-            and a ``filename``.
+            each filemeta attached to the delivery. Each dict
+            contains``id``, ``size`` and ``filename``.
     """
     assignment_group = get_object_or_404(AssignmentGroup,
             pk=assignmentgroup_id)
@@ -108,7 +108,7 @@ def list_deliveries(request, assignmentgroup_id):
             'time_of_delivery': d.time_of_delivery,
             # TODO: Add delivered_by when it has been updated to use candidate
             'successful': d.successful,
-            'filemetas': [{'id':f.id, 'filename':f.filename}
+            'filemetas': [{'id':f.id, 'filename':f.filename, 'size':f.size}
                 for f in d.filemeta_set.all()]}
         for d in assignment_group.delivery_set.all()]
     return result

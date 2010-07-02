@@ -96,8 +96,31 @@ class CookieTransportMixin(object):
 
 class CookieTransport(CookieTransportMixin, xmlrpclib.Transport):
     """ Unprotected HTTP XMLRPC transport with cookie support. """
+    def __init__(self, cookiefile, use_datetime=True):
+        """
+        :param cookiefile:
+            Path to a file where cookies are stored. Cookies are stored
+            using cookielib.LWPCookieJar, so they are easy to read.
+        :param use_datetime:
+            Convert date into ``datetime.datetime`` objects? Defaults to
+            ``True``.
+        """
+        CookieTransportMixin.__init__(self, cookiefile)
+        xmlrpclib.Transport.__init__(self, use_datetime=use_datetime)
 
 
 class SafeCookieTransport(CookieTransportMixin, xmlrpclib.SafeTransport):
     """ Unprotected HTTP XMLRPC transport with cookie support. """
     urltype = 'https'
+
+    def __init__(self, cookiefile, use_datetime=True):
+        """
+        :param cookiefile:
+            Path to a file where cookies are stored. Cookies are stored
+            using cookielib.LWPCookieJar, so they are easy to read.
+        :param use_datetime:
+            Convert date into ``datetime.datetime`` objects? Defaults to
+            ``True``.
+        """
+        CookieTransportMixin.__init__(self, cookiefile)
+        xmlrpclib.SafeTransport.__init__(self, use_datetime=use_datetime)
