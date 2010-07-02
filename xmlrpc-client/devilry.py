@@ -174,20 +174,29 @@ class ListAssignmentGroups(Command):
 class GetDeliveries(Command):
     name = 'get-deliveries'
     description = 'Get deliveries.'
-    args_help = '<file-id>'
+    args_help = '<assignmentgroup-id>'
     urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         self.validate_argslen(1)
-        server = self.get_server()
-        file_id = int(self.args[0])
+
         cj = LWPCookieJar()
         if isfile(self.get_cookiepath()):
             cj.load(self.get_cookiepath())
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        f = opener.open(urljoin(self.get_url(), "/ui/download-file/" +
-            file_id))
-        print f.read()
+
+        server = self.get_server()
+        assignmentgroup_id = int(self.args[0])
+        for d in server.list_deliveries(assignmentgroup_id):
+            print
+            print "%(id)d - %(time_of_delivery)s" % d
+            for filemeta in d['filemetas']:
+                print "*** %s ***" % filemeta['filename']
+                url = urljoin(self.get_url(),
+                    "/ui/download-file/%s" % filemeta['id'])
+                print url
+                f = opener.open(url)
+                print f.read()
 
 
 class Init(Command):
