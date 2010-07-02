@@ -457,5 +457,52 @@
             ], 
             "parentnode": 1
         }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-02 02:25:35", 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-02 02:25:25", 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 2, 
+            "size": 16, 
+            "filename": "example.py"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 1, 
+            "size": 5, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 2, 
+            "size": 5, 
+            "filename": "test.txt"
+        }
     }
 ]
