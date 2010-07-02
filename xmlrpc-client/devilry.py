@@ -32,6 +32,9 @@ SUCCESSFUL_LOGIN = 3
 #host = "http://localhost:8000/xmlrpc/"
 
 
+TIME_FORMAT = '%Y-%m-%d %H:%M'
+
+
 
 class Command(object):
     description = None
@@ -127,7 +130,7 @@ class Command(object):
             transport=SafeCookieTransport(self.get_cookiepath())
         else:
             transport=CookieTransport(self.get_cookiepath())
-        return ServerProxy(url, transport=transport)
+        return ServerProxy(url, transport=transport, use_datetime=True)
     
 
 class Login(Command):
@@ -174,29 +177,37 @@ class ListAssignmentGroups(Command):
 class GetDeliveries(Command):
     name = 'get-deliveries'
     description = 'Get deliveries.'
-    args_help = '<assignmentgroup-id>'
+    args_help = '<assignment-id>'
     urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         self.validate_argslen(1)
-
         cj = LWPCookieJar()
         if isfile(self.get_cookiepath()):
             cj.load(self.get_cookiepath())
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
         server = self.get_server()
-        assignmentgroup_id = int(self.args[0])
-        for d in server.list_deliveries(assignmentgroup_id):
+        assignment_id = int(self.args[0])
+        for group in server.list_assignmentgroups(assignment_id):
             print
-            print "%(id)d - %(time_of_delivery)s" % d
-            for filemeta in d['filemetas']:
-                print "*** %s ***" % filemeta['filename']
-                url = urljoin(self.get_url(),
-                    "/ui/download-file/%s" % filemeta['id'])
-                print url
-                f = opener.open(url)
-                print f.read()
+            print "###################################################"
+            print "%d : %s (%d deliveries)" % (group['id'],
+                    ', '.join(group['students']),
+                    group['number_of_deliveries'])
+            print "###################################################"
+            for d in server.list_deliveries(group['id']):
+                print
+                t = d['time_of_delivery']
+                print t.value
+                print "%d - %s" % (d['id'], t)
+                for filemeta in d['filemetas']:
+                    print "*** %s ***" % filemeta['filename']
+                    url = urljoin(self.get_url(),
+                        "/ui/download-file/%s" % filemeta['id'])
+                    print url
+                    f = opener.open(url)
+                    print f.read()
 
 
 class Init(Command):
