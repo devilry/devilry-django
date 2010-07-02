@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
+from devilry.core.utils import OrderedDict
 
 
 class RpcFuncInfo(object):
@@ -41,14 +42,13 @@ class XmlRpc(object):
             A reStructuredText string displayed at the top of the HTML
             documentation.
         """
-        self.argnames = {}
         if name in self.__class__.xmlrpcs:
             raise ValueError("'%s' is already registered as a XmlRpc." % name)
         self.name = name
         self.docs = docs
         self.viewname = viewname
         self.__class__.xmlrpcs[name] = self
-        self.dispatch = {}
+        self.dispatch = OrderedDict()
 
     def get_url(self):
         return reverse(self.viewname)
