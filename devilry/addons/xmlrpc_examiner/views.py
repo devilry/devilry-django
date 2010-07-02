@@ -27,6 +27,9 @@ def list_active_assignments(request):
         long_name
             The ``long_name`` of the assignment.
 
+        path
+            The unique path to the assignment.
+
         publishing_time
             The ``publishing_time`` of the assignment.
 
