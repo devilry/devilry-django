@@ -3,17 +3,15 @@
 import sys
 import logging
 import getpass
-import urllib2
 from ConfigParser import ConfigParser
 from xmlrpclib import ServerProxy
 from optparse import OptionParser
 from os.path import exists, join, dirname
-from os import mkdir, getcwd, makedirs
-from cookielib import LWPCookieJar
-from os.path import isfile, isdir
+from os import mkdir, getcwd
 from urlparse import urljoin
 
 from cookie_transport import CookieTransport, SafeCookieTransport
+from utils import AssignmentSync
 
 
 
@@ -30,10 +28,6 @@ SUCCESSFUL_LOGIN = 3
 
 #host = "https://localhost/django/example/xmlrpc/"
 #host = "http://localhost:8000/xmlrpc/"
-
-
-DATETIME_FORMAT = '%Y-%m-%d_%H:%M:%S'
-
 
 
 class Command(object):
@@ -177,74 +171,14 @@ class ListAssignmentGroups(Command):
                     group['number_of_deliveries'])
 
 
-
 class GetDeliveries(Command):
     name = 'get-deliveries'
     description = 'Get deliveries.'
     urlpath = '/xmlrpc_examiner/'
-    bufsize = 65536
 
     def command(self):
-        cj = LWPCookieJar()
-        if isfile(self.get_cookiepath()):
-            cj.load(self.get_cookiepath())
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-
-        server = self.get_server()
-        for assignment in server.list_active_assignments():
-            assignmentdir = '%(path)s_id-%(id)d' % assignment
-            if isdir(assignmentdir):
-                logging.debug('%s already exists' % assignmentdir)
-            else:
-                logging.info('+ %s' % assignmentdir)
-                makedirs(assignmentdir)
-
-            for group in server.list_assignmentgroups(assignment['id']):
-                number_of_deliveries = group['number_of_deliveries']
-                groupname = "%s_id-%d" % ('-'.join(group['students']),
-                        group['id'])
-                groupdir = join(assignmentdir, groupname)
-                if number_of_deliveries == 0:
-                    logging.warning('Group "%s" has no deliveries' %
-                            groupdir)
-                    continue
-                if isdir(groupdir):
-                    logging.debug('%s already exists' % groupdir)
-                else:
-                    logging.info('+ %s' % groupdir)
-                    makedirs(groupdir)
-
-                for d in server.list_deliveries(group['id']):
-                    time_of_delivery = d['time_of_delivery'].strftime(
-                            DATETIME_FORMAT)
-                    deliveryname = "%s_id-%d" % (time_of_delivery, d['id'])
-                    deliverydir = join(groupdir, deliveryname)
-                    if isdir(deliverydir):
-                        logging.debug('%s already exists' % deliverydir)
-                    else:
-                        logging.info('+ %s' % deliverydir)
-                        makedirs(deliverydir)
-
-                    for filemeta in d['filemetas']:
-                        filename = filemeta['filename'] 
-                        filepath = join(deliverydir, filename)
-                        if isfile(filepath):
-                            logging.debug('%s already exists' % filepath)
-                        else:
-                            logging.info('+ %s' % filepath)
-                            url = urljoin(self.get_url(),
-                                "/ui/download-file/%s" % filemeta['id'])
-                            logging.debug('Downloading file: %s' % url)
-                            size = filemeta['size']
-                            left_bytes = size
-                            input = opener.open(url)
-                            output = open(filepath, 'wb')
-                            while left_bytes > 0:
-                                out = input.read(self.bufsize)
-                                left_bytes -= len(out)
-                                output.write(out)
-                            input.close()
-                            output.close()
+        AssignmentSync(self.get_cookiepath(), self.get_server(),
+                self.get_url())
 
 
 class Init(Command):
