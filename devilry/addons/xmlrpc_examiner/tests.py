@@ -38,9 +38,10 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(len(lst), 2)
 
     def test_list_assignmentgroups(self):
-        self.assertLoginRequired(self.s.list_assignmentgroups, 1)
+        self.assertLoginRequired(self.s.list_assignmentgroups,
+                'inf1100.looong.oblig1')
         self.login(self.client, 'examiner1')
-        lst = self.s.list_assignmentgroups(1)
+        lst = self.s.list_assignmentgroups('inf1100.looong.oblig1')
         self.assertEquals(len(lst), 2)
         self.assertEquals(lst[0]['id'], 1)
         self.assertEquals(lst[1]['id'], 2)
@@ -50,7 +51,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         a = Assignment.objects.get(id=1)
         a.anonymous = True
         a.save()
-        lst = self.s.list_assignmentgroups(1)
+        lst = self.s.list_assignmentgroups('inf1100.looong.oblig1')
         self.assertEquals(lst[1]['students'], ['2', '3'])
 
     def test_list_deliveries(self):

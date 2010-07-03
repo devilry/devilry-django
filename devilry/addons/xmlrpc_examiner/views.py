@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
 
 from devilry.core.models import Assignment, AssignmentGroup
 from devilry.xmlrpc import XmlRpc
@@ -15,26 +15,27 @@ def list_active_assignments(request):
     """ Get a list (xmlrpc array) containing all active assignments where the
     authenticated user is examiner.
     
-    Each entry in the list is a dict (xmlrpc structure) with the following
-    values:
+    :return:
+        A list where each entry is a dict (xmlrpc structure) with the
+        following values:
 
-        id
-            A number identifying the assignment.
+            id
+                A number identifying the assignment.
 
-        short_name
-            The ``short_name`` of the assignment.
+            short_name
+                The ``short_name`` of the assignment.
 
-        long_name
-            The ``long_name`` of the assignment.
+            long_name
+                The ``long_name`` of the assignment.
 
-        path
-            The unique path to the assignment.
+            path
+                The unique path to the assignment.
 
-        publishing_time
-            The ``publishing_time`` of the assignment.
+            publishing_time
+                The ``publishing_time`` of the assignment.
 
-        deadline
-            The ``deadline`` of the assignment.
+            deadline
+                The ``deadline`` of the assignment.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
     result = [{
@@ -49,25 +50,35 @@ def list_active_assignments(request):
     return result
 
 
-@rpc.rpcdec_login_required('assignment_id')
-def list_assignmentgroups(request, assignment_id):
+@rpc.rpcdec_login_required('assignment_path')
+def list_assignmentgroups(request, assignment_path):
     """ Get a list (xmlrpc array) containing all assignment-groups within
     the given assignment where the authenticated user is examiner.
-    
-    Each entry in the list is a dict (xmlrpc structure) with the following
-    values:
 
-        id
-            A number identifying the assignment-group.
+    ``assignment_path`` is the path to a assignment as a string, like
+    ``"mysubject.spring09.oblig1"``.
 
-        students
-            List of the usernames/candiatenumber of all the students on the
-            group.
+    :return:
+        A list where each entry is a dict (xmlrpc structure) with the
+        following values:
 
-        number_of_deliveries
-            The number of deliveries on the group.
+            id
+                A number identifying the assignment-group.
+
+            students
+                List of the usernames/candiatenumber of all the students on the
+                group.
+
+            number_of_deliveries
+                The number of deliveries on the group.
     """
-    assignment = get_object_or_404(Assignment, pk=assignment_id)
+    try:
+        assignment = Assignment.get_by_path(assignment_path)
+    except Assignment.DoesNotExist:
+        raise Http404('No such assignment: %s' % assignment_path)
+    except ValueError, e:
+        raise Http404(str(e))
+
     assignment_groups = assignment.assignment_groups_where_is_examiner(
             request.user)
     assignment_groups = [{
@@ -84,23 +95,24 @@ def list_deliveries(request, assignmentgroup_id):
     """ Get a list (xmlrpc array) containing all deliveries within
     the given assignment group.
     
-    Each entry in the list is a dict (xmlrpc structure) with the following
-    values:
+    :return:
+        A list where each entry is a dict (xmlrpc structure) with the
+        following values:
 
-        id
-            A number identifying the assignment-group.
+            id
+                A number identifying the assignment-group.
 
-        time_of_delivery
-            Date/time of the delivery.
+            time_of_delivery
+                Date/time of the delivery.
 
-        successful
-            Boolean which tells if the delivery was completed successfully.
-            This might be false if the delivery was aborted midway through.
+            successful
+                Boolean which tells if the delivery was completed successfully.
+                This might be false if the delivery was aborted midway through.
 
-        filemetas
-            List (xmlrpc array) containing a dict (xmlrpc structure) for
-            each filemeta attached to the delivery. Each dict
-            contains``id``, ``size`` and ``filename``.
+            filemetas
+                List (xmlrpc array) containing a dict (xmlrpc structure) for
+                each filemeta attached to the delivery. Each dict
+                contains``id``, ``size`` and ``filename``.
     """
     assignment_group = get_object_or_404(AssignmentGroup,
             pk=assignmentgroup_id)
