@@ -1,7 +1,7 @@
 import xmlrpclib
 import textwrap
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
@@ -67,8 +67,16 @@ class XmlRpc(object):
                 xml = xmlrpclib.dumps((result,), methodresponse=1,
                         allow_none=True)
             except Exception, e:
+                faultcode = -32400
+                errmsg = str(e)
+                if isinstance(e, Http404):
+                    faultcode = 404
+                elif 'django.http.CompatCookie' in str(e):
+                    faultcode = 2
+                    errmsg = 'Cookie error. Probably caused by missing ' \
+                            'login-cookie, or cookie timeout. Try logging in.'
                 xml = xmlrpclib.dumps(
-                        xmlrpclib.Fault(-32400, 'system error: %s' % e),
+                        xmlrpclib.Fault(faultcode, errmsg),
                         methodresponse=1)
         else:
             xml = xmlrpclib.dumps(
