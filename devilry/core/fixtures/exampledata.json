@@ -17,6 +17,7 @@
         "fields": {
             "long_name": "University of Oslo", 
             "admins": [
+                2, 
                 9
             ], 
             "parentnode": null, 
@@ -184,7 +185,7 @@
         "pk": 3, 
         "model": "core.assignment", 
         "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
+            "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig2", 
             "publishing_time": "2010-02-01 06:00:00", 
             "parentnode": 4, 
@@ -318,7 +319,7 @@
             "parentnode": 5, 
             "long_name": "Oblig 2", 
             "admins": [
-                6
+                4
             ], 
             "deadline": "2008-03-11 21:38:04", 
             "anonymous": false
@@ -328,7 +329,7 @@
         "pk": 12, 
         "model": "core.assignment", 
         "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
+            "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "oblig1", 
             "publishing_time": "2008-03-11 21:39:43", 
             "parentnode": 5, 
@@ -404,6 +405,15 @@
         }
     }, 
     {
+        "pk": 8, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 6, 
+            "assignment_group": 6
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
@@ -459,6 +469,27 @@
         }
     }, 
     {
+        "pk": 6, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "examiners": [
+                10
+            ], 
+            "parentnode": 3
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-03 16:13:54", 
+            "assignment_group": 6
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "core.delivery", 
         "fields": {
@@ -479,10 +510,55 @@
         }
     }, 
     {
+        "pk": 1, 
+        "model": "core.feedback", 
+        "fields": {
+            "grade_object_id": 1, 
+            "feedback_published": false, 
+            "grade_type": 19, 
+            "delivery": 2, 
+            "feedback_format": "text", 
+            "feedback_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non tortor sit amet est facilisis vehicula. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue dictum sapien at placerat. Nam lacinia varius aliquam. Proin dignissim lacinia est vel gravida. Curabitur lorem dui, vehicula quis porta non, rutrum eget ante. Vestibulum porttitor sollicitudin felis, id sodales lacus faucibus id. Nulla vel fermentum eros. Cras placerat pellentesque elit, sed dictum lacus elementum id. Suspendisse potenti. Vestibulum consectetur vulputate quam sed faucibus. Duis lobortis accumsan ligula, at malesuada erat vehicula pulvinar. In ultricies pretium sagittis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin interdum turpis eu mauris tincidunt rhoncus. Integer sollicitudin pharetra dui, in cursus velit sagittis vitae. Morbi augue ipsum, iaculis nec ullamcorper a, suscipit a libero. Mauris non dolor ipsum.\r\n\r\nEtiam commodo odio in quam congue pharetra. In hac habitasse platea dictumst. Aliquam erat volutpat. Vivamus sed urna a velit lobortis imperdiet sit amet sed neque. Phasellus id vestibulum nulla. Aliquam ultrices molestie lorem, sit amet sodales nisl suscipit at. Sed non elit lorem. Etiam eleifend consectetur justo at volutpat. In hac habitasse platea dictumst. Etiam vel lectus magna, at ultricies elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut vel elit massa, ac luctus mauris. Nulla facilisi. Vivamus porta lacus vitae enim venenatis a vehicula nisi placerat. Nunc et imperdiet lectus. Donec eleifend interdum eros eu placerat. Suspendisse porttitor aliquam urna sed suscipit."
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.feedback", 
+        "fields": {
+            "grade_object_id": 2, 
+            "feedback_published": false, 
+            "grade_type": 19, 
+            "delivery": 1, 
+            "feedback_format": "restructuredtext", 
+            "feedback_text": "Hello world"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.feedback", 
+        "fields": {
+            "grade_object_id": 1, 
+            "feedback_published": false, 
+            "grade_type": 18, 
+            "delivery": 3, 
+            "feedback_format": "restructuredtext", 
+            "feedback_text": "Hello world"
+        }
+    }, 
+    {
         "pk": 3, 
         "model": "core.filemeta", 
         "fields": {
             "delivery": 2, 
+            "size": 16, 
+            "filename": "example.py"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 3, 
             "size": 16, 
             "filename": "example.py"
         }
