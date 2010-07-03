@@ -6,3 +6,6 @@ class CharFieldGrade(models.Model):
 
     def __unicode__(self):
         return self.grade
+
+    def set_grade_from_string(self, grade):
+        self.grade = grade

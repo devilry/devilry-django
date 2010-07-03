@@ -970,15 +970,10 @@ class Delivery(models.Model):
 
 
 
+# TODO: Refactor feedback_* to just *.
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
-
-
-   .. attribute:: grade
-
-        A django.db.models.Charfield_ representing the grade given for the
-        Delivery.
 
    .. attribute:: feedback_text
 
@@ -988,7 +983,13 @@ class Feedback(models.Model):
    .. attribute:: feedback_format
 
         A django.db.models.CharField_ that holds the format of the feedback
-        text.
+        text. Valid values are:
+
+            ``"restructuredtext"``
+                Format feedback as restructured text.
+
+            ``"text"``
+                No text formatting.
 
    .. attribute:: feedback_published
 
@@ -1001,12 +1002,11 @@ class Feedback(models.Model):
 
         A django.db.models.OneToOneField_ that points to the `Delivery`_ to
         be given feedback.
-
     """
 
     text_formats = (
-       ('text', 'Text'),
        ('restructuredtext', 'ReStructured Text'),
+       ('text', 'Text'),
     )
     feedback_text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats,
@@ -1019,7 +1019,36 @@ class Feedback(models.Model):
     content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
 
     def get_grade(self):
+        """ Get the grade as a string. """
         return unicode(self.content_object)
+
+    def set_grade_from_string(self, grade):
+        """ Set the grade from string. This is primarly intended for xmlrpc,
+        and a grade-plugin is not
+        required to support it.
+        
+        Raises :exc:`NotImplementedError` if the grade-plugin do not support
+        setting grades from string. The error message in the exception is
+        suited for direct display to the user.
+
+        Raises :exc:`ValueError` if the grade-plugin given grade is invalid
+        for this grade-plugin. The error message in the exception is suited
+        for direct display to the user.
+        """
+        key = self.delivery.assignment_group.parentnode.grade_plugin
+        model_cls = gradeplugin_registry.get(key).model_cls
+        if hasattr(model_cls, 'set_grade_from_string'):
+            if self.content_object:
+                self.content_object.set_grade_from_string(grade)
+                self.content_object.save()
+            else:
+                content_object = model_cls()
+                content_object.set_grade_from_string(grade)
+                content_object.save()
+                self.content_object = content_object
+        else:
+            raise NotImplementedError('Setting grade from string is not ' \
+                    'supported for this assignment.')
 
 
 class FileMeta(models.Model):
