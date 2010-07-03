@@ -1,6 +1,7 @@
 import xmlrpclib
 from textwrap import dedent
 from os import linesep, getcwd
+import logging
 
 from utils import AssignmentSync, Command, log_fault
 
@@ -60,25 +61,34 @@ class Sync(Command):
 class Feedback(Command):
     name = 'feedback'
     description = 'Submit feedback on a delivery.'
-    args_help = '[grade]'
+    args_help = '[delivery-id]'
     urlpath = '/xmlrpc_examiner/'
 
     def add_options(self):
         help = 'Id of a existing delivery.'
-        self.op.add_option("-d", "--delivery", metavar="DELIVERY",
-            dest="delivery_id", default=getcwd(), help=help)
         self.op.add_option("-t", "--feedback-text", metavar="TEXT",
             dest="feedback_text", default='', help='Feedback text.')
+        self.op.add_option("-g", "--grade", metavar="GRADE",
+            dest="grade", default=None, help='Grade.')
         self.op.add_option("-f", "--feedback-format",
             metavar="restructuredtext|text", dest="feedback_format",
             default='restructuredtext', help='Feedback format.')
 
     def command(self):
-        id = self.determine_id(self.opt.delivery_id, 3)
-        grade = self.args[0]
+        grade = self.opt.grade
+        if not grade:
+            raise SystemExit('A grade is required. See --help for more info.')
+
+        if len(self.args) == 0:
+            ids = [getcwd()]
+        else:
+            ids = self.args
+        allids = [(idstr, self.determine_id(idstr, 3)) for idstr in ids]
+
         server = self.get_server()
-        try:
-            server.set_feedback(id, self.opt.feedback_text,
-                    self.opt.feedback_format, grade)
-        except xmlrpclib.Fault, e:
-            print e.faultString
+        for idstr, id in allids:
+            try:
+                server.set_feedback(id, self.opt.feedback_text,
+                        self.opt.feedback_format, grade)
+            except xmlrpclib.Fault, e:
+                logging.error('Delivery %d: %s' % (idstr, e.faultString))
