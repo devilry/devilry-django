@@ -17,6 +17,11 @@ from cookie_transport import CookieTransport, SafeCookieTransport
 
 DATETIME_FORMAT = '%Y-%m-%d_%H:%M:%S'
 
+
+def log_fault(fault):
+    """ Log a xmlrpclib.Fault to logging.error. """
+    logging.error('%s: %s' % (fault.faultCode, fault.faultString))
+
 class AssignmentTreeWalker(object):
     """ Finds all assignment where the current user is examiner, and walks
     through every AssignmentGroup, Delivery and FileMeta calling
@@ -33,10 +38,10 @@ class AssignmentTreeWalker(object):
         self.urlopener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
         for assignment in server.list_active_assignments():
-            assignmentdir = '%(path)s_id-%(id)d' % assignment
+            assignmentdir = assignment['path']
             self.assignment(assignment, assignmentdir)
 
-            for group in server.list_assignmentgroups(assignment['id']):
+            for group in server.list_assignmentgroups(assignment['path']):
                 groupname = "%s_id-%d" % ('-'.join(group['students']),
                         group['id'])
                 groupdir = join(assignmentdir, groupname)
