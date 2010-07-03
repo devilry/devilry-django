@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
+import xmlrpclib
 
 from django.test import TestCase
 from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
-from devilry.core.models import Assignment, Delivery, FileMeta
+from devilry.core.models import Assignment, Delivery, FileMeta, Feedback
 from devilry.core.deliverystore import MemoryDeliveryStore
 
 
@@ -15,6 +16,13 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
     def setUp(self):
         self.client = Client()
         self.s = get_serverproxy(self.client, '/xmlrpc_examiner/')
+
+
+    def assertFault(self, faultcode, function, *args, **kwargs):
+        try:
+            function(*args, **kwargs)
+        except xmlrpclib.Fault, e:
+            self.assertEquals(faultcode, e.faultCode)
 
     def test_list_active_assignments(self):
         self.assertLoginRequired(self.s.list_active_assignments)
@@ -29,6 +37,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(o1['path'], oblig1.get_path())
         self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
         self.assertEquals(o1['deadline'], oblig1.deadline)
+        self.assertEquals(o1['xmlrpc_conf'], False)
 
         future = datetime.now() + timedelta(10)
         oldone = Assignment.objects.get(id=3)
@@ -72,3 +81,45 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(len(filemetas), 2)
         self.assertEquals(['test.txt', 'test2.txt'],
                 [f['filename'] for f in filemetas])
+
+    def test_set_feedback(self):
+        d = Delivery.objects.get(pk=3)
+        d.add_file('test.txt', ['test'])
+        d.finish()
+        self.assertLoginRequired(self.s.set_feedback, d.pk)
+        self.login(self.client, 'examiner1')
+        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        feedback = Delivery.objects.get(pk=3).feedback
+        self.assertEquals(feedback.feedback_text, 'test')
+        self.assertEquals(feedback.feedback_format, 'text')
+        self.assertFault(1, self.s.set_feedback,
+                d.pk, 'test', 'text', 'invalid-grade')
+        self.assertFault(3, self.s.set_feedback,
+                d.pk, 'test', 'invalid-format', 'approved')
+
+    def test_set_feedback_published(self):
+        d = Delivery.objects.get(pk=3)
+        d.add_file('test.txt', ['test'])
+        d.finish()
+        self.assertLoginRequired(self.s.set_feedback, d.pk)
+        self.login(self.client, 'examiner1')
+        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback_published(d.pk, True)
+        feedback = Delivery.objects.get(pk=3).feedback
+        self.assertTrue(feedback.feedback_published)
+
+    def test_get_feedback(self):
+        d = Delivery.objects.get(pk=3)
+        d.add_file('test.txt', ['test'])
+        d.finish()
+        self.assertLoginRequired(self.s.get_feedback, d.pk)
+        self.login(self.client, 'examiner1')
+        self.assertFault(404, self.s.get_feedback, d.pk)
+        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        f = self.s.get_feedback(d.pk)
+        self.assertEquals(f['text'], 'test')
+        self.assertEquals(f['format'], 'text')
+        self.assertFalse(f['published'])
+        self.s.set_feedback_published(d.pk, True)
+        f = self.s.get_feedback(d.pk)
+        self.assertTrue(f['published'])

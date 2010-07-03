@@ -2,7 +2,8 @@
 
 from utils import Cli
 from commoncmd import Login, Init
-from examinercmd import ListAssignmentGroups, Sync, ListAssignments
+from examinercmd import ListAssignmentGroups, Sync, ListAssignments, \
+        Feedback
 
 
 # TODO: make sure SESSION_COOKIE_SECURE is enabled by default or something
@@ -16,6 +17,7 @@ if __name__ == '__main__':
             Login,
             ListAssignments,
             ListAssignmentGroups,
-            Sync):
+            Sync,
+            Feedback):
         c.add_command(action)
     c.cli()

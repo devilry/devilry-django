@@ -1,6 +1,8 @@
 class RegistryItem(object):
-    def __init__(self, view, model_cls, label, description, admin_url_callback):
+    def __init__(self, view, model_cls, label, description,
+            admin_url_callback, xmlrpc_conf=None):
         self.view = view
+        self.xmlrpc_conf = xmlrpc_conf
         self.model_cls = model_cls
         self.label = label
         self.description = description
@@ -11,8 +13,10 @@ class RegistryItem(object):
         return '%s:%s' % (meta.app_label, meta.module_name)
 
 _registry = {}
-def register(view, model_cls, label, description, admin_url_callback=None):
-    r = RegistryItem(view, model_cls, label, description, admin_url_callback)
+def register(view, model_cls, label, description,
+        admin_url_callback=None, xmlrpc_conf=None):
+    r = RegistryItem(view, model_cls, label, description,
+            admin_url_callback, xmlrpc_conf)
     _registry[r.get_key()] = r
 
 def get(key):

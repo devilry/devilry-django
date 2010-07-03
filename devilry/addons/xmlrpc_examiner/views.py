@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden, Http404
 
-from devilry.core.models import Assignment, AssignmentGroup
+from devilry.core import gradeplugin_registry
+from devilry.core.models import Assignment, AssignmentGroup, Delivery, \
+    Feedback
 from devilry.xmlrpc import XmlRpc
 
 
@@ -38,6 +40,11 @@ def list_active_assignments(request):
                 The ``deadline`` of the assignment.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
+
+    def xmlrpc_conf(a):
+        key = a.grade_plugin
+        c = gradeplugin_registry.get(key)
+        return c.xmlrpc_conf or False
     result = [{
             'id': a.id,
             'short_name': a.short_name,
@@ -45,6 +52,7 @@ def list_active_assignments(request):
             'path': a.get_path(),
             'publishing_time': a.publishing_time,
             'deadline': a.deadline,
+            'xmlrpc_conf': xmlrpc_conf(a),
             }
         for a in assignments]
     return result
@@ -127,3 +135,78 @@ def list_deliveries(request, assignmentgroup_id):
                 for f in d.filemeta_set.all()]}
         for d in assignment_group.delivery_set.all()]
     return result
+
+
+@rpc.rpcdec_login_required('delivery_id, text, format, grade',
+        ['The authenticated user must be examiner on the assignment group'])
+def get_feedback(request, delivery_id):
+    """ Get feedback as a dict (xmlrpc structure) with the following values:
+
+        text
+            The feedback text.
+        format
+            The feedback format. Will always be one of:
+            ``"restructuredtext"`` or ``"text"``.
+        published
+            True if the feedback is published, false otherwise.
+
+    Raises fault 404 if the feedback does not exist.
+    """
+    delivery = get_object_or_404(Delivery,
+            pk=delivery_id)
+    if not delivery.assignment_group.is_examiner(request.user):
+        return HttpResponseForbidden("Forbidden")
+    
+    try:
+        feedback = delivery.feedback
+    except Feedback.DoesNotExist, e:
+        raise Http404(str(e))
+    return dict(
+            text = feedback.feedback_text,
+            format = feedback.feedback_format,
+            published = feedback.feedback_published)
+
+
+@rpc.rpcdec_login_required('delivery_id, text, format, grade',
+        ['The authenticated user must be examiner on the assignment group'])
+def set_feedback(request, delivery_id, text, format, grade):
+    """ Set feedback on a delivery.
+
+    :param delivery_id:
+        Id of a existing delivery.
+    :param text:
+        Feedback text.
+    :param format:
+        Feedback format. Valid values: ``"restructuredtext"`` or ``"text"``.
+    :param grade:
+        The grade as a string. The exact format of this value is determined
+        by the grade-plugin.
+    """
+    delivery = get_object_or_404(Delivery,
+            pk=delivery_id)
+    if not delivery.assignment_group.is_examiner(request.user):
+        return HttpResponseForbidden("Forbidden")
+    
+    try:
+        feedback = delivery.feedback
+    except Feedback.DoesNotExist, e:
+        feedback = Feedback(delivery=delivery)
+    feedback.feedback_text = text
+    feedback.feedback_format = format
+    feedback.set_grade_from_string(grade)
+    feedback.full_clean()
+    feedback.save()
+
+
+@rpc.rpcdec_login_required('delivery_id, publish',
+        ['The authenticated user must be examiner on the assignment group'])
+def set_feedback_published(request, delivery_id, publish):
+    """
+    Set feedback publised to ``True`` or ``False``.
+    """
+    delivery = get_object_or_404(Delivery,
+            pk=delivery_id)
+    if not delivery.assignment_group.is_examiner(request.user):
+        return HttpResponseForbidden("Forbidden")
+    delivery.feedback.feedback_published = publish
+    delivery.feedback.save()

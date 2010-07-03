@@ -1,9 +1,8 @@
 import xmlrpclib
 from textwrap import dedent
-from os import linesep
+from os import linesep, getcwd
 
 from utils import AssignmentSync, Command, log_fault
-
 
 
 class ListAssignments(Command):
@@ -57,3 +56,29 @@ class Sync(Command):
     def command(self):
         AssignmentSync(self.get_cookiepath(), self.get_server(),
                 self.get_url())
+
+class Feedback(Command):
+    name = 'feedback'
+    description = 'Submit feedback on a delivery.'
+    args_help = '[grade]'
+    urlpath = '/xmlrpc_examiner/'
+
+    def add_options(self):
+        help = 'Id of a existing delivery.'
+        self.op.add_option("-d", "--delivery", metavar="DELIVERY",
+            dest="delivery_id", default=getcwd(), help=help)
+        self.op.add_option("-t", "--feedback-text", metavar="TEXT",
+            dest="feedback_text", default='', help='Feedback text.')
+        self.op.add_option("-f", "--feedback-format",
+            metavar="restructuredtext|text", dest="feedback_format",
+            default='restructuredtext', help='Feedback format.')
+
+    def command(self):
+        id = self.determine_id(self.opt.delivery_id, 3)
+        grade = self.args[0]
+        server = self.get_server()
+        try:
+            server.set_feedback(id, self.opt.feedback_text,
+                    self.opt.feedback_format, grade)
+        except xmlrpclib.Fault, e:
+            print e.faultString
