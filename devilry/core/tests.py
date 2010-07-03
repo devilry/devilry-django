@@ -134,16 +134,8 @@ class TestNode(TestCase):
                 'parentnode__parentnode__parentnode__short_name': 'uio'
                 }
         self.assertEquals(expected,
-                Node._get_pathlist_kw(
+                Node.get_by_path_kw(
                     ['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']))
-
-    def test_get_by_pathlist(self):
-        self.assertEquals(
-                Node.get_by_pathlist(
-                    ['uio', 'deepdummy1', 'deepdummy2']).short_name,
-                'deepdummy2')
-        self.assertRaises(Node.DoesNotExist, Node.get_by_pathlist,
-                ['uio', 'deepdummy1', 'nonode'])
 
     def test_get_by_path(self):
         self.assertEquals(
@@ -151,6 +143,8 @@ class TestNode(TestCase):
                 'deepdummy2')
         self.assertRaises(Node.DoesNotExist, Node.get_by_path,
                 'uio.deepdummy1.nonode')
+        self.assertRaises(Node.DoesNotExist, Node.get_by_path,
+                'does.not.exist')
 
     def test_get_nodepks_where_isadmin(self):
         uioadmin = User.objects.get(username='uioadmin')
@@ -186,6 +180,12 @@ class TestSubject(TestCase):
         inf1100 = Subject.objects.get(id=1)
         self.assertEquals(inf1100.get_full_path(), 'uio.ifi.inf1100')
 
+    def test_get_by_path(self):
+        self.assertEquals(Subject.get_by_path('inf1100').short_name,
+                'inf1100')
+        self.assertRaises(Subject.DoesNotExist, Subject.get_by_path,
+                'doesnotexist')
+
 
 class TestPeriod(TestCase):
     fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
@@ -209,6 +209,14 @@ class TestPeriod(TestCase):
         p.clean()
         p.start_time = datetime(2012, 1, 1)
         self.assertRaises(ValidationError, p.clean)
+
+    def test_get_by_path(self):
+        self.assertEquals(Period.get_by_path('inf1100.old').short_name,
+                'old')
+        self.assertRaises(Period.DoesNotExist, Period.get_by_path,
+                'does.notexist')
+        self.assertRaises(ValueError, Period.get_by_path,
+                'does.not.exist')
 
 
 class TestAssignment(TestCase):
@@ -349,6 +357,14 @@ class TestAssignment(TestCase):
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(oblig1.get_full_path(),
                 'uio.ifi.inf1100.looong.oblig1')
+
+    def test_get_by_path(self):
+        self.assertEquals(
+                Assignment.get_by_path('inf1100.looong.oblig1').short_name,
+                'oblig1')
+        self.assertRaises(Assignment.DoesNotExist, Assignment.get_by_path,
+                'does.not.exist')
+        self.assertRaises(ValueError, Assignment.get_by_path, 'does.not')
 
 
 class TestAssignmentGroup(TestCase):

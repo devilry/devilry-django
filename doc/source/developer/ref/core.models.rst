@@ -13,30 +13,38 @@ Check out the :ref:`overview` if you need a simple overview of the different
 components.
 
 
+Functions and attributes
+#########################################################
+
+.. automodule:: devilry.core.models
+    :members: pathsep, splitpath
+    :no-members:
+
+
 BaseNode
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.BaseNode
     :no-members:
 
 Node
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.Node
 
 
 Subject
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.Subject
 
 Period
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.Period
 
 Assignment
-===========================================================
+#########################################################
 
 Represents one assignment within a given Period_ in a given Subject_. Each
 assignment contains one AssignmentGroup_ for each student or group of students
@@ -56,12 +64,12 @@ We have three main classifications of assignments:
 
 
 AssignmentGroup
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.AssignmentGroup
 
 Delivery
-===========================================================
+#########################################################
 
 You will normally not create Delivery-objects manually, but rather
 use :meth:`Delivery.begin`, :meth:`~Delivery.add_file` and
@@ -79,13 +87,13 @@ but as shown above it can be anything you want.
 
 
 Feeback
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.Feedback
 
 
 FileMeta
-===========================================================
+#########################################################
 
 .. autoclass:: devilry.core.models.FileMeta
 

@@ -1,3 +1,11 @@
+"""
+.. attribute:: pathsep
+
+    Path separator used by node-paths. The value is ``'.'``, and it must not
+    be changed.
+"""
+
+
 from datetime import datetime
 
 from django.db import models
@@ -17,6 +25,8 @@ import gradeplugin_registry
 # TODO: Complete/extend and document CommonInterface.
 # TODO: short_name ignorecase match on save.
 
+pathsep = '.' # path separator for Node-paths
+
 
 class CommonInterface(object):
 
@@ -24,8 +34,28 @@ class CommonInterface(object):
     def where_is_admin(cls, user_obj):
         """ Get all objects of this type where the given user is admin. """
         raise NotImplementedError()
-    
 
+
+def splitpath(path, expected_len=0):
+    """ Split the path on :attr:`pathsep` and return the resulting list.
+    Example:
+
+    >>> splitpath('uio.ifi.matnat')
+    ['uio', 'ifi', 'matnat']
+    >>> splitpath('uio.ifi.matnat', expected_len=2)
+    Traceback (most recent call last):
+    ...
+    ValueError: Path must have exactly 2 parts
+
+    :param expected_len:
+        Expected length of the resulting list. If the resulting list is not
+        exactly the given length, ``ValueError`` is raised. If
+        ``expected_len`` is 0 (default), no checking is done.
+    """
+    p = path.split(pathsep)
+    if expected_len and len(p) != expected_len:
+        raise ValueError('Path must have exactly %d parts' % expected_len)
+    return p
 
 
 class ShortNameField(models.SlugField):
@@ -231,10 +261,15 @@ class Node(models.Model, BaseNode):
         return Node.objects.filter(pk__in=cls._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
-    def _get_pathlist_kw(cls, pathlist):
-        """ Used by get_by_pathlist to create the required kwargs for
+    def get_by_path_kw(cls, pathlist):
+        """ Used by :meth:`get_by_path` to create the required kwargs for
         Node.objects.get(). Might be a starting point for more sophisticated
-        queries including paths. """
+        queries including paths. Example::
+
+            ifi = Node.objects.get(**Node.get_by_path_kw(['uio', 'ifi']))
+
+        :param pathlist: A list of node-names, like ``['uio', 'ifi']``.
+        """
         kw = {}
         key = 'short_name'
         for short_name in reversed(pathlist):
@@ -243,23 +278,16 @@ class Node(models.Model, BaseNode):
         return kw
 
     @classmethod
-    def get_by_pathlist(cls, pathlist):
-        """ Get node by pathlist.
-        
-        :param pathlist: A list of node-names, like ``['uio', 'ifi']``.
-        :return: A Node-object.
-        """
-        return Node.objects.get(**cls._get_pathlist_kw(pathlist))
-
-    @classmethod
     def get_by_path(cls, path):
         """ Get a node by path.
+
+        Raises :exc:`Node.DoesNotExist` if the query does not match.
         
-        :param path: Node-names separated by '.', like ``'uio.ifi'``.
+        :param path: The path to a Node, like ``'uio.ifi'``.
         :type path: str
         :return: A Node-object.
         """
-        return cls.get_by_pathlist(path.split('.'))
+        return Node.objects.get(**Node.get_by_path_kw(path.split('.')))
 
 
 class Subject(models.Model, BaseNode):
@@ -274,6 +302,14 @@ class Subject(models.Model, BaseNode):
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
+
+   .. attribute:: short_name
+
+        A django.db.models.SlugField_ with max 20 characters. Only numbers,
+        letters, '_' and '-'. Unlike all other children of
+        :class:`BaseNode`, Subject.short_name is **unique**. This is mainly
+        to avoid the overhead of having to recurse all the way to the top of
+        the node hierarchy for every unique path.
     """
 
     class Meta:
@@ -297,8 +333,23 @@ class Subject(models.Model, BaseNode):
                 Q(admins__pk=user_obj.pk)
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
 
+    @classmethod
+    def get_by_path(self, path):
+        """ Get a Subject by path.
+
+        Only matches on :attr:`short_name` for subjects because it is
+        guaranteed to be unique.
+
+        Raises :exc:`Subject.DoesNotExist` if the query does not match.
+        
+        :param path: The :attr:`short_name` of a subject.
+        :return: A Subject-object.
+        """
+        return Subject.objects.get(short_name=path)
+
     def get_path(self):
-        """ Only return short name for subject """
+        """ Only returns :attr:`short_name` for subject since it is
+        guaranteed to be unique. """
         return self.short_name
 
 
@@ -341,7 +392,6 @@ class Period(models.Model, BaseNode):
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
 
-
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Returns a QuerySet matching all Periods where the given user is admin.
@@ -355,6 +405,21 @@ class Period(models.Model, BaseNode):
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
 
+    @classmethod
+    def get_by_path(self, path):
+        """ Get a Period by path.
+
+        Raises :exc:`Period.DoesNotExist` if the query does not match.
+        Raises :exc:`ValueError` if the path does not contain exactly two
+        path-elements (uses :func:`splitpath`).
+        
+        :param path: The path to a Period, like ``'inf1100.spring09'``.
+        :return: A Period-object.
+        """
+        subject, period = splitpath(path, expected_len=2)
+        return Period.objects.get(
+                parentnode__short_name=subject,
+                short_name=period)
 
     def clean(self, *args, **kwargs):
         """Validate the period.
@@ -485,6 +550,23 @@ class Assignment(models.Model, BaseNode):
             ).distinct()
 
 
+    @classmethod
+    def get_by_path(self, path):
+        """ Get a Assignment by path.
+
+        Raises :exc:`Assignment.DoesNotExist` if the query does not match.
+        Raises :exc:`ValueError` if the path does not contain exactly three
+        path-elements (uses :func:`splitpath`).
+        
+        :param path:
+            The path to a Assignment, like ``'inf1100.spring09.oblig1'``.
+        :return: A Assignment-object.
+        """
+        subject, period, assignment = splitpath(path, expected_len=3)
+        return Assignment.objects.get(
+                parentnode__parentnode__short_name=subject,
+                parentnode__short_name=period,
+                short_name=assignment)
 
     def assignment_groups_where_is_examiner(self, user_obj):
         """ Get all assignment groups within this assignment where the given
