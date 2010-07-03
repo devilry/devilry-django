@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 
 from devilry.core.utils import OrderedDict
 
@@ -69,10 +70,24 @@ class XmlRpc(object):
             except Exception, e:
                 faultcode = -32400
                 errmsg = str(e)
+                # TODO: Document fault-codes
                 if isinstance(e, Http404):
                     faultcode = 404
-                elif 'django.http.CompatCookie' in str(e):
+                elif isinstance(e, ValueError):
+                    faultcode = 1
+                    errmsg = 'Value error: %s' % e 
+                elif isinstance(e, NotImplementedError):
                     faultcode = 2
+                    errmsg = 'Not implemented error: %s' % e 
+                elif isinstance(e, ValidationError):
+                    faultcode = 3
+                    msgs = ['%s:\n%s' % (
+                            key,
+                            '\n'.join(['- %s' % v for v in value]))
+                        for key, value in e.message_dict.iteritems()]
+                    errmsg = 'Validation error:\n\n%s' % '\n\n'.join(msgs)
+                elif 'django.http.CompatCookie' in str(e):
+                    faultcode = 500
                     errmsg = 'Cookie error. Probably caused by missing ' \
                             'login-cookie, or cookie timeout. Try logging in.'
                 xml = xmlrpclib.dumps(
