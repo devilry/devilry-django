@@ -645,6 +645,7 @@ class Candidate(models.Model):
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
+# TODO: students should be named candidates?
 class AssignmentGroup(models.Model):
     """
     Represents a student or a group of students. 
