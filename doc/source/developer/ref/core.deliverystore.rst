@@ -56,6 +56,26 @@ when writing unit-tests for your DeliveryStore. Here is how we test
 
 .. currentmodule:: devilry.core.deliverystore
 
+
+Setting the DeliveryStore manually - for tests
+###########################################################
+
+You might need to set the DeliveryStore manually if you need to handle
+deliveries in your own tests. Just set ``devilry.core.FileMeta.deliveryStore``
+like this::
+
+    from django.test import TestCase
+    from devilry.core.models import FileMeta, Delivery
+    from devilry.core.deliverystore import MemoryDeliveryStore
+
+    class MyTest(TestCase):
+        def test_something(self):
+            FileMeta.deliverystore = MemoryDeliveryStore()
+            delivery = Delivery.begin(assignmentgroup, user)
+            delivery.add_file('hello.txt', ['hello', 'world'])
+            delivery.finish()
+
+
 API
 ###########################################################
 
