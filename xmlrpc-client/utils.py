@@ -17,7 +17,7 @@ from cookie_transport import CookieTransport, SafeCookieTransport
 # TODO: chmod cookies.txt
 
 
-DATETIME_FORMAT = '%Y-%m-%d_%H:%M:%S'
+DATETIME_FORMAT = '%Y.%m.%d_%H-%M-%S'
 
 
 def id_from_path(path):
