@@ -92,3 +92,5 @@ class Feedback(Command):
                         self.opt.feedback_format, grade)
             except xmlrpclib.Fault, e:
                 logging.error('Delivery %d: %s' % (id, e.faultString))
+            else:
+                logging.info('Added feedback to: %s' % idstr)
