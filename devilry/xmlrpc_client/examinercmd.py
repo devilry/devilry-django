@@ -91,4 +91,4 @@ class Feedback(Command):
                 server.set_feedback(id, self.opt.feedback_text,
                         self.opt.feedback_format, grade)
             except xmlrpclib.Fault, e:
-                logging.error('Delivery %d: %s' % (idstr, e.faultString))
+                logging.error('Delivery %d: %s' % (id, e.faultString))
