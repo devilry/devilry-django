@@ -9,7 +9,6 @@ def group_assignments(assignments):
 
 
 def group_nodes(nodes, tree_height):
-
     dict = OrderedDict()
 
     for node in nodes:
@@ -24,7 +23,6 @@ def group_nodes(nodes, tree_height):
 
 
 def make_node_list(child_node, list_count):
-    
     parent = Node(child_node.node.parentnode) 
     parent.add_child(child_node)
 
@@ -40,20 +38,32 @@ class Node(object):
     def __init__(self, node):
         self.children = OrderedDict()
         self.node = node
-            
+        self.display_group = False
+     
     def __unicode__(self):
-        
         if hasattr(self.node, 'long_name'):
             return self.node.long_name
         else:
-            return self.node.__unicode__()
+            if self.display_group:
+                return self.node.parentnode.long_name + " (" + self.node.get_candidates() + ")"
+            else:
+                return self.node.parentnode.long_name
 
     def get_name(self):
         return self.__unicode__()
 
     def add_child(self, child_node):
-        
+        # Assignment group doesn't have short_name
         if not hasattr(child_node.node, 'short_name'):
+            # Makes sure the candidates are shown if a student 
+            # is part of more than one AssignmentGroup
+            if len(self.children) != 0:
+                child_node.display_group = True
+
+                # Contains only one, set display_group to True for than element as well.
+                if len(self.children) == 1:
+                    self.children.values()[0].display_group = True
+
             self.children[child_node] = child_node
         else:
             if not self.children.has_key(child_node.get_name()):
