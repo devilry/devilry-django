@@ -7,7 +7,7 @@
       {% for assignment_group in assignment %}
       <li>
         <a href='{{ assignment_group.node.id }}'>
-					{{ assignment.get_name }}
+					{{ assignment_group.get_name }}
         </a>
       </li>
       {% endfor %}
