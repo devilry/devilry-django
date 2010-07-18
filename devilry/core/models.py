@@ -474,7 +474,7 @@ class Assignment(models.Model, BaseNode):
     anonymous = models.BooleanField(default=False)
     deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
-    grade_plugin = models.CharField(max_length=100,
+    grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
             choices=gradeplugin_registry.KeyLabelIterable())
 
     @classmethod
@@ -1015,9 +1015,9 @@ class Feedback(models.Model):
     feedback_published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery)
 
-    grade_type = models.ForeignKey(ContentType)
-    grade_object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('grade_type', 'grade_object_id')
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     def get_grade(self):
         """ Get the grade as a string. """

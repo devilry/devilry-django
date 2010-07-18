@@ -55,8 +55,8 @@ class Sync(Command):
     urlpath = '/xmlrpc_examiner/'
 
     def command(self):
-        AssignmentSync(self.get_cookiepath(), self.get_server(),
-                self.get_url())
+        AssignmentSync(self.get_configdir(), self.get_cookiepath(),
+                self.get_server(), self.get_url())
 
 class Feedback(Command):
     name = 'feedback'
@@ -92,3 +92,5 @@ class Feedback(Command):
                         self.opt.feedback_format, grade)
             except xmlrpclib.Fault, e:
                 logging.error('Delivery %d: %s' % (id, e.faultString))
+            else:
+                logging.info('Added feedback to: %s' % idstr)

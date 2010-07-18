@@ -1,5 +1,5 @@
 import sys
-from os import makedirs, getcwd
+from os import makedirs, getcwd, chdir
 import os.path
 from cookielib import LWPCookieJar
 import urllib2
@@ -142,6 +142,16 @@ class AssignmentSync(AssignmentTreeWalker):
     filesystem-directory.
     """
     bufsize = 65536
+
+
+    def __init__(self, configdir, cookiepath, server, serverurl):
+        cwd = getcwd()
+        chdir(configdir)
+        try:
+            super(AssignmentSync, self).__init__(cookiepath, server,
+                    serverurl)
+        finally:
+            chdir(cwd)
 
     def assignment(self, assignment, assignmentdir):
         super(AssignmentSync, self).assignment(assignment, assignmentdir)

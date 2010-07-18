@@ -243,22 +243,6 @@
         }
     }, 
     {
-        "pk": 7, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "week1", 
-            "publishing_time": "2010-03-11 21:21:34", 
-            "parentnode": 3, 
-            "long_name": "Week 1", 
-            "admins": [
-                4
-            ], 
-            "deadline": "2010-03-14 21:21:35", 
-            "anonymous": false
-        }
-    }, 
-    {
         "pk": 8, 
         "model": "core.assignment", 
         "fields": {
@@ -480,6 +464,36 @@
         }
     }, 
     {
+        "pk": 6, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 8, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-18 15:33:01", 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 8, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-18 15:32:35", 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-18 15:22:18", 
+            "assignment_group": 1
+        }
+    }, 
+    {
         "pk": 3, 
         "model": "core.delivery", 
         "fields": {
@@ -510,42 +524,6 @@
         }
     }, 
     {
-        "pk": 1, 
-        "model": "core.feedback", 
-        "fields": {
-            "grade_object_id": 1, 
-            "feedback_published": false, 
-            "grade_type": 19, 
-            "delivery": 2, 
-            "feedback_format": "text", 
-            "feedback_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non tortor sit amet est facilisis vehicula. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue dictum sapien at placerat. Nam lacinia varius aliquam. Proin dignissim lacinia est vel gravida. Curabitur lorem dui, vehicula quis porta non, rutrum eget ante. Vestibulum porttitor sollicitudin felis, id sodales lacus faucibus id. Nulla vel fermentum eros. Cras placerat pellentesque elit, sed dictum lacus elementum id. Suspendisse potenti. Vestibulum consectetur vulputate quam sed faucibus. Duis lobortis accumsan ligula, at malesuada erat vehicula pulvinar. In ultricies pretium sagittis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin interdum turpis eu mauris tincidunt rhoncus. Integer sollicitudin pharetra dui, in cursus velit sagittis vitae. Morbi augue ipsum, iaculis nec ullamcorper a, suscipit a libero. Mauris non dolor ipsum.\r\n\r\nEtiam commodo odio in quam congue pharetra. In hac habitasse platea dictumst. Aliquam erat volutpat. Vivamus sed urna a velit lobortis imperdiet sit amet sed neque. Phasellus id vestibulum nulla. Aliquam ultrices molestie lorem, sit amet sodales nisl suscipit at. Sed non elit lorem. Etiam eleifend consectetur justo at volutpat. In hac habitasse platea dictumst. Etiam vel lectus magna, at ultricies elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut vel elit massa, ac luctus mauris. Nulla facilisi. Vivamus porta lacus vitae enim venenatis a vehicula nisi placerat. Nunc et imperdiet lectus. Donec eleifend interdum eros eu placerat. Suspendisse porttitor aliquam urna sed suscipit."
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "core.feedback", 
-        "fields": {
-            "grade_object_id": 2, 
-            "feedback_published": false, 
-            "grade_type": 19, 
-            "delivery": 1, 
-            "feedback_format": "restructuredtext", 
-            "feedback_text": "Hello world"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "core.feedback", 
-        "fields": {
-            "grade_object_id": 1, 
-            "feedback_published": false, 
-            "grade_type": 18, 
-            "delivery": 3, 
-            "feedback_format": "restructuredtext", 
-            "feedback_text": "Hello world"
-        }
-    }, 
-    {
         "pk": 3, 
         "model": "core.filemeta", 
         "fields": {
@@ -561,6 +539,33 @@
             "delivery": 3, 
             "size": 16, 
             "filename": "example.py"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 4, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 5, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 6, 
+            "size": 15, 
+            "filename": "hello2.txt"
         }
     }, 
     {
