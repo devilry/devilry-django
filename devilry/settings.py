@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'devilry.addons.dashboard',
     'devilry.xmlrpc',
     'devilry.addons.xmlrpc_examiner',
+    'devilry.xmlrpc_client',
     'django.contrib.markup', 
     )
 
