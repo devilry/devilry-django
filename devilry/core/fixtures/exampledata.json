@@ -243,22 +243,6 @@
         }
     }, 
     {
-        "pk": 7, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "week1", 
-            "publishing_time": "2010-03-11 21:21:34", 
-            "parentnode": 3, 
-            "long_name": "Week 1", 
-            "admins": [
-                4
-            ], 
-            "deadline": "2010-03-14 21:21:35", 
-            "anonymous": false
-        }
-    }, 
-    {
         "pk": 8, 
         "model": "core.assignment", 
         "fields": {
@@ -480,6 +464,36 @@
         }
     }, 
     {
+        "pk": 6, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 8, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-18 15:33:01", 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 8, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-18 15:32:35", 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 6, 
+            "successful": true, 
+            "time_of_delivery": "2010-07-18 15:22:18", 
+            "assignment_group": 1
+        }
+    }, 
+    {
         "pk": 3, 
         "model": "core.delivery", 
         "fields": {
@@ -561,6 +575,33 @@
             "delivery": 3, 
             "size": 16, 
             "filename": "example.py"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 4, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 5, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 6, 
+            "size": 15, 
+            "filename": "hello2.txt"
         }
     }, 
     {
