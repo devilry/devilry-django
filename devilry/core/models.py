@@ -92,12 +92,12 @@ class BaseNode(CommonInterface):
     is never used directly.
 
 
-   .. attribute:: short_name
+    .. attribute:: short_name
 
         A django.db.models.SlugField_ with max 20 characters. Only numbers,
         letters, '_' and '-'.
 
-   .. attribute:: long_name
+    .. attribute:: long_name
 
         A django.db.models.CharField_ with max 100 characters. Gives a longer 
         description than :attr:`short_name`.
@@ -178,12 +178,12 @@ class Node(models.Model, BaseNode):
     faculties and departments.
 
 
-   .. attribute:: parentnode
+    .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node, which
         is always a `Node`_.
 
-   .. attribute:: admins
+    .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
@@ -293,17 +293,17 @@ class Node(models.Model, BaseNode):
 class Subject(models.Model, BaseNode):
     """
 
-   .. attribute:: parentnode
+    .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Node`_.
 
-   .. attribute:: admins
+    .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
 
-   .. attribute:: short_name
+    .. attribute:: short_name
 
         A django.db.models.SlugField_ with max 20 characters. Only numbers,
         letters, '_' and '-'. Unlike all other children of
@@ -359,22 +359,22 @@ class Period(models.Model, BaseNode):
     at a university.
 
 
-   .. attribute:: parentnode
+    .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Subject`_.
 
-   .. attribute:: start_time
+    .. attribute:: start_time
 
         A django.db.models.DateTimeField_ representing the starting time of
         the period.
 
-   .. attribute:: end_time
+    .. attribute:: end_time
 
         A django.db.models.DateTimeField_ representing the ending time of
         the period.
 
-   .. attribute:: admins
+    .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         node.
@@ -436,30 +436,31 @@ class Period(models.Model, BaseNode):
 class Assignment(models.Model, BaseNode):
     """
 
-   .. attribute:: parentnode
+    .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always a `Period`_.
 
-   .. attribute:: publishing_time
+    .. attribute:: publishing_time
 
         A django.db.models.DateTimeField_ representing the publishing time of
         the assignment.
 
-   .. attribute:: deadline
+    .. attribute:: deadline
 
         A django.db.models.DateTimeField_ representing the deadline of the
         assignment.
 
-   .. attribute:: admins
+    .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         Node.
 
-   .. attribute:: grade_plugin
+    .. attribute:: grade_plugin
 
-        A django.db.models.CharField_ that holds the current feedback plugin
-        used.
+        A django.db.models.CharField_ that holds the key of the current
+        grade-plugin. More info on grade-plugins
+        :ref:`here <ref-devilry.core.gradeplugin_registry>`.
     """
 
     class Meta:
@@ -475,6 +476,12 @@ class Assignment(models.Model, BaseNode):
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
             choices=gradeplugin_registry.KeyLabelIterable())
+
+
+    def get_gradeplugin_registryitem(self):
+        """ Get the :class:`devilry.core.gradeplugin_registry.RegistryItem`
+        for the current :attr:`grade_plugin`. """
+        return gradeplugin_registry.get(self.grade_plugin)
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -642,22 +649,22 @@ class AssignmentGroup(models.Model):
     Represents a student or a group of students. 
 
 
-   .. attribute:: parentnode
+    .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
 
-   .. attribute:: students
+    .. attribute:: students
 
         A django.db.models.ManyToManyField_ that holds the student(s) that have
         handed in the assignment
 
-   .. attribute:: examiners
+    .. attribute:: examiners
 
         A django.db.models.ManyToManyField_ that holds the examiner(s) that are
         to correct and grade the assignment.
 
-   .. attribute:: is_open
+    .. attribute:: is_open
 
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
@@ -886,22 +893,22 @@ class Delivery(models.Model):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
 
-   .. attribute:: assignment_group
+    .. attribute:: assignment_group
 
         A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
         that handed in the Delivery.
 
-   .. attribute:: time_of_delivery
+    .. attribute:: time_of_delivery
 
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
 
-   .. attribute:: delivered_by
+    .. attribute:: delivered_by
 
         A django.db.models.ForeignKey_ pointing to the user that uploaded
         the Delivery
 
-   .. attribute:: successful
+    .. attribute:: successful
 
         A django.db.models.BooleanField_ telling whether or not the Delivery
         was successfully uploaded.
@@ -993,33 +1000,41 @@ class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
 
-   .. attribute:: feedback_text
+    .. attribute:: feedback_text
 
-        A django.db.models.TextField_ that holds the feedback text given by
-        the examiner.
+       A django.db.models.TextField_ that holds the feedback text given by
+       the examiner.
 
-   .. attribute:: feedback_format
+    .. attribute:: feedback_format
 
-        A django.db.models.CharField_ that holds the format of the feedback
-        text. Valid values are:
+       A django.db.models.CharField_ that holds the format of the feedback
+       text. Valid values are:
 
-            ``"restructuredtext"``
-                Format feedback as restructured text.
+           ``"restructuredtext"``
+               Format feedback as restructured text.
 
-            ``"text"``
-                No text formatting.
+           ``"text"``
+               No text formatting.
 
-   .. attribute:: feedback_published
+    .. attribute:: feedback_published
 
-        A django.db.models.BooleanField_ that tells if the feedback is
-        published or not. This allows editing and saving the feedback before
-        publishing it. Is useful for exams and other assignments when
-        feedback and grading is published simultaneously for all Deliveries.
+       A django.db.models.BooleanField_ that tells if the feedback is
+       published or not. This allows editing and saving the feedback before
+       publishing it. Is useful for exams and other assignments when
+       feedback and grading is published simultaneously for all Deliveries.
 
-   .. attribute:: delivery
+    .. attribute:: delivery
 
-        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
-        be given feedback.
+       A django.db.models.OneToOneField_ that points to the `Delivery`_ to
+       be given feedback.
+
+    .. attribute:: content_object
+    
+       A generic relation
+       (django.contrib.contenttypes.generic.GenericForeignKey) to the
+       grade-plugin object storing the grade for this feedback. The
+       :meth:`clean`-method checks that this points to a class of the type
+       defined in :attr:`Assignment.grade_plugin`.
     """
 
     text_formats = (
@@ -1068,25 +1083,65 @@ class Feedback(models.Model):
             raise NotImplementedError('Setting grade from string is not ' \
                     'supported for this assignment.')
 
+    def get_gradeplugin_registryitem(self):
+        """ Shortcut for
+        getting the assignment (delivery.assignment_group.parentnode), and
+        calling :meth:`Assignment.get_gradeplugin_registryitem`.
+        """
+        assignment = self.delivery.assignment_group.parentnode
+        return assignment.get_gradeplugin_registryitem()
+
+    def clean(self, *args, **kwargs):
+        """Validate the Feedback, making sure it does not do something stupid.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - :attr:`content_object` is not a instance of the model-class
+              defined in
+              :attr:`devilry.core.gradeplugin_registry.RegistryItem.model_cls`
+              referred by :attr:`Assignment.grade_plugin`.
+            - The node is the child of itself or one of its childnodes.
+        """
+
+        #    raise ValidationError(_('A node can not be it\'s own parent.'))
+        assignment = self.delivery.assignment_group.parentnode
+        try:
+            ri = self.get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise ValidationError(_(
+                'The assignment, %s, has a invalid grade-plugin. Contact ' \
+                'the system administrators to get this fixed.' %
+                assignment))
+        else:
+            if not isinstance(self.content_object, ri.model_cls):
+                raise ValidationError(_(
+                    'Grade-plugin on feedback must be "%s", as on the ' \
+                    'assignment, %s.' % (i.label, assignment)))
+
+        super(Feedback, self).clean(*args, **kwargs)
+
 
 class FileMeta(models.Model):
     """
     Represents the metadata for a file belonging to a `Delivery`_.
 
-   .. attribute:: delivery
+    .. attribute:: delivery
 
         A django.db.models.OneToOneField_ that points to the `Delivery`_ to
         be given feedback.
 
-   .. attribute:: filename
+    .. attribute:: filename
 
         Name of the file.
 
-   .. attribute:: size
+    .. attribute:: size
 
         Size of the file in bytes.
 
-   .. attribute:: deliverystore
+    .. attribute:: deliverystore
 
         The current :ref:`DeliveryStore <ref-devilry.core.deliverystore>`.
     """

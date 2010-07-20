@@ -1,4 +1,22 @@
+_registry = {}
+
+def register(view, model_cls, label, description,
+        admin_url_callback=None, xmlrpc_conf=None):
+    r = RegistryItem(view, model_cls, label, description,
+            admin_url_callback, xmlrpc_conf)
+    _registry[r.get_key()] = r
+
+def get(key):
+    return _registry[key]
+
+
 class RegistryItem(object):
+    """ Information about a grade plugin.
+    
+    .. attribute:: model_cls::
+
+        A class for storing grades.
+    """
     def __init__(self, view, model_cls, label, description,
             admin_url_callback, xmlrpc_conf=None):
         self.view = view
@@ -12,15 +30,9 @@ class RegistryItem(object):
         meta = self.model_cls._meta
         return '%s:%s' % (meta.app_label, meta.module_name)
 
-_registry = {}
-def register(view, model_cls, label, description,
-        admin_url_callback=None, xmlrpc_conf=None):
-    r = RegistryItem(view, model_cls, label, description,
-            admin_url_callback, xmlrpc_conf)
-    _registry[r.get_key()] = r
+    def __unicode__(self):
+        return self.label
 
-def get(key):
-    return _registry[key]
 
 class KeyLabelIterable(object):
     def __iter__(self):

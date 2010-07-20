@@ -518,6 +518,8 @@ class TestDelivery(TestCase):
         self.assertTrue(d.successful)
 
 
+# TODO: Feedback tests
+
 class TestMemoryDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def get_storageobj(self):
         return MemoryDeliveryStore()
