@@ -35,6 +35,26 @@ class CommonInterface(object):
         """ Get all objects of this type where the given user is admin. """
         raise NotImplementedError()
 
+    def can_save(self, user_obj):
+        """ Check if the give user has permission to save (or create) this
+        node.
+
+        A user can create a new node if it:
+
+            - Is a superuser.
+            - Is admin on any parentnode.
+
+        A user can save if it:
+
+            - Is a superuser.
+            - Is admin on any parentnode.
+            - Is admin on the node.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: bool
+        """
+        raise NotImplementedError()
+
 
 def splitpath(path, expected_len=0):
     """ Split the path on :attr:`pathsep` and return the resulting list.
@@ -145,23 +165,6 @@ class BaseNode(CommonInterface):
         
 
     def can_save(self, user_obj):
-        """ Check if the give user has permission to save (or create) this
-        node.
-
-        A user can create a new node if it:
-
-            - Is a superuser.
-            - Is admin on any parentnode.
-
-        A user can save if it:
-
-            - Is a superuser.
-            - Is admin on any parentnode.
-            - Is admin on the node.
-
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: bool
-        """
         if user_obj.is_superuser:
             return True
         if self.id == None:
@@ -644,7 +647,7 @@ class Candidate(models.Model):
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 # TODO: students should be named candidates?
-class AssignmentGroup(models.Model):
+class AssignmentGroup(models.Model, CommonInterface):
     """
     Represents a student or a group of students. 
 
@@ -654,7 +657,11 @@ class AssignmentGroup(models.Model):
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
 
+<<<<<<< HEAD
     .. attribute:: students
+=======
+   .. attribute:: candidates
+>>>>>>> 04dc90fd6241f4a76c96a34207f5d817b2fba4a8
 
         A django.db.models.ManyToManyField_ that holds the student(s) that have
         handed in the assignment
@@ -669,10 +676,13 @@ class AssignmentGroup(models.Model):
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
     """
-    parentnode = models.ForeignKey(Assignment)
 
-    students = models.ManyToManyField(User, blank=True, through=Candidate,
-            related_name='students')
+    parentnode = models.ForeignKey(Assignment)
+    
+    name = models.CharField(max_length=30)
+    
+    candidates = models.ManyToManyField(User, blank=True, through=Candidate,
+            related_name='candidates')
 
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
@@ -703,7 +713,7 @@ class AssignmentGroup(models.Model):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return AssignmentGroup.objects.filter(students=user_obj)
+        return AssignmentGroup.objects.filter(candidates=user_obj)
 
     @classmethod
     def published_where_is_student(cls, user_obj):
@@ -795,7 +805,7 @@ class AssignmentGroup(models.Model):
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
-                ', '.join([unicode(x) for x in self.students.all()]))
+                ', '.join([unicode(x) for x in self.candidates.all()]))
     
     def get_students(self):
         """ Get a string containing all students in the group separated by
@@ -808,7 +818,7 @@ class AssignmentGroup(models.Model):
         return u', '.join(
                 [c.student.username for c in self.candidate_set.all()])
     get_students.short_description = _('Students')
-
+ 
     def get_candidates(self):
         """ Get a string containing all candiates in the group separated by
         comma and a space, like: ``superman, spiderman, batman`` for normal
@@ -860,6 +870,20 @@ class AssignmentGroup(models.Model):
     def get_number_of_deliveries(self):
         return self.delivery_set.all().count()
 
+    def _can_save_id_none(self, user_obj):
+        """ Used by all except Node, which overrides. """
+        return self.parentnode.is_admin(user_obj)
+
+    def can_save(self, user_obj):
+        if user_obj.is_superuser:
+            return True
+        if self.id == None:
+            return self._can_save_id_none(user_obj)
+        elif self.is_admin(user_obj):
+            return True
+        else:
+            return False
+    
 
 class Deadline(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup) 

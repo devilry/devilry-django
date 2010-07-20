@@ -19,6 +19,12 @@ class IdFileNotFoundError(Exception):
         super(IdFileNotFoundError, self).__init__(
                 'No id-file (%s) found in %s.' % (idfilename, dirpath))
 
+class NotInDevilryDirError(Exception):
+    """
+    Raised when searching the current working directory and it's parents for
+    a .devilry subdirectory fails.
+    """
+
 
 class Command(object):
     """ Base class for all commands in the cli. """
@@ -28,7 +34,7 @@ class Command(object):
 
     def __init__(self):
         self.config = ConfigParser()
-        self._confdir = None
+        self._rootdir = None
         self.op = OptionParser(usage="usage: %%prog %s [options] %s" % (
                 self.name, self.args_help))
         self.op.add_option("-q", "--quiet", action="store_const",
@@ -68,37 +74,34 @@ class Command(object):
         """ Get server url from config-file. """
         return self.get_config('url')
 
-    def find_configdir(self, path=None):
-        """
-        Find and return the configdir, but do not change any variables.
-        Returns ``None`` if there is no .devilry directory within any of the
-        parent-directory of ``path``.
-
-        :param path: Defaults to current working directory.
-        """
+    def _find_rootdir(self, path=None):
         path = path or os.getcwd()
         while True:
             cdir = os.path.join(path, '.devilry')
             if os.path.exists(cdir):
-                return cdir
+                self._rootdir = path
+                return True
             p = os.path.dirname(path)
             if p == path:
                 break
             path = p
-        return None
+        raise NotInDevilryDirError()
+
+    def get_rootdir(self):
+        """
+        Get the first parent-directory of path containing a
+        .devilry-directory.  Returns ``None`` if there is no .devilry
+        directory within any of the parent-directories of ``path``.
+
+        :param path: Defaults to current working directory.
+        """
+        if not self._rootdir:
+            self._find_rootdir()
+        return self._rootdir
 
     def get_configdir(self):
-        """
-        Use :meth:`find_configdir` to find the configdir, and cache it so we
-        don't have to search on subsequent calls.
-        """
-        if self._confdir:
-            return self._confdir
-        cdir = self.find_configdir()
-        if not cdir:
-            raise SystemExit('You are not in a Devilry directory tree.')
-        self._confdir = cdir
-        return cdir
+        """ Get the config-directory (the .devilry directory). """
+        return os.path.join(self.get_rootdir(), '.devilry')
 
     def get_cookiepath(self):
         """ The cli uses cookies to maintain a session. The cookie-file is

@@ -50,6 +50,7 @@ class AssignmentTreeWalker(object):
                 self.assignmentgroup(group, groupdir)
 
                 for delivery in server.list_deliveries(group['id']):
+                    print(delivery['time_of_delivery'])
                     time_of_delivery = delivery['time_of_delivery'].strftime(
                             DATETIME_FORMAT)
                     deliveryname = "%s_id-%d" % (time_of_delivery,
@@ -132,15 +133,14 @@ class AssignmentTreeWalker(object):
 class AssignmentSync(AssignmentTreeWalker):
     """
     Uses :class:`AssignmentTreeWalker` to sync all deliveries on any
-    active assignment where the current uses is examiner into the current
-    filesystem-directory.
+    active assignment where the current user is examiner to the filesystem.
     """
     bufsize = 65536
 
 
-    def __init__(self, configdir, cookiepath, server, serverurl):
+    def __init__(self, rootdir, cookiepath, server, serverurl):
         cwd = os.getcwd()
-        os.chdir(configdir)
+        os.chdir(rootdir)
         try:
             super(AssignmentSync, self).__init__(cookiepath, server,
                     serverurl)

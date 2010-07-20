@@ -6,10 +6,14 @@ import logging
 from utils import AssignmentSync, Command, log_fault
 
 
-class ListAssignments(Command):
+class ExaminerCommand(Command):
+    """ Base class for all examiner commands. """
+    urlpath = '/xmlrpc_examiner/'
+
+
+class ListAssignments(ExaminerCommand):
     name = 'list'
     description = 'List assignments where the authenticated user is examiner.'
-    urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         server = self.get_server()
@@ -23,11 +27,10 @@ class ListAssignments(Command):
                 print '* %(path)s' % assignment
 
 
-class ListAssignmentGroups(Command):
+class ListAssignmentGroups(ExaminerCommand):
     name = 'list-groups'
     description = 'List assignment groups on a given assignment.'
     args_help = '<assignment-path>'
-    urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         self.validate_argslen(1)
@@ -48,21 +51,20 @@ class ListAssignmentGroups(Command):
             print dedent(linesep.join(out))
 
 
-class Sync(Command):
+class Sync(ExaminerCommand):
     name = 'sync'
     description = 'Sync all deliveries (including all files) where the '\
             'authenticated user is examiner.'
-    urlpath = '/xmlrpc_examiner/'
 
     def command(self):
         AssignmentSync(self.get_configdir(), self.get_cookiepath(),
                 self.get_server(), self.get_url())
 
-class Feedback(Command):
+
+class Feedback(ExaminerCommand):
     name = 'feedback'
     description = 'Submit feedback on a delivery.'
     args_help = '[delivery-id]'
-    urlpath = '/xmlrpc_examiner/'
 
     def add_options(self):
         help = 'Id of a existing delivery.'
