@@ -1,5 +1,5 @@
 from models import (Node, Subject, Period, Assignment,
-        AssignmentGroup, Candidate, Delivery, FileMeta, Feedback)
+        AssignmentGroup, Candidate, Delivery, FileMeta, Feedback, Deadline)
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
@@ -27,24 +27,23 @@ class PeriodAdmin(BaseNodeAdmin):
     date_hierarchy = 'start_time'
 
 
-class CandidateInline(admin.TabularInline):
-    model = Candidate
-
-
-class FileMetaInline(admin.TabularInline):
-    model = FileMeta
-    extra = 1
-
-
 class AssignmentAdmin(admin.ModelAdmin):
     list_display = ['short_name', 'long_name', 'get_path', 'grade_plugin',
             'anonymous', 'id', 
-            'publishing_time', 'deadline', 'get_admins']
+            'publishing_time', 'get_admins']
     search_fields = ['id', 'short_name', 'long_name', 'parentnode__short_name',
             'parentnode__parentnode__short_name', 'admins__username']
-    list_filter = ['publishing_time', 'deadline', 'anonymous']
+    list_filter = ['publishing_time', 'anonymous']
     date_hierarchy = 'publishing_time'
 
+
+class CandidateInline(admin.TabularInline):
+    model = Candidate
+    extra = 0
+
+class DeadlineInline(admin.TabularInline):
+    model = Deadline
+    extra = 0
 
 class AssignmentGroupAdmin(BaseNodeAdmin):
     list_display = ['get_students', 'get_examiners', 'parentnode', 'id']
@@ -56,35 +55,42 @@ class AssignmentGroupAdmin(BaseNodeAdmin):
             'parentnode__parentnode__short_name',
             'parentnode__parentnode__parentnode__short_name']
     ordering = ['parentnode']
-    inlines = [CandidateInline]
+    inlines = [CandidateInline, DeadlineInline]
 
 
-class FeedbackInline(generic.GenericStackedInline):
+
+#class FeedbackAdmin(admin.ModelAdmin):
+    #list_display = ['delivery', 'feedback_format', 'get_examiners',
+            #'get_students', 'id']
+    #list_filter = ['feedback_format']
+    #search_fields = [
+            #'id',
+            #'delivery__assignment_group__students__username',
+            #'delivery__assignment_group__examiners__username',
+            #'delivery__assignment_group__parentnode__short_name',
+            #'delivery__assignment_group__parentnode__parentnode__short_name',
+            #'delivery__assignment_group__parentnode__parentnode__parentnode__short_name']
+
+    #def get_students(self, feedback):
+        #return feedback.delivery.assignment_group.get_students()
+    #get_students.short_description = AssignmentGroup.get_students.short_description
+
+    #def get_examiners(self, feedback):
+        #return feedback.delivery.assignment_group.get_examiners()
+    #get_examiners.short_description = AssignmentGroup.get_examiners.short_description
+
+
+
+class FeedbackInline(admin.StackedInline):
     model = Feedback
-    formset = generic.generic_inlineformset_factory(Feedback)
+    #formset = generic.generic_inlineformset_factory(Feedback)
     extra = 0
-    fields = ['feedback_text', 'feedback_format', 'feedback_published']
+    #fields = ['feedback_text', 'feedback_format', 'feedback_published']
 
-class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ['delivery', 'feedback_format', 'get_examiners',
-            'get_students', 'id']
-    list_filter = ['feedback_format']
-    search_fields = [
-            'id',
-            'delivery__assignment_group__students__username',
-            'delivery__assignment_group__examiners__username',
-            'delivery__assignment_group__parentnode__short_name',
-            'delivery__assignment_group__parentnode__parentnode__short_name',
-            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name']
 
-    def get_students(self, feedback):
-        return feedback.delivery.assignment_group.get_students()
-    get_students.short_description = AssignmentGroup.get_students.short_description
-
-    def get_examiners(self, feedback):
-        return feedback.delivery.assignment_group.get_examiners()
-    get_examiners.short_description = AssignmentGroup.get_examiners.short_description
-
+class FileMetaInline(admin.TabularInline):
+    model = FileMeta
+    extra = 0
 
 class DeliveryAdmin(admin.ModelAdmin):
     list_display = ['assignment_group', 'get_examiners', 'time_of_delivery',
@@ -115,4 +121,4 @@ admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
 admin.site.register(Delivery, DeliveryAdmin)
-admin.site.register(Feedback, FeedbackAdmin)
+#admin.site.register(Feedback, FeedbackAdmin)
