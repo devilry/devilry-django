@@ -32,7 +32,7 @@ Plugin development
 Api refererence
 ---------------
 
-* **Core:** :ref:`devilry.core.models <ref-devilry.core.models>` | :ref:`devilry.core.utils <ref-devilry.core.utils>` | :ref:`devilry.core.deliverystore <ref-devilry.core.deliverystore>`
+* **Core:** :ref:`devilry.core.models <ref-devilry.core.models>` | :ref:`devilry.core.utils <ref-devilry.core.utils>` | :ref:`devilry.core.deliverystore <ref-devilry.core.deliverystore>` | :ref:`devilry.core.gradeplugin_registry <ref-devilry.core.gradeplugin_registry>`
 * **XMLRPC:** :ref:`devilry.xmlrpc <ref-devilry.xmlrpc>`
 
 
