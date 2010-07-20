@@ -3,10 +3,12 @@ from shutil import rmtree
 import os
 from ConfigParser import ConfigParser
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
+from devilry.core.testhelpers import create_from_path
 from cookie_transport import CookieTransport, SafeCookieTransport
 from command import Command
 from utils import AssignmentSync
@@ -78,19 +80,31 @@ class TestAssignmentSync(TestCase, XmlRpcAssertsMixin):
     fixtures = ['tests/xmlrpc_examiner/users',
             'tests/xmlrpc_examiner/core']
 
+    def assignmentsync(self):
+        return AssignmentSync(
+                self.root,
+                os.path.join(self.root, 'cookie.txt'),
+                self.server, 'http://test')
+
     def setUp(self):
         self.client = Client()
         self.server = get_serverproxy(self.client, '/xmlrpc_examiner/')
         self.login(self.client, 'examiner1')
         self.root = mkdtemp('devilry-test')
-        self.atw = AssignmentSync(
-                self.root,
-                os.path.join(self.root, 'cookie.txt'),
-                self.server, '')
+        self.assignmentsync()
+        self.examiner1 = User.objects.get(username='examiner1')
 
-    def test_it(self):
-        pass
+    def test_assignment(self):
+        self.assertEquals(os.listdir(self.root), ['inf1100.looong.oblig1'])
+        assignmentgroup = create_from_path('ifi.inf1010.spring09.oblig1.student1')
+        assignmentgroup.examiners.add(self.examiner1)
+        assignmentgroup.save()
+        self.assignmentsync()
+        dircontent = os.listdir(self.root)
+        dircontent.sort()
+        self.assertEquals(dircontent,
+                ['inf1010.spring09.oblig1', 'inf1100.looong.oblig1'])
 
     def tearDown(self):
-        self.server.logout()
+        self.logout(self.client)
         rmtree(self.root)

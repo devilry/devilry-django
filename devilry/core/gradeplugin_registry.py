@@ -35,8 +35,10 @@ class RegistryItem(object):
 
 
 class KeyLabelIterable(object):
+    """ Iterator over the gradeplugin-registry yielding (key, RegistryItem).
+    The iterator is sorted by :attr:`RegistryItem.label`. """
     def __iter__(self):
-        keys = _registry.keys()
-        keys.sort()
-        for key in keys:
-            yield (key, _registry[key].label)
+        values = _registry.values()
+        values.sort(key=lambda i: i.label)
+        for v in values:
+            yield (v.get_key(), v)

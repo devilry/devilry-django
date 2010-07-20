@@ -50,7 +50,6 @@ class AssignmentTreeWalker(object):
                 self.assignmentgroup(group, groupdir)
 
                 for delivery in server.list_deliveries(group['id']):
-                    print(delivery['time_of_delivery'])
                     time_of_delivery = delivery['time_of_delivery'].strftime(
                             DATETIME_FORMAT)
                     deliveryname = "%s_id-%d" % (time_of_delivery,

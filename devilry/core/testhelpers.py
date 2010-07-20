@@ -1,9 +1,11 @@
+from datetime import datetime, timedelta
+
 from django.contrib.auth.models import User
 
+import gradeplugin_registry
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
         Delivery, FileMeta, Candidate
 from deliverystore import FileNotFoundError
-from datetime import datetime, timedelta
 
 
 
@@ -45,6 +47,9 @@ def create_from_path(path):
     if len(p) > 3:
         assignment = Assignment(parentnode=period, short_name=p[3],
                 long_name=p[3], publishing_time=datetime.now())
+        gradeplugin = gradeplugin_registry.KeyLabelIterable().__iter__().next()[0]
+        assignment.grade_plugin = gradeplugin
+        
         try:
             assignment.save()
         except:
