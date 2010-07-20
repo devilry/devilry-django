@@ -28,5 +28,9 @@
   {% if assignments.all.count %}
     <li><a href='{% url devilry-admin-list_assignments %}'>Assignments</a></li>
   {% endif %}
+
+   {% if assignmentgroups.all.count %}
+    <li><a href='{% url devilry-admin-list_assignmentgroups %}'>Assignment groups</a></li>
+  {% endif %}
 </ul>
 {% endblock %}

@@ -2,9 +2,9 @@ from django.conf.urls.defaults import *
 
 
 generic_urls = []
-for x in ('node', 'subject', 'period', 'assignment'):
+for x in ('node', 'subject', 'period', 'assignment', 'assignmentgroup'):
     generic_urls += [
-        url(r'^%ss/edit/(?P<node_id>\d+)$' % x, 'views.edit_%s' % x,
+        url(r'^%ss/edit/(?P<obj_id>\d+)$' % x, 'views.edit_%s' % x,
             name='devilry-admin-edit_%s' % x),
         url(r'^%ss/add/$' % x, 'views.edit_%s' % x,
             name='devilry-admin-add_%s' % x),
