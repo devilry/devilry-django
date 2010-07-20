@@ -32,7 +32,7 @@ create-core-testdata:
 	python manage.py dumpdata core.delivery --indent=4 > core/fixtures/tests/core/deliveries.json
 
 cleardb:
-	rm -i db.sqlite3
+	rm -f db.sqlite3
 	python manage.py syncdb --noinput
 	@echo
 	@echo "Database is now clean."
@@ -45,7 +45,7 @@ create-exampledata:
 	python manage.py dumpdata auth.user --indent=4 > core/fixtures/exampleusers.json
 
 reset-exampledb:
-	rm -i db.sqlite3
+	rm -f db.sqlite3
 	python manage.py syncdb --noinput
 	python manage.py loaddata -v0 exampleusers
 	python manage.py loaddata -v0 exampledata
