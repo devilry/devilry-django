@@ -1,18 +1,12 @@
 import sys
-from os import makedirs, getcwd, chdir
-import os.path
+import os
 from cookielib import LWPCookieJar
 import urllib2
 import logging
 from urlparse import urljoin
-import getpass
-from ConfigParser import ConfigParser
-from xmlrpclib import ServerProxy
-from optparse import OptionParser
 import re
 import xmlrpclib
 
-from cookie_transport import CookieTransport, SafeCookieTransport
 
 # TODO: chmod cookies.txt
 
@@ -145,13 +139,13 @@ class AssignmentSync(AssignmentTreeWalker):
 
 
     def __init__(self, configdir, cookiepath, server, serverurl):
-        cwd = getcwd()
-        chdir(configdir)
+        cwd = os.getcwd()
+        os.chdir(configdir)
         try:
             super(AssignmentSync, self).__init__(cookiepath, server,
                     serverurl)
         finally:
-            chdir(cwd)
+            os.chdir(cwd)
 
     def assignment(self, assignment, assignmentdir):
         super(AssignmentSync, self).assignment(assignment, assignmentdir)
@@ -161,7 +155,7 @@ class AssignmentSync(AssignmentTreeWalker):
 
     def assignment_new(self, assignment, assignmentdir):
         logging.info('+ %s' % assignmentdir)
-        makedirs(assignmentdir)
+        os.makedirs(assignmentdir)
 
     def assignment_exists(self, assignment, assignmentdir):
         logging.debug('%s already os.path.exists' % assignmentdir)
@@ -172,14 +166,14 @@ class AssignmentSync(AssignmentTreeWalker):
 
     def assignmentgroup_new(self, group, groupdir):
         logging.info('+ %s' % groupdir)
-        makedirs(groupdir)
+        os.makedirs(groupdir)
 
     def assignmentgroup_exists(self, group, groupdir):
         logging.debug('%s already os.path.exists' % groupdir)
 
     def delivery_new(self, delivery, deliverydir, filesdir):
         logging.info('+ %s' % deliverydir)
-        makedirs(filesdir)
+        os.makedirs(filesdir)
 
     def delivery_exists(self, delivery, deliverydir, filesdir):
         logging.debug('%s already os.path.exists' % deliverydir)
@@ -215,155 +209,6 @@ class AssignmentSync(AssignmentTreeWalker):
             ext = 'txt'
         feedbackfile = os.path.join(deliverydir, 'feedback.server.%s' % ext)
         open(feedbackfile, 'wb').write(feedback['text'])
-
-
-class Command(object):
-    """ Base class for all commands in the cli. """
-    description = None
-    name = None
-    args_help = '[args]'
-
-    def __init__(self):
-        self.config = ConfigParser()
-        self._confdir = None
-        self.op = OptionParser(usage="usage: %%prog %s [options] %s" % (
-                self.name, self.args_help))
-        self.op.add_option("-q", "--quiet", action="store_const",
-            const=logging.ERROR, dest="loglevel", default=logging.INFO,
-            help="Don't show extra information (only errors).")
-        self.op.add_option("--debug", action="store_const",
-            const=logging.DEBUG, dest="loglevel",
-            help="Show all output, for debugging.")
-        self.add_options()
-        self._read_config()
-
-    def _read_config(self):
-        self.config.read([self.get_configfile()])
-
-    def get_configfile(self):
-        """
-        Uses :meth:`get_configdir` to find config.cfg in the configdir.
-        """
-        return os.path.join(self.get_configdir(), 'config.cfg')
-
-
-    def write_config(self):
-        """ Update the configfile on disk. """
-        self.config.write(open(self.get_configfile(), 'wb'))
-
-    def set_config(self, key, value):
-        """ Set a config value. """
-        if not self.config.has_section('settings'):
-            self.config.add_section('settings')
-        self.config.set('settings', key, value)
-
-    def get_config(self, key):
-        """ Get a config value. """
-        return self.config.get('settings', key)
-
-    def get_url(self):
-        """ Get server url from config-file. """
-        return self.get_config('url')
-
-    def find_configdir(self, path=None):
-        """
-        Find and return the configdir, but do not change any variables.
-        Returns ``None`` if there is no .devilry directory within any of the
-        parent-directory of ``path``.
-
-        :param path: Defaults to current working directory.
-        """
-        path = path or getcwd()
-        while True:
-            cdir = os.path.join(path, '.devilry')
-            if os.path.exists(cdir):
-                return cdir
-            p = os.path.dirname(path)
-            if p == path:
-                break
-            path = p
-        return None
-
-    def get_configdir(self):
-        """
-        Use :meth:`find_configdir` to find the configdir, and cache it so we
-        don't have to search on subsequent calls.
-        """
-        if self._confdir:
-            return self._confdir
-        cdir = self.find_configdir()
-        if not cdir:
-            raise SystemExit('You are not in a Devilry directory tree.')
-        self._confdir = cdir
-        return cdir
-
-    @classmethod
-    def split_relpath(cls, root, path):
-        """
-        Get a list of directory-names in ``path`` relative to ``root``.
-        """
-        path = os.path.abspath(path)
-        cdir = root
-        if not cdir:
-            raise SystemExit('You are not in a Devilry directory tree.')
-        rootdir = os.path.dirname(cdir)
-        paths = os.path.relpath(path, rootdir).split(os.path.sep)
-        return paths
-
-    def failed_detecting_id(self):
-        raise SystemExit(
-                'Could not determine id from directory name. ' \
-                'Use --help for more info.')
-
-    def determine_id(self, idstr, pathlen):
-        id = idstr
-        if not id.isdigit():
-            paths = self.split_relpath(self.find_configdir(path), id)
-            if len(paths) != pathlen:
-                self.failed_detecting_id()
-            id = id_from_path(paths[-1])
-            if id == None:
-                self.failed_detecting_id()
-        return id
-
-    def cli(self, argv):
-        self.opt, self.args = self.op.parse_args(argv)
-        logging.basicConfig(level=self.opt.loglevel,
-            format="*** %(levelname)s: %(message)s")
-        self.command()
-
-    def add_user_option(self):
-        self.op.add_option("-u", "--username", metavar="USERNAME",
-            dest="username", default=getpass.getuser(),
-            help="Username default to current system user (%s)." % getpass.getuser())
-
-    def add_options(self):
-        pass
-
-    def command(self):
-        pass
-
-    def print_help(self):
-        self.op.print_help()
-
-    def exit_help(self):
-        self.print_help()
-        raise SystemExit()
-
-    def validate_argslen(self, length):
-        if len(self.args) != length:
-            self.exit_help()
-
-    def get_cookiepath(self):
-        return os.path.join(self.get_configdir(), 'cookies.txt')
-
-    def get_server(self):
-        url = urljoin(self.get_url(), self.urlpath)
-        if url.startswith('https'):
-            transport=SafeCookieTransport(self.get_cookiepath())
-        else:
-            transport=CookieTransport(self.get_cookiepath())
-        return ServerProxy(url, transport=transport)
 
 
 class Cli(object):
