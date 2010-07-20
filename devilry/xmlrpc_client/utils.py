@@ -218,6 +218,7 @@ class AssignmentSync(AssignmentTreeWalker):
 
 
 class Command(object):
+    """ Base class for all commands in the cli. """
     description = None
     name = None
     args_help = '[args]'
@@ -234,29 +235,45 @@ class Command(object):
             const=logging.DEBUG, dest="loglevel",
             help="Show all output, for debugging.")
         self.add_options()
-        self.read_config()
+        self._read_config()
 
-    def get_configfile(self):
-        return os.path.join(self.get_configdir(), 'config.cfg')
-
-    def read_config(self):
+    def _read_config(self):
         self.config.read([self.get_configfile()])
 
+    def get_configfile(self):
+        """
+        Uses :meth:`get_configdir` to find config.cfg in the configdir.
+        """
+        return os.path.join(self.get_configdir(), 'config.cfg')
+
+
     def write_config(self):
+        """ Update the configfile on disk. """
         self.config.write(open(self.get_configfile(), 'wb'))
 
     def set_config(self, key, value):
+        """ Set a config value. """
         if not self.config.has_section('settings'):
             self.config.add_section('settings')
         self.config.set('settings', key, value)
 
     def get_config(self, key):
+        """ Get a config value. """
         return self.config.get('settings', key)
 
     def get_url(self):
+        """ Get server url from config-file. """
         return self.get_config('url')
 
-    def find_confdir(self, path=getcwd()):
+    def find_configdir(self, path=None):
+        """
+        Find and return the configdir, but do not change any variables.
+        Returns ``None`` if there is no .devilry directory within any of the
+        parent-directory of ``path``.
+
+        :param path: Defaults to current working directory.
+        """
+        path = path or getcwd()
         while True:
             cdir = os.path.join(path, '.devilry')
             if os.path.exists(cdir):
@@ -268,17 +285,25 @@ class Command(object):
         return None
 
     def get_configdir(self):
+        """
+        Use :meth:`find_configdir` to find the configdir, and cache it so we
+        don't have to search on subsequent calls.
+        """
         if self._confdir:
             return self._confdir
-        cdir = self.find_confdir()
+        cdir = self.find_configdir()
         if not cdir:
             raise SystemExit('You are not in a Devilry directory tree.')
         self._confdir = cdir
         return cdir
 
-    def split_relpath(self, path):
+    @classmethod
+    def split_relpath(cls, root, path):
+        """
+        Get a list of directory-names in ``path`` relative to ``root``.
+        """
         path = os.path.abspath(path)
-        cdir = self.find_confdir(path)
+        cdir = root
         if not cdir:
             raise SystemExit('You are not in a Devilry directory tree.')
         rootdir = os.path.dirname(cdir)
@@ -293,7 +318,7 @@ class Command(object):
     def determine_id(self, idstr, pathlen):
         id = idstr
         if not id.isdigit():
-            paths = self.split_relpath(id)
+            paths = self.split_relpath(self.find_configdir(path), id)
             if len(paths) != pathlen:
                 self.failed_detecting_id()
             id = id_from_path(paths[-1])
