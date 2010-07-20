@@ -657,11 +657,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
 
-<<<<<<< HEAD
-    .. attribute:: students
-=======
    .. attribute:: candidates
->>>>>>> 04dc90fd6241f4a76c96a34207f5d817b2fba4a8
 
         A django.db.models.ManyToManyField_ that holds the student(s) that have
         handed in the assignment
