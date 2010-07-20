@@ -10,3 +10,4 @@ How-to's
     plugins
     grade-plugins
     xmlrpc
+    cli

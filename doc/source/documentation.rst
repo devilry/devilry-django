@@ -40,6 +40,7 @@ Developing devilry
 ------------------
 
 * :ref:`developer-howto-documentation`
+* :ref:`developer-howto-cli`
 
 
 
