@@ -7,13 +7,14 @@ import httplib
 
 class XmlrpcTestClientTransport(object):
 
-    def __init__(self, client):
+    def __init__(self, client, use_datetime=True):
         self.client = client
+        self.use_datetime = use_datetime
 
     def getparser(self):
-        return getparser()
+        return getparser(use_datetime=self.use_datetime)
 
-    def request(self, host, handler, request_body, verbose = False):
+    def request(self, host, handler, request_body, verbose=False):
         parser, unmarshaller = self.getparser()
         response = self.client.post(handler, request_body, 'text/xml')
         if response.status_code != 200:
@@ -26,6 +27,7 @@ class XmlrpcTestClientTransport(object):
         parser.feed(response.content)
         return unmarshaller.close()
 
+
 def get_serverproxy(client, path):
     return ServerProxy('http://localhost' + path,
             transport=XmlrpcTestClientTransport(client))
@@ -36,3 +38,6 @@ class XmlRpcAssertsMixin(object):
 
     def login(self, client, username):
         get_serverproxy(client, '/xmlrpc/').login(username, 'test')
+
+    def logout(self, client):
+        get_serverproxy(client, '/xmlrpc/').logout()
