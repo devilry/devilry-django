@@ -102,11 +102,27 @@ class EditNode(EditNodeBase):
                     queryset = Node.where_is_admin(self.request.user))
             class Meta:
                 model = Node
+                fields = ['parentnode', 'short_name', 'long_name', 'admins']
+                widgets = {
+                    'admins': DevilryMultiSelectFew,
+                }
         return NodeForm
 
 class EditSubject(EditNodeBase):
     VIEW_NAME = 'subject'
     MODEL_CLASS = Subject
+
+    def create_form(self):
+        class Form(forms.ModelForm):
+            parentnode = forms.ModelChoiceField(required=True,
+                    queryset = Node.where_is_admin(self.request.user))
+            class Meta:
+                model = Subject
+                fields = ['parentnode', 'short_name', 'long_name', 'admins']
+                widgets = {
+                    'admins': DevilryMultiSelectFew,
+                }
+        return Form
 
 class EditPeriod(EditNodeBase):
     VIEW_NAME = 'period'
@@ -122,6 +138,7 @@ class EditPeriod(EditNodeBase):
                 widgets = {
                     'start_time': DevilryDateTimeWidget,
                     'end_time': DevilryDateTimeWidget,
+                    'admins': DevilryMultiSelectFew,
                 }
         return Form
 
@@ -139,12 +156,12 @@ class EditAssignment(EditNodeBase):
             
             class Meta:
                 model = Assignment
-                fields = ['parentnode', 'short_name', 'long_name', 'publishing_time', 'deadline', 'admins']
+                fields = ['parentnode', 'short_name', 'long_name', 'publishing_time', 'admins']
                 if self.is_new:
                     fields.append('grade_plugin')
                 widgets = {
                     'publishing_time': DevilryDateTimeWidget,
-                    'deadline': DevilryDateTimeWidget,
+                    #'deadline': DevilryDateTimeWidget,
                     'admins': DevilryMultiSelectFew,
                 }
         return Form
