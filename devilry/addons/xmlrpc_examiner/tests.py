@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
-from devilry.core.models import Assignment, Delivery, FileMeta, Feedback
+from devilry.core.models import Assignment, AssignmentGroup, Delivery, FileMeta, Feedback
 from devilry.core.deliverystore import MemoryDeliveryStore
 
 
@@ -36,7 +36,6 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(o1['long_name'], oblig1.long_name)
         self.assertEquals(o1['path'], oblig1.get_path())
         self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
-        self.assertEquals(o1['deadline'], oblig1.deadline)
         self.assertEquals(o1['xmlrpc_conf'], False)
 
         future = datetime.now() + timedelta(10)
@@ -50,6 +49,9 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertLoginRequired(self.s.list_assignmentgroups,
                 'inf1100.looong.oblig1')
         self.login(self.client, 'examiner1')
+        ag = AssignmentGroup.objects.get(id=1)
+        ag.deadline_set.create(deadline=datetime(2012, 1, 1), text=None)
+        
         lst = self.s.list_assignmentgroups('inf1100.looong.oblig1')
         self.assertEquals(len(lst), 2)
         self.assertEquals(lst[0]['id'], 1)
@@ -62,7 +64,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         a.save()
         lst = self.s.list_assignmentgroups('inf1100.looong.oblig1')
         self.assertEquals(lst[1]['students'], ['2', '3'])
-
+        
     def test_list_deliveries(self):
         FileMeta.deliverystore = MemoryDeliveryStore()
         self.assertLoginRequired(self.s.list_deliveries, 1)

@@ -9,7 +9,6 @@
             "parentnode": 1, 
             "long_name": "Obligatory assignment one", 
             "admins": [], 
-            "deadline": "2109-06-05 00:31:43", 
             "anonymous": false
         }
     }, 
@@ -23,7 +22,6 @@
             "parentnode": 1, 
             "long_name": "Obligatory assignment two", 
             "admins": [], 
-            "deadline": "2010-06-05 01:08:01", 
             "anonymous": false
         }
     }, 
@@ -37,7 +35,6 @@
             "parentnode": 2, 
             "long_name": "A old assignment", 
             "admins": [], 
-            "deadline": "2010-06-01 00:00:00", 
             "anonymous": false
         }
     }

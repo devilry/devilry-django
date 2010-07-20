@@ -472,7 +472,6 @@ class Assignment(models.Model, BaseNode):
     parentnode = models.ForeignKey(Period)
     publishing_time = models.DateTimeField()
     anonymous = models.BooleanField(default=False)
-    deadline = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
             choices=gradeplugin_registry.KeyLabelIterable())
@@ -583,23 +582,15 @@ class Assignment(models.Model, BaseNode):
         Always call this before save()! Read about validation here:
         http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
 
-        Raises ValidationError if:
-
-            - ``deadline`` is before ``publishing_time``.
-            - ``deadline`` or ``publishing_time`` is not between
-              ``Period.start_time`` and ``Period.end_time``.
+        Raises ValidationError if ``publishing_time`` is not between
+        :attr:`Period.start_time` and ``Period.end_time``.
         """
-        if self.deadline < self.publishing_time:
-            raise ValidationError(_('Publishing time must be before deadline.'))
         if self.publishing_time < self.parentnode.start_time  or \
                 self.publishing_time > self.parentnode.end_time:
             raise ValidationError(
                     _("Publishing time must be within it's period (%(period)s)."
                         % dict(period=unicode(self.parentnode))))
-        if self.deadline > self.parentnode.end_time:
-            raise ValidationError(
-                    _("Deadline must be within it's period (%(period)s)."
-                        % dict(period=unicode(self.parentnode))))
+       
         super(Assignment, self).clean(*args, **kwargs)
 
 
@@ -680,8 +671,8 @@ class AssignmentGroup(models.Model):
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
-
-
+    
+    
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
@@ -861,6 +852,32 @@ class AssignmentGroup(models.Model):
 
     def get_number_of_deliveries(self):
         return self.delivery_set.all().count()
+
+
+class Deadline(models.Model):
+    assignment_group = models.ForeignKey(AssignmentGroup) 
+    deadline = models.DateTimeField()
+    text = models.TextField(blank=True, null=True)
+    
+    def clean(self, *args, **kwargs):
+        """Validate the deadline.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - ``deadline`` is before ``Assignment.publishing_time``. 
+            - ``deadline`` is not before ``Period.end_time``.
+        """
+        if self.deadline < self.assignment_group.parentnode.publishing_time:
+            raise ValidationError(_('Publishing time must be before deadline.'))
+
+        if self.deadline > self.assignment_group.parentnode.parentnode.end_time:
+            raise ValidationError(
+                    _("Deadline must be within it's period (%(period)s)."
+                        % dict(period=unicode(self.assignment_group.parentnode.parentnode))))
+        super(Deadline, self).clean(*args, **kwargs)
 
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?

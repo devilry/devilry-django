@@ -35,9 +35,6 @@ def list_active_assignments(request):
 
             publishing_time
                 The ``publishing_time`` of the assignment.
-
-            deadline
-                The ``deadline`` of the assignment.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
 
@@ -51,7 +48,6 @@ def list_active_assignments(request):
             'long_name': a.long_name,
             'path': a.get_path(),
             'publishing_time': a.publishing_time,
-            'deadline': a.deadline,
             'xmlrpc_conf': xmlrpc_conf(a),
             }
         for a in assignments]
@@ -92,6 +88,7 @@ def list_assignmentgroups(request, assignment_path):
     assignment_groups = [{
             'id': g.id,
             'students': [u.get_identifier() for u in g.candidate_set.all()],
+            'deadlines': [u for u in g.deadline_set.all()],
             'number_of_deliveries': g.get_number_of_deliveries()}
         for g in assignment_groups]
     return assignment_groups

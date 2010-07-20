@@ -227,8 +227,7 @@ class TestAssignment(TestCase):
     def test_unique(self):
         n = Assignment(parentnode=Period.objects.get(short_name='looong'),
                 short_name='oblig1', long_name='O1',
-                publishing_time=datetime.now(),
-                deadline=datetime.now())
+                publishing_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
 
     def test_where_is_admin(self):
@@ -310,21 +309,11 @@ class TestAssignment(TestCase):
         self.assertEquals(2,
                 oblig1.assignment_groups_where_is_examiner(examiner1).count())
 
-    def test_clean_publishing_time_vs_deadline(self):
-        oblig1 = Assignment.objects.get(id=1)
-        oblig1.publishing_time = datetime(2011, 12, 24)
-        oblig1.deadline = datetime(2012, 1, 1)
-        oblig1.clean()
-        oblig1.publishing_time = datetime(2012, 12, 24)
-        oblig1.deadline = datetime(2011, 1, 1)
-        self.assertRaises(ValidationError, oblig1.clean)
-
     def test_clean_publishing_time_before(self):
         oblig1 = Assignment.objects.get(id=1)
         oblig1.parentnode.start_time = datetime(2010, 1, 1)
         oblig1.parentnode.end_time = datetime(2011, 1, 1)
         oblig1.publishing_time = datetime(2010, 1, 2)
-        oblig1.deadline = datetime(2010, 5, 5)
         oblig1.clean()
         oblig1.publishing_time = datetime(2009, 1, 1)
         self.assertRaises(ValidationError, oblig1.clean)
@@ -334,19 +323,8 @@ class TestAssignment(TestCase):
         oblig1.parentnode.start_time = datetime(2010, 1, 1)
         oblig1.parentnode.end_time = datetime(2011, 1, 1)
         oblig1.publishing_time = datetime(2010, 1, 2)
-        oblig1.deadline = datetime(2010, 5, 5)
         oblig1.clean()
         oblig1.publishing_time = datetime(2012, 1, 1)
-        self.assertRaises(ValidationError, oblig1.clean)
-
-    def test_clean_deadline_after(self):
-        oblig1 = Assignment.objects.get(id=1)
-        oblig1.parentnode.start_time = datetime(2010, 1, 1)
-        oblig1.parentnode.end_time = datetime(2011, 1, 1)
-        oblig1.publishing_time = datetime(2010, 1, 2)
-        oblig1.deadline = datetime(2010, 5, 5)
-        oblig1.clean()
-        oblig1.deadline = datetime(2012, 1, 1)
         self.assertRaises(ValidationError, oblig1.clean)
         
     def test_get_path(self):
@@ -479,7 +457,27 @@ class TestAssignmentGroup(TestCase):
         self.assertTrue(a.is_student(student1))
         self.assertFalse(a.is_student(student2))
 
+    def test_clean_deadline_after_endtime(self):
+        assignment_group = AssignmentGroup.objects.get(id=1)
+        oblig1 = assignment_group.parentnode
+        oblig1.parentnode.start_time = datetime(2010, 1, 1)
+        oblig1.parentnode.end_time = datetime(2011, 1, 1)
+        oblig1.publishing_time = datetime(2010, 1, 2)
+        deadline = assignment_group.deadline_set.create(deadline=datetime(2010, 5, 5), text=None)
+        deadline.clean()
+        deadline = assignment_group.deadline_set.create(deadline=datetime(2012, 1, 1), text=None)
+        self.assertRaises(ValidationError, deadline.clean)
 
+    def test_clean_deadline_before_publishing_time(self):
+        assignment_group = AssignmentGroup.objects.get(id=1)
+        oblig1 = assignment_group.parentnode
+        oblig1.publishing_time = datetime(2011, 12, 24)
+        deadline = assignment_group.deadline_set.create(deadline=datetime(2012, 1, 1), text=None)
+        deadline.clean()
+        oblig1.publishing_time = datetime(2012, 12, 24)
+        deadline = assignment_group.deadline_set.create(deadline=datetime(2011, 12, 24), text=None)
+        self.assertRaises(ValidationError, deadline.clean)
+        
 class TestCandidate(TestCase):
     fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
             'tests/core/periods', 'tests/core/assignments',

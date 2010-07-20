@@ -44,8 +44,7 @@ def create_from_path(path):
         last = period
     if len(p) > 3:
         assignment = Assignment(parentnode=period, short_name=p[3],
-                long_name=p[3], publishing_time=datetime.now(),
-                deadline=datetime.now() + timedelta(5))
+                long_name=p[3], publishing_time=datetime.now())
         try:
             assignment.save()
         except:

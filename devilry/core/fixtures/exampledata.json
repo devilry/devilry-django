@@ -163,7 +163,6 @@
                 4, 
                 5
             ], 
-            "deadline": "2040-01-01 00:00:00", 
             "anonymous": false
         }
     }, 
@@ -177,7 +176,6 @@
             "parentnode": 2, 
             "long_name": "Oblig2", 
             "admins": [], 
-            "deadline": "2010-02-26 23:05:14", 
             "anonymous": false
         }
     }, 
@@ -191,7 +189,6 @@
             "parentnode": 4, 
             "long_name": "Oblig 2", 
             "admins": [], 
-            "deadline": "2029-03-16 00:00:00", 
             "anonymous": false
         }
     }, 
@@ -205,7 +202,6 @@
             "parentnode": 4, 
             "long_name": "Oblig 1", 
             "admins": [], 
-            "deadline": "2029-05-01 12:00:00", 
             "anonymous": false
         }
     }, 
@@ -221,7 +217,6 @@
             "admins": [
                 3
             ], 
-            "deadline": "2010-03-12 20:23:00", 
             "anonymous": false
         }
     }, 
@@ -238,7 +233,6 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-03-15 21:19:20", 
             "anonymous": false
         }
     }, 
@@ -255,7 +249,6 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-09-11 21:34:05", 
             "anonymous": false
         }
     }, 
@@ -272,7 +265,6 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-10-11 21:34:51", 
             "anonymous": false
         }
     }, 
@@ -289,7 +281,6 @@
                 4, 
                 5
             ], 
-            "deadline": "2010-11-11 21:35:10", 
             "anonymous": false
         }
     }, 
@@ -305,7 +296,6 @@
             "admins": [
                 4
             ], 
-            "deadline": "2008-03-11 21:38:04", 
             "anonymous": false
         }
     }, 
@@ -321,7 +311,6 @@
             "admins": [
                 6
             ], 
-            "deadline": "2008-03-11 23:39:43", 
             "anonymous": false
         }
     }, 
