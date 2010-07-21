@@ -607,7 +607,8 @@ class Assignment(models.Model, BaseNode):
 
 class Candidate(models.Model):
     student = models.ForeignKey(User)
-    assignment_group = models.ForeignKey('AssignmentGroup')
+    assignment_group = models.ForeignKey('AssignmentGroup',
+            related_name='candidates')
 
     # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
@@ -647,7 +648,6 @@ class Candidate(models.Model):
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
-# TODO: students should be named candidates?
 class AssignmentGroup(models.Model, CommonInterface):
     """
     Represents a student or a group of students. 
@@ -658,10 +658,9 @@ class AssignmentGroup(models.Model, CommonInterface):
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
 
-   .. attribute:: candidates
+    .. attribute:: candidates
 
-        A django.db.models.ManyToManyField_ that holds the student(s) that have
-        handed in the assignment
+        A django ``RelatedManager`` that holds the candidates on this group.
 
     .. attribute:: examiners
 
@@ -675,12 +674,7 @@ class AssignmentGroup(models.Model, CommonInterface):
     """
 
     parentnode = models.ForeignKey(Assignment)
-    
     name = models.CharField(max_length=30, blank=True, null=True)
-    
-    candidates = models.ManyToManyField(User, blank=True, through=Candidate,
-            related_name='candidates')
-
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
@@ -710,7 +704,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return AssignmentGroup.objects.filter(candidates=user_obj)
+        return AssignmentGroup.objects.filter(candidates__student=user_obj)
 
     @classmethod
     def published_where_is_candidate(cls, user_obj):
@@ -802,7 +796,7 @@ class AssignmentGroup(models.Model, CommonInterface):
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
-                ', '.join([unicode(x) for x in self.candidates.all()]))
+                self.get_candidates())
     
     def get_students(self):
         """ Get a string containing all students in the group separated by
@@ -813,7 +807,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         instead.
         """
         return u', '.join(
-                [c.student.username for c in self.candidate_set.all()])
+                [c.student.username for c in self.candidates.all()])
     get_students.short_description = _('Students')
  
     def get_candidates(self):
@@ -823,7 +817,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         assignments.
         """
         return u', '.join(
-                [c.get_identifier() for c in self.candidate_set.all()])
+                [c.get_identifier() for c in self.candidates.all()])
     get_students.short_description = _('Students')
 
     def get_examiners(self):
@@ -836,7 +830,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.parentnode.is_admin(user_obj)
 
     def is_candidate(self, user_obj):
-        return self.candidate_set.filter(student=user_obj).count() > 0
+        return self.candidates.filter(student=user_obj).count() > 0
 
     def is_examiner(self, user_obj):
         """ Return True if user is examiner on this assignment group """
