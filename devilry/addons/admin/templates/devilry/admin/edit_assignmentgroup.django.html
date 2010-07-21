@@ -28,14 +28,14 @@
 
   <fieldset class='stdfieldset'>
     <h2 class='legend'>{% trans "Deadlines" %}</h2>
+    {% comment %}
     <table>
       {{ deadline_form.as_table }}
     </table>
-    {% comment %}
+    {% endcomment %}
     {% with deadline_form as formset %}
       {% include "devilry/ui/include/tabular-inline.django.html" %}
     {% endwith %}
-    {% endcomment %}
   </fieldset>
 
   <fieldset class='stdfieldset'>
