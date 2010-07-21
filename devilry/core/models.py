@@ -675,7 +675,7 @@ class AssignmentGroup(models.Model, CommonInterface):
 
     parentnode = models.ForeignKey(Assignment)
     
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, blank=True, null=True)
     
     candidates = models.ManyToManyField(User, blank=True, through=Candidate,
             related_name='candidates')
