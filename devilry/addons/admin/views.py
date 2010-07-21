@@ -227,6 +227,7 @@ class EditAssignmentGroup(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Assignment.where_is_admin(self.request.user))
+            examiners = MultiSelectCharField(widget=DevilryMultiSelectFew)
                         
             class Meta:
                 model = AssignmentGroup
@@ -237,15 +238,14 @@ class EditAssignmentGroup(EditBase):
         return Form
 
     def create_view(self):
+        if not self.obj.can_save(self.request.user):
+            return HttpResponseForbidden("Forbidden")
 
         assignmentgroup = AssignmentGroup.objects.get(pk=self.obj.id)
         DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
                 extra=1)
         CandidatesFormSet = inlineformset_factory(AssignmentGroup,
                 Candidate, extra=1)
-
-        if not self.obj.can_save(self.request.user):
-            return HttpResponseForbidden("Forbidden")
 
         model_name = AssignmentGroup._meta.verbose_name
         model_name_dict = {'model_name': model_name}
@@ -274,19 +274,17 @@ class EditAssignmentGroup(EditBase):
             self.title = _('Edit %(model_name)s' % model_name_dict)
 
 
-        dic = {
-            'title': self.title,
-            'model_plural_name': AssignmentGroup._meta.verbose_name_plural,
-            'nodeform': objform,
-            'messages': self.messages,
-            'post_url': self.post_url,
-            }
-        dic['deadline_form'] = deadline_formset
-        dic['candidates_form'] = candidates_formset
 
-        return render_to_response('devilry/admin/edit_assignmentgroup.django.html', 
-                                  dic,
-                                  context_instance=RequestContext(self.request))
+        return render_to_response(
+                'devilry/admin/edit_assignmentgroup.django.html', {
+                    'title': self.title,
+                    'model_plural_name': AssignmentGroup._meta.verbose_name_plural,
+                    'nodeform': objform,
+                    'messages': self.messages,
+                    'post_url': self.post_url,
+                    'deadline_form': deadline_formset,
+                    'candidates_form': candidates_formset
+                }, context_instance=RequestContext(self.request))
 
 @login_required
 def edit_node(request, obj_id=None, successful_save=False):
