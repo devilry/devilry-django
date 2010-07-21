@@ -703,7 +703,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         ).distinct()
 
     @classmethod
-    def where_is_student(cls, user_obj):
+    def where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
         
@@ -713,7 +713,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         return AssignmentGroup.objects.filter(candidates=user_obj)
 
     @classmethod
-    def published_where_is_student(cls, user_obj):
+    def published_where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all :ref:`published
         <assignment-classifications>` assignment groups where the given user
         is student.
@@ -721,11 +721,11 @@ class AssignmentGroup(models.Model, CommonInterface):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return cls.where_is_student(user_obj).filter(
+        return cls.where_is_candidate(user_obj).filter(
                 parentnode__publishing_time__lt = datetime.now())
 
     @classmethod
-    def active_where_is_student(cls, user_obj):
+    def active_where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all :ref:`active
         <assignment-classifications>` assignment groups where the given user
         is student.
@@ -734,12 +734,12 @@ class AssignmentGroup(models.Model, CommonInterface):
         :rtype: QuerySet
         """
         now = datetime.now()
-        return cls.published_where_is_student(user_obj).filter(
+        return cls.published_where_is_candidate(user_obj).filter(
                 parentnode__parentnode__start_time__lt = now,
                 parentnode__parentnode__end_time__gt = now)
 
     @classmethod
-    def old_where_is_student(cls, user_obj):
+    def old_where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all :ref:`old
         <assignment-classifications>` assignment groups where the given user
         is student.
@@ -748,7 +748,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         :rtype: QuerySet
         """
         now = datetime.now()
-        return cls.where_is_student(user_obj).filter(
+        return cls.where_is_candidate(user_obj).filter(
                 parentnode__parentnode__end_time__lt = now)
 
 
@@ -835,7 +835,7 @@ class AssignmentGroup(models.Model, CommonInterface):
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
 
-    def is_student(self, user_obj):
+    def is_candidate(self, user_obj):
         return self.candidate_set.filter(student=user_obj).count() > 0
 
     def is_examiner(self, user_obj):

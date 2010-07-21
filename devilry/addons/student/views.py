@@ -1,4 +1,5 @@
 from os.path import basename
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -6,13 +7,12 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.forms.formsets import formset_factory
-from devilry.core.models import (Delivery, AssignmentGroup,
-        Node, Subject, Period, Assignment, FileMeta)
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from devilry.ui.messages import UiMessages
-from devilry.core.utils.GroupNodes import group_assignments, group_assignmentgroups
+from devilry.core.utils.GroupNodes import group_assignmentgroups
+from devilry.core.models import Delivery, AssignmentGroup
 
 
 
@@ -23,7 +23,7 @@ UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
 @login_required
 def add_delivery_choose_assignment(request):
-    active_assignment_groups = AssignmentGroup.active_where_is_student(request.user)
+    active_assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
     subjects = group_assignmentgroups(active_assignment_groups)
 
     return render_to_response('devilry/student/add_delivery_choose_assignment.django.html', {
@@ -36,7 +36,7 @@ def add_delivery_choose_assignment(request):
 @transaction.autocommit
 def add_delivery(request, assignment_group_id, messages=None):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignment_group_id)
-    if not assignment_group.is_student(request.user):
+    if not assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     if request.method == 'POST':
         formset = UploadFileFormSet(request.POST, request.FILES)
@@ -72,7 +72,7 @@ def successful_delivery(request, assignment_group_id):
 
 @login_required
 def show_history(request):
-    old_assignment_groups = AssignmentGroup.published_where_is_student(request.user)
+    old_assignment_groups = AssignmentGroup.published_where_is_candidate(request.user)
     subjects = group_assignmentgroups(old_assignment_groups)
 
     return render_to_response('devilry/student/show-history.django.html', {
@@ -82,7 +82,7 @@ def show_history(request):
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
-    if not assignment_group.is_student(request.user):
+    if not assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_assignmentgroup.django.html', {
         'assignment_group': assignment_group,
@@ -91,7 +91,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
 @login_required
 def show_delivery(request, delivery_id):
     delivery = get_object_or_404(Delivery, pk=delivery_id)
-    if not delivery.assignment_group.is_student(request.user):
+    if not delivery.assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_delivery.django.html', {
         'delivery': delivery,
