@@ -230,7 +230,7 @@ class EditAssignmentGroup(EditBase):
                         
             class Meta:
                 model = AssignmentGroup
-                fields = ['parentnode', 'name', 'examiners']
+                fields = ['parentnode', 'name', 'examiners', 'is_open']
                 widgets = {
                     'examiners': DevilryMultiSelectFew,
                     }
@@ -239,23 +239,23 @@ class EditAssignmentGroup(EditBase):
     def create_view(self):
         dic = self.make_view() 
         assignmentgroup = AssignmentGroup.objects.get(pk=self.obj.id)
-        DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline, max_num=1)
-        CandidatesFormSet = inlineformset_factory(AssignmentGroup, Candidate, max_num=1)
+        #DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline, max_num=1)
+        #CandidatesFormSet = inlineformset_factory(AssignmentGroup, Candidate, max_num=1)
 
-        if self.request.method == "POST":
-            deadline_formset = DeadlineFormSet(self.request.POST, instance=assignmentgroup)
-            candidates_formset = CandidatesFormSet(self.request.POST, instance=assignmentgroup)
+        #if self.request.method == "POST":
+            #deadline_formset = DeadlineFormSet(self.request.POST, instance=assignmentgroup)
+            #candidates_formset = CandidatesFormSet(self.request.POST, instance=assignmentgroup)
             
-            if deadline_formset.is_valid():
-                deadline_formset.save()
-            if candidates_formset.is_valid():
-                candidates_formset.save()
-        else:
-            deadline_formset = DeadlineFormSet(instance=assignmentgroup)
-            candidates_formset = CandidatesFormSet(instance=assignmentgroup)
+            #if deadline_formset.is_valid():
+                #deadline_formset.save()
+            #if candidates_formset.is_valid():
+                #candidates_formset.save()
+        #else:
+            #deadline_formset = DeadlineFormSet(instance=assignmentgroup)
+            #candidates_formset = CandidatesFormSet(instance=assignmentgroup)
         
-        dic['deadline_form'] = deadline_formset
-        dic['candidates_form'] = candidates_formset
+        #dic['deadline_form'] = deadline_formset
+        #dic['candidates_form'] = candidates_formset
 
         return render_to_response('devilry/admin/edit_assignmentgroup.django.html', 
                                   dic,
