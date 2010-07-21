@@ -892,13 +892,14 @@ class Deadline(models.Model):
             - ``deadline`` is before ``Assignment.publishing_time``. 
             - ``deadline`` is not before ``Period.end_time``.
         """
-        if self.deadline < self.assignment_group.parentnode.publishing_time:
-            raise ValidationError(_('Publishing time must be before deadline.'))
-
-        if self.deadline > self.assignment_group.parentnode.parentnode.end_time:
-            raise ValidationError(
+        if self.deadline != None:
+            if self.deadline < self.assignment_group.parentnode.publishing_time:
+                raise ValidationError(_('Deadline cannot be before publishing time.'))
+            
+            if self.deadline > self.assignment_group.parentnode.parentnode.end_time:
+                raise ValidationError(
                     _("Deadline must be within it's period (%(period)s)."
-                        % dict(period=unicode(self.assignment_group.parentnode.parentnode))))
+                      % dict(period=unicode(self.assignment_group.parentnode.parentnode))))
         super(Deadline, self).clean(*args, **kwargs)
 
 
