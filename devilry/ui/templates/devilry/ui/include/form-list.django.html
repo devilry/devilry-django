@@ -1,4 +1,5 @@
 <ol class='form-list'>
+{{ form.non_field_errors }}
 {% for field in form %}
 	<li class="form-li{% if field.errors %} form-li-errors{% endif %}{% if field.field.required %} form-li-required{% endif %} {{ field.name }}">
 		{{ field.errors }}
