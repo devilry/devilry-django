@@ -25,9 +25,20 @@
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
   {% endwith %}
-  {{ deadline_form }}
 
-  {{ candidates_form }}
+  <fieldset class='stdfieldset'>
+    <h2 class='legend'>{% trans "Deadlines" %}</h2>
+    <table>
+      {{ deadline_form.as_table }}
+    </table>
+  </fieldset>
+
+  <fieldset class='stdfieldset'>
+    <h2 class='legend'>{% trans "Candidates" %}</h2>
+    <table>
+      {{ candidates_form.as_table }}
+    </table>
+  </fieldset>
 
   <div class='submit-row'>
     <div class='submit-row-right'>
