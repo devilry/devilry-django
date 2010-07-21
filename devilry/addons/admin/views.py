@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from django.forms.models import inlineformset_factory
 
 from devilry.core.models import Node, Period, Assignment, AssignmentGroup, \
-        Deadline, Subject
+        Deadline, Candidate, Subject
 from devilry.ui.messages import UiMessages
 from devilry.core import gradeplugin_registry
 from devilry.ui.widgets import DevilryDateTimeWidget, DevilryMultiSelectFew
@@ -227,33 +227,35 @@ class EditAssignmentGroup(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Assignment.where_is_admin(self.request.user))
-            #admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
-            
-            DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline)
-
+                        
             class Meta:
                 model = AssignmentGroup
-                fields = ['parentnode', 'name', 'candidates', 'examiners']
+                fields = ['parentnode', 'name', 'examiners']
                 widgets = {
-                   # 'deadline': DevilryDateTimeWidget,
                     'examiners': DevilryMultiSelectFew,
-                    'candidates': DevilryMultiSelectFew,
-                }
+                    }
         return Form
 
     def create_view(self):
         dic = self.make_view() 
         assignmentgroup = AssignmentGroup.objects.get(pk=self.obj.id)
-        DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline)
+        DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline, max_num=1)
+        CandidatesFormSet = inlineformset_factory(AssignmentGroup, Candidate, max_num=1)
 
         if self.request.method == "POST":
-            formset = DeadlineFormSet(request.POST, instance=assignmentgroup)
-            if formset.is_valid():
-                formset.save()
+            deadline_formset = DeadlineFormSet(self.request.POST, instance=assignmentgroup)
+            candidates_formset = CandidatesFormSet(self.request.POST, instance=assignmentgroup)
+            
+            if deadline_formset.is_valid():
+                deadline_formset.save()
+            if candidates_formset.is_valid():
+                candidates_formset.save()
         else:
-            formset = DeadlineFormSet(instance=assignmentgroup)
-
-        dic['deadline_form'] = formset
+            deadline_formset = DeadlineFormSet(instance=assignmentgroup)
+            candidates_formset = CandidatesFormSet(instance=assignmentgroup)
+        
+        dic['deadline_form'] = deadline_formset
+        dic['candidates_form'] = candidates_formset
 
         return render_to_response('devilry/admin/edit_assignmentgroup.django.html', 
                                   dic,
