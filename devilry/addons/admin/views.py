@@ -147,7 +147,7 @@ class EditAssignment(EditBase):
     def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Period.where_is_admin(self.request.user))
+                    queryset = Period.not_ended_where_is_admin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
                                           required=False)
             

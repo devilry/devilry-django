@@ -397,7 +397,8 @@ class Period(models.Model, BaseNode):
 
     @classmethod
     def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Periods where the given user is admin.
+        """ Returns a QuerySet matching all Periods where the given user is
+        admin.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -407,6 +408,16 @@ class Period(models.Model, BaseNode):
                 Q(parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
+
+    @classmethod
+    def not_ended_where_is_admin(cls, user_obj):
+        """ Returns a QuerySet matching all Periods where the given user is
+        admin and end_time is in the future.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
 
     @classmethod
     def get_by_path(self, path):
