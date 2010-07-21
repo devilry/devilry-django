@@ -54,8 +54,7 @@ class EditBase(object):
     
     def get_reverse_url(self, *args):
         return reverse(__name__ + '.edit_' + self.VIEW_NAME, args=args)
-    
-    """
+        
     def create_view(self):
         model_name = self.MODEL_CLASS._meta.verbose_name
         model_name_dict = {'model_name': model_name}
@@ -85,43 +84,7 @@ class EditBase(object):
             'messages': self.messages,
             'post_url': self.post_url,
             }, context_instance=RequestContext(self.request))
-            """
-    
-    def make_view(self):
-        
-        model_name = self.MODEL_CLASS._meta.verbose_name
-        model_name_dict = {'model_name': model_name}
-        form_cls = self.create_form()
-
-        if self.request.POST:
-            objform = form_cls(self.request.POST, instance=self.obj)
-            if objform.is_valid():
-                if not self.obj.can_save(self.request.user):
-                    return HttpResponseForbidden("Forbidden")
-                objform.save()
-                success_url = self.get_reverse_url(str(self.obj.pk))
-                return HttpResponseRedirect(success_url)
-        else:
-            objform = form_cls(instance=self.obj)
-
-        if self.obj.id == None:
-            self.title = _('New %(model_name)s') % model_name_dict
-        else:
-            self.title = _('Edit %(model_name)s' % model_name_dict)
-
-        return {
-            'title': self.title,
-            'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
-            'nodeform': objform,
-            'messages': self.messages,
-            'post_url': self.post_url,
-            }
-    
-    def create_view(self):
-        return render_to_response('devilry/admin/edit_node.django.html', 
-                                  self.make_view(), 
-                                  context_instance=RequestContext(self.request))
-                                  
+  
 
 class EditNode(EditBase):
     VIEW_NAME = 'node'
@@ -145,18 +108,10 @@ class EditSubject(EditBase):
     MODEL_CLASS = Subject
 
     def create_form(self):
-        class NodeForm(forms.ModelForm):
-            parentnode = forms.ModelChoiceField(required=True,
-                    queryset = self.parent_model.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
-            class Meta:
-                model = self.MODEL_CLASS
-        return NodeForm
-
-    def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Node.where_is_admin(self.request.user))
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
             class Meta:
                 model = Subject
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
