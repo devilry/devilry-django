@@ -69,7 +69,7 @@ def create_from_path(path):
         assignment_group = AssignmentGroup(parentnode=assignment)
         assignment_group.save()
         for user in users:
-            assignment_group.candidate_set.add(Candidate(student=user))
+            assignment_group.candidates.add(Candidate(student=user))
         last = assignment_group
     return last
 

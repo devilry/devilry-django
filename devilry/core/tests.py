@@ -564,7 +564,7 @@ class TestTestHelpers(TestCase):
                 User.objects.get, username='student1')
         ag = create_from_path(
                 'ifi.inf1100.spring10.oblig1.student1')
-        students = [c.student.username for c in ag.candidate_set.all()]
+        students = [c.student.username for c in ag.candidates.all()]
         self.assertEquals(students, ['student1'])
         User.objects.get(username='student1')
         self.assertEquals(ag.parentnode.short_name, 'oblig1')

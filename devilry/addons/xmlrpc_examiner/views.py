@@ -87,7 +87,7 @@ def list_assignmentgroups(request, assignment_path):
             request.user)
     assignment_groups = [{
             'id': g.id,
-            'students': [u.get_identifier() for u in g.candidate_set.all()],
+            'students': [u.get_identifier() for u in g.candidates.all()],
             'deadlines': [u for u in g.deadline_set.all()],
             'number_of_deliveries': g.get_number_of_deliveries()}
         for g in assignment_groups]
