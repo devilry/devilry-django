@@ -57,9 +57,6 @@ class EditBase(object):
     
     """
     def create_view(self):
-        if not self.obj.can_save(self.request.user):
-            return HttpResponseForbidden("Forbidden")
-
         model_name = self.MODEL_CLASS._meta.verbose_name
         model_name_dict = {'model_name': model_name}
         form_cls = self.create_form()
@@ -67,6 +64,9 @@ class EditBase(object):
         if self.request.POST:
             objform = form_cls(self.request.POST, instance=self.obj)
             if objform.is_valid():
+                if not self.obj.can_save(self.request.user):
+                    return HttpResponseForbidden("Forbidden")
+                
                 objform.save()
                 success_url = self.get_reverse_url(str(self.obj.pk))
                 return HttpResponseRedirect(success_url)
@@ -86,11 +86,9 @@ class EditBase(object):
             'post_url': self.post_url,
             }, context_instance=RequestContext(self.request))
             """
-
+    
     def make_view(self):
-        if not self.obj.can_save(self.request.user):
-            return HttpResponseForbidden("Forbidden")
-
+        
         model_name = self.MODEL_CLASS._meta.verbose_name
         model_name_dict = {'model_name': model_name}
         form_cls = self.create_form()
@@ -98,6 +96,8 @@ class EditBase(object):
         if self.request.POST:
             objform = form_cls(self.request.POST, instance=self.obj)
             if objform.is_valid():
+                if not self.obj.can_save(self.request.user):
+                    return HttpResponseForbidden("Forbidden")
                 objform.save()
                 success_url = self.get_reverse_url(str(self.obj.pk))
                 return HttpResponseRedirect(success_url)
@@ -121,7 +121,7 @@ class EditBase(object):
         return render_to_response('devilry/admin/edit_node.django.html', 
                                   self.make_view(), 
                                   context_instance=RequestContext(self.request))
-
+                                  
 
 class EditNode(EditBase):
     VIEW_NAME = 'node'
@@ -131,6 +131,7 @@ class EditNode(EditBase):
         class NodeForm(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=False,
                     queryset = Node.where_is_admin(self.request.user))
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
             class Meta:
                 model = Node
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
@@ -147,6 +148,7 @@ class EditSubject(EditBase):
         class NodeForm(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = self.parent_model.where_is_admin(self.request.user))
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
             class Meta:
                 model = self.MODEL_CLASS
         return NodeForm
@@ -171,6 +173,8 @@ class EditPeriod(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Subject.where_is_admin(self.request.user))
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
+            
             class Meta:
                 model = Period
                 fields = ['parentnode', 'short_name', 'long_name', 'start_time', 'end_time', 'admins']
@@ -189,7 +193,8 @@ class EditAssignment(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Period.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+                                          required=False)
             
             class Meta:
                 model = Assignment

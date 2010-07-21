@@ -596,11 +596,12 @@ class Assignment(models.Model, BaseNode):
         Raises ValidationError if ``publishing_time`` is not between
         :attr:`Period.start_time` and ``Period.end_time``.
         """
-        if self.publishing_time < self.parentnode.start_time  or \
-                self.publishing_time > self.parentnode.end_time:
-            raise ValidationError(
+        if self.publishing_time != None:
+            if self.publishing_time < self.parentnode.start_time  or \
+                    self.publishing_time > self.parentnode.end_time:
+                raise ValidationError(
                     _("Publishing time must be within it's period (%(period)s)."
-                        % dict(period=unicode(self.parentnode))))
+                      % dict(period=unicode(self.parentnode))))
        
         super(Assignment, self).clean(*args, **kwargs)
 
