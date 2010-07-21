@@ -5,7 +5,7 @@
 		{{ field }}
 	{% endfor %}
 {% endfor %}
-<table>
+<table class='tabular-inline'>
 {% for form in formset.forms %}
 	{% if forloop.first %}
 		<thead>
@@ -15,12 +15,11 @@
 				{% endfor %}
 			</tr>
 		</thead>
-	{% endif %}
-
 	<tbody>
-		<tr>
+	{% endif %}
+		<tr class='{% if forloop.counter|divisibleby:"2" %}oddrow{% else %}evenrow{% endif %}'>
 		{% for field in form.visible_fields %}
-			<td class="form-td{% if field.errors %} form-td-errors{% endif %}{% if field.field.required %} form-td-required{% endif %} {{ field.name }}">
+			<td class="tabular-inline-field{% if field.errors %} tabular-inline-errors{% endif %}{% if field.field.required %} required-field{% endif %} {{ field.name }}">
 				{{ field.errors }}
 				{% if field.is_readonly %}
 					<div class='readonly-field'>{{ field.contents }}</div>
@@ -33,6 +32,8 @@
 			</td>
 		{% endfor %}
 		</tr>
-	</tbody>
+  {% if forloop.last %}
+  </tbody>
+  {% endif %}
 {% endfor %}
 </table>

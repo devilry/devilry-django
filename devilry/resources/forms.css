@@ -89,3 +89,27 @@ fieldset.stdfieldset p.form-help {
 	margin: 5px 0 0 140px;
 	color: #777;
 }
+
+
+/********************************
+ * Tabular inline
+ *******************************/
+table.tabular-inline {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.tabular-inline th {
+	font-weight: bold;
+	text-align: left;
+	background-color: #fff;
+	color: #666;
+	border: 1px solid #ddd;
+}
+table.tabular-inline th,
+table.tabular-inline td {
+	vertical-align: top;
+	padding: 2px 8px;
+}
+table.tabular-inline tr.oddrow {
+	background-color: #eee;
+}
