@@ -273,8 +273,6 @@ class EditAssignmentGroup(EditBase):
         else:
             self.title = _('Edit %(model_name)s' % model_name_dict)
 
-
-
         return render_to_response(
                 'devilry/admin/edit_assignmentgroup.django.html', {
                     'title': self.title,
