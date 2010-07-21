@@ -64,6 +64,7 @@ class EditBase(object):
             objform = form_cls(self.request.POST, instance=self.obj)
             if objform.is_valid():
                 if not self.obj.can_save(self.request.user):
+                    print "return forbidden"
                     return HttpResponseForbidden("Forbidden")
                 
                 objform.save()
@@ -94,13 +95,11 @@ class EditNode(EditBase):
         class NodeForm(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=False,
                     queryset = Node.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+                                          required=False)
             class Meta:
                 model = Node
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
-                widgets = {
-                    'admins': DevilryMultiSelectFew,
-                }
         return NodeForm
 
 class EditSubject(EditBase):
@@ -111,13 +110,11 @@ class EditSubject(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Node.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+                                          required=False)
             class Meta:
                 model = Subject
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
-                widgets = {
-                    'admins': DevilryMultiSelectFew,
-                }
         return Form
 
 class EditPeriod(EditBase):
@@ -128,16 +125,15 @@ class EditPeriod(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Subject.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew)
-            
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+                                          required=False)
             class Meta:
                 model = Period
                 fields = ['parentnode', 'short_name', 'long_name', 'start_time', 'end_time', 'admins']
                 widgets = {
                     'start_time': DevilryDateTimeWidget,
                     'end_time': DevilryDateTimeWidget,
-                    'admins': DevilryMultiSelectFew,
-                }
+                    }
         return Form
 
 class EditAssignment(EditBase):
@@ -150,7 +146,6 @@ class EditAssignment(EditBase):
                     queryset = Period.not_ended_where_is_admin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
                                           required=False)
-            
             class Meta:
                 model = Assignment
                 fields = ['parentnode', 'short_name', 'long_name', 'publishing_time', 'admins']
@@ -158,9 +153,7 @@ class EditAssignment(EditBase):
                     fields.append('grade_plugin')
                 widgets = {
                     'publishing_time': DevilryDateTimeWidget,
-                    #'deadline': DevilryDateTimeWidget,
-                    'admins': DevilryMultiSelectFew,
-                }
+                    }
         return Form
 
     def create_view(self):
@@ -195,7 +188,7 @@ class EditAssignmentGroup(EditBase):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Assignment.where_is_admin(self.request.user))
             examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
-                    required=False)
+                                             required=False)
                         
             class Meta:
                 model = AssignmentGroup
