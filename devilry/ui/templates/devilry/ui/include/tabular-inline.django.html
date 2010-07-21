@@ -1,0 +1,38 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{{ formset.management_form }}
+{% for form in formset.forms %}
+	{% for field in form.hidden_fields %}
+		{{ field }}
+	{% endfor %}
+{% endfor %}
+<table>
+{% for form in formset.forms %}
+	{% if forloop.first %}
+		<thead>
+			<tr>
+				{% for field in form.visible_fields %}
+						<th>{{ field.label }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+	{% endif %}
+
+	<tbody>
+		<tr>
+		{% for field in form.visible_fields %}
+			<td class="form-td{% if field.errors %} form-td-errors{% endif %}{% if field.field.required %} form-td-required{% endif %} {{ field.name }}">
+				{{ field.errors }}
+				{% if field.is_readonly %}
+					<div class='readonly-field'>{{ field.contents }}</div>
+				{% else %}
+					{{ field }}
+				{% endif %}
+				{% if field.help_text %}
+					<p class="form-help">{{ field.help_text|safe }}</p>
+				{% endif %}
+			</td>
+		{% endfor %}
+		</tr>
+	</tbody>
+{% endfor %}
+</table>
