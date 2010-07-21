@@ -50,7 +50,3 @@ class DevilryMultiSelectFew(forms.TextInput):
         qry = User.objects.filter(pk__in=value).all()
         value = ", ".join([u.username for u in qry])
         return super(DevilryMultiSelectFew, self).render(name, value, attrs)
-       
-
-
-
