@@ -227,7 +227,8 @@ class EditAssignmentGroup(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Assignment.where_is_admin(self.request.user))
-            examiners = MultiSelectCharField(widget=DevilryMultiSelectFew)
+            examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
+                    required=False)
                         
             class Meta:
                 model = AssignmentGroup
