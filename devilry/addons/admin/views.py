@@ -179,6 +179,13 @@ class EditAssignment(EditBase):
         return super(EditAssignment, self).create_view()
 
 
+class DeadlineForm(forms.ModelForm):
+    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
+    text = forms.CharField(required=False,
+            widget=forms.Textarea(attrs=dict(rows=5, cols=50)))
+    class Meta:
+        model = Deadline
+
 class EditAssignmentGroup(EditBase):
     VIEW_NAME = 'assignmentgroup'
     MODEL_CLASS = AssignmentGroup
@@ -200,7 +207,7 @@ class EditAssignmentGroup(EditBase):
 
     def create_view(self):
         DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
-                extra=1)
+                extra=1, form=DeadlineForm)
         CandidatesFormSet = inlineformset_factory(AssignmentGroup,
                 Candidate, extra=1)
 

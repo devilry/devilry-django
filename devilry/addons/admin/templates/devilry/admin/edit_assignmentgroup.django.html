@@ -35,9 +35,9 @@
 
   <fieldset class='stdfieldset'>
     <h2 class='legend'>{% trans "Candidates" %}</h2>
-    <table>
-      {{ candidates_form.as_table }}
-    </table>
+    {% with candidates_form as formset %}
+      {% include "devilry/ui/include/tabular-inline.django.html" %}
+    {% endwith %}
   </fieldset>
 
   <div class='submit-row'>

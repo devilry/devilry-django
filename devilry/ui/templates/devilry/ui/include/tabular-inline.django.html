@@ -11,7 +11,7 @@
 		<thead>
 			<tr>
 				{% for field in form.visible_fields %}
-						<th>{{ field.label }}</th>
+						<th{% if field.field.required %} class='required-field'{% endif %}>{{ field.label }}</th>
 				{% endfor %}
 			</tr>
 		</thead>
@@ -37,3 +37,5 @@
   {% endif %}
 {% endfor %}
 </table>
+
+{{ formset.media }}

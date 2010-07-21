@@ -99,11 +99,14 @@ table.tabular-inline {
 	border-collapse: collapse;
 }
 table.tabular-inline th {
-	font-weight: bold;
+	font-weight: normal;
 	text-align: left;
 	background-color: #fff;
 	color: #666;
 	border: 1px solid #ddd;
+}
+table.tabular-inline th.required-field {
+	font-weight: bold;
 }
 table.tabular-inline th,
 table.tabular-inline td {
