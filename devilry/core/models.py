@@ -478,13 +478,14 @@ class Assignment(models.Model, BaseNode):
     anonymous = models.BooleanField(default=False)
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
-            choices=gradeplugin_registry.KeyLabelIterable())
+            choices=gradeplugin_registry.RegistryIterator(),
+            default=gradeplugin_registry.getdefaultkey())
 
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin_registry.RegistryItem`
         for the current :attr:`grade_plugin`. """
-        return gradeplugin_registry.get(self.grade_plugin)
+        return gradeplugin_registry.getitem(self.grade_plugin)
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -835,7 +836,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.parentnode.is_admin(user_obj)
 
     def is_student(self, user_obj):
-        return self.students.filter(pk=user_obj.pk).count() > 0
+        return self.candidate_set.filter(student=user_obj).count() > 0
 
     def is_examiner(self, user_obj):
         """ Return True if user is examiner on this assignment group """
@@ -1089,7 +1090,7 @@ class Feedback(models.Model):
         for direct display to the user.
         """
         key = self.delivery.assignment_group.parentnode.grade_plugin
-        model_cls = gradeplugin_registry.get(key).model_cls
+        model_cls = gradeplugin_registry.getitem(key).model_cls
         if hasattr(model_cls, 'set_grade_from_string'):
             if self.content_object:
                 self.content_object.set_grade_from_string(grade)

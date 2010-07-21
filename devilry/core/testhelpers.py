@@ -47,7 +47,7 @@ def create_from_path(path):
     if len(p) > 3:
         assignment = Assignment(parentnode=period, short_name=p[3],
                 long_name=p[3], publishing_time=datetime.now())
-        gradeplugin = gradeplugin_registry.KeyLabelIterable().__iter__().next()[0]
+        gradeplugin = gradeplugin_registry.getdefaultkey()
         assignment.grade_plugin = gradeplugin
         
         try:

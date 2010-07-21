@@ -132,3 +132,8 @@ BASE_TEMPLATE = 'devilry/base.django.html'
 
 MEDIA_ICONS_URL = 'media/icons/'
 JQUERY_UI_THEME = 'blitzer'
+
+
+## The default grade-plugin
+DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
+#DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:approvedgrade'

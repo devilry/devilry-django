@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 _registry = {}
 
 def register(view, model_cls, label, description,
@@ -6,8 +9,11 @@ def register(view, model_cls, label, description,
             admin_url_callback, xmlrpc_conf)
     _registry[r.get_key()] = r
 
-def get(key):
+def getitem(key):
     return _registry[key]
+
+def getdefaultkey():
+    return settings.DEVILRY_DEFAULT_GRADEPLUGIN
 
 
 class RegistryItem(object):
@@ -30,11 +36,11 @@ class RegistryItem(object):
         meta = self.model_cls._meta
         return '%s:%s' % (meta.app_label, meta.module_name)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label
 
 
-class KeyLabelIterable(object):
+class RegistryIterator(object):
     """ Iterator over the gradeplugin-registry yielding (key, RegistryItem).
     The iterator is sorted by :attr:`RegistryItem.label`. """
     def __iter__(self):

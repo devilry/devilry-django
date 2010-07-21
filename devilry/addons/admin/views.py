@@ -4,16 +4,16 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
-from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext as _
+from django.forms.models import inlineformset_factory
 
-from devilry.core.models import (Delivery, Node, Subject, Period, Assignment, 
-                                 AssignmentGroup, Deadline, FileMeta)
+from devilry.core.models import Node, Period, Assignment, AssignmentGroup, \
+        Deadline, Subject
 from devilry.ui.messages import UiMessages
 from devilry.core import gradeplugin_registry
 from devilry.ui.widgets import DevilryDateTimeWidget, DevilryMultiSelectFew
 from devilry.ui.fields import MultiSelectCharField
-from django.forms.models import inlineformset_factory
+
 
 @login_required
 def main(request):
@@ -205,7 +205,7 @@ class EditAssignment(EditBase):
 
     def create_view(self):
         if not self.is_new:
-            gradeplugin = gradeplugin_registry.get(self.obj.grade_plugin)
+            gradeplugin = gradeplugin_registry.getitem(self.obj.grade_plugin)
             msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
                     'grade-plugin. You cannot change grade-plugin on an ' \
                     'existing assignment.' % {'gradeplugin_label': gradeplugin.label})

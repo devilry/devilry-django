@@ -1,16 +1,12 @@
-from os.path import basename
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.core.urlresolvers import reverse
+from django.http import HttpResponseForbidden
 from django.template import RequestContext
-from django import forms
-from django.forms.formsets import formset_factory
-from devilry.core.models import (Delivery, Feedback, AssignmentGroup,
-        Node, Subject, Period, Assignment, FileMeta)
+
+from devilry.core.models import Delivery, AssignmentGroup, Assignment
+from devilry.core import gradeplugin_registry
 
 import dashboardplugin_registry
-from django.db import transaction
 
 
 
@@ -20,7 +16,7 @@ def correct_delivery(request, delivery_id):
     if not delivery_obj.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
     key = delivery_obj.assignment_group.parentnode.grade_plugin
-    return gradeplugin_registry.get(key).view(request, delivery_obj)
+    return gradeplugin_registry.getitem(key).view(request, delivery_obj)
 
 
 @login_required

@@ -40,7 +40,7 @@ def list_active_assignments(request):
 
     def xmlrpc_conf(a):
         key = a.grade_plugin
-        c = gradeplugin_registry.get(key)
+        c = gradeplugin_registry.getitem(key)
         return c.xmlrpc_conf or False
     result = [{
             'id': a.id,
