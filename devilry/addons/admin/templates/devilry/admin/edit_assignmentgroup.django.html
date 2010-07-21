@@ -31,6 +31,11 @@
     <table>
       {{ deadline_form.as_table }}
     </table>
+    {% comment %}
+    {% with deadline_form as formset %}
+      {% include "devilry/ui/include/tabular-inline.django.html" %}
+    {% endwith %}
+    {% endcomment %}
   </fieldset>
 
   <fieldset class='stdfieldset'>

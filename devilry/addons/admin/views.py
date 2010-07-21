@@ -239,10 +239,6 @@ class EditAssignmentGroup(EditBase):
         return Form
 
     def create_view(self):
-        if not self.obj.can_save(self.request.user):
-            return HttpResponseForbidden("Forbidden")
-
-        assignmentgroup = AssignmentGroup.objects.get(pk=self.obj.id)
         DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
                 extra=1)
         CandidatesFormSet = inlineformset_factory(AssignmentGroup,
@@ -254,11 +250,15 @@ class EditAssignmentGroup(EditBase):
 
         if self.request.POST:
             objform = form_cls(self.request.POST, instance=self.obj)
-            deadline_formset = DeadlineFormSet(self.request.POST, instance=assignmentgroup)
-            candidates_formset = CandidatesFormSet(self.request.POST, instance=assignmentgroup)
+            deadline_formset = DeadlineFormSet(self.request.POST,
+                    instance=self.obj)
+            candidates_formset = CandidatesFormSet(self.request.POST,
+                    instance=self.obj)
             if objform.is_valid() \
                     and deadline_formset.is_valid() \
                     and candidates_formset.is_valid():
+                if not self.obj.can_save(self.request.user):
+                    return HttpResponseForbidden("Forbidden")
                 objform.save()
                 deadline_formset.save()
                 candidates_formset.save()
@@ -266,8 +266,8 @@ class EditAssignmentGroup(EditBase):
                 return HttpResponseRedirect(success_url)
         else:
             objform = form_cls(instance=self.obj)
-            deadline_formset = DeadlineFormSet(instance=assignmentgroup)
-            candidates_formset = CandidatesFormSet(instance=assignmentgroup)
+            deadline_formset = DeadlineFormSet(instance=self.obj)
+            candidates_formset = CandidatesFormSet(instance=self.obj)
 
         if self.obj.id == None:
             self.title = _('New %(model_name)s') % model_name_dict
