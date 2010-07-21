@@ -13,23 +13,14 @@ class DevilryDateWidget(forms.DateTimeInput):
                 attrs = {'class': 'devilry-date', 'size': '11'},
                 format = '%Y-%m-%d')
 
-    def render(self, *args, **kwargs):
-        widget = super(DevilryDateWidget, self).render(*args, **kwargs)
-        return mark_safe(
-                u'%s <span class="devilry-date-format">%s</span>' % (
-                    widget, _('yyyy-mm-dd')))
-
 class DevilryTimeWidget(forms.TimeInput):
+    class Media:
+        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/timewidget.js",)
+
     def __init__(self, attrs={}):
         super(DevilryTimeWidget, self).__init__(
                 attrs={'class': 'devilry-time', 'size': '8'},
                 format='%H:%M')
-
-    def render(self, *args, **kwargs):
-        widget = super(DevilryTimeWidget, self).render(*args, **kwargs)
-        return mark_safe(
-                u'%s <span class="devilry-time-format">%s</span>' % (
-                    widget, _('hh:mm')))
 
 class DevilryDateTimeWidget(forms.SplitDateTimeWidget):
     def __init__(self, attrs=None):
