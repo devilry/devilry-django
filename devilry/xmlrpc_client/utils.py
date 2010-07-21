@@ -6,6 +6,7 @@ import logging
 from urlparse import urljoin
 import re
 import xmlrpclib
+from ConfigParser import SafeConfigParser
 
 
 # TODO: chmod cookies.txt
@@ -44,17 +45,14 @@ class AssignmentTreeWalker(object):
             self.assignment(assignment, assignmentdir)
 
             for group in server.list_assignmentgroups(assignment['path']):
-                groupname = "%s_id-%d" % ('-'.join(group['students']),
-                        group['id'])
+                groupname = '-'.join(group['students'])
                 groupdir = os.path.join(assignmentdir, groupname)
                 self.assignmentgroup(group, groupdir)
 
                 for delivery in server.list_deliveries(group['id']):
                     time_of_delivery = delivery['time_of_delivery'].strftime(
                             DATETIME_FORMAT)
-                    deliveryname = "%s_id-%d" % (time_of_delivery,
-                            delivery['id'])
-                    deliverydir = os.path.join(groupdir, deliveryname)
+                    deliverydir = os.path.join(groupdir, time_of_delivery)
                     filesdir = os.path.join(deliverydir, 'files')
                     self.delivery(delivery, deliverydir, filesdir)
 
@@ -66,15 +64,19 @@ class AssignmentTreeWalker(object):
                         feedback = server.get_feedback(delivery['id'])
                     except xmlrpclib.Fault, e:
                         if e.faultCode == 404:
-                            self.feedback_new(delivery, deliverydir)
+                            self.feeback_none(delivery, deliverydir)
                         else:
                             raise
                     else:
                         self.feedback_exists(delivery, deliverydir, feedback)
 
-
-
     def assignment(self, assignment, assignmentdir):
+        """ Called on each assignment.
+        
+        Calls :meth:`assignment_new` if the assignment has not been synced
+        before, and :meth:`assignment_exists` if not. These two methods do
+        nothing by default, and are ment to be overridden in subclasses.
+        """
         if os.path.isdir(assignmentdir):
             self.assignment_exists(assignment, assignmentdir)
         else:
@@ -86,6 +88,14 @@ class AssignmentTreeWalker(object):
         pass
 
     def assignmentgroup(self, group, groupdir):
+        """ Called on each assignment-group.
+        
+        Calls :meth:`assignmentgroup_nodeliveries` if the assignmentgroup
+        has no deliveries, :meth:`assignmentgroup_new` if the assignment has
+        not been synced before, and :meth:`assignmentgroup_exists` if not.
+        These three methods do nothing by default, and are ment to be
+        overridden in subclasses.
+        """
         number_of_deliveries = group['number_of_deliveries']
         if number_of_deliveries == 0:
             self.assignmentgroup_nodeliveries(group, groupdir)
@@ -102,6 +112,12 @@ class AssignmentTreeWalker(object):
         pass
 
     def delivery(self, delivery, deliverydir, filesdir):
+        """ Called on each delivery.
+        
+        Calls :meth:`delivery_new` if the delivery has not been synced
+        before, and :meth:`delivery_exists` if not. These two methods do
+        nothing by default, and are ment to be overridden in subclasses.
+        """
         if os.path.isdir(deliverydir):
             self.delivery_exists(delivery, deliverydir, filesdir)
         else:
@@ -113,6 +129,12 @@ class AssignmentTreeWalker(object):
         pass
 
     def filemeta(self, filemeta, deliverydir, filepath):
+        """ Called on each filemeta.
+        
+        Calls :meth:`filemeta_new` if the filemeta has not been synced
+        before, and :meth:`filemeta_exists` if not. These two methods do
+        nothing by default, and are ment to be overridden in subclasses.
+        """
         if os.path.isfile(filepath):
             self.filemeta_exists(filemeta, deliverydir, filepath)
         else:
@@ -123,10 +145,46 @@ class AssignmentTreeWalker(object):
     def filemeta_exists(self, filemeta, deliverydir, filepath):
         pass
 
-    def feedback_new(self, delivery, deliverydir):
+    def feeback_none(self, delivery, deliverydir):
+        """ Called when there is no feedback on a delivery. Does nothing by
+        default, and should be overridden in subclasses. """
         pass
+
     def feedback_exists(self, delivery, deliverydir, feedback):
+        """ Called when there is feedback on a delivery. Does nothing by
+        default, and should be overridden in subclasses. """
         pass
+
+
+class Stats(object):
+    def __init__(self, dirname, typename):
+        self.filename = os.path.join(dirname, '.stats')
+        self.cfg = SafeConfigParser()
+        self.cfg.read([self.filename])
+        self.sectionname = 'statistics'
+        if self.cfg.has_section(self.sectionname):
+            if self.get('type') != typename:
+                raise ValueError(
+                        'The given type does not match the existing type ' \
+                        'in %s. This could mean you have managed to ' \
+                        'checkout one devilry-tree within another.' %
+                        self.filename)
+        else:
+            self.cfg.add_section(self.sectionname)
+            self.add('type', typename)
+
+    def add(self, key, value):
+        self.cfg.add(self.sectionname, key, value)
+
+    def addmany(self, **values):
+        for key, value in values.iteritems():
+            self.add(key, value)
+
+    def get(self, key):
+        self.cfg.get(self.sectionname, key)
+
+    def write(self):
+        self.cfg.write(open(self.filename, 'wb'))
 
 
 class AssignmentSync(AssignmentTreeWalker):
@@ -135,7 +193,6 @@ class AssignmentSync(AssignmentTreeWalker):
     active assignment where the current user is examiner to the filesystem.
     """
     bufsize = 65536
-
 
     def __init__(self, rootdir, cookiepath, server, serverurl):
         cwd = os.getcwd()
@@ -146,8 +203,15 @@ class AssignmentSync(AssignmentTreeWalker):
         finally:
             os.chdir(cwd)
 
+    @classmethod
+    def mkdir(parentdir, name, id):
+        dirpath = os.path.join(parentdir, name)
+        if os.path.exits(dirpath):
+            os.rename()
+
     def assignment(self, assignment, assignmentdir):
         super(AssignmentSync, self).assignment(assignment, assignmentdir)
+        open
         if not assignment['xmlrpc_conf']:
             logging.warning('%s does not support creating feedback using ' \
                     'the command-line' % assignment['path'])
@@ -198,7 +262,7 @@ class AssignmentSync(AssignmentTreeWalker):
     def filemeta_exists(self, filemeta, deliverydir, filepath):
         logging.debug('%s already os.path.exists' % filepath)
 
-    def feedback_new(self, delivery, deliverydir):
+    def feeback_none(self, delivery, deliverydir):
         pass
 
     def feedback_exists(self, delivery, deliverydir, feedback):

@@ -105,6 +105,9 @@ class TestAssignmentSync(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(dircontent,
                 ['inf1010.spring09.oblig1', 'inf1100.looong.oblig1'])
 
+    def test_assignmentgroup(self):
+        self.assertEquals(os.listdir(self.root), ['inf1100.looong.oblig1'])
+
     def tearDown(self):
         self.logout(self.client)
         rmtree(self.root)
