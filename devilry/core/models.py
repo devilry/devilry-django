@@ -158,11 +158,9 @@ class BaseNode(CommonInterface):
             return True
         return False
 
-
     def _can_save_id_none(self, user_obj):
         """ Used by all except Node, which overrides. """
         return self.parentnode.is_admin(user_obj)
-        
 
     def can_save(self, user_obj):
         if user_obj.is_superuser:
@@ -202,7 +200,10 @@ class Node(models.Model, BaseNode):
         unique_together = ('short_name', 'parentnode')
 
     def _can_save_id_none(self, user_obj):
-        return False
+        if self.parentnode == None and not user_obj.is_superuser:
+            return False
+        else:
+            return True
 
     def get_path(self):
         if self.parentnode:
