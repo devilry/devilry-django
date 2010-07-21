@@ -237,25 +237,52 @@ class EditAssignmentGroup(EditBase):
         return Form
 
     def create_view(self):
-        dic = self.make_view() 
-        assignmentgroup = AssignmentGroup.objects.get(pk=self.obj.id)
-        #DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline, max_num=1)
-        #CandidatesFormSet = inlineformset_factory(AssignmentGroup, Candidate, max_num=1)
 
-        #if self.request.method == "POST":
-            #deadline_formset = DeadlineFormSet(self.request.POST, instance=assignmentgroup)
-            #candidates_formset = CandidatesFormSet(self.request.POST, instance=assignmentgroup)
-            
-            #if deadline_formset.is_valid():
-                #deadline_formset.save()
-            #if candidates_formset.is_valid():
-                #candidates_formset.save()
-        #else:
-            #deadline_formset = DeadlineFormSet(instance=assignmentgroup)
-            #candidates_formset = CandidatesFormSet(instance=assignmentgroup)
-        
-        #dic['deadline_form'] = deadline_formset
-        #dic['candidates_form'] = candidates_formset
+        assignmentgroup = AssignmentGroup.objects.get(pk=self.obj.id)
+        DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
+                extra=1)
+        CandidatesFormSet = inlineformset_factory(AssignmentGroup,
+                Candidate, extra=1)
+
+        if not self.obj.can_save(self.request.user):
+            return HttpResponseForbidden("Forbidden")
+
+        model_name = AssignmentGroup._meta.verbose_name
+        model_name_dict = {'model_name': model_name}
+        form_cls = self.create_form()
+
+        if self.request.POST:
+            objform = form_cls(self.request.POST, instance=self.obj)
+            deadline_formset = DeadlineFormSet(self.request.POST, instance=assignmentgroup)
+            candidates_formset = CandidatesFormSet(self.request.POST, instance=assignmentgroup)
+            if objform.is_valid() \
+                    and deadline_formset.is_valid() \
+                    and candidates_formset.is_valid():
+                objform.save()
+                deadline_formset.save()
+                candidates_formset.save()
+                success_url = self.get_reverse_url(str(self.obj.pk))
+                return HttpResponseRedirect(success_url)
+        else:
+            objform = form_cls(instance=self.obj)
+            deadline_formset = DeadlineFormSet(instance=assignmentgroup)
+            candidates_formset = CandidatesFormSet(instance=assignmentgroup)
+
+        if self.obj.id == None:
+            self.title = _('New %(model_name)s') % model_name_dict
+        else:
+            self.title = _('Edit %(model_name)s' % model_name_dict)
+
+
+        dic = {
+            'title': self.title,
+            'model_plural_name': AssignmentGroup._meta.verbose_name_plural,
+            'nodeform': objform,
+            'messages': self.messages,
+            'post_url': self.post_url,
+            }
+        dic['deadline_form'] = deadline_formset
+        dic['candidates_form'] = candidates_formset
 
         return render_to_response('devilry/admin/edit_assignmentgroup.django.html', 
                                   dic,
