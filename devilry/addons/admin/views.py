@@ -331,7 +331,7 @@ def create_assignmentgroups(request):
                 
                 if users:
                     group_data['examiners'] = MultiSelectCharField.from_string(users)
-                    #print group_data['examiners']
+                    print users
                 
                 data.append(group_data)
 
