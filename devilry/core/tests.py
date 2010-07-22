@@ -553,13 +553,15 @@ class TestTestHelpers(TestCase):
 
         self.assertEquals(create_from_path('uio').short_name, 'uio')
         self.assertEquals(create_from_path('test.node').short_name, 'node')
-        self.assertEquals(create_from_path('uio:inf1010').short_name,
-                'inf1010')
-        self.assertEquals(create_from_path('uio:inf1010.spring11').short_name,
-                'spring11')
-        self.assertEquals(
-                create_from_path('uio:inf1010.spring11.oblig1').short_name,
-                'oblig1')
+        subject = create_from_path('uio:inf1010')
+        self.assertEquals(subject.short_name, 'inf1010')
+        self.assertTrue(isinstance(subject, Subject))
+        period = create_from_path('uio:inf1010.spring11') 
+        self.assertEquals(period.short_name, 'spring11')
+        self.assertTrue(isinstance(period, Period))
+        assignment = create_from_path('uio:inf1010.spring11.oblig1')
+        self.assertEquals(assignment.short_name, 'oblig1')
+        self.assertTrue(isinstance(assignment, Assignment))
 
         self.assertRaises(User.DoesNotExist,
                 User.objects.get, username='student1')
