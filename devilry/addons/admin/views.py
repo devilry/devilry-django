@@ -272,9 +272,9 @@ def create_assignmentgroups2(request, assignment, data):
     
     class AssignmentgroupForm(forms.Form):
         name = forms.CharField()
-        #examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
-        #                                required=False)
-        examiners = forms.CharField()
+        examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
+                                       required=False)
+        #examiners = forms.CharField()
         
     if request.POST:
         pass
@@ -287,8 +287,7 @@ def create_assignmentgroups2(request, assignment, data):
     return render_to_response(
         'devilry/admin/verify_assignmentgroups.django.html', {
             'title': "Create assignmentsgroups",
-            'formset': formset,
-            'post_url':'laban',
+           'formset': formset
             }, context_instance=RequestContext(request))
 
 
@@ -301,12 +300,12 @@ def create_assignmentgroups(request):
         assignment_groups = forms.CharField(widget=forms.widgets.Textarea())
 
     if request.POST:
-        print "post"
+        #print "post"
         form = Form(request.POST) 
         
         if form.is_valid():
-            print "valid"
-            print form.cleaned_data
+            #print "valid"
+            #print form.cleaned_data
             parentnode = form.cleaned_data['parentnode']
             groups = form.cleaned_data['assignment_groups']
         
@@ -315,6 +314,8 @@ def create_assignmentgroups(request):
             data = []
 
             for l in lines:
+                if l.strip() == "":
+                    continue
                 m = re.match("(?:(?P<name>.+?)::)?(?P<users>.+)?", l)
                 
                 if not m:
@@ -329,7 +330,8 @@ def create_assignmentgroups(request):
                     group_data['name'] = name
                 
                 if users:
-                    group_data['examiners'] = users
+                    group_data['examiners'] = MultiSelectCharField.from_string(users)
+                    #print group_data['examiners']
                 
                 data.append(group_data)
 
