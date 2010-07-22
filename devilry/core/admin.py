@@ -1,7 +1,6 @@
 from models import (Node, Subject, Period, Assignment,
         AssignmentGroup, Candidate, Delivery, FileMeta, Feedback, Deadline)
 from django.contrib import admin
-from django.contrib.contenttypes import generic
 
 
 class BaseNodeAdmin(admin.ModelAdmin):
@@ -46,7 +45,7 @@ class DeadlineInline(admin.TabularInline):
     extra = 0
 
 class AssignmentGroupAdmin(BaseNodeAdmin):
-    list_display = ['get_students', 'get_examiners', 'parentnode', 'id']
+    list_display = ['get_students', 'get_examiners', 'parentnode', 'name', 'id']
     search_fields = [
             'id',
             'students__username',
@@ -83,9 +82,7 @@ class AssignmentGroupAdmin(BaseNodeAdmin):
 
 class FeedbackInline(admin.StackedInline):
     model = Feedback
-    #formset = generic.generic_inlineformset_factory(Feedback)
     extra = 0
-    #fields = ['feedback_text', 'feedback_format', 'feedback_published']
 
 
 class FileMetaInline(admin.TabularInline):
@@ -121,4 +118,3 @@ admin.site.register(Period, PeriodAdmin)
 admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
 admin.site.register(Delivery, DeliveryAdmin)
-#admin.site.register(Feedback, FeedbackAdmin)
