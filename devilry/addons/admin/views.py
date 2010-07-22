@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.utils.translation import ugettext as _
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, formset_factory
 
 from devilry.core.models import Node, Period, Assignment, AssignmentGroup, \
         Deadline, Candidate, Subject
@@ -14,6 +14,8 @@ from devilry.core import gradeplugin_registry
 from devilry.ui.widgets import DevilryDateTimeWidget, DevilryMultiSelectFew
 from devilry.ui.fields import MultiSelectCharField
 
+from django.contrib.auth.models import User
+import re
 
 @login_required
 def main(request):
@@ -64,7 +66,6 @@ class EditBase(object):
             objform = form_cls(self.request.POST, instance=self.obj)
             if objform.is_valid():
                 if not self.obj.can_save(self.request.user):
-                    print "return forbidden"
                     return HttpResponseForbidden("Forbidden")
                 
                 objform.save()
@@ -265,6 +266,174 @@ def edit_assignment(request, obj_id=None, successful_save=False):
 def edit_assignmentgroup(request, obj_id=None, successful_save=False):
     return EditAssignmentGroup(request, obj_id, successful_save).create_view()
 
+
+@login_required
+def create_assignmentgroups2(request, assignment, data):
+    
+    class AssignmentgroupForm(forms.Form):
+        name = forms.CharField()
+        examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
+                                        required=False)
+        #examiners = forms.CharField()
+        
+    if request.POST:
+        pass
+    else:
+        pass
+    
+    AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
+    formset = AssignmentGroupsFormSet()
+    
+    return render_to_response(
+        'devilry/admin/verify_assignmentgroups.django.html', {
+            'title': "Create assignmentsgroups",
+            'formset': formset,
+            'post_url':'laban',
+            }, context_instance=RequestContext(request))
+
+
+@login_required
+def create_assignmentgroups(request):
+
+    class Form(forms.Form):
+        parentnode = forms.ModelChoiceField(required=True,
+                     queryset = Assignment.where_is_admin(request.user))
+        assignment_groups = forms.CharField(widget=forms.widgets.Textarea())
+
+    if request.POST:
+        print "post"
+        form = Form(request.POST) 
+        
+        if form.is_valid():
+            print "valid"
+            print form.cleaned_data
+            parentnode = form.cleaned_data['parentnode']
+            groups = form.cleaned_data['assignment_groups']
+        
+            lines = groups.splitlines()
+
+            data = []
+
+            for l in lines:
+                m = re.match("(?:(?P<name>.+?)::)?(?P<users>.+)?", l)
+                
+                if not m:
+                    continue
+                
+                group_data = {}
+
+                name = m.group('name')
+                users = m.group('users')
+
+                if name:
+                    group_data['name'] = name
+                
+                if users:
+                    group_data['users'] = users
+                
+                data.append(group_data)
+
+            return create_assignmentgroups2(request, parentnode, data)
+
+        #return HttpResponseRedirect('/thanks/')
+    else:
+        print "GEt"
+        form = Form()
+
+    title = _('Create Assignment groups')
+    messages = UiMessages()
+    
+    return render_to_response('devilry/admin/create_assignmentgroups.django.html', {
+            'title': title,
+            #'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
+            'nodeform': form,
+            'messages': messages,
+            #'post_url': self.get_reverse_url(),
+            }, context_instance=RequestContext(request))
+
+
+
+
+@login_required
+def create_assignmentgroups1(request):
+
+    class Form(forms.Form):
+        parentnode = forms.ModelChoiceField(required=True,
+                     queryset = Assignment.where_is_admin(request.user))
+        assignment_groups = forms.CharField(widget=forms.widgets.Textarea())
+
+    if request.POST:
+        print "post"
+        form = Form(request.POST) 
+        
+        if form.is_valid():
+            print "valid"
+            print form.cleaned_data
+            parentnode = form.cleaned_data['parentnode']
+            groups = form.cleaned_data['assignment_groups']
+        
+            lines = groups.splitlines()
+
+            for l in lines:
+                m = re.match("(?:(?P<name>.+?)::)?(?P<users>.+)?", l)
+                
+                if not m:
+                    continue
+                
+                name = m.group('name')
+                users = m.group('users')
+
+                ag = AssignmentGroup()
+                ag.parentnode = parentnode
+                                
+                if name:
+                    ag.name = name
+                
+                ag.save()
+    
+                if users:
+                    sep = re.compile(r',\s*')
+                    usersplit = sep.split(users)
+                        
+                    for user in usersplit:
+                        user_cand = user.split(':')
+                        
+                        try:
+                            print "finding user:", user_cand[0]
+                            userobj = User.objects.get(username=user_cand[0])
+                            cand = Candidate()
+                            cand.student = userobj
+                            cand.assignment_group = ag
+
+                            if len(user_cand) == 2 and user_cand[1].isdigit():
+                                cand.candidate_id = user_cand[1]
+                                                   
+                            cand.save()
+     
+                            ag.candidates.add(cand)
+                            ag.save()
+                                                            
+                        except Exception as e:
+                            print e
+                            print "user %s doesnt exist" % (user_cand)
+        else:
+            print "NOT VALID"
+        
+        #return HttpResponseRedirect('/thanks/')
+    else:
+        print "GEt"
+        form = Form()
+
+    title = _('Create Assignment groups')
+    messages = UiMessages()
+    
+    return render_to_response('devilry/admin/create_assignmentgroups.django.html', {
+            'title': title,
+            #'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
+            'nodeform': form,
+            'messages': messages,
+            #'post_url': self.get_reverse_url(),
+            }, context_instance=RequestContext(request))
 
 
 
