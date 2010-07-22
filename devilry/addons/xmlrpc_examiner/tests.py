@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
-from devilry.core.models import Assignment, AssignmentGroup, Delivery, FileMeta, Feedback
+from devilry.core.models import Assignment, AssignmentGroup, Delivery, FileMeta
 from devilry.core.deliverystore import MemoryDeliveryStore
 
 
@@ -36,7 +36,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(o1['long_name'], oblig1.long_name)
         self.assertEquals(o1['path'], oblig1.get_path())
         self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
-        self.assertEquals(o1['xmlrpc_conf'], False)
+        self.assertEquals(o1['xmlrpc_gradeconf'], False)
 
         future = datetime.now() + timedelta(10)
         oldone = Assignment.objects.get(id=3)

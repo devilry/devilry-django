@@ -35,20 +35,33 @@ def list_active_assignments(request):
 
             publishing_time
                 The ``publishing_time`` of the assignment.
+
+            xmlrpc_gradeconf
+                A dict (xmlrpc struct) with the following values:
+
+                    help
+                        Help for the grade format.
+
+                    isfile
+                        True if the grade is set using a file, False
+                        otherwise.
+
+                    filename
+                        The filename if ``isfile`` is True.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
 
-    def xmlrpc_conf(a):
+    def xmlrpc_gradeconf(a):
         key = a.grade_plugin
         c = gradeplugin_registry.getitem(key)
-        return c.xmlrpc_conf or False
+        return c.xmlrpc_gradeconf or False
     result = [{
             'id': a.id,
             'short_name': a.short_name,
             'long_name': a.long_name,
             'path': a.get_path(),
             'publishing_time': a.publishing_time,
-            'xmlrpc_conf': xmlrpc_conf(a),
+            'xmlrpc_gradeconf': xmlrpc_gradeconf(a),
             }
         for a in assignments]
     return result
@@ -69,6 +82,9 @@ def list_assignmentgroups(request, assignment_path):
             id
                 A number identifying the assignment-group.
 
+            name
+                A optional name for the group.
+
             students
                 List of the usernames/candiatenumber of all the students on the
                 group.
@@ -87,6 +103,7 @@ def list_assignmentgroups(request, assignment_path):
             request.user)
     assignment_groups = [{
             'id': g.id,
+            'name': g.name,
             'students': [u.get_identifier() for u in g.candidates.all()],
             'deadlines': [u for u in g.deadline_set.all()],
             'number_of_deliveries': g.get_number_of_deliveries()}

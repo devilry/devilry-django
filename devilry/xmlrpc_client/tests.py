@@ -9,9 +9,15 @@ from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
 from devilry.core.testhelpers import create_from_path
+from devilry.core.models import Delivery
+
 from cookie_transport import CookieTransport, SafeCookieTransport
 from command import Command
-from utils import AssignmentSync
+from utils import AssignmentSync, InfoFileDoesNotExistError, \
+    InfoFileWrongTypeError, InfoFileMissingSectionError
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 
 class TestCommand(TestCase):
@@ -34,7 +40,6 @@ class TestCommand(TestCase):
     def tearDown(self):
         os.chdir(self.oldcwd)
         rmtree(self.root)
-
 
     def test_get_rootdir(self):
         self.assertTrue(os.path.samefile(self.root,
@@ -76,11 +81,11 @@ class TestCommand(TestCase):
         self.assertTrue(isinstance(serverproxy, SafeCookieTransport))
 
 
-class TestAssignmentSync(TestCase, XmlRpcAssertsMixin):
+class TestAssignmentSyncBase(TestCase, XmlRpcAssertsMixin):
     fixtures = ['tests/xmlrpc_examiner/users',
             'tests/xmlrpc_examiner/core']
 
-    def assignmentsync(self):
+    def sync(self):
         return AssignmentSync(
                 self.root,
                 os.path.join(self.root, 'cookie.txt'),
@@ -91,23 +96,115 @@ class TestAssignmentSync(TestCase, XmlRpcAssertsMixin):
         self.server = get_serverproxy(self.client, '/xmlrpc_examiner/')
         self.login(self.client, 'examiner1')
         self.root = mkdtemp('devilry-test')
-        self.assignmentsync()
+        self.sync()
         self.examiner1 = User.objects.get(username='examiner1')
-
-    def test_assignment(self):
-        self.assertEquals(os.listdir(self.root), ['inf1100.looong.oblig1'])
-        assignmentgroup = create_from_path('ifi.inf1010.spring09.oblig1.student1')
-        assignmentgroup.examiners.add(self.examiner1)
-        assignmentgroup.save()
-        self.assignmentsync()
-        dircontent = os.listdir(self.root)
-        dircontent.sort()
-        self.assertEquals(dircontent,
-                ['inf1010.spring09.oblig1', 'inf1100.looong.oblig1'])
-
-    def test_assignmentgroup(self):
-        self.assertEquals(os.listdir(self.root), ['inf1100.looong.oblig1'])
+        self.student2 = User.objects.get(username='student2')
 
     def tearDown(self):
         self.logout(self.client)
         rmtree(self.root)
+
+
+class TestAssignmentSync(TestAssignmentSyncBase):
+    def setUp(self):
+        super(TestAssignmentSync, self).setUp()
+        self.infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
+                '.info')
+
+    def test_sync(self):
+        self.assertEquals(os.listdir(self.root), ['inf1100.looong.oblig1'])
+        assignmentgroup = create_from_path(
+                'ifi:inf1010.spring09.oblig1.student1')
+        assignmentgroup.examiners.add(self.examiner1)
+        assignmentgroup.save()
+        self.sync()
+        dircontent = os.listdir(self.root)
+        dircontent.sort()
+        self.assertEquals(dircontent,
+                ['inf1010.spring09.oblig1', 'inf1100.looong.oblig1'])
+        info = ConfigParser() # Sanity test of info-file
+        info.read([self.infofile])
+        self.assertEquals(
+                info.get('info', 'path'), 'inf1100.looong.oblig1')
+        self.assertEquals(info.get('info', 'id'), '1')
+
+    def test_infofile(self):
+        self.assertTrue(os.path.isfile(self.infofile))
+        info = ConfigParser()
+        info.read([self.infofile])
+        self.assertEquals(
+                info.get('info', 'path'), 'inf1100.looong.oblig1')
+        self.assertEquals(info.get('info', 'id'), '1')
+        self.assertEquals(info.get('info', 'short_name'), 'oblig1')
+        self.assertEquals(
+                info.get('info', 'long_name'), 'Obligatory assignment one')
+        self.assertEquals(info.get('info', 'path'), 'inf1100.looong.oblig1')
+        self.assertEquals(
+                info.get('info', 'publishing_time'), '2010-06-05 00:31:42')
+
+    def test_assignment_missing_infofile(self):
+        infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
+                '.info')
+        os.remove(infofile)
+        self.assertRaises(InfoFileDoesNotExistError, self.sync)
+
+    def test_assignment_infofile_missing_section(self):
+        infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
+                '.info')
+        i = open(infofile, 'rb').read().replace('[info]', '[somethingelse]')
+        open(infofile, 'wb').write(i)
+        self.assertRaises(InfoFileMissingSectionError, self.sync)
+
+    def test_assignment_infofile_wrongtype(self):
+        infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
+                '.info')
+        i = open(infofile, 'rb').read().replace('type = Assignment',
+                'type = somethingelse')
+        open(infofile, 'wb').write(i)
+        self.assertRaises(InfoFileWrongTypeError, self.sync)
+
+
+class TestAssignmentGroupSync(TestAssignmentSyncBase):
+    def setUp(self):
+        super(TestAssignmentGroupSync, self).setUp()
+        self.infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
+                'student2-student3', '.info')
+        self.folder = os.path.join(self.root, 'inf1100.looong.oblig1')
+
+    def test_sync(self):
+        l = os.listdir(self.folder)
+        l.sort()
+        self.assertEquals(l, ['.info', 'student1', 'student2-student3'])
+
+    def test_infofile(self):
+        self.assertTrue(os.path.isfile(self.infofile))
+        info = ConfigParser()
+        info.read([self.infofile])
+        self.assertEquals(info.get('info', 'id'), '2')
+        self.assertEquals(info.get('info', 'name'), '')
+        self.assertEquals(
+                info.get('info', 'students'), 'student2, student3')
+        self.assertEquals(
+                info.get('info', 'number_of_deliveries'), '1')
+
+    def test_namecrash(self):
+        assignmentgroup = create_from_path(
+                'uio.ifi:inf1100.looong.oblig1.student2,student3')
+        assignmentgroup.examiners.add(self.examiner1)
+        assignmentgroup.save()
+        delivery = Delivery.begin(assignmentgroup, self.student2)
+        delivery.finish()
+        self.sync()
+        dircontent = os.listdir(self.folder)
+        dircontent.sort()
+        self.assertEquals(dircontent,
+            ['.info', 'student1', 'student2-student3.2',
+            'student2-student3.%s' % assignmentgroup.id])
+
+        # Make sure it works when id-based names are in the fs
+        self.sync()
+        dircontent = os.listdir(self.folder)
+        dircontent.sort()
+        self.assertEquals(dircontent,
+            ['.info', 'student1', 'student2-student3.2',
+            'student2-student3.%s' % assignmentgroup.id])
