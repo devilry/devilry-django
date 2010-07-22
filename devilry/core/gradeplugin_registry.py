@@ -4,9 +4,9 @@ from django.conf import settings
 _registry = {}
 
 def register(view, model_cls, label, description,
-        admin_url_callback=None, xmlrpc_conf=None):
+        admin_url_callback=None, xmlrpc_gradeconf=None):
     r = RegistryItem(view, model_cls, label, description,
-            admin_url_callback, xmlrpc_conf)
+            admin_url_callback, xmlrpc_gradeconf)
     _registry[r.get_key()] = r
 
 def getitem(key):
@@ -24,9 +24,9 @@ class RegistryItem(object):
         A class for storing grades.
     """
     def __init__(self, view, model_cls, label, description,
-            admin_url_callback, xmlrpc_conf=None):
+            admin_url_callback, xmlrpc_gradeconf=None):
         self.view = view
-        self.xmlrpc_conf = xmlrpc_conf
+        self.xmlrpc_gradeconf = xmlrpc_gradeconf
         self.model_cls = model_cls
         self.label = label
         self.description = description
