@@ -272,9 +272,9 @@ def create_assignmentgroups2(request, assignment, data):
     
     class AssignmentgroupForm(forms.Form):
         name = forms.CharField()
-        examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
-                                        required=False)
-        #examiners = forms.CharField()
+        #examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
+        #                                required=False)
+        examiners = forms.CharField()
         
     if request.POST:
         pass
@@ -282,7 +282,7 @@ def create_assignmentgroups2(request, assignment, data):
         pass
     
     AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
-    formset = AssignmentGroupsFormSet()
+    formset = AssignmentGroupsFormSet(initial=data)
     
     return render_to_response(
         'devilry/admin/verify_assignmentgroups.django.html', {
@@ -329,7 +329,7 @@ def create_assignmentgroups(request):
                     group_data['name'] = name
                 
                 if users:
-                    group_data['users'] = users
+                    group_data['examiners'] = users
                 
                 data.append(group_data)
 
