@@ -552,18 +552,19 @@ class TestTestHelpers(TestCase):
     def test_create_from_path(self):
 
         self.assertEquals(create_from_path('uio').short_name, 'uio')
-        self.assertEquals(create_from_path('uio.inf1010').short_name,
+        self.assertEquals(create_from_path('test.node').short_name, 'node')
+        self.assertEquals(create_from_path('uio:inf1010').short_name,
                 'inf1010')
-        self.assertEquals(create_from_path('uio.inf1010.spring11').short_name,
+        self.assertEquals(create_from_path('uio:inf1010.spring11').short_name,
                 'spring11')
         self.assertEquals(
-                create_from_path('uio.inf1010.spring11.oblig1').short_name,
+                create_from_path('uio:inf1010.spring11.oblig1').short_name,
                 'oblig1')
 
         self.assertRaises(User.DoesNotExist,
                 User.objects.get, username='student1')
         ag = create_from_path(
-                'ifi.inf1100.spring10.oblig1.student1')
+                'ifi:inf1100.spring10.oblig1.student1')
         students = [c.student.username for c in ag.candidates.all()]
         self.assertEquals(students, ['student1'])
         User.objects.get(username='student1')
@@ -576,7 +577,7 @@ class TestTestHelpers(TestCase):
                 'ifi')
 
         ag1 = create_from_path(
-                'ifi.inf1100.spring10.oblig1.student1,student2')
+                'ifi:inf1100.spring10.oblig1.student1,student2')
         ag2 = create_from_path(
-                'ifi.inf1100.spring10.oblig1.student1,student2')
+                'ifi:inf1100.spring10.oblig1.student1,student2')
         self.assertNotEquals(ag1.id, ag2.id)

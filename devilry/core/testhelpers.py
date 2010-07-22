@@ -16,37 +16,52 @@ def create_from_path(path):
     Examples::
 
         assignmentgroup = create_from_path(
-                'ifi.inf1100.spring05.oblig1.student1,student2')
+                'ifi:inf1100.spring05.oblig1.student1,student2')
         oblig1 = create_from_path(
-                'ifi.inf1100.spring05.oblig1')
+                'ifi:inf1100.spring05.oblig1')
     """
-    p = path.split('.')
-    node = Node(short_name=p[0], long_name=p[0])
-    try:
-        node.save()
-    except:
-        node = Node.objects.get(short_name=p[0])
-    last = node
-    if len(p) > 1:
-        subject = Subject(parentnode=node, short_name=p[1], long_name=p[1])
+    split = path.split(':', 1)
+    nodes = split[0].split('.')
+    for nodename in nodes:
+        node = Node(short_name=nodename, long_name=nodename)
         try:
-            subject.save()
+            node.save()
         except:
-            subject = Subject.objects.get(short_name=p[1])
-        last = subject
-    if len(p) > 2:
-        period = Period(parentnode=subject, short_name=p[2],
-                long_name=p[2], start_time=datetime.now(),
+            node = Node.objects.get(short_name=nodename)
+        last = node
+
+    if len(split) != 2:
+        return last
+    pathsplit = split[1].split('.')
+
+    # Subject
+    subjectname = pathsplit[0]
+    subject = Subject(parentnode=node, short_name=subjectname,
+            long_name=subjectname)
+    try:
+        subject.save()
+    except:
+        subject = Subject.objects.get(short_name=subjectname)
+    last = subject
+
+    # Period
+    if len(pathsplit) > 1:
+        periodname = pathsplit[1]
+        period = Period(parentnode=subject, short_name=periodname,
+                long_name=periodname, start_time=datetime.now(),
                 end_time=datetime.now() + timedelta(10))
         try:
             period.save()
         except:
             period = Period.objects.get(parentnode=subject,
-                    short_name=p[2])
+                    short_name=periodname)
         last = period
-    if len(p) > 3:
-        assignment = Assignment(parentnode=period, short_name=p[3],
-                long_name=p[3], publishing_time=datetime.now())
+
+    # Assignment
+    if len(pathsplit) > 2:
+        assignmentname = pathsplit[2]
+        assignment = Assignment(parentnode=period, short_name=assignmentname,
+                long_name=assignmentname, publishing_time=datetime.now())
         gradeplugin = gradeplugin_registry.getdefaultkey()
         assignment.grade_plugin = gradeplugin
         
@@ -54,10 +69,12 @@ def create_from_path(path):
             assignment.save()
         except:
             assignment = Assignment.objects.get(parentnode=period,
-                    short_name=p[3])
+                    short_name=assignmentname)
         last = assignment
-    if len(p) > 4:
-        usernames = p[4].split(',')
+
+    # Candidates
+    if len(pathsplit) > 3:
+        usernames = pathsplit[3].split(',')
         users = []
         for u in usernames:
             user = User(username=u)
