@@ -1,0 +1,52 @@
+{% extends "devilry/admin/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block heading %}{{ title }}{% endblock %}
+
+
+{% block admin-breadcrumbs %}
+  {{ block.super }}
+  <li><a href='../'>{{ model_plural_name|capfirst }}</a></li>
+  <li>::</li>
+  <li>{{ title }}</li>
+{% endblock %}
+
+{% block main %}
+
+{% if message %}
+	<p>{{ message }}</p>
+{% endif %}
+
+<form method='post' action='{{ post_url }}'>
+  {% with nodeform as form %}
+  <fieldset class='stdfieldset'>
+    {% include "devilry/ui/include/form-list.django.html" %}
+  </fieldset>
+  {% endwith %}
+
+  <fieldset class='stdfieldset'>
+    <h2 class='legend'>{% trans "Deadlines" %}</h2>
+    {% with deadline_form as formset %}
+      {% include "devilry/ui/include/tabular-inline.django.html" %}
+    {% endwith %}
+  </fieldset>
+
+  <fieldset class='stdfieldset'>
+    <h2 class='legend'>{% trans "Candidates" %}</h2>
+    {% with candidates_form as formset %}
+      {% include "devilry/ui/include/tabular-inline.django.html" %}
+    {% endwith %}
+  </fieldset>
+
+  <div class='submit-row'>
+    <div class='submit-row-right'>
+      <input type='submit' name='save' value='{% trans "Save" %}'/>
+    </div>
+    <div class='submit-row-left'>
+      <div class='form-link-as-button delete'><a href='#'>{% trans "Delete" %}</a></div>
+    </div>
+  </div>
+</form>
+{% endblock %}
