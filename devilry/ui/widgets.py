@@ -36,15 +36,14 @@ class DevilryDateTimeWidget(forms.SplitDateTimeWidget):
                 _('Date:'), rendered_widgets[0], _('Time:'), rendered_widgets[1]))
 
 
-class DevilryMultiSelectFew(forms.TextInput):
+class DevilryMultiSelectFewUsersDb(forms.TextInput):
     class Media:
         js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_user_field.js",)
                 
     def __init__(self, attrs={}):
-        widgets = [DevilryMultiSelectFew]
         attrs["size"] = 60
         attrs["class"] = "devilry_multiselect_few"
-        super(DevilryMultiSelectFew, self).__init__(attrs)
+        super(DevilryMultiSelectFewUsersDb, self).__init__(attrs)
     
     def render(self, name, value, attrs=None):
         if value:
@@ -52,4 +51,14 @@ class DevilryMultiSelectFew(forms.TextInput):
             value = ", ".join([u.username for u in qry])
         else:
             value = ""
-        return super(DevilryMultiSelectFew, self).render(name, value, attrs)
+        return super(DevilryMultiSelectFewUsersDb, self).render(name, value, attrs)
+
+
+class DevilryMultiSelectFewUsers(forms.TextInput):
+    class Media:
+        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_user_field.js",)
+                
+    def __init__(self, attrs={}):
+        attrs["size"] = 60
+        attrs["class"] = "devilry_multiselect_few"
+        super(DevilryMultiSelectFewUsers, self).__init__(attrs)
