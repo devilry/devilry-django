@@ -16,9 +16,9 @@
 {% block main %}
 
 <form method='post' action='{{ post_url }}'>
-  <table>
-    {{ formset }}
-  </table>
+  <fieldset class='stdfieldset'>
+    {% include "devilry/ui/include/tabular-inline.django.html" %}
+  </fieldset>
   
   <div class='submit-row'>
     <div class='submit-row-right'>
