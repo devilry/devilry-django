@@ -1019,6 +1019,19 @@ class Delivery(models.Model):
         self.successful = True
         self.save()
 
+    def get_feedback(self):
+        """ Get the feedback for this delivery. If the feedback does not
+        exists, a new :class:`Feedback`-object is created but not saved.
+
+        :return:
+            A :class:`Feedback`-object with the delivery-attribute set
+            to this delivery.
+        """
+        try:
+            return self.feedback
+        except Feedback.DoesNotExist:
+            return Feedback(delivery=self)
+
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)
 
