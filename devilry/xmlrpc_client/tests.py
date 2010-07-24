@@ -2,6 +2,7 @@ from tempfile import mkdtemp
 from shutil import rmtree
 import os
 from ConfigParser import ConfigParser
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -9,7 +10,7 @@ from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
 from devilry.core.testhelpers import create_from_path
-from devilry.core.models import Delivery
+from devilry.core.models import Delivery, AssignmentGroup
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 from command import Command
@@ -17,7 +18,7 @@ from utils import AssignmentSync, InfoFileDoesNotExistError, \
     InfoFileWrongTypeError, InfoFileMissingSectionError
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.ERROR)
 
 
 class TestCommand(TestCase):
@@ -199,7 +200,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
         dircontent.sort()
         self.assertEquals(dircontent,
             ['.info', 'student1', 'student2-student3.2',
-            'student2-student3.%s' % assignmentgroup.id])
+            join_dirname_id('student2-student3', assignmentgroup.id)])
 
         # Make sure it works when id-based names are in the fs
         self.sync()
@@ -207,4 +208,66 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
         dircontent.sort()
         self.assertEquals(dircontent,
             ['.info', 'student1', 'student2-student3.2',
-            'student2-student3.%s' % assignmentgroup.id])
+            join_dirname_id('student2-student3', assignmentgroup.id)])
+
+
+class TestAssignmentDeliverySync(TestAssignmentSyncBase):
+    def setUp(self):
+        super(TestAssignmentDeliverySync, self).setUp()
+        self.agfolder = os.path.join(self.root, 'inf1100.looong.oblig1',
+                'student1')
+        self.folder = os.path.join(self.agfolder, '2010-06-19_14.47.29')
+        self.infofile = os.path.join(self.folder, '.info')
+
+    def test_sync(self):
+        dircontent = os.listdir(self.folder)
+        dircontent.sort()
+        self.assertEquals(dircontent, ['.info', 'files'])
+        agdircontent = os.listdir(self.agfolder)
+        agdircontent.sort()
+        self.assertEquals(agdircontent, ['.info', '2010-06-19_14.47.29'])
+
+    def test_infofile(self):
+        self.assertTrue(os.path.isfile(self.infofile))
+        info = ConfigParser()
+        info.read([self.infofile])
+        self.assertEquals(info.get('info', 'id'), '1')
+        self.assertEquals(info.get('info', 'time_of_delivery'),
+                '2010-06-19 14:47:29')
+
+    def test_namecrash(self):
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        delivery = Delivery.begin(assignmentgroup, self.student2)
+        delivery.finish()
+        delivery.time_of_delivery = datetime(2010, 6, 19, 14, 47, 29)
+        delivery.save()
+        self.sync()
+
+        dircontent = os.listdir(self.agfolder)
+        dircontent.sort()
+        self.assertEquals(dircontent,
+            ['.info', '2010-06-19_14.47.29.1',
+            join_dirname_id('2010-06-19_14.47.29', delivery.id)])
+
+        # Make sure it works when id-based names are in the fs
+        self.sync()
+        dircontent = os.listdir(self.agfolder)
+        dircontent.sort()
+        self.assertEquals(dircontent,
+            ['.info', '2010-06-19_14.47.29.1',
+                '2010-06-19_14.47.29.%s' % delivery.id])
+
+    def test_feedback(self):
+        delivery = Delivery.objects.get(id=1)
+        f = delivery.get_feedback()
+        f.feedback_text = 'test'
+        f.feedback_published = True
+        f.set_grade_from_string('+')
+        f.save()
+        self.sync()
+
+
+# WARNING: We are have no tests for filemeta, because all the other tests
+# use the django test-client, and it does not support file-downloads using
+# urllib2.
+

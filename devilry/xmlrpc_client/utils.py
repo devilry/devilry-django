@@ -13,14 +13,12 @@ from ConfigParser import SafeConfigParser
 # TODO: chmod cookies.txt
 
 
-DATETIME_FORMAT = '%Y.%m.%d_%H-%M-%S'
+DATETIME_FORMAT = '%Y-%m-%d_%H.%M.%S'
 
 
-def id_from_path(path):
-    m = re.match(r'.*?_id-(\d+)$', os.path.normpath(path))
-    if not m:
-        return None
-    return int(m.groups(1)[0])
+
+def join_dirname_id(dirname, id):
+    return "%s+%s" % (dirname, id)
 
 def log_fault(fault):
     """ Log a xmlrpclib.Fault to logging.error. """
@@ -49,14 +47,10 @@ class InfoFileWrongTypeError(Exception):
     """ Raised in :meth:`Info.write` when the *type* stored in the info-file
     does not match the expected type. """
 
+
 class Info(object):
     """ Each directory in the assignment-tree has a hidden file named
-    *.info* where information about the item in the directory.
-    
-    .. attribute:: dirpath
-        Directory where the info-file is stored on disk.
-    .. attribute:: filepath
-        Path where the info-file is stored on disk.
+    *.info* where information about the item in the directory is stored.
     """
     sectionname = 'info'
 
@@ -82,31 +76,39 @@ class Info(object):
     def get(self, key):
         return self.cfg.get(self.sectionname, key)
 
-    def getid(self):
+    def get_id(self):
         return self.get('id')
+
+    def get_dirpath(self):
+        """ Get the directory where the info-file is stored on disk. """
+        return self._dirpath
+
+    def get_infofilepath(self):
+        """ Get path to where the info-file is stored on disk. """
+        return self._infofilepath
 
     def new(self):
         self.cfg.add_section(self.sectionname)
         self.set('type', self.typename)
 
     def read(self):
-        self.cfg.read([self.filepath])
-        if not os.path.exists(self.filepath):
+        self.cfg.read([self._infofilepath])
+        if not os.path.exists(self._infofilepath):
             raise InfoFileDoesNotExistError(self, "The info-file does not exists.")
         if not self.cfg.has_section(self.sectionname):
             raise InfoFileMissingSectionError(self,
                     'The info-file, %s, has no [%s]-section. This could ' \
                     'be because you have changed or overwritten the file.' % (
-                        self.filepath, self.sectionname))
+                        self._infofilepath, self.sectionname))
         if self.get('type') != self.typename:
             raise InfoFileWrongTypeError(
                     'The expected type, %s, does not match the existing ' \
                     'type, %s, in %s. This could mean you have managed to ' \
                     'checkout one devilry-tree within another.' % (
-                    self.typename, self.get('type'), self.filepath))
+                    self.typename, self.get('type'), self._infofilepath))
 
     def write(self):
-        self.cfg.write(open(self.filepath, 'wb'))
+        self.cfg.write(open(self._infofilepath, 'wb'))
 
     def __str__(self):
         f = StringIO()
@@ -114,8 +116,8 @@ class Info(object):
         return f.getvalue()
 
     def _change_dirpath(self, dirpath):
-        self.dirpath = dirpath
-        self.filepath = os.path.join(dirpath, '.info')
+        self._dirpath = dirpath
+        self._infofilepath = os.path.join(dirpath, '.info')
 
     def rename_if_required(self, id):
         """
@@ -132,13 +134,18 @@ class Info(object):
         If a rename is not required, ``False`` is returned.
 
         **Never** call this unless :meth:`determine_location` returns False.
+
+        Only used with duplicate dirnames. See :class:`AssignmentTreeWalker`
+        for more information.
         """
-        parentdir = os.path.dirname(self.dirpath)
-        dirpath_with_id = '%s.%s' % (self.dirpath, id)
-        if os.path.exists(self.dirpath):
-            existing_id = Info.read_open(self.dirpath, self.typename).getid()
-            existing_dirpath_with_id = '%s.%s' % (self.dirpath, existing_id)
-            os.rename(self.dirpath, existing_dirpath_with_id)
+        #if not self.determine_location(id):
+            #return False
+        parentdir = os.path.dirname(self._dirpath)
+        dirpath_with_id = join_dirname_id(self._dirpath, id)
+        if os.path.exists(self._dirpath):
+            existing_id = Info.read_open(self._dirpath, self.typename).get_id()
+            existing_dirpath_with_id = join_dirname_id(self._dirpath, existing_id)
+            os.rename(self._dirpath, existing_dirpath_with_id)
             self._change_dirpath(dirpath_with_id)
             return existing_dirpath_with_id
         return False
@@ -146,25 +153,31 @@ class Info(object):
     def determine_location(self, id):
         """
         Determine the correct location of this Info, changing
-        the :attr:`dirpath` the Info exists, but uses id in it's path.
+        the dirpath the Info exists, but uses id in it's path.
+        
+        Only used with duplicate dirnames. See :class:`AssignmentTreeWalker`
+        for more information.
 
         :return: True if the determined location exists.
         """
-        dirpath_with_id = '%s.%s' % (self.dirpath, id)
+        dirpath_with_id = join_dirname_id(self._dirpath, id)
         if os.path.exists(dirpath_with_id):
             self._change_dirpath(dirpath_with_id)
             return True
-        if os.path.exists(self.dirpath):
-            existing_id = Info.read_open(self.dirpath, self.typename).getid()
+        if os.path.exists(self._dirpath):
+            existing_id = Info.read_open(self._dirpath, self.typename).get_id()
             return existing_id == str(id)
         return False
 
 
 class AssignmentTreeWalker(object):
     """ Finds all assignment where the current user is examiner, and walks
-    through every AssignmentGroup, Delivery and FileMeta calling
-    :meth:`assignment`, :meth:`assignmentgroup`, :meth:`delivery` and
-    :meth:`filemeta`.
+    through every AssignmentGroup, Delivery, Feedback and FileMeta.
+
+    Calls :meth:`assignment`, :meth:`assignmentgroup`, :meth:`delivery`,
+    :meth:`filemeta`, :meth:`feedback_none` and :meth:`feedback_exists` with
+    the returned dicts from the corresponding functions in the examiner
+    xmlrpc as argument.
     """
     def __init__(self, cookiepath, server, serverurl):
         self.cookiepath = cookiepath
@@ -183,27 +196,28 @@ class AssignmentTreeWalker(object):
             for group in server.list_assignmentgroups(assignment['path']):
                 groupname = '-'.join(group['students'])
                 # Note that the correct dirpath depends on the assignment
-                # method setting assignmentinfo.dirpath correctly..
-                groupdir = os.path.join(assignmentinfo.dirpath, groupname)
+                # method setting assignmentinfo.get_dirpath() correctly..
+                groupdir = os.path.join(assignmentinfo.get_dirpath(), groupname)
                 groupinfo = Info(groupdir, "AssignmentGroup")
                 self.assignmentgroup(group, groupinfo)
 
                 for delivery in server.list_deliveries(group['id']):
                     time_of_delivery = delivery['time_of_delivery'].strftime(
                             DATETIME_FORMAT)
-                    deliverydir = os.path.join(groupinfo.dirpath, time_of_delivery)
-                    filesdir = os.path.join(deliverydir, 'files')
-                    self.delivery(delivery, deliverydir, filesdir)
+                    deliverydir = os.path.join(groupinfo.get_dirpath(), time_of_delivery)
+                    deliveryinfo = Info(deliverydir, "Delivery")
+                    self.delivery(delivery, deliveryinfo)
 
+                    filesdir = os.path.join(deliveryinfo.get_dirpath(), 'files')
                     for filemeta in delivery['filemetas']:
                         filepath = os.path.join(filesdir, filemeta['filename'])
-                        self.filemeta(filemeta, deliverydir, filepath)
+                        self.filemeta(filemeta, filepath)
 
                     try:
                         feedback = server.get_feedback(delivery['id'])
                     except xmlrpclib.Fault, e:
                         if e.faultCode == 404:
-                            self.feeback_none(delivery, deliverydir)
+                            self.feedback_none(delivery, deliverydir)
                         else:
                             raise
                     else:
@@ -215,8 +229,10 @@ class AssignmentTreeWalker(object):
         Calls :meth:`assignment_new` if the assignment has not been synced
         before, and :meth:`assignment_exists` if not. These two methods do
         nothing by default, and are ment to be overridden in subclasses.
+
+        :param assignment: A dictionary as returned from the 
         """
-        if os.path.isdir(info.dirpath):
+        if os.path.isdir(info.get_dirpath()):
             self.assignment_exists(assignment, info)
         else:
             self.assignment_new(assignment, info)
@@ -252,24 +268,24 @@ class AssignmentTreeWalker(object):
     def assignmentgroup_exists(self, group, groupdir):
         pass
 
-    def delivery(self, delivery, deliverydir, filesdir):
+    def delivery(self, delivery, info):
         """ Called on each delivery.
         
         Calls :meth:`delivery_new` if the delivery has not been synced
         before, and :meth:`delivery_exists` if not. These two methods do
         nothing by default, and are ment to be overridden in subclasses.
         """
-        if os.path.isdir(deliverydir):
-            self.delivery_exists(delivery, deliverydir, filesdir)
+        if info.determine_location(delivery['id']):
+            self.delivery_exists(delivery, info)
         else:
-            self.delivery_new(delivery, deliverydir, filesdir)
+            self.delivery_new(delivery, info)
 
-    def delivery_new(self, delivery, deliverydir, filesdir):
+    def delivery_new(self, delivery, info):
         pass
-    def delivery_exists(self, delivery, deliverydir, filesdir):
+    def delivery_exists(self, delivery, info):
         pass
 
-    def filemeta(self, filemeta, deliverydir, filepath):
+    def filemeta(self, filemeta, filepath):
         """ Called on each filemeta.
         
         Calls :meth:`filemeta_new` if the filemeta has not been synced
@@ -277,16 +293,16 @@ class AssignmentTreeWalker(object):
         nothing by default, and are ment to be overridden in subclasses.
         """
         if os.path.isfile(filepath):
-            self.filemeta_exists(filemeta, deliverydir, filepath)
+            self.filemeta_exists(filemeta, filepath)
         else:
-            self.filemeta_new(filemeta, deliverydir, filepath)
+            self.filemeta_new(filemeta, filepath)
 
-    def filemeta_new(self, filemeta, deliverydir, filepath):
+    def filemeta_new(self, filemeta, filepath):
         pass
-    def filemeta_exists(self, filemeta, deliverydir, filepath):
+    def filemeta_exists(self, filemeta, filepath):
         pass
 
-    def feeback_none(self, delivery, deliverydir):
+    def feedback_none(self, delivery, deliverydir):
         """ Called when there is no feedback on a delivery. Does nothing by
         default, and should be overridden in subclasses. """
         pass
@@ -314,8 +330,8 @@ class AssignmentSync(AssignmentTreeWalker):
             os.chdir(cwd)
 
     def assignment_new(self, assignment, info):
-        logging.info('+ %s' % info.dirpath)
-        os.mkdir(info.dirpath)
+        logging.info('+ %s' % info.get_dirpath())
+        os.mkdir(info.get_dirpath())
         info.new()
         info.addmany(
                 id = assignment['id'],
@@ -326,10 +342,7 @@ class AssignmentSync(AssignmentTreeWalker):
         info.write()
 
     def assignment_exists(self, assignment, info):
-        logging.debug('%s already exists' % info.dirpath)
-        #errorfallback = 'If so, you can backup and delete the directory, ' \
-                #'%s, and sync to get a fresh copy from the server.' % \
-                #assignmentdir
+        logging.debug('%s already exists' % info.get_dirpath())
         info.read()
         if not assignment['xmlrpc_gradeconf']:
             logging.warning(
@@ -339,16 +352,16 @@ class AssignmentSync(AssignmentTreeWalker):
 
     def assignmentgroup_nodeliveries(self, group, info):
         logging.warning('Group "%s" has no deliveries' %
-                info.dirpath)
+                info.get_dirpath())
 
     def assignmentgroup_new(self, group, info):
-        olddir = info.dirpath
+        olddir = info.get_dirpath()
         renamed_name = info.rename_if_required(group['id'])
         if renamed_name:
             logging.warning('Renamed %s -> %s to avoid name crash with %s.' % (
-                olddir, renamed_name, info.dirpath))
-        logging.info('+ %s' % info.dirpath)
-        os.mkdir(info.dirpath)
+                olddir, renamed_name, info.get_dirpath()))
+        logging.info('+ %s' % info.get_dirpath())
+        os.mkdir(info.get_dirpath())
         info.new()
         info.addmany(
                 id = group['id'],
@@ -358,49 +371,64 @@ class AssignmentSync(AssignmentTreeWalker):
         info.write()
 
     def assignmentgroup_exists(self, group, info):
-        logging.debug('%s already exists.' % info.dirpath)
+        logging.debug('%s already exists.' % info.get_dirpath())
 
-    def delivery_new(self, delivery, deliverydir, filesdir):
-        logging.info('+ %s' % deliverydir)
-        os.mkdir(deliverydir)
-        os.mkdir(filesdir)
+    def delivery_new(self, delivery, info):
+        if not delivery['successful']:
+            logging.debug('Delivery %s was not successfully completed, and '
+                    'is therefore ignored.' % info.get_dirpath())
+            return
 
-    def delivery_exists(self, delivery, deliverydir, filesdir):
-        logging.debug('%s already exists.' % deliverydir)
+        olddir = info.get_dirpath()
+        renamed_name = info.rename_if_required(delivery['id'])
+        if renamed_name:
+            logging.warning('Renamed %s -> %s to avoid name crash with %s.' % (
+                olddir, renamed_name, info.get_dirpath()))
+        logging.info('+ %s' % info.get_dirpath())
+        os.mkdir(info.get_dirpath())
+        os.mkdir(os.path.join(info.get_dirpath(), 'files'))
+        info.new()
+        info.addmany(
+                id = delivery['id'],
+                time_of_delivery = delivery['time_of_delivery'])
+        info.write()
 
-
-    #def filemeta_new(self, filemeta, deliverydir, filepath):
-        #logging.info('+ %s' % filepath)
-        #url = urljoin(self.serverurl,
-            #"/ui/download-file/%s" % filemeta['id'])
-        #logging.debug('Downloading file: %s' % url)
-        #size = filemeta['size']
-        #left_bytes = size
-        #input = self.urlopener.open(url)
-        #output = open(filepath, 'wb')
-        #while left_bytes > 0:
-            #out = input.read(self.bufsize)
-            #left_bytes -= len(out)
-            #if len(out) == 0:
-                #break
-            #output.write(out)
-        #input.close()
-        #output.close()
-
-    #def filemeta_exists(self, filemeta, deliverydir, filepath):
-        #logging.debug('%s already exists.' % filepath)
+    def delivery_exists(self, delivery, info):
+        logging.debug('%s already exists.' % info.get_dirpath())
 
 
-    #def feeback_none(self, delivery, deliverydir):
-        #pass
+    def filemeta_new(self, filemeta, filepath):
+        logging.info('+ %s' % filepath)
+        url = urljoin(self.serverurl,
+            "/ui/download-file/%s" % filemeta['id'])
+        logging.debug('Downloading file: %s' % url)
+        size = filemeta['size']
+        left_bytes = size
+        input = self.urlopener.open(url)
+        output = open(filepath, 'wb')
+        while left_bytes > 0:
+            out = input.read(self.bufsize)
+            left_bytes -= len(out)
+            if len(out) == 0:
+                break
+            output.write(out)
+        input.close()
+        output.close()
 
-    #def feedback_exists(self, delivery, deliverydir, feedback):
-        #if feedback['format'] == 'restructuredtext':
-            #ext = 'rst'
-        #else:
-            #ext = 'txt'
-        #feedbackfile = os.path.join(deliverydir, 'feedback.server.%s' % ext)
-        #open(feedbackfile, 'wb').write(feedback['text'])
+    def filemeta_exists(self, filemeta, filepath):
+        logging.debug('%s already exists.' % filepath)
+
+
+    def feedback_none(self, delivery, deliverydir):
+        pass
+
+    def feedback_exists(self, delivery, deliverydir, feedback):
+        if feedback['format'] == 'restructuredtext':
+            ext = 'rst'
+        else:
+            ext = 'txt'
+        feedbackfile = os.path.join(deliverydir, 'feedback.server.%s' % ext)
+        open(feedbackfile, 'wb').write(feedback['text'])
 
 
 class Cli(object):
