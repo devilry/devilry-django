@@ -16,7 +16,13 @@
 {% block main %}
 
 <form method='post' action='{{ post_url }}'>
+
   <fieldset class='stdfieldset'>
+    {% comment %}
+    <table>
+      {{ formset }}
+    </table>
+    {% endcomment %}
     {% include "devilry/ui/include/tabular-inline.django.html" %}
   </fieldset>
   
