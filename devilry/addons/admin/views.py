@@ -11,7 +11,8 @@ from devilry.core.models import Node, Period, Assignment, AssignmentGroup, \
         Deadline, Candidate, Subject
 from devilry.ui.messages import UiMessages
 from devilry.core import gradeplugin_registry
-from devilry.ui.widgets import DevilryDateTimeWidget, DevilryMultiSelectFew
+from devilry.ui.widgets import DevilryDateTimeWidget, \
+        DevilryMultiSelectFewUsers, DevilryMultiSelectFewUsersDb
 from devilry.ui.fields import MultiSelectCharField
 
 from django.contrib.auth.models import User
@@ -96,7 +97,7 @@ class EditNode(EditBase):
         class NodeForm(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=False,
                     queryset = Node.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
                 model = Node
@@ -111,7 +112,7 @@ class EditSubject(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Node.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
                 model = Subject
@@ -126,7 +127,7 @@ class EditPeriod(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Subject.where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
                 model = Period
@@ -145,7 +146,7 @@ class EditAssignment(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Period.not_ended_where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFew, 
+            admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
                 model = Assignment
@@ -188,14 +189,14 @@ class EditAssignmentGroup(EditBase):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Assignment.where_is_admin(self.request.user))
-            examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
+            examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
                                              required=False)
                         
             class Meta:
                 model = AssignmentGroup
                 fields = ['parentnode', 'name', 'examiners', 'is_open']
                 widgets = {
-                    'examiners': DevilryMultiSelectFew,
+                    'examiners': DevilryMultiSelectFewUsersDb,
                     }
         return Form
 
@@ -266,11 +267,16 @@ def edit_assignment(request, obj_id=None, successful_save=False):
 def edit_assignmentgroup(request, obj_id=None, successful_save=False):
     return EditAssignmentGroup(request, obj_id, successful_save).create_view()
 
-class AssignmentgroupForm(forms.Form):
+class AssignmentgroupForm(forms.ModelForm):
         name = forms.CharField()
-        examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
-                                       required=False)
-        #examiners = forms.CharField()
+        #examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
+                                       #required=False)
+        examiners = forms.CharField(widget=DevilryMultiSelectFewUsers)
+
+        class Meta:
+            model = AssignmentGroup
+            fields = ['name', 'examiners']
+
 
 class CreateAssignmentgroups:
 
@@ -308,9 +314,18 @@ class CreateAssignmentgroups:
         if request.POST:
             AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
             formset = AssignmentGroupsFormSet(request.POST)
-            print "ass formset:", formset
-        
+            if formset.is_valid():
+                print "************* Valid *****************"
+            else:
+                return render_to_response(
+                    'devilry/admin/verify_assignmentgroups.django.html', {
+                        'title': "Create assignmentsgroups",
+                        'formset': formset,
+                        'post_url': "save-assignmentgroups"
+                        }, context_instance=RequestContext(request))
+
         return HttpResponseRedirect("create-assignmentgroups")
+
 
 @login_required
 def save_assignmentgroups(request):
@@ -341,7 +356,7 @@ def create_assignmentgroups(request):
             for l in lines:
                 if l.strip() == "":
                     continue
-                m = re.match("(?:(?P<name>.+?)::)?(?P<users>.+)?", l)
+                m = re.match("(?:(?P<name>.+?)::)?\s*(?P<users>.+)?", l)
                 
                 if not m:
                     continue
@@ -358,7 +373,7 @@ def create_assignmentgroups(request):
                     group_data['name'] = name
                 
                 if users:
-                    group_data['examiners'] = MultiSelectCharField.from_string(users)
+                    group_data['examiners'] = users
                 
                 print "group data:", group_data
 
@@ -439,7 +454,6 @@ def create_assignmentgroups1(request):
 
                             if len(user_cand) == 2 and user_cand[1].isdigit():
                                 cand.candidate_id = user_cand[1]
-                                                   
                             cand.save()
      
                             ag.candidates.add(cand)
