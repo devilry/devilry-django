@@ -266,30 +266,55 @@ def edit_assignment(request, obj_id=None, successful_save=False):
 def edit_assignmentgroup(request, obj_id=None, successful_save=False):
     return EditAssignmentGroup(request, obj_id, successful_save).create_view()
 
-
-@login_required
-def create_assignmentgroups2(request, assignment, data):
-    
-    class AssignmentgroupForm(forms.Form):
+class AssignmentgroupForm(forms.Form):
         name = forms.CharField()
         examiners = MultiSelectCharField(widget=DevilryMultiSelectFew,
                                        required=False)
         #examiners = forms.CharField()
-        
-    if request.POST:
-        pass
-    else:
-        pass
-    
-    AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
-    formset = AssignmentGroupsFormSet(initial=data)
-    
-    return render_to_response(
-        'devilry/admin/verify_assignmentgroups.django.html', {
-            'title': "Create assignmentsgroups",
-           'formset': formset
-            }, context_instance=RequestContext(request))
 
+class CreateAssignmentgroups:
+
+        #@login_required
+    def verify_assignmentgroups(self, request, assignment, initial_data):
+        print "YES----------"
+
+        AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
+        
+        formset = None
+
+        
+        print "GET"
+        data = {'form-TOTAL_FORMS': u'1',
+                'form-INITIAL_FORMS': u'4',
+                'form-MAX_NUM_FORMS': u'',
+                }
+         
+        #print "inital data:", initial_data
+
+        formset = AssignmentGroupsFormSet(initial=initial_data)
+        
+        #print "formset:", formset
+
+        return render_to_response(
+            'devilry/admin/verify_assignmentgroups.django.html', {
+                'title': "Create assignmentsgroups",
+                'formset': formset,
+                'post_url': "save-assignmentgroups"
+                }, context_instance=RequestContext(request))
+
+
+    def save_assignmentgroups(self, request):
+        print "Save assignmentgroups"
+        if request.POST:
+            AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
+            formset = AssignmentGroupsFormSet(request.POST)
+            print "ass formset:", formset
+        
+        return HttpResponseRedirect("create-assignmentgroups")
+
+@login_required
+def save_assignmentgroups(request):
+    return CreateAssignmentgroups().save_assignmentgroups(request)
 
 @login_required
 def create_assignmentgroups(request):
@@ -311,8 +336,8 @@ def create_assignmentgroups(request):
         
             lines = groups.splitlines()
 
-            data = []
-
+            initial_data = []
+            
             for l in lines:
                 if l.strip() == "":
                     continue
@@ -326,15 +351,21 @@ def create_assignmentgroups(request):
                 name = m.group('name')
                 users = m.group('users')
 
+                print "name:", name
+                print "users:", users
+
                 if name:
                     group_data['name'] = name
                 
                 if users:
                     group_data['examiners'] = MultiSelectCharField.from_string(users)
                 
-                data.append(group_data)
+                print "group data:", group_data
 
-            return create_assignmentgroups2(request, parentnode, data)
+                initial_data.append(group_data)
+                
+            print "initial_data:", initial_data
+            return CreateAssignmentgroups().verify_assignmentgroups(request, parentnode, initial_data)
 
         #return HttpResponseRedirect('/thanks/')
     else:
