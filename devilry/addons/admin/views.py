@@ -267,15 +267,11 @@ def edit_assignment(request, obj_id=None, successful_save=False):
 def edit_assignmentgroup(request, obj_id=None, successful_save=False):
     return EditAssignmentGroup(request, obj_id, successful_save).create_view()
 
-class AssignmentgroupForm(forms.ModelForm):
+class AssignmentgroupForm(forms.Form):
         name = forms.CharField()
         #examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
                                        #required=False)
         examiners = forms.CharField(widget=DevilryMultiSelectFewUsers)
-
-        class Meta:
-            model = AssignmentGroup
-            fields = ['name', 'examiners']
 
 
 class CreateAssignmentgroups:
