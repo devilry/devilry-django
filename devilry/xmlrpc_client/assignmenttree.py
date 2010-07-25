@@ -27,6 +27,7 @@ ID_SEP = '+'
 
 
 def join_dirname_id(dirname, id):
+    """ Join ``dirname`` and ``id`` using :attr:`ID_SEP`. """
     return "%s+%s" % (dirname, id)
 
 
