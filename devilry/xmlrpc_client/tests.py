@@ -14,7 +14,7 @@ from devilry.core.models import Delivery, AssignmentGroup
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 from command import Command
-from utils import AssignmentSync, InfoFileDoesNotExistError, \
+from assignmenttree import AssignmentSync, InfoFileDoesNotExistError, \
     InfoFileWrongTypeError, InfoFileMissingSectionError, \
     join_dirname_id
 
