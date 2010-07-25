@@ -1,3 +1,15 @@
+"""
+.. attribute:: DATETIME_FORMAT
+
+    The format used with strftime to create directory-names from dates:
+    ``'%Y-%m-%d_%H.%M.%S'``.
+
+.. attribute:: ID_SEP
+
+    Separator used to separate id and filenames when handling duplicate
+    directory names: ``'+'``.
+"""
+
 from StringIO import StringIO
 import sys
 import os
@@ -5,7 +17,6 @@ from cookielib import LWPCookieJar
 import urllib2
 import logging
 from urlparse import urljoin
-import re
 import xmlrpclib
 from ConfigParser import SafeConfigParser
 
@@ -14,6 +25,7 @@ from ConfigParser import SafeConfigParser
 
 
 DATETIME_FORMAT = '%Y-%m-%d_%H.%M.%S'
+ID_SEP = '+'
 
 
 
@@ -49,9 +61,6 @@ class InfoFileWrongTypeError(Exception):
 
 
 class Info(object):
-    """ Each directory in the assignment-tree has a hidden file named
-    *.info* where information about the item in the directory is stored.
-    """
     sectionname = 'info'
 
     @classmethod
@@ -315,8 +324,10 @@ class AssignmentTreeWalker(object):
 
 class AssignmentSync(AssignmentTreeWalker):
     """
-    Uses :class:`AssignmentTreeWalker` to sync all deliveries on any
-    active assignment where the current user is examiner to the filesystem.
+    .. attribute:: bufsize
+
+        Buffer size used when downloading files. Defaults to ``65536``, and
+        might be overridden in subclasses.
     """
     bufsize = 65536
 
