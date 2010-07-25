@@ -15,7 +15,8 @@ from devilry.core.models import Delivery, AssignmentGroup
 from cookie_transport import CookieTransport, SafeCookieTransport
 from command import Command
 from utils import AssignmentSync, InfoFileDoesNotExistError, \
-    InfoFileWrongTypeError, InfoFileMissingSectionError
+    InfoFileWrongTypeError, InfoFileMissingSectionError, \
+    join_dirname_id
 
 import logging
 logging.basicConfig(level=logging.ERROR)
@@ -199,7 +200,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.folder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', 'student1', 'student2-student3.2',
+            ['.info', 'student1', 'student2-student3+2',
             join_dirname_id('student2-student3', assignmentgroup.id)])
 
         # Make sure it works when id-based names are in the fs
@@ -207,7 +208,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.folder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', 'student1', 'student2-student3.2',
+            ['.info', 'student1', 'student2-student3+2',
             join_dirname_id('student2-student3', assignmentgroup.id)])
 
 
@@ -246,7 +247,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.agfolder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', '2010-06-19_14.47.29.1',
+            ['.info', '2010-06-19_14.47.29+1',
             join_dirname_id('2010-06-19_14.47.29', delivery.id)])
 
         # Make sure it works when id-based names are in the fs
@@ -254,8 +255,8 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.agfolder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', '2010-06-19_14.47.29.1',
-                '2010-06-19_14.47.29.%s' % delivery.id])
+            ['.info', '2010-06-19_14.47.29+1',
+                join_dirname_id('2010-06-19_14.47.29', delivery.id)])
 
     def test_feedback(self):
         delivery = Delivery.objects.get(id=1)
