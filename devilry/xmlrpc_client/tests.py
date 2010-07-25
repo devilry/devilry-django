@@ -14,9 +14,7 @@ from devilry.core.models import Delivery, AssignmentGroup
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 from command import Command
-from assignmenttree import AssignmentSync, InfoFileDoesNotExistError, \
-    InfoFileWrongTypeError, InfoFileMissingSectionError, \
-    join_dirname_id
+from assignmenttree import AssignmentSync, Info, join_dirname_id
 
 import logging
 logging.basicConfig(level=logging.ERROR)
@@ -148,14 +146,14 @@ class TestAssignmentSync(TestAssignmentSyncBase):
         infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
                 '.info')
         os.remove(infofile)
-        self.assertRaises(InfoFileDoesNotExistError, self.sync)
+        self.assertRaises(Info.FileDoesNotExistError, self.sync)
 
     def test_assignment_infofile_missing_section(self):
         infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
                 '.info')
         i = open(infofile, 'rb').read().replace('[info]', '[somethingelse]')
         open(infofile, 'wb').write(i)
-        self.assertRaises(InfoFileMissingSectionError, self.sync)
+        self.assertRaises(Info.FileMissingSectionError, self.sync)
 
     def test_assignment_infofile_wrongtype(self):
         infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
@@ -163,7 +161,7 @@ class TestAssignmentSync(TestAssignmentSyncBase):
         i = open(infofile, 'rb').read().replace('type = Assignment',
                 'type = somethingelse')
         open(infofile, 'wb').write(i)
-        self.assertRaises(InfoFileWrongTypeError, self.sync)
+        self.assertRaises(Info.FileWrongTypeError, self.sync)
 
 
 class TestAssignmentGroupSync(TestAssignmentSyncBase):

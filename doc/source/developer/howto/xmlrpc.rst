@@ -4,6 +4,20 @@
 XMLRPC howto
 ============
 
+Devilry exports some common functionality over *XMLRPC*. XMLRPC is a language
+independent standard, so if you need to do some of the more common operations
+in devilry, but don't know Python, the XMLRPC should be able to help.
+
+All XMLRPC functions exported by a running Devilry server can be found at
+*/xmlrpc/*. So if your server is running at http://example.com, the xmlrpc will
+be available at http://example.com/xmlrpc/ (just visit the address in a browser
+for documentation).
+
+
+
+Creating a XMLRPC for your Devilry plugin
+#########################################
+
 It is very easy to export parts of your addons as a *XMLRPC* with the help of
 the ``devilry.xmlrpc`` module. *XMLRPC* can be used to communicate with the
 devilry server from any programming language with support for XMLRPC with
@@ -12,10 +26,6 @@ cookies over SSL.
 We will explain how to use XMLRPC by explaining how the
 ``devilry.addons.xmlrpc_examiner`` module works. The module exports the most
 common functionality required by *examiners*.
-
-
-Getting started
-###############
 
 A function
 ----------
@@ -61,8 +71,8 @@ http://localhost:8000/xmlrpc. The xmlrpc, in this case ``"examiner"`` should be
 in the menu, and clicking on it will take you to it's documentation.
 
 
-Usage
------
+Using the XMLRPC
+################
 
 To connect to this xmlrpc you will need a xmlrpc client with cookies (and SSL
 for production use). A example of this can be found in *exampleclient.py* found

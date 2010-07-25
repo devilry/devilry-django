@@ -17,22 +17,20 @@ Command and general purpose subclasses
 Shortcuts for walking the entire assignment-tree 
 #######################################################################
 
-.. currentmodule:: devilry.xmlrpc_client.utils
+.. currentmodule:: devilry.xmlrpc_client.assignmenttree
 
 
-AssignmentTreeWalker
-======================================================================
-
-AssignmentTreeWalker does not change anything on the filesystem or on the
-server (see :class:`AssignmentSync` for that), but provides a base for any
-operation needing to walk the assignment-tree using the *examiner xmlrpc*.
+The *assignment tree* is everything in the :ref:`node-tree <overview>` from
+*Assignment* and down. The ``devilry.xmlrpc_client.assignmentsync`` module
+provides a layer on top of the the examiner :ref:`XMLRPC
+<developer-howto-xmlrpc>` making it easy to work with and sync a copy of the
+assignment-tree on the filesystem.
 
 
 Directory-tree format
----------------------
+=====================
 
-Even though this class does not create any directories, it does presume
-a direcotry hierarchy::
+The following directory-format is used::
 
     [path of assignment]
         .info
@@ -46,7 +44,7 @@ a direcotry hierarchy::
 
 
 Handling directory name duplicates
-----------------------------------
+==================================
 
 Assignment groups might have exactly the same members, and deliveries
 might be delivered within the same second. We could just add *id* to
@@ -55,8 +53,8 @@ so uncommon. So instead we just add id when needed. This leads to some
 extra complexity (explained in next section).
 
 
-Info
-----
+Info-objects
+============
 
 Each directory in the assignment-tree has a hidden file named *.info* where
 information about the item in the directory is stored.
@@ -75,19 +73,23 @@ possibility:
        existing directory (adding id to the name) if determine_location
        returns False.
 
-.. autoclass:: devilry.xmlrpc_client.utils.Info
+.. autoclass:: devilry.xmlrpc_client.assignmenttree.Info
 
 
-AssignmentTreeWalker
---------------------
+AssignmentTreeWalker-objects
+============================
+
+AssignmentTreeWalker does not change anything on the filesystem or on the
+server (see :class:`AssignmentSync` for that), but provides a base for any
+operation needing to walk the assignment-tree using the *examiner xmlrpc*.
+
+.. autoclass:: devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker
+
+
+AssignmentSync
+==============
 
 Uses :class:`AssignmentTreeWalker` to sync all deliveries on any
 active assignment where the current user is examiner to the filesystem.
 
-.. autoclass:: devilry.xmlrpc_client.utils.AssignmentTreeWalker
-
-
-AssignmentSync
-======================================================================
-
-.. autoclass:: devilry.xmlrpc_client.utils.AssignmentSync
+.. autoclass:: devilry.xmlrpc_client.assignmenttree.AssignmentSync
