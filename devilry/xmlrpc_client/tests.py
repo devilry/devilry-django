@@ -13,7 +13,7 @@ from devilry.core.testhelpers import create_from_path
 from devilry.core.models import Delivery, AssignmentGroup
 
 from cookie_transport import CookieTransport, SafeCookieTransport
-from command import Command
+from cli import Command
 from assignmenttree import AssignmentSync, Info, join_dirname_id
 
 import logging

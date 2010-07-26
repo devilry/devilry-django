@@ -5,9 +5,64 @@ from optparse import OptionParser
 import os
 from urlparse import urljoin
 import logging
+import sys
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 
+
+# TODO: chmod cookies.txt
+
+
+def log_fault(fault):
+    """ Log a xmlrpclib.Fault to logging.error. """
+    logging.error('%s: %s' % (fault.faultCode, fault.faultString))
+
+
+
+class Cli(object):
+    def __init__(self):
+        self.commands = []
+        self.commands_dict = {}
+
+    def cli(self, args=sys.argv):
+        """
+        Redirect to the command with name matching ``args[1]``. (you add
+        commands with :meth:`add_command`). If invalid number of arguments,
+        or ``args[1]=='help', show help and raise :exc:`SystemExit`.
+        """
+        if len(args) < 2:
+            print 'usage: %s <command>' % args[0]
+            print
+            self.print_commands()
+            print '   %-10s %s' % ('help', 'Show command help.')
+            raise SystemExit()
+
+        command = args[1]
+        if command == 'help':
+            if len(args) != 3:
+                print 'usage: %s help <command>' % args[0]
+                print
+                self.print_commands()
+                raise SystemExit()
+            c = self.commands_dict[args[2]]()
+            c.print_help()
+        else:
+            c = self.commands_dict[command]()
+            c.cli(args[2:])
+
+    def print_commands(self):
+        """ Print available commands. """
+        print 'The available commands are:'
+        for c in self.commands:
+            print '   %-10s %s' % (c.name, c.description)
+
+    def add_command(self, command):
+        """ Add command.
+        
+        :param command: A subclass of :class:`Command`.
+        """
+        self.commands.append(command)
+        self.commands_dict[command.name] = command
 
 
 class IdFileNotFoundError(Exception):
