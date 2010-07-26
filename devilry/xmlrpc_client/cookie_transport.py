@@ -1,6 +1,7 @@
 import xmlrpclib
 from cookielib import LWPCookieJar
-from os.path import isfile
+import os
+import stat
 
 
 class _CookieResponse(object):
@@ -45,6 +46,11 @@ class CookieTransportMixin(object):
     urltype = 'http'
 
     def __init__(self, cookiefile):
+        """
+        :param cookierfile:
+            Path to a file where cookies are stored. This file is chmodded
+            so only the current user might access it on posix-systems.
+        """
         self.cookiefile = cookiefile
         xmlrpclib.Transport.__init__(self)
 
@@ -53,7 +59,7 @@ class CookieTransportMixin(object):
 
         # Load cookies from file
         cj = LWPCookieJar()
-        if isfile(self.cookiefile):
+        if os.path.isfile(self.cookiefile):
             cj.load(self.cookiefile)
 
         h = self.make_connection(host)
@@ -90,6 +96,8 @@ class CookieTransportMixin(object):
         cookie_response = _CookieResponse(headers)
         cj.extract_cookies(cookie_response, cookie_request)
         cj.save(self.cookiefile)
+        if os.name == 'posix':
+            os.chmod(self.cookiefile, stat.S_IWUSR|stat.S_IRUSR)
 
         return self._parse_response(h.getfile(), sock)
 

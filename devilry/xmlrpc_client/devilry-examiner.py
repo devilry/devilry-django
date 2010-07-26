@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from utils import Cli
-from commoncmd import Login, Init
+from cli import Cli, Login, Init
 from examinercmd import ListAssignmentGroups, Sync, ListAssignments, \
         Feedback
 

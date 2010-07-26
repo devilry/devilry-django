@@ -11,8 +11,6 @@ from cookie_transport import CookieTransport, SafeCookieTransport
 from assignmenttree import Info
 
 
-# TODO: chmod cookies.txt
-
 
 def log_fault(fault):
     """ Log a xmlrpclib.Fault to logging.error. """
@@ -92,9 +90,8 @@ class Command(object):
             const=logging.DEBUG, dest="loglevel",
             help="Show all output, for debugging.")
         self.add_options()
-        self._read_config()
 
-    def _read_config(self):
+    def read_config(self):
         self.config.read([self.get_configfile()])
 
     def get_configfile(self):
@@ -122,34 +119,31 @@ class Command(object):
         """ Get server url from config-file. """
         return self.get_config('url')
 
-    def _find_rootdir(self, path=None):
+    def find_rootdir(self, path=None):
+        """
+        Find the first parent-directory of path containing a
+        .devilry-directory.
+        
+        Raises :ecx:`Command.NotInDevilryDirError` if there is no .devilry
+        directory within any of the parent-directories of ``path``.
+
+        :param path: Defaults to current working directory.
+        :return: The path to the rootdir.
+        """
         path = path or os.getcwd()
         while True:
             cdir = os.path.join(path, '.devilry')
             if os.path.exists(cdir):
-                self._rootdir = path
-                return True
+                return path
             p = os.path.dirname(path)
             if p == path:
                 break
             path = p
         raise Command.NotInDevilryDirError()
 
-    def get_rootdir(self):
-        """
-        Get the first parent-directory of path containing a
-        .devilry-directory.  Returns ``None`` if there is no .devilry
-        directory within any of the parent-directories of ``path``.
-
-        :param path: Defaults to current working directory.
-        """
-        if not self._rootdir:
-            self._find_rootdir()
-        return self._rootdir
-
     def get_configdir(self):
         """ Get the config-directory (the .devilry directory). """
-        return os.path.join(self.get_rootdir(), '.devilry')
+        return os.path.join(self.find_rootdir(), '.devilry')
 
     def get_cookiepath(self):
         """ The cli uses cookies to maintain a session. The cookie-file is
@@ -216,13 +210,23 @@ class Command(object):
 
 
 
+class CommandUsingConfig(Command):
+    """ Use this as a base for commands which needs to set or get
+    configuration values.
+
+    Extends the __init__ method of :class:`Command` with a call to
+    :meth:`Command.read_config`. """
+    def __init__(self, *args, **kwargs):
+        super(CommandUsingConfig, self).__init__(*args, **kwargs)
+        self.read_config()
+
 
 ############################################################################
 # Some commonly used commands
 ############################################################################
 
 
-class Login(Command):
+class Login(CommandUsingConfig):
     """ Login command. """
     name = 'login'
     description ='Login to the devilry server.' 
@@ -259,11 +263,12 @@ class Init(Command):
     description = 'Initialize.'
     args_help = '<url>'
 
-    def read_config(self):
-        pass
-
     def command(self):
-        if self.find_confdir():
+        try:
+            self.find_rootdir()
+        except Command.NotInDevilryDirError:
+            pass
+        else:
             raise SystemExit(
                     'You are in a existing Devilry directory tree. '\
                     'Initialization aborted.')

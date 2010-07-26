@@ -3,7 +3,8 @@ from textwrap import dedent
 from os import linesep, getcwd
 import logging
 
-from utils import AssignmentSync, Command, log_fault
+from assignmenttree import AssignmentSync
+from cli import Command, log_fault
 
 
 class ExaminerCommand(Command):
