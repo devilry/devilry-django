@@ -31,7 +31,6 @@ class TestCommand(TestCase):
 
         self.ob1dir = os.path.join(self.configdir, 'ifi.inf1100', 'oblig1')
         os.makedirs(self.ob1dir)
-        open(os.path.join(self.ob1dir, '.assignment-id'), 'w').write('20')
 
         class TestCommand(Command):
             urlpath = '/xmlrpc/'
@@ -57,16 +56,6 @@ class TestCommand(TestCase):
         cfg = ConfigParser()
         cfg.read([cfgfile])
         self.assertEquals(cfg.get('settings', 'hello'), 'world')
-
-    def test_get_id_from_path(self):
-        self.assertEquals(20,
-                self.cmd.get_id_from_path(self.ob1dir, '.assignment-id'))
-
-    def test_determine_id(self):
-        self.assertEquals(10,
-                self.cmd.determine_id('10', '.assignment-id'))
-        self.assertEquals(20,
-                self.cmd.determine_id(self.ob1dir, '.assignment-id'))
 
     def test_get_cookiepath(self):
         self.assertEquals(os.path.join(self.configdir, 'cookies.txt'),

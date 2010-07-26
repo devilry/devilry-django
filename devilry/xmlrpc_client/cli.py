@@ -8,6 +8,7 @@ import logging
 import sys
 
 from cookie_transport import CookieTransport, SafeCookieTransport
+from assignmenttree import Info
 
 
 # TODO: chmod cookies.txt
@@ -65,27 +66,19 @@ class Cli(object):
         self.commands_dict[command.name] = command
 
 
-class IdFileNotFoundError(Exception):
-    """
-    The command-line uses hidden files to store id in the sync-tree.
-    When such a ID-file is not found, this exception is raised.
-    """
-    def __init__(self, dirpath, idfilename):
-        super(IdFileNotFoundError, self).__init__(
-                'No id-file (%s) found in %s.' % (idfilename, dirpath))
-
-class NotInDevilryDirError(Exception):
-    """
-    Raised when searching the current working directory and it's parents for
-    a .devilry subdirectory fails.
-    """
-
 
 class Command(object):
     """ Base class for all commands in the cli. """
     description = None
     name = None
     args_help = '[args]'
+
+
+    class NotInDevilryDirError(Exception):
+        """
+        Raised when searching the current working directory and it's parents
+        for a subdirectory named ``".devilry"``  fails.
+        """
 
     def __init__(self):
         self.config = ConfigParser()
@@ -140,7 +133,7 @@ class Command(object):
             if p == path:
                 break
             path = p
-        raise NotInDevilryDirError()
+        raise Command.NotInDevilryDirError()
 
     def get_rootdir(self):
         """
@@ -164,7 +157,7 @@ class Command(object):
         file. """
         return os.path.join(self.get_configdir(), 'cookies.txt')
 
-    def get_id_from_path(self, dirpath, idfilename):
+    def get_info(self, dirpath, typename):
         """ Get id from the file name ``idfilename`` in the
         ``dirpath``-directory.
         
@@ -173,21 +166,7 @@ class Command(object):
         Raises :exc:`ValueError` if the contents of the id-file can not be
         converted to int.
         """
-        idfilepath = os.path.join(dirpath, idfilename)
-        if not os.path.isfile(idfilepath):
-            raise IdFileNotFoundError(dirpath, idfilename)
-        return int(open(idfilepath, 'rb').read().strip())
-
-    def determine_id(self, id_or_path, idfilename):
-        """ Determin id from the string ``id_or_path``.
-        
-        If ``id_or_path`` contains a digit, return the digit converted to
-        int, else use :meth:`get_id_from_path`.
-        """
-        if id_or_path.isdigit():
-            return int(id_or_path)
-        else:
-            return self.get_id_from_path(id_or_path, idfilename)
+        return Info.read_open(dirpath, typename)
 
     def cli(self, argv):
         """ Start the cli. """
