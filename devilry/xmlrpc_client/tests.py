@@ -17,6 +17,7 @@ from devilry.core.models import Delivery, AssignmentGroup
 from cookie_transport import CookieTransport, SafeCookieTransport
 from assignmenttree import AssignmentSync, Info, join_dirname_id
 import cli
+import examinercmd
 
 
 log = logging.getLogger('devilry')
@@ -262,6 +263,10 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
 # urllib2.
 
 
+class LoginTester(cli.Login):
+    def get_password(self):
+        return 'test' # test-data uses this password for all users
+
 
 class TestCommandBase(TestCase, XmlRpcAssertsMixin):
     """ Base class for testing subclasss of cli.Command. """
@@ -271,6 +276,7 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
     def setUp(self):
         self.oldcwd = os.getcwd()
         self.root = mkdtemp(prefix='devilry-test')
+        self.devilrydir = os.path.join(self.root, '.devilry')
         os.chdir(self.root)
         self.examiner1 = User.objects.get(username='examiner1')
         self.student2 = User.objects.get(username='student2')
@@ -279,6 +285,7 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
 
         self.logdata = StringIO()
         self.loghandler = logging.StreamHandler(self.logdata)
+        self.loghandler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(levelname)s:%(message)s")
         self.loghandler.setFormatter(formatter)
         log.addHandler(self.loghandler)
@@ -293,15 +300,8 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
         class TestCmd(commandcls):
             def get_serverproxy(self):
                 return server
-            
-            def configure_loghandlers(self):
-                #self.logoutput = StringIO()
-                #handler = logging.StreamHandler(self.logoutput)
-                #formatter = logging.Formatter("%(levelname)s:%(message)s")
-                #handler.setFormatter(formatter)
-                #log.addHandler(handler)
+            def configure_loghandlers(self, loglevel):
                 pass
-
         return TestCmd
 
     def init(self):
@@ -310,6 +310,12 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
         url = 'http://localhost:8000'
         i.cli([url])
         return url
+
+    def login(self, username):
+        Login = self.create_commandcls(LoginTester)
+        l = Login()
+        l.cli(['-u', username])
+        return l
 
     def read_config(self):
         c = ConfigParser()
@@ -330,10 +336,6 @@ class TestInit(TestCommandBase):
     def test_init_existing(self):
         self.assertRaises(SystemExit, self.init)
 
-
-class LoginTester(cli.Login):
-    def get_password(self):
-        return 'test'
 
 class TestLogin(TestCommandBase):
     def test_login_successful(self):
@@ -359,3 +361,65 @@ class TestLogin(TestCommandBase):
         self.assertRaises(SystemExit, l.cli, ['-u', 'examiner1'])
         self.assertEquals(self.logdata.getvalue().strip(),
                 'ERROR:Login failed. Reason:\nERROR:Your user is disabled.')
+
+
+class TestListAssignments(TestCommandBase):
+    def test_listassignments(self):
+        self.login('examiner1')
+        ListAssignments = self.create_commandcls(examinercmd.ListAssignments)
+        la = ListAssignments()
+        la.cli([])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'INFO:Login successful\n'\
+                'INFO:Active assignments:\n' \
+                'INFO:* inf1100.looong.oblig1')
+
+
+class TestListAssignmentGroups(TestCommandBase):
+    def test_listassignmentgroups(self):
+        self.login('examiner1')
+        ListAssignmentGroups = self.create_commandcls(examinercmd.ListAssignmentGroups)
+        la = ListAssignmentGroups()
+        la.cli(['inf1100.looong.oblig1'])
+        self.assertEquals(self.logdata.getvalue().strip(),
+            'INFO:Login successful\n' \
+            'INFO:              ID  STUDENT(S)\n' \
+            'INFO:              1)  student1                                      (deliveries: 2)\n' \
+            'INFO:              2)  student2, student3                            (deliveries: 1)')
+
+
+class TestSync(TestCommandBase):
+    def test_sync(self):
+        self.login('examiner1')
+        Sync = self.create_commandcls(examinercmd.Sync)
+        s = Sync()
+        s.cli(['--debug'])
+        s.cli(['--debug'])
+
+        # Just a sanity test to make sure the already tested AssignmentSync
+        # class is called correctly
+        self.assertTrue(os.path.exists(os.path.join(self.devilrydir,
+            'inf1100.looong.oblig1', 'student2-student3')))
+
+        self.assertEquals(self.logdata.getvalue().strip(),
+            'INFO:Login successful\n' \
+            'INFO:+ inf1100.looong.oblig1\n' \
+            'INFO:+ inf1100.looong.oblig1/student1\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student1/2010-06-19_16.36.57 was not successfully completed, and is therefore ignored.\n' \
+            'INFO:+ inf1100.looong.oblig1/student1/2010-06-19_14.47.29\n' \
+            'INFO:+ inf1100.looong.oblig1/student2-student3\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student2-student3/2010-06-19_16.31.37 was not successfully completed, and is therefore ignored.\n' \
+            'DEBUG:inf1100.looong.oblig1 already exists\n' \
+            'DEBUG:inf1100.looong.oblig1/student1 already exists.\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student1/2010-06-19_16.36.57 was not successfully completed, and is therefore ignored.\n' \
+            'DEBUG:inf1100.looong.oblig1/student1/2010-06-19_14.47.29 already exists.\n' \
+            'DEBUG:inf1100.looong.oblig1/student2-student3 already exists.\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student2-student3/2010-06-19_16.31.37 was not successfully completed, and is therefore ignored.')
+
+
+class TestFeedback(TestCommandBase):
+    def test_feedback(self):
+        self.login('examiner1')
+        Feedback = self.create_commandcls(examinercmd.Sync)
+        s = Feedback()
+        s.cli(['--debug'])

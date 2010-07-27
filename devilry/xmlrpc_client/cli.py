@@ -5,6 +5,7 @@ from optparse import OptionParser
 import os
 from urlparse import urljoin
 import logging
+import logging.handlers
 import sys
 
 from cookie_transport import CookieTransport, SafeCookieTransport
@@ -155,6 +156,10 @@ class Command(object):
         file. """
         return os.path.join(self.get_configdir(), 'cookies.txt')
 
+    def get_logfilepath(self):
+        """ Get path to the log-file. """
+        return os.path.join(self.get_configdir(), 'everything.log')
+
     def get_info(self, dirpath, typename):
         """ Get id from the file name ``idfilename`` in the
         ``dirpath``-directory.
@@ -166,17 +171,29 @@ class Command(object):
         """
         return Info.read_open(dirpath, typename)
 
-    def configure_loghandlers(self):
-        handler = logging.StreamHandler()
-        formatter = logging.Formatter("*** %(levelname)s: %(message)s")
-        handler.setFormatter(formatter)
-        log.addHandler(handler)
+    def configure_loghandlers(self, loglevel):
+        console = logging.StreamHandler()
+        formatter = logging.Formatter("%(message)s")
+        console.setFormatter(formatter)
+        console.setLevel(loglevel)
+        log.addHandler(console)
+
+        # Keep 10mb of complete logs, in files of 1mb
+        f = logging.handlers.RotatingFileHandler(self.get_logfilepath(),
+                maxBytes=2**20,
+                backupCount=10)
+        formatter = logging.Formatter(
+                "%(asctime)s: %(levelname)s: %(message)s")
+        f.setFormatter(formatter)
+        f.setLevel(logging.DEBUG)
+        log.addHandler(f)
+
 
     def cli(self, argv):
         """ Start the cli. """
         self.opt, self.args = self.op.parse_args(argv)
-        log.setLevel(self.opt.loglevel)
-        self.configure_loghandlers()
+        log.setLevel(logging.DEBUG)
+        self.configure_loghandlers(self.opt.loglevel)
         self.command()
 
     def add_user_option(self):
