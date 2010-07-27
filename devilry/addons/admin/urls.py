@@ -13,7 +13,9 @@ for x in ('node', 'subject', 'period', 'assignment', 'assignmentgroup'):
 
 urlpatterns = patterns('devilry.addons.admin',
     url(r'^$', 'views.main', name='devilry-admin-main'),
-    url(r'^assignmentgroups/create-assignmentgroups/(?P<assignment_id>\d+)$', 'views.create_assignmentgroups', name='devilry-admin-create-assignmentgroups'),
-url(r'^assignmentgroups/save-assignmentgroups/(?P<assignment_id>\d+)$', 'views.save_assignmentgroups', name='devilry-admin-save-assignmentgroups'),
+    url(r'^assignmentgroups/create-assignmentgroups/(?P<assignment_id>\d+)$',
+        'views.create_assignmentgroups', name='devilry-admin-create-assignmentgroups'),
+    url(r'^assignmentgroups/save-assignmentgroups/(?P<assignment_id>\d+)$',
+        'views.save_assignmentgroups', name='devilry-admin-save-assignmentgroups'),
     *generic_urls
 )

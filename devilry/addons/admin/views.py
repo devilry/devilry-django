@@ -309,6 +309,8 @@ def edit_assignment(request, obj_id=None, successful_save=False):
 def edit_assignmentgroup(request, obj_id=None, successful_save=False):
     return EditAssignmentGroup(request, obj_id, successful_save).create_view()
 
+
+
 class AssignmentgroupForm(forms.Form):
         name = forms.CharField(required=False)
         candidates = forms.CharField(widget=DevilryMultiSelectFewCandidates, required=False)
@@ -321,67 +323,45 @@ class AssignmentgroupForm(forms.Form):
             if name.strip() == '' and cands.strip() == '':
                 # Only do something if both fields are valid so far.
                 raise forms.ValidationError("Either name or candidates must be filled in.")
-                
+   
             # Always return the full collection of cleaned data.
             return cleaned_data
 
+
+
 class CreateAssignmentgroups:
-
-        #@login_required
-    def verify_assignmentgroups(self, request, assignment_id, initial_data):
-        AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm, extra=5)
-        
-        formset = AssignmentGroupsFormSet(initial=initial_data, )
-        save_assignmentgroups_url = reverse('devilry-admin-save-assignmentgroups', args=[assignment_id])
-        
-        return render_to_response(
-            'devilry/admin/verify_assignmentgroups.django.html', {
-                'title': "Verify assignmentsgroups",
-                'formset': formset,
-                'post_url': save_assignmentgroups_url,
-                }, context_instance=RequestContext(request))
-
-    
-    def save_assignmentgroups(self, request, assignment_id):
+    def save_assignmentgroups(self, request, assignment, initial_data=None):
         if request.POST:
-            AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
-            formset = AssignmentGroupsFormSet(request.POST)
+            AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm,
+                    extra=0)
+            if initial_data:
+                formset = AssignmentGroupsFormSet(initial=initial_data)
+            else:
+                formset = AssignmentGroupsFormSet(request.POST)
 
             if formset.is_valid():
-                assignment = Assignment.objects.get(id=assignment_id)
-                
-                if 'more-fields' in request.POST:
-                    print "yes"
-                    return render_to_response(
-                        'devilry/admin/verify_assignmentgroups.django.html', {
-                            'title': "Verify assignmentsgroups",
-                            'formset': formset,
-                            'post_url': reverse('devilry-admin-save-assignmentgroups', args=[assignment_id])
-                            }, context_instance=RequestContext(request))
-                
-                for i in range(0, formset.total_form_count()):
-                    form = formset.forms[i]
-                    name = None
-                    candidates = None
+                if not 'more-fields' in request.POST:
+                    for i in range(0, formset.total_form_count()):
+                        form = formset.forms[i]
+                        name = None
+                        candidates = None
 
-                    if 'name' in form.cleaned_data:
-                        name = form.cleaned_data['name']
-                    if 'candidates' in form.cleaned_data:
-                        candidates = form.cleaned_data['candidates']
+                        if 'name' in form.cleaned_data:
+                            name = form.cleaned_data['name']
+                        if 'candidates' in form.cleaned_data:
+                            candidates = form.cleaned_data['candidates']
 
-                    if name or candidates:
-                        self.save_group(assignment, name, candidates)
-            else:
-                return render_to_response(
-                    'devilry/admin/verify_assignmentgroups.django.html', {
-                        'title': "Create assignmentsgroups",
-                        'formset': formset,
-                        'post_url': "save-assignmentgroups"
-                        }, context_instance=RequestContext(request))
-                print "Not valid"
-
-        return HttpResponseRedirect(reverse('devilry-admin-edit_assignment', args=[assignment_id]))
-
+                        if name or candidates:
+                            self.save_group(assignment, name, candidates)
+                    return HttpResponseRedirect(reverse(
+                        'devilry-admin-edit_assignment', args=[assignment.id]))
+            return render_to_response(
+                'devilry/admin/verify_assignmentgroups.django.html', {
+                    'formset': formset,
+                    'assignment': assignment,
+                    }, context_instance=RequestContext(request))
+        else:
+            return HttpResponseForbidden('Forbidden')
 
     def save_group(self, assignment, name, candidates):
         ag = AssignmentGroup()
@@ -389,14 +369,11 @@ class CreateAssignmentgroups:
         if name:
             ag.name = name
         ag.save()
-        
         if candidates:
             sep = re.compile(r',\s*')
             candsplit = sep.split(candidates)
-            
             for user in candsplit:
                 user_cand = user.split(':')
-                
                 try:
                     print "finding user:", user_cand[0]
                     userobj = User.objects.get(username=user_cand[0])
@@ -409,83 +386,54 @@ class CreateAssignmentgroups:
                     cand.save()
                     ag.candidates.add(cand)
                     ag.save()
-                                                            
                 except Exception as e:
                     print e
                     print "user %s doesnt exist" % (user_cand)
 
 
 @login_required
-def add_more_assignmentgroup_fields(request, assignment_id):
-    return CreateAssignmentgroups().add_more_verify_fields(request, assignment_id)
-
-@login_required
 def save_assignmentgroups(request, assignment_id):
-    return CreateAssignmentgroups().save_assignmentgroups(request, assignment_id)
+    assignment = get_object_or_404(Assignment, pk=assignment_id)
+    return CreateAssignmentgroups().save_assignmentgroups(request, assignment)
 
 @login_required
 def create_assignmentgroups(request, assignment_id):
+    assignment = get_object_or_404(Assignment, pk=assignment_id)
 
     class Form(forms.Form):
-        #parentnode = forms.ModelChoiceField(required=True,
-        #             queryset = Assignment.where_is_admin(request.user))
         assignment_groups = forms.CharField(widget=forms.widgets.Textarea())
 
     if request.POST:
-        #print "post"
         form = Form(request.POST) 
-        
         if form.is_valid():
-            #parentnode = form.cleaned_data['parentnode']
             groups = form.cleaned_data['assignment_groups']
-        
             lines = groups.splitlines()
-
             initial_data = []
             
             for l in lines:
                 if l.strip() == "":
                     continue
                 m = re.match("(?:(?P<name>.+?)::)?\s*(?P<users>.+)?", l)
-                
                 if not m:
                     continue
                 
                 group_data = {}
-
                 name = m.group('name')
                 users = m.group('users')
-
-                print "name:", name
-                print "users:", users
-
                 if name:
                     group_data['name'] = name
-                
                 if users:
                     group_data['candidates'] = users
-                
                 initial_data.append(group_data)
-                print "group data:", group_data
-
-            print "initial_data:", initial_data
-            return CreateAssignmentgroups().verify_assignmentgroups(request, assignment_id, initial_data)
-
-        #return HttpResponseRedirect('/thanks/')
+            return CreateAssignmentgroups().save_assignmentgroups(request,
+                    assignment, initial_data)
     else:
         form = Form()
 
-    title = _('Create Assignment groups')
-    messages = UiMessages()
-    
     return render_to_response('devilry/admin/create_assignmentgroups.django.html', {
-            'title': title,
-            #'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
-            'nodeform': form,
-            'messages': messages,
-            #'post_url': self.get_reverse_url(),
+            'form': form,
+            'assignment': assignment,
             }, context_instance=RequestContext(request))
-
 
 
 

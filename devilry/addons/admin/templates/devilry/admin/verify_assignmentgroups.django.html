@@ -8,14 +8,20 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='../'>{{ model_plural_name|capfirst }}</a></li>
+  <li>
+    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
+      {{ assignment.get_path }}
+    </a>
+  </li>
   <li>::</li>
-  <li>{{ title }}</li>
+  <li>{% trans "Create assignmentgroups" %}</li>
+  <li>::</li>
+  <li>Verify</li>
 {% endblock %}
 
 {% block main %}
 
-<form method='post' action='{{ post_url }}'>
+<form method='post' action='{% url devilry-admin-save-assignmentgroups assignment.id %}'>
 
   <fieldset class='stdfieldset'>
     {% comment %}
@@ -30,13 +36,6 @@
     <div class='submit-row-right'>
       <input type='submit' name='save' value='{% trans "Save" %}'/>
     </div>
-    <div class='submit-row-left'>
-      <div class='form-link-as-button delete'><a href='#'>{% trans "Delete" %}</a></div>
-    </div>
-	<div class='submit-row-right'>
-      <input type='submit' name='more-fields' value='{% trans "Add more fields" %}'/>
-    </div>
-	
   </div>
   {{ formset.media }}
 </form>
