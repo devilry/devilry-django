@@ -176,9 +176,9 @@ def get_feedback(request, delivery_id):
     except Feedback.DoesNotExist, e:
         raise Http404(str(e))
     return dict(
-            text = feedback.feedback_text,
-            format = feedback.feedback_format,
-            published = feedback.feedback_published)
+            text = feedback.text,
+            format = feedback.format,
+            published = feedback.published)
 
 
 @rpc.rpcdec_login_required('delivery_id, text, format, grade',
@@ -205,8 +205,8 @@ def set_feedback(request, delivery_id, text, format, grade):
         feedback = delivery.feedback
     except Feedback.DoesNotExist, e:
         feedback = Feedback(delivery=delivery)
-    feedback.feedback_text = text
-    feedback.feedback_format = format
+    feedback.text = text
+    feedback.format = format
     feedback.set_grade_from_string(grade)
     feedback.full_clean()
     feedback.save()
@@ -222,5 +222,5 @@ def set_feedback_published(request, delivery_id, publish):
             pk=delivery_id)
     if not delivery.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
-    delivery.feedback.feedback_published = publish
+    delivery.feedback.published = publish
     delivery.feedback.save()

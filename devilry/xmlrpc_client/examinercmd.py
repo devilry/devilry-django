@@ -75,11 +75,11 @@ class Feedback(ExaminerCommand):
     def add_options(self):
         help = 'Id of a existing delivery.'
         self.op.add_option("-t", "--feedback-text", metavar="TEXT",
-            dest="feedback_text", default='', help='Feedback text.')
+            dest="text", default='', help='Feedback text.')
         self.op.add_option("-g", "--grade", metavar="GRADE",
             dest="grade", default=None, help='Grade.')
         self.op.add_option("-f", "--feedback-format",
-            metavar="restructuredtext|text", dest="feedback_format",
+            metavar="restructuredtext|text", dest="format",
             default='restructuredtext', help='Feedback format.')
 
     def direrror(self):
@@ -108,9 +108,40 @@ class Feedback(ExaminerCommand):
             log.error('A grade is required. See --help for more info.')
             raise SystemExit()
         server = self.get_serverproxy()
+
+        # Get feedback text from arguments or file.
+        text = self.opt.text
+        format = None
+        if text:
+            log.debug('Feedback found in commandline argument -t.')
+            format = self.opt.format
+        else:
+            filenamebase = os.path.join(path, 'feedback')
+            fn = filenamebase + '.rst'
+            log.debug('Feedback not found in commandline argument -t. ' \
+                    'Trying file feedback.rst.')
+            if os.path.isfile(fn):
+                log.info('Found feedback in file feedback.rst.')
+                text = open(fn, 'rb').read()
+                format = 'restructuredtext'
+            else:
+                fn = filenamebase + '.txt'
+                log.debug('Did not find feedback in file feedback.rst. ' \
+                        'Trying file feedback.txt')
+                if os.path.isfile(fn):
+                    log.info('Found feedback in file feedback.txt.')
+                    text = open(fn, 'rb').read()
+                    format = 'text'
+                else:
+                    log.info('No feedback text found in commandline ' \
+                            'argument -t, feedback.rst or feedback.txt. ' \
+                            'Feedback text is empty.')
+            if text:
+                log.info('Feedback format: %s.' % format)
+
         try:
-            server.set_feedback(info.get_id(), self.opt.feedback_text,
-                    self.opt.feedback_format, grade)
+            server.set_feedback(info.get_id(), text,
+                    format, grade)
         except xmlrpclib.Fault, e:
             log.error('%s' % e.faultString)
         else:

@@ -92,8 +92,8 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.login(self.client, 'examiner1')
         self.s.set_feedback(d.pk, 'test', 'text', 'approved')
         feedback = Delivery.objects.get(pk=3).feedback
-        self.assertEquals(feedback.feedback_text, 'test')
-        self.assertEquals(feedback.feedback_format, 'text')
+        self.assertEquals(feedback.text, 'test')
+        self.assertEquals(feedback.format, 'text')
         self.assertFault(1, self.s.set_feedback,
                 d.pk, 'test', 'text', 'invalid-grade')
         self.assertFault(3, self.s.set_feedback,
@@ -108,7 +108,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.s.set_feedback(d.pk, 'test', 'text', 'approved')
         self.s.set_feedback_published(d.pk, True)
         feedback = Delivery.objects.get(pk=3).feedback
-        self.assertTrue(feedback.feedback_published)
+        self.assertTrue(feedback.published)
 
     def test_get_feedback(self):
         d = Delivery.objects.get(pk=3)

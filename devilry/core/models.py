@@ -1076,12 +1076,12 @@ class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
 
-    .. attribute:: feedback_text
+    .. attribute:: text
 
        A django.db.models.TextField_ that holds the feedback text given by
        the examiner.
 
-    .. attribute:: feedback_format
+    .. attribute:: format
 
        A django.db.models.CharField_ that holds the format of the feedback
        text. Valid values are:
@@ -1092,7 +1092,7 @@ class Feedback(models.Model):
            ``"text"``
                No text formatting.
 
-    .. attribute:: feedback_published
+    .. attribute:: published
 
        A django.db.models.BooleanField_ that tells if the feedback is
        published or not. This allows editing and saving the feedback before
@@ -1117,10 +1117,10 @@ class Feedback(models.Model):
        ('restructuredtext', 'ReStructured Text'),
        ('text', 'Text'),
     )
-    feedback_text = models.TextField(blank=True, null=True, default='')
-    feedback_format = models.CharField(max_length=20, choices=text_formats,
+    text = models.TextField(blank=True, null=True, default='')
+    format = models.CharField(max_length=20, choices=text_formats,
             default=text_formats[0])
-    feedback_published = models.BooleanField(blank=True, default=False)
+    published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery)
 
     content_type = models.ForeignKey(ContentType)

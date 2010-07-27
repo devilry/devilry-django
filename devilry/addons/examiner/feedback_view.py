@@ -9,9 +9,9 @@ from django import forms
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
-        fields = ('feedback_text', 'feedback_format', 'feedback_published')
+        fields = ('text', 'format', 'published')
         widgets = {
-                'feedback_text': forms.Textarea(attrs={'cols': 90, 'rows': 25})
+                'text': forms.Textarea(attrs={'cols': 90, 'rows': 25})
         }
 
 def parse_feedback_form(request, delivery_obj, prefix='feedback'):
