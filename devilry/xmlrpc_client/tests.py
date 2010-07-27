@@ -282,13 +282,19 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
         self.student2 = User.objects.get(username='student2')
         self.client = Client()
         self.init()
+        self.setup_log()
 
+    def setup_log(self):
         self.logdata = StringIO()
         self.loghandler = logging.StreamHandler(self.logdata)
         self.loghandler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(levelname)s:%(message)s")
         self.loghandler.setFormatter(formatter)
         log.addHandler(self.loghandler)
+
+    def reset_log(self):
+        log.removeHandler(self.loghandler)
+        self.setup_log()
 
     def tearDown(self):
         rmtree(self.root)
@@ -393,12 +399,12 @@ class TestSync(TestCommandBase):
         self.login('examiner1')
         Sync = self.create_commandcls(examinercmd.Sync)
         s = Sync()
-        s.cli(['--debug'])
-        s.cli(['--debug'])
+        s.cli([])
+        s.cli([])
 
         # Just a sanity test to make sure the already tested AssignmentSync
         # class is called correctly
-        self.assertTrue(os.path.exists(os.path.join(self.devilrydir,
+        self.assertTrue(os.path.exists(os.path.join(self.root,
             'inf1100.looong.oblig1', 'student2-student3')))
 
         self.assertEquals(self.logdata.getvalue().strip(),
@@ -418,8 +424,38 @@ class TestSync(TestCommandBase):
 
 
 class TestFeedback(TestCommandBase):
+
+    def sync(self):
+        Sync = self.create_commandcls(examinercmd.Sync)
+        s = Sync()
+        s.cli([])
+
+    def test_feedback_wrongcwd(self):
+        self.login('examiner1')
+        Feedback = self.create_commandcls(examinercmd.Feedback)
+        f = Feedback()
+        self.assertRaises(SystemExit, f.cli, [])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'INFO:Login successful\n' \
+                'ERROR:You are not in a delivery-directory.')
+
+    def test_feedback_wrongdirarg(self):
+        self.login('examiner1')
+        Feedback = self.create_commandcls(examinercmd.Feedback)
+        f = Feedback()
+        self.assertRaises(SystemExit, f.cli, [''])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'INFO:Login successful\n' \
+                'ERROR:The given directory is not a delivery-directory.')
+
     def test_feedback(self):
         self.login('examiner1')
-        Feedback = self.create_commandcls(examinercmd.Sync)
-        s = Feedback()
-        s.cli(['--debug'])
+        self.sync()
+        self.reset_log()
+        Feedback = self.create_commandcls(examinercmd.Feedback)
+        f = Feedback()
+        path = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
+            '2010-06-19_14.47.29')
+        f.cli(['-g', '+', '-t', 'ok', path])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'INFO:Feedback successfully saved.')

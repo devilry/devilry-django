@@ -10,13 +10,10 @@ from examinercmd import ListAssignmentGroups, Sync, ListAssignments, \
 
 
 if __name__ == '__main__':
-    c = Cli()
-    for action in (
-            Init,
-            Login,
-            ListAssignments,
-            ListAssignmentGroups,
-            Sync,
-            Feedback):
-        c.add_command(action)
-    c.cli()
+    Cli([
+        Init,
+        Login,
+        ListAssignments,
+        ListAssignmentGroups,
+        Sync,
+        Feedback]).cli()

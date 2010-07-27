@@ -23,9 +23,11 @@ def log_fault(fault):
 
 
 class Cli(object):
-    def __init__(self):
+    def __init__(self, commands=[]):
         self.commands = []
         self.commands_dict = {}
+        for command in commands:
+            self.add_command(command)
 
     def cli(self, args=sys.argv):
         """
