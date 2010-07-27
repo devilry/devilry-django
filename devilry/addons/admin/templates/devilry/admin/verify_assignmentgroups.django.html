@@ -33,6 +33,10 @@
     <div class='submit-row-left'>
       <div class='form-link-as-button delete'><a href='#'>{% trans "Delete" %}</a></div>
     </div>
+	<div class='submit-row-right'>
+      <input type='submit' name='more-fields' value='{% trans "Add more fields" %}'/>
+    </div>
+	
   </div>
   {{ formset.media }}
 </form>
