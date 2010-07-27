@@ -62,3 +62,13 @@ class DevilryMultiSelectFewUsers(forms.TextInput):
         attrs["size"] = 60
         attrs["class"] = "devilry_multiselect_few"
         super(DevilryMultiSelectFewUsers, self).__init__(attrs)
+
+
+class DevilryMultiSelectFewCandidates(forms.TextInput):
+    class Media:
+        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_candidates_field.js",)
+                
+    def __init__(self, attrs={}):
+        attrs["size"] = 60
+        attrs["class"] = "devilry_multiselect_few"
+        super(DevilryMultiSelectFewCandidates, self).__init__(attrs)
