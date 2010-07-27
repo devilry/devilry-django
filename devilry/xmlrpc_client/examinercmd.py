@@ -108,9 +108,40 @@ class Feedback(ExaminerCommand):
             log.error('A grade is required. See --help for more info.')
             raise SystemExit()
         server = self.get_serverproxy()
+
+        # Get feedback text from arguments or file.
+        feedback_text = self.opt.feedback_text
+        feedback_format = None
+        if feedback_text:
+            log.debug('Feedback found in commandline argument -t.')
+            feedback_format = self.opt.feedback_format
+        else:
+            filenamebase = os.path.join(path, 'feedback')
+            fn = filenamebase + '.rst'
+            log.debug('Feedback not found in commandline argument -t. ' \
+                    'Trying file feedback.rst.')
+            if os.path.isfile(fn):
+                log.info('Found feedback in file feedback.rst.')
+                feedback_text = open(fn, 'rb').read()
+                feedback_format = 'restructuredtext'
+            else:
+                fn = filenamebase + '.txt'
+                log.debug('Did not find feedback in file feedback.rst. ' \
+                        'Trying file feedback.txt')
+                if os.path.isfile(fn):
+                    log.info('Found feedback in file feedback.txt.')
+                    feedback_text = open(fn, 'rb').read()
+                    feedback_format = 'text'
+                else:
+                    log.info('No feedback text found in commandline ' \
+                            'argument -t, feedback.rst or feedback.txt. ' \
+                            'Feedback text is empty.')
+            if feedback_text:
+                log.info('Feedback format: %s.' % feedback_format)
+
         try:
-            server.set_feedback(info.get_id(), self.opt.feedback_text,
-                    self.opt.feedback_format, grade)
+            server.set_feedback(info.get_id(), feedback_text,
+                    feedback_format, grade)
         except xmlrpclib.Fault, e:
             log.error('%s' % e.faultString)
         else:

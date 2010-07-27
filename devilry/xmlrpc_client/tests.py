@@ -458,4 +458,40 @@ class TestFeedback(TestCommandBase):
             '2010-06-19_14.47.29')
         f.cli(['-g', '+', '-t', 'ok', path])
         self.assertEquals(self.logdata.getvalue().strip(),
+                'DEBUG:Feedback found in commandline argument -t.\n' \
                 'INFO:Feedback successfully saved.')
+
+    def test_feedback_from_rstfile(self):
+        self.login('examiner1')
+        self.sync()
+        self.reset_log()
+        Feedback = self.create_commandcls(examinercmd.Feedback)
+        f = Feedback()
+        path = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
+            '2010-06-19_14.47.29')
+        open(os.path.join(path, 'feedback.rst'), 'wb').write('ok')
+        f.cli(['-g', '+', path])
+        logvalue = self.logdata.getvalue().strip()
+        self.assertEquals(logvalue,
+            'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
+            'INFO:Found feedback in file feedback.rst.\n' \
+            'INFO:Feedback format: restructuredtext.\n' \
+            'INFO:Feedback successfully saved.')
+
+    def test_feedback_from_txtfile(self):
+        self.login('examiner1')
+        self.sync()
+        self.reset_log()
+        Feedback = self.create_commandcls(examinercmd.Feedback)
+        f = Feedback()
+        path = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
+            '2010-06-19_14.47.29')
+        open(os.path.join(path, 'feedback.txt'), 'wb').write('ok')
+        f.cli(['-g', '+', path])
+        logvalue = self.logdata.getvalue().strip()
+        self.assertEquals(logvalue,
+            'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
+            'DEBUG:Did not find feedback in file feedback.rst. Trying file feedback.txt\n' \
+            'INFO:Found feedback in file feedback.txt.\n' \
+            'INFO:Feedback format: text.\n' \
+            'INFO:Feedback successfully saved.')
