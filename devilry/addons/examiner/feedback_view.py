@@ -9,7 +9,7 @@ from django import forms
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
-        fields = ('text', 'feedback_format', 'feedback_published')
+        fields = ('text', 'format', 'feedback_published')
         widgets = {
                 'text': forms.Textarea(attrs={'cols': 90, 'rows': 25})
         }

@@ -59,9 +59,9 @@ class AssignmentGroupAdmin(BaseNodeAdmin):
 
 
 #class FeedbackAdmin(admin.ModelAdmin):
-    #list_display = ['delivery', 'feedback_format', 'get_examiners',
+    #list_display = ['delivery', 'format', 'get_examiners',
             #'get_students', 'id']
-    #list_filter = ['feedback_format']
+    #list_filter = ['format']
     #search_fields = [
             #'id',
             #'delivery__assignment_group__students__username',

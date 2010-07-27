@@ -79,7 +79,7 @@ class Feedback(ExaminerCommand):
         self.op.add_option("-g", "--grade", metavar="GRADE",
             dest="grade", default=None, help='Grade.')
         self.op.add_option("-f", "--feedback-format",
-            metavar="restructuredtext|text", dest="feedback_format",
+            metavar="restructuredtext|text", dest="format",
             default='restructuredtext', help='Feedback format.')
 
     def direrror(self):
@@ -111,10 +111,10 @@ class Feedback(ExaminerCommand):
 
         # Get feedback text from arguments or file.
         text = self.opt.text
-        feedback_format = None
+        format = None
         if text:
             log.debug('Feedback found in commandline argument -t.')
-            feedback_format = self.opt.feedback_format
+            format = self.opt.format
         else:
             filenamebase = os.path.join(path, 'feedback')
             fn = filenamebase + '.rst'
@@ -123,7 +123,7 @@ class Feedback(ExaminerCommand):
             if os.path.isfile(fn):
                 log.info('Found feedback in file feedback.rst.')
                 text = open(fn, 'rb').read()
-                feedback_format = 'restructuredtext'
+                format = 'restructuredtext'
             else:
                 fn = filenamebase + '.txt'
                 log.debug('Did not find feedback in file feedback.rst. ' \
@@ -131,17 +131,17 @@ class Feedback(ExaminerCommand):
                 if os.path.isfile(fn):
                     log.info('Found feedback in file feedback.txt.')
                     text = open(fn, 'rb').read()
-                    feedback_format = 'text'
+                    format = 'text'
                 else:
                     log.info('No feedback text found in commandline ' \
                             'argument -t, feedback.rst or feedback.txt. ' \
                             'Feedback text is empty.')
             if text:
-                log.info('Feedback format: %s.' % feedback_format)
+                log.info('Feedback format: %s.' % format)
 
         try:
             server.set_feedback(info.get_id(), text,
-                    feedback_format, grade)
+                    format, grade)
         except xmlrpclib.Fault, e:
             log.error('%s' % e.faultString)
         else:
