@@ -176,7 +176,7 @@ def get_feedback(request, delivery_id):
     except Feedback.DoesNotExist, e:
         raise Http404(str(e))
     return dict(
-            text = feedback.feedback_text,
+            text = feedback.text,
             format = feedback.feedback_format,
             published = feedback.feedback_published)
 
@@ -205,7 +205,7 @@ def set_feedback(request, delivery_id, text, format, grade):
         feedback = delivery.feedback
     except Feedback.DoesNotExist, e:
         feedback = Feedback(delivery=delivery)
-    feedback.feedback_text = text
+    feedback.text = text
     feedback.feedback_format = format
     feedback.set_grade_from_string(grade)
     feedback.full_clean()

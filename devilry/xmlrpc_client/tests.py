@@ -251,7 +251,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
     def test_feedback(self):
         delivery = Delivery.objects.get(id=1)
         f = delivery.get_feedback()
-        f.feedback_text = 'test'
+        f.text = 'test'
         f.feedback_published = True
         f.set_grade_from_string('+')
         f.save()

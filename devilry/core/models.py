@@ -1076,7 +1076,7 @@ class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
 
-    .. attribute:: feedback_text
+    .. attribute:: text
 
        A django.db.models.TextField_ that holds the feedback text given by
        the examiner.
@@ -1117,7 +1117,7 @@ class Feedback(models.Model):
        ('restructuredtext', 'ReStructured Text'),
        ('text', 'Text'),
     )
-    feedback_text = models.TextField(blank=True, null=True, default='')
+    text = models.TextField(blank=True, null=True, default='')
     feedback_format = models.CharField(max_length=20, choices=text_formats,
             default=text_formats[0])
     feedback_published = models.BooleanField(blank=True, default=False)
