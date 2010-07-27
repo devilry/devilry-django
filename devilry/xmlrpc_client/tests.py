@@ -3,6 +3,8 @@ from shutil import rmtree
 import os
 from ConfigParser import ConfigParser
 from datetime import datetime
+from StringIO import StringIO
+import logging
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -16,8 +18,8 @@ from cookie_transport import CookieTransport, SafeCookieTransport
 from assignmenttree import AssignmentSync, Info, join_dirname_id
 import cli
 
-import logging
-logging.basicConfig(level=logging.ERROR)
+
+log = logging.getLogger('devilry')
 
 
 class TestCommand(TestCase):
@@ -275,11 +277,31 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
         self.client = Client()
         self.init()
 
+        self.logdata = StringIO()
+        self.loghandler = logging.StreamHandler(self.logdata)
+        formatter = logging.Formatter("%(levelname)s:%(message)s")
+        self.loghandler.setFormatter(formatter)
+        log.addHandler(self.loghandler)
+
+    def tearDown(self):
+        rmtree(self.root)
+        os.chdir(self.oldcwd)
+        log.removeHandler(self.loghandler)
+
     def create_commandcls(self, commandcls):
         server = get_serverproxy(self.client, commandcls.urlpath)
         class TestCmd(commandcls):
             def get_serverproxy(self):
                 return server
+            
+            def configure_loghandlers(self):
+                #self.logoutput = StringIO()
+                #handler = logging.StreamHandler(self.logoutput)
+                #formatter = logging.Formatter("%(levelname)s:%(message)s")
+                #handler.setFormatter(formatter)
+                #log.addHandler(handler)
+                pass
+
         return TestCmd
 
     def init(self):
@@ -293,10 +315,6 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
         c = ConfigParser()
         c.read([os.path.join(self.root, '.devilry', 'config.cfg')])
         return c
-
-    def tearDown(self):
-        rmtree(self.root)
-        os.chdir(self.oldcwd)
 
 
 class TestInit(TestCommandBase):
@@ -313,13 +331,31 @@ class TestInit(TestCommandBase):
         self.assertRaises(SystemExit, self.init)
 
 
-
 class LoginTester(cli.Login):
     def get_password(self):
         return 'test'
 
 class TestLogin(TestCommandBase):
-    def test_login(self):
+    def test_login_successful(self):
         Login = self.create_commandcls(LoginTester)
         l = Login()
         l.cli(['-u', 'examiner1'])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'INFO:Login successful')
+
+    def test_login_invalid(self):
+        Login = self.create_commandcls(LoginTester)
+        l = Login()
+        self.assertRaises(SystemExit, l.cli, ['-u', 'doesnotexists'])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'ERROR:Login failed. Reason:\nERROR:Invalid username/password.')
+
+    def test_login_disabled(self):
+        examiner1 = User.objects.get(username='examiner1')
+        examiner1.is_active = False
+        examiner1.save()
+        Login = self.create_commandcls(LoginTester)
+        l = Login()
+        self.assertRaises(SystemExit, l.cli, ['-u', 'examiner1'])
+        self.assertEquals(self.logdata.getvalue().strip(),
+                'ERROR:Login failed. Reason:\nERROR:Your user is disabled.')
