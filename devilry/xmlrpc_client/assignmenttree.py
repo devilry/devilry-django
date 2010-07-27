@@ -23,7 +23,7 @@ from ConfigParser import SafeConfigParser
 
 DATETIME_FORMAT = '%Y-%m-%d_%H.%M.%S'
 ID_SEP = '+'
-
+log = logging.getLogger('devilry')
 
 
 def join_dirname_id(dirname, id):
@@ -358,7 +358,7 @@ class AssignmentSync(AssignmentTreeWalker):
             os.chdir(cwd)
 
     def assignment_new(self, assignment, info):
-        logging.info('+ %s' % info.get_dirpath())
+        log.info('+ %s' % info.get_dirpath())
         os.mkdir(info.get_dirpath())
         info.new()
         info.setmany(
@@ -370,25 +370,25 @@ class AssignmentSync(AssignmentTreeWalker):
         info.write()
 
     def assignment_exists(self, assignment, info):
-        logging.debug('%s already exists' % info.get_dirpath())
+        log.debug('%s already exists' % info.get_dirpath())
         info.read()
         if not assignment['xmlrpc_gradeconf']:
-            logging.warning(
+            log.warning(
                     '%s does not support creating feedback using ' \
                     'the command-line' % assignment['path'])
 
 
     def assignmentgroup_nodeliveries(self, group, info):
-        logging.warning('Group "%s" has no deliveries' %
+        log.warning('Group "%s" has no deliveries' %
                 info.get_dirpath())
 
     def assignmentgroup_new(self, group, info):
         olddir = info.get_dirpath()
         renamed_name = info.rename_if_required(group['id'])
         if renamed_name:
-            logging.warning('Renamed %s -> %s to avoid name crash with %s.' % (
+            log.warning('Renamed %s -> %s to avoid name crash with %s.' % (
                 olddir, renamed_name, info.get_dirpath()))
-        logging.info('+ %s' % info.get_dirpath())
+        log.info('+ %s' % info.get_dirpath())
         os.mkdir(info.get_dirpath())
         info.new()
         info.setmany(
@@ -399,20 +399,20 @@ class AssignmentSync(AssignmentTreeWalker):
         info.write()
 
     def assignmentgroup_exists(self, group, info):
-        logging.debug('%s already exists.' % info.get_dirpath())
+        log.debug('%s already exists.' % info.get_dirpath())
 
     def delivery_new(self, delivery, info):
         if not delivery['successful']:
-            logging.debug('Delivery %s was not successfully completed, and '
+            log.debug('Delivery %s was not successfully completed, and '
                     'is therefore ignored.' % info.get_dirpath())
             return
 
         olddir = info.get_dirpath()
         renamed_name = info.rename_if_required(delivery['id'])
         if renamed_name:
-            logging.warning('Renamed %s -> %s to avoid name crash with %s.' % (
+            log.warning('Renamed %s -> %s to avoid name crash with %s.' % (
                 olddir, renamed_name, info.get_dirpath()))
-        logging.info('+ %s' % info.get_dirpath())
+        log.info('+ %s' % info.get_dirpath())
         os.mkdir(info.get_dirpath())
         os.mkdir(os.path.join(info.get_dirpath(), 'files'))
         info.new()
@@ -422,14 +422,14 @@ class AssignmentSync(AssignmentTreeWalker):
         info.write()
 
     def delivery_exists(self, delivery, info):
-        logging.debug('%s already exists.' % info.get_dirpath())
+        log.debug('%s already exists.' % info.get_dirpath())
 
 
     def filemeta_new(self, filemeta, filepath):
-        logging.info('+ %s' % filepath)
+        log.info('+ %s' % filepath)
         url = urljoin(self.serverurl,
             "/ui/download-file/%s" % filemeta['id'])
-        logging.debug('Downloading file: %s' % url)
+        log.debug('Downloading file: %s' % url)
         size = filemeta['size']
         left_bytes = size
         input = self.urlopener.open(url)
@@ -444,7 +444,7 @@ class AssignmentSync(AssignmentTreeWalker):
         output.close()
 
     def filemeta_exists(self, filemeta, filepath):
-        logging.debug('%s already exists.' % filepath)
+        log.debug('%s already exists.' % filepath)
 
 
     def feedback_none(self, delivery, deliverydir):

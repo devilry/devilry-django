@@ -12,9 +12,12 @@ from assignmenttree import Info
 
 
 
+log = logging.getLogger('devilry')
+
+
 def log_fault(fault):
-    """ Log a xmlrpclib.Fault to logging.error. """
-    logging.error('%s: %s' % (fault.faultCode, fault.faultString))
+    """ Log a xmlrpclib.Fault to log.error. """
+    log.error('%s: %s' % (fault.faultCode, fault.faultString))
 
 
 
@@ -163,11 +166,17 @@ class Command(object):
         """
         return Info.read_open(dirpath, typename)
 
+    def configure_loghandlers(self):
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter("*** %(levelname)s: %(message)s")
+        handler.setFormatter(formatter)
+        log.addHandler(handler)
+
     def cli(self, argv):
         """ Start the cli. """
         self.opt, self.args = self.op.parse_args(argv)
-        logging.basicConfig(level=self.opt.loglevel,
-            format="*** %(levelname)s: %(message)s")
+        log.setLevel(self.opt.loglevel)
+        self.configure_loghandlers()
         self.command()
 
     def add_user_option(self):
@@ -273,11 +282,11 @@ class Login(CommandUsingConfig):
         password = self.get_password()
         ret = server.login(self.opt.username, password)
         if ret == self.successful_login:
-            logging.info('Login successful')
+            log.info('Login successful')
         else:
-            logging.error('Login failed. Reason:')
+            log.error('Login failed. Reason:')
             if ret == self.user_disabled:
-                print logging.error('Your user is disabled.')
+                log.error('Your user is disabled.')
             elif ret == self.login_failed:
-                print logging.error('Invalid username/password.')
+                log.error('Invalid username/password.')
             raise SystemExit()
