@@ -1,10 +1,13 @@
 import xmlrpclib
-from textwrap import dedent
-from os import linesep, getcwd
+import os
 import logging
 
-from assignmenttree import AssignmentSync
+from assignmenttree import AssignmentSync, Info
 from cli import Command, log_fault
+
+
+
+log = logging.getLogger('devilry')
 
 
 class ExaminerCommand(Command):
@@ -17,15 +20,16 @@ class ListAssignments(ExaminerCommand):
     description = 'List assignments where the authenticated user is examiner.'
 
     def command(self):
-        server = self.get_server()
+        self.read_config()
+        server = self.get_serverproxy()
         try:
             assignments = server.list_active_assignments()
         except xmlrpclib.Fault, e:
             log_fault(e)
         else:
-            print 'Active assignments:'
+            log.info('Active assignments:')
             for assignment in assignments:
-                print '* %(path)s' % assignment
+                log.info('* %(path)s' % assignment)
 
 
 class ListAssignmentGroups(ExaminerCommand):
@@ -35,21 +39,21 @@ class ListAssignmentGroups(ExaminerCommand):
 
     def command(self):
         self.validate_argslen(1)
-        server = self.get_server()
+        self.read_config()
+        server = self.get_serverproxy()
         assignmentpath = self.args[0]
         try:
             groups = server.list_assignmentgroups(assignmentpath)
         except xmlrpclib.Fault, e:
             log_fault(e)
         else:
-            out = [
-                "%15d) %-45s (deliveries: %d)" % (
+            log.info('%16s  %s' % ('ID', 'STUDENT(S)'))
+            for group in groups:
+                groupinfo = "%15d)  %-45s (deliveries: %d)" % (
                     group['id'],
                     ', '.join(group['students']),
-                    group['number_of_deliveries']
-                ) for group in groups]
-            out.insert(0, '%15s  %-55s' % ('ID', 'STUDENT(S)'))
-            print dedent(linesep.join(out))
+                    group['number_of_deliveries'])
+                log.info(groupinfo)
 
 
 class Sync(ExaminerCommand):
@@ -58,14 +62,15 @@ class Sync(ExaminerCommand):
             'authenticated user is examiner.'
 
     def command(self):
-        AssignmentSync(self.get_configdir(), self.get_cookiepath(),
-                self.get_server(), self.get_url())
+        self.read_config()
+        AssignmentSync(self.find_rootdir(), self.get_cookiepath(),
+                self.get_serverproxy(), self.get_url())
 
 
 class Feedback(ExaminerCommand):
     name = 'feedback'
     description = 'Submit feedback on a delivery.'
-    args_help = '[delivery-id]'
+    args_help = '[delivery-dir]'
 
     def add_options(self):
         help = 'Id of a existing delivery.'
@@ -77,23 +82,36 @@ class Feedback(ExaminerCommand):
             metavar="restructuredtext|text", dest="feedback_format",
             default='restructuredtext', help='Feedback format.')
 
+    def direrror(self):
+        if len(self.args) > 0:
+            log.error('The given directory is not a delivery-directory.')
+        else:
+            log.error('You are not in a delivery-directory.')
+        raise SystemExit()
+
     def command(self):
+        self.read_config()
+
+        if len(self.args) > 0:
+            path = self.args[0]
+        else:
+            path = os.getcwd()
+        try:
+            info = self.get_info(path, 'Delivery')
+        except Info.FileWrongTypeError, e:
+            self.direrror()
+        except Info.FileDoesNotExistError, e:
+            self.direrror()
+
         grade = self.opt.grade
         if not grade:
-            raise SystemExit('A grade is required. See --help for more info.')
-
-        if len(self.args) == 0:
-            ids = [getcwd()]
+            log.error('A grade is required. See --help for more info.')
+            raise SystemExit()
+        server = self.get_serverproxy()
+        try:
+            server.set_feedback(info.get_id(), self.opt.feedback_text,
+                    self.opt.feedback_format, grade)
+        except xmlrpclib.Fault, e:
+            log.error('%s' % e.faultString)
         else:
-            ids = self.args
-        allids = [(idstr, self.determine_id(idstr, 3)) for idstr in ids]
-
-        server = self.get_server()
-        for idstr, id in allids:
-            try:
-                server.set_feedback(id, self.opt.feedback_text,
-                        self.opt.feedback_format, grade)
-            except xmlrpclib.Fault, e:
-                logging.error('Delivery %d: %s' % (id, e.faultString))
-            else:
-                logging.info('Added feedback to: %s' % idstr)
+            log.info('Feedback successfully saved.')
