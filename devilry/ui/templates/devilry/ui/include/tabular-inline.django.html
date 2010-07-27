@@ -17,6 +17,11 @@
 		</thead>
 	<tbody>
 	{% endif %}
+    {% if form.non_field_errors %}
+    <tr>
+      <td colspan='2'>{{ form.non_field_errors }}</td>
+    </tr>
+    {% endif %}
 		<tr class='{% if forloop.counter|divisibleby:"2" %}oddrow{% else %}evenrow{% endif %}'>
 		{% for field in form.visible_fields %}
 			<td class="tabular-inline-field{% if field.errors %} tabular-inline-errors{% endif %}{% if field.field.required %} required-field{% endif %} {{ field.name }}">
