@@ -13,8 +13,8 @@ from devilry.core.testhelpers import create_from_path
 from devilry.core.models import Delivery, AssignmentGroup
 
 from cookie_transport import CookieTransport, SafeCookieTransport
-from cli import Command
 from assignmenttree import AssignmentSync, Info, join_dirname_id
+import cli
 
 import logging
 logging.basicConfig(level=logging.ERROR)
@@ -32,7 +32,7 @@ class TestCommand(TestCase):
         self.ob1dir = os.path.join(self.configdir, 'ifi.inf1100', 'oblig1')
         os.makedirs(self.ob1dir)
 
-        class TestCommand(Command):
+        class TestCommand(cli.Command):
             urlpath = '/xmlrpc/'
         self.cmd = TestCommand()
 
@@ -40,9 +40,9 @@ class TestCommand(TestCase):
         os.chdir(self.oldcwd)
         rmtree(self.root)
 
-    def test_get_rootdir(self):
+    def test_find_rootdir(self):
         self.assertTrue(os.path.samefile(self.root,
-            self.cmd.get_rootdir()))
+            self.cmd.find_rootdir()))
 
     def test_config(self):
         self.assertTrue(os.path.samefile(self.configdir,
@@ -84,7 +84,7 @@ class TestAssignmentSyncBase(TestCase, XmlRpcAssertsMixin):
         self.client = Client()
         self.server = get_serverproxy(self.client, '/xmlrpc_examiner/')
         self.login(self.client, 'examiner1')
-        self.root = mkdtemp('devilry-test')
+        self.root = mkdtemp(prefix='devilry-test')
         self.sync()
         self.examiner1 = User.objects.get(username='examiner1')
         self.student2 = User.objects.get(username='student2')
@@ -259,3 +259,67 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
 # use the django test-client, and it does not support file-downloads using
 # urllib2.
 
+
+
+class TestCommandBase(TestCase, XmlRpcAssertsMixin):
+    """ Base class for testing subclasss of cli.Command. """
+    fixtures = ['tests/xmlrpc_examiner/users',
+            'tests/xmlrpc_examiner/core']
+
+    def setUp(self):
+        self.oldcwd = os.getcwd()
+        self.root = mkdtemp(prefix='devilry-test')
+        os.chdir(self.root)
+        self.examiner1 = User.objects.get(username='examiner1')
+        self.student2 = User.objects.get(username='student2')
+        self.client = Client()
+        self.init()
+
+    def create_commandcls(self, commandcls):
+        server = get_serverproxy(self.client, commandcls.urlpath)
+        class TestCmd(commandcls):
+            def get_serverproxy(self):
+                return server
+        return TestCmd
+
+    def init(self):
+        Init = self.create_commandcls(cli.Init)
+        i = Init()
+        url = 'http://localhost:8000'
+        i.cli([url])
+        return url
+
+    def read_config(self):
+        c = ConfigParser()
+        c.read([os.path.join(self.root, '.devilry', 'config.cfg')])
+        return c
+
+    def tearDown(self):
+        rmtree(self.root)
+        os.chdir(self.oldcwd)
+
+
+class TestInit(TestCommandBase):
+    def test_init(self):
+        devilrydir = os.path.join(self.root, '.devilry')
+        self.assertTrue(os.path.isdir(devilrydir))
+        self.assertTrue(os.path.isfile(os.path.join(devilrydir,
+            'config.cfg')))
+        conf = self.read_config()
+        self.assertEquals(conf.get('settings', 'url'),
+                'http://localhost:8000')
+
+    def test_init_existing(self):
+        self.assertRaises(SystemExit, self.init)
+
+
+
+class LoginTester(cli.Login):
+    def get_password(self):
+        return 'test'
+
+class TestLogin(TestCommandBase):
+    def test_login(self):
+        Login = self.create_commandcls(LoginTester)
+        l = Login()
+        l.cli(['-u', 'examiner1'])

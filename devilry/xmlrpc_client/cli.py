@@ -70,6 +70,7 @@ class Command(object):
     description = None
     name = None
     args_help = '[args]'
+    urlpath = '/xmlrpc/'
 
 
     class NotInDevilryDirError(Exception):
@@ -121,8 +122,8 @@ class Command(object):
 
     def find_rootdir(self, path=None):
         """
-        Find the first parent-directory of path containing a
-        .devilry-directory.
+        Find the first parent-directory of ``path`` containing a
+        directory named ``".devilry"``.
         
         Raises :ecx:`Command.NotInDevilryDirError` if there is no .devilry
         directory within any of the parent-directories of ``path``.
@@ -226,35 +227,6 @@ class CommandUsingConfig(Command):
 ############################################################################
 
 
-class Login(CommandUsingConfig):
-    """ Login command. """
-    name = 'login'
-    description ='Login to the devilry server.' 
-    args_help = '<url>'
-    urlpath = '/xmlrpc/'
-
-    user_disabled = 1
-    login_failed = 2
-    successful_login = 3
-
-    def add_options(self):
-        self.add_user_option()
-
-    def command(self):
-        server = self.get_serverproxy()
-        password = getpass.getpass('Password: ')
-        ret = server.login(self.opt.username, password)
-        if ret == self.successful_login:
-            logging.info('Login successful')
-        else:
-            logging.error('Login failed. Reason:')
-            if ret == self.user_disabled:
-                print logging.error('Your user is disabled.')
-            elif ret == self.login_failed:
-                print logging.error('Invalid username/password.')
-            raise SystemExit()
-
-
 class Init(Command):
     """
     Init command.
@@ -273,8 +245,39 @@ class Init(Command):
                     'You are in a existing Devilry directory tree. '\
                     'Initialization aborted.')
         self.validate_argslen(1)
-
-        os.mkdir('.devilry')
         url = self.args[0]
+        os.mkdir('.devilry')
         self.set_config('url', url)
         self.write_config()
+
+
+class Login(CommandUsingConfig):
+    """ Login command. """
+    name = 'login'
+    description ='Login to the devilry server.' 
+    args_help = ''
+    urlpath = '/xmlrpc/'
+
+    user_disabled = 1
+    login_failed = 2
+    successful_login = 3
+
+    def add_options(self):
+        self.add_user_option()
+
+    def get_password(self):
+        return getpass.getpass('Password: ')
+
+    def command(self):
+        server = self.get_serverproxy()
+        password = self.get_password()
+        ret = server.login(self.opt.username, password)
+        if ret == self.successful_login:
+            logging.info('Login successful')
+        else:
+            logging.error('Login failed. Reason:')
+            if ret == self.user_disabled:
+                print logging.error('Your user is disabled.')
+            elif ret == self.login_failed:
+                print logging.error('Invalid username/password.')
+            raise SystemExit()
