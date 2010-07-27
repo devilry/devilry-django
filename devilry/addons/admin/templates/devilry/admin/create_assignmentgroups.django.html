@@ -1,27 +1,8 @@
-{% extends "devilry/admin/base.django.html" %}
+{% extends "devilry/admin/bulkcreate_assignmentgroups_base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "Create assignmentgroups" %}{% endblock %}
-{% block heading %}{% trans "Create assignmentgroups" %}{% endblock %}
-
-{% block admin-breadcrumbs %}
-  {{ block.super }}
-  <li>
-    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
-      {{ assignment.get_path }}
-    </a>
-  </li>
-  <li>::</li>
-  <li>{% trans "Create assignmentgroups" %}</li>
-{% endblock %}
-
 {% block main %}
-
-{% if message %}
-	<p>{{ message }}</p>
-{% endif %}
-
 <form method='post' action='{% url devilry-admin-create-assignmentgroups assignment.id %}'>
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
