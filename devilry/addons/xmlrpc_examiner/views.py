@@ -178,7 +178,7 @@ def get_feedback(request, delivery_id):
     return dict(
             text = feedback.text,
             format = feedback.format,
-            published = feedback.feedback_published)
+            published = feedback.published)
 
 
 @rpc.rpcdec_login_required('delivery_id, text, format, grade',
@@ -222,5 +222,5 @@ def set_feedback_published(request, delivery_id, publish):
             pk=delivery_id)
     if not delivery.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
-    delivery.feedback.feedback_published = publish
+    delivery.feedback.published = publish
     delivery.feedback.save()

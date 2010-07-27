@@ -1092,7 +1092,7 @@ class Feedback(models.Model):
            ``"text"``
                No text formatting.
 
-    .. attribute:: feedback_published
+    .. attribute:: published
 
        A django.db.models.BooleanField_ that tells if the feedback is
        published or not. This allows editing and saving the feedback before
@@ -1120,7 +1120,7 @@ class Feedback(models.Model):
     text = models.TextField(blank=True, null=True, default='')
     format = models.CharField(max_length=20, choices=text_formats,
             default=text_formats[0])
-    feedback_published = models.BooleanField(blank=True, default=False)
+    published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery)
 
     content_type = models.ForeignKey(ContentType)

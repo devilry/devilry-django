@@ -108,7 +108,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.s.set_feedback(d.pk, 'test', 'text', 'approved')
         self.s.set_feedback_published(d.pk, True)
         feedback = Delivery.objects.get(pk=3).feedback
-        self.assertTrue(feedback.feedback_published)
+        self.assertTrue(feedback.published)
 
     def test_get_feedback(self):
         d = Delivery.objects.get(pk=3)
