@@ -44,7 +44,7 @@
 <th>Candidates</th>
 </tr>
 
-  {% for assignmentgroup in assignment.assignmentgroups.all %}
+  {% for assignmentgroup in assignment.assignment_groups_where_is_examiner.all %}
   <tr>
     <td>{{ assignmentgroup.name }}</td>
 	
