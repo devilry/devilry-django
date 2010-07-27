@@ -41,7 +41,7 @@
     <th>{% trans "Files" %}</th>
     <td>
       <ul class='files-list'>
-      {% for filemeta in delivery.filemeta_set.all %}
+      {% for filemeta in delivery.filemetas.all %}
         <li>
           <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>  
           <span class='filesize'>({{ filemeta.size }} bytes)</span>

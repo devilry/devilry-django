@@ -27,7 +27,7 @@
 <div class='section'>
 	<h2>{% trans "Current deliveries" %}</h2>
 	<ul id='assignment_group-deliveries'>
-	{% for delivery in assignment_group.delivery_set.all %}
+	{% for delivery in assignment_group.deliveries.all %}
 		<li>
 			<a href='{% url devilry-student-show_delivery delivery.id %}'>
 				{{ delivery.time_of_delivery }}

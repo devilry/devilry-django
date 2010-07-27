@@ -43,11 +43,11 @@
 
 
 <h2>Deliveries</h2>
-{% if assignment_group.delivery_set.all.count == 0 %}
+{% if assignment_group.deliveries.all.count == 0 %}
   <p>{% trans "No deliveries" %}</p>
 {% else %}
   <ul>
-  {% for delivery in assignment_group.delivery_set.all %}
+  {% for delivery in assignment_group.deliveries.all %}
     <li>
       <a href='{% url devilry-student-show_delivery delivery.id %}'>
         {{ delivery.time_of_delivery }}

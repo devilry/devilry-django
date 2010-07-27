@@ -6,7 +6,7 @@
 		{{ form.as_p}}
 
 
-	{% for file in form.instance.filemeta_set.values %}
+	{% for file in form.instance.filemetas.values %}
 		<p>{{ file.filepath }}</p>
 	{% endfor %}
 

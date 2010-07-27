@@ -50,7 +50,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
                 'inf1100.looong.oblig1')
         self.login(self.client, 'examiner1')
         ag = AssignmentGroup.objects.get(id=1)
-        ag.deadline_set.create(deadline=datetime(2012, 1, 1), text=None)
+        ag.deadlines.create(deadline=datetime(2012, 1, 1), text=None)
         
         lst = self.s.list_assignmentgroups('inf1100.looong.oblig1')
         self.assertEquals(len(lst), 2)

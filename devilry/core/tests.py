@@ -463,19 +463,19 @@ class TestAssignmentGroup(TestCase):
         oblig1.parentnode.start_time = datetime(2010, 1, 1)
         oblig1.parentnode.end_time = datetime(2011, 1, 1)
         oblig1.publishing_time = datetime(2010, 1, 2)
-        deadline = assignment_group.deadline_set.create(deadline=datetime(2010, 5, 5), text=None)
+        deadline = assignment_group.deadlines.create(deadline=datetime(2010, 5, 5), text=None)
         deadline.clean()
-        deadline = assignment_group.deadline_set.create(deadline=datetime(2012, 1, 1), text=None)
+        deadline = assignment_group.deadlines.create(deadline=datetime(2012, 1, 1), text=None)
         self.assertRaises(ValidationError, deadline.clean)
 
     def test_clean_deadline_before_publishing_time(self):
         assignment_group = AssignmentGroup.objects.get(id=1)
         oblig1 = assignment_group.parentnode
         oblig1.publishing_time = datetime(2011, 12, 24)
-        deadline = assignment_group.deadline_set.create(deadline=datetime(2012, 1, 1), text=None)
+        deadline = assignment_group.deadlines.create(deadline=datetime(2012, 1, 1), text=None)
         deadline.clean()
         oblig1.publishing_time = datetime(2012, 12, 24)
-        deadline = assignment_group.deadline_set.create(deadline=datetime(2011, 12, 24), text=None)
+        deadline = assignment_group.deadlines.create(deadline=datetime(2011, 12, 24), text=None)
         self.assertRaises(ValidationError, deadline.clean)
         
 class TestCandidate(TestCase):

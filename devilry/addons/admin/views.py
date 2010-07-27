@@ -199,12 +199,14 @@ class EditAssignment(EditBase):
             self.title = _('Edit %(model_name)s' % model_name_dict)
 
         create_assignmentgroup_url = reverse('devilry-admin-create-assignmentgroups', args=[self.obj.id])
-        print "create_assignmentgroup_url:", create_assignmentgroup_url
+        
+        assignment = Assignment.objects.get(id=self.obj.id)
 
         return render_to_response('devilry/admin/edit_assignment.django.html', {
             'title': self.title,
             'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
             'nodeform': objform,
+            'assignment': assignment,
             'messages': self.messages,
             'post_url': self.post_url,
             'create_assignmentgroup_url': create_assignmentgroup_url,
@@ -325,6 +327,9 @@ class AssignmentgroupForm(forms.Form):
 
 class CreateAssignmentgroups:
 
+    #def add_more_verify_fields(self):
+        
+
         #@login_required
     def verify_assignmentgroups(self, request, assignment_id, initial_data):
         AssignmentGroupsFormSet = formset_factory(AssignmentgroupForm)
@@ -358,7 +363,9 @@ class CreateAssignmentgroups:
                         name = form.cleaned_data['name']
                     if 'candidates' in form.cleaned_data:
                         candidates = form.cleaned_data['candidates']
-                    self.save_group(assignment, name, candidates)
+
+                    if name or candidates:
+                        self.save_group(assignment, name, candidates)
             else:
                 print "Not valid"
 
@@ -446,8 +453,6 @@ def create_assignmentgroups(request, assignment_id):
                 
                 print "group data:", group_data
 
-                initial_data.append(group_data)
-                
             print "initial_data:", initial_data
             return CreateAssignmentgroups().verify_assignmentgroups(request, assignment_id, initial_data)
 

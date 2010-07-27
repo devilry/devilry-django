@@ -105,7 +105,7 @@ def list_assignmentgroups(request, assignment_path):
             'id': g.id,
             'name': g.name,
             'students': [u.get_identifier() for u in g.candidates.all()],
-            'deadlines': [u for u in g.deadline_set.all()],
+            'deadlines': [u for u in g.deadlines.all()],
             'number_of_deliveries': g.get_number_of_deliveries()}
         for g in assignment_groups]
     return assignment_groups
@@ -146,8 +146,8 @@ def list_deliveries(request, assignmentgroup_id):
             # TODO: Add delivered_by when it has been updated to use candidate
             'successful': d.successful,
             'filemetas': [{'id':f.id, 'filename':f.filename, 'size':f.size}
-                for f in d.filemeta_set.all()]}
-        for d in assignment_group.delivery_set.all()]
+                for f in d.filemetas.all()]}
+        for d in assignment_group.deliveries.all()]
     return result
 
 

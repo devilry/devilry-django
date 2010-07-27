@@ -58,7 +58,7 @@
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>
   <div class="accordion">
-  {% for delivery in assignment_group.delivery_set.all %}
+  {% for delivery in assignment_group.deliveries.all %}
     <h3><a href="#">
       {{ delivery.time_of_delivery }}
       {% spaceless %}

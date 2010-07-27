@@ -188,10 +188,18 @@ class Node(models.Model, BaseNode):
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
+
+    .. attribute:: nodes
+
+        A set of child_nodes for this node
+ 
+    .. attribute:: subjects
+
+        A set of subjects for this node 
     """
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey('self', blank=True, null=True)
+    parentnode = models.ForeignKey('self', blank=True, null=True, related_name='child_nodes')
     admins = models.ManyToManyField(User, blank=True)
 
     class Meta:
@@ -250,7 +258,7 @@ class Node(models.Model, BaseNode):
         def add_admnodes(admnodes):
             for a in admnodes.all():
                 l.append(a.pk)
-                add_admnodes(a.node_set)
+                add_admnodes(a.child_nodes)
         add_admnodes(admnodes)
         return l
 
@@ -314,6 +322,11 @@ class Subject(models.Model, BaseNode):
         :class:`BaseNode`, Subject.short_name is **unique**. This is mainly
         to avoid the overhead of having to recurse all the way to the top of
         the node hierarchy for every unique path.
+
+
+    .. attribute:: periods
+
+        A set of periods for this subject 
     """
 
     class Meta:
@@ -322,7 +335,7 @@ class Subject(models.Model, BaseNode):
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Node)
+    parentnode = models.ForeignKey(Node, related_name='subjects')
     admins = models.ManyToManyField(User, blank=True)
     
     @classmethod
@@ -382,6 +395,10 @@ class Period(models.Model, BaseNode):
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         node.
+
+    .. attribute:: assignments
+
+        A set of assignments for this period 
     """
 
     class Meta:
@@ -391,7 +408,7 @@ class Period(models.Model, BaseNode):
 
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Subject)
+    parentnode = models.ForeignKey(Subject, related_name='periods')
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     admins = models.ManyToManyField(User, blank=True)
@@ -476,7 +493,11 @@ class Assignment(models.Model, BaseNode):
         A django.db.models.CharField_ that holds the key of the current
         grade-plugin. More info on grade-plugins
         :ref:`here <ref-devilry.core.gradeplugin_registry>`.
-    """
+
+    .. attribute:: assignmentgroups
+
+        A set of the assignmentgroups for this assignment.
+       """
 
     class Meta:
         verbose_name = _('Assignment')
@@ -485,7 +506,7 @@ class Assignment(models.Model, BaseNode):
 
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Period)
+    parentnode = models.ForeignKey(Period, related_name='assignments')
     publishing_time = models.DateTimeField()
     anonymous = models.BooleanField(default=False)
     admins = models.ManyToManyField(User, blank=True)
@@ -523,7 +544,7 @@ class Assignment(models.Model, BaseNode):
         :rtype: QuerySet
         """
         return Assignment.objects.filter(
-            assignmentgroup__examiners=user_obj
+            assignmentgroups__examiners=user_obj
             ).distinct()
 
     @classmethod
@@ -537,7 +558,7 @@ class Assignment(models.Model, BaseNode):
         """
         return Assignment.objects.filter(
             publishing_time__lt = datetime.now(),
-            assignmentgroup__examiners=user_obj
+            assignmentgroups__examiners=user_obj
             ).distinct()
 
     @classmethod
@@ -553,7 +574,7 @@ class Assignment(models.Model, BaseNode):
         return Assignment.objects.filter(
             publishing_time__lt = now,
             parentnode__end_time__gt = now,
-            assignmentgroup__examiners=user_obj
+            assignmentgroups__examiners=user_obj
             ).distinct()
 
     @classmethod
@@ -568,7 +589,7 @@ class Assignment(models.Model, BaseNode):
         now = datetime.now()
         return Assignment.objects.filter(
             parentnode__end_time__lt = now,
-            assignmentgroup__examiners=user_obj
+            assignmentgroups__examiners=user_obj
             ).distinct()
 
 
@@ -597,7 +618,7 @@ class Assignment(models.Model, BaseNode):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return self.assignmentgroup_set.filter(examiners=user_obj)
+        return self.assignmentgroups.filter(examiners=user_obj)
 
     def clean(self, *args, **kwargs):
         """Validate the assignment.
@@ -684,9 +705,17 @@ class AssignmentGroup(models.Model, CommonInterface):
 
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
+
+    .. attribute:: deliveries
+
+        A set of deliveries for this assignmentgroup 
+
+    .. attribute:: deadlines
+
+        A set of deadlines for this assignmentgroup 
     """
 
-    parentnode = models.ForeignKey(Assignment)
+    parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
@@ -850,20 +879,20 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_status(self):
-        if self.delivery_set.all().count() == 0:
+        if self.deliveries.all().count() == 0:
             return _('No deliveries')
         else:
-            qry = self.delivery_set.filter(feedback__isnull=False)
+            qry = self.deliveries.filter(feedback__isnull=False)
             if qry.count() == 0:
                 return _('Not corrected')
             else:
                 return _('Corrected')
 
     def get_grade(self):
-        if self.delivery_set.all().count() == 0:
+        if self.deliveries.all().count() == 0:
             return None
         else:
-            qry = self.delivery_set.filter(feedback__isnull=False)
+            qry = self.deliveries.filter(feedback__isnull=False)
             if qry.count() == 0:
                 return None
             else:
@@ -872,7 +901,7 @@ class AssignmentGroup(models.Model, CommonInterface):
 
 
     def get_number_of_deliveries(self):
-        return self.delivery_set.all().count()
+        return self.deliveries.all().count()
 
     def _can_save_id_none(self, user_obj):
         """ Used by all except Node, which overrides. """
@@ -890,7 +919,7 @@ class AssignmentGroup(models.Model, CommonInterface):
     
 
 class Deadline(models.Model):
-    assignment_group = models.ForeignKey(AssignmentGroup) 
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deadlines') 
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
     
@@ -941,9 +970,14 @@ class Delivery(models.Model):
 
         A django.db.models.BooleanField_ telling whether or not the Delivery
         was successfully uploaded.
+
+    .. attribute:: filemetas
+
+        A set of filemetas for this delivery.
+
     """
     
-    assignment_group = models.ForeignKey(AssignmentGroup)
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
@@ -1187,7 +1221,7 @@ class FileMeta(models.Model):
 
         The current :ref:`DeliveryStore <ref-devilry.core.deliverystore>`.
     """
-    delivery = models.ForeignKey(Delivery)
+    delivery = models.ForeignKey(Delivery, related_name='filemetas')
     filename = models.CharField(max_length=255)
     size = models.IntegerField()
 
