@@ -451,7 +451,7 @@ class AssignmentSync(AssignmentTreeWalker):
         pass
 
     def feedback_exists(self, delivery, deliverydir, feedback):
-        if feedback['format'] == 'restructuredtext':
+        if feedback['format'] == 'rst':
             ext = 'rst'
         else:
             ext = 'txt'

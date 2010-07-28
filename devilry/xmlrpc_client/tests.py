@@ -465,7 +465,7 @@ class TestFeedback(TestCommandBase):
                 'DEBUG:Feedback found in commandline argument -t.\n' \
                 'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
-        self.assertEquals(self.delivery.feedback.format, 'restructuredtext')
+        self.assertEquals(self.delivery.feedback.format, 'rst')
         self.assertEquals(self.delivery.feedback.get_grade(), 'Approved')
 
     def test_feedback_from_rstfile(self):
@@ -480,10 +480,10 @@ class TestFeedback(TestCommandBase):
         self.assertEquals(logvalue,
             'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
             'INFO:Found feedback in file feedback.rst.\n' \
-            'INFO:Feedback format: restructuredtext.\n' \
+            'INFO:Feedback format: rst.\n' \
             'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
-        self.assertEquals(self.delivery.feedback.format, 'restructuredtext')
+        self.assertEquals(self.delivery.feedback.format, 'rst')
         self.assertEquals(self.delivery.feedback.get_grade(), 'Approved')
 
     def test_feedback_from_txtfile(self):

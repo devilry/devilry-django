@@ -1086,11 +1086,11 @@ class Feedback(models.Model):
        A django.db.models.CharField_ that holds the format of the feedback
        text. Valid values are:
 
-           ``"restructuredtext"``
-               Format feedback as restructured text.
+           ``"rst"``
+               Format feedback using restructured text.
 
            ``"text"``
-               No text formatting.
+               Plain text - no text formatting.
 
     .. attribute:: published
 
@@ -1114,7 +1114,7 @@ class Feedback(models.Model):
     """
 
     text_formats = (
-       ('restructuredtext', 'ReStructured Text'),
+       ('rst', 'ReStructured Text'),
        ('text', 'Text'),
     )
     text = models.TextField(blank=True, null=True, default='')

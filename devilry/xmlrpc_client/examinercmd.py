@@ -79,8 +79,8 @@ class Feedback(ExaminerCommand):
         self.op.add_option("-g", "--grade", metavar="GRADE",
             dest="grade", default=None, help='Grade.')
         self.op.add_option("-f", "--feedback-format",
-            metavar="restructuredtext|text", dest="format",
-            default='restructuredtext', help='Feedback format.')
+            metavar="rst|text", dest="format",
+            default='rst', help='Feedback format.')
 
     def direrror(self):
         if len(self.args) > 0:
@@ -123,7 +123,7 @@ class Feedback(ExaminerCommand):
             if os.path.isfile(fn):
                 log.info('Found feedback in file feedback.rst.')
                 text = open(fn, 'rb').read()
-                format = 'restructuredtext'
+                format = 'rst'
             else:
                 fn = filenamebase + '.txt'
                 log.debug('Did not find feedback in file feedback.rst. ' \
