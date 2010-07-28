@@ -163,6 +163,7 @@ class Command(object):
         return os.path.join(self.get_configdir(), 'everything.log')
 
     def configure_loghandlers(self, loglevel):
+        """ Configure log handling. """
         console = logging.StreamHandler()
         formatter = logging.Formatter("%(message)s")
         console.setFormatter(formatter)
@@ -170,14 +171,19 @@ class Command(object):
         log.addHandler(console)
 
         # Keep 10mb of complete logs, in files of 1mb
-        f = logging.handlers.RotatingFileHandler(self.get_logfilepath(),
-                maxBytes=2**20,
-                backupCount=10)
-        formatter = logging.Formatter(
-                "%(asctime)s: %(levelname)s: %(message)s")
-        f.setFormatter(formatter)
-        f.setLevel(logging.DEBUG)
-        log.addHandler(f)
+        try:
+            logfile = self.get_logfilepath()
+        except Command.NotInDevilryDirError:
+            pass
+        else:
+            f = logging.handlers.RotatingFileHandler(logfile,
+                    maxBytes=2**20,
+                    backupCount=10)
+            formatter = logging.Formatter(
+                    "%(asctime)s: %(levelname)s: %(message)s")
+            f.setFormatter(formatter)
+            f.setLevel(logging.DEBUG)
+            log.addHandler(f)
 
 
     def cli(self, argv):
