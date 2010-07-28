@@ -1,6 +1,6 @@
 from django.db import models
-from django.utils.translation import ugettext as _
-from devilry.core.models import Assignment, Delivery
+from devilry.core.models import Assignment
+from core.gradeplugin import GradeModel
 
 
 class SchemaGrade(models.Model):
@@ -15,8 +15,8 @@ class Entry(models.Model):
         return self.text
 
 
-class SchemaGradeResults(models.Model):
-    def __unicode__(self):
+class SchemaGradeResults(GradeModel):
+    def get_short_string(self):
         return unicode(self.result_set.count())
     
 

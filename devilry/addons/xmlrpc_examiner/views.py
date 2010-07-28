@@ -42,12 +42,10 @@ def list_active_assignments(request):
                     help
                         Help for the grade format.
 
-                    isfile
-                        True if the grade is set using a file, False
-                        otherwise.
-
                     filename
-                        The filename if ``isfile`` is True.
+                        The filename. If a file is not required, no filename
+                        is given. Note that this is only a hint to the
+                        xmlrpc, and might be ignored.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
 
@@ -207,7 +205,7 @@ def set_feedback(request, delivery_id, text, format, grade):
         feedback = Feedback(delivery=delivery)
     feedback.text = text
     feedback.format = format
-    feedback.set_grade_from_string(grade)
+    feedback.set_grade_from_xmlrpcstring(grade)
     feedback.full_clean()
     feedback.save()
 

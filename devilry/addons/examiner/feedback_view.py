@@ -38,7 +38,6 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
             'grade_form': grade_form,
         }, context_instance=RequestContext(request))
 
-
 def view_shortcut(request, delivery_obj, model_cls, form_cls):
     feedback_form = parse_feedback_form(request, delivery_obj)
     feedback_obj = feedback_form.instance

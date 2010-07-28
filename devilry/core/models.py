@@ -1108,9 +1108,11 @@ class Feedback(models.Model):
     
        A generic relation
        (django.contrib.contenttypes.generic.GenericForeignKey) to the
-       grade-plugin object storing the grade for this feedback. The
-       :meth:`clean`-method checks that this points to a class of the type
-       defined in :attr:`Assignment.grade_plugin`.
+       grade-plugin object storing the grade for this feedback. This will
+       always be a subclass for
+       :class:`devilry.core.gradeplugin.GradeModel`.The :meth:`clean`-method
+       checks that this points to a class of the type defined in
+       :attr:`Assignment.grade_plugin`.
     """
 
     text_formats = (
@@ -1127,18 +1129,17 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    def get_grade(self): # TODO: Not use unicode, and better docs
+    def get_grade(self):
         """ Get the grade as a string. """
-        return unicode(self.content_object)
+        return self.content_object.get_short_string()
 
-    def set_grade_from_string(self, grade):
-        """ Set the grade from string. This is primarly intended for xmlrpc,
-        and a grade-plugin is not
-        required to support it.
+    def set_grade_from_xmlrpcstring(self, grade):
+        """
+        Set the grade from string. This is primarly intended for xmlrpc, and
+        a grade-plugin is not required to support it.
         
         Raises :exc:`NotImplementedError` if the grade-plugin do not support
-        setting grades from string. The error message in the exception is
-        suited for direct display to the user.
+        setting grades from string.
 
         Raises :exc:`ValueError` if the grade-plugin given grade is invalid
         for this grade-plugin. The error message in the exception is suited
@@ -1146,18 +1147,29 @@ class Feedback(models.Model):
         """
         key = self.delivery.assignment_group.parentnode.grade_plugin
         model_cls = gradeplugin.registry.getitem(key).model_cls
-        if hasattr(model_cls, 'set_grade_from_string'):
-            if self.content_object:
-                self.content_object.set_grade_from_string(grade)
-                self.content_object.save()
-            else:
-                content_object = model_cls()
-                content_object.set_grade_from_string(grade)
-                content_object.save()
-                self.content_object = content_object
+        if self.content_object:
+            self.content_object.set_grade_from_xmlrpcstring(grade)
+            self.content_object.save()
         else:
-            raise NotImplementedError('Setting grade from string is not ' \
-                    'supported for this assignment.')
+            content_object = model_cls()
+            content_object.set_grade_from_xmlrpcstring(grade)
+            content_object.save()
+            self.content_object = content_object
+
+    def get_grade_as_xmlrpcstring(self):
+        """
+        Get the grade as a string compatible with
+        :meth:`set_grade_from_string`. This is primarly intended for xmlrpc,
+        and a grade-plugin is not required to support it.
+
+        If you need a simple string representation, use :meth:`get_grade`
+        instead.
+
+        Raises :exc:`NotImplementedError` if the grade-plugin do not support
+        getting grades as string.
+        """
+        return self.content_object.get_grade_as_xmlrpcstring()
+        
 
     def get_gradeplugin_registryitem(self):
         """ Shortcut for

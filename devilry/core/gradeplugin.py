@@ -1,22 +1,74 @@
+from django.db import models
 from django.conf import settings
 
 
 class XmlrpcGradeConf(object):
-    def __init__(self, help=None, isfile=False, filename=None):
+    """ Provides the configuration-wrapper between a grade-plugin and the
+    xmlrpc. """
+    def __init__(self, help=None, filename=None):
+        """
+        All parameters are stored as object attributes.
+
+        :param help:
+            Help text explaining the format of the grade.
+        :param filename:
+            The reccommended filename. ``None`` means that no file is
+            required.  Note that this is only a hint to the xmlrpc, and
+            might be ignored.
+        """
         self.help = help
-        self.isfile = isfile
         self.filename = filename
+
+
+class GradeModel(models.Model):
+    def get_short_string(self):
+        """ Return a string representation of the grade suitable for
+        short one-line display. This method is required. """
+        raise NotImplementedError()
+
+    def get_long_string(self):
+        """
+        Return a string representation of the grade which might span
+        multiple lines. The string must be formatted with restructured text.
+        """
+        raise NotImplementedError()
+
+    def get_grade_as_xmlrpcstring(self):
+        """
+        Get the grade from a string compatible with
+        :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for
+        xmlrpc, and a grade-plugin is not required to support it. If
+        unsupported, just do not override it, and it will default to raising
+        :exc:`NotImplementedError`, which the core and xmlrpc handles.
+        """
+        raise NotImplementedError()
+
+    def set_grade_from_xmlrpcstring(self, grade):
+        """
+        Set the grade from string. This is primarly intended for xmlrpc, and
+        a grade-plugin is not required to support it. If unsupported, just
+        do not override it, and it will default to raising
+        :exc:`NotImplementedError`, which the core and xmlrpc handles.
+        """
+        raise NotImplementedError()
 
 
 class RegistryItem(object):
     """ Information about a grade plugin.
-    
-    .. attribute:: model_cls::
-
-        A class for storing grades.
     """
     def __init__(self, view, model_cls, label, description,
            admin_url_callback=None, xmlrpc_gradeconf=None):
+        """   
+        All parameters are stored as object attributes.
+
+        :param view:
+            The view used when creating feedback with this grade-plugin.
+            See :ref:
+        :param model_cls:
+            A class for storing the grade of a single Feedback. It us used in a
+            one-to-one relationship with :class:`devilry.core.models.Feedback`
+            (The Feedback-class takes care of the relationship).
+        """
         self.view = view
         self.xmlrpc_gradeconf = xmlrpc_gradeconf
         self.model_cls = model_cls
