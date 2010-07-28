@@ -46,11 +46,12 @@ class DevilryMultiSelectFewUsersDb(forms.TextInput):
         super(DevilryMultiSelectFewUsersDb, self).__init__(attrs)
     
     def render(self, name, value, attrs=None):
-        if value:
-            qry = User.objects.filter(pk__in=value).all()
-            value = ", ".join([u.username for u in qry])
-        else:
-            value = ""
+        if not isinstance(value, unicode):
+            if value:
+                qry = User.objects.filter(pk__in=value).all()
+                value = u", ".join([u.username for u in qry])
+            else:
+                value = u""
         return super(DevilryMultiSelectFewUsersDb, self).render(name, value, attrs)
 
 
