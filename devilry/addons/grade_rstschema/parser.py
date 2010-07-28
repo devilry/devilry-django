@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from docutils.parsers.rst import Parser, directives
+from docutils.parsers.rst import Parser
 from docutils.utils import new_document
 
 
@@ -18,7 +18,6 @@ def rstdoc_from_string(rst):
 
 if __name__ == "__main__":
     import sys
-    from docutils.parsers.rst import directives
     import text
     import html
     import field

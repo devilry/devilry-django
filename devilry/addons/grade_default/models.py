@@ -1,5 +1,5 @@
 from django.db import models
-from core.gradeplugin import GradeModel
+from devilry.core.gradeplugin import GradeModel
 
 class CharFieldGrade(GradeModel):
     grade = models.CharField(max_length=15)

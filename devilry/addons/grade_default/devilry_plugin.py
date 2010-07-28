@@ -9,5 +9,5 @@ gradeplugin.registry.register(gradeplugin.RegistryItem(
         model_cls = CharFieldGrade,
         label = _('Manual grade handling'),
         description = _('Examiners type in grades manually in a text field ' \
-            'without any restrictions beyond a 20 character limit.')
+            'without any restrictions beyond a 15 character limit.')
 ))
