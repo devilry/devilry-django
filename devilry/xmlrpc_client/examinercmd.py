@@ -97,7 +97,7 @@ class Feedback(ExaminerCommand):
         else:
             path = os.getcwd()
         try:
-            info = self.get_info(path, 'Delivery')
+            info = Info.read_open(path, 'Delivery')
         except Info.FileWrongTypeError, e:
             self.direrror()
         except Info.FileDoesNotExistError, e:

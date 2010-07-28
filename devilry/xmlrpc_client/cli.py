@@ -162,17 +162,6 @@ class Command(object):
         """ Get path to the log-file. """
         return os.path.join(self.get_configdir(), 'everything.log')
 
-    def get_info(self, dirpath, typename):
-        """ Get id from the file name ``idfilename`` in the
-        ``dirpath``-directory.
-        
-        Raises :exc:`IdFileNotFoundError` if the file cannot be found.
-
-        Raises :exc:`ValueError` if the contents of the id-file can not be
-        converted to int.
-        """
-        return Info.read_open(dirpath, typename)
-
     def configure_loghandlers(self, loglevel):
         console = logging.StreamHandler()
         formatter = logging.Formatter("%(message)s")
