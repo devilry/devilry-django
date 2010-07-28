@@ -1127,7 +1127,7 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    def get_grade(self):
+    def get_grade(self): # TODO: Not use unicode, and better docs
         """ Get the grade as a string. """
         return unicode(self.content_object)
 
