@@ -1,3 +1,10 @@
+"""
+.. attribute:: registry
+
+    A :class:`Registry`-object.
+"""
+
+
 from django.db import models
 from django.conf import settings
 
@@ -54,7 +61,8 @@ class GradeModel(models.Model):
 
 
 class RegistryItem(object):
-    """ Information about a grade plugin.
+    """
+    Information about a grade plugin.
     """
     def __init__(self, view, model_cls, label, description,
            admin_url_callback=None, xmlrpc_gradeconf=None):
@@ -85,6 +93,10 @@ class RegistryItem(object):
 
 
 class Registry(object):
+    """
+    Grade-plugin registry. You do not need to create a object of this class.
+    It is already available as :attr:`registry`.
+    """
     def __init__(self):
         self._registry = {}
 

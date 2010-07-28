@@ -1,10 +1,7 @@
 from django.utils.translation import ugettext as _
-
 from devilry.core import gradeplugin
-
 from gradeviews import view
 from models import CharFieldGrade
-
 
 gradeplugin.registry.register(gradeplugin.RegistryItem(
         view = view,

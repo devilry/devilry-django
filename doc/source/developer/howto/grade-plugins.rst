@@ -20,6 +20,38 @@ grade-plugin. This is the contents of *models.py*:
 
 .. literalinclude:: /../../devilry/addons/grade_default/models.py
 
+As you can see, the model is a subclass of
+:class:`devilry.gradeplugin.GradeModel`, which in turn is a subclass of
+``django.db.Model``. ``GradeModel`` simply defines and documents some extra
+functions.
+
+
+The view
+########
+
+Next we have to create a view which examiners can use to give feedback using
+this plugin. To make grade-plugins as flexible as possible, the grade-plugin
+gets complete control of the view for the entire feedback. This means that the
+view has to create a complete view for creating a new
+:class:`devilry.core.models.Feedback`. This is a lot of work, so we provide
+some :ref:`shortcuts <developer-howto-grade-plugins-feedback-view>` which makes
+it possible for our view to look a simple as this (*gradeviews.py*):
+
+.. literalinclude:: /../../devilry/addons/grade_default/gradeviews.py
+
+
+Register the plugin
+###################
+
+To make the plugin register itself when the server starts, you need to put
+something like the following in ``devilry_plugin.py`` in you plugin (see
+:ref:`developer-howto-plugins`):
+
+.. literalinclude:: /../../devilry/addons/grade_default/devilry_plugin.py
+
+You can see that we register our *model* and our *view*. The API-docs for
+:attr:`devilry.core.gradeplugin.registry` explains all the details.
+
 
 Grade plugin classes
 ####################
@@ -31,9 +63,11 @@ Grade plugin classes
 
 
 
-Feedback-view
-#############
+.. _developer-howto-grade-plugins-feedback-view:
 
-.. currentmodule:: devilry.examiner.feedback_view
+Feedback-view shortcuts
+#######################
 
-.. autoclass:: devilry.examiner.feedback_view
+.. currentmodule:: devilry.addons.examiner.feedback_view
+
+.. automodule:: devilry.addons.examiner.feedback_view

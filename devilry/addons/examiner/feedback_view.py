@@ -7,6 +7,7 @@ from django import forms
 
 
 class FeedbackForm(forms.ModelForm):
+    """ A ModelForm for the :class:`devilry.core.models.Feedback`-class. """
     class Meta:
         model = Feedback
         fields = ('text', 'format', 'published')
@@ -38,18 +39,29 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
             'grade_form': grade_form,
         }, context_instance=RequestContext(request))
 
-def view_shortcut(request, delivery_obj, model_cls, form_cls):
+def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
+    """
+    Creates a feedback-view.
+
+    :param delivery_obj:
+        A :class:`devilry.core.models.Delivery` object.
+    :param grade_model_cls:
+        A subclass of class:`devilry.core.gradeplugin.GradeModel`.
+    :param grade_form_cls:
+        A ``django.forms.ModelForm`` for editing objects of
+        ``grade_model_cls``.
+    """
     feedback_form = parse_feedback_form(request, delivery_obj)
     feedback_obj = feedback_form.instance
     if feedback_obj.content_object:
         grade_obj = feedback_obj.content_object
     else:
-        grade_obj = model_cls()
+        grade_obj = grade_model_cls()
 
     if request.method == 'POST':
-        grade_form = form_cls(request.POST, instance=grade_obj, prefix='grade')
+        grade_form = grade_form_cls(request.POST, instance=grade_obj, prefix='grade')
     else:
-        grade_form = form_cls(instance=grade_obj, prefix='grade')
+        grade_form = grade_form_cls(instance=grade_obj, prefix='grade')
 
     if request.method == 'POST':
         if feedback_form.is_valid() and grade_form.is_valid():
