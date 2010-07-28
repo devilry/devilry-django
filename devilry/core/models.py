@@ -17,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 from deliverystore import load_deliverystore_backend, FileNotFoundError
-import gradeplugin_registry
+import gradeplugin
 
 
 
@@ -492,7 +492,7 @@ class Assignment(models.Model, BaseNode):
 
         A django.db.models.CharField_ that holds the key of the current
         grade-plugin. More info on grade-plugins
-        :ref:`here <ref-devilry.core.gradeplugin_registry>`.
+        :ref:`here <ref-devilry.core.gradeplugin>`.
 
     .. attribute:: assignmentgroups
 
@@ -511,14 +511,14 @@ class Assignment(models.Model, BaseNode):
     anonymous = models.BooleanField(default=False)
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
-            choices=gradeplugin_registry.RegistryIterator(),
-            default=gradeplugin_registry.getdefaultkey())
+            choices=gradeplugin.registry,
+            default=gradeplugin.registry.getdefaultkey())
 
 
     def get_gradeplugin_registryitem(self):
-        """ Get the :class:`devilry.core.gradeplugin_registry.RegistryItem`
+        """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
         for the current :attr:`grade_plugin`. """
-        return gradeplugin_registry.getitem(self.grade_plugin)
+        return gradeplugin.registry.getitem(self.grade_plugin)
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -1145,7 +1145,7 @@ class Feedback(models.Model):
         for direct display to the user.
         """
         key = self.delivery.assignment_group.parentnode.grade_plugin
-        model_cls = gradeplugin_registry.getitem(key).model_cls
+        model_cls = gradeplugin.registry.getitem(key).model_cls
         if hasattr(model_cls, 'set_grade_from_string'):
             if self.content_object:
                 self.content_object.set_grade_from_string(grade)
@@ -1177,7 +1177,7 @@ class Feedback(models.Model):
 
             - :attr:`content_object` is not a instance of the model-class
               defined in
-              :attr:`devilry.core.gradeplugin_registry.RegistryItem.model_cls`
+              :attr:`devilry.core.gradeplugin.RegistryItem.model_cls`
               referred by :attr:`Assignment.grade_plugin`.
             - The node is the child of itself or one of its childnodes.
         """

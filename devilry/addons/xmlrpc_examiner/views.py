@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden, Http404
 
-from devilry.core import gradeplugin_registry
+from devilry.core import gradeplugin
 from devilry.core.models import Assignment, AssignmentGroup, Delivery, \
     Feedback
 from devilry.xmlrpc import XmlRpc
@@ -53,7 +53,7 @@ def list_active_assignments(request):
 
     def xmlrpc_gradeconf(a):
         key = a.grade_plugin
-        c = gradeplugin_registry.getitem(key)
+        c = gradeplugin.registry.getitem(key)
         return c.xmlrpc_gradeconf or False
     result = [{
             'id': a.id,

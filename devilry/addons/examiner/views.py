@@ -4,7 +4,7 @@ from django.http import HttpResponseForbidden
 from django.template import RequestContext
 
 from devilry.core.models import Delivery, AssignmentGroup, Assignment
-from devilry.core import gradeplugin_registry
+from devilry.core import gradeplugin
 from devilry.core.utils.GroupNodes import group_assignments
 
 
@@ -35,7 +35,7 @@ def correct_delivery(request, delivery_id):
     if not delivery_obj.assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
     key = delivery_obj.assignment_group.parentnode.grade_plugin
-    return gradeplugin_registry.getitem(key).view(request, delivery_obj)
+    return gradeplugin.registry.getitem(key).view(request, delivery_obj)
 
 @login_required
 def choose_assignment(request):

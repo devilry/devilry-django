@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 
-import gradeplugin_registry
+import gradeplugin
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
         Delivery, FileMeta, Candidate
 from deliverystore import FileNotFoundError
@@ -62,8 +62,8 @@ def create_from_path(path):
         assignmentname = pathsplit[2]
         assignment = Assignment(parentnode=period, short_name=assignmentname,
                 long_name=assignmentname, publishing_time=datetime.now())
-        gradeplugin = gradeplugin_registry.getdefaultkey()
-        assignment.grade_plugin = gradeplugin
+        gp = gradeplugin.registry.getdefaultkey()
+        assignment.grade_plugin = gp
         
         try:
             assignment.save()

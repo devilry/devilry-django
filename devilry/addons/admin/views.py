@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -6,18 +8,17 @@ from django.template import RequestContext
 from django import forms
 from django.utils.translation import ugettext as _
 from django.forms.models import inlineformset_factory, formset_factory
+from django.contrib.auth.models import User
 
 from devilry.core.models import Node, Period, Assignment, AssignmentGroup, \
         Deadline, Candidate, Subject
 from devilry.ui.messages import UiMessages
-from devilry.core import gradeplugin_registry
+from devilry.core import gradeplugin
 from devilry.ui.widgets import DevilryDateTimeWidget, \
-    DevilryMultiSelectFewUsers, DevilryMultiSelectFewUsersDb, \
-    DevilryMultiSelectFewCandidates
+    DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
 from devilry.ui.fields import MultiSelectCharField
 
-from django.contrib.auth.models import User
-import re
+
 
 @login_required
 def main(request):
@@ -161,12 +162,12 @@ class EditAssignment(EditBase):
 
     def create_view2(self):
         if not self.is_new:
-            gradeplugin = gradeplugin_registry.getitem(self.obj.grade_plugin)
+            gp = gradeplugin.registry.getitem(self.obj.grade_plugin)
             msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
                     'grade-plugin. You cannot change grade-plugin on an ' \
-                    'existing assignment.' % {'gradeplugin_label': gradeplugin.label})
-            if gradeplugin.admin_url_callback:
-                url = gradeplugin.admin_url_callback(self.obj.id)
+                    'existing assignment.' % {'gradeplugin_label': gp.label})
+            if gp.admin_url_callback:
+                url = gp.admin_url_callback(self.obj.id)
                 msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
                         'to administer the plugin.' % {'gradeplugin_admin_url': url})
                 self.messages.add_info('%s %s' % (msg, msg2), raw_html=True)
