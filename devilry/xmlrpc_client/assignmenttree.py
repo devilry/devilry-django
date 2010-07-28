@@ -243,11 +243,13 @@ class AssignmentTreeWalker(object):
                         feedback = server.get_feedback(delivery['id'])
                     except xmlrpclib.Fault, e:
                         if e.faultCode == 404:
-                            self.feedback_none(delivery, deliverydir)
+                            self.feedback_none(delivery, deliverydir,
+                                    assignment['xmlrpc_gradeconf'])
                         else:
                             raise
                     else:
-                        self.feedback_exists(delivery, deliverydir, feedback)
+                        self.feedback_exists(delivery, deliverydir,
+                                feedback, assignment['xmlrpc_gradeconf'])
 
     def assignment(self, assignment, info):
         """ Called on each assignment.
@@ -328,12 +330,12 @@ class AssignmentTreeWalker(object):
     def filemeta_exists(self, filemeta, filepath):
         pass
 
-    def feedback_none(self, delivery, deliverydir):
+    def feedback_none(self, delivery, deliverydir, gradeconf):
         """ Called when there is no feedback on a delivery. Does nothing by
         default, and should be overridden in subclasses. """
         pass
 
-    def feedback_exists(self, delivery, deliverydir, feedback):
+    def feedback_exists(self, delivery, deliverydir, feedback, gradeconf):
         """ Called when there is feedback on a delivery. Does nothing by
         default, and should be overridden in subclasses. """
         pass
@@ -357,21 +359,32 @@ class AssignmentSync(AssignmentTreeWalker):
         finally:
             os.chdir(cwd)
 
-    def assignment_new(self, assignment, info):
-        log.info('+ %s' % info.get_dirpath())
-        os.mkdir(info.get_dirpath())
-        info.new()
+    def _assignment_info_refresh(self, assignment, info):
         info.setmany(
                 id = assignment['id'],
                 short_name = assignment['short_name'],
                 long_name = assignment['long_name'],
                 path = assignment['path'],
                 publishing_time = assignment['publishing_time'])
+        gradeconf = assignment['xmlrpc_gradeconf']
+        if gradeconf:
+            info.setmany(
+                gradeconf_help = gradeconf['help'],
+                gradeconf_filename = gradeconf['filename'],
+                gradeconf_default_filencontents = gradeconf['default_filecontents'])
+
+    def assignment_new(self, assignment, info):
+        log.info('+ %s' % info.get_dirpath())
+        os.mkdir(info.get_dirpath())
+        info.new()
+        self._assignment_info_refresh(assignment, info)
         info.write()
 
     def assignment_exists(self, assignment, info):
         log.debug('%s already exists' % info.get_dirpath())
         info.read()
+        self._assignment_info_refresh(assignment, info)
+        info.write()
         if not assignment['xmlrpc_gradeconf']:
             log.warning(
                     '%s does not support creating feedback using ' \
@@ -398,6 +411,7 @@ class AssignmentSync(AssignmentTreeWalker):
                 number_of_deliveries = group['number_of_deliveries'])
         info.write()
 
+    # TODO: Refresh info even on exists, like assignment_exists does
     def assignmentgroup_exists(self, group, info):
         log.debug('%s already exists.' % info.get_dirpath())
 
@@ -447,10 +461,23 @@ class AssignmentSync(AssignmentTreeWalker):
         log.debug('%s already exists.' % filepath)
 
 
-    def feedback_none(self, delivery, deliverydir):
-        pass
+    def _handle_gradeconf(self, deliverydir, gradeconf):
+        filename = gradeconf['filename']
+        if gradeconf and filename:
+            gradeconffile = os.path.join(deliverydir, filename)
+            if os.path.exists(gradeconffile):
+                log.info('%s already exists. If you want a clean one, ' \
+                        'simply delete it and sync again.' % gradeconffile)
+            else:
+                open(gradeconffile,'wb').write(
+                        gradeconf['default_filecontents'])
+                log.info('+ %s' % gradeconffile)
 
-    def feedback_exists(self, delivery, deliverydir, feedback):
+    def feedback_none(self, delivery, deliverydir, gradeconf):
+        self._handle_gradeconf(deliverydir, gradeconf)
+
+    def feedback_exists(self, delivery, deliverydir, feedback, gradeconf):
+        self._handle_gradeconf(deliverydir, gradeconf)
         if feedback['format'] == 'rst':
             ext = 'rst'
         else:

@@ -15,7 +15,7 @@ from models import RstSchemaDefinition
 class RstSchemaDefinitionForm(forms.ModelForm):
     class Meta:
         model = RstSchemaDefinition
-        fields = ('schema',)
+        fields = ('schemadef',)
 
 
 @login_required

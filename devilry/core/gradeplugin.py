@@ -12,7 +12,8 @@ from django.conf import settings
 class XmlrpcGradeConf(object):
     """ Provides the configuration-wrapper between a grade-plugin and the
     xmlrpc. """
-    def __init__(self, help=None, filename=None):
+    def __init__(self, help=None, filename=None,
+            default_filecontents_callback=None):
         """
         All parameters are stored as object attributes.
 
@@ -22,9 +23,30 @@ class XmlrpcGradeConf(object):
             The reccommended filename. ``None`` means that no file is
             required.  Note that this is only a hint to the xmlrpc, and
             might be ignored.
+        :param default_filecontents_callback:
+            A function which returns the reccommended default contents of
+            the grade-file. The function takes a
+            :class:`devilry.core.models.Assignment` object as it's only
+            argument.
         """
         self.help = help
         self.filename = filename
+        self.default_filecontents_callback = default_filecontents_callback
+
+    def as_dict(self, assignmentobj):
+        """
+        Get a dict with all the attributes except
+        ``default_filecontents_callback`` which instead is called with
+        ``assignmentobj`` as argument, and the result is stored with the
+        ``"default_filecontents"``-key.
+        """
+        if self.default_filecontents_callback:
+            default_filecontents = self.default_filecontents_callback(
+                    assignmentobj)
+        else:
+            default_filecontents = None
+        return dict(help=self.help, filename=self.filename,
+                default_filecontents=default_filecontents)
 
 
 class GradeModel(models.Model):

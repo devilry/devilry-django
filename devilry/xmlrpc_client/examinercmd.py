@@ -93,9 +93,9 @@ class Feedback(ExaminerCommand):
         self.read_config()
 
         if len(self.args) > 0:
-            path = self.args[0]
+            path = os.path.abspath(os.path.normpath(self.args[0]))
         else:
-            path = os.getcwd()
+            path = os.path.abspath(os.getcwd())
         try:
             info = Info.read_open(path, 'Delivery')
         except Info.FileWrongTypeError, e:
@@ -103,11 +103,18 @@ class Feedback(ExaminerCommand):
         except Info.FileDoesNotExistError, e:
             self.direrror()
 
-        grade = self.opt.grade
-        if not grade:
-            log.error('A grade is required. See --help for more info.')
-            raise SystemExit()
-        server = self.get_serverproxy()
+        groupdir = os.path.dirname(path)
+        assignmentdir = os.path.dirname(groupdir)
+        assignmentinfo = Info.read_open(assignmentdir, 'Assignment')
+        gradeconf_filename = assignmentinfo.get('gradeconf_filename')
+        if gradeconf_filename:
+            gradeconf_help = assignmentinfo.get('gradeconf_help')
+            grade = open(gradeconf_filename, 'rb').read()
+        else:
+            grade = self.opt.grade
+            if not grade:
+                log.error('A grade is required. See --help for more info.')
+                raise SystemExit()
 
         # Get feedback text from arguments or file.
         text = self.opt.text
@@ -139,6 +146,7 @@ class Feedback(ExaminerCommand):
             if text:
                 log.info('Feedback format: %s.' % format)
 
+        server = self.get_serverproxy()
         try:
             server.set_feedback(info.get_id(), text,
                     format, grade)

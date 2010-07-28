@@ -46,13 +46,19 @@ def list_active_assignments(request):
                         The filename. If a file is not required, no filename
                         is given. Note that this is only a hint to the
                         xmlrpc, and might be ignored.
+
+                    default_filecontents
+                        The reccommended default contents of the grade-file.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
 
-    def xmlrpc_gradeconf(a):
-        key = a.grade_plugin
-        c = gradeplugin.registry.getitem(key)
-        return c.xmlrpc_gradeconf or False
+    def xmlrpc_gradeconf(assignment):
+        key = assignment.grade_plugin
+        ri = gradeplugin.registry.getitem(key)
+        if ri.xmlrpc_gradeconf:
+            return ri.xmlrpc_gradeconf.as_dict(assignment)
+        else:
+            return False
     result = [{
             'id': a.id,
             'short_name': a.short_name,

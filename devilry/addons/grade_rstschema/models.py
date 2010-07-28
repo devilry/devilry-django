@@ -5,8 +5,9 @@ from devilry.core.models import Assignment
 
 
 class RstSchemaDefinition(models.Model):
-    assignment = models.OneToOneField(Assignment, primary_key=True)
-    schema = models.TextField()
+    assignment = models.OneToOneField(Assignment, primary_key=True,
+            unique=True)
+    schemadef = models.TextField()
 
 
 class RstSchemaGrade(GradeModel):
