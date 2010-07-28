@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block main %}
-<form method='post' action='{% url devilry-admin-create-assignmentgroups assignment.id %}'>
+<form method='post' action='{% url devilry-admin-create_assignmentgroups assignment.id %}'>
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>

@@ -140,81 +140,6 @@ class EditPeriod(EditBase):
                     }
         return Form
 
-class EditAssignment(EditBase):
-    VIEW_NAME = 'assignment'
-    MODEL_CLASS = Assignment
-    
-    def create_form(self):
-        class Form(forms.ModelForm):
-            parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Period.not_ended_where_is_admin(self.request.user))
-            admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
-                                          required=False)
-            class Meta:
-                model = Assignment
-                fields = ['parentnode', 'short_name', 'long_name', 'publishing_time', 'admins']
-                if self.is_new:
-                    fields.append('grade_plugin')
-                widgets = {
-                    'publishing_time': DevilryDateTimeWidget,
-                    }
-        return Form
-
-    def create_view2(self):
-        if not self.is_new:
-            gp = gradeplugin.registry.getitem(self.obj.grade_plugin)
-            msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
-                    'grade-plugin. You cannot change grade-plugin on an ' \
-                    'existing assignment.' % {'gradeplugin_label': gp.label})
-            if gp.admin_url_callback:
-                url = gp.admin_url_callback(self.obj.id)
-                msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
-                        'to administer the plugin.' % {'gradeplugin_admin_url': url})
-                self.messages.add_info('%s %s' % (msg, msg2), raw_html=True)
-            else:
-                self.messages.add_info(msg, raw_html=True)
-
-
-    def create_view(self):
-        self.create_view2()
-        
-        model_name = self.MODEL_CLASS._meta.verbose_name
-        model_name_dict = {'model_name': model_name}
-        form_cls = self.create_form()
-
-        if self.request.POST:
-            objform = form_cls(self.request.POST, instance=self.obj)
-            if objform.is_valid():
-                if not self.obj.can_save(self.request.user):
-                    return HttpResponseForbidden("Forbidden")
-                
-                objform.save()
-                success_url = self.get_reverse_url(str(self.obj.pk))
-                return HttpResponseRedirect(success_url)
-        else:
-            objform = form_cls(instance=self.obj)
-
-        if self.obj.id == None:
-            self.title = _('New %(model_name)s') % model_name_dict
-        else:
-            self.title = _('Edit %(model_name)s' % model_name_dict)
-
-        create_assignmentgroup_url = reverse('devilry-admin-create-assignmentgroups', args=[self.obj.id])
-        
-        assignment = Assignment.objects.get(id=self.obj.id)
-
-        return render_to_response('devilry/admin/edit_assignment.django.html', {
-            'title': self.title,
-            'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
-            'nodeform': objform,
-            'assignment': assignment,
-            'messages': self.messages,
-            'post_url': self.post_url,
-            'create_assignmentgroup_url': create_assignmentgroup_url,
-            }, context_instance=RequestContext(self.request))
-
-   
-     
 
 
 class DeadlineForm(forms.ModelForm):
@@ -303,8 +228,65 @@ def edit_period(request, obj_id=None, successful_save=False):
     return EditPeriod(request, obj_id, successful_save).create_view()
 
 @login_required
-def edit_assignment(request, obj_id=None, successful_save=False):
-    return EditAssignment(request, obj_id, successful_save).create_view()
+def edit_assignment(request, assignment_id=None, successful_save=False):
+    isnew = assignment_id == None
+    if isnew:
+        assignment = Assignment()
+    else:
+        assignment = Assignment.objects.get(id=assignment_id)
+    messages = UiMessages()
+
+    if successful_save:
+        messages.add_success(_("Assignment successfully saved."))
+    
+    class Form(forms.ModelForm):
+        parentnode = forms.ModelChoiceField(required=True,
+                queryset = Period.not_ended_where_is_admin(request.user))
+        admins = MultiSelectCharField(required=False,
+                widget=DevilryMultiSelectFewUsersDb)
+        class Meta:
+            model = Assignment
+            fields = ['parentnode', 'short_name', 'long_name', 
+                    'publishing_time', 'admins']
+            if isnew:
+                fields.append('grade_plugin')
+            widgets = {
+                'publishing_time': DevilryDateTimeWidget,
+                }
+
+    if not isnew:
+        gp = gradeplugin.registry.getitem(assignment.grade_plugin)
+        msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
+                'grade-plugin. You cannot change grade-plugin on an ' \
+                'existing assignment.' % {'gradeplugin_label': gp.label})
+        if gp.admin_url_callback:
+            url = gp.admin_url_callback(assignment.id)
+            msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
+                    'to administer the plugin.' % {'gradeplugin_admin_url': url})
+            messages.add_info('%s %s' % (msg, msg2), raw_html=True)
+        else:
+            messages.add_info(msg, raw_html=True)
+    
+    if request.method == 'POST':
+        form = Form(request.POST, instance=assignment)
+        if form.is_valid():
+            if not assignment.can_save(request.user):
+                return HttpResponseForbidden("Forbidden")
+            
+            form.save()
+            success_url = reverse('devilry-admin-assignment-save-success',
+                    args=[str(assignment.pk)])
+            return HttpResponseRedirect(success_url)
+    else:
+        form = Form(instance=assignment)
+
+    return render_to_response('devilry/admin/edit_assignment.django.html', {
+        'form': form,
+        'assignment': assignment,
+        'messages': messages,
+        'isnew': isnew,
+        }, context_instance=RequestContext(request))
+
 
 @login_required
 def edit_assignmentgroup(request, obj_id=None, successful_save=False):
