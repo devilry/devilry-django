@@ -1115,7 +1115,7 @@ class Feedback(models.Model):
 
     text_formats = (
        ('rst', 'ReStructured Text'),
-       ('text', 'Text'),
+       ('txt', 'Text'),
     )
     text = models.TextField(blank=True, null=True, default='')
     format = models.CharField(max_length=20, choices=text_formats,

@@ -90,12 +90,12 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         d.finish()
         self.assertLoginRequired(self.s.set_feedback, d.pk)
         self.login(self.client, 'examiner1')
-        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         feedback = Delivery.objects.get(pk=3).feedback
         self.assertEquals(feedback.text, 'test')
-        self.assertEquals(feedback.format, 'text')
+        self.assertEquals(feedback.format, 'txt')
         self.assertFault(1, self.s.set_feedback,
-                d.pk, 'test', 'text', 'invalid-grade')
+                d.pk, 'test', 'txt', 'invalid-grade')
         self.assertFault(3, self.s.set_feedback,
                 d.pk, 'test', 'invalid-format', 'approved')
 
@@ -105,7 +105,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         d.finish()
         self.assertLoginRequired(self.s.set_feedback, d.pk)
         self.login(self.client, 'examiner1')
-        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         self.s.set_feedback_published(d.pk, True)
         feedback = Delivery.objects.get(pk=3).feedback
         self.assertTrue(feedback.published)
@@ -117,10 +117,10 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertLoginRequired(self.s.get_feedback, d.pk)
         self.login(self.client, 'examiner1')
         self.assertFault(404, self.s.get_feedback, d.pk)
-        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         f = self.s.get_feedback(d.pk)
         self.assertEquals(f['text'], 'test')
-        self.assertEquals(f['format'], 'text')
+        self.assertEquals(f['format'], 'txt')
         self.assertFalse(f['published'])
         self.s.set_feedback_published(d.pk, True)
         f = self.s.get_feedback(d.pk)

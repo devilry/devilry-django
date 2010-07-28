@@ -499,8 +499,8 @@ class TestFeedback(TestCommandBase):
             'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
             'DEBUG:Did not find feedback in file feedback.rst. Trying file feedback.txt\n' \
             'INFO:Found feedback in file feedback.txt.\n' \
-            'INFO:Feedback format: text.\n' \
+            'INFO:Feedback format: txt.\n' \
             'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
-        self.assertEquals(self.delivery.feedback.format, 'text')
+        self.assertEquals(self.delivery.feedback.format, 'txt')
         self.assertEquals(self.delivery.feedback.get_grade(), 'Approved')

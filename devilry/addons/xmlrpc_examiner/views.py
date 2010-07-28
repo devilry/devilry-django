@@ -160,7 +160,7 @@ def get_feedback(request, delivery_id):
             The feedback text.
         format
             The feedback format. Will always be one of:
-            ``"rst"`` or ``"text"``.
+            ``"rst"`` or ``"txt"``.
         published
             True if the feedback is published, false otherwise.
 
@@ -191,7 +191,7 @@ def set_feedback(request, delivery_id, text, format, grade):
     :param text:
         Feedback text.
     :param format:
-        Feedback format. Valid values: ``"rst"`` or ``"text"``.
+        Feedback format. Valid values: ``"rst"`` or ``"txt"``.
     :param grade:
         The grade as a string. The exact format of this value is determined
         by the grade-plugin.
