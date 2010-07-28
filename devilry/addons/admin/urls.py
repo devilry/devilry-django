@@ -6,10 +6,14 @@ for x in ('node', 'subject', 'period', 'assignmentgroup'):
     generic_urls += [
         url(r'^%ss/edit/(?P<obj_id>\d+)$' % x, 'views.edit_%s' % x,
             name='devilry-admin-edit_%s' % x),
-        url(r'^%ss/add/$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-add_%s' % x),
+        url(r'^%ss/successful-save/(?P<obj_id>\d+)$' % x, 'views.edit_%s' % x,
+            name='devilry-admin-edit_%s-success' % x,
+            kwargs = {'successful_save':True}),
+        url(r'^%ss/create$' % x, 'views.edit_%s' % x,
+            name='devilry-admin-create_%s' % x),
         url(r'^%ss/$' % x, 'views.list_%ss' % x,
-            name='devilry-admin-list_%ss' % x)]
+            name='devilry-admin-list_%ss' % x)
+        ]
 
 urlpatterns = patterns('devilry.addons.admin',
     url(r'^$', 'views.main', name='devilry-admin-main'),
@@ -18,10 +22,10 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.edit_assignment', name='devilry-admin-edit_assignment'),
     url(r'^assignments/successful-save/(?P<assignment_id>\d+)$',
         'views.edit_assignment',
-        name = 'devilry-admin-assignment-save-success',
+        name = 'devilry-admin-edit_assignment-success',
         kwargs = {'successful_save':True}),
-    url(r'^assignments/add/',
-        'views.edit_assignment', name='devilry-admin-add_assignment'),
+    url(r'^assignments/create$',
+        'views.edit_assignment', name='devilry-admin-create_assignment'),
     url(r'^assignments/',
         'views.list_assignments', name='devilry-admin-list_assignments'),
 
