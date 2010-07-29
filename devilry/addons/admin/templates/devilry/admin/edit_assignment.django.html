@@ -49,22 +49,22 @@
       <th>Candidates</th>
     </tr>
 
-    {% for assignmentgroup in assignment.assignmentgroups.all %}
-    <tr>
-      <td>{{ assignmentgroup.name }}</td>
-    
-      <td> 
-      {% for cand in assignmentgroup.candidates.all %}
-      
-      {% if not forloop.first %},
-      {% endif %}
-      {{ cand.student }}
-      {% endfor %}
-    </td>
-    <td> <a href='/admin/assignmentgroups/edit/{{ assignmentgroup.id }}'>{% trans "Edit" %}</a></td>
-    
-    </tr>
-    {% endfor %}
-  </table>
+  {% for assignmentgroup in assignmentgroups %}
+  <tr>
+    <td>{% if assignmentgroup.name %} {{ assignmentgroup.name }} {% endif %}</td>
+	
+    <td> 
+	  {% for cand in assignmentgroup.candidates.all %}
+	  
+	  {% if not forloop.first %},
+	  {% endif %}
+	  {{ cand.student }}
+	  {% endfor %}
+	</td>
+	<td> <a href='/admin/assignmentgroups/edit/{{ assignmentgroup.id }}'>{% trans "Edit" %}</a></td>
+	
+  </tr>
+  {% endfor %}
+</table>
 {% endif %}
 {% endblock %}

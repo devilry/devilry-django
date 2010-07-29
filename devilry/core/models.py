@@ -618,8 +618,10 @@ class Assignment(models.Model, BaseNode):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return self.assignmentgroups.filter(examiners=user_obj)
-
+        return self.assignmentgroups.filter(
+            Q(examiners=user_obj) |
+            Q(parentnode__admins=user_obj))
+    
     def clean(self, *args, **kwargs):
         """Validate the assignment.
 
