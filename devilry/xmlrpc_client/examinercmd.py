@@ -3,7 +3,7 @@ import os
 import logging
 
 from assignmenttree import AssignmentSync, Info
-from cli import Command, log_fault
+from cli import Command, log_fault, format_long_message
 
 
 
@@ -148,9 +148,15 @@ class Feedback(ExaminerCommand):
 
         server = self.get_serverproxy()
         try:
-            server.set_feedback(info.get_id(), text,
+            ok_message = server.set_feedback(info.get_id(), text,
                     format, grade)
         except xmlrpclib.Fault, e:
-            log.error('%s' % e.faultString)
+            log.error(format_long_message('ERROR MESSAGE', e.faultString,
+                False))
+            log.error('Setting feedback failed. See error-message above.')
         else:
-            log.info('Feedback successfully saved.')
+            if ok_message:
+                log.info(format_long_message('FEEDBACK SUCCESSFULLY SAVED',
+                    ok_message))
+            else:
+                log.info('Feedback successfully saved.')

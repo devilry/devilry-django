@@ -3,6 +3,7 @@ import re
 
 def validate_input(text, fields):
     offset = 0
+    errors = 0
     for i, m in enumerate(re.finditer(r"\[\[\[\s*(.*?)\s*\]\]\]", text)):
         value = m.group(1)
         field = fields[i]
@@ -12,9 +13,10 @@ def validate_input(text, fields):
             msg = ' {POINTS: %d}' % points
         except ValueError, e:
             msg = ' {ERROR: %s}' % e
+            errors += 1
         text = text[:offset+m.end()] + msg + text[offset+m.end():]
         offset += len(msg)
-    return offset == 0, text
+    return errors, text
 
 def strip_messages(text):
     return re.sub(r"\s*\{(?:POINTS|ERROR):[^}]*?\}", "", text, re.DOTALL)

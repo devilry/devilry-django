@@ -9,7 +9,6 @@ import logging.handlers
 import sys
 
 from cookie_transport import CookieTransport, SafeCookieTransport
-from assignmenttree import Info
 
 
 
@@ -20,6 +19,29 @@ def log_fault(fault):
     """ Log a xmlrpclib.Fault to log.error. """
     log.error('%s: %s' % (fault.faultCode, fault.faultString))
 
+
+def format_long_message(title, msg, always_show_title=True):
+    """ Format a message which might be long for logging, to make it clear
+    where the message starts and ends.
+    
+    :return:
+        The formatted message, which will be surrounded by markers if
+        ``msg`` has more than 200 characters.
+    """
+    if len(msg) < 200:
+        if always_show_title:
+            return '%s: %s' % (title, msg)
+        else:
+            return msg
+    else:
+        sidelen = (68 - len(title)) / 2
+        beforesides = '>'.join(['' for x in xrange(sidelen)])
+        aftersides = '<'.join(['' for x in xrange(sidelen)])
+        m = []
+        m.append('%s %s %s' % (beforesides, title, beforesides))
+        m.append(msg)
+        m.append('%s %s %s' % (aftersides, title, aftersides))
+        return os.linesep.join(m)
 
 
 class Cli(object):
@@ -227,8 +249,7 @@ class Command(object):
         server-proxy with SSL-support is created. """
         url = urljoin(self.get_url(), self.urlpath)
         if url.startswith('https'):
-            transport=SafeCookieTransport(self.get_cookiepath(),
-                    allow_none=True)
+            transport=SafeCookieTransport(self.get_cookiepath())
         else:
             transport=CookieTransport(self.get_cookiepath())
         return ServerProxy(url, transport=transport, allow_none=True)

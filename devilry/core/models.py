@@ -1157,13 +1157,14 @@ class Feedback(models.Model):
         key = self.delivery.assignment_group.parentnode.grade_plugin
         model_cls = gradeplugin.registry.getitem(key).model_cls
         if self.grade:
-            self.grade.set_grade_from_xmlrpcstring(grade, self)
+            ok_message = self.grade.set_grade_from_xmlrpcstring(grade, self)
             self.grade.save()
         else:
             gradeobj = model_cls()
-            gradeobj.set_grade_from_xmlrpcstring(grade, self)
+            ok_message = gradeobj.set_grade_from_xmlrpcstring(grade, self)
             gradeobj.save()
             self.grade = gradeobj
+        return ok_message
 
     def get_grade_as_xmlrpcstring(self):
         """
