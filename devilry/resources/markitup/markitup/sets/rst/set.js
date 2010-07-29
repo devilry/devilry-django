@@ -25,7 +25,8 @@ markitupRstSettings = {
 		//{name:'Preview', className:'preview',  call:'preview'}
 	//]
 
-	previewParserPath: '/ui/rst_to_html',
+	previewParserPath: DEVILRY_MAIN_PAGE + '/ui/rst_to_html',
+	previewParserVar: 'rst',
 	//previewAutoRefresh: true,
 	resizeHandle: true,
 	onShiftEnter: {keepDefault:false, openWith:'\n\n'},
@@ -39,9 +40,7 @@ markitupRstSettings = {
 		{name:'Italic', key:'I', openWith:'*', closeWith:'*'},
 		{separator:'---------------' },
 		{name:'Bulleted List', openWith:'- ' },
-		{name:'Numeric List', openWith:function(markItUp) {
-			return markItUp.line+'. ';
-		}},
+		{name:'Numeric List', openWith:'#. ' },
 		{separator:'---------------' },
 		{name:'Link', key:'L', openWith:'`', closeWith:' <[![Url:!:http://]!]>`_', placeHolder:'Link title here...' },
 		{separator:'---------------'},	

@@ -20,8 +20,10 @@
 
 {% include "devilry/ui/include/show_delivery_default.django.html" %}
 {% if delivery.feedback.text %}
-  <h2>{% trans "Feedback" %}</h2>
-  {% include "devilry/ui/include/show_feedback.django.html" %}
+  <fieldset>
+    <h2 class='legend'>{% trans "Feedback" %}</h2>
+    {% include "devilry/ui/include/show_feedback.django.html" %}
+  </fieldset>
 {% endif %}
 
 {% endblock %}

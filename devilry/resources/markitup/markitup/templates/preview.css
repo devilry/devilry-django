@@ -1,5 +1,21 @@
-/* preview style examples */
+@import "../../../rst.css";
+
 body {
-	background-color:#EFEFEF;
-	font:70% Verdana, Arial, Helvetica, sans-serif;
+	background-color:#fff;
+	font-family: "Tahoma", "Geneva", sans-serif;
+	margin: 0;
+	padding: 0;
+	color: #555;
+}
+
+div.markitup-preview-head {
+	font-size: 0.8em;
+	text-align: center;
+	padding: 3px 10px 3px 10px;
+	background-color: #ECEBE9;
+	border-bottom: 1px solid #D4D2CE;
+	color: #776B5F;
+	font-family: "Century Gothic", sans-serif;
+	font-size: 1.0em;
+	font-weight: bold;
 }

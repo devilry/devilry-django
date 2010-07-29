@@ -128,7 +128,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
 DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore.dbm')
 
-DEVILRY_MAIN_PAGE = '/'
+# Make sure this does not end with / (i.e. '' means / is the main page).
+DEVILRY_MAIN_PAGE = ''
+
+# The base template used by devilry. Override for simple theming
 BASE_TEMPLATE = 'devilry/base.django.html'
 
 MEDIA_ICONS_URL = 'media/icons/'

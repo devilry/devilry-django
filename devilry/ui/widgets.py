@@ -84,7 +84,7 @@ class RstEditWidget(forms.Textarea):
         )
         css = {
             'all': [
-                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/skins/markitup/style.css",
+                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/skins/simple/style.css",
                 settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/style.css"
         ]}
 

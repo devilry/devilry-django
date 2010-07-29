@@ -19,7 +19,6 @@
 	font:11px Verdana, Arial, Helvetica, sans-serif;
 }
 .markItUpEditor {
-	font:12px 'Courier New', Courier, monospace;
 	padding:5px;
 	width:690px;
 	height:320px;
@@ -30,6 +29,7 @@
 .markItUpPreviewFrame	{
 	overflow:auto;
 	background-color:#FFF;
+	border: 1px solid #D4D2CE;
 	width:99.9%;
 	height:300px;
 	margin:5px 0;
