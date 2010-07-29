@@ -13,23 +13,11 @@ help:
 	@echo "just to show of Devilry, and it can be changed and extended without"
 	@echo "affecting anything."
 
-test: test-core
-
-test-core:
-	coverage -x manage.py test core
+test:
+	coverage -x manage.py test
 
 html-testreport: test
 	coverage html
-
-create-core-testdata:
-	python manage.py dumpdata auth.user --indent=4 > core/fixtures/tests/core/users.json
-	python manage.py dumpdata core.node --indent=4 > core/fixtures/tests/core/nodes.json
-	python manage.py dumpdata core.subject --indent=4 > core/fixtures/tests/core/subjects.json
-	python manage.py dumpdata core.period --indent=4 > core/fixtures/tests/core/periods.json
-	python manage.py dumpdata core.assignment --indent=4 > core/fixtures/tests/core/assignments.json
-	python manage.py dumpdata core.assignmentgroup --indent=4 > core/fixtures/tests/core/assignmentgroups.json
-	python manage.py dumpdata core.candidate --indent=4 > core/fixtures/tests/core/candidates.json
-	python manage.py dumpdata core.delivery --indent=4 > core/fixtures/tests/core/deliveries.json
 
 cleardb:
 	rm -f db.sqlite3
@@ -38,7 +26,7 @@ cleardb:
 	@echo "Database is now clean."
 	@echo "Use 'python manage.py loaddata' to load fixtures into the empty database. Example:"
 	@echo
-	@echo "   ~# python manage.py loaddata core/fixtures/tests/core/*"
+	@echo "   ~# python manage.py loaddata core/fixtures/tests/core/*.json"
 
 create-exampledata:
 	python manage.py dumpdata core --indent=4 > core/fixtures/exampledata.json
@@ -50,7 +38,5 @@ reset-exampledb:
 	python manage.py loaddata -v0 exampleusers
 	python manage.py loaddata -v0 exampledata
 
-
 clean:
 	coverage erase
-

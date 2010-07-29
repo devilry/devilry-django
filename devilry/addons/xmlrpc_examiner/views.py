@@ -214,9 +214,10 @@ def set_feedback(request, delivery_id, text, format, grade):
         feedback.format = 'txt'
     else:
         feedback.format = format
-    feedback.set_grade_from_xmlrpcstring(grade)
+    ok_message = feedback.set_grade_from_xmlrpcstring(grade)
     feedback.full_clean()
     feedback.save()
+    return ok_message
 
 
 @rpc.rpcdec_login_required('delivery_id, publish',

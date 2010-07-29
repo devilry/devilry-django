@@ -29,10 +29,12 @@ class RstSchemaGrade(GradeModel):
         fields = field.extract_fields(schemadef_document)
 
         grade = text.strip_messages(grade)
-        ok, output = text.validate_input(grade, fields)
-        if not ok:
-            raise ValueError(output)
+        errors, output = text.validate_input(grade, fields)
+        if errors > 0:
+            raise ValueError('Fix the %s errors (marked with' \
+                    'ERROR) in text below:\n\n%s' % (errors, output))
         self.schema = grade
+        return output
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         return self.schema
