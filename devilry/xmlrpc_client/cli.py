@@ -227,10 +227,11 @@ class Command(object):
         server-proxy with SSL-support is created. """
         url = urljoin(self.get_url(), self.urlpath)
         if url.startswith('https'):
-            transport=SafeCookieTransport(self.get_cookiepath())
+            transport=SafeCookieTransport(self.get_cookiepath(),
+                    allow_none=True)
         else:
             transport=CookieTransport(self.get_cookiepath())
-        return ServerProxy(url, transport=transport)
+        return ServerProxy(url, transport=transport, allow_none=True)
 
 
 

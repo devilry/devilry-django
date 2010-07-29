@@ -6,6 +6,9 @@ class RstSchemaGradeForm(forms.ModelForm):
     class Meta:
         model = RstSchemaGrade
         fields = ('schema',)
+        widgets = {
+            'schema': forms.Textarea(attrs={'rows':40, 'cols':70})
+        }
 
 def view(request, delivery_obj):
     return view_shortcut(request, delivery_obj, RstSchemaGrade,

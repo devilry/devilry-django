@@ -210,7 +210,10 @@ def set_feedback(request, delivery_id, text, format, grade):
     except Feedback.DoesNotExist, e:
         feedback = Feedback(delivery=delivery)
     feedback.text = text
-    feedback.format = format
+    if not format and not text:
+        feedback.format = 'txt'
+    else:
+        feedback.format = format
     feedback.set_grade_from_xmlrpcstring(grade)
     feedback.full_clean()
     feedback.save()
