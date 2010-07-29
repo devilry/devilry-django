@@ -154,7 +154,7 @@ class Registry(object):
     def getdefaultkey(self):
         """
         Get the default key (the key defined in the
-        DEVILRY_DEFAULT_GRADEPLUGIN setting.
+        DEVILRY_DEFAULT_GRADEPLUGIN setting).
         """
         return settings.DEVILRY_DEFAULT_GRADEPLUGIN
 
