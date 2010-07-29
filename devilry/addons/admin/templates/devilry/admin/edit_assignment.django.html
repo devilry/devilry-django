@@ -49,9 +49,9 @@
       <th>Candidates</th>
     </tr>
 
-  {% for assignmentgroup in assignment.assignment_groups_where_is_examiner.all %}
+  {% for assignmentgroup in assignmentgroups %}
   <tr>
-    <td>{{ assignmentgroup.name }}</td>
+    <td>{% if assignmentgroup.name %} {{ assignmentgroup.name }} {% endif %}</td>
 	
     <td> 
 	  {% for cand in assignmentgroup.candidates.all %}
