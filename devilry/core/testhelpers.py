@@ -106,10 +106,7 @@ class TestDeliveryStoreMixin(object):
         class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):
             ...
     """
-    fixtures = ['tests/core/users', 'tests/core/nodes', 'tests/core/subjects',
-            'tests/core/periods', 'tests/core/assignments',
-            'tests/core/assignmentgroups', 'tests/core/candidates',
-            'tests/core/deliveries']
+    fixtures = ['tests/core/users.json', 'tests/core/core.json']
 
     def get_storageobj(self):
         """ Return a object implementing
