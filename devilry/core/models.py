@@ -1148,11 +1148,11 @@ class Feedback(models.Model):
         key = self.delivery.assignment_group.parentnode.grade_plugin
         model_cls = gradeplugin.registry.getitem(key).model_cls
         if self.content_object:
-            self.content_object.set_grade_from_xmlrpcstring(grade)
+            self.content_object.set_grade_from_xmlrpcstring(grade, self)
             self.content_object.save()
         else:
             content_object = model_cls()
-            content_object.set_grade_from_xmlrpcstring(grade)
+            content_object.set_grade_from_xmlrpcstring(grade, self)
             content_object.save()
             self.content_object = content_object
 
@@ -1170,14 +1170,12 @@ class Feedback(models.Model):
         """
         return self.content_object.get_grade_as_xmlrpcstring()
         
-
-    def get_gradeplugin_registryitem(self):
-        """ Shortcut for
-        getting the assignment (delivery.assignment_group.parentnode), and
-        calling :meth:`Assignment.get_gradeplugin_registryitem`.
+    def get_assignment(self):
         """
-        assignment = self.delivery.assignment_group.parentnode
-        return assignment.get_gradeplugin_registryitem()
+        Shortcut for getting the assignment
+        (``delivery.assignment_group.parentnode``).
+        """
+        return self.delivery.assignment_group.parentnode
 
     def clean(self, *args, **kwargs):
         """Validate the Feedback, making sure it does not do something stupid.
@@ -1197,7 +1195,7 @@ class Feedback(models.Model):
         #    raise ValidationError(_('A node can not be it\'s own parent.'))
         assignment = self.delivery.assignment_group.parentnode
         try:
-            ri = self.get_gradeplugin_registryitem()
+            ri = self.get_assignment().get_gradeplugin_registryitem()
         except KeyError, e:
             raise ValidationError(_(
                 'The assignment, %s, has a invalid grade-plugin. Contact ' \

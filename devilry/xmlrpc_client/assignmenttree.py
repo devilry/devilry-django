@@ -86,12 +86,14 @@ class Info(object):
 
     def set(self, key, value):
         """ Set a value. """
-        self.cfg.set(self.sectionname, key, value)
+        if value == None:
+            value = ''
+        self.cfg.set(self.sectionname, key, str(value))
 
     def setmany(self, **values):
         """ Set many values. """
         for key, value in values.iteritems():
-            self.set(key, str(value))
+            self.set(key, value)
 
     def get(self, key):
         """ Get a value. """

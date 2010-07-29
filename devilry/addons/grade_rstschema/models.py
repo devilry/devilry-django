@@ -5,19 +5,18 @@ from devilry.core.models import Assignment
 
 
 class RstSchemaDefinition(models.Model):
-    assignment = models.OneToOneField(Assignment, primary_key=True,
-            unique=True)
+    assignment = models.OneToOneField(Assignment, primary_key=True)
     schemadef = models.TextField()
 
 
 class RstSchemaGrade(GradeModel):
     schema = models.TextField()
 
-    def get_short_string(self):
+    def get_short_string(self, feedback_obj):
         return "TODO"
 
-    def set_grade_from_xmlrpcstring(self, grade):
+    def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         self.schema = grade
 
-    def get_grade_as_xmlrpcstring(self):
+    def get_grade_as_xmlrpcstring(self, feedback_obj):
         return self.schema

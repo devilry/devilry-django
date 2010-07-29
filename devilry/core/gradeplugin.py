@@ -50,34 +50,51 @@ class XmlrpcGradeConf(object):
 
 
 class GradeModel(models.Model):
-    def get_short_string(self):
+    def get_short_string(self, feedback_obj):
         """ Return a string representation of the grade suitable for
-        short one-line display. This method is required. """
+        short one-line display. This method is required.
+        
+        :param feedback_obj:
+            The :class:`devilry.core.models.Feedback` using this
+            grade-object.
+        """
         raise NotImplementedError()
 
-    def get_long_string(self):
+    def get_long_string(self, feedback_obj):
         """
         Return a string representation of the grade which might span
         multiple lines. The string must be formatted with restructured text.
+        
+        :param feedback_obj:
+            The :class:`devilry.core.models.Feedback` using this
+            grade-object.
         """
         raise NotImplementedError()
 
-    def get_grade_as_xmlrpcstring(self):
+    def get_grade_as_xmlrpcstring(self, feedback_obj):
         """
         Get the grade from a string compatible with
         :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for
         xmlrpc, and a grade-plugin is not required to support it. If
         unsupported, just do not override it, and it will default to raising
         :exc:`NotImplementedError`, which the core and xmlrpc handles.
+        
+        :param feedback_obj:
+            The :class:`devilry.core.models.Feedback` using this
+            grade-object.
         """
         raise NotImplementedError()
 
-    def set_grade_from_xmlrpcstring(self, grade):
+    def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         """
         Set the grade from string. This is primarly intended for xmlrpc, and
         a grade-plugin is not required to support it. If unsupported, just
         do not override it, and it will default to raising
         :exc:`NotImplementedError`, which the core and xmlrpc handles.
+
+        :param feedback_obj:
+            The :class:`devilry.core.models.Feedback` using this
+            grade-object.
         """
         raise NotImplementedError()
 

@@ -16,7 +16,7 @@ class Entry(models.Model):
 
 
 class SchemaGradeResults(GradeModel):
-    def get_short_string(self):
+    def get_short_string(self, feedback_obj):
         return unicode(self.result_set.count())
     
 
