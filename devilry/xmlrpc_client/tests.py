@@ -12,7 +12,7 @@ from django.test.client import Client
 
 from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
 from devilry.core.testhelpers import create_from_path
-from devilry.core.models import Delivery, AssignmentGroup
+import devilry.core.models
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 from assignmenttree import AssignmentSync, Info, join_dirname_id
@@ -184,7 +184,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
                 'uio.ifi:inf1100.looong.oblig1.student2,student3')
         assignmentgroup.examiners.add(self.examiner1)
         assignmentgroup.save()
-        delivery = Delivery.begin(assignmentgroup, self.student2)
+        delivery = devilry.core.models.Delivery.begin(assignmentgroup, self.student2)
         delivery.finish()
         self.sync()
         dircontent = os.listdir(self.folder)
@@ -227,8 +227,8 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
                 '2010-06-19 14:47:29')
 
     def test_namecrash(self):
-        assignmentgroup = AssignmentGroup.objects.get(id=1)
-        delivery = Delivery.begin(assignmentgroup, self.student2)
+        assignmentgroup = devilry.core.models.AssignmentGroup.objects.get(id=1)
+        delivery = devilry.core.models.Delivery.begin(assignmentgroup, self.student2)
         delivery.finish()
         delivery.time_of_delivery = datetime(2010, 6, 19, 14, 47, 29)
         delivery.save()
@@ -249,11 +249,11 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
                 join_dirname_id('2010-06-19_14.47.29', delivery.id)])
 
     def test_feedback(self):
-        delivery = Delivery.objects.get(id=1)
+        delivery = devilry.core.models.Delivery.objects.get(id=1)
         f = delivery.get_feedback()
         f.text = 'test'
         f.published = True
-        f.set_grade_from_string('+')
+        f.set_grade_from_xmlrpcstring('+')
         f.save()
         self.sync()
 
@@ -425,73 +425,85 @@ class TestSync(TestCommandBase):
 
 class TestFeedback(TestCommandBase):
 
+    def setUp(self):
+        super(TestFeedback, self).setUp()
+        self.login('examiner1')
+        self.sync()
+        self.reset_log()
+        self.deliverypath = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
+            '2010-06-19_14.47.29')
+        deliveryinfo = Info.read_open(self.deliverypath, 'Delivery')
+        self.delivery = devilry.core.models.Delivery.objects.get(
+                id = deliveryinfo.get_id())
+
     def sync(self):
         Sync = self.create_commandcls(examinercmd.Sync)
         s = Sync()
         s.cli([])
 
     def test_feedback_wrongcwd(self):
-        self.login('examiner1')
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
         self.assertRaises(SystemExit, f.cli, [])
         self.assertEquals(self.logdata.getvalue().strip(),
-                'INFO:Login successful\n' \
                 'ERROR:You are not in a delivery-directory.')
 
     def test_feedback_wrongdirarg(self):
-        self.login('examiner1')
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
         self.assertRaises(SystemExit, f.cli, [''])
         self.assertEquals(self.logdata.getvalue().strip(),
-                'INFO:Login successful\n' \
                 'ERROR:The given directory is not a delivery-directory.')
 
     def test_feedback(self):
-        self.login('examiner1')
-        self.sync()
-        self.reset_log()
+        self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
+                lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
-        path = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
-            '2010-06-19_14.47.29')
-        f.cli(['-g', '+', '-t', 'ok', path])
+        f.cli(['-g', '+', '-t', 'ok', self.deliverypath])
         self.assertEquals(self.logdata.getvalue().strip(),
                 'DEBUG:Feedback found in commandline argument -t.\n' \
                 'INFO:Feedback successfully saved.')
+        self.assertEquals(self.delivery.feedback.text, 'ok')
+        self.assertEquals(self.delivery.feedback.format, 'rst')
+        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
+                'Approved')
 
     def test_feedback_from_rstfile(self):
-        self.login('examiner1')
-        self.sync()
-        self.reset_log()
+        self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
+                lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
-        path = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
-            '2010-06-19_14.47.29')
-        open(os.path.join(path, 'feedback.rst'), 'wb').write('ok')
-        f.cli(['-g', '+', path])
+        open(os.path.join(self.deliverypath, 'feedback.rst'), 'wb').write('ok')
+        f.cli(['-g', '+', self.deliverypath])
+
         logvalue = self.logdata.getvalue().strip()
         self.assertEquals(logvalue,
             'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
             'INFO:Found feedback in file feedback.rst.\n' \
-            'INFO:Feedback format: restructuredtext.\n' \
+            'INFO:Feedback format: rst.\n' \
             'INFO:Feedback successfully saved.')
+        self.assertEquals(self.delivery.feedback.text, 'ok')
+        self.assertEquals(self.delivery.feedback.format, 'rst')
+        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
+                'Approved')
 
     def test_feedback_from_txtfile(self):
-        self.login('examiner1')
-        self.sync()
-        self.reset_log()
+        self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
+                lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
-        f = Feedback()
-        path = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
-            '2010-06-19_14.47.29')
-        open(os.path.join(path, 'feedback.txt'), 'wb').write('ok')
-        f.cli(['-g', '+', path])
+        feedback = Feedback()
+        open(os.path.join(self.deliverypath, 'feedback.txt'), 'wb').write('ok')
+        feedback.cli(['-g', '+', self.deliverypath])
+
         logvalue = self.logdata.getvalue().strip()
         self.assertEquals(logvalue,
             'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
             'DEBUG:Did not find feedback in file feedback.rst. Trying file feedback.txt\n' \
             'INFO:Found feedback in file feedback.txt.\n' \
-            'INFO:Feedback format: text.\n' \
+            'INFO:Feedback format: txt.\n' \
             'INFO:Feedback successfully saved.')
+        self.assertEquals(self.delivery.feedback.text, 'ok')
+        self.assertEquals(self.delivery.feedback.format, 'txt')
+        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
+                'Approved')

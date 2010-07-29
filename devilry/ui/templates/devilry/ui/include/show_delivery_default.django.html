@@ -33,7 +33,7 @@
   {% if delivery.feedback %}
     <tr>
       <th>{% trans "Grade" %}</th>
-      <td> {{ delivery.feedback.get_grade }} </td>
+      <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
     </tr>
   {% endif %}
 

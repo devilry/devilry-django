@@ -1,17 +1,19 @@
-{% extends "devilry/admin/bulkcreate_assignmentgroups_base.django.html" %}
+{% extends "devilry/admin/gradeplugin_base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
+
 {% block main %}
-<form method='post' action='{% url devilry-admin-create_assignmentgroups assignment.id %}'>
+
+<form method='post' action='{% url devilry-grade_rstschema-edit_schema schema.assignment.id %}'>
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
-
   <div class='submit-row'>
     <div class='submit-row-right'>
-      <input type='submit' name='next' value='{% trans "Next" %}'/>
+      <input type='submit' name='save' value='{% trans "Save" %}'/>
     </div>
   </div>
 </form>
+
 {% endblock %}

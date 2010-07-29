@@ -26,10 +26,10 @@
     <td>{{ assignment_group.get_status }}</td>
   </tr>
 
-  {% if assignment_group.get_grade %}
+  {% if assignment_group.get_grade_as_short_string %}
   <tr>
     <th>{% trans "Grade" %}:</th>
-    <td>{{ assignment_group.get_grade }}</td>
+    <td>{{ assignment_group.get_grade_as_short_string }}</td>
   </tr> 
   {% endif %}
 

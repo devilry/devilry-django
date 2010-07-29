@@ -17,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 from deliverystore import load_deliverystore_backend, FileNotFoundError
-import gradeplugin_registry
+import gradeplugin
 
 
 
@@ -492,12 +492,12 @@ class Assignment(models.Model, BaseNode):
 
         A django.db.models.CharField_ that holds the key of the current
         grade-plugin. More info on grade-plugins
-        :ref:`here <ref-devilry.core.gradeplugin_registry>`.
+        :ref:`here <ref-devilry.core.gradeplugin>`.
 
     .. attribute:: assignmentgroups
 
         A set of the assignmentgroups for this assignment.
-       """
+    """
 
     class Meta:
         verbose_name = _('Assignment')
@@ -511,14 +511,14 @@ class Assignment(models.Model, BaseNode):
     anonymous = models.BooleanField(default=False)
     admins = models.ManyToManyField(User, blank=True)
     grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
-            choices=gradeplugin_registry.RegistryIterator(),
-            default=gradeplugin_registry.getdefaultkey())
+            choices=gradeplugin.registry,
+            default=gradeplugin.registry.getdefaultkey())
 
 
     def get_gradeplugin_registryitem(self):
-        """ Get the :class:`devilry.core.gradeplugin_registry.RegistryItem`
+        """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
         for the current :attr:`grade_plugin`. """
-        return gradeplugin_registry.getitem(self.grade_plugin)
+        return gradeplugin.registry.getitem(self.grade_plugin)
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -888,7 +888,7 @@ class AssignmentGroup(models.Model, CommonInterface):
             else:
                 return _('Corrected')
 
-    def get_grade(self):
+    def get_grade_as_short_string(self):
         if self.deliveries.all().count() == 0:
             return None
         else:
@@ -897,8 +897,7 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return None
             else:
                 return qry.annotate(
-                        models.Max('time_of_delivery'))[0].feedback.get_grade()
-
+                        models.Max('time_of_delivery'))[0].feedback.get_grade_as_short_string()
 
     def get_number_of_deliveries(self):
         return self.deliveries.all().count()
@@ -1086,11 +1085,11 @@ class Feedback(models.Model):
        A django.db.models.CharField_ that holds the format of the feedback
        text. Valid values are:
 
-           ``"restructuredtext"``
-               Format feedback as restructured text.
+           ``"rst"``
+               Format feedback using restructured text.
 
            ``"text"``
-               No text formatting.
+               Plain text - no text formatting.
 
     .. attribute:: published
 
@@ -1104,18 +1103,20 @@ class Feedback(models.Model):
        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
        be given feedback.
 
-    .. attribute:: content_object
+    .. attribute:: grade
     
        A generic relation
        (django.contrib.contenttypes.generic.GenericForeignKey) to the
-       grade-plugin object storing the grade for this feedback. The
+       grade-plugin object storing the grade for this feedback. This will
+       always be a subclass of
+       :class:`devilry.core.gradeplugin.GradeModel`. The
        :meth:`clean`-method checks that this points to a class of the type
        defined in :attr:`Assignment.grade_plugin`.
     """
 
     text_formats = (
-       ('restructuredtext', 'ReStructured Text'),
-       ('text', 'Text'),
+       ('rst', 'ReStructured Text'),
+       ('txt', 'Text'),
     )
     text = models.TextField(blank=True, null=True, default='')
     format = models.CharField(max_length=20, choices=text_formats,
@@ -1125,47 +1126,65 @@ class Feedback(models.Model):
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    grade = generic.GenericForeignKey('content_type', 'object_id')
 
-    def get_grade(self):
-        """ Get the grade as a string. """
-        return unicode(self.content_object)
+    def get_grade_as_short_string(self):
+        """
+        Get the grade as a short string suitable for short one-line
+        display.
+        """
+        return self.grade.get_grade_as_short_string(self)
 
-    def set_grade_from_string(self, grade):
-        """ Set the grade from string. This is primarly intended for xmlrpc,
-        and a grade-plugin is not
-        required to support it.
+    def get_grade_as_long_string(self):
+        """
+        Get the grade as a longer string formatted with restructured
+        text.
+        """
+        return self.grade.get_grade_as_long_string(self)
+
+    def set_grade_from_xmlrpcstring(self, grade):
+        """
+        Set the grade from string. This is primarly intended for xmlrpc, and
+        a grade-plugin is not required to support it.
         
         Raises :exc:`NotImplementedError` if the grade-plugin do not support
-        setting grades from string. The error message in the exception is
-        suited for direct display to the user.
+        setting grades from string.
 
         Raises :exc:`ValueError` if the grade-plugin given grade is invalid
         for this grade-plugin. The error message in the exception is suited
         for direct display to the user.
         """
         key = self.delivery.assignment_group.parentnode.grade_plugin
-        model_cls = gradeplugin_registry.getitem(key).model_cls
-        if hasattr(model_cls, 'set_grade_from_string'):
-            if self.content_object:
-                self.content_object.set_grade_from_string(grade)
-                self.content_object.save()
-            else:
-                content_object = model_cls()
-                content_object.set_grade_from_string(grade)
-                content_object.save()
-                self.content_object = content_object
+        model_cls = gradeplugin.registry.getitem(key).model_cls
+        if self.grade:
+            self.grade.set_grade_from_xmlrpcstring(grade, self)
+            self.grade.save()
         else:
-            raise NotImplementedError('Setting grade from string is not ' \
-                    'supported for this assignment.')
+            gradeobj = model_cls()
+            gradeobj.set_grade_from_xmlrpcstring(grade, self)
+            gradeobj.save()
+            self.grade = gradeobj
 
-    def get_gradeplugin_registryitem(self):
-        """ Shortcut for
-        getting the assignment (delivery.assignment_group.parentnode), and
-        calling :meth:`Assignment.get_gradeplugin_registryitem`.
+    def get_grade_as_xmlrpcstring(self):
         """
-        assignment = self.delivery.assignment_group.parentnode
-        return assignment.get_gradeplugin_registryitem()
+        Get the grade as a string compatible with
+        :meth:`set_grade_from_string`. This is primarly intended for xmlrpc,
+        and a grade-plugin is not required to support it.
+
+        If you need a simple string representation, use :meth:`get_grade_as_short_string`
+        instead.
+
+        Raises :exc:`NotImplementedError` if the grade-plugin do not support
+        getting grades as string.
+        """
+        return self.grade.get_grade_as_xmlrpcstring()
+        
+    def get_assignment(self):
+        """
+        Shortcut for getting the assignment
+        (``delivery.assignment_group.parentnode``).
+        """
+        return self.delivery.assignment_group.parentnode
 
     def clean(self, *args, **kwargs):
         """Validate the Feedback, making sure it does not do something stupid.
@@ -1175,9 +1194,9 @@ class Feedback(models.Model):
 
         Raises ValidationError if:
 
-            - :attr:`content_object` is not a instance of the model-class
+            - :attr:`grade` is not a instance of the model-class
               defined in
-              :attr:`devilry.core.gradeplugin_registry.RegistryItem.model_cls`
+              :attr:`devilry.core.gradeplugin.RegistryItem.model_cls`
               referred by :attr:`Assignment.grade_plugin`.
             - The node is the child of itself or one of its childnodes.
         """
@@ -1185,14 +1204,14 @@ class Feedback(models.Model):
         #    raise ValidationError(_('A node can not be it\'s own parent.'))
         assignment = self.delivery.assignment_group.parentnode
         try:
-            ri = self.get_gradeplugin_registryitem()
+            ri = self.get_assignment().get_gradeplugin_registryitem()
         except KeyError, e:
             raise ValidationError(_(
                 'The assignment, %s, has a invalid grade-plugin. Contact ' \
                 'the system administrators to get this fixed.' %
                 assignment))
         else:
-            if not isinstance(self.content_object, ri.model_cls):
+            if not isinstance(self.grade, ri.model_cls):
                 raise ValidationError(_(
                     'Grade-plugin on feedback must be "%s", as on the ' \
                     'assignment, %s.' % (i.label, assignment)))

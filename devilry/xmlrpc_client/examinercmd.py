@@ -79,8 +79,8 @@ class Feedback(ExaminerCommand):
         self.op.add_option("-g", "--grade", metavar="GRADE",
             dest="grade", default=None, help='Grade.')
         self.op.add_option("-f", "--feedback-format",
-            metavar="restructuredtext|text", dest="format",
-            default='restructuredtext', help='Feedback format.')
+            metavar="rst|txt", dest="format",
+            default='rst', help='Feedback format.')
 
     def direrror(self):
         if len(self.args) > 0:
@@ -93,21 +93,28 @@ class Feedback(ExaminerCommand):
         self.read_config()
 
         if len(self.args) > 0:
-            path = self.args[0]
+            path = os.path.abspath(os.path.normpath(self.args[0]))
         else:
-            path = os.getcwd()
+            path = os.path.abspath(os.getcwd())
         try:
-            info = self.get_info(path, 'Delivery')
+            info = Info.read_open(path, 'Delivery')
         except Info.FileWrongTypeError, e:
             self.direrror()
         except Info.FileDoesNotExistError, e:
             self.direrror()
 
-        grade = self.opt.grade
-        if not grade:
-            log.error('A grade is required. See --help for more info.')
-            raise SystemExit()
-        server = self.get_serverproxy()
+        groupdir = os.path.dirname(path)
+        assignmentdir = os.path.dirname(groupdir)
+        assignmentinfo = Info.read_open(assignmentdir, 'Assignment')
+        gradeconf_filename = assignmentinfo.get('gradeconf_filename')
+        if gradeconf_filename:
+            gradeconf_help = assignmentinfo.get('gradeconf_help')
+            grade = open(gradeconf_filename, 'rb').read()
+        else:
+            grade = self.opt.grade
+            if not grade:
+                log.error('A grade is required. See --help for more info.')
+                raise SystemExit()
 
         # Get feedback text from arguments or file.
         text = self.opt.text
@@ -123,7 +130,7 @@ class Feedback(ExaminerCommand):
             if os.path.isfile(fn):
                 log.info('Found feedback in file feedback.rst.')
                 text = open(fn, 'rb').read()
-                format = 'restructuredtext'
+                format = 'rst'
             else:
                 fn = filenamebase + '.txt'
                 log.debug('Did not find feedback in file feedback.rst. ' \
@@ -131,7 +138,7 @@ class Feedback(ExaminerCommand):
                 if os.path.isfile(fn):
                     log.info('Found feedback in file feedback.txt.')
                     text = open(fn, 'rb').read()
-                    format = 'text'
+                    format = 'txt'
                 else:
                     log.info('No feedback text found in commandline ' \
                             'argument -t, feedback.rst or feedback.txt. ' \
@@ -139,6 +146,7 @@ class Feedback(ExaminerCommand):
             if text:
                 log.info('Feedback format: %s.' % format)
 
+        server = self.get_serverproxy()
         try:
             server.set_feedback(info.get_id(), text,
                     format, grade)

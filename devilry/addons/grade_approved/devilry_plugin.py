@@ -1,15 +1,15 @@
 from django.utils.translation import ugettext as _
 from models import ApprovedGrade
 
-from devilry.xmlrpc.gradeconf import GradeConf
-from devilry.core import gradeplugin_registry
+from devilry.core import gradeplugin
 
 from gradeviews import view
 
 
-gradeplugin_registry.register(
+gradeplugin.registry.register(gradeplugin.RegistryItem(
         view = view,
-        xmlrpc_gradeconf = GradeConf(),
+        xmlrpc_gradeconf = gradeplugin.XmlrpcGradeConf(),
         model_cls = ApprovedGrade,
         label = _('Approved/not approved'),
-        description = _('Examiners either approves or disapproves a delivery.'))
+        description = _('Examiners either approves or disapproves a delivery.')
+))

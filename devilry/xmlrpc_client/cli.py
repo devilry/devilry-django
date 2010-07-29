@@ -162,18 +162,8 @@ class Command(object):
         """ Get path to the log-file. """
         return os.path.join(self.get_configdir(), 'everything.log')
 
-    def get_info(self, dirpath, typename):
-        """ Get id from the file name ``idfilename`` in the
-        ``dirpath``-directory.
-        
-        Raises :exc:`IdFileNotFoundError` if the file cannot be found.
-
-        Raises :exc:`ValueError` if the contents of the id-file can not be
-        converted to int.
-        """
-        return Info.read_open(dirpath, typename)
-
     def configure_loghandlers(self, loglevel):
+        """ Configure log handling. """
         console = logging.StreamHandler()
         formatter = logging.Formatter("%(message)s")
         console.setFormatter(formatter)
@@ -181,14 +171,19 @@ class Command(object):
         log.addHandler(console)
 
         # Keep 10mb of complete logs, in files of 1mb
-        f = logging.handlers.RotatingFileHandler(self.get_logfilepath(),
-                maxBytes=2**20,
-                backupCount=10)
-        formatter = logging.Formatter(
-                "%(asctime)s: %(levelname)s: %(message)s")
-        f.setFormatter(formatter)
-        f.setLevel(logging.DEBUG)
-        log.addHandler(f)
+        try:
+            logfile = self.get_logfilepath()
+        except Command.NotInDevilryDirError:
+            pass
+        else:
+            f = logging.handlers.RotatingFileHandler(logfile,
+                    maxBytes=2**20,
+                    backupCount=10)
+            formatter = logging.Formatter(
+                    "%(asctime)s: %(levelname)s: %(message)s")
+            f.setFormatter(formatter)
+            f.setLevel(logging.DEBUG)
+            log.addHandler(f)
 
 
     def cli(self, argv):
@@ -232,10 +227,11 @@ class Command(object):
         server-proxy with SSL-support is created. """
         url = urljoin(self.get_url(), self.urlpath)
         if url.startswith('https'):
-            transport=SafeCookieTransport(self.get_cookiepath())
+            transport=SafeCookieTransport(self.get_cookiepath(),
+                    allow_none=True)
         else:
             transport=CookieTransport(self.get_cookiepath())
-        return ServerProxy(url, transport=transport)
+        return ServerProxy(url, transport=transport, allow_none=True)
 
 
 

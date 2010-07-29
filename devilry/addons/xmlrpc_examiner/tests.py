@@ -36,7 +36,8 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(o1['long_name'], oblig1.long_name)
         self.assertEquals(o1['path'], oblig1.get_path())
         self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
-        self.assertEquals(o1['xmlrpc_gradeconf'], False)
+        self.assertEquals(o1['xmlrpc_gradeconf'],
+                {'default_filecontents': None, 'help': None, 'filename': None})
 
         future = datetime.now() + timedelta(10)
         oldone = Assignment.objects.get(id=3)
@@ -90,12 +91,12 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         d.finish()
         self.assertLoginRequired(self.s.set_feedback, d.pk)
         self.login(self.client, 'examiner1')
-        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         feedback = Delivery.objects.get(pk=3).feedback
         self.assertEquals(feedback.text, 'test')
-        self.assertEquals(feedback.format, 'text')
+        self.assertEquals(feedback.format, 'txt')
         self.assertFault(1, self.s.set_feedback,
-                d.pk, 'test', 'text', 'invalid-grade')
+                d.pk, 'test', 'txt', 'invalid-grade')
         self.assertFault(3, self.s.set_feedback,
                 d.pk, 'test', 'invalid-format', 'approved')
 
@@ -105,7 +106,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         d.finish()
         self.assertLoginRequired(self.s.set_feedback, d.pk)
         self.login(self.client, 'examiner1')
-        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         self.s.set_feedback_published(d.pk, True)
         feedback = Delivery.objects.get(pk=3).feedback
         self.assertTrue(feedback.published)
@@ -117,10 +118,10 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertLoginRequired(self.s.get_feedback, d.pk)
         self.login(self.client, 'examiner1')
         self.assertFault(404, self.s.get_feedback, d.pk)
-        self.s.set_feedback(d.pk, 'test', 'text', 'approved')
+        self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         f = self.s.get_feedback(d.pk)
         self.assertEquals(f['text'], 'test')
-        self.assertEquals(f['format'], 'text')
+        self.assertEquals(f['format'], 'txt')
         self.assertFalse(f['published'])
         self.s.set_feedback_published(d.pk, True)
         f = self.s.get_feedback(d.pk)

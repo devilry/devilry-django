@@ -27,7 +27,7 @@ def edit_schema(request, assignment_id, messages=None):
         return HttpResponseForbidden("Forbidden")
 
     try:
-        schema = SchemaGrade.objects.get(pk=assignment_id)
+        schema = SchemaGrade.objects.get(assignment=assignment_id)
     except SchemaGrade.DoesNotExist, e:
         schema = SchemaGrade(assignment=assignment)
         schema.save()

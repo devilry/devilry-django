@@ -19,13 +19,13 @@ def view(request, delivery_obj):
 
     feedback_form = feedback_view.parse_feedback_form(request, delivery_obj)
     feedback_obj = feedback_form.instance
-    if feedback_obj.content_object:
-        schemagrade_results_obj = feedback_obj.content_object
+    if feedback_obj.grade:
+        schemagrade_results_obj = feedback_obj.grade
     else:
         # Create the feedback and all initial results on first view.
         schemagrade_results_obj = SchemaGradeResults()
         schemagrade_results_obj.save()
-        feedback_obj.content_object = schemagrade_results_obj
+        feedback_obj.grade = schemagrade_results_obj
         feedback_obj.save()
         schemagrade = delivery_obj.assignment_group.parentnode.schemagrade
         for entry in schemagrade.entry_set.all():
@@ -41,7 +41,7 @@ def view(request, delivery_obj):
     if request.method == 'POST':
         if feedback_form.is_valid() and grade_form.is_valid():
             grade_form.save()
-            feedback_form.instance.content_object = grade_form.instance
+            feedback_form.instance.grade = grade_form.instance
             feedback_form.save()
             return feedback_view.redirect_after_successful_save(delivery_obj)
 

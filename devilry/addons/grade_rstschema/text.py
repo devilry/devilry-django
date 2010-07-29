@@ -6,7 +6,7 @@ def validate_input(text, fields):
     for i, m in enumerate(re.finditer(r"\[\[\[\s*(.*?)\s*\]\]\]", text)):
         value = m.group(1)
         field = fields[i]
-        print text[offset+m.start():offset+m.end()]
+        #print text[offset+m.start():offset+m.end()]
         try:
             points = field.spec.validate(value)
             msg = ' {POINTS: %d}' % points
@@ -19,7 +19,11 @@ def validate_input(text, fields):
 def strip_messages(text):
     return re.sub(r"\s*\{(?:POINTS|ERROR):[^}]*?\}", "", text, re.DOTALL)
 
+def normalize_newlines(s):
+    return s.replace('\r\n', '\n').replace('\r', '\n')
+
 def examiner_format(rst):
+    rst = normalize_newlines(rst)
     r = re.sub(
             r"\n\n\.\. field::\s+(\S+)\s+:default:\s*(\S+).*",
             r" [\1]\n[[[ \2 ]]]",

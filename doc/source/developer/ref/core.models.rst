@@ -86,7 +86,7 @@ but as shown above it can be anything you want.
 .. autoclass:: devilry.core.models.Delivery
 
 
-Feeback
+Feedback
 #########################################################
 
 .. autoclass:: devilry.core.models.Feedback

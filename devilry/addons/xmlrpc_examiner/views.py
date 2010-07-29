@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden, Http404
 
-from devilry.core import gradeplugin_registry
+from devilry.core import gradeplugin
 from devilry.core.models import Assignment, AssignmentGroup, Delivery, \
     Feedback
 from devilry.xmlrpc import XmlRpc
@@ -42,19 +42,23 @@ def list_active_assignments(request):
                     help
                         Help for the grade format.
 
-                    isfile
-                        True if the grade is set using a file, False
-                        otherwise.
-
                     filename
-                        The filename if ``isfile`` is True.
+                        The filename. If a file is not required, no filename
+                        is given. Note that this is only a hint to the
+                        xmlrpc, and might be ignored.
+
+                    default_filecontents
+                        The reccommended default contents of the grade-file.
     """
     assignments = Assignment.active_where_is_examiner(request.user)
 
-    def xmlrpc_gradeconf(a):
-        key = a.grade_plugin
-        c = gradeplugin_registry.getitem(key)
-        return c.xmlrpc_gradeconf or False
+    def xmlrpc_gradeconf(assignment):
+        key = assignment.grade_plugin
+        ri = gradeplugin.registry.getitem(key)
+        if ri.xmlrpc_gradeconf:
+            return ri.xmlrpc_gradeconf.as_dict(assignment)
+        else:
+            return False
     result = [{
             'id': a.id,
             'short_name': a.short_name,
@@ -160,7 +164,7 @@ def get_feedback(request, delivery_id):
             The feedback text.
         format
             The feedback format. Will always be one of:
-            ``"restructuredtext"`` or ``"text"``.
+            ``"rst"`` or ``"txt"``.
         published
             True if the feedback is published, false otherwise.
 
@@ -191,7 +195,7 @@ def set_feedback(request, delivery_id, text, format, grade):
     :param text:
         Feedback text.
     :param format:
-        Feedback format. Valid values: ``"restructuredtext"`` or ``"text"``.
+        Feedback format. Valid values: ``"rst"`` or ``"txt"``.
     :param grade:
         The grade as a string. The exact format of this value is determined
         by the grade-plugin.
@@ -206,8 +210,11 @@ def set_feedback(request, delivery_id, text, format, grade):
     except Feedback.DoesNotExist, e:
         feedback = Feedback(delivery=delivery)
     feedback.text = text
-    feedback.format = format
-    feedback.set_grade_from_string(grade)
+    if not format and not text:
+        feedback.format = 'txt'
+    else:
+        feedback.format = format
+    feedback.set_grade_from_xmlrpcstring(grade)
     feedback.full_clean()
     feedback.save()
 

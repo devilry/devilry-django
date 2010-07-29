@@ -8,5 +8,4 @@ API reference
     core.models
     core.utils
     core.deliverystore
-    core.gradeplugin_registry
     xmlrpc

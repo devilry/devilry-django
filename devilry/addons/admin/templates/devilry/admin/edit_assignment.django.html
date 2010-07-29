@@ -2,15 +2,21 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{{ title }}{% endblock %}
-{% block heading %}{{ title }}{% endblock %}
+{% block title %}{% trans "Assignments" %}{% endblock %}
+{% block heading %}
+    {% if isnew %}{% trans "Create" %}{% else %}{% trans "Edit" %}{% endif %}
+    assignment
+{% endblock %}
 
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='../'>{{ model_plural_name|capfirst }}</a></li>
+  <li><a href='../'>{% trans "Assignments" %}</a></li>
   <li>::</li>
-  <li>{{ title }}</li>
+  <li>
+    {% if isnew %}{% trans "Create" %}{% else %}{% trans "Edit" %}{% endif %}
+    assignment
+  </li>
 {% endblock %}
 
 {% block main %}
@@ -20,11 +26,9 @@
 {% endif %}
 
 <form method='post' action='{{ post_url }}'>
-  {% with nodeform as form %}
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
-  {% endwith %}
   <div class='submit-row'>
     <div class='submit-row-right'>
       <input type='submit' name='save' value='{% trans "Save" %}'/>
@@ -35,14 +39,15 @@
   </div>
 </form>
 
-<a href='{{ create_assignmentgroup_url }}'> Create assignmentgroups </a>
 
+{% if not isnew %}
+  <a href='{% url devilry-admin-create_assignmentgroups assignment.id %}'>Create assignmentgroups</a>
 
-<table border="1">
-<tr>
-<th>Name</th>
-<th>Candidates</th>
-</tr>
+  <table border="1">
+    <tr>
+      <th>Name</th>
+      <th>Candidates</th>
+    </tr>
 
   {% for assignmentgroup in assignment.assignment_groups_where_is_examiner.all %}
   <tr>
@@ -61,4 +66,5 @@
   </tr>
   {% endfor %}
 </table>
+{% endif %}
 {% endblock %}

@@ -31,8 +31,8 @@
 	{% for assignment_group in period %}
     <li><a href='{% url devilry-examiner-show_assignment-group assignment_group.id %}'>{{ assignment_group.parentnode.short_name }}</a> 
 	  
-	  {% if assignment_group.get_grade %}
-	  ({{ assignment_group.get_grade }})
+	  {% if assignment_group.get_grade_as_short_string %}
+	  ({{ assignment_group.get_grade_as_short_string }})
 	  {% else %}
 	  ({{ assignment_group.get_status }})
 	  {% endif %}
