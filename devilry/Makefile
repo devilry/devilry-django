@@ -38,5 +38,11 @@ reset-exampledb:
 	python manage.py loaddata -v0 exampleusers
 	python manage.py loaddata -v0 exampledata
 
+selenium-test: cleardb
+	python manage.py loaddata -v0 addons/student/fixtures/exampleusers.json
+	python manage.py loaddata -v0 addons/student/fixtures/exampledata.json
+	export DJANGO_SETTINGS_MODULE=devilry.settings
+	python addons/student/seleniumtests.py
+
 clean:
 	coverage erase

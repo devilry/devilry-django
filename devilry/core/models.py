@@ -622,6 +622,20 @@ class Assignment(models.Model, BaseNode):
             Q(examiners=user_obj) |
             Q(parentnode__admins=user_obj))
     
+    def assignment_groups_where_is_examiner_or_admin(self, user_obj):
+        """ Get all assignment groups within this assignment where the given
+        ``user_obj`` is examiner or is admin.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return self.assignmentgroups.filter(
+            Q(examiners=user_obj) |
+            Q(parentnode__admins=user_obj) |
+            Q(parentnode__parentnode__admins=user_obj) |
+            Q(parentnode__parentnode__parentnode__admins=user_obj) |
+            Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
+            
     def clean(self, *args, **kwargs):
         """Validate the assignment.
 

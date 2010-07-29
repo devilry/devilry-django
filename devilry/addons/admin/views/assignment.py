@@ -74,12 +74,9 @@ def edit_assignment(request, assignment_id=None, successful_save=False):
     else:
         form = Form(instance=assignment)
         
-    assignmentgroups = assignment.assignment_groups_where_is_examiner(request.user)
-        
     return render_to_response('devilry/admin/edit_assignment.django.html', {
         'form': form,
         'assignment': assignment,
-        'assignmentgroups': assignmentgroups,
         'messages': messages,
         'isnew': isnew,
         }, context_instance=RequestContext(request))
