@@ -53,8 +53,8 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
     """
     feedback_form = parse_feedback_form(request, delivery_obj)
     feedback_obj = feedback_form.instance
-    if feedback_obj.content_object:
-        grade_obj = feedback_obj.content_object
+    if feedback_obj.grade:
+        grade_obj = feedback_obj.grade
     else:
         grade_obj = grade_model_cls()
 
@@ -66,7 +66,7 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
     if request.method == 'POST':
         if feedback_form.is_valid() and grade_form.is_valid():
             grade_form.save()
-            feedback_form.instance.content_object = grade_form.instance
+            feedback_form.instance.grade = grade_form.instance
             feedback_form.save()
             return redirect_after_successful_save(delivery_obj)
 

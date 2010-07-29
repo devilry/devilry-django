@@ -1104,15 +1104,15 @@ class Feedback(models.Model):
        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
        be given feedback.
 
-    .. attribute:: content_object
+    .. attribute:: grade
     
        A generic relation
        (django.contrib.contenttypes.generic.GenericForeignKey) to the
        grade-plugin object storing the grade for this feedback. This will
-       always be a subclass for
-       :class:`devilry.core.gradeplugin.GradeModel`.The :meth:`clean`-method
-       checks that this points to a class of the type defined in
-       :attr:`Assignment.grade_plugin`.
+       always be a subclass of
+       :class:`devilry.core.gradeplugin.GradeModel`. The
+       :meth:`clean`-method checks that this points to a class of the type
+       defined in :attr:`Assignment.grade_plugin`.
     """
 
     text_formats = (
@@ -1127,11 +1127,11 @@ class Feedback(models.Model):
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    grade = generic.GenericForeignKey('content_type', 'object_id')
 
     def get_grade(self):
         """ Get the grade as a string. """
-        return self.content_object.get_short_string()
+        return self.grade.get_short_string(self)
 
     def set_grade_from_xmlrpcstring(self, grade):
         """
@@ -1147,14 +1147,14 @@ class Feedback(models.Model):
         """
         key = self.delivery.assignment_group.parentnode.grade_plugin
         model_cls = gradeplugin.registry.getitem(key).model_cls
-        if self.content_object:
-            self.content_object.set_grade_from_xmlrpcstring(grade, self)
-            self.content_object.save()
+        if self.grade:
+            self.grade.set_grade_from_xmlrpcstring(grade, self)
+            self.grade.save()
         else:
-            content_object = model_cls()
-            content_object.set_grade_from_xmlrpcstring(grade, self)
-            content_object.save()
-            self.content_object = content_object
+            gradeobj = model_cls()
+            gradeobj.set_grade_from_xmlrpcstring(grade, self)
+            gradeobj.save()
+            self.grade = gradeobj
 
     def get_grade_as_xmlrpcstring(self):
         """
@@ -1168,7 +1168,7 @@ class Feedback(models.Model):
         Raises :exc:`NotImplementedError` if the grade-plugin do not support
         getting grades as string.
         """
-        return self.content_object.get_grade_as_xmlrpcstring()
+        return self.grade.get_grade_as_xmlrpcstring()
         
     def get_assignment(self):
         """
@@ -1185,7 +1185,7 @@ class Feedback(models.Model):
 
         Raises ValidationError if:
 
-            - :attr:`content_object` is not a instance of the model-class
+            - :attr:`grade` is not a instance of the model-class
               defined in
               :attr:`devilry.core.gradeplugin.RegistryItem.model_cls`
               referred by :attr:`Assignment.grade_plugin`.
@@ -1202,7 +1202,7 @@ class Feedback(models.Model):
                 'the system administrators to get this fixed.' %
                 assignment))
         else:
-            if not isinstance(self.content_object, ri.model_cls):
+            if not isinstance(self.grade, ri.model_cls):
                 raise ValidationError(_(
                     'Grade-plugin on feedback must be "%s", as on the ' \
                     'assignment, %s.' % (i.label, assignment)))

@@ -19,8 +19,9 @@ class ApprovedGrade(GradeModel):
             self.approved = False
         else:
             raise ValueError(
-                    'Invalid grade. Use "approved" or "+" to approve, ' \
-                    'and "notapproved" or "-" to disapprove the delivery.')
+                    'Invalid grade: "%s". Use "approved" or "+" to approve, ' \
+                    'and "notapproved" or "-" to disapprove the delivery.' %
+                    grade)
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         if self.approved:

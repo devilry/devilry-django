@@ -37,7 +37,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(o1['path'], oblig1.get_path())
         self.assertEquals(o1['publishing_time'], oblig1.publishing_time)
         self.assertEquals(o1['xmlrpc_gradeconf'],
-                {'help': None, 'filename': None})
+                {'default_filecontents': None, 'help': None, 'filename': None})
 
         future = datetime.now() + timedelta(10)
         oldone = Assignment.objects.get(id=3)
