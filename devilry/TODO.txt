@@ -11,3 +11,4 @@
 - Delete in admin
 - Selenium tests
 - Clean up student views
+- Tests for grade_rstschema
