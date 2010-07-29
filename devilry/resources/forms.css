@@ -89,6 +89,9 @@ fieldset.stdfieldset p.form-help {
 	margin: 5px 0 0 140px;
 	color: #777;
 }
+fieldset.stdfieldset textarea {
+	font-family: "Lucida Console", "Andale Mono", monospace;
+}
 
 
 /********************************
