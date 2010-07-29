@@ -49,7 +49,7 @@
       <th>Candidates</th>
     </tr>
 
-  {% for assignmentgroup in assignmentgroups %}
+  {% for assignmentgroup in assignment.assignmentgroups.all %}
   <tr>
     <td>{% if assignmentgroup.name %} {{ assignmentgroup.name }} {% endif %}</td>
 	
