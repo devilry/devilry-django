@@ -10,12 +10,27 @@ from devilry.ui.messages import UiMessages
 from devilry.core.models import Assignment
 
 from models import RstSchemaDefinition
+from parser import RstValidationError, rstdoc_from_string
 
 
 class RstSchemaDefinitionForm(forms.ModelForm):
     class Meta:
         model = RstSchemaDefinition
         fields = ('schemadef', 'let_students_see_schema')
+        widgets = {
+            'schemadef': forms.Textarea(attrs={'rows':40, 'cols':70})
+        }
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        try:
+            rstdoc_from_string(cleaned_data['schemadef'])
+        except RstValidationError, e:
+            msg = _('Line %(line)s: %(message)s') % e.__dict__
+            self._errors['schemadef'] = self.error_class([msg])
+            del cleaned_data['schemadef']
+        return cleaned_data
+
 
 
 @login_required

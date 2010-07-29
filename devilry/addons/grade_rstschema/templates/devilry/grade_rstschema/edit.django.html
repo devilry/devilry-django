@@ -6,12 +6,14 @@
 {% block main %}
 
 <form method='post' action='{% url devilry-grade_rstschema-edit_schema schema.assignment.id %}'>
-	<table>
-    {{ form.as_table }}
-	</table>
-	<p>
-		<input type='submit' name='save' value='{% trans "Save" %}'/>
-	</p>
+  <fieldset class='stdfieldset'>
+    {% include "devilry/ui/include/form-list.django.html" %}
+  </fieldset>
+  <div class='submit-row'>
+    <div class='submit-row-right'>
+      <input type='submit' name='save' value='{% trans "Save" %}'/>
+    </div>
+  </div>
 </form>
 
 {% endblock %}

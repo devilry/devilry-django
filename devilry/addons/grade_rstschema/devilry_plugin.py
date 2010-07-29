@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse
 from devilry.core import gradeplugin
 from gradeviews import view
 from models import RstSchemaGrade, RstSchemaDefinition
+import field
+import text
 
 
 def url_callback(assignment_id):
@@ -12,7 +14,7 @@ def url_callback(assignment_id):
 
 def default_filecontents_callback(assignmentobj):
     schemadef = RstSchemaDefinition.objects.get(assignment=assignmentobj)
-    return schemadef.schemadef
+    return text.examiner_format(schemadef.schemadef)
 
 gradeplugin.registry.register(gradeplugin.RegistryItem(
         view = view,
@@ -28,3 +30,6 @@ gradeplugin.registry.register(gradeplugin.RegistryItem(
             'administrator) using reStructuredText' \
             '(a quite simple plain-text format).')
 ))
+
+# register .. field:: with rst
+field.register_directive()
