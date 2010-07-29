@@ -6,7 +6,7 @@ from devilry.core.gradeplugin import GradeModel
 class ApprovedGrade(GradeModel):
     approved = models.BooleanField(blank=True, default=False)
 
-    def get_short_string(self, feedback_obj):
+    def get_grade_as_short_string(self, feedback_obj):
         if self.approved:
             return _('Approved')
         else:

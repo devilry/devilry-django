@@ -15,7 +15,7 @@ from models import RstSchemaDefinition
 class RstSchemaDefinitionForm(forms.ModelForm):
     class Meta:
         model = RstSchemaDefinition
-        fields = ('schemadef',)
+        fields = ('schemadef', 'let_students_see_schema')
 
 
 @login_required

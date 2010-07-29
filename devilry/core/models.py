@@ -497,7 +497,7 @@ class Assignment(models.Model, BaseNode):
     .. attribute:: assignmentgroups
 
         A set of the assignmentgroups for this assignment.
-       """
+    """
 
     class Meta:
         verbose_name = _('Assignment')
@@ -888,7 +888,7 @@ class AssignmentGroup(models.Model, CommonInterface):
             else:
                 return _('Corrected')
 
-    def get_grade(self):
+    def get_grade_as_short_string(self):
         if self.deliveries.all().count() == 0:
             return None
         else:
@@ -897,8 +897,7 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return None
             else:
                 return qry.annotate(
-                        models.Max('time_of_delivery'))[0].feedback.get_grade()
-
+                        models.Max('time_of_delivery'))[0].feedback.get_grade_as_short_string()
 
     def get_number_of_deliveries(self):
         return self.deliveries.all().count()
@@ -1129,9 +1128,19 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
-    def get_grade(self):
-        """ Get the grade as a string. """
-        return self.grade.get_short_string(self)
+    def get_grade_as_short_string(self):
+        """
+        Get the grade as a short string suitable for short one-line
+        display.
+        """
+        return self.grade.get_grade_as_short_string(self)
+
+    def get_grade_as_long_string(self):
+        """
+        Get the grade as a longer string formatted with restructured
+        text.
+        """
+        return self.grade.get_grade_as_long_string(self)
 
     def set_grade_from_xmlrpcstring(self, grade):
         """
@@ -1162,7 +1171,7 @@ class Feedback(models.Model):
         :meth:`set_grade_from_string`. This is primarly intended for xmlrpc,
         and a grade-plugin is not required to support it.
 
-        If you need a simple string representation, use :meth:`get_grade`
+        If you need a simple string representation, use :meth:`get_grade_as_short_string`
         instead.
 
         Raises :exc:`NotImplementedError` if the grade-plugin do not support

@@ -50,7 +50,7 @@ class XmlrpcGradeConf(object):
 
 
 class GradeModel(models.Model):
-    def get_short_string(self, feedback_obj):
+    def get_grade_as_short_string(self, feedback_obj):
         """ Return a string representation of the grade suitable for
         short one-line display. This method is required.
         
@@ -60,7 +60,7 @@ class GradeModel(models.Model):
         """
         raise NotImplementedError()
 
-    def get_long_string(self, feedback_obj):
+    def get_grade_as_long_string(self, feedback_obj):
         """
         Return a string representation of the grade which might span
         multiple lines. The string must be formatted with restructured text.

@@ -466,7 +466,8 @@ class TestFeedback(TestCommandBase):
                 'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
         self.assertEquals(self.delivery.feedback.format, 'rst')
-        self.assertEquals(self.delivery.feedback.get_grade(), 'Approved')
+        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
+                'Approved')
 
     def test_feedback_from_rstfile(self):
         self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
@@ -484,7 +485,8 @@ class TestFeedback(TestCommandBase):
             'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
         self.assertEquals(self.delivery.feedback.format, 'rst')
-        self.assertEquals(self.delivery.feedback.get_grade(), 'Approved')
+        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
+                'Approved')
 
     def test_feedback_from_txtfile(self):
         self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
@@ -503,4 +505,5 @@ class TestFeedback(TestCommandBase):
             'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
         self.assertEquals(self.delivery.feedback.format, 'txt')
-        self.assertEquals(self.delivery.feedback.get_grade(), 'Approved')
+        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
+                'Approved')
