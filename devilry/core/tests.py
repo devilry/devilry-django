@@ -300,7 +300,7 @@ class TestAssignment(TestCase):
         self.assertEquals(q.count(), 2)
 
 
-    def test_assignment_groups_where_is_examiner(self):
+    def test_assignmentgroups_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         examiner2 = User.objects.get(username='examiner2')
         oblig1 = Assignment.objects.get(id=1)
@@ -308,6 +308,21 @@ class TestAssignment(TestCase):
                 oblig1.assignment_groups_where_is_examiner(examiner2)[0].id)
         self.assertEquals(2,
                 oblig1.assignment_groups_where_is_examiner(examiner1).count())
+
+    def test_assignmentgroups_where_is_examiner_or_admin(self):
+        examiner1 = User.objects.get(username='examiner1')
+        ifiadmin = User.objects.get(username='ifiadmin')
+
+        oblig1 = Assignment.objects.get(id=1)
+        self.assertEquals(1,
+                oblig1.assignment_groups_where_is_examiner_or_admin(examiner1)[0].id)
+        self.assertEquals(2,
+                oblig1.assignment_groups_where_is_examiner_or_admin(examiner1).count())
+
+        self.assertEquals(1,
+                oblig1.assignment_groups_where_is_examiner_or_admin(ifiadmin)[0].id)
+        self.assertEquals(4,
+                oblig1.assignment_groups_where_is_examiner_or_admin(ifiadmin).count())
 
     def test_clean_publishing_time_before(self):
         oblig1 = Assignment.objects.get(id=1)
