@@ -1214,10 +1214,11 @@ class Feedback(models.Model):
                 'the system administrators to get this fixed.' %
                 assignment))
         else:
-            if not isinstance(self.grade, ri.model_cls):
-                raise ValidationError(_(
-                    'Grade-plugin on feedback must be "%s", as on the ' \
-                    'assignment, %s.' % (i.label, assignment)))
+            if self.grade:
+                if not isinstance(self.grade, ri.model_cls):
+                    raise ValidationError(_(
+                        'Grade-plugin on feedback must be "%s", as on the ' \
+                        'assignment, %s.' % (ri.label, assignment)))
 
         super(Feedback, self).clean(*args, **kwargs)
 

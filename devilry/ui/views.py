@@ -1,4 +1,7 @@
 from mimetypes import guess_type
+from docutils.writers import html4css1
+from docutils.core import publish_parts
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django import forms
@@ -85,3 +88,18 @@ def user_json(request):
     data = JSONEncoder().encode(l)
     response = HttpResponse(data, content_type="text/plain")
     return response
+
+
+
+def rststring_to_html(rst):
+    parts = publish_parts(rst, writer=html4css1.Writer(),
+            settings_overrides={})
+    return parts["fragment"]
+
+@login_required
+def rst_to_html(request):
+    if request.method == 'POST' and 'data' in request.POST:
+        rst = request.POST['data']
+        return HttpResponse(rststring_to_html(rst),
+                content_type='text/html; encoding=utf-8')
+    return HttpResponse('hello world', content_type='text/plain')

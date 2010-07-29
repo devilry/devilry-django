@@ -73,3 +73,25 @@ class DevilryMultiSelectFewCandidates(forms.TextInput):
         attrs["size"] = 60
         attrs["class"] = "devilry_multiselect_few"
         super(DevilryMultiSelectFewCandidates, self).__init__(attrs)
+
+
+class RstEditWidget(forms.Textarea):
+    class Media:
+        js = (
+            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/jquery.markitup.js",
+            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/set.js",
+            settings.DEVILRY_RESOURCES_URL + "/ui/js/rstedit_widget.js",
+        )
+        css = {
+            'all': [
+                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/skins/markitup/style.css",
+                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/style.css"
+        ]}
+
+    def __init__(self, attrs={}):
+        if not 'cols' in attrs:
+            attrs["cols"] = 70
+        if not 'rows' in attrs:
+            attrs["rows"] = 35
+        attrs["class"] = "devilry_rstedit"
+        super(RstEditWidget, self).__init__(attrs)
