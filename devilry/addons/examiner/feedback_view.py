@@ -2,8 +2,10 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from devilry.core.models import Feedback
 from django import forms
+
+from devilry.core.models import Feedback
+from devilry.ui.widgets import RstEditWidget
 
 
 class FeedbackForm(forms.ModelForm):
@@ -12,7 +14,8 @@ class FeedbackForm(forms.ModelForm):
         model = Feedback
         fields = ('text', 'format', 'published')
         widgets = {
-                'text': forms.Textarea(attrs={'cols': 90, 'rows': 25})
+                #'text': forms.Textarea(attrs={'cols': 90, 'rows': 25})
+                'text': RstEditWidget
         }
 
 def parse_feedback_form(request, delivery_obj, prefix='feedback'):

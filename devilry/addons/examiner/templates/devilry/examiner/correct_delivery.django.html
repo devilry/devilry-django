@@ -1,8 +1,6 @@
 {% extends "devilry/examiner/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
-{% load markup %}
-
 {% block title %}{% trans "Feedback" %}{% endblock %}
 {% block heading %}{% trans "Feedback" %}{% endblock %}
 
@@ -20,57 +18,30 @@
 {% block main %}
 
 {% include "devilry/ui/include/show_delivery_default.django.html" %}
+<form method='post' action='{% url devilry-examiner-correct_delivery delivery.id %}'>
+  {% block formfields %}
+    {% with grade_form as form %}
+      <fieldset class='stdfieldset'>
+        <h2 class='legend'>{% trans "Grade" %}</h2>
+        {% include "devilry/ui/include/form-list.django.html" %}
+      </fieldset>
+    {% endwith %}
 
-<script type="text/javascript">
-  $(function() {
-    $("#tabs").tabs();
-  });
-</script>
-
-
-<div id='tabs'>
-  <ul>
-    <li><a href="#tab-1">{% trans "Edit" %}</a></li>
-    {% if delivery.feedback %}
-      <li><a href="#tab-2">{% trans "Feedback text preview" %}</a></li>
-    {% endif %}
-  </ul>
-
-  <div id='tab-1'>
-    {% block form %}
-    <form method='post' action='{% url devilry-examiner-correct_delivery delivery.id %}'>
-      {% block formfields %}
-        {% with grade_form as form %}
-          <fieldset class='stdfieldset'>
-            <h2 class='legend'>{% trans "Grade" %}</h2>
-            {% include "devilry/ui/include/form-list.django.html" %}
-          </fieldset>
-        {% endwith %}
-
-        {% with feedback_form as form %}
-          <fieldset class='stdfieldset'>
-            <h2 class='legend'>{% trans "Feedback" %}</h2>
-            {% include "devilry/ui/include/form-list.django.html" %}
-          </fieldset>
-        {% endwith %}
-      {% endblock formfields %}
-      
-      <div class='submit-row'>
-        <div class='submit-row-right'>
-          <input type='submit' name='save'
-            value='{% if delivery.feedback %}{% trans "Update" %}{% else %}{% trans "Create" %}{% endif %}'/>
-        </div>
-      </div>
-    </form>
-    {% endblock form %}
-  </div>
-
-  {% if delivery.feedback %}
-    <div id='tab-2'>
-      <p>{% trans "Preview of the currently saved feedback text." %}</p>
-      {% include "devilry/ui/include/show_feedback.django.html" %}
+    {% with feedback_form as form %}
+      <fieldset class='stdfieldset'>
+        <h2 class='legend'>{% trans "Feedback" %}</h2>
+        {% include "devilry/ui/include/form-list.django.html" %}
+      </fieldset>
+    {% endwith %}
+  {% endblock formfields %}
+  
+  <div class='submit-row'>
+    <div class='submit-row-right'>
+      <input type='submit' name='save'
+        value='{% if delivery.feedback %}{% trans "Update" %}{% else %}{% trans "Create" %}{% endif %}'/>
     </div>
-  {% endif %}
-</div>
+  </div>
+</form>
+
 
 {% endblock main %}
