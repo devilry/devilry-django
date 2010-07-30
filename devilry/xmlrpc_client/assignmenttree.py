@@ -30,7 +30,76 @@ def join_dirname_id(dirname, id):
     """ Join ``dirname`` and ``id`` using :attr:`ID_SEP`. """
     return "%s+%s" % (dirname, id)
 
+def overwriteable_filename(filename):
+    """
+    All files that the sync operations might overwrite without notice
+    uses this function to prefix the filename with ``".overwriteable-"``.
+    """
+    return '.overwriteable-%s' % filename
 
+class OverwriteError(Exception):
+    """
+    Raised by :func:`overwrite` when trying to overwrite a file not starting
+    with ``".overwriteable-"`` without making a backup.
+    """
+
+def overwrite(dirname, filename, data):
+    """
+    Overwrite the given file with the given ``data``. If the file is not
+    overwriteable (see :func:`overwriteable_filename`), raise
+    :exc:`OverwriteError`.
+    """
+    if not filename.startswith('.overwriteable-'):
+        raise OverwriteError('Can not overwrite %s.')
+    filepath = os.path.join(dirname, filename)
+    open(filepath, 'wb').write(data)
+
+
+def make_backup(filepath, index=0):
+    """
+    Create a backup of the file, ``filepath``, named *[filename].bak-[N]*,
+    where [N] is the lowest number higher than ``index`` which produces a
+    unique filename.
+    """
+    backupfile = '%s.bak-%d' % (filepath, index)
+    if os.path.exists(backupfile):
+        make_backup(filepath, index+1)
+    else:
+        log.warning('* %s was overwritten. Backup written to %s.' % (
+            filepath, backupfile))
+        open(backupfile, 'wb').write(open(filepath, 'rb').read())
+
+def overwrite_with_backup(dirname, filename, data, lastsavefile=None):
+    """
+    Overwrite the given file with the given ``data`` and create a backup
+    using :func:`make_backup` if the file exists and the contents of the
+    existing file does not match ``data``.
+    """
+    filepath = os.path.join(dirname, filename)
+    if os.path.exists(filepath):
+        current_data = open(filepath, 'rb').read()
+        if current_data == data:
+            log.debug('%s matches the server. No update requried.' %
+                    filepath)
+            return
+        backup = True
+        if lastsavefile and os.path.exists(lastsavefile):
+            lastsave_data = open(lastsavefile, 'rb').read()
+            current_data = open(filepath, 'rb').read()
+            # If the file has not changed since last save, we do not need a
+            # backup
+            if lastsave_data == current_data:
+                backup = False
+                log.debug('Last-save data for %s matches current data. No '\
+                        'backup required.' % filepath)
+            else:
+                log.debug('Last-save data for %s does not match current data. '\
+                        'Backup required.' % filepath)
+        if backup:
+            make_backup(filepath)
+    open(filepath, 'wb').write(data)
+    if lastsavefile:
+        open(lastsavefile, 'wb').write(data)
 
 
 class Info(object):
@@ -462,27 +531,39 @@ class AssignmentSync(AssignmentTreeWalker):
     def filemeta_exists(self, filemeta, filepath):
         log.debug('%s already exists.' % filepath)
 
-
-    def _handle_gradeconf(self, deliverydir, gradeconf):
+    def _handle_gradeconf(self, deliverydir, gradeconf,
+            grade_as_xmlrpcstring=None):
         filename = gradeconf['filename']
         if gradeconf and filename:
             gradeconffile = os.path.join(deliverydir, filename)
             if os.path.exists(gradeconffile):
-                log.info('%s already exists. If you want a clean one, ' \
-                        'simply delete it and sync again.' % gradeconffile)
+                contents = open(gradeconffile, 'rb').read()
+                default_contents = contents == gradeconf['default_filecontents']
+                if grade_as_xmlrpcstring and default_contents:
+                    log.info('+ Grade file from server: %s' % gradeconffile)
+                    open(gradeconffile, 'wb').write(grade_as_xmlrpcstring)
+                else:
+                    log.debug('%s already exists. If you want a clean one, ' \
+                            'simply delete it and sync again.' % gradeconffile)
             else:
-                open(gradeconffile,'wb').write(
-                        gradeconf['default_filecontents'])
-                log.info('+ %s' % gradeconffile)
+                if grade_as_xmlrpcstring:
+                    fc = grade_as_xmlrpcstring
+                    log.info('+ Grade file from server: %s' % gradeconffile)
+                else:
+                    fc = gradeconf['default_filecontents']
+                    log.info('+ Grade file with defaults: %s' % gradeconffile)
+                open(gradeconffile,'wb').write(fc)
 
     def feedback_none(self, delivery, deliverydir, gradeconf):
         self._handle_gradeconf(deliverydir, gradeconf)
 
     def feedback_exists(self, delivery, deliverydir, feedback, gradeconf):
-        self._handle_gradeconf(deliverydir, gradeconf)
-        if feedback['format'] == 'rst':
-            ext = 'rst'
-        else:
-            ext = 'txt'
-        feedbackfile = os.path.join(deliverydir, 'feedback.server.%s' % ext)
-        open(feedbackfile, 'wb').write(feedback['text'])
+        self._handle_gradeconf(deliverydir, gradeconf,
+                feedback.get('grade_as_xmlrpcstring'))
+
+        # TODO: Use this for grade-files as well
+        feedbackfile = os.path.join(deliverydir, 'feedback.rst')
+        lastsavefile = os.path.join(deliverydir,
+                overwriteable_filename('feedback.lastsave.rst'))
+        overwrite_with_backup(deliverydir, 'feedback.rst', feedback['text'],
+                lastsavefile)

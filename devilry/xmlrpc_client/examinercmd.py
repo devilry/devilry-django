@@ -2,9 +2,9 @@ import xmlrpclib
 import os
 import logging
 
-from assignmenttree import AssignmentSync, Info
+from assignmenttree import AssignmentSync, Info, overwriteable_filename, \
+    overwrite
 from cli import Command, log_fault, format_long_message
-
 
 
 log = logging.getLogger('devilry')
@@ -93,17 +93,17 @@ class Feedback(ExaminerCommand):
         self.read_config()
 
         if len(self.args) > 0:
-            path = os.path.abspath(os.path.normpath(self.args[0]))
+            deliverydir = os.path.abspath(os.path.normpath(self.args[0]))
         else:
-            path = os.path.abspath(os.getcwd())
+            deliverydir = os.path.abspath(os.getcwd())
         try:
-            info = Info.read_open(path, 'Delivery')
+            info = Info.read_open(deliverydir, 'Delivery')
         except Info.FileWrongTypeError, e:
             self.direrror()
         except Info.FileDoesNotExistError, e:
             self.direrror()
 
-        groupdir = os.path.dirname(path)
+        groupdir = os.path.dirname(deliverydir)
         assignmentdir = os.path.dirname(groupdir)
         assignmentinfo = Info.read_open(assignmentdir, 'Assignment')
         gradeconf_filename = assignmentinfo.get('gradeconf_filename')
@@ -118,43 +118,31 @@ class Feedback(ExaminerCommand):
 
         # Get feedback text from arguments or file.
         text = self.opt.text
-        format = None
+        feedbackfile = os.path.join(deliverydir, 'feedback.rst')
         if text:
             log.debug('Feedback found in commandline argument -t.')
-            format = self.opt.format
         else:
-            filenamebase = os.path.join(path, 'feedback')
-            fn = filenamebase + '.rst'
             log.debug('Feedback not found in commandline argument -t. ' \
                     'Trying file feedback.rst.')
-            if os.path.isfile(fn):
+            if os.path.isfile(feedbackfile):
                 log.info('Found feedback in file feedback.rst.')
-                text = open(fn, 'rb').read()
-                format = 'rst'
-            else:
-                fn = filenamebase + '.txt'
-                log.debug('Did not find feedback in file feedback.rst. ' \
-                        'Trying file feedback.txt')
-                if os.path.isfile(fn):
-                    log.info('Found feedback in file feedback.txt.')
-                    text = open(fn, 'rb').read()
-                    format = 'txt'
-                else:
-                    log.info('No feedback text found in commandline ' \
-                            'argument -t, feedback.rst or feedback.txt. ' \
-                            'Feedback text is empty.')
-            if text:
-                log.info('Feedback format: %s.' % format)
+                text = open(feedbackfile, 'rb').read()
+
+        if text:
+            log.info('Feedback format: %s.' % self.opt.format)
 
         server = self.get_serverproxy()
         try:
             ok_message = server.set_feedback(info.get_id(), text,
-                    format, grade)
+                    self.opt.format, grade)
         except xmlrpclib.Fault, e:
             log.error(format_long_message('ERROR MESSAGE', e.faultString,
                 False))
             log.error('Setting feedback failed. See error-message above.')
         else:
+            lastsave_filename = overwriteable_filename('feedback.lastsave.rst')
+            overwrite(deliverydir, lastsave_filename, text)
+            open(feedbackfile, 'wb').write(text)
             if ok_message:
                 log.info(format_long_message('FEEDBACK SUCCESSFULLY SAVED',
                     ok_message))

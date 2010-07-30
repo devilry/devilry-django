@@ -460,16 +460,17 @@ class TestFeedback(TestCommandBase):
                 lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
-        f.cli(['-g', '+', '-t', 'ok', self.deliverypath])
+        f.cli(['-g', '+', '-t', 'ok', '-f', 'txt', self.deliverypath])
         self.assertEquals(self.logdata.getvalue().strip(),
                 'DEBUG:Feedback found in commandline argument -t.\n' \
+            'INFO:Feedback format: txt.\n' \
                 'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
-        self.assertEquals(self.delivery.feedback.format, 'rst')
+        self.assertEquals(self.delivery.feedback.format, 'txt')
         self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
                 'Approved')
 
-    def test_feedback_from_rstfile(self):
+    def test_feedback_from_file(self):
         self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
                 lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
@@ -485,25 +486,5 @@ class TestFeedback(TestCommandBase):
             'INFO:Feedback successfully saved.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
         self.assertEquals(self.delivery.feedback.format, 'rst')
-        self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
-                'Approved')
-
-    def test_feedback_from_txtfile(self):
-        self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
-                lambda: self.delivery.feedback)
-        Feedback = self.create_commandcls(examinercmd.Feedback)
-        feedback = Feedback()
-        open(os.path.join(self.deliverypath, 'feedback.txt'), 'wb').write('ok')
-        feedback.cli(['-g', '+', self.deliverypath])
-
-        logvalue = self.logdata.getvalue().strip()
-        self.assertEquals(logvalue,
-            'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
-            'DEBUG:Did not find feedback in file feedback.rst. Trying file feedback.txt\n' \
-            'INFO:Found feedback in file feedback.txt.\n' \
-            'INFO:Feedback format: txt.\n' \
-            'INFO:Feedback successfully saved.')
-        self.assertEquals(self.delivery.feedback.text, 'ok')
-        self.assertEquals(self.delivery.feedback.format, 'txt')
         self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
                 'Approved')
