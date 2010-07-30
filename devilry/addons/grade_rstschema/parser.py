@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 from docutils.parsers.rst import Parser
-from docutils.utils import new_document, SystemMessage, Reporter, \
-    decode_path
+from docutils.utils import Reporter, decode_path
 from docutils import nodes
 from docutils import frontend
 
@@ -70,8 +69,8 @@ if __name__ == "__main__":
     if action == 'create':
         fmt = sys.argv[3]
         if fmt == 'html':
-            p = html.input_form(rst)
-            print p
+            errors, values, form = html.input_form(rst)
+            print form
         elif fmt == 'text':
             print text.examiner_format(rst)
         else:

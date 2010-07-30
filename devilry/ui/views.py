@@ -1,13 +1,11 @@
 from mimetypes import guess_type
-from docutils.writers import html4css1
-from docutils.core import publish_parts
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django import http
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.servers.basehttp import FileWrapper
@@ -16,10 +14,11 @@ from django.utils.simplejson import JSONEncoder
 from django.db.models import Q
 
 from devilry.core.models import FileMeta
+from templatetags.rst_to_html import rst_to_html
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('login'))
+    return http.HttpResponseRedirect(reverse('login'))
 
 
 class LoginForm(forms.Form):
@@ -40,9 +39,9 @@ def login_view(request):
                 if user.is_active:
                     login(request, user)
                     next = form.cleaned_data.get('next') or settings.DEVILRY_MAIN_PAGE
-                    return HttpResponseRedirect(next)
+                    return http.HttpResponseRedirect(next)
                 else:
-                    return HttpResponseForbidden("Acount is not active")
+                    return http.HttpResponseForbidden("Acount is not active")
             else:
                 login_failed = True
     else:
@@ -57,7 +56,7 @@ def download_file(request, filemeta_id):
     filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
     # TODO: make this work on any storage backend
     # TODO: restrict to admins and examiners and students on the AssignmentGroup
-    response = HttpResponse(
+    response = http.HttpResponse(
             FileWrapper(filemeta.read_open()),
             content_type=guess_type(filemeta.filename)[0])
     response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
@@ -86,20 +85,16 @@ def user_json(request):
     l = [dict(id=u.id, value=u.username, label=u.username, 
               desc=get_description(u)) for u in qry]
     data = JSONEncoder().encode(l)
-    response = HttpResponse(data, content_type="text/plain")
+    response = http.HttpResponse(data, content_type="text/plain")
     return response
 
 
-
-def rststring_to_html(rst):
-    parts = publish_parts(rst, writer=html4css1.Writer(),
-            settings_overrides={})
-    return parts["fragment"]
-
 @login_required
-def rst_to_html(request):
-    if request.method == 'POST' and 'data' in request.POST:
-        rst = request.POST['data']
-        return HttpResponse(rststring_to_html(rst),
-                content_type='text/html; encoding=utf-8')
-    return HttpResponse('hello world', content_type='text/plain')
+def preview_rst(request):
+    if request.method == 'POST' and 'rst' in request.POST:
+        rst = request.POST['rst']
+        rst = rst_to_html(rst)
+        return render_to_response('devilry/ui/rst_preview.django.html', {
+                'rst': rst,
+            }, context_instance=RequestContext(request))
+    return http.HttpResponseBadRequest('Could not find "rst" in POST-data.')

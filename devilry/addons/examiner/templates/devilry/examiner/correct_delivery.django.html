@@ -20,12 +20,16 @@
 {% include "devilry/ui/include/show_delivery_default.django.html" %}
 <form method='post' action='{% url devilry-examiner-correct_delivery delivery.id %}'>
   {% block formfields %}
-    {% with grade_form as form %}
+    {% block gradeformfieldset %}
       <fieldset class='stdfieldset'>
         <h2 class='legend'>{% trans "Grade" %}</h2>
-        {% include "devilry/ui/include/form-list.django.html" %}
+        {% block gradeform %}
+          {% with grade_form as form %}
+            {% include "devilry/ui/include/form-list.django.html" %}
+          {% endwith %}
+        {% endblock %}
       </fieldset>
-    {% endwith %}
+    {% endblock %}
 
     {% with feedback_form as form %}
       <fieldset class='stdfieldset'>

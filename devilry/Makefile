@@ -29,14 +29,16 @@ cleardb:
 	@echo "   ~# python manage.py loaddata core/fixtures/tests/core/*.json"
 
 create-exampledata:
-	python manage.py dumpdata core --indent=4 > core/fixtures/exampledata.json
-	python manage.py dumpdata auth.user --indent=4 > core/fixtures/exampleusers.json
+	python manage.py dumpdata core --indent=4 > core/fixtures/example/data.json
+	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/users.json
+	python manage.py dumpdata grade_rstschema --indent=4 > core/fixtures/example/grade_rstschema.json
 
 reset-exampledb:
 	rm -f db.sqlite3
 	python manage.py syncdb --noinput
-	python manage.py loaddata -v0 exampleusers
-	python manage.py loaddata -v0 exampledata
+	python manage.py loaddata -v0 core/fixtures/example/users.json
+	python manage.py loaddata -v0 core/fixtures/example/data.json
+	python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
 
 selenium-test: cleardb
 	python manage.py loaddata -v0 addons/student/fixtures/exampleusers.json

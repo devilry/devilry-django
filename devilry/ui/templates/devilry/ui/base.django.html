@@ -7,6 +7,10 @@
     {% block jquery %}
       <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery.js"></script>          
       <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui.js"></script>          
+      <script type="text/javascript">
+        var DEVILRY_RESOURCES_URL = "{{ DEVILRY_RESOURCES_URL }}";
+        var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
+      </script>          
       <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui.css" />
     {% endblock %}
     {% block basecss %}

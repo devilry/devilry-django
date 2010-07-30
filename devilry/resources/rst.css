@@ -1,0 +1,15 @@
+.rst-preview {
+	padding: 10px;
+}
+.rst-preview h1 {
+	font-size: 2.0em;
+}
+.rst-preview h2 {
+	font-size: 1.6em;
+	font-weight: normal;
+}
+.rst-preview h3 {
+	font-size: 1.2em;
+	font-weight: normal;
+	font-style: italic;
+}

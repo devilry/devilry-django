@@ -5,6 +5,6 @@ urlpatterns = patterns('devilry.ui',
     url(r'^login$', 'views.login_view', name='login'),
     url(r'^download-file/(?P<filemeta_id>\d+)$', 'views.download_file', name='devilry-ui-download_file'),
     url(r'^user_json$', 'views.user_json', name='devilry-ui-user_json'),
-    url(r'^rst_to_html$', 'views.rst_to_html', name='devilry-ui-rst_to_html'),
+    url(r'^preview_rst$', 'views.preview_rst', name='devilry-ui-rst_to_html'),
 )
 
