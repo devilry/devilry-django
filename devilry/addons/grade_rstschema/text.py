@@ -1,10 +1,12 @@
 import re
 
 
+valuepatt = r"\[\[\[\s*(.*?)\s*\]\]\]" 
+
 def validate_input(text, fields):
     offset = 0
     errors = 0
-    for i, m in enumerate(re.finditer(r"\[\[\[\s*(.*?)\s*\]\]\]", text)):
+    for i, m in enumerate(re.finditer(valuepatt, text)):
         value = m.group(1)
         field = fields[i]
         #print text[offset+m.start():offset+m.end()]
@@ -34,4 +36,19 @@ def examiner_format(rst):
             r"\n\n\.\. field::\s+(\S+)",
             r" [\1]\n[[[  ]]]",
             r, re.MULTILINE)
+    return r
+
+def insert_values(rst, values):
+    offset = 0
+    for i, m in enumerate(re.finditer(valuepatt, rst)):
+        value = '[[[ %s ]]]' % values[i]
+        current = rst[offset+m.start():offset+m.end()]
+        rst = rst[:offset+m.start()] + value + rst[offset+m.end():]
+        offset += len(value) - len(current)
+    return rst
+
+def extract_valuedict(rst):
+    r = {}
+    for i, value in enumerate(re.findall(valuepatt, rst)):
+        r['rstschema_field_%s' % i] = value
     return r

@@ -42,7 +42,7 @@ ul.errorlist {
 	padding: 0;
 }
 
-li.form-li-errors {
+li.form-li-errors, div.rstschema_field-error {
 	background-color: rgb(255, 255, 204);
 }
 

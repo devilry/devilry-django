@@ -1,4 +1,5 @@
 import re
+from xml.sax.saxutils import escape, quoteattr
 
 
 class AbstractSpec(object):
@@ -16,8 +17,21 @@ class AbstractSpec(object):
     def __str__(self):
         return self.specstring
 
-    def create_html_formfield(self, field, field_id, htmltranslator):
-        htmltranslator.body.append('<input name="%s" size="10" />' % field_id)
+    def add_hint(self, htmltranslator, hint):
+        htmltranslator.body.append(
+                '<span class="rstschema_field-hint">%s</span>' % escape(hint))
+
+    def create_html_formfield(self, field, field_id, htmltranslator,
+            value=None):
+        if value:
+            val = ' value=%s' % quoteattr(value)
+        else:
+            val = ''
+        htmltranslator.body.append('<input name="%s" size="10"%s />' % (
+            field_id, val))
+        hint = self.get_hint()
+        if hint:
+            self.add_hint(htmltranslator, hint)
 
 
 class NumberRangeSpec(AbstractSpec):
@@ -34,7 +48,7 @@ class NumberRangeSpec(AbstractSpec):
         self.end = int(l[1])
 
     def validate(self, value):
-        errmsg = 'Must be a digit between %(start)s and %(end)s' % dict(
+        errmsg = 'Must be a number between %(start)s and %(end)s' % dict(
                 start=self.start, end=self.end)
         if not value.isdigit():
             raise ValueError(errmsg)
@@ -44,6 +58,9 @@ class NumberRangeSpec(AbstractSpec):
         else:
             return value
 
+    def get_hint(self):
+        return 'A number between %(start)s and %(end)s' % dict(
+                start=self.start, end=self.end)
 
 class SequenceSpec(AbstractSpec):
     patt = re.compile(r"\s*((?:\w+/)*\w+)\s*")
@@ -63,14 +80,22 @@ class SequenceSpec(AbstractSpec):
             raise ValueError('Must be one of: %(values)s' % dict(
                 values='/'.join(self.valid_values)))
 
-    def create_html_formfield(self, field, field_id, htmltranslator):
+    def create_html_formfield(self, field, field_id, htmltranslator,
+            value=None):
         htmltranslator.body.append('<select name="%s">' % field_id)
-        for value in self.valid_values:
+
+        if value and not value in self.valid_values:
+            value == None
+
+        for validvalue in self.valid_values:
             selected = ""
-            if field.default and value == field.default:
+            if value:
+                if value == validvalue:
+                    selected = ' selected="selected"'
+            elif field.default and validvalue == field.default:
                 selected = ' selected="selected"'
             htmltranslator.body.append('<option value="%s"%s>%s</option>' % (
-                value, selected, value))
+                validvalue, selected, validvalue))
         htmltranslator.body.append('</select>')
 
         
