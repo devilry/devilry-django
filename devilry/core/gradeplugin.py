@@ -68,8 +68,9 @@ class GradeModel(models.Model):
         :param feedback_obj:
             The :class:`devilry.core.models.Feedback` using this
             grade-object.
+        :return: None if this operation is not supported (the default).
         """
-        raise NotImplementedError()
+        return None
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         """
@@ -82,8 +83,9 @@ class GradeModel(models.Model):
         :param feedback_obj:
             The :class:`devilry.core.models.Feedback` using this
             grade-object.
+        :return: None if this operation is not supported (the default).
         """
-        raise NotImplementedError()
+        raise None
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         """
@@ -95,6 +97,8 @@ class GradeModel(models.Model):
         :param feedback_obj:
             The :class:`devilry.core.models.Feedback` using this
             grade-object.
+
+        Raises :exc:`NotImplementedError` if the operation is not supported.
         """
         raise NotImplementedError()
 

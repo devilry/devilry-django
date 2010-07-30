@@ -123,6 +123,8 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertEquals(f['text'], 'test')
         self.assertEquals(f['format'], 'txt')
         self.assertFalse(f['published'])
+        self.assertEquals(f['grade_as_short_string'], 'Approved')
+        self.assertEquals(f['grade_as_xmlrpcstring'], 'approved')
         self.s.set_feedback_published(d.pk, True)
         f = self.s.get_feedback(d.pk)
         self.assertTrue(f['published'])

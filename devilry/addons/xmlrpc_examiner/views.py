@@ -167,6 +167,19 @@ def get_feedback(request, delivery_id):
             ``"rst"`` or ``"txt"``.
         published
             True if the feedback is published, false otherwise.
+        grade_as_short_string
+            The grade as a short string suitable for short one-line
+            display. Will not be included if grade is not set.
+        grade_as_long_string
+            The grade as a longer string formatted with restructured
+            text. Will not be included if grade is not set.
+        grade_as_xmlrpcstring
+            Get the grade on a format intended to be put into the file
+            specified by ``filename`` in the ``xmlrpc_gradeconf`` returned
+            by ``list_active_assignments()``. The contents of the file is
+            then ment to be edited and sent as grade to ``set_feedback()``.
+            Note that you do not really need to use a file, but it is
+            provided as a hint. Will not be included if grade is not set.
 
     Raises fault 404 if the feedback does not exist.
     """
@@ -179,10 +192,22 @@ def get_feedback(request, delivery_id):
         feedback = delivery.feedback
     except Feedback.DoesNotExist, e:
         raise Http404(str(e))
-    return dict(
+    d = dict(
             text = feedback.text,
             format = feedback.format,
             published = feedback.published)
+
+    shortstring = feedback.get_grade_as_short_string()
+    if shortstring:
+        d['grade_as_short_string'] = shortstring
+    longstring = feedback.get_grade_as_long_string()
+    if longstring:
+        d['grade_as_long_string'] = longstring
+    try:
+        d['grade_as_xmlrpcstring'] = feedback.get_grade_as_xmlrpcstring()
+    except NotImplementedError:
+        pass
+    return d
 
 
 @rpc.rpcdec_login_required('delivery_id, text, format, grade',
