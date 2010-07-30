@@ -45,8 +45,6 @@ def view(request, delivery_obj):
     else:
         if grade_obj.schema:
             input_data = text.extract_valuedict(grade_obj.schema)
-            print grade_obj.schema
-            print input_data
         else:
             input_data = {}
         gradeform_errors, gradeform_values, grade_form = html.input_form(

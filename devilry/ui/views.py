@@ -14,6 +14,7 @@ from django.utils.simplejson import JSONEncoder
 from django.db.models import Q
 
 from devilry.core.models import FileMeta
+from templatetags.rst_to_html import rst_to_html
 
 def logout_view(request):
     logout(request)
@@ -89,9 +90,10 @@ def user_json(request):
 
 
 @login_required
-def rst_to_html(request):
+def preview_rst(request):
     if request.method == 'POST' and 'rst' in request.POST:
         rst = request.POST['rst']
+        rst = rst_to_html(rst)
         return render_to_response('devilry/ui/rst_preview.django.html', {
                 'rst': rst,
             }, context_instance=RequestContext(request))

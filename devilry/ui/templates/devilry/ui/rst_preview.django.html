@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -7,14 +9,10 @@
 </head>
 <body>
 
-{% load rst_to_html %}
-{% load i18n %}
-{% spaceless %}
-	<div class='markitup-preview-head'>{% trans "Preview" %}</div>
-  <div class='rst-preview'>
-    {{ rst|rst_to_html }}
-  </div>
-{% endspaceless %}
+<div class='markitup-preview-head'>{% trans "Preview" %}</div>
+<div class='rst-preview'>{{ rst|safe }}</div>
+
+{% block media %}{% endblock %}
 
 </body>
 </html>

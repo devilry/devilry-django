@@ -75,6 +75,7 @@ def input_form(rst, input_values={}, validate=False):
         form.
     """
     writer = SchemaHTMLWriter(input_values, validate)
+    rst = ":::::\nTITLE\n:::::\nSUBTITLE\n:::::::::::\n" + rst
     parts = publish_parts(rst,
             writer=writer,
             settings_overrides={})

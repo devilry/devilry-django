@@ -1,5 +1,5 @@
 markitupRstSettings = {
-	previewParserPath: DEVILRY_MAIN_PAGE + '/ui/rst_to_html',
+	previewParserPath: DEVILRY_MAIN_PAGE + '/ui/preview_rst',
 	previewParserVar: 'rst',
 	//previewAutoRefresh: true,
 	resizeHandle: true,

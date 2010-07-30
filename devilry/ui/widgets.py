@@ -79,7 +79,7 @@ class RstEditWidget(forms.Textarea):
     class Media:
         js = (
             settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/jquery.markitup.js",
-            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/set.js",
+            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/rst.js",
             settings.DEVILRY_RESOURCES_URL + "/ui/js/rstedit_widget.js",
         )
         css = {
