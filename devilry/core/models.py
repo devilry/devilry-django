@@ -1139,6 +1139,9 @@ class Feedback(models.Model):
             default=text_formats[0])
     published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery)
+    last_modified = models.DateTimeField(auto_now=True, blank=False,
+            null=False)
+    last_modified_by = models.ForeignKey(User, blank=False, null=False)
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()

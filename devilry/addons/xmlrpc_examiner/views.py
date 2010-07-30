@@ -167,6 +167,10 @@ def get_feedback(request, delivery_id):
             ``"rst"`` or ``"txt"``.
         published
             True if the feedback is published, false otherwise.
+        last_modified
+            The timestamp when the feedback was last modified.
+        last_modified_by
+            The username of the user that last modified the feedback.
         grade_as_short_string
             The grade as a short string suitable for short one-line
             display. Will not be included if grade is not set.
@@ -195,7 +199,9 @@ def get_feedback(request, delivery_id):
     d = dict(
             text = feedback.text,
             format = feedback.format,
-            published = feedback.published)
+            published = feedback.published,
+            last_modified = feedback.last_modified,
+            last_modified_by = feedback.last_modified_by.username)
 
     shortstring = feedback.get_grade_as_short_string()
     if shortstring:
@@ -240,6 +246,7 @@ def set_feedback(request, delivery_id, text, format, grade):
     else:
         feedback.format = format
     ok_message = feedback.set_grade_from_xmlrpcstring(grade)
+    feedback.last_modified_by = request.user
     feedback.full_clean()
     feedback.save()
     return ok_message

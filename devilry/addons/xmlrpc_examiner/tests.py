@@ -118,6 +118,7 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertLoginRequired(self.s.get_feedback, d.pk)
         self.login(self.client, 'examiner1')
         self.assertFault(404, self.s.get_feedback, d.pk)
+        before_feedback = datetime.now()
         self.s.set_feedback(d.pk, 'test', 'txt', 'approved')
         f = self.s.get_feedback(d.pk)
         self.assertEquals(f['text'], 'test')
@@ -125,6 +126,13 @@ class TestXmlRpc(TestCase, XmlRpcAssertsMixin):
         self.assertFalse(f['published'])
         self.assertEquals(f['grade_as_short_string'], 'Approved')
         self.assertEquals(f['grade_as_xmlrpcstring'], 'approved')
+        self.assertEquals(f['last_modified_by'], 'examiner1')
+        after_feedback = datetime.now()
+        fmt = '%Y-%m-%d %H:%M:%S'
+        self.assertTrue(f['last_modified'].strftime(fmt) >=
+                before_feedback.strftime(fmt))
+        self.assertTrue(f['last_modified'].strftime(fmt) <=
+                after_feedback.strftime(fmt))
         self.s.set_feedback_published(d.pk, True)
         f = self.s.get_feedback(d.pk)
         self.assertTrue(f['published'])
