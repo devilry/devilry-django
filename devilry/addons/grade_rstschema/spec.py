@@ -46,6 +46,7 @@ class NumberRangeSpec(AbstractSpec):
         l = specstring.strip().split('-')
         self.start = int(l[0])
         self.end = int(l[1])
+        self.manyvalues = self.end - self.start > 8
 
     def validate(self, value):
         errmsg = 'Must be a number between %(start)s and %(end)s' % dict(
@@ -59,8 +60,20 @@ class NumberRangeSpec(AbstractSpec):
             return value
 
     def get_hint(self):
-        return 'A number between %(start)s and %(end)s' % dict(
-                start=self.start, end=self.end)
+        if self.manyvalues:
+            return 'A number between %(start)s and %(end)s' % dict(
+                    start=self.start, end=self.end)
+
+    def create_html_formfield(self, field, field_id, htmltranslator,
+            value=None):
+        if self.manyvalues:
+            super(NumberRangeSpec, self).create_html_formfield(field,
+                    field_id, htmltranslator, value)
+        else:
+            valid_values = [str(i) for i in range(self.start, self.end+1)]
+            SequenceSpec.create_radio_fields(field, field_id, htmltranslator,
+                    value, valid_values)
+
 
 class SequenceSpec(AbstractSpec):
     patt = re.compile(r"\s*((?:\w+/)*\w+)\s*")
@@ -80,24 +93,33 @@ class SequenceSpec(AbstractSpec):
             raise ValueError('Must be one of: %(values)s' % dict(
                 values='/'.join(self.valid_values)))
 
-    def create_html_formfield(self, field, field_id, htmltranslator,
-            value=None):
-        htmltranslator.body.append('<select name="%s">' % field_id)
-
-        if value and not value in self.valid_values:
+    @classmethod
+    def create_radio_fields(cls, field, field_id, htmltranslator, value,
+            valid_values):
+        if value and not value in valid_values:
             value == None
-
-        for validvalue in self.valid_values:
-            selected = ""
+        for i, validvalue in enumerate(valid_values):
+            checked = ""
+            radioid = '%s_%d' % (field_id, i)
             if value:
                 if value == validvalue:
-                    selected = ' selected="selected"'
+                    checked = ' checked="checked"'
             elif field.default and validvalue == field.default:
-                selected = ' selected="selected"'
-            htmltranslator.body.append('<option value="%s"%s>%s</option>' % (
-                validvalue, selected, validvalue))
-        htmltranslator.body.append('</select>')
+                checked = ' checked="checked"'
+            
+            htmltranslator.body.append('<div class="rstschema_field-radio">')
+            htmltranslator.body.append(
+                '<input type="radio" id="%s" name="%s" value="%s"%s />' % (
+                    radioid, field_id, validvalue, checked))
+            htmltranslator.body.append(
+                '<label for="%s">%s</label>' % (
+                    radioid, validvalue))
+            htmltranslator.body.append('</div>')
 
+    def create_html_formfield(self, field, field_id, htmltranslator,
+            value=None):
+        SequenceSpec.create_radio_fields(field, field_id, htmltranslator,
+                value, self.valid_values)
         
 
 

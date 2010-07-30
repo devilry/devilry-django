@@ -74,12 +74,12 @@ span.devilry-date-format, span.devilry-time-format {
  * - A "normal" fieldset with somewhat short labels.
  *******************************************/
 
-fieldset.stdfieldset label {
+fieldset.stdfieldset ol.form-list label {
 	display: block;
 	width: 130px;
 	float: left;
 }
-fieldset.stdfieldset label:after {
+fieldset.stdfieldset ol.form-list label:after {
 	content: ':';
 }
 fieldset.stdfieldset .form-field {
@@ -118,4 +118,9 @@ table.tabular-inline td {
 }
 table.tabular-inline tr.oddrow {
 	background-color: #eee;
+}
+
+
+div.rstschema_field-radio {
+	display: inline;
 }
