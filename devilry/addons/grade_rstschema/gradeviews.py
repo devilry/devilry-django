@@ -1,6 +1,15 @@
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django import forms
-from devilry.addons.examiner.feedback_view import view_shortcut
+
+from devilry.addons.examiner.feedback_view import \
+    parse_feedback_form, redirect_after_successful_save
+
 from models import RstSchemaGrade, RstSchemaDefinition
+import html
+import text
+
+
 
 class RstSchemaGradeForm(forms.ModelForm):
     class Meta:
@@ -9,14 +18,6 @@ class RstSchemaGradeForm(forms.ModelForm):
         widgets = {
             'schema': forms.Textarea(attrs={'rows':40, 'cols':70})
         }
-
-
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from devilry.addons.examiner.feedback_view import \
-    render_response, parse_feedback_form, redirect_after_successful_save
-import html
-import text
 
 
 def view(request, delivery_obj):
@@ -29,12 +30,6 @@ def view(request, delivery_obj):
 
     assignment = feedback_obj.get_assignment()
     schemadef = RstSchemaDefinition.objects.get(assignment=assignment)
-    #print schemadef.schemadef
-
-    #if request.method == 'POST':
-        #grade_form = RstSchemaGradeForm(request.POST, instance=grade_obj, prefix='grade')
-    #else:
-        #grade_form = RstSchemaGradeForm(instance=grade_obj, prefix='grade')
 
     if request.method == 'POST':
         gradeform_errors, gradeform_values, grade_form = html.input_form(

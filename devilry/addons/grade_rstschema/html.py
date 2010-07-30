@@ -57,10 +57,23 @@ class SchemaHTMLWriter(html4css1.Writer):
 
 
 def input_form(rst, input_values={}, validate=False):
-    #input_values = {
-            #'rstschema_field_0': '7',
-            #'rstschema_field_1': 'yes',
-            #}
+    """
+    :param input_values:
+        A value-dict, like request.POST. Values are  inserted into the
+        appropriate fields. Fields are named ``"rstschema_field_N"``, where
+        *N* is a number from 0 and up to the number of fields in the form.
+    :param validate:
+        Validate ``input_values``? Errors are added to each field as django
+        errorlists (ul with class "errorlist").
+
+    :return:
+        (errors, values, html). ``errors`` is a dict with
+        ValueError-objects for each field with a error. ``values`` is a list
+        of the values that was extracted from ``input_values`` in the order
+        they were added (meaning that the value of rstschema_field_1 is in
+        ``values[1]``). ``html`` is a string containing the html for the
+        form.
+    """
     writer = SchemaHTMLWriter(input_values, validate)
     parts = publish_parts(rst,
             writer=writer,
