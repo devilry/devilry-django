@@ -11,3 +11,4 @@ How-to's
     grade-plugins
     xmlrpc
     cli
+    selenium-tests
