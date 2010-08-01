@@ -1,4 +1,4 @@
-.. _ref-devilry.core.models:
+.. _devilry.core.models:
 
 =========================================================
 :mod:`devilry.core.models` --- Devilry core datastructure

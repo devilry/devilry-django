@@ -4,7 +4,16 @@
 Developers 
 ==========
 
+.. :maxdepth: 2
+
 .. toctree::
 
-    ref/contents
-    howto/contents
+    core.models
+    core.utils
+    core.deliverystore
+    documentation
+    plugins
+    grade-plugins
+    xmlrpc
+    commandline
+    selenium-tests

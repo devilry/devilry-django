@@ -1,4 +1,4 @@
-.. _ref-devilry.core.deliverystore:
+.. _devilry.core.deliverystore:
 
 ================================================================
 :mod:`devilry.core.deliverystore` --- DeliveryStore

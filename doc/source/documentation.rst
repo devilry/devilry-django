@@ -21,28 +21,28 @@ Developers
 ==========
 
 
+Core
+---------------
+
+* :ref:`devilry.core.models <devilry.core.models>`
+* :ref:`devilry.core.utils <devilry.core.utils>`
+* :ref:`devilry.core.deliverystore <devilry.core.deliverystore>`
+
+
 Plugin development
 ------------------
 
-* **The basics:** :ref:`developer-howto-plugins`
-* **Grade plugins:** :ref:`Overview <developer-howto-grade-plugins>`
-* **XMLRPC:** :ref:`Overview <developer-howto-xmlrpc>`
-
-
-Api refererence
----------------
-
-* **Core:** :ref:`devilry.core.models <ref-devilry.core.models>` | :ref:`devilry.core.utils <ref-devilry.core.utils>` | :ref:`devilry.core.deliverystore <ref-devilry.core.deliverystore>` | :ref:`devilry.core.gradeplugin_registry <ref-devilry.core.gradeplugin_registry>`
-* **XMLRPC:** :ref:`devilry.xmlrpc <ref-devilry.xmlrpc>`
+* **The basics:** :ref:`plugins`
+* **Grade plugins:** :ref:`Overview <grade-plugins>`
+* **XMLRPC:** :ref:`Overview <xmlrpc>`
 
 
 Developing devilry
 ------------------
 
-* :ref:`developer-howto-documentation`
-* :ref:`developer-howto-cli`
-* :ref:`developer-howto-selenium-tests`
-
+* :ref:`developer-documentation`
+* :ref:`developer-commandline`
+* :ref:`developer-selenium-tests`
 
 
 More help

@@ -1,4 +1,4 @@
-.. _ref-devilry.core.utils:
+.. _devilry.core.utils:
 
 ====================================================
 :mod:`devilry.core.utils` --- Devilry core utilities

@@ -153,7 +153,7 @@ class Command(object):
         Find the first parent-directory of ``path`` containing a
         directory named ``".devilry"``.
         
-        Raises :ecx:`Command.NotInDevilryDirError` if there is no .devilry
+        Raises :exc:`Command.NotInDevilryDirError` if there is no .devilry
         directory within any of the parent-directories of ``path``.
 
         :param path: Defaults to current working directory.
