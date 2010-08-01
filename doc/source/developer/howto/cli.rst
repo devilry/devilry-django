@@ -93,3 +93,10 @@ Uses :class:`AssignmentTreeWalker` to sync all deliveries on any
 active assignment where the current user is examiner to the filesystem.
 
 .. autoclass:: devilry.xmlrpc_client.assignmenttree.AssignmentSync
+
+
+The rest of devilry.xmlrpc_client.assignmenttree
+================================================
+
+.. automodule:: devilry.xmlrpc_client.assignmenttree
+    :exclude-members: AssignmentSync, AssignmentTreeWalker, Info

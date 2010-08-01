@@ -35,7 +35,18 @@
       <th>{% trans "Grade" %}</th>
       <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
     </tr>
+    <tr>
+      <th>{% trans "Feedback last modified" %}</th>
+      <td> {{ delivery.feedback.last_modified|date:DEVILRY_DATETIME_FORMAT }} </td>
+    </tr>
+    {% if show_feedback_modifier %}
+      <tr>
+        <th>{% trans "Feedback last modified by" %}</th>
+        <td> {{ delivery.feedback.last_modified_by }} </td>
+      </tr>
+    {% endif %}
   {% endif %}
+
 
   <tr>
     <th>{% trans "Files" %}</th>

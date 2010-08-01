@@ -1139,6 +1139,9 @@ class Feedback(models.Model):
             default=text_formats[0])
     published = models.BooleanField(blank=True, default=False)
     delivery = models.OneToOneField(Delivery)
+    last_modified = models.DateTimeField(auto_now=True, blank=False,
+            null=False)
+    last_modified_by = models.ForeignKey(User, blank=False, null=False)
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -1155,6 +1158,10 @@ class Feedback(models.Model):
         """
         Get the grade as a longer string formatted with restructured
         text.
+
+        :return:
+            None if getting long string is not supported by the grade
+            plugin.
         """
         return self.grade.get_grade_as_long_string(self)
 
@@ -1193,8 +1200,12 @@ class Feedback(models.Model):
 
         Raises :exc:`NotImplementedError` if the grade-plugin do not support
         getting grades as string.
+
+        :return:
+            None if getting grade as xmlrpcstring is not supported by
+            the grade plugin.
         """
-        return self.grade.get_grade_as_xmlrpcstring()
+        return self.grade.get_grade_as_xmlrpcstring(self)
         
     def get_assignment(self):
         """

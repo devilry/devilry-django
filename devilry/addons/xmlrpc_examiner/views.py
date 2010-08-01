@@ -167,6 +167,23 @@ def get_feedback(request, delivery_id):
             ``"rst"`` or ``"txt"``.
         published
             True if the feedback is published, false otherwise.
+        last_modified
+            The timestamp when the feedback was last modified.
+        last_modified_by
+            The username of the user that last modified the feedback.
+        grade_as_short_string
+            The grade as a short string suitable for short one-line
+            display. Will not be included if grade is not set.
+        grade_as_long_string
+            The grade as a longer string formatted with restructured
+            text. Will not be included if grade is not set.
+        grade_as_xmlrpcstring
+            Get the grade on a format intended to be put into the file
+            specified by ``filename`` in the ``xmlrpc_gradeconf`` returned
+            by ``list_active_assignments()``. The contents of the file is
+            then ment to be edited and sent as grade to ``set_feedback()``.
+            Note that you do not really need to use a file, but it is
+            provided as a hint. Will not be included if grade is not set.
 
     Raises fault 404 if the feedback does not exist.
     """
@@ -179,10 +196,24 @@ def get_feedback(request, delivery_id):
         feedback = delivery.feedback
     except Feedback.DoesNotExist, e:
         raise Http404(str(e))
-    return dict(
+    d = dict(
             text = feedback.text,
             format = feedback.format,
-            published = feedback.published)
+            published = feedback.published,
+            last_modified = feedback.last_modified,
+            last_modified_by = feedback.last_modified_by.username)
+
+    shortstring = feedback.get_grade_as_short_string()
+    if shortstring:
+        d['grade_as_short_string'] = shortstring
+    longstring = feedback.get_grade_as_long_string()
+    if longstring:
+        d['grade_as_long_string'] = longstring
+    try:
+        d['grade_as_xmlrpcstring'] = feedback.get_grade_as_xmlrpcstring()
+    except NotImplementedError:
+        pass
+    return d
 
 
 @rpc.rpcdec_login_required('delivery_id, text, format, grade',
@@ -215,6 +246,7 @@ def set_feedback(request, delivery_id, text, format, grade):
     else:
         feedback.format = format
     ok_message = feedback.set_grade_from_xmlrpcstring(grade)
+    feedback.last_modified_by = request.user
     feedback.full_clean()
     feedback.save()
     return ok_message

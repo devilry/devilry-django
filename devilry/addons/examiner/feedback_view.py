@@ -23,7 +23,7 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
         feedback_obj = delivery_obj.feedback
     except Feedback.DoesNotExist, e:
         feedback_obj = Feedback(delivery=delivery_obj)
-
+    feedback_obj.last_modified_by = request.user
     if request.method == 'POST':
         return FeedbackForm(request.POST, instance=feedback_obj, prefix=prefix)
     else:

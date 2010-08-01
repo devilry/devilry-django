@@ -17,7 +17,10 @@
 
 {% block main %}
 
-{% include "devilry/ui/include/show_delivery_default.django.html" %}
+{% with "yes" as show_feedback_modifier %}
+  {% include "devilry/ui/include/show_delivery_default.django.html" %}
+{% endwith %}
+
 <form method='post' action='{% url devilry-examiner-correct_delivery delivery.id %}'>
   {% block formfields %}
     {% block gradeformfieldset %}
