@@ -41,6 +41,7 @@ Developing devilry
 
 * :ref:`developer-howto-documentation`
 * :ref:`developer-howto-cli`
+* :ref:`developer-howto-selenium-tests`
 
 
 
