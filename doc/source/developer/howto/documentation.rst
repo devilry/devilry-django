@@ -35,7 +35,16 @@ sources are organized like this:
     * ``howto/`` --- How-to's. 
 
 
+Required software
+=================
 
+You will need a newer version of Sphinx_, at least version 1.
+
+
+Building the documentation
+==========================
+
+Run *make html* while cwd is *doc/*.
 
 
 .. _Sphinx: http://sphinx.pocoo.org/
