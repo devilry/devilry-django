@@ -253,6 +253,8 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         f = delivery.get_feedback()
         f.text = 'test'
         f.published = True
+        f.last_modified = datetime.now()
+        f.last_modified_by = self.examiner1
         f.set_grade_from_xmlrpcstring('+')
         f.save()
         self.sync()

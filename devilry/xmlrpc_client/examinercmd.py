@@ -89,6 +89,43 @@ class Feedback(ExaminerCommand):
             log.error('You are not in a delivery-directory.')
         raise SystemExit()
 
+    def _get_feedback_text(self, deliverydir):
+        """ Get feedback text from arguments or file. """
+        feedbackfile = os.path.join(deliverydir, 'feedback.rst')
+        if self.opt.text:
+            log.debug('Feedback found in commandline argument -t.')
+            text = self.opt.text
+        else:
+            log.debug('Feedback not found in commandline argument -t. ' \
+                    'Trying file feedback.rst.')
+            if os.path.isfile(feedbackfile):
+                log.info('Found feedback in file feedback.rst.')
+                text = open(feedbackfile, 'rb').read()
+            else:
+                log.debug('Feedback not found in commandline argument -t or ' \
+                        'in file feedback.rst. Feedback text is empty.')
+                text = None
+        if text:
+            log.info('Feedback format: %s.' % self.opt.format)
+        return text, feedbackfile
+
+    def _get_assignmentinfo(self, deliverydir):
+        groupdir = os.path.dirname(deliverydir)
+        assignmentdir = os.path.dirname(groupdir)
+        return Info.read_open(assignmentdir, 'Assignment')
+
+    def _get_grade(self, assignmentinfo):
+        gradeconf_filename = assignmentinfo.get('gradeconf_filename')
+        if gradeconf_filename:
+            #gradeconf_help = assignmentinfo.get('gradeconf_help')
+            grade = open(gradeconf_filename, 'rb').read()
+        else:
+            grade = self.opt.grade
+            if not grade:
+                log.error('A grade is required. See --help for more info.')
+                raise SystemExit()
+        return grade
+
     def command(self):
         self.read_config()
 
@@ -103,33 +140,9 @@ class Feedback(ExaminerCommand):
         except Info.FileDoesNotExistError, e:
             self.direrror()
 
-        groupdir = os.path.dirname(deliverydir)
-        assignmentdir = os.path.dirname(groupdir)
-        assignmentinfo = Info.read_open(assignmentdir, 'Assignment')
-        gradeconf_filename = assignmentinfo.get('gradeconf_filename')
-        if gradeconf_filename:
-            gradeconf_help = assignmentinfo.get('gradeconf_help')
-            grade = open(gradeconf_filename, 'rb').read()
-        else:
-            grade = self.opt.grade
-            if not grade:
-                log.error('A grade is required. See --help for more info.')
-                raise SystemExit()
-
-        # Get feedback text from arguments or file.
-        text = self.opt.text
-        feedbackfile = os.path.join(deliverydir, 'feedback.rst')
-        if text:
-            log.debug('Feedback found in commandline argument -t.')
-        else:
-            log.debug('Feedback not found in commandline argument -t. ' \
-                    'Trying file feedback.rst.')
-            if os.path.isfile(feedbackfile):
-                log.info('Found feedback in file feedback.rst.')
-                text = open(feedbackfile, 'rb').read()
-
-        if text:
-            log.info('Feedback format: %s.' % self.opt.format)
+        assignmentinfo = self._get_assignmentinfo(deliverydir)
+        grade = self._get_grade(assignmentinfo)
+        text, feedbackfile = self._get_feedback_text(deliverydir)
 
         server = self.get_serverproxy()
         try:
