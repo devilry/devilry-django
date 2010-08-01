@@ -161,3 +161,42 @@ class Feedback(ExaminerCommand):
                     ok_message))
             else:
                 log.info('Feedback successfully saved.')
+
+
+class InfoCmd(Command):
+    name = 'info'
+    description = 'Show info about current directory.'
+    args_help = ''
+
+    def _assignment(self, info):
+        print 'Type: %s' % info.get('type')
+        print 'Id: %s' % info.get('id')
+        print 'Long name: %s' % info.get('long_name')
+        print 'Publishing time: %s' % info.get('publishing_time')
+
+    def _assignmentgroup(self, info):
+        print 'Type: %s' % info.get('type')
+        print 'Id: %s' % info.get('id')
+        print 'Name: %s' % (info.get('name') or '#Not defined#')
+        print 'Number of deliveries: %s' % info.get('number_of_deliveries')
+
+    def _delivery(self, info):
+        print info
+
+    def command(self):
+        directory = os.getcwd()
+        try:
+            info = Info.read_open(directory)
+        except Info.FileDoesNotExistError, e:
+            log.error('Not in a directory containing a info-file.')
+            raise SystemExit()
+        typename = info.get('type')
+        if typename == 'Assignment':
+            self._assignment(info)
+        elif typename == 'AssignmentGroup':
+            self._assignmentgroup(info)
+        elif typename == 'Delivery':
+            self._delivery(info)
+        else:
+            log.error('Invalid type: %s.' % typename)
+            raise SystemExit()

@@ -130,10 +130,14 @@ class Info(object):
 
 
     @classmethod
-    def read_open(cls, dirpath, typename):
-        """ Shortcut to open a Info for reading. """
+    def read_open(cls, dirpath, typename=None):
+        """ Shortcut to open a Info for reading.
+        
+        If typename is ``None``, :meth:`read` is called with check_typename
+        set to ``False``.
+        """
         i = Info(dirpath, typename)
-        i.read()
+        i.read(typename != None)
         return i
 
     def __init__(self, dirpath, typename):
@@ -186,8 +190,11 @@ class Info(object):
         self.cfg.add_section(self.sectionname)
         self.set('type', self.typename)
 
-    def read(self):
-        """ Read info-file from disk. """
+    def read(self, check_typename=True):
+        """ Read info-file from disk.
+        If check_typename is ``False``, no exception is raised if the type
+        in the file, and current typename does not match.
+        """
         self.cfg.read([self._infofilepath])
         if not os.path.exists(self._infofilepath):
             raise Info.FileDoesNotExistError(self, "The info-file does not exists.")
@@ -196,7 +203,7 @@ class Info(object):
                     'The info-file, %s, has no [%s]-section. This could ' \
                     'be because you have changed or overwritten the file.' % (
                         self._infofilepath, self.sectionname))
-        if self.get('type') != self.typename:
+        if check_typename and self.get('type') != self.typename:
             raise Info.FileWrongTypeError(
                     'The expected type, %s, does not match the existing ' \
                     'type, %s, in %s. This could mean you have managed to ' \

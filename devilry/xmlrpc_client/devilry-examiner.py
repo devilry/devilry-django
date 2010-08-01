@@ -2,7 +2,7 @@
 
 from cli import Cli, Login, Init
 from examinercmd import ListAssignmentGroups, Sync, ListAssignments, \
-        Feedback
+        Feedback, InfoCmd
 
 
 # TODO: make sure SESSION_COOKIE_SECURE is enabled by default or something
@@ -16,4 +16,5 @@ if __name__ == '__main__':
         ListAssignments,
         ListAssignmentGroups,
         Sync,
+        InfoCmd,
         Feedback]).cli()
