@@ -10,7 +10,7 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
@@ -993,6 +993,7 @@ class Delivery(models.Model):
     
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
+    number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
 
@@ -1000,6 +1001,7 @@ class Delivery(models.Model):
         verbose_name = _('Delivery')
         verbose_name_plural = _('Deliveries')
         ordering = ['-time_of_delivery']
+        unique_together = ('assignment_group', 'number')
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -1079,6 +1081,18 @@ class Delivery(models.Model):
             return self.feedback
         except Feedback.DoesNotExist:
             return Feedback(delivery=self)
+
+    def save(self, *args, **kwargs):
+        """
+        Set :attr:`number` automatically to one greater than what is was
+        last.
+        """
+        if not self.number:
+            m = Delivery.objects.filter(
+                    assignment_group=self.assignment_group).aggregate(
+                            Max('number'))
+            self.number = (m['number__max'] or 0) + 1
+        super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s %s' % (self.assignment_group, self.time_of_delivery)

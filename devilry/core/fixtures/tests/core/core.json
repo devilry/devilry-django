@@ -283,6 +283,7 @@
             "delivered_by": 6, 
             "successful": false, 
             "time_of_delivery": "2010-06-19 16:36:57", 
+			"number": 2,
             "assignment_group": 1
         }
     }, 
@@ -293,6 +294,7 @@
             "delivered_by": 7, 
             "successful": false, 
             "time_of_delivery": "2010-06-19 16:31:37", 
+			"number": 1,
             "assignment_group": 2
         }
     }, 
@@ -303,6 +305,7 @@
             "delivered_by": 6, 
             "successful": true, 
             "time_of_delivery": "2010-06-19 14:47:29", 
+			"number": 1,
             "assignment_group": 1
         }
     }

@@ -521,6 +521,17 @@ class TestDelivery(TestCase):
         d.finish()
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
+        self.assertEquals(d.number, 3)
+
+        d2 = Delivery.begin(assignmentgroup, student1)
+        d2.finish()
+        self.assertTrue(d2.successful)
+        self.assertEquals(d2.number, 4)
+        d2.save()
+
+        # TODO find a graceful way to handle this error:
+        d2.number = 3
+        self.assertRaises(IntegrityError, d2.save)
 
 
 # TODO: Feedback tests
