@@ -1,2 +1,1 @@
-Because of problems with JavaEE implementations, we are trying to re-implement
-*Devilry* using Django (http://djangoproject.org).
+See http://devilry.github.com for documentation.
