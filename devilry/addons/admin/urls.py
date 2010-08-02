@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 
 generic_urls = []
-for x in ('node', 'subject', 'period', 'assignmentgroup'):
+for x in ('node', 'subject', 'period'):
     generic_urls += [
         url(r'^%ss/edit/(?P<obj_id>\d+)$' % x, 'views.edit_%s' % x,
             name='devilry-admin-edit_%s' % x),
@@ -28,6 +28,18 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.edit_assignment', name='devilry-admin-create_assignment'),
     url(r'^assignments/',
         'views.list_assignments', name='devilry-admin-list_assignments'),
+
+    url(r'^assignmentgroups/edit/(?P<assignmentgroup_id>\d+)$',
+        'views.edit_assignmentgroup',
+        name='devilry-admin-edit_assignmentgroup'),
+    url(r'^assignmentgroups/successful-save/(?P<assignmentgroup_id>\d+)$',
+        'views.edit_assignmentgroup',
+        name='devilry-admin-edit_assignmentgroup-success',
+        kwargs = {'successful_save':True}),
+    url(r'^assignmentgroups/create$', 'views.edit_assignmentgroup',
+        name='devilry-admin-create_assignmentgroup'),
+    url(r'^assignmentgroups/$', 'views.list_assignmentgroups',
+        name='devilry-admin-list_assignmentgroups'),
 
     url(r'^assignmentgroups/create-assignmentgroups/(?P<assignment_id>\d+)$',
         'views.create_assignmentgroups', name='devilry-admin-create_assignmentgroups'),

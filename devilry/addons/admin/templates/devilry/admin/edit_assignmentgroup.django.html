@@ -19,8 +19,8 @@
 	<p>{{ message }}</p>
 {% endif %}
 
-<form method='post' action='{{ post_url }}'>
-  {% with nodeform as form %}
+<form method='post' action='{% url devilry-admin-edit_assignmentgroup assignmentgroup.id %}'>
+  {% with assignmentgroupform as form %}
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>

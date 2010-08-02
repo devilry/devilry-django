@@ -15,8 +15,9 @@ from devilry.core.models import Assignment, AssignmentGroup, \
 from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
 from devilry.ui.fields import MultiSelectCharField
+from devilry.ui.messages import UiMessages
 
-from shortcuts import EditBase, list_nodes_generic
+from shortcuts import list_nodes_generic
 
 
 
@@ -27,71 +28,86 @@ class DeadlineForm(forms.ModelForm):
     class Meta:
         model = Deadline
 
-class EditAssignmentGroup(EditBase):
-    VIEW_NAME = 'assignmentgroup'
-    MODEL_CLASS = AssignmentGroup
+
+
+@login_required
+def edit_assignmentgroup(request, assignmentgroup_id=None, successful_save=False):
+    isnew = assignmentgroup_id == None
+    if isnew:
+        assignmentgroup = AssignmentGroup()
+    else:
+        assignmentgroup = get_object_or_404(AssignmentGroup,
+                id=assignmentgroup_id)
+    messages = UiMessages()
+
+    if successful_save:
+        messages.add_success(_("Assignment group successfully saved."))
     
-    def create_form(self):
-        class Form(forms.ModelForm):
-            parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Assignment.where_is_admin(self.request.user))
-            examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
-                                             required=False)
-                        
-            class Meta:
-                model = AssignmentGroup
-                fields = ['parentnode', 'name', 'examiners', 'is_open']
-                widgets = {
-                    'examiners': DevilryMultiSelectFewUsersDb,
-                    }
-        return Form
+    class AssignmentGroupForm(forms.ModelForm):
+        parentnode = forms.ModelChoiceField(required=True,
+                queryset = Assignment.where_is_admin(request.user))
+        examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
+                                         required=False)
+                    
+        class Meta:
+            model = AssignmentGroup
+            fields = ['parentnode', 'name', 'examiners', 'is_open']
+            widgets = {
+                'examiners': DevilryMultiSelectFewUsersDb,
+                }
 
-    def create_view(self):
-        DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
-                extra=1, form=DeadlineForm)
-        CandidatesFormSet = inlineformset_factory(AssignmentGroup,
-                Candidate, extra=1)
+    DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
+            extra=1, form=DeadlineForm)
+    CandidatesFormSet = inlineformset_factory(AssignmentGroup,
+            Candidate, extra=1)
 
-        model_name = AssignmentGroup._meta.verbose_name
-        model_name_dict = {'model_name': model_name}
-        form_cls = self.create_form()
+    model_name = AssignmentGroup._meta.verbose_name
+    model_name_dict = {'model_name': model_name}
 
-        if self.request.POST:
-            objform = form_cls(self.request.POST, instance=self.obj)
-            deadline_formset = DeadlineFormSet(self.request.POST,
-                    instance=self.obj)
-            candidates_formset = CandidatesFormSet(self.request.POST,
-                    instance=self.obj)
-            if objform.is_valid() \
-                    and deadline_formset.is_valid() \
-                    and candidates_formset.is_valid():
-                if not self.obj.can_save(self.request.user):
-                    return HttpResponseForbidden("Forbidden")
-                objform.save()
-                deadline_formset.save()
-                candidates_formset.save()
-                success_url = self.get_reverse_url(str(self.obj.pk))
-                return HttpResponseRedirect(success_url)
-        else:
-            objform = form_cls(instance=self.obj)
-            deadline_formset = DeadlineFormSet(instance=self.obj)
-            candidates_formset = CandidatesFormSet(instance=self.obj)
+    if request.method == 'POST':
+        assignmentgroupform = AssignmentGroupForm(request.POST,
+                instance=assignmentgroup)
+        deadline_formset = DeadlineFormSet(request.POST,
+                instance=assignmentgroup)
+        candidates_formset = CandidatesFormSet(request.POST,
+                instance=assignmentgroup)
+        if assignmentgroupform.is_valid() \
+                and deadline_formset.is_valid() \
+                and candidates_formset.is_valid():
+            if not assignmentgroup.can_save(request.user):
+                return HttpResponseForbidden("Forbidden")
+            assignmentgroupform.save()
+            deadline_formset.save()
+            candidates_formset.save()
+            success_url = reverse('devilry-admin-edit_assignmentgroup-success',
+                    args=[str(assignmentgroup.pk)])
+            return HttpResponseRedirect(success_url)
+    else:
+        assignmentgroupform = AssignmentGroupForm(instance=assignmentgroup)
+        deadline_formset = DeadlineFormSet(instance=assignmentgroup)
+        candidates_formset = CandidatesFormSet(instance=assignmentgroup)
 
-        if self.obj.id == None:
-            self.title = _('New %(model_name)s') % model_name_dict
-        else:
-            self.title = _('Edit %(model_name)s' % model_name_dict)
+    return render_to_response('devilry/admin/edit_assignmentgroup.django.html', {
+        'assignmentgroupform': assignmentgroupform,
+        'assignmentgroup': assignmentgroup,
+        'deadline_form': deadline_formset,
+        'candidates_form': candidates_formset,
+        'messages': messages,
+        'isnew': isnew,
+        }, context_instance=RequestContext(request))
 
-        return render_to_response(
-                'devilry/admin/edit_assignmentgroup.django.html', {
-                    'title': self.title,
-                    'model_plural_name': AssignmentGroup._meta.verbose_name_plural,
-                    'nodeform': objform,
-                    'messages': self.messages,
-                    'post_url': self.post_url,
-                    'deadline_form': deadline_formset,
-                    'candidates_form': candidates_formset
-                }, context_instance=RequestContext(self.request))
+@login_required
+def list_assignmentgroups(request):
+    return list_nodes_generic(request, AssignmentGroup)
+
+@login_required
+def save_assignmentgroups(request, assignment_id):
+    assignment = get_object_or_404(Assignment, pk=assignment_id)
+    return CreateAssignmentgroups().save_assignmentgroups(request, assignment)
+
+
+
+
 
 
 
@@ -171,23 +187,12 @@ class CreateAssignmentgroups(object):
                     cand.save()
                     ag.candidates.add(cand)
                     ag.save()
-                except Exception as e:
+                except Exception, e:
                     print e
                     print "user %s doesnt exist" % (user_cand)
 
 
-@login_required
-def edit_assignmentgroup(request, obj_id=None, successful_save=False):
-    return EditAssignmentGroup(request, obj_id, successful_save).create_view()
 
-@login_required
-def list_assignmentgroups(request):
-    return list_nodes_generic(request, AssignmentGroup)
-
-@login_required
-def save_assignmentgroups(request, assignment_id):
-    assignment = get_object_or_404(Assignment, pk=assignment_id)
-    return CreateAssignmentgroups().save_assignmentgroups(request, assignment)
 
 @login_required
 def create_assignmentgroups(request, assignment_id):
