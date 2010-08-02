@@ -8,7 +8,7 @@ LOGIN_FAILED = 2
 SUCCESSFUL_LOGIN = 3
 
 ## Connect to unprotect server
-host = "http://localhost:8000/xmlrpc/"
+host = "http://localhost:8000/"
 server = ServerProxy(host, transport=CookieTransport('cookies.txt'),
         allow_none=True)
 
