@@ -2,15 +2,38 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{{ title }}{% endblock %}
-{% block heading %}{{ title }}{% endblock %}
+{% block title %}
+  {% if isnew %}
+    {% trans "Create assignment group" %}
+  {% else %}
+    {% trans "Edit assignment group" %}
+  {% endif %}
+{% endblock %}
+{% block heading %}
+  {% if isnew %}
+    {% trans "Create assignment group" %}
+  {% else %}
+    {% trans "Edit assignment group" %}
+  {% endif %}
+{% endblock %}
 
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='../'>{{ model_plural_name|capfirst }}</a></li>
+  <li><a href='{% url devilry-admin-list_assignments %}'>{% trans "Assignments" %}</a></li>
   <li>::</li>
-  <li>{{ title }}</li>
+  <li>
+    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
+      {{ assignment.get_path }}</a>
+  </li>
+  <li>::</li>
+  <li>
+    {% if isnew %}
+      {% trans "Create assignment group" %}
+    {% else %}
+      {% trans "Edit assignment group" %}
+    {% endif %}
+  </li>
 {% endblock %}
 
 {% block main %}
@@ -19,7 +42,13 @@
 	<p>{{ message }}</p>
 {% endif %}
 
-<form method='post' action='{% url devilry-admin-edit_assignmentgroup assignmentgroup.id %}'>
+<form method='post' action='
+    {% if assignmentgroup.id %}
+      {% url devilry-admin-edit_assignmentgroup assignment.id assignmentgroup.id %}
+    {% else %}
+      {% url devilry-admin-create_assignmentgroup assignment.id %}
+    {% endif %}
+    '>
   {% with assignmentgroupform as form %}
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}

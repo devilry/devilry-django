@@ -31,27 +31,29 @@ class DeadlineForm(forms.ModelForm):
 
 
 @login_required
-def edit_assignmentgroup(request, assignmentgroup_id=None, successful_save=False):
+def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
+        successful_save=False):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
     isnew = assignmentgroup_id == None
     if isnew:
-        assignmentgroup = AssignmentGroup()
+        assignmentgroup = AssignmentGroup(parentnode=assignment)
     else:
         assignmentgroup = get_object_or_404(AssignmentGroup,
-                id=assignmentgroup_id)
+                id=assignmentgroup_id, parentnode=assignment)
     messages = UiMessages()
 
     if successful_save:
         messages.add_success(_("Assignment group successfully saved."))
     
     class AssignmentGroupForm(forms.ModelForm):
-        parentnode = forms.ModelChoiceField(required=True,
-                queryset = Assignment.where_is_admin(request.user))
+        #parentnode = forms.ModelChoiceField(required=True,
+                #queryset = Assignment.where_is_admin(request.user))
         examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
                                          required=False)
                     
         class Meta:
             model = AssignmentGroup
-            fields = ['parentnode', 'name', 'examiners', 'is_open']
+            fields = ['name', 'examiners', 'is_open']
             widgets = {
                 'examiners': DevilryMultiSelectFewUsersDb,
                 }
@@ -80,7 +82,7 @@ def edit_assignmentgroup(request, assignmentgroup_id=None, successful_save=False
             deadline_formset.save()
             candidates_formset.save()
             success_url = reverse('devilry-admin-edit_assignmentgroup-success',
-                    args=[str(assignmentgroup.pk)])
+                    args=[str(assignment.id), str(assignmentgroup.id)])
             return HttpResponseRedirect(success_url)
     else:
         assignmentgroupform = AssignmentGroupForm(instance=assignmentgroup)
@@ -88,8 +90,9 @@ def edit_assignmentgroup(request, assignmentgroup_id=None, successful_save=False
         candidates_formset = CandidatesFormSet(instance=assignmentgroup)
 
     return render_to_response('devilry/admin/edit_assignmentgroup.django.html', {
-        'assignmentgroupform': assignmentgroupform,
+        'assignment': assignment,
         'assignmentgroup': assignmentgroup,
+        'assignmentgroupform': assignmentgroupform,
         'deadline_form': deadline_formset,
         'candidates_form': candidates_formset,
         'messages': messages,

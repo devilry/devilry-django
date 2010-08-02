@@ -110,6 +110,11 @@ body {
 }
 #breadcrumbs a {
 	color: #776B5F;
+	text-decoration: underline;
+}
+#breadcrumbs a:hover {
+	color: #333;
+	text-decoration: underline;
 }
 
 
@@ -190,7 +195,7 @@ body {
 	width: 200px;
 	font-size: 0.8em;
 	float: right;
-	margin: 45px -70px 0 0;
+	margin: 45px 0 0 0;
 }
 #sidebar a {
 	color: #acc2d6;
@@ -205,12 +210,12 @@ body {
 	background-color: #303030;
 	color: #ccc;
 }
-#sidebar .section:first-child {
+/*#sidebar .section:first-child {*/
 	/*background-color: #44513c;*/
 	/*color: #c3d0bb;*/
-	background-color: #2b4358;
-	color: #dfe8ef;
-}
+	/*background-color: #2b4358;*/
+	/*color: #dfe8ef;*/
+/*}*/
 #sidebar .section h2 {
 	font-size: 1.6em;
 	font-family: "Arial Black", sans-serif;
@@ -257,12 +262,12 @@ ul {
 	margin-bottom: 2px;
 }
 
-#content a {
+#content a, #messages a {
 	color: #0B5A9D;
 	text-decoration: none;
 }
 
-#content a:hover {
+#content a:hover, #messages a:hover {
 	text-decoration: underline;
 }
 

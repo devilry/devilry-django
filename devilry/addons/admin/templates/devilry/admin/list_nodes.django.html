@@ -17,7 +17,7 @@
 
 <ul>
   {% for node in nodes.all %}
-    <li><a href='edit/{{ node.pk }}'>{{ node }}</a></li>
+    <li><a href='{{ node.pk }}/edit'>{{ node }}</a></li>
   {% endfor %}
 </ul>
 {% endblock %}

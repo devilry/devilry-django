@@ -22,7 +22,6 @@ def main(request):
         'subjects': Subject.where_is_admin(request.user),
         'periods': Period.where_is_admin(request.user),
         'assignments': Assignment.where_is_admin(request.user),
-        'assignmentgroups': AssignmentGroup.where_is_admin(request.user),
         }, context_instance=RequestContext(request))
 
 @login_required

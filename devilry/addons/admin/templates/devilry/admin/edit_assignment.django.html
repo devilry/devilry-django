@@ -11,11 +11,14 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='../'>{% trans "Assignments" %}</a></li>
+  <li><a href='{% url devilry-admin-list_assignments %}'>{% trans "Assignments" %}</a></li>
   <li>::</li>
   <li>
-    {% if isnew %}{% trans "Create" %}{% else %}{% trans "Edit" %}{% endif %}
-    assignment
+    {% if isnew %}
+      {% trans "Create assignment" %}
+    {% else %}
+      {{ assignment.get_path }}
+    {% endif %}
   </li>
 {% endblock %}
 
@@ -25,7 +28,13 @@
 	<p>{{ message }}</p>
 {% endif %}
 
-<form method='post' action='{% url devilry-admin-edit_assignment assignment.id %}'>
+<form method='post' action='
+    {% if assignment.id %}
+      {% url devilry-admin-edit_assignment assignment.id %}
+    {% else %}
+      {% url devilry-admin-create_assignment %}
+    {% endif %}
+    '>
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
@@ -41,30 +50,48 @@
 
 
 {% if not isnew %}
-  <a href='{% url devilry-admin-create_assignmentgroups assignment.id %}'>Create assignmentgroups</a>
-
-  <table border="1">
+  <h2>Assignment groups</h2>
+  <table class='horizontal_ordered_table'>
     <tr>
-      <th>Name</th>
       <th>Candidates</th>
+      <th>Examiners</th>
+      <th>Name</th>
+      <th>&nbsp;</th>
     </tr>
 
-  {% for assignmentgroup in assignment.assignmentgroups.all %}
-  <tr>
-    <td>{% if assignmentgroup.name %} {{ assignmentgroup.name }} {% endif %}</td>
-	
-    <td> 
-	  {% for cand in assignmentgroup.candidates.all %}
-	  
-	  {% if not forloop.first %},
-	  {% endif %}
-	  {{ cand.student }}
-	  {% endfor %}
-	</td>
-	<td> <a href='/admin/assignmentgroups/edit/{{ assignmentgroup.id }}'>{% trans "Edit" %}</a></td>
-	
-  </tr>
-  {% endfor %}
-</table>
+    {% for assignmentgroup in assignment.assignmentgroups.all %}
+      <tr>
+        <td> 
+          {{ assignmentgroup.candidates.all|join:", " }}
+        </td>
+        <td> 
+          {{ assignmentgroup.examiners.all|join:", " }}
+        </td>
+        <td>
+          {% if assignmentgroup.name %} {{ assignmentgroup.name }} {% endif %}
+        </td>
+        <td>
+          <a href='{% url devilry-admin-edit_assignmentgroup assignment.id assignmentgroup.id %}'>
+            {% trans "Edit" %}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+
+  <h3>{% trans "Actions" %}:</h3>
+  <ul>
+    <li>
+      <a href='{% url devilry-admin-create_assignmentgroup assignment.id %}'>
+        Create assignment group
+      </a>
+    </li>
+    <li>
+      <a href='{% url devilry-admin-create_assignmentgroups assignment.id %}'>
+        Create many assignment groups (advanced)
+      </a>
+    </li>
+  </ul>
 {% endif %}
 {% endblock %}
