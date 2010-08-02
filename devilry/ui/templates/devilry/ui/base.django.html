@@ -21,41 +21,42 @@
 		{% block headextra %}{% endblock %}
 	</head>
 	<body>
-    <div id='branding'>
-      {% block logo %}
-        <div id='logo'>
-          <div id='logo-maintext'>Devilry</div>
-          <div id='logo-subtext'>
-            <a href='http://devilry.github.com'>http://devilry.github.com</a>
-          </div>
-        </div>
-      {% endblock %}
-    </div>
-
-
-    <div id='topbar'>
-    {% block topbar %}
-      <ul id='links'>
-        {% block links %}
-          <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
-          {% if user.is_authenticated %}
-            <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
-          {% endif %}
-          {% block links-extra %}{% endblock %}
+    <div id='top'>
+      <div id='linkbar'>
+        {% block linkbar %}
+          <ul id='links'>
+            {% block links %}
+              <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
+              {% if user.is_authenticated %}
+                <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
+              {% endif %}
+              {% block links-extra %}{% endblock %}
+            {% endblock %}
+          </ul>
         {% endblock %}
-      </ul>
-    {% endblock %}
-    </div>
+      </div>
 
-    <div id='page'>
-    {% block page %}
-      {% block sidebar %}{% endblock %}
+      <div id='branding'>
+        {% block logo %}
+          <div id='logo'>
+            <div id='logo-maintext'>Devilry</div>
+            <div id='logo-subtext'>
+              <a href='http://devilry.github.com'>http://devilry.github.com</a>
+            </div>
+          </div>
+        {% endblock %}
+      </div>
 
       <div id='breadcrumbs'>
         <ul>
           {% block breadcrumbs %}{% endblock %}
         </ul>
       </div>
+    </div>
+
+    <div id='page'>
+    {% block page %}
+      {% block sidebar %}{% endblock %}
 
       <div id='heading'>
         <h1>{% block heading %}{% endblock %}</h1>

@@ -38,7 +38,8 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    next = form.cleaned_data.get('next') or settings.DEVILRY_MAIN_PAGE
+                    next = form.cleaned_data.get('next') or \
+                            settings.DEVILRY_MAIN_PAGE or '/'
                     return http.HttpResponseRedirect(next)
                 else:
                     return http.HttpResponseForbidden("Acount is not active")

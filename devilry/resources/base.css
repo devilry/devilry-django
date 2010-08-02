@@ -2,21 +2,19 @@
 @import "rst.css";
 
 
-/*
-Colors:
-	D4D2CE
-*/
-
-
 body {
 	font-family: "Tahoma", "Geneva", sans-serif;
 	margin: 0;
 	padding: 0;
 	/*background-color: #fff;*/
 	/*background-image: url("theme-bg.gif");*/
+	background-color: #fff;
 }
 
-
+#top {
+	padding: 0 6%;
+	background-color: #000;
+}
 
 
 
@@ -25,14 +23,13 @@ body {
  **********************************************************/
 
 #branding {
-	width: 950px;
-	padding: 0;
-	margin: 20px auto 20px auto;
+	margin: 0;
 	text-align: left;
+	padding: 30px 0;
 }
 
 #logo-maintext {
-	color: #B30000;
+	color: #fff;
 	font-size: 35px;
 	font-family: "Arial Black", sans-serif;
 	font-weight: bold;
@@ -41,39 +38,78 @@ body {
 	font-family: "Arial Black", sans-serif;
 }
 #logo-subtext a {
-	color: #B5ACA3;
 	text-decoration: none;
+	color: #B30000;
 }
 #logo-subtext a:hover {
 	color: #f00;
 }
 
 /***********************************************************
- * Topbar
+ * Linkbar
  **********************************************************/
 
-#topbar {
+#linkbar {
 	/*background-color: #000;*/
-	width: 950px;
-	margin: 0 auto 0 auto;
-	padding: 5px 20px 10px 20px;
+	float: right;
 }
 
-#topbar ul {
+#linkbar ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	text-align: right;
 }
-#topbar li {
+#linkbar li {
 	font-size: 11px;
 	display: inline-block;
 	padding: 0;
 	margin: 0 0 0 20px;
 	color: #888;
 }
-#topbar a {
-	color: #888;
+#linkbar a {
+	color: #aaa;
+	font-weight: bold;
+	text-decoration: none;
+}
+#linkbar a:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+
+/***********************************************************
+ * Breadcrumbs
+ **********************************************************/
+
+#breadcrumbs {
+	/*border-top: 1px solid #D4D2CE;*/
+	background-color: #eaeaea;
+	/*border-bottom: 1px solid #D4D2CE;*/
+	border-style: solid;
+	border-width: 1px 1px 0 1px;
+	margin: 0 -20px 0 -20px;
+	padding: 5px 20px 10px 20px;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+}
+
+#breadcrumbs ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#breadcrumbs li {
+	font-size: 11px;
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	color: #776B5F;
+}
+#breadcrumbs a {
+	color: #776B5F;
 }
 
 
@@ -83,14 +119,68 @@ body {
 
 #page {
 	clear: both;
+	padding: 20px 6%;
+	margin: 0;
+	background-color: #f8f8f8;
+}
+
+
+.bigbox {
+	clear: both;
 	background-color: #fff;
-	width: 950px;
-	padding: 0 20px 20px 20px;
-	margin: 0 auto 0 auto;
+	padding: 0 10px 10px 10px;
+	margin: 20px;
 	-moz-border-radius-bottomleft: 10px;
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px;
 	-webkit-border-bottom-right-radius: 10px;
+	background-color: #fff;
+
+}
+
+
+/***********************************************************
+ * Page heading
+ **********************************************************/
+#heading h1 {
+	color: #000;
+	font-size: 1.8em;
+	font-family: "Georgia", serif;
+	font-weight: normal;
+	padding: 0 0 15px 0;
+	margin: 0;
+}
+
+
+/***********************************************************
+ * Page messages
+ **********************************************************/
+#messages ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#messages li {
+	padding: 5px;
+	font-size: 0.8em;
+	margin: 10px 0 10px 0;
+}
+#messages li.success_message{
+	border: 1px solid #315C00;
+	background-color: #BFFF75;
+}
+#messages li.info_message {
+	border: 1px solid #808000;
+	background-color: #FFFFCC;
+}
+#messages li.warning_message {
+	border: 1px solid #B34700;
+	background-color: #FFB380;
+}
+#messages li.error_message {
+	border: 3px solid #000;
+	background-color: #CC0000;
 }
 
 /***********************************************************
@@ -140,81 +230,6 @@ body {
 }
 
 
-/***********************************************************
- * Page breadcrumbs
- **********************************************************/
-
-#breadcrumbs {
-	border-top: 1px solid #D4D2CE;
-	background-color: #ECEBE9;
-	border-bottom: 1px solid #D4D2CE;
-	margin: 0 -20px 0 -20px;
-	padding: 5px 20px 10px 20px;
-}
-
-#breadcrumbs ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-#breadcrumbs li {
-	font-size: 11px;
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-	color: #776B5F;
-}
-#breadcrumbs a {
-	color: #776B5F;
-}
-
-
-/***********************************************************
- * Page heading
- **********************************************************/
-#heading h1 {
-	color: #000;
-	font-size: 1.5em;
-	/*font-family: "Georgia", serif;*/
-	font-family: "Century Gothic", sans-serif;
-	font-weight: normal;
-	margin: 20px 0 20px 0;
-	border-bottom: 1px dotted #000;
-}
-
-
-/***********************************************************
- * Page messages
- **********************************************************/
-#messages ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-#messages li {
-	padding: 5px;
-	font-size: 0.8em;
-	margin: 10px 0 10px 0;
-}
-#messages li.success_message{
-	border: 1px solid #315C00;
-	background-color: #BFFF75;
-}
-#messages li.info_message {
-	border: 1px solid #808000;
-	background-color: #FFFFCC;
-}
-#messages li.warning_message {
-	border: 1px solid #B34700;
-	background-color: #FFB380;
-}
-#messages li.error_message {
-	border: 3px solid #000;
-	background-color: #CC0000;
-}
-
-
 
 /***********************************************************
  * Page content
@@ -242,6 +257,15 @@ ul {
 	margin-bottom: 2px;
 }
 
+#content a {
+	color: #0B5A9D;
+	text-decoration: none;
+}
+
+#content a:hover {
+	text-decoration: underline;
+}
+
 #page-footer {
 	clear: both;
 }
@@ -263,12 +287,15 @@ table.vertical_infotable th {
 	text-align: right;
 	font-weight: normal;
 	font-style: italic;
-	/*background-color: #ECEBE9;*/
+	background-color: #ECEBE9;
 }
 table.vertical_infotable td,
 table.vertical_infotable th {
 	padding: 2px 6px;
 	border: 1px solid #D4D2CE;
+}
+table.vertical_infotable td {
+	background-color: #fff;
 }
 table.vertical_infotable ul.files-list {
 	list-style: none;
@@ -289,7 +316,7 @@ table.horizontal_ordered_table {
 table.horizontal_ordered_table th {
 	text-align: left;
 	font-weight: normal;
-	/*background-color: #ECEBE9;*/
+	background-color: #ECEBE9;
 	padding: 4px;
 	border: 1px solid #D4D2CE;
 	border-bottom-width: 3px;
@@ -298,6 +325,7 @@ table.horizontal_ordered_table th {
 table.horizontal_ordered_table td {
 	padding: 4px;
 	border: 1px solid #D4D2CE;
+	background-color: #fff;
 }
 
 
@@ -309,7 +337,6 @@ table.horizontal_ordered_table td {
 #footer {
 	text-align: right;
 	clear: both;
-	width: 950px;
 	padding: 20px 20px 20px 20px;
 	margin: 0 auto 0 auto;
 	font-size: 0.8em;
