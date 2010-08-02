@@ -17,7 +17,7 @@ class ExaminerCommand(Command):
 
 class ListAssignments(ExaminerCommand):
     name = 'list'
-    description = 'List assignments where the authenticated user is examiner.'
+    short_info = 'List assignments where the authenticated user is examiner.'
 
     def command(self):
         self.read_config()
@@ -34,7 +34,7 @@ class ListAssignments(ExaminerCommand):
 
 class ListAssignmentGroups(ExaminerCommand):
     name = 'list-groups'
-    description = 'List assignment groups on a given assignment.'
+    short_info = 'List assignment groups on a given assignment.'
     args_help = '<assignment-path>'
 
     def command(self):
@@ -58,8 +58,35 @@ class ListAssignmentGroups(ExaminerCommand):
 
 class Sync(ExaminerCommand):
     name = 'sync'
-    description = 'Sync all deliveries (including all files) where the '\
+    short_info = 'Sync all deliveries (including all files) where the '\
             'authenticated user is examiner.'
+    description = """
+File hierarchy
+==============
+
+[assignment path]
+    [assignment group member (usernames separated with -)]
+        [deliveries numbered from 1 and up, 1 beeing the first delivery]
+            feedback.rst
+            files/
+                [all files in the delivery]
+
+
+Overwriting files
+=================
+
+The sync command does not overwrite any files except the ones it is supposed
+to overwrite. Those files have their name prefixed with ".overwriteable-".
+If you want "sync" to overwrite other files, you have to delete them, and
+re-run sync.
+
+Some files have to be overwritten, but are backed up if needed. The backup
+is just the filename suffixed with ".bak-N", where N is the smallest unused
+number which is greater than 0. You will meet this behavior with
+"feedback.rst", and with a plugin-spesific file if the assignment uses a
+grade-plugin requiering you to edit a file instead of using the -g option to
+the feedback command.
+"""
 
     def command(self):
         self.read_config()
@@ -69,8 +96,7 @@ class Sync(ExaminerCommand):
 
 class Feedback(ExaminerCommand):
     name = 'feedback'
-    description = 'Submit feedback on a delivery.'
-    args_help = '[delivery-dir]'
+    short_info = 'Submit feedback on a delivery.'
 
     def add_options(self):
         help = 'Id of a existing delivery.'
@@ -165,7 +191,7 @@ class Feedback(ExaminerCommand):
 
 class InfoCmd(Command):
     name = 'info'
-    description = 'Show info about current directory.'
+    short_info = 'Show info about current directory.'
     args_help = ''
 
     def _assignment(self, info):

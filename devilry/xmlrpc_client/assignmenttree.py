@@ -563,6 +563,7 @@ class AssignmentSync(AssignmentTreeWalker):
                 open(gradeconffile,'wb').write(fc)
 
     def feedback_none(self, delivery, deliverydir, gradeconf):
+        overwrite_with_backup(deliverydir, 'feedback.rst', '')
         self._handle_gradeconf(deliverydir, gradeconf)
 
     def feedback_exists(self, delivery, deliverydir, feedback, gradeconf):

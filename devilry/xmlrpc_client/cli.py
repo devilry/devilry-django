@@ -71,7 +71,7 @@ class Cli(object):
             print '   %-12s %s' % ('help', 'Show command help.')
             if self._extra_help:
                 print
-                print Template(self._extra_help, prog=prog)
+                print Template(self._extra_help).safe_substitute(prog=prog)
             raise SystemExit()
 
         command = args[1]
@@ -82,7 +82,7 @@ class Cli(object):
                 self._print_commands()
                 raise SystemExit()
             c = self.commands_dict[args[2]]()
-            c.print_help()
+            c.exit_help()
         else:
             c = self.commands_dict[command]()
             c.cli(args[2:])
@@ -97,7 +97,7 @@ class Cli(object):
         """ Print available commands. """
         print 'The available commands are:'
         for c in self.commands:
-            print '   %-12s %s' % (c.name, c.description)
+            print '   %-12s %s' % (c.name, c.short_info)
 
     def add_command(self, command):
         """ Add command.
@@ -110,10 +110,34 @@ class Cli(object):
 
 
 class Command(object):
-    """ Base class for all commands in the cli. """
-    description = None
+    """ Base class for all commands in the cli.
+
+    .. attribute:: name
+
+        Name of the argument. Lowercase-only and no spaces. Max 12
+        characters. Use ``-`` to improve readablilty on long names.
+    
+    .. attribute:: short_info
+
+        Short info shown when :class:`Cli` list commands.
+
+    .. attribute:: description
+
+        Description shown in addition to option help and usage.
+
+    .. attribute:: args_help
+
+        Description of arguments in usage. Use ``[arg-description]`` for
+        optional arguments and ``<arg-description>`` for required arguments.
+
+    .. attribute:: urlpath
+
+        Path to the xmlrpc used by the command.
+    """
     name = None
-    args_help = '[args]'
+    short_info = None
+    description = None
+    args_help = ''
     urlpath = '/xmlrpc/'
 
 
@@ -127,7 +151,8 @@ class Command(object):
         self.config = ConfigParser()
         self._rootdir = None
         self.op = OptionParser(usage="usage: %%prog %s [options] %s" % (
-                self.name, self.args_help))
+                self.name, self.args_help),
+                description=(self.description or ''))
         self.op.add_option("-q", "--quiet", action="store_const",
             const=logging.ERROR, dest="loglevel", default=logging.INFO,
             help="Don't show extra information (only errors).")
@@ -293,7 +318,7 @@ class Init(Command):
     Init command.
     """
     name = 'init'
-    description = 'Initialize.'
+    short_info = 'Initialize.'
     args_help = '<url>'
 
     def command(self):
@@ -315,7 +340,7 @@ class Init(Command):
 class Login(CommandUsingConfig):
     """ Login command. """
     name = 'login'
-    description ='Login to the devilry server.' 
+    short_info ='Login to the devilry server.' 
     args_help = ''
     urlpath = '/xmlrpc/'
 
