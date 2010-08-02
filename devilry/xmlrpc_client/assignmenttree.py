@@ -514,6 +514,10 @@ class AssignmentSync(AssignmentTreeWalker):
                 time_of_delivery = delivery['time_of_delivery'])
         info.write()
 
+        lastsavefile = os.path.join(info.get_dirpath(),
+                overwriteable_filename('feedback.lastsave.rst'))
+        overwrite_with_backup(info.get_dirpath(), 'feedback.rst', '', lastsavefile)
+
     def delivery_exists(self, delivery, info):
         log.debug('%s already exists.' % info.get_dirpath())
 
@@ -563,9 +567,6 @@ class AssignmentSync(AssignmentTreeWalker):
                 open(gradeconffile,'wb').write(fc)
 
     def feedback_none(self, delivery, deliverydir, gradeconf):
-        #lastsavefile = os.path.join(deliverydir,
-                #overwriteable_filename('feedback.lastsave.rst'))
-        #overwrite_with_backup(deliverydir, 'feedback.rst', '', lastsavefile)
         self._handle_gradeconf(deliverydir, gradeconf)
 
     def feedback_exists(self, delivery, deliverydir, feedback, gradeconf):

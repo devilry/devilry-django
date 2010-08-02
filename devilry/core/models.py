@@ -975,6 +975,14 @@ class Delivery(models.Model):
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
 
+    .. attribute:: number
+
+        A django.db.models.PositiveIntegerField_ with the delivery-number
+        within this assignment-group. This number is automatically
+        incremented within each assignmentgroup, starting from 1. Must be
+        unique within the assignment-group. Automatic incrementation is used
+        if number is None when calling :meth:`save` (or :meth:`begin`).
+
     .. attribute:: delivered_by
 
         A django.db.models.ForeignKey_ pointing to the user that uploaded

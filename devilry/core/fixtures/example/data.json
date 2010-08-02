@@ -495,6 +495,7 @@
             "delivered_by": 6, 
             "successful": true, 
             "time_of_delivery": "2010-07-29 15:18:19", 
+			"number": 1,
             "assignment_group": 7
         }
     }, 
@@ -505,6 +506,7 @@
             "delivered_by": 8, 
             "successful": true, 
             "time_of_delivery": "2010-07-18 15:33:01", 
+			"number": 2,
             "assignment_group": 2
         }
     }, 
@@ -515,6 +517,7 @@
             "delivered_by": 8, 
             "successful": true, 
             "time_of_delivery": "2010-07-18 15:32:35", 
+			"number": 1,
             "assignment_group": 2
         }
     }, 
@@ -525,6 +528,7 @@
             "delivered_by": 6, 
             "successful": true, 
             "time_of_delivery": "2010-07-18 15:22:18", 
+			"number": 3,
             "assignment_group": 1
         }
     }, 
@@ -535,6 +539,7 @@
             "delivered_by": 6, 
             "successful": true, 
             "time_of_delivery": "2010-07-03 16:13:54", 
+			"number": 1,
             "assignment_group": 6
         }
     }, 
@@ -545,6 +550,7 @@
             "delivered_by": 6, 
             "successful": true, 
             "time_of_delivery": "2010-07-02 02:25:35", 
+			"number": 2,
             "assignment_group": 1
         }
     }, 
@@ -555,6 +561,7 @@
             "delivered_by": 6, 
             "successful": true, 
             "time_of_delivery": "2010-07-02 02:25:25", 
+			"number": 1,
             "assignment_group": 1
         }
     }, 
