@@ -258,6 +258,20 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         info.read([self.infofile])
         self.assertEquals(info.get('info', 'feedback_text'), 'test')
 
+    def test_feedback_text(self):
+        delivery = devilry.core.models.Delivery.objects.get(id=1)
+        f = delivery.get_feedback()
+        f.text = 'test'
+        f.published = True
+        f.last_modified = datetime.now()
+        f.last_modified_by = self.examiner1
+        f.set_grade_from_xmlrpcstring('+')
+        f.save()
+        self.sync()
+        info = ConfigParser()
+        info.read([self.infofile])
+        self.assertEquals(info.get('info', 'feedback_text'), 'test')
+
 
 # WARNING: We are have no tests for filemeta, because all the other tests
 # use the django test-client, and it does not support file-downloads using

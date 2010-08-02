@@ -551,30 +551,17 @@ class AssignmentSync(AssignmentTreeWalker):
         log.debug('%s already exists.' % filepath)
 
     def _handle_gradeconf(self, deliverydir, gradeconf,
-            grade_as_xmlrpcstring=None):
-        filename = gradeconf['filename']
-        if gradeconf and filename:
-            gradeconffile = os.path.join(deliverydir, filename)
-            if os.path.exists(gradeconffile):
-                contents = open(gradeconffile, 'rb').read()
-                default_contents = contents == gradeconf['default_filecontents']
-                if grade_as_xmlrpcstring and default_contents:
-                    log.info('+ Grade file from server: %s' % gradeconffile)
-                    open(gradeconffile, 'wb').write(grade_as_xmlrpcstring)
-                else:
-                    log.debug('%s already exists. If you want a clean one, ' \
-                            'simply delete it and sync again.' % gradeconffile)
-            else:
-                if grade_as_xmlrpcstring:
-                    fc = grade_as_xmlrpcstring
-                    log.info('+ Grade file from server: %s' % gradeconffile)
-                else:
-                    fc = gradeconf['default_filecontents']
-                    log.info('+ Grade file with defaults: %s' % gradeconffile)
-                open(gradeconffile,'wb').write(fc)
+            grade_as_xmlrpcstring):
+        filename = gradeconf.get('filename')
+        if filename:
+            lastsavefile = os.path.join(deliverydir,
+                    overwriteable_filename(filename + '.lastsave'))
+            overwrite_with_backup(deliverydir, filename,
+                    grade_as_xmlrpcstring, lastsavefile)
 
     def feedback_none(self, delivery, deliverydir, gradeconf):
-        self._handle_gradeconf(deliverydir, gradeconf)
+        self._handle_gradeconf(deliverydir, gradeconf,
+                gradeconf.get('default_filecontents', ''))
 
     @classmethod
     def set_feedbackinfo(cls, deliverydir, feedback):
@@ -593,7 +580,7 @@ class AssignmentSync(AssignmentTreeWalker):
         self.__class__.set_feedbackinfo(deliverydir, feedback)
 
         # TODO: Use this for grade-files as well
-        feedbackfile = os.path.join(deliverydir, 'feedback.rst')
+        # TODO: Make tests for this
         lastsavefile = os.path.join(deliverydir,
                 overwriteable_filename('feedback.lastsave.rst'))
         overwrite_with_backup(deliverydir, 'feedback.rst', feedback['text'],
