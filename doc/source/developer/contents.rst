@@ -12,6 +12,7 @@ Developers
     core.utils
     core.deliverystore
     documentation
+    develop
     plugins
     grade-plugins
     xmlrpc

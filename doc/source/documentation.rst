@@ -40,6 +40,7 @@ Plugin development
 Developing devilry
 ------------------
 
+* :ref:`developer-develop`
 * :ref:`developer-documentation`
 * :ref:`developer-commandline`
 * :ref:`developer-selenium-tests`

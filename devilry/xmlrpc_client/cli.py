@@ -1,3 +1,4 @@
+from string import Template
 import getpass
 from ConfigParser import ConfigParser
 from xmlrpclib import ServerProxy
@@ -45,9 +46,14 @@ def format_long_message(title, msg, always_show_title=True):
 
 
 class Cli(object):
-    def __init__(self, commands=[]):
+    def __init__(self, commands=[], extra_help=None):
+        """
+        :param commands: A list of subclasses of :class:`Command`.
+        :param extra_help: Extra help text.
+        """
         self.commands = []
         self.commands_dict = {}
+        self.set_extra_help(extra_help)
         for command in commands:
             self.add_command(command)
 
@@ -57,19 +63,23 @@ class Cli(object):
         commands with :meth:`add_command`). If invalid number of arguments,
         or ``args[1]=='help', show help and raise :exc:`SystemExit`.
         """
+        prog = os.path.basename(args[0])
         if len(args) < 2:
-            print 'usage: %s <command>' % args[0]
+            print 'usage: %s <command>' % prog
             print
-            self.print_commands()
-            print '   %-10s %s' % ('help', 'Show command help.')
+            self._print_commands()
+            print '   %-12s %s' % ('help', 'Show command help.')
+            if self._extra_help:
+                print
+                print Template(self._extra_help, prog=prog)
             raise SystemExit()
 
         command = args[1]
         if command == 'help':
             if len(args) != 3:
-                print 'usage: %s help <command>' % args[0]
+                print 'usage: %s help <command>' % prog
                 print
-                self.print_commands()
+                self._print_commands()
                 raise SystemExit()
             c = self.commands_dict[args[2]]()
             c.print_help()
@@ -77,11 +87,17 @@ class Cli(object):
             c = self.commands_dict[command]()
             c.cli(args[2:])
 
-    def print_commands(self):
+    def set_extra_help(self, extra_help):
+        """
+        Set extra help text. Use $prog to show the program-name.
+        """
+        self._extra_help = extra_help
+
+    def _print_commands(self):
         """ Print available commands. """
         print 'The available commands are:'
         for c in self.commands:
-            print '   %-10s %s' % (c.name, c.description)
+            print '   %-12s %s' % (c.name, c.description)
 
     def add_command(self, command):
         """ Add command.
