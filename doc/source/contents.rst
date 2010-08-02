@@ -8,5 +8,4 @@ Devilry documentation contents
 
     index
     overview
-    documentation
     developer/contents

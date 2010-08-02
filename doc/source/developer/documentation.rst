@@ -31,8 +31,10 @@ sources are organized like this:
 * ``source/contents.rst`` --- Table of contents.
 * ``source/documentation.rst`` --- The documentation index page.
 * ``source/developer`` --- Developer documentation.
-    * ``ref/`` --- Module API reference.
-    * ``howto/`` --- How-to's. 
+
+Remember to add documentation to both ``contents.rst`` (example:
+``source/developer/contents.rst``) and to the documentation overview
+``source/overview.rst``.
 
 
 Required software

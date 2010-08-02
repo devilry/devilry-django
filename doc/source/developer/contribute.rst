@@ -1,4 +1,4 @@
-.. _developer-develop:
+.. _developer-contribute:
 
 =================================
 How to contribute code to Devilry
@@ -22,12 +22,14 @@ Source code guidelines
 
 We follow the official python guidelines for python code (`PEP 8`_). Additional
 restrictions:
+
     - Use spaces-only for indentation.
     - Write `tests`_ (selenium-tests for webinterfaces). We do not accept new
       code into the tree without tests.
-    - Write ref:`documentation <documentation>`. We prefer a howto/examples in
-      addition to API-docs (see :ref:`grade-plugins` for a example.)
+    - Write :ref:`documentation <developer-documentation>`. We prefer a
+      howto/examples in addition to API-docs (see :ref:`grade-plugins` for a
+      example.)
 
-.. _`devilry sourcecode`: http://github.com/devilry/devilry-django/tree/master/devilry/
+.. _`devilry sourcecode`: http://github.com/devilry/devilry-django
 .. _`PEP 8`: http://www.python.org/dev/peps/pep-0008/
 .. _tests: http://docs.djangoproject.com/en/dev/topics/testing/

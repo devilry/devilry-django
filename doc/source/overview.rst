@@ -1,39 +1,35 @@
 .. _overview:
 
-=========================================================
-Overview
-=========================================================
+======================================================================
+Devilry documentation overview
+======================================================================
+
+Core
+######################################################################
+
+* :ref:`devilry.core.models <devilry.core.models>`
+* :ref:`devilry.core.utils <devilry.core.utils>`
+* :ref:`devilry.core.deliverystore <devilry.core.deliverystore>`
 
 
-.. image:: http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment]
+Plugin development
+######################################################################
+
+* **The basics:** :ref:`plugins`
+* **Grade plugins:** :ref:`Overview <grade-plugins>`
+* **XMLRPC:** :ref:`Overview <xmlrpc>`
 
 
-Node
-====
+Developing devilry
+######################################################################
 
-A node at the top of the navigation tree. It is a generic element used to
-organize administrators. A Node can be organized below another Node, and it
-can only have one parent.
+* :ref:`developer-contribute`
+* :ref:`developer-documentation`
+* :ref:`developer-commandline`
+* :ref:`developer-selenium-tests`
 
-Let us say you use Devilry within two departments at *Fantasy University*;
-mathematics and physics. The university have a administration, and each
-department have their own administration. You would end ut with this
-node-hierarchy:
 
-    - Fantasy University
-        - Department of informatics
-        - Department of mathematics
+More help
+######################################################################
 
-Subject
-=======
-A subject is a course, seminar, class or something else beeing given
-regularly. A subject is further divided into periods.
-
-Period
-======
-A Period is a limited period of time, like *spring 2009*, *week 34 2010* or
-even a single day.
-
-Assignment
-==========
-TODO
+Looking for specific information? Try the :ref:`genindex` or the :ref:`contents`.
