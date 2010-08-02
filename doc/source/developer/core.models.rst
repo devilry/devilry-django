@@ -9,7 +9,13 @@
 .. currentmodule:: devilry.core.models
 
 
-.. image:: http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment]
+.. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment]
+
+.. image::
+    http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects>*[Subject], [Node]++0-child-nodes>*[Node], [Subject]++1-periods>*[Period], [Period]++1-assignments>*[Assignment]
+
+.. image::
+    http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Assignment]++1-assignmentgroups >*[AssignmentGroup], [AssignmentGroup]++1-deliveries >*[Delivery], [AssignmentGroup]++1-deadlines >*[Deadline], [Delivery]++1-feedback >0..1[Feedback], [Delivery]++1-filemetas >*[FileMeta]
 
 
 Functions and attributes
@@ -85,6 +91,15 @@ AssignmentGroup
 #########################################################
 
 .. autoclass:: devilry.core.models.AssignmentGroup
+
+
+Deadline
+#########################################################
+
+Each :class:`AssignmentGroup` have zero or more deadlines.
+
+.. autoclass:: devilry.core.models.Deadline
+
 
 Delivery
 #########################################################
