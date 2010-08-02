@@ -153,6 +153,7 @@ class Info(object):
             typename ``"Assignment"``, :exc:`Info.FileWrongTypeError` is
             raised.
         """
+        self._infofilename = overwriteable_filename('info')
         self._change_dirpath(dirpath)
         self.typename = typename
         self.cfg = SafeConfigParser()
@@ -221,7 +222,7 @@ class Info(object):
 
     def _change_dirpath(self, dirpath):
         self._dirpath = dirpath
-        self._infofilepath = os.path.join(dirpath, '.info')
+        self._infofilepath = os.path.join(dirpath, self._infofilename)
 
     def rename_if_required(self, id):
         """

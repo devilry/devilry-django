@@ -101,7 +101,7 @@ class TestAssignmentSync(TestAssignmentSyncBase):
     def setUp(self):
         super(TestAssignmentSync, self).setUp()
         self.infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
-                '.info')
+                '.overwriteable-info')
 
     def test_sync(self):
         self.assertEquals(os.listdir(self.root), ['inf1100.looong.oblig1'])
@@ -136,20 +136,20 @@ class TestAssignmentSync(TestAssignmentSyncBase):
 
     def test_assignment_missing_infofile(self):
         infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
-                '.info')
+                '.overwriteable-info')
         os.remove(infofile)
         self.assertRaises(Info.FileDoesNotExistError, self.sync)
 
     def test_assignment_infofile_missing_section(self):
         infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
-                '.info')
+                '.overwriteable-info')
         i = open(infofile, 'rb').read().replace('[info]', '[somethingelse]')
         open(infofile, 'wb').write(i)
         self.assertRaises(Info.FileMissingSectionError, self.sync)
 
     def test_assignment_infofile_wrongtype(self):
         infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
-                '.info')
+                '.overwriteable-info')
         i = open(infofile, 'rb').read().replace('type = Assignment',
                 'type = somethingelse')
         open(infofile, 'wb').write(i)
@@ -160,13 +160,13 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
     def setUp(self):
         super(TestAssignmentGroupSync, self).setUp()
         self.infofile = os.path.join(self.root, 'inf1100.looong.oblig1',
-                'student2-student3', '.info')
+                'student2-student3', '.overwriteable-info')
         self.folder = os.path.join(self.root, 'inf1100.looong.oblig1')
 
     def test_sync(self):
         l = os.listdir(self.folder)
         l.sort()
-        self.assertEquals(l, ['.info', 'student1', 'student2-student3'])
+        self.assertEquals(l, ['.overwriteable-info', 'student1', 'student2-student3'])
 
     def test_infofile(self):
         self.assertTrue(os.path.isfile(self.infofile))
@@ -190,7 +190,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.folder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', 'student1', 'student2-student3+2',
+            ['.overwriteable-info', 'student1', 'student2-student3+2',
             join_dirname_id('student2-student3', assignmentgroup.id)])
 
         # Make sure it works when id-based names are in the fs
@@ -198,7 +198,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.folder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', 'student1', 'student2-student3+2',
+            ['.overwriteable-info', 'student1', 'student2-student3+2',
             join_dirname_id('student2-student3', assignmentgroup.id)])
 
 
@@ -208,15 +208,15 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         self.agfolder = os.path.join(self.root, 'inf1100.looong.oblig1',
                 'student1')
         self.folder = os.path.join(self.agfolder, '2010-06-19_14.47.29')
-        self.infofile = os.path.join(self.folder, '.info')
+        self.infofile = os.path.join(self.folder, '.overwriteable-info')
 
     def test_sync(self):
         dircontent = os.listdir(self.folder)
         dircontent.sort()
-        self.assertEquals(dircontent, ['.info', 'files'])
+        self.assertEquals(dircontent, ['.overwriteable-info', 'files'])
         agdircontent = os.listdir(self.agfolder)
         agdircontent.sort()
-        self.assertEquals(agdircontent, ['.info', '2010-06-19_14.47.29'])
+        self.assertEquals(agdircontent, ['.overwriteable-info', '2010-06-19_14.47.29'])
 
     def test_infofile(self):
         self.assertTrue(os.path.isfile(self.infofile))
@@ -237,7 +237,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.agfolder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', '2010-06-19_14.47.29+1',
+            ['.overwriteable-info', '2010-06-19_14.47.29+1',
             join_dirname_id('2010-06-19_14.47.29', delivery.id)])
 
         # Make sure it works when id-based names are in the fs
@@ -245,7 +245,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         dircontent = os.listdir(self.agfolder)
         dircontent.sort()
         self.assertEquals(dircontent,
-            ['.info', '2010-06-19_14.47.29+1',
+            ['.overwriteable-info', '2010-06-19_14.47.29+1',
                 join_dirname_id('2010-06-19_14.47.29', delivery.id)])
 
     def test_feedback(self):
