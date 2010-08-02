@@ -152,6 +152,11 @@ class Feedback(ExaminerCommand):
                 raise SystemExit()
         return grade
 
+    def _refresh_info(self, server, deliveryinfo):
+        feedback = server.get_feedback(deliveryinfo.get_id())
+        AssignmentSync.set_feedbackinfo(deliveryinfo.get_dirpath(),
+                feedback)
+
     def command(self):
         self.read_config()
 
@@ -187,6 +192,7 @@ class Feedback(ExaminerCommand):
                     ok_message))
             else:
                 log.info('Feedback successfully saved.')
+            self._refresh_info(server, info)
 
 
 class InfoCmd(Command):
@@ -204,10 +210,23 @@ class InfoCmd(Command):
         print 'Type: %s' % info.get('type')
         print 'Id: %s' % info.get('id')
         print 'Name: %s' % (info.get('name') or '#Not defined#')
-        print 'Number of deliveries: %s' % info.get('number_of_deliveries')
+        print 'Deliveries:'
+        numbers = [n for n in os.listdir(info.get_dirpath()) if n.isdigit()]
+        numbers.sort()
+        numbers.reverse()
+        for num in numbers:
+            deliveryinfo = Info.read_open(os.path.join(info.get_dirpath(),
+                num))
+            print "   %(number)s) %(time_of_delivery)s" % deliveryinfo
 
     def _delivery(self, info):
-        print info
+        print 'Type: %(type)s' % info
+        print 'Id: %(id)s' % info
+        print 'Number: %(number)s' % info
+        if info.get('feedback_text'):
+            print 'Feedback last modified: %(feedback_last_modified)s' % info
+            print 'Feedback last modified by: %(feedback_last_modified_by)s' % info
+            print 'Current feedback format: %(feedback_format)s' % info
 
     def command(self):
         directory = os.getcwd()

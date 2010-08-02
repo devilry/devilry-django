@@ -131,6 +131,12 @@ def list_deliveries(request, assignmentgroup_id):
             time_of_delivery
                 Date/time of the delivery.
 
+            number
+                A unique number for this delivery within the
+                AssignmentGroup. The number starts at 1 with the first
+                delivery by the assignmentgroup, and is incremented for each
+                new delivery.
+
             successful
                 Boolean which tells if the delivery was completed successfully.
                 This might be false if the delivery was aborted midway through.
@@ -148,6 +154,7 @@ def list_deliveries(request, assignmentgroup_id):
             'id': d.id,
             'time_of_delivery': d.time_of_delivery,
             # TODO: Add delivered_by when it has been updated to use candidate
+            'number': d.number,
             'successful': d.successful,
             'filemetas': [{'id':f.id, 'filename':f.filename, 'size':f.size}
                 for f in d.filemetas.all()]}

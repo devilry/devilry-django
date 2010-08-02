@@ -1,7 +1,7 @@
 from tempfile import mkdtemp
 from shutil import rmtree
 import os
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser, NoOptionError
 from datetime import datetime
 from StringIO import StringIO
 import logging
@@ -207,16 +207,18 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         super(TestAssignmentDeliverySync, self).setUp()
         self.agfolder = os.path.join(self.root, 'inf1100.looong.oblig1',
                 'student1')
-        self.folder = os.path.join(self.agfolder, '2010-06-19_14.47.29')
+        self.folder = os.path.join(self.agfolder, '1')
         self.infofile = os.path.join(self.folder, '.overwriteable-info')
 
     def test_sync(self):
         dircontent = os.listdir(self.folder)
         dircontent.sort()
-        self.assertEquals(dircontent, ['.overwriteable-info', 'files'])
+        self.assertEquals(dircontent,
+                ['.overwriteable-feedback.lastsave.rst', '.overwriteable-info',
+                    'feedback.rst', 'files'])
         agdircontent = os.listdir(self.agfolder)
         agdircontent.sort()
-        self.assertEquals(agdircontent, ['.overwriteable-info', '2010-06-19_14.47.29'])
+        self.assertEquals(agdircontent, ['.overwriteable-info', '1'])
 
     def test_infofile(self):
         self.assertTrue(os.path.isfile(self.infofile))
@@ -226,7 +228,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         self.assertEquals(info.get('info', 'time_of_delivery'),
                 '2010-06-19 14:47:29')
 
-    def test_namecrash(self):
+    def test_add_delivery(self):
         assignmentgroup = devilry.core.models.AssignmentGroup.objects.get(id=1)
         delivery = devilry.core.models.Delivery.begin(assignmentgroup, self.student2)
         delivery.finish()
@@ -236,19 +238,13 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
 
         dircontent = os.listdir(self.agfolder)
         dircontent.sort()
-        self.assertEquals(dircontent,
-            ['.overwriteable-info', '2010-06-19_14.47.29+1',
-            join_dirname_id('2010-06-19_14.47.29', delivery.id)])
-
-        # Make sure it works when id-based names are in the fs
-        self.sync()
-        dircontent = os.listdir(self.agfolder)
-        dircontent.sort()
-        self.assertEquals(dircontent,
-            ['.overwriteable-info', '2010-06-19_14.47.29+1',
-                join_dirname_id('2010-06-19_14.47.29', delivery.id)])
+        self.assertEquals(dircontent, ['.overwriteable-info', '1', '3']) # 2 is not successful, and ignored..
 
     def test_feedback(self):
+        info = ConfigParser()
+        info.read([self.infofile])
+        self.assertRaises(NoOptionError, info.get, 'info', 'feedback_text')
+
         delivery = devilry.core.models.Delivery.objects.get(id=1)
         f = delivery.get_feedback()
         f.text = 'test'
@@ -258,6 +254,9 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         f.set_grade_from_xmlrpcstring('+')
         f.save()
         self.sync()
+        info = ConfigParser()
+        info.read([self.infofile])
+        self.assertEquals(info.get('info', 'feedback_text'), 'test')
 
 
 # WARNING: We are have no tests for filemeta, because all the other tests
@@ -409,20 +408,23 @@ class TestSync(TestCommandBase):
         self.assertTrue(os.path.exists(os.path.join(self.root,
             'inf1100.looong.oblig1', 'student2-student3')))
 
+        #print '\n'.join(["'%s\\n' \\" % x for x in self.logdata.getvalue().strip().split('\n')])
         self.assertEquals(self.logdata.getvalue().strip(),
             'INFO:Login successful\n' \
             'INFO:+ inf1100.looong.oblig1\n' \
             'INFO:+ inf1100.looong.oblig1/student1\n' \
-            'DEBUG:Delivery inf1100.looong.oblig1/student1/2010-06-19_16.36.57 was not successfully completed, and is therefore ignored.\n' \
-            'INFO:+ inf1100.looong.oblig1/student1/2010-06-19_14.47.29\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student1/2 was not successfully completed, and is therefore ignored.\n' \
+            'INFO:+ inf1100.looong.oblig1/student1/1\n' \
             'INFO:+ inf1100.looong.oblig1/student2-student3\n' \
-            'DEBUG:Delivery inf1100.looong.oblig1/student2-student3/2010-06-19_16.31.37 was not successfully completed, and is therefore ignored.\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student2-student3/1 was not successfully completed, and is therefore ignored.\n' \
             'DEBUG:inf1100.looong.oblig1 already exists\n' \
             'DEBUG:inf1100.looong.oblig1/student1 already exists.\n' \
-            'DEBUG:Delivery inf1100.looong.oblig1/student1/2010-06-19_16.36.57 was not successfully completed, and is therefore ignored.\n' \
-            'DEBUG:inf1100.looong.oblig1/student1/2010-06-19_14.47.29 already exists.\n' \
+            'DEBUG:Delivery inf1100.looong.oblig1/student1/2 was not successfully completed, and is therefore ignored.\n' \
+            'DEBUG:inf1100.looong.oblig1/student1/1 already exists.\n' \
             'DEBUG:inf1100.looong.oblig1/student2-student3 already exists.\n' \
-            'DEBUG:Delivery inf1100.looong.oblig1/student2-student3/2010-06-19_16.31.37 was not successfully completed, and is therefore ignored.')
+            'DEBUG:Delivery inf1100.looong.oblig1/student2-student3/1 was not successfully completed, and is therefore ignored.'
+        )
+        
 
 
 class TestFeedback(TestCommandBase):
@@ -432,8 +434,8 @@ class TestFeedback(TestCommandBase):
         self.login('examiner1')
         self.sync()
         self.reset_log()
-        self.deliverypath = os.path.join(self.root, 'inf1100.looong.oblig1', 'student1',
-            '2010-06-19_14.47.29')
+        self.deliverypath = os.path.join(self.root, 'inf1100.looong.oblig1',
+                'student1', '1')
         deliveryinfo = Info.read_open(self.deliverypath, 'Delivery')
         self.delivery = devilry.core.models.Delivery.objects.get(
                 id = deliveryinfo.get_id())

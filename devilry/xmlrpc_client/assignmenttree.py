@@ -1,9 +1,4 @@
 """
-.. attribute:: DATETIME_FORMAT
-
-    The format used with strftime to create directory-names from dates:
-    ``'%Y-%m-%d_%H.%M.%S'``.
-
 .. attribute:: ID_SEP
 
     Separator used to separate id and filenames when handling duplicate
@@ -18,10 +13,9 @@ import urllib2
 import logging
 from urlparse import urljoin
 import xmlrpclib
-from ConfigParser import SafeConfigParser
+from ConfigParser import SafeConfigParser, NoOptionError
 
 
-DATETIME_FORMAT = '%Y-%m-%d_%H.%M.%S'
 ID_SEP = '+'
 log = logging.getLogger('devilry')
 
@@ -169,9 +163,19 @@ class Info(object):
         for key, value in values.iteritems():
             self.set(key, value)
 
-    def get(self, key):
-        """ Get a value. """
-        return self.cfg.get(self.sectionname, key)
+    def get(self, key, default=None):
+        """ Get a item, but default to ``default`` if the key is not found. """
+        try:
+            return self[key]
+        except KeyError, e:
+            return default
+
+    def __getitem__(self, key):
+        """ Get a item. """
+        try:
+            return self.cfg.get(self.sectionname, key)
+        except NoOptionError, e:
+            raise KeyError(str(e))
 
     def get_id(self):
         """ Shortcut to get the id. """
@@ -307,9 +311,8 @@ class AssignmentTreeWalker(object):
                 self.assignmentgroup(group, groupinfo)
 
                 for delivery in server.list_deliveries(group['id']):
-                    time_of_delivery = delivery['time_of_delivery'].strftime(
-                            DATETIME_FORMAT)
-                    deliverydir = os.path.join(groupinfo.get_dirpath(), time_of_delivery)
+                    deliverydir = os.path.join(groupinfo.get_dirpath(),
+                            str(delivery['number']))
                     deliveryinfo = Info(deliverydir, "Delivery")
                     self.delivery(delivery, deliveryinfo)
 
@@ -451,19 +454,18 @@ class AssignmentSync(AssignmentTreeWalker):
                 gradeconf_help = gradeconf['help'],
                 gradeconf_filename = gradeconf['filename'],
                 gradeconf_default_filencontents = gradeconf['default_filecontents'])
+        info.write()
 
     def assignment_new(self, assignment, info):
         log.info('+ %s' % info.get_dirpath())
         os.mkdir(info.get_dirpath())
         info.new()
         self._assignment_info_refresh(assignment, info)
-        info.write()
 
     def assignment_exists(self, assignment, info):
         log.debug('%s already exists' % info.get_dirpath())
         info.read()
         self._assignment_info_refresh(assignment, info)
-        info.write()
         if not assignment['xmlrpc_gradeconf']:
             log.warning(
                     '%s does not support creating feedback using ' \
@@ -474,6 +476,15 @@ class AssignmentSync(AssignmentTreeWalker):
         log.warning('Group "%s" has no deliveries' %
                 info.get_dirpath())
 
+
+    def _assignmentgroup_info_refresh(self, group, info):
+        info.setmany(
+                id = group['id'],
+                name = group['name'] or '',
+                students = ', '.join(group['students']),
+                number_of_deliveries = group['number_of_deliveries'])
+        info.write()
+
     def assignmentgroup_new(self, group, info):
         olddir = info.get_dirpath()
         renamed_name = info.rename_if_required(group['id'])
@@ -483,43 +494,39 @@ class AssignmentSync(AssignmentTreeWalker):
         log.info('+ %s' % info.get_dirpath())
         os.mkdir(info.get_dirpath())
         info.new()
-        info.setmany(
-                id = group['id'],
-                name = group['name'] or '',
-                students = ', '.join(group['students']),
-                number_of_deliveries = group['number_of_deliveries'])
-        info.write()
+        self._assignmentgroup_info_refresh(group, info)
 
-    # TODO: Refresh info even on exists, like assignment_exists does
     def assignmentgroup_exists(self, group, info):
         log.debug('%s already exists.' % info.get_dirpath())
+        info.read()
+        self._assignmentgroup_info_refresh(group, info)
+
+
+    def _delivery_info_refresh(self, delivery, info):
+        info.setmany(
+                id = delivery['id'],
+                number = delivery['number'],
+                time_of_delivery = delivery['time_of_delivery'])
+        info.write()
 
     def delivery_new(self, delivery, info):
         if not delivery['successful']:
             log.debug('Delivery %s was not successfully completed, and '
                     'is therefore ignored.' % info.get_dirpath())
             return
-
-        olddir = info.get_dirpath()
-        renamed_name = info.rename_if_required(delivery['id'])
-        if renamed_name:
-            log.warning('Renamed %s -> %s to avoid name crash with %s.' % (
-                olddir, renamed_name, info.get_dirpath()))
         log.info('+ %s' % info.get_dirpath())
         os.mkdir(info.get_dirpath())
         os.mkdir(os.path.join(info.get_dirpath(), 'files'))
         info.new()
-        info.setmany(
-                id = delivery['id'],
-                time_of_delivery = delivery['time_of_delivery'])
-        info.write()
-
+        self._delivery_info_refresh(delivery, info)
         lastsavefile = os.path.join(info.get_dirpath(),
                 overwriteable_filename('feedback.lastsave.rst'))
         overwrite_with_backup(info.get_dirpath(), 'feedback.rst', '', lastsavefile)
 
     def delivery_exists(self, delivery, info):
         log.debug('%s already exists.' % info.get_dirpath())
+        info.read()
+        self._delivery_info_refresh(delivery, info)
 
 
     def filemeta_new(self, filemeta, filepath):
@@ -569,9 +576,21 @@ class AssignmentSync(AssignmentTreeWalker):
     def feedback_none(self, delivery, deliverydir, gradeconf):
         self._handle_gradeconf(deliverydir, gradeconf)
 
+    @classmethod
+    def set_feedbackinfo(cls, deliverydir, feedback):
+        deliveryinfo = Info.read_open(deliverydir, 'Delivery')
+        deliveryinfo.setmany(
+            feedback_text = feedback['text'],
+            feedback_format = feedback['format'],
+            feedback_published = feedback['published'],
+            feedback_last_modified = feedback['last_modified'],
+            feedback_last_modified_by = feedback['last_modified_by'])
+        deliveryinfo.write()
+
     def feedback_exists(self, delivery, deliverydir, feedback, gradeconf):
         self._handle_gradeconf(deliverydir, gradeconf,
                 feedback.get('grade_as_xmlrpcstring'))
+        self.__class__.set_feedbackinfo(deliverydir, feedback)
 
         # TODO: Use this for grade-files as well
         feedbackfile = os.path.join(deliverydir, 'feedback.rst')
