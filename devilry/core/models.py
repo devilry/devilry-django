@@ -619,8 +619,7 @@ class Assignment(models.Model, BaseNode):
         :rtype: QuerySet
         """
         return self.assignmentgroups.filter(
-            Q(examiners=user_obj) |
-            Q(parentnode__admins=user_obj))
+            Q(examiners=user_obj))
     
     def assignment_groups_where_is_examiner_or_admin(self, user_obj):
         """ Get all assignment groups within this assignment where the given
