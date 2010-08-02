@@ -12,4 +12,3 @@
 - Selenium tests
 - Clean up student views
 - Tests for grade_rstschema
-- Info overwritable_filename
