@@ -1,7 +1,7 @@
 from tempfile import mkdtemp
 from shutil import rmtree
 import os
-from ConfigParser import ConfigParser, NoOptionError
+from ConfigParser import SafeConfigParser, NoOptionError
 from datetime import datetime
 from StringIO import StringIO
 import logging
@@ -15,7 +15,8 @@ from devilry.core.testhelpers import create_from_path
 import devilry.core.models
 
 from cookie_transport import CookieTransport, SafeCookieTransport
-from assignmenttree import AssignmentSync, Info, join_dirname_id
+from assignmenttree import AssignmentSync, Info, join_dirname_id, \
+        overwriteable_filename
 import cli
 import examinercmd
 
@@ -56,7 +57,7 @@ class TestCommand(TestCase):
         self.assertEquals('world', self.cmd.get_config('hello'))
         self.cmd.write_config()
         cfgfile = os.path.join(self.configdir, 'config.cfg')
-        cfg = ConfigParser()
+        cfg = SafeConfigParser()
         cfg.read([cfgfile])
         self.assertEquals(cfg.get('settings', 'hello'), 'world')
 
@@ -114,7 +115,7 @@ class TestAssignmentSync(TestAssignmentSyncBase):
         dircontent.sort()
         self.assertEquals(dircontent,
                 ['inf1010.spring09.oblig1', 'inf1100.looong.oblig1'])
-        info = ConfigParser() # Sanity test of info-file
+        info = SafeConfigParser() # Sanity test of info-file
         info.read([self.infofile])
         self.assertEquals(
                 info.get('info', 'path'), 'inf1100.looong.oblig1')
@@ -122,7 +123,7 @@ class TestAssignmentSync(TestAssignmentSyncBase):
 
     def test_infofile(self):
         self.assertTrue(os.path.isfile(self.infofile))
-        info = ConfigParser()
+        info = SafeConfigParser()
         info.read([self.infofile])
         self.assertEquals(
                 info.get('info', 'path'), 'inf1100.looong.oblig1')
@@ -170,7 +171,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
 
     def test_infofile(self):
         self.assertTrue(os.path.isfile(self.infofile))
-        info = ConfigParser()
+        info = SafeConfigParser()
         info.read([self.infofile])
         self.assertEquals(info.get('info', 'id'), '2')
         self.assertEquals(info.get('info', 'name'), '')
@@ -222,7 +223,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
 
     def test_infofile(self):
         self.assertTrue(os.path.isfile(self.infofile))
-        info = ConfigParser()
+        info = SafeConfigParser()
         info.read([self.infofile])
         self.assertEquals(info.get('info', 'id'), '1')
         self.assertEquals(info.get('info', 'time_of_delivery'),
@@ -241,9 +242,9 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         self.assertEquals(dircontent, ['.overwriteable-info', '1', '3']) # 2 is not successful, and ignored..
 
     def test_feedback(self):
-        info = ConfigParser()
+        info = SafeConfigParser()
         info.read([self.infofile])
-        self.assertRaises(NoOptionError, info.get, 'info', 'feedback_text')
+        self.assertRaises(NoOptionError, info.get, 'info', 'feedback_format')
 
         delivery = devilry.core.models.Delivery.objects.get(id=1)
         f = delivery.get_feedback()
@@ -254,23 +255,12 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         f.set_grade_from_xmlrpcstring('+')
         f.save()
         self.sync()
-        info = ConfigParser()
+        info = SafeConfigParser()
         info.read([self.infofile])
-        self.assertEquals(info.get('info', 'feedback_text'), 'test')
-
-    def test_feedback_text(self):
-        delivery = devilry.core.models.Delivery.objects.get(id=1)
-        f = delivery.get_feedback()
-        f.text = 'test'
-        f.published = True
-        f.last_modified = datetime.now()
-        f.last_modified_by = self.examiner1
-        f.set_grade_from_xmlrpcstring('+')
-        f.save()
-        self.sync()
-        info = ConfigParser()
-        info.read([self.infofile])
-        self.assertEquals(info.get('info', 'feedback_text'), 'test')
+        lastsavedfeedbackfile = os.path.join(self.folder,
+                overwriteable_filename('feedback.lastsave.rst'))
+        self.assertEquals('test',
+                open(lastsavedfeedbackfile, 'rb').read())
 
 
 # WARNING: We are have no tests for filemeta, because all the other tests
@@ -339,7 +329,7 @@ class TestCommandBase(TestCase, XmlRpcAssertsMixin):
         return l
 
     def read_config(self):
-        c = ConfigParser()
+        c = SafeConfigParser()
         c.read([os.path.join(self.root, '.devilry', 'config.cfg')])
         return c
 
@@ -454,6 +444,10 @@ class TestFeedback(TestCommandBase):
         self.delivery = devilry.core.models.Delivery.objects.get(
                 id = deliveryinfo.get_id())
 
+        self.lastsavedfeedbackfile = os.path.join(self.deliverypath,
+                overwriteable_filename('feedback.lastsave.rst'))
+        self.feedbackfile = os.path.join(self.deliverypath, 'feedback.rst')
+
     def sync(self):
         Sync = self.create_commandcls(examinercmd.Sync)
         s = Sync()
@@ -493,7 +487,7 @@ class TestFeedback(TestCommandBase):
                 lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
-        open(os.path.join(self.deliverypath, 'feedback.rst'), 'wb').write('ok')
+        open(self.feedbackfile, 'wb').write('ok')
         f.cli(['-g', '+', self.deliverypath])
 
         logvalue = self.logdata.getvalue().strip()
@@ -506,3 +500,82 @@ class TestFeedback(TestCommandBase):
         self.assertEquals(self.delivery.feedback.format, 'rst')
         self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
                 'Approved')
+
+
+    def get_sorted_dircontent(self):
+        dircontent = os.listdir(self.deliverypath)
+        dircontent.sort()
+        return dircontent
+
+    def test_feedbacktext_backup(self):
+        self.assertEquals('',
+                open(self.lastsavedfeedbackfile, 'rb').read())
+        Feedback = self.create_commandcls(examinercmd.Feedback)
+        f = Feedback()
+        open(self.feedbackfile, 'wb').write('ok')
+        f.cli(['-g', '+', self.deliverypath])
+        
+        # No changes on server does not cause backup?
+        self.sync()
+        self.assertEquals('ok',
+                open(self.lastsavedfeedbackfile, 'rb').read())
+        self.assertEquals(self.get_sorted_dircontent(),
+                ['.overwriteable-feedback.lastsave.rst',
+                    '.overwriteable-info', 'feedback.rst', 'files'])
+
+        # Changes locally, but not on server does not cause backup?
+        open(self.feedbackfile, 'wb').write('changes')
+        self.reset_log()
+        self.sync()
+        logvalue = self.logdata.getvalue().strip()
+        important_logpart = 'WARNING:inf1100.looong.oblig1/student1/1: '\
+            'feedback.rst has local modifications, but the file on the server '\
+            'matches your last save, so your local file remains utouched. '\
+            'Remove feedback.rst and sync to get the file from the server.'
+        self.assertTrue(important_logpart in logvalue)
+        self.assertEquals(self.get_sorted_dircontent(),
+                ['.overwriteable-feedback.lastsave.rst',
+                    '.overwriteable-info', 'feedback.rst', 'files'])
+        info = Info.read_open(self.deliverypath, 'Delivery')
+        self.assertEquals(info['feedback_text'], 'ok')
+        self.assertEquals('changes',
+                open(self.feedbackfile, 'rb').read())
+
+        # Same change locally and on server does not cause backup?
+        f = self.delivery.get_feedback()
+        f.text = 'changes'
+        f.save()
+        self.sync()
+        self.assertEquals(self.get_sorted_dircontent(),
+                ['.overwriteable-feedback.lastsave.rst',
+                    '.overwriteable-info', 'feedback.rst', 'files'])
+        info = Info.read_open(self.deliverypath, 'Delivery')
+        self.assertEquals(info['feedback_text'], 'changes')
+
+        # Changes locally and on server cause backup?
+        f = self.delivery.get_feedback()
+        f.text = 'another change'
+        f.save()
+        self.sync()
+        self.assertEquals(self.get_sorted_dircontent(),
+                ['.overwriteable-feedback.lastsave.rst',
+                    '.overwriteable-info', 'feedback.rst',
+                    'feedback.rst.bak-0', 'files'])
+        info = Info.read_open(self.deliverypath, 'Delivery')
+        self.assertEquals(info['feedback_text'], 'another change')
+
+        # ... but not another backup?
+        self.sync()
+        self.assertEquals(self.get_sorted_dircontent(),
+                ['.overwriteable-feedback.lastsave.rst',
+                    '.overwriteable-info', 'feedback.rst',
+                    'feedback.rst.bak-0', 'files'])
+
+    def test_feedbacktext_removefile(self):
+        # Remove feedback.rst and sync does not cause backup?
+        os.remove(self.feedbackfile)
+        self.sync()
+        self.assertEquals(self.get_sorted_dircontent(),
+                ['.overwriteable-feedback.lastsave.rst',
+                    '.overwriteable-info', 'feedback.rst',
+                    'files'])

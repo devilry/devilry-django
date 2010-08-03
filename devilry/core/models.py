@@ -510,10 +510,9 @@ class Assignment(models.Model, BaseNode):
     publishing_time = models.DateTimeField()
     anonymous = models.BooleanField(default=False)
     admins = models.ManyToManyField(User, blank=True)
-    grade_plugin = models.CharField(max_length=100,  # TODO: use ContentType instead?
+    grade_plugin = models.CharField(max_length=100,
             choices=gradeplugin.registry,
             default=gradeplugin.registry.getdefaultkey())
-
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
@@ -533,7 +532,6 @@ class Assignment(models.Model, BaseNode):
                 Q(parentnode__parentnode__admins=user_obj) |
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
         ).distinct()
-
 
     @classmethod
     def where_is_examiner(cls, user_obj):

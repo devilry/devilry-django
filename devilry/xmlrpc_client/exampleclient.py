@@ -29,6 +29,5 @@ try:
         raise SystemExit()
 
     print server.sum(1, 2)
-    print server.list_assignmentgroups(1)
 except Error, v:
     print "ERROR", v

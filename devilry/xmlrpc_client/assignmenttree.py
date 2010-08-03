@@ -43,9 +43,9 @@ def overwrite(dirname, filename, data):
     overwriteable (see :func:`overwriteable_filename`), raise
     :exc:`OverwriteError`.
     """
-    if not filename.startswith('.overwriteable-'):
-        raise OverwriteError('Can not overwrite %s.')
     filepath = os.path.join(dirname, filename)
+    if not filename.startswith('.overwriteable-'):
+        raise OverwriteError('Can not overwrite %s.' % filepath)
     open(filepath, 'wb').write(data)
 
 
@@ -59,15 +59,23 @@ def make_backup(filepath, index=0):
     if os.path.exists(backupfile):
         make_backup(filepath, index+1)
     else:
-        log.warning('* %s was overwritten. Backup written to %s.' % (
+        log.warning('%s was overwritten. Backup written to %s.' % (
             filepath, backupfile))
         open(backupfile, 'wb').write(open(filepath, 'rb').read())
 
-def overwrite_with_backup(dirname, filename, data, lastsavefile=None):
+def overwrite_with_backup(dirname, filename, data, lastsavefilename=None):
     """
     Overwrite the given file with the given ``data`` and create a backup
     using :func:`make_backup` if the file exists and the contents of the
     existing file does not match ``data``.
+
+    Both ``filename`` and ``lastsavefilename`` are files in the ``dirname``
+    directory. They do not have to exist. ``lastsavefilename`` is filtered
+    throught :func:`overwriteable_filename`.
+
+    If ``lastsavefilename`` is the name of a existing file, a backup will
+    not be created unless the contents of ``filename`` does not match the
+    contents of ``lastsavefilename``.
     """
     filepath = os.path.join(dirname, filename)
     if os.path.exists(filepath):
@@ -76,24 +84,33 @@ def overwrite_with_backup(dirname, filename, data, lastsavefile=None):
             log.debug('%s matches the server. No update requried.' %
                     filepath)
             return
-        backup = True
-        if lastsavefile and os.path.exists(lastsavefile):
+        lastsavefile = os.path.join(dirname,
+                overwriteable_filename(lastsavefilename))
+        if lastsavefilename and os.path.exists(lastsavefile):
             lastsave_data = open(lastsavefile, 'rb').read()
-            current_data = open(filepath, 'rb').read()
-            # If the file has not changed since last save, we do not need a
-            # backup
+            if lastsave_data == data:
+                # No need for data if the server matches our last save,
+                # but a warning is needed.
+                log.warning('%(dirname)s: %(filename)s has local '\
+                        'modifications, but the file on the server ' \
+                        'matches your last save, so your local file ' \
+                        'remains utouched. Remove %(filename)s and sync to ' \
+                        'get the file from the server.' % vars())
+                return
             if lastsave_data == current_data:
-                backup = False
+                # If the file has not changed since last save, we do not
+                # need a backup
                 log.debug('Last-save data for %s matches current data. No '\
                         'backup required.' % filepath)
             else:
-                log.debug('Last-save data for %s does not match current data. '\
-                        'Backup required.' % filepath)
-        if backup:
+                log.debug('Last-save data for %s does not match current ' \
+                        'data. Backup required.' % filepath)
+                make_backup(filepath)
+        else:
             make_backup(filepath)
     open(filepath, 'wb').write(data)
-    if lastsavefile:
-        open(lastsavefile, 'wb').write(data)
+    if lastsavefilename:
+        overwrite(dirname, overwriteable_filename(lastsavefilename), data)
 
 
 class Info(object):
@@ -385,7 +402,7 @@ class AssignmentTreeWalker(object):
         before, and :meth:`delivery_exists` if not. These two methods do
         nothing by default, and are ment to be overridden in subclasses.
         """
-        if info.determine_location(delivery['id']):
+        if os.path.isdir(info.get_dirpath()):
             self.delivery_exists(delivery, info)
         else:
             self.delivery_new(delivery, info)
@@ -509,6 +526,13 @@ class AssignmentSync(AssignmentTreeWalker):
                 time_of_delivery = delivery['time_of_delivery'])
         info.write()
 
+    def _create_feedbackfile_if_notexists(self, deliverydir):
+        path = os.path.join(deliverydir, 'feedback.rst')
+        if not os.path.exists(path):
+            lastsave_filename = overwriteable_filename('feedback.lastsave.rst')
+            overwrite(deliverydir, lastsave_filename, '')
+            open(path, 'wb').write('')
+
     def delivery_new(self, delivery, info):
         if not delivery['successful']:
             log.debug('Delivery %s was not successfully completed, and '
@@ -519,14 +543,13 @@ class AssignmentSync(AssignmentTreeWalker):
         os.mkdir(os.path.join(info.get_dirpath(), 'files'))
         info.new()
         self._delivery_info_refresh(delivery, info)
-        lastsavefile = os.path.join(info.get_dirpath(),
-                overwriteable_filename('feedback.lastsave.rst'))
-        overwrite_with_backup(info.get_dirpath(), 'feedback.rst', '', lastsavefile)
+        self._create_feedbackfile_if_notexists(info.get_dirpath())
 
     def delivery_exists(self, delivery, info):
         log.debug('%s already exists.' % info.get_dirpath())
         info.read()
         self._delivery_info_refresh(delivery, info)
+        self._create_feedbackfile_if_notexists(info.get_dirpath())
 
 
     def filemeta_new(self, filemeta, filepath):
@@ -554,10 +577,8 @@ class AssignmentSync(AssignmentTreeWalker):
             grade_as_xmlrpcstring):
         filename = gradeconf.get('filename')
         if filename:
-            lastsavefile = os.path.join(deliverydir,
-                    overwriteable_filename(filename + '.lastsave'))
             overwrite_with_backup(deliverydir, filename,
-                    grade_as_xmlrpcstring, lastsavefile)
+                    grade_as_xmlrpcstring, filename + '.lastsave')
 
     def feedback_none(self, delivery, deliverydir, gradeconf):
         self._handle_gradeconf(deliverydir, gradeconf,
@@ -578,10 +599,5 @@ class AssignmentSync(AssignmentTreeWalker):
         self._handle_gradeconf(deliverydir, gradeconf,
                 feedback.get('grade_as_xmlrpcstring'))
         self.__class__.set_feedbackinfo(deliverydir, feedback)
-
-        # TODO: Use this for grade-files as well
-        # TODO: Make tests for this
-        lastsavefile = os.path.join(deliverydir,
-                overwriteable_filename('feedback.lastsave.rst'))
         overwrite_with_backup(deliverydir, 'feedback.rst', feedback['text'],
-                lastsavefile)
+                'feedback.lastsave.rst')

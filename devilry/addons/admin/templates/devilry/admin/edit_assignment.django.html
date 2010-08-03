@@ -53,6 +53,7 @@
   <h2>Assignment groups</h2>
   <table class='horizontal_ordered_table'>
     <tr>
+      <th>Id</th>
       <th>Candidates</th>
       <th>Examiners</th>
       <th>Name</th>
@@ -61,6 +62,9 @@
 
     {% for assignmentgroup in assignment.assignmentgroups.all %}
       <tr>
+        <td> 
+          {{ assignmentgroup.id }}
+        </td>
         <td> 
           {{ assignmentgroup.candidates.all|join:", " }}
         </td>
