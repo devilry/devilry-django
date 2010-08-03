@@ -3,26 +3,22 @@
 {% load i18n %}
 
 {% block title %}
-{% trans "Deliver" %} :: {{ assignment_group.parentnode.parentnode }}
+{% trans "Add delivery" %}
 {% endblock %}
 
 {% block heading %}
-{% trans "Deliver" %} :: {{ assignment_group.parentnode.parentnode }}
+{% trans "Add delivery" %}
 {% endblock %}
-
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li>
-  <a href='{% url devilry-student-add_delivery_choose_assignment %}'>
-    {% trans "Deliver" %}
-  </a>
-</li>
+<li><a href='{% url devilry-student-show-assignments %}'>{% trans "Assignments" %}</a></li>
 <li>::</li>
+<li><a href='{% url devilry-student-show-assignmentgroup assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
+<li>::</li>
+
 <li>{{ assignment_group.parentnode.parentnode }}</li>
 {% endblock %}
-
-
 
 {% block sidebar %}
 <div id='sidebar' class='assignment_group_info'>
@@ -32,8 +28,10 @@
 
 {% block content %}
 
+{% include "devilry/student/add_delivery_table.django.html" %}
+
 <form enctype="multipart/form-data"
-    action="{% url devilry-student-add_delivery assignment_group.id %}"
+    action="{% url devilry-student-add-delivery assignment_group.id %}"
     method="post" id='add_delivery-form'>
 
   <table>

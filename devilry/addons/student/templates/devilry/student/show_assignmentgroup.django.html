@@ -8,9 +8,10 @@
 {% block breadcrumbs %}
 {{ block.super }}
 
-<li><a href='{% url devilry-student-show_history %}'>{% trans "History" %}</a></li>
+<li><a href='{% url devilry-student-show-assignments %}'>{% trans "Assignments" %}</a></li>
 <li>::</li>
 <li>{{ assignment_group.parentnode }}</li>
+
 {% endblock %}
 
 
@@ -39,6 +40,7 @@
       <td>{{ assignment_group.students.all|join:", " }} </td>
     </tr>
   {% endif %}
+
 </table>
 
 
@@ -49,7 +51,7 @@
   <ul>
   {% for delivery in assignment_group.deliveries.all %}
     <li>
-      <a href='{% url devilry-student-show_delivery delivery.id %}'>
+      <a href='{% url devilry-student-show-delivery delivery.id %}'>
         {{ delivery.time_of_delivery }}
       </a>
     </li>
@@ -57,4 +59,15 @@
   </ul>
 {% endif %}
 
+
+{% if assignment_group.can_add_deliveries %}
+<p>
+<a href='{% url devilry-student-add-delivery assignment_group.id %}'>
+        Add new delivery
+      </a>
+</p>
+{% endif %}
+
 {% endblock %}
+
+
