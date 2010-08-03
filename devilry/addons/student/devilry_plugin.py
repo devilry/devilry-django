@@ -18,3 +18,11 @@ register('show_history_key',
          icon='ikon.png', 
          student_access=True,
          )
+
+register('show_assignments_key', 
+         'Show Assignments', 
+         reverse('devilry-student-show_assignments'),
+         description = _('Show Assignments.'),
+         icon='ikon.png', 
+         student_access=True,
+         )
