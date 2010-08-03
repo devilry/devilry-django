@@ -8,7 +8,7 @@ LOGIN_FAILED = 2
 SUCCESSFUL_LOGIN = 3
 
 ## Connect to unprotect server
-host = "http://localhost:8000/"
+host = "http://localhost:8000/xmlrpc/"
 server = ServerProxy(host, transport=CookieTransport('cookies.txt'),
         allow_none=True)
 
@@ -29,6 +29,5 @@ try:
         raise SystemExit()
 
     print server.sum(1, 2)
-    print server.list_assignmentgroups(1)
 except Error, v:
     print "ERROR", v
