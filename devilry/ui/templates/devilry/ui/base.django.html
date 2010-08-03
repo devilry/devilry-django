@@ -26,7 +26,6 @@
         {% block linkbar %}
           <ul id='links'>
             {% block links %}
-              <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
               {% if user.is_authenticated %}
                 <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
               {% endif %}
@@ -49,7 +48,10 @@
 
       <div id='breadcrumbs'>
         <ul>
-          {% block breadcrumbs %}{% endblock %}
+          {% block breadcrumbs %}
+              <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
+              <li>::</li>
+          {% endblock %}
         </ul>
       </div>
     </div>

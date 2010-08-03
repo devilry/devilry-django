@@ -14,13 +14,24 @@
 {% endblock %}
 
 {% block main %}
+<script type="text/javascript">
+	$(function() {
+		$(".button").button();
+		
+		$("a", ".demo").click(function() { return false; });
+	});
+</script>
 
-<div id='dashboard_box'>
-  <ul>
-	{% for app in applications %}
-    <li><a href="{{ app.url }}"> {{ app.label }} </a></li>
+
+<div id='dashboard_important'>
+	{% for app, view in important %}
+    <div class='dashboaditem {{ app.cssclass }}'>
+      <h2>{{ app.title }}</h2>
+      <div class=''>
+        {{ view }}
+      </div>
+    </div>
   {% endfor %}
-  </ul>
 </div>
 
 {% endblock %}

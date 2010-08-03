@@ -1,46 +1,60 @@
-from django.conf import settings
+"""
+.. attribute:: registry
 
-class PluginItem(object):
+    A :class:`Registry`-object.
+"""
 
-    def __init__(self, key, label, url, description, iconurl, student_access,
-            examiner_access, admin_access):
-        self.key = key
-        self.label = label
-
-        if settings.DEVILRY_MAIN_PAGE.endswith('/'):
-            self.url = settings.DEVILRY_MAIN_PAGE[:-1] + url
-        else:
-            self.url = settings.DEVILRY_MAIN_PAGE + url
-        self.icon = key + ".png"
-        self.description = description
-        self.student_access = student_access
+class DashboardItem(object):
+    def __init__(self, title, view=None, candidate_access=False,
+            examiner_access=False, admin_access=False, cssclass=''):
+        self.title = title
+        self.view = view
+        self.candidate_access = candidate_access
         self.examiner_access = examiner_access
         self.admin_access = admin_access
     
-    def can_show(self, student, examiner, admin):
-        return (self.student_access and student) \
-                or (self.examiner_access and examiner) \
-                or (self.admin_access and admin)
+    def can_show(self, is_candidate, is_examiner, is_admin):
+        return (self.candidate_access and is_candidate) \
+                or (self.examiner_access and is_examiner) \
+                or (self.admin_access and is_admin)
+
+    def getview(self, request, is_candidate, is_examiner, is_admin):
+        return self.view(request, is_candidate, is_examiner, is_admin)
 
 
-_registry = {}
+class DashboardRegistry(object):
+    """
+    Dashboard registry. You do not need to create a object of this class.
+    It is already available as :attr:`registry`.
+    """
+    def __init__(self):
+        self._important = []
 
-def register(key, label, url, description, icon=None, student_access=False,
-        examiner_access=False, admin_access=False):
-    r = PluginItem(key, label, url, description, icon, student_access,
-            examiner_access, admin_access)
-    _registry[r.key] = r
+    def register_important(self, registryitem):
+        """
+        Add a :class:`RegistryItem` to the registry.
+        """
+        self._important.append(registryitem)
+
+    def __getitem__(self, key):
+        """
+        Get the :class:`RegistryItem` registered with the given ``key``.
+        """
+        return self._registry[key]
+
+    def _itervalues(self, request, lst, is_candidate=False, is_examiner=False,
+            is_admin=False):
+        for item in lst:
+            if item.can_show(is_candidate, is_examiner, is_admin):
+                view = item.getview(request, is_candidate, is_examiner,
+                        is_admin)
+                if view != None:
+                    yield item, view
+
+    def iterimportant(self, request, is_candidate=False, is_examiner=False,
+                is_admin=False):
+        return self._itervalues(request, self._important, is_candidate, is_examiner,
+            is_admin)
 
 
-def get(key):
-    return _registry[key]
-
-def values():
-    values = _registry.values()
-
-def iter_values(student=False, examiner=False, admin=False):
-    for value in _registry.itervalues():
-        if value.can_show(student, examiner, admin):
-            yield (value)
-
-
+registry = DashboardRegistry()
