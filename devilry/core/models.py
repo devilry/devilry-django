@@ -492,7 +492,7 @@ class Assignment(models.Model, BaseNode):
 
         A django.db.models.CharField_ that holds the key of the current
         grade-plugin. More info on grade-plugins
-        :ref:`here <ref-devilry.core.gradeplugin>`.
+        :ref:`here <grade-plugins>`.
 
     .. attribute:: assignmentgroups
 
