@@ -5,19 +5,19 @@ from devilry.addons.dashboard.dashboardplugin_registry import registry, \
 import dashboardviews
 
 
-registry.register_important(DashboardItem(
+registry.register_normal(DashboardItem(
          title = _('Nodes'),
          view = dashboardviews.list_nodes,
          admin_access=True,
 ))
 
-registry.register_important(DashboardItem(
+registry.register_normal(DashboardItem(
          title = _('Subjects'),
          view = dashboardviews.list_subjects,
          admin_access=True,
 ))
 
-registry.register_important(DashboardItem(
+registry.register_normal(DashboardItem(
          title = _('Periods'),
          view = dashboardviews.list_periods,
          admin_access=True,

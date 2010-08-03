@@ -23,11 +23,21 @@
 </script>
 
 
-<div id='dashboard_important'>
+<div id='dashboard-important'>
 	{% for app, view in important %}
-    <div class='dashboaditem {{ app.cssclass }}'>
+    <div class='dashboarditem {{ app.cssclass }}'>
       <h2>{{ app.title }}</h2>
-      <div class=''>
+      <div class='dashboarditem-body'>
+        {{ view }}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<div id='dashboard-normal'>
+	{% for app, view in normal %}
+    <div class='dashboarditem {{ app.cssclass }}'>
+      <h2>{{ app.title }}</h2>
+      <div class='dashboarditem-body'>
         {{ view }}
       </div>
     </div>

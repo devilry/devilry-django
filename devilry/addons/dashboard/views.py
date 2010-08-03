@@ -13,7 +13,11 @@ def main(request):
     is_candidate = AssignmentGroup.where_is_candidate(request.user).count() > 0
     is_examiner = AssignmentGroup.where_is_examiner(request.user).count() > 0
     is_admin = Assignment.where_is_admin(request.user).count() > 0
-    important = registry.iterimportant(request, is_candidate, is_examiner, is_admin)
+    important = registry.iterimportant(request, is_candidate, is_examiner,
+            is_admin)
+    normal = registry.iternormal(request, is_candidate, is_examiner,
+            is_admin)
     return render_to_response('devilry/dashboard/main.django.html', {
             'important': important,
+            'normal': normal,
             }, context_instance=RequestContext(request))

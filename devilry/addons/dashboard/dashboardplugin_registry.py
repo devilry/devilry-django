@@ -29,12 +29,20 @@ class DashboardRegistry(object):
     """
     def __init__(self):
         self._important = []
+        self._normal = []
 
     def register_important(self, registryitem):
         """
-        Add a :class:`RegistryItem` to the registry.
+        Add a :class:`RegistryItem` to the registry with *important*
+        priority.
         """
         self._important.append(registryitem)
+
+    def register_normal(self, registryitem):
+        """
+        Add a :class:`RegistryItem` to the registry with *normal* priority.
+        """
+        self._normal.append(registryitem)
 
     def __getitem__(self, key):
         """
@@ -53,8 +61,13 @@ class DashboardRegistry(object):
 
     def iterimportant(self, request, is_candidate=False, is_examiner=False,
                 is_admin=False):
-        return self._itervalues(request, self._important, is_candidate, is_examiner,
-            is_admin)
+        return self._itervalues(request, self._important, is_candidate,
+                is_examiner, is_admin)
+
+    def iternormal(self, request, is_candidate=False, is_examiner=False,
+                is_admin=False):
+        return self._itervalues(request, self._normal, is_candidate,
+                is_examiner, is_admin)
 
 
 registry = DashboardRegistry()
