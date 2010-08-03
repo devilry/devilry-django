@@ -15,26 +15,6 @@
 <li>{% trans "Assignments" %}</li>
 {% endblock %}
 
-{% block sidebar %}
-<div id='sidebar' class='assignment_group_info'>
-  
-<!--
-  <div class='section related'>
-    <h2>{% trans "Related" %}</h2>
-    <p>
-      {% url devilry-student-add_delivery_choose_assignment as add_delivery_url %}
-      {% blocktrans %}
-        You can add deliveries on active assignments
-        <a href='{{ add_delivery_url }}'>here</a>.
-      {% endblocktrans %}
-    </p>
-  </div>
--->
-
-</div>
-{% endblock %}
-
-
 
 {% block main %}
 
@@ -44,28 +24,45 @@
       autoHeight: false,
       navigation: true,
       collapsible: true,
+      active: 2,
+    });
+
+  //getter
+  var active = $(".accordion").accordion("option", "active");
+  //setter
+  $(".accordion").accordion("option", "active", 2);
+  });
+</script>
+
+<script type="text/javascript">
+  $(function() {
+    $(".accordion-collapsed").accordion({
+      autoHeight: false,
+      navigation: true,
+      collapsible: true,
       active: false,
     });
   });
 </script>
 
-{% include "devilry/ui/include/assignment_group_chooser_all.django.html" %}
-
- <div class="accordion">
-     <h3><a href="#">
-      Older deliveries
-      {% spaceless %}
-      {% endspaceless %}
-    </a></h3>
-    <div>
-
-	  {% with old_subjects as subjects %}
-	  {% include "devilry/ui/include/assignment_group_chooser_all.django.html" %}
-	  {% endwith %}
-      
-    </div>
+<div class="accordion">
+  <h3><a href="#">
+	  Active
+  </a></h3>
+  <div>
+	{% include "devilry/ui/include/assignment_group_chooser.django.html" %}
   </div>
+</div>
 
-
+<div class="accordion-collapsed">
+  <h3><a href="#">
+      Old
+  </a></h3>
+  <div>
+	{% with old_subjects as subjects %}
+	{% include "devilry/ui/include/assignment_group_chooser.django.html" %}
+	{% endwith %}
+  </div>
+</div>
 
 {% endblock %}
