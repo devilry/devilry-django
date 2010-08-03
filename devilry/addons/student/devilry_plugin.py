@@ -28,3 +28,10 @@ from devilry.addons.dashboard.dashboardplugin_registry import registry
          #icon='ikon.png', 
          #student_access=True,
          #)
+#register('show_assignments_key', 
+         #'Show Assignments', 
+         #reverse('devilry-student-show-assignments'),
+         #description = _('Show Assignments.'),
+         #icon='ikon.png', 
+         #student_access=True,
+         #)

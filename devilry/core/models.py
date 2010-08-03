@@ -464,6 +464,11 @@ class Period(models.Model, BaseNode):
         if self.start_time > self.end_time:
             raise ValidationError(_('Start time must be before end time.'))
 
+    def is_active(self):
+        """ Returns true if the period is active
+        """
+        now = datetime.now()
+        return self.start_time < now and self.end_time > now
 
 class Assignment(models.Model, BaseNode):
     """
@@ -929,6 +934,13 @@ class AssignmentGroup(models.Model, CommonInterface):
         else:
             return False
     
+    def can_add_deliveries(self):
+        """ Returns true if a student can add deliveries on this assignmengroup
+        
+        Both the assignmentgroups is_open attribute, and the periods start and end time is checked.
+        """
+        return self.is_open and self.parentnode.parentnode.is_active()
+
 
 class Deadline(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deadlines') 

@@ -1,7 +1,7 @@
 <ul>
 {% for subject in subjects %}
   {% for period in subject %}
-    <li>{{ subject }} - {{ period }} </li>
+    <h2>{{ subject }} - {{ period }}</h2>
     <ul>
 	  {% for assignment in period %}
       {% for assignment_group in assignment %}
