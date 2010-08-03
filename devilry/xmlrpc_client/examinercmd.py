@@ -81,10 +81,7 @@ If you want "sync" to overwrite other files, you have to delete them
 yourself, and re-run sync.
 
 Some files have to be overwritten, but are backed up if needed. Backup is
-needed if:
-
-    - The file has local modifications.
-    - 
+needed if the file has local modifications.
 
 The backup is just the filename suffixed with ".bak-N", where N is the
 smallest unused number which is greater than 0. You will meet this behavior
