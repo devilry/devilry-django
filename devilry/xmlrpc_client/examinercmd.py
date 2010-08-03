@@ -232,6 +232,8 @@ class InfoCmd(Command):
             print 'Feedback last modified: %(feedback_last_modified)s' % info
             print 'Feedback last modified by: %(feedback_last_modified_by)s' % info
             print 'Current feedback format: %(feedback_format)s' % info
+            print 'Current feedback text:'
+            print info['feedback_text']
 
     def command(self):
         directory = os.getcwd()

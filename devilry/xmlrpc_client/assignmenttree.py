@@ -43,9 +43,9 @@ def overwrite(dirname, filename, data):
     overwriteable (see :func:`overwriteable_filename`), raise
     :exc:`OverwriteError`.
     """
-    if not filename.startswith('.overwriteable-'):
-        raise OverwriteError('Can not overwrite %s.')
     filepath = os.path.join(dirname, filename)
+    if not filename.startswith('.overwriteable-'):
+        raise OverwriteError('Can not overwrite %s.' % filepath)
     open(filepath, 'wb').write(data)
 
 
@@ -78,15 +78,15 @@ def overwrite_with_backup(dirname, filename, data, lastsavefilename=None):
     contents of ``lastsavefilename``.
     """
     filepath = os.path.join(dirname, filename)
-    lastsavefile = os.path.join(dirname,
-            overwriteable_filename(lastsavefilename))
     if os.path.exists(filepath):
         current_data = open(filepath, 'rb').read()
         if current_data == data:
             log.debug('%s matches the server. No update requried.' %
                     filepath)
             return
-        if lastsavefile and os.path.exists(lastsavefile):
+        lastsavefile = os.path.join(dirname,
+                overwriteable_filename(lastsavefilename))
+        if lastsavefilename and os.path.exists(lastsavefile):
             lastsave_data = open(lastsavefile, 'rb').read()
             if lastsave_data == data:
                 # No need for data if the server matches our last save,
@@ -109,6 +109,8 @@ def overwrite_with_backup(dirname, filename, data, lastsavefilename=None):
         else:
             make_backup(filepath)
     open(filepath, 'wb').write(data)
+    if lastsavefilename:
+        overwrite(dirname, overwriteable_filename(lastsavefilename), data)
 
 
 class Info(object):
@@ -597,7 +599,5 @@ class AssignmentSync(AssignmentTreeWalker):
         self._handle_gradeconf(deliverydir, gradeconf,
                 feedback.get('grade_as_xmlrpcstring'))
         self.__class__.set_feedbackinfo(deliverydir, feedback)
-
-        # TODO: Use this for grade-files as well
         overwrite_with_backup(deliverydir, 'feedback.rst', feedback['text'],
                 'feedback.lastsave.rst')
