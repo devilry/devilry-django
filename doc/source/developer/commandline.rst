@@ -31,13 +31,13 @@ Directory-tree format
 
 The following directory-format is used::
 
-    [path of assignment]
-        .info
-        [group members separated by '-']
-            .info
-            [time of delivery YYYY-MM-DD_hh.mm.ss]
-                .info
-                [feedback.server.[rst|txt]]
+    [assignment path]
+        .overwriteable-info
+        [assignment group members (usernames separated with -)]
+            .overwriteable-info
+            [deliveries numbered from 1 and up, 1 beeing the first delivery]
+                .overwriteable-info
+                [feedback.server.rst]
                 files/
                     [files in the delivery]
 

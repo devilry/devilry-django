@@ -65,7 +65,7 @@ File hierarchy
 ==============
 
 [assignment path]
-    [assignment group member (usernames separated with -)]
+    [assignment group members (usernames separated with -)]
         [deliveries numbered from 1 and up, 1 beeing the first delivery]
             feedback.rst
             files/
@@ -77,15 +77,20 @@ Overwriting files
 
 The sync command does not overwrite any files except the ones it is supposed
 to overwrite. Those files have their name prefixed with ".overwriteable-".
-If you want "sync" to overwrite other files, you have to delete them, and
-re-run sync.
+If you want "sync" to overwrite other files, you have to delete them
+yourself, and re-run sync.
 
-Some files have to be overwritten, but are backed up if needed. The backup
-is just the filename suffixed with ".bak-N", where N is the smallest unused
-number which is greater than 0. You will meet this behavior with
-"feedback.rst", and with a plugin-spesific file if the assignment uses a
-grade-plugin requiering you to edit a file instead of using the -g option to
-the feedback command.
+Some files have to be overwritten, but are backed up if needed. Backup is
+needed if:
+
+    - The file has local modifications.
+    - 
+
+The backup is just the filename suffixed with ".bak-N", where N is the
+smallest unused number which is greater than 0. You will meet this behavior
+with "feedback.rst", and with a plug-in specific file if the assignment uses
+a grade plug-in which requires you to edit a file instead of using the "-g"
+option with the feedback command.
 """
 
     def command(self):
