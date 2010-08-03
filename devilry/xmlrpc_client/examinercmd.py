@@ -92,8 +92,11 @@ option with the feedback command.
 
     def command(self):
         self.read_config()
-        AssignmentSync(self.find_rootdir(), self.get_cookiepath(),
-                self.get_serverproxy(), self.get_url())
+        try:
+            AssignmentSync(self.find_rootdir(), self.get_cookiepath(),
+                    self.get_serverproxy(), self.get_url())
+        except xmlrpclib.Fault, e:
+            log_fault(e)
 
 
 class Feedback(ExaminerCommand):

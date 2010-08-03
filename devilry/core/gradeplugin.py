@@ -162,11 +162,19 @@ class Registry(object):
         """
         return settings.DEVILRY_DEFAULT_GRADEPLUGIN
 
-    def __iter__(self):
+    def iterlabels(self):
+        """ Iterate over the registry yielding (key, label). """
         values = self._registry.values()
         values.sort(key=lambda i: i.label)
         for v in values:
             yield (v.get_key(), v)
+
+    def iteritems(self):
+        """ Iterate over the registry yielding (key, RegistryItem). """
+        return self._registry.iteritems()
+
+    def __iter__(self):
+        return self.iterlabels()
 
 
 registry = Registry()
