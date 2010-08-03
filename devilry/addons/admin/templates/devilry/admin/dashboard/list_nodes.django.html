@@ -1,12 +1,14 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-
 <ul>
   {% for node, editurl in nodes %}
     <li><a href='{{ editurl }}'>{{ node }}</a></li>
   {% endfor %}
 </ul>
-<p>
+<div>
+  {% if moreurl %}
+    <a href='{{ moreurl }}' class='button'>{% trans "More" %}</a>
+  {% endif %}
   <a href='{{ createurl }}' class='button'>{% trans "Create new" %}</a>
-</p>
+</div>
