@@ -1,7 +1,7 @@
 from string import Template
 import getpass
 from ConfigParser import ConfigParser
-from xmlrpclib import ServerProxy
+import xmlrpclib
 from optparse import OptionParser
 import os
 from urlparse import urljoin
@@ -293,7 +293,7 @@ class Command(object):
             transport=SafeCookieTransport(self.get_cookiepath())
         else:
             transport=CookieTransport(self.get_cookiepath())
-        return ServerProxy(url, transport=transport, allow_none=True)
+        return xmlrpclib.ServerProxy(url, transport=transport, allow_none=True)
 
 
 
@@ -357,7 +357,11 @@ class Login(CommandUsingConfig):
     def command(self):
         server = self.get_serverproxy()
         password = self.get_password()
-        ret = server.login(self.opt.username, password)
+        try:
+            ret = server.login(self.opt.username, password)
+        except xmlrpclib.Fault, e:
+            log_fault(e)
+            raise SystemExit()
         if ret == self.successful_login:
             log.info('Login successful')
         else:

@@ -108,6 +108,8 @@ def overwrite_with_backup(dirname, filename, data, lastsavefilename=None):
                 make_backup(filepath)
         else:
             make_backup(filepath)
+    if not os.path.exists(filepath):
+        log.info('+ %s' % filepath)
     open(filepath, 'wb').write(data)
     if lastsavefilename:
         overwrite(dirname, overwriteable_filename(lastsavefilename), data)
