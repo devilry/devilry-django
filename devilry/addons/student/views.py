@@ -11,7 +11,7 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from devilry.ui.messages import UiMessages
-from devilry.core.utils.GroupNodes import group_assignmentgroups
+from devilry.core.utils.GroupNodes import group_assignmentgroups, print_tree
 from devilry.core.models import Delivery, AssignmentGroup
 
 
@@ -65,10 +65,26 @@ def successful_delivery(request, assignment_group_id):
     return add_delivery(request, assignment_group_id, messages)
 
 
+@login_required
+def show_assignments(request):
+    assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
+    subjects = group_assignmentgroups(assignment_groups)
+
+    old_assignment_groups = AssignmentGroup.old_where_is_candidate(request.user)
+    old_subjects = group_assignmentgroups(old_assignment_groups)
+
+    
+    #print "User:", request.user
+    #print "Tree:", old_subjects
+    #print_tree(old_subjects)
+    #for s in old_subjects:
+    #    print "s:",s
 
 
-
-
+    return render_to_response('devilry/student/show-assignments.django.html', {
+            'subjects': subjects,
+            'old_subjects': old_subjects,
+            }, context_instance=RequestContext(request))
 
 @login_required
 def show_history(request):
@@ -84,7 +100,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
-    return render_to_response('devilry/student/show_assignmentgroup.django.html', {
+    return render_to_response('devilry/student/show_assignmentgroup_all.django.html', {
         'assignment_group': assignment_group,
         }, context_instance=RequestContext(request))
 

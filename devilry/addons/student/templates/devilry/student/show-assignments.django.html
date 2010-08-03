@@ -1,0 +1,71 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Assignments" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "Assignments" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li>{% trans "Assignments" %}</li>
+{% endblock %}
+
+{% block sidebar %}
+<div id='sidebar' class='assignment_group_info'>
+  
+<!--
+  <div class='section related'>
+    <h2>{% trans "Related" %}</h2>
+    <p>
+      {% url devilry-student-add_delivery_choose_assignment as add_delivery_url %}
+      {% blocktrans %}
+        You can add deliveries on active assignments
+        <a href='{{ add_delivery_url }}'>here</a>.
+      {% endblocktrans %}
+    </p>
+  </div>
+-->
+
+</div>
+{% endblock %}
+
+
+
+{% block main %}
+
+<script type="text/javascript">
+  $(function() {
+    $(".accordion").accordion({
+      autoHeight: false,
+      navigation: true,
+      collapsible: true,
+      active: false,
+    });
+  });
+</script>
+
+{% include "devilry/ui/include/assignment_group_chooser_all.django.html" %}
+
+ <div class="accordion">
+     <h3><a href="#">
+      Older deliveries
+      {% spaceless %}
+      {% endspaceless %}
+    </a></h3>
+    <div>
+
+	  {% with old_subjects as subjects %}
+	  {% include "devilry/ui/include/assignment_group_chooser_all.django.html" %}
+	  {% endwith %}
+      
+    </div>
+  </div>
+
+
+
+{% endblock %}

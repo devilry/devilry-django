@@ -8,13 +8,17 @@ Requirements for Selenium testing
 #######################################################################
 
 
-**robotframework** (http://code.google.com/p/robotframework/wiki/)
+**robotframework** 
+
+Download: http://code.google.com/p/robotframework/wiki/
 
 Install::
 
  $ easy_install robotframework
 
-**SeleniumLibrary** (http://code.google.com/p/robotframework-seleniumlibrary/wiki)
+**SeleniumLibrary** 
+
+Download: http://code.google.com/p/robotframework-seleniumlibrary/wiki
 
 Install::
 
@@ -39,8 +43,8 @@ The server is stopped with::
 Creating Selenium tests using Firefox plugin
 ########################################################################
 
-To create tests through Firefox using Firefox pugin, install Selenium IDE:
-http://seleniumhq.org/download/
+To create tests through Firefox using Firefox pugin, install 
+`Selenium IDE <http://seleniumhq.org/download/>`_:
 
 **Creating the python test**
 
