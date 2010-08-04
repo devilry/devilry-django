@@ -35,6 +35,15 @@ class CommonInterface(object):
         """ Get all objects of this type where the given user is admin. """
         raise NotImplementedError()
 
+    @classmethod
+    def where_is_admin_or_superadmin(cls, user_obj):
+        """ Get all objects of this type where the given user is admin, or
+        all objects if the user is superadmin. """
+        if user_obj.is_superuser:
+            return cls.objects.all()
+        else:
+            return cls.where_is_admin(user_obj)
+
     def can_save(self, user_obj):
         """ Check if the give user has permission to save (or create) this
         node.
