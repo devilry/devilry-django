@@ -17,7 +17,9 @@ def main(request):
             is_admin)
     normal = registry.iternormal(request, is_candidate, is_examiner,
             is_admin)
+    js = registry.iterjs(is_candidate, is_examiner, is_admin)
     return render_to_response('devilry/dashboard/main.django.html', {
             'important': important,
             'normal': normal,
+            'js': js
             }, context_instance=RequestContext(request))

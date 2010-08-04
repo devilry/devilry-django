@@ -22,7 +22,8 @@ def list_nodes_generic(request, nodecls, orderby='short_name'):
         'model_plural_name': nodecls._meta.verbose_name_plural,
         'nodes': [(node, get_editurl(node)) for node in nodes],
         'createurl': reverse('devilry-admin-create_%s' % name),
-        'moreurl': moreurl
+        'moreurl': moreurl,
+        'name': name
         }, context_instance=RequestContext(request))
 
 

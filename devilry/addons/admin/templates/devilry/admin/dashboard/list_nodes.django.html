@@ -1,7 +1,8 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-<ul>
+<input id="autocomplete-{{ name }}name" />
+<ul id='autocomplete-{{ name }}name-result'>
   {% for node, editurl in nodes %}
     <li><a href='{{ editurl }}'>{{ node }}</a></li>
   {% endfor %}

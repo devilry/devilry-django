@@ -22,6 +22,10 @@
 	});
 </script>
 
+{% for src in js %}
+  <script type="text/javascript" src="{{ src }}"></script>
+{% endfor %}
+
 
 <div id='dashboard-important'>
 	{% for app, view in important %}

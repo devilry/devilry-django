@@ -3,15 +3,18 @@
 
     A :class:`Registry`-object.
 """
+from itertools import chain
 
 class DashboardItem(object):
     def __init__(self, title, view=None, candidate_access=False,
-            examiner_access=False, admin_access=False, cssclass=''):
+            examiner_access=False, admin_access=False, cssclass='',
+            js=[]):
         self.title = title
         self.view = view
         self.candidate_access = candidate_access
         self.examiner_access = examiner_access
         self.admin_access = admin_access
+        self.js = js
     
     def can_show(self, is_candidate, is_examiner, is_admin):
         return (self.candidate_access and is_candidate) \
@@ -30,6 +33,7 @@ class DashboardRegistry(object):
     def __init__(self):
         self._important = []
         self._normal = []
+        self._js = set()
 
     def register_important(self, registryitem):
         """
@@ -49,6 +53,13 @@ class DashboardRegistry(object):
         Get the :class:`RegistryItem` registered with the given ``key``.
         """
         return self._registry[key]
+
+    def iterjs(self, is_candidate=False, is_examiner=False, is_admin=False):
+        s = set()
+        for item in chain(self._important, self._normal):
+            if item.can_show(is_candidate, is_examiner, is_admin):
+                s.update(item.js)
+        return s.__iter__()
 
     def _itervalues(self, request, lst, is_candidate=False, is_examiner=False,
             is_admin=False):
