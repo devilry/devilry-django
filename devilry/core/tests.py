@@ -15,11 +15,16 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
+from devilry.addons.grade_approved.models import ApprovedGrade
+from devilry.core import pluginloader
+
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
         Delivery, Candidate
 from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
     DbmDeliveryStore
 from testhelpers import TestDeliveryStoreMixin, create_from_path
+
+pluginloader.autodiscover()
 
 
 class TestBaseNode(TestCase):
@@ -532,6 +537,22 @@ class TestDelivery(TestCase):
         # TODO find a graceful way to handle this error:
         d2.number = 3
         self.assertRaises(IntegrityError, d2.save)
+
+    def test_feedback_delete(self):
+        student1 = User.objects.get(username='student1')
+        examiner1 = User.objects.get(username='examiner1')
+        assignmentgroup = AssignmentGroup.objects.get(id=1)
+        d = Delivery.begin(assignmentgroup, student1)
+        d.finish()
+        self.assertEquals(ApprovedGrade.objects.all().count(), 0)
+        feedback = d.get_feedback()
+        feedback.set_grade_from_xmlrpcstring('+')
+        feedback.last_modified_by = examiner1
+        feedback.save()
+        self.assertEquals(ApprovedGrade.objects.all().count(), 1)
+        feedback.delete()
+        self.assertEquals(ApprovedGrade.objects.all().count(), 0)
+        
 
 
 # TODO: Feedback tests

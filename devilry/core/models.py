@@ -1232,7 +1232,7 @@ class Feedback(models.Model):
     def get_grade_as_xmlrpcstring(self):
         """
         Get the grade as a string compatible with
-        :meth:`set_grade_from_string`. This is primarly intended for xmlrpc,
+        :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for xmlrpc,
         and a grade-plugin is not required to support it.
 
         If you need a simple string representation, use :meth:`get_grade_as_short_string`
@@ -1354,8 +1354,15 @@ def filemeta_deleted_handler(sender, **kwargs):
     try:
         filemeta.remove_file()
     except FileNotFoundError, e:
-        # TODO: We should have some way of cleaning files which have no corresponding FileMeta from DeliveryStores (could happen if the disk is not mounted when this kicks in..
+        # TODO: We should have some way of cleaning files which have no
+        # corresponding FileMeta from DeliveryStores (could happen if the
+        # disk is not mounted when this kicks in..
         pass
+
+def feedback_grade_delete_handler(sender, **kwargs):
+    feedback = kwargs['instance']
+    feedback.grade.delete()
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
+pre_delete.connect(feedback_grade_delete_handler, sender=Feedback)
