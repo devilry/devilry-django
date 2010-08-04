@@ -9,25 +9,32 @@ from django.template import RequestContext
 from devilry.core.models import Node, Subject, Period, Assignment
 
 
-def node_json_generic(request, nodecls, qrycallback):
-    maximum = 8
-    term = request.GET['term']
-    if term == '':
-        nodes = nodecls.where_is_admin(request.user)
-    else:
-        nodes = nodecls.where_is_admin(request.user).filter(
-                qrycallback(term)).distinct()
-    name = nodecls.__name__.lower()
+def node_json_generic(request, nodecls, qrycallback,
+        pathcallback = lambda n: n.get_path().split('.')):
     def get_editurl(node):
         return reverse('devilry-admin-edit_%s' % name,
                 args=[str(node.id)])
+
+    maximum = 3
+    term = request.GET.get('term', '')
+    showall = request.GET.get('all', 'no')
+
+    nodes = nodecls.where_is_admin(request.user)
+    if term != '':
+        nodes = nodes.filter(
+                qrycallback(term)).distinct()
+    allcount = nodes.count()
+
+    name = nodecls.__name__.lower()
+    if showall != 'yes':
+        nodes = nodes[:maximum]
     l = [dict(
             short_name = n.short_name,
             long_name = n.long_name,
-            path = n.get_path(),
+            path = pathcallback(n),
             editurl = get_editurl(n))
-        for n in nodes[:maximum]]
-    data = JSONEncoder().encode(l)
+        for n in nodes]
+    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
 
@@ -35,7 +42,8 @@ def node_json_generic(request, nodecls, qrycallback):
 def nodename_json(request):
     return node_json_generic(request, Node,
             lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t))
+                Q(short_name__istartswith=t) | Q(long_name__istartswith=t),
+            lambda n: [n.get_path()])
 
 @login_required
 def subjectname_json(request):
@@ -62,18 +70,27 @@ def assignmentname_json(request):
                 | Q(parentnode__parentnode__parentnode__short_name__istartswith=t))
 
 
-def nodename_json_js_generic(request, clsname):
+def nodename_json_js_generic(request, clsname, headings):
     return render_to_response('devilry/admin/autocomplete-nodename.js', {
             'jsonurl': reverse('admin-autocomplete-%sname' % clsname),
+            'createurl': reverse('devilry-admin-create_%s' % clsname),
+            'headings': headings,
             'clsname': clsname},
         context_instance=RequestContext(request),
         mimetype='text/javascript')
 
 def nodename_json_js(request):
-    return nodename_json_js_generic(request, 'node')
+    return nodename_json_js_generic(request, 'node',
+            ["Node"])
+
 def subjectname_json_js(request):
-    return nodename_json_js_generic(request, 'subject')
+    return nodename_json_js_generic(request, 'subject',
+            ["Subject"])
+
 def periodname_json_js(request):
-    return nodename_json_js_generic(request, 'period')
+    return nodename_json_js_generic(request, 'period',
+            ["Subject", "Period"])
+
 def assignmentname_json_js(request):
-    return nodename_json_js_generic(request, 'assignment')
+    return nodename_json_js_generic(request, 'assignment',
+            ["Subject", "Period", "Assignment"])
