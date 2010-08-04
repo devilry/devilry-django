@@ -1,15 +1,15 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-<input id="autocomplete-{{ name }}name" />
-<ul id='autocomplete-{{ name }}name-result'>
+<input id="autocomplete-{{ name }}name" class='autocomplete-somename' />
+<ul id='autocomplete-{{ name }}name-result' class='autocomplete-somename-result'>
   {% for node, editurl in nodes %}
     <li><a href='{{ editurl }}'>{{ node }}</a></li>
   {% endfor %}
 </ul>
-<div>
+<div class='buttonbar'>
   {% if moreurl %}
-    <a href='{{ moreurl }}' class='button'>{% trans "More" %}</a>
+    <a href='{{ moreurl }}' class='button'>{% trans "Show all" %}</a>
   {% endif %}
   <a href='{{ createurl }}' class='button'>{% trans "Create new" %}</a>
 </div>

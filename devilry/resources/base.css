@@ -473,3 +473,35 @@ table.xmlrpc-function-constraints li {
 #dashboard-normal .dashboarditem-body a{
 	color: #555;
 }
+
+ul.autocomplete-somename-result {
+	margin: 0; padding: 0;
+}
+ul.autocomplete-somename-result li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#content ul.autocomplete-somename-result li a {
+	display: block;
+	margin: 1px;
+	padding: 2px 5px;
+	border: 1px solid transparent;
+	text-decoration: none;
+	color: #444;
+}
+#content ul.autocomplete-somename-result li a:hover {
+	border: 1px solid #D4D2CE;
+	background-color: #f8f8f8;
+	text-decoration: none;
+	color: #111;
+}
+
+input.autocomplete-somename {
+	width: 98%;
+}
+
+#dashboard-normal .buttonbar,
+#dashboard-important .buttonbar {
+	margin-top: 10px;
+}
