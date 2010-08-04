@@ -12,3 +12,5 @@
 - Selenium tests
 - Clean up student views
 - Tests for grade_rstschema
+    - Including implemenation and testing of deleting SchemaDefinition
+      pre_delete Assignment.
