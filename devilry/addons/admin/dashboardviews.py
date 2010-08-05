@@ -7,7 +7,6 @@ from devilry.core.models import Node, Subject, Period, Assignment
 
 def list_nodes_generic(request, nodecls, orderby='short_name'):
     clsname = nodecls.__name__.lower()
-    print clsname
     return render_to_string('devilry/admin/dashboard/list_nodes.django.html', {
         'clsname': clsname
         }, context_instance=RequestContext(request))

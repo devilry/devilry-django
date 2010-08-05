@@ -19,6 +19,7 @@ registry.register_normal(DashboardItem(
 registry.register_normal(DashboardItem(
          title = _('Subjects'),
          view = dashboardviews.list_subjects,
+         nodeadmin_access = True,
          subjectadmin_access = True,
          js = [
              settings.DEVILRY_RESOURCES_URL + '/ui/js/jquery.autocompletetable.js',
