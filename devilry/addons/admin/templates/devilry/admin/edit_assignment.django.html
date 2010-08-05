@@ -39,8 +39,10 @@
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
   <div class='submit-row'>
-    <a href='{% url devilry-admin-delete_assignment assignment.id %}'
-      class='delete button'>{% trans "Delete" %}</a>
+    {% if assignment.id %}
+      <a href='{% url devilry-admin-delete_assignment assignment.id %}'
+        class='delete button'>{% trans "Delete" %}</a>
+    {% endif %}
     <input type='submit' name='save' value='{% trans "Save" %}' class='button'/>
   </div>
 </form>
