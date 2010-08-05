@@ -19,7 +19,7 @@ def node_json_generic(request, nodecls, qrycallback,
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
 
-    nodes = nodecls.where_is_admin(request.user)
+    nodes = nodecls.where_is_admin_or_superadmin(request.user)
     if term != '':
         nodes = nodes.filter(
                 qrycallback(term)).distinct()

@@ -13,12 +13,20 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 from devilry.core import gradeplugin
 
-from shortcuts import list_nodes_generic
+from shortcuts import list_nodes_generic, delete_generic
 
 
 @login_required
 def list_assignments(request):
     return list_nodes_generic(request, Assignment)
+
+
+@login_required
+def delete_assignment(request, assignment_id):
+    return delete_generic(request, Assignment, assignment_id,
+            message=_(
+                'This will delete all assignment groups, deliveries, '\
+                'feedbacks, and delivered files on the assignment.'))
 
 
 @login_required

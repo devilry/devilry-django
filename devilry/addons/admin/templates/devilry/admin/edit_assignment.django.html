@@ -39,12 +39,9 @@
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
   <div class='submit-row'>
-    <div class='submit-row-right'>
-      <input type='submit' name='save' value='{% trans "Save" %}'/>
-    </div>
-    <div class='submit-row-left'>
-      <div class='form-link-as-button delete'><a href='#'>{% trans "Delete" %}</a></div>
-    </div>
+    <a href='{% url devilry-admin-delete_assignment assignment.id %}'
+      class='delete button'>{% trans "Delete" %}</a>
+    <input type='submit' name='save' value='{% trans "Save" %}' class='button'/>
   </div>
 </form>
 

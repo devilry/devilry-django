@@ -15,6 +15,25 @@ def list_nodes_generic(request, nodecls):
         }, context_instance=RequestContext(request))
 
 
+def delete_generic(request, nodecls, id, message=""):
+    node = get_object_or_404(nodecls, id=id)
+    clsname = nodecls.__name__.lower()
+    deleteurl = reverse('devilry-admin-delete_%s' % clsname,
+            args=[id])
+    cancelurl = reverse('devilry-admin-edit_%s' % clsname,
+            args=[id])
+    if "confirm" in request.GET:
+        node.delete()
+        successurl = reverse('main')
+        return HttpResponseRedirect(successurl)
+    return render_to_response('devilry/admin/confirm_delete.django.html', {
+        'deleteurl': deleteurl,
+        'cancelurl': cancelurl,
+        'message': message,
+        'what_to_delete': node,
+        }, context_instance=RequestContext(request))
+
+
 class EditBase(object):
     VIEW_NAME = None
     MODEL_CLASS = None

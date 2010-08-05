@@ -68,6 +68,13 @@ span.devilry-date-format, span.devilry-time-format {
 	text-decoration: none;
 }
 
+.delete {
+	color: #c00 !important;
+}
+.cancel {
+	color: #555 !important;
+}
+
 
 
 /*******************************************

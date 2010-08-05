@@ -12,7 +12,7 @@ from dashboardplugin_registry import registry
 def main(request):
     is_candidate = AssignmentGroup.where_is_candidate(request.user).count() > 0
     is_examiner = AssignmentGroup.where_is_examiner(request.user).count() > 0
-    is_admin = Assignment.where_is_admin(request.user).count() > 0
+    is_admin = Assignment.where_is_admin_or_superadmin(request.user).count() > 0
     important = registry.iterimportant(request, is_candidate, is_examiner,
             is_admin)
     normal = registry.iternormal(request, is_candidate, is_examiner,

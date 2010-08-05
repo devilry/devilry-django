@@ -6,26 +6,12 @@ from devilry.core.models import Node, Subject, Period, Assignment
 
 
 def list_nodes_generic(request, nodecls, orderby='short_name'):
-    maximum = 8
-    nodes = nodecls.where_is_admin(request.user)[:maximum]
-    if nodes.count() == 0:
+    if nodecls.where_is_admin_or_superadmin(request.user).count() == 0:
         return None
-    name = nodecls.__name__.lower()
-    def get_editurl(node):
-        return reverse('devilry-admin-edit_%s' % name,
-                args=[str(node.id)])
-    if nodes.count() == maximum:
-         moreurl = reverse('devilry-admin-list_%ss' % name)
-    else:
-        moreurl = None
+    clsname = nodecls.__name__.lower()
     return render_to_string('devilry/admin/dashboard/list_nodes.django.html', {
-        'model_plural_name': nodecls._meta.verbose_name_plural,
-        'nodes': [(node, get_editurl(node)) for node in nodes],
-        'createurl': reverse('devilry-admin-create_%s' % name),
-        'moreurl': moreurl,
-        'name': name
+        'clsname': clsname
         }, context_instance=RequestContext(request))
-
 
 def list_nodes(request, *args):
     return list_nodes_generic(request, Node)
