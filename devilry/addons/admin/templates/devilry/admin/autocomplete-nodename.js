@@ -8,5 +8,10 @@ $(function() {
             "{{ h }}",
         {% endfor %}],
         "{% trans "Show all" %}",
-        "{% trans "Create new" %}", "{{ createurl }}");
+        "{% trans "Create new" %}", "{{ createurl }}",
+        "{% trans "Delete selected" %}", "{% trans "Confirm delete" %}",
+        "{{ deletemessage }}",
+        "{{ deleteurl }}",
+        "{% trans "Cancel" %}"
+        );
 });

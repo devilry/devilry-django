@@ -20,14 +20,12 @@ from shortcuts import list_nodes_generic, delete_generic
 def list_assignments(request):
     return list_nodes_generic(request, Assignment)
 
-
 @login_required
 def delete_assignment(request, assignment_id):
     return delete_generic(request, Assignment, assignment_id,
             message=_(
                 'This will delete all assignment groups, deliveries, '\
                 'feedbacks, and delivered files on the assignment.'))
-
 
 @login_required
 def edit_assignment(request, assignment_id=None, successful_save=False):

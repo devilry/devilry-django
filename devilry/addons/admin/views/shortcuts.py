@@ -34,6 +34,24 @@ def delete_generic(request, nodecls, id, message=""):
         }, context_instance=RequestContext(request))
 
 
+def deletemany_generic(request, nodecls):
+    prefix = 'autocomplete-%s-cb' % nodecls.__name__.lower()
+    if request.method == 'POST':
+        nodes = []
+        for key, value in request.POST.iteritems():
+            if key.startswith(prefix):
+                node = nodecls.objects.get(id=value)
+                if node.can_save(request.user):
+                    nodes.append(node)
+                else:
+                    raise ValueError(
+                            "No permission to delete %(node)s" % node)
+        for node in nodes:
+            node.delete()
+        successurl = reverse('main')
+        return HttpResponseRedirect(successurl)
+
+
 class EditBase(object):
     VIEW_NAME = None
     MODEL_CLASS = None

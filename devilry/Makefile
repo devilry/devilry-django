@@ -39,6 +39,8 @@ reset-exampledb:
 	python manage.py loaddata -v0 core/fixtures/example/users.json
 	python manage.py loaddata -v0 core/fixtures/example/data.json
 	python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
+	git checkout deliverystore.dbm.dat
+	git checkout deliverystore.dbm.dir
 
 selenium-test: cleardb
 	python manage.py loaddata -v0 addons/student/fixtures/exampleusers.json

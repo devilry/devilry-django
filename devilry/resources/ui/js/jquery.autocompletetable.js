@@ -14,14 +14,18 @@ jQuery.autocompletetable = {
         $("<th>&nbsp;</th>").appendTo(headrow);
         $("<thead></thead>").append(headrow).appendTo(tbl);
         var result = $("<tbody></tbody>").appendTo(tbl);
-        var idprefix = searchfield.parent().attr("id") + "-";
+        var idprefix = searchfield.parent().parent().attr("id") + "-cb";
 
         $.getJSON(jsonurl, {"term": term, "all": showall}, function(data) {
             $.each(data.result, function(i, item) {
-                var id = idprefix + i;
+                var id = idprefix + "-" + i;
                 var tr = $("<tr></tr>");
                 $("<td></td>")
-                    .append($("<input />").attr("type", "checkbox").attr("id", id))
+                    .append($("<input />")
+                        .attr("type", "checkbox")
+                        .attr("value", item.id)
+                        .attr("id", id)
+                        .attr("name", id))
                 .appendTo(tr);
                 $.each(item.path, function(index, part) {
                     var p = part.replace(term,
@@ -46,6 +50,7 @@ jQuery.autocompletetable = {
                     var term = searchfield.val();
                     jQuery.autocompletetable.fill(searchfield, showall_label,
                         headings, editlabel, jsonurl, term, "yes");
+                    return false;
                 });
             }
         });
@@ -59,14 +64,22 @@ jQuery.autocompletetable = {
 }
 
 
-jQuery.fn.autocompletetable = function(jsonurl, editlabel, headings, showall_label,
-        createlabel, createurl) {
+jQuery.fn.autocompletetable = function(jsonurl, editlabel, headings,
+        showall_label, createlabel, createurl,
+        deletelabel, deletetitle, deletemessage, deleteurl,
+        cancel_label) {
+
     return this.each(function(){
+        var form = $("<form></form>")
+            .attr("method", "post")
+            .attr("action", deleteurl)
+            .appendTo(this);
+
         var searchfieldid = $(this).attr("id") + "-searchfield";
         $("<label>Filter: </label>")
             .addClass("autocompletetable-filterlabel")
             .attr("for", searchfieldid)
-            .appendTo(this);
+            .appendTo(form);
         var searchfield =
             $("<input />")
                 .attr("id", searchfieldid)
@@ -74,17 +87,47 @@ jQuery.fn.autocompletetable = function(jsonurl, editlabel, headings, showall_lab
                 .addClass("ui-widget")
                 .addClass("ui-widget-content")
                 .addClass("ui-corner-all")
-            .appendTo(this);
+            .appendTo(form);
 
         // Initialize with default search results
         jQuery.autocompletetable.fill(searchfield, showall_label,
             headings, editlabel, jsonurl, "", "no");
 
         // Add buttonbar
-        var buttonbar = $("<div></div>").attr("class", "autocompletetable-buttonbar")
+        var buttonbar = $("<div></div>")
+            .addClass("autocompletetable-buttonbar")
             .appendTo(this);
-        $("<a>" + createlabel + "</a>").attr('href', createurl).button()
+        var deletebutton = $("<button></button>")
+            .html(deletelabel)
+            .button()
+            .addClass("delete")
             .appendTo(buttonbar);
+        $("<a>" + createlabel + "</a>").button()
+            .attr("href", createurl)
+            .appendTo(buttonbar);
+
+        // Create confirm delete dialog
+        var confirmdelete_buttons = {}
+        confirmdelete_buttons[deletelabel] = function() {
+            form.submit();
+        };
+        confirmdelete_buttons[cancel_label] = function() {
+            $(this).dialog('close');
+        };
+        var confirmdelete_dialog = $('<div></div>')
+            .html(deletemessage)
+            .dialog({
+                autoOpen: false,
+                title: deletetitle,
+                modal: true,
+                buttons: confirmdelete_buttons
+            });
+
+        // Open confirm-delete dialog when delete button is clicked.
+        deletebutton.click(function() {
+            confirmdelete_dialog.dialog('open');
+            return false;
+        });
 
         // Search when at least 2 characters are in the searchfield, and reset
         // when searchfield is empty.

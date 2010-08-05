@@ -12,7 +12,9 @@ for x in ('node', 'subject', 'period'):
         url(r'^%ss/create$' % x, 'views.edit_%s' % x,
             name='devilry-admin-create_%s' % x),
         url(r'^%ss/$' % x, 'views.list_%ss' % x,
-            name='devilry-admin-list_%ss' % x)
+            name='devilry-admin-list_%ss' % x),
+        url(r'^%ss/deletemany$' % x, 'views.delete_many%ss' % x,
+            name='devilry-admin-delete_many%ss' % x),
         ]
 
 urlpatterns = patterns('devilry.addons.admin',
@@ -31,6 +33,8 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/delete$',
         'views.assignment.delete_assignment',
         name='devilry-admin-delete_assignment'),
+    url(r'^assignments/deletemany$', 'views.delete_manyassignments',
+        name='devilry-admin-delete_manyassignments'),
 
     url(r'^assignments/(?P<assignment_id>\d+)/group/edit/(?P<assignmentgroup_id>\d+)$',
         'views.edit_assignmentgroup',

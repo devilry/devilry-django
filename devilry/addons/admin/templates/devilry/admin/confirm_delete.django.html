@@ -15,16 +15,18 @@
 {% endblock %}
 
 {% block main %}
-<p>
-{% blocktrans %}
-	Are you sure you want to delete {{ what_to_delete }}?
-{% endblocktrans %}
-</p>
+{% if showform %}
+  <p>
+  {% blocktrans %}
+    Are you sure you want to delete {{ what_to_delete }}?
+  {% endblocktrans %}
+  </p>
 
-<p>{{ message }}</p>
+  <p>{{ message }}</p>
 
-<p>
-	<a href="{{ cancelurl }}" class='button cancel'>{% trans "Cancel" %}</a>
-	<a href="{{ deleteurl }}?confirm=yes" class='button'>{% trans "Yes" %}</a>
-</p>
+  <p>
+    <a href="{{ cancelurl }}" class='button cancel'>{% trans "Cancel" %}</a>
+    <a href="{{ deleteurl }}?confirm=yes" class='button'>{% trans "Yes" %}</a>
+  </p>
+{% endif %}
 {% endblock %}

@@ -9,7 +9,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb
 from devilry.ui.fields import MultiSelectCharField
 
-from shortcuts import EditBase, list_nodes_generic
+from shortcuts import EditBase, list_nodes_generic, deletemany_generic
 from assignment import edit_assignment, list_assignments
 from assignmentgroup import list_assignmentgroups, edit_assignmentgroup, \
         create_assignmentgroups, save_assignmentgroups
@@ -102,3 +102,20 @@ def edit_subject(request, obj_id=None, successful_save=False):
 @login_required
 def edit_period(request, obj_id=None, successful_save=False):
     return EditPeriod(request, obj_id, successful_save).create_view()
+
+
+@login_required
+def delete_manynodes(request):
+    return deletemany_generic(request, Node)
+
+@login_required
+def delete_manysubjects(request):
+    return deletemany_generic(request, Subject)
+
+@login_required
+def delete_manyperiods(request):
+    return deletemany_generic(request, Period)
+
+@login_required
+def delete_manyassignments(request):
+    return deletemany_generic(request, Assignment)
