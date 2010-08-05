@@ -2,22 +2,25 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from devilry.core.models import AssignmentGroup, Assignment
+from devilry.core.models import Node, Subject, Period, Assignment, \
+        AssignmentGroup
 
 from dashboardplugin_registry import registry
 
 
-
 @login_required
 def main(request):
-    is_candidate = AssignmentGroup.where_is_candidate(request.user).count() > 0
-    is_examiner = AssignmentGroup.where_is_examiner(request.user).count() > 0
-    is_admin = Assignment.where_is_admin_or_superadmin(request.user).count() > 0
-    important = registry.iterimportant(request, is_candidate, is_examiner,
-            is_admin)
-    normal = registry.iternormal(request, is_candidate, is_examiner,
-            is_admin)
-    js = registry.iterjs(is_candidate, is_examiner, is_admin)
+    kw = dict(
+        is_candidate = AssignmentGroup.where_is_candidate(request.user).count() > 0,
+        is_examiner = AssignmentGroup.where_is_examiner(request.user).count() > 0,
+        is_nodeadmin = Node.where_is_admin_or_superadmin(request.user).count() > 0,
+        is_subjectadmin = Subject.where_is_admin_or_superadmin(request.user).count() > 0,
+        is_periodadmin = Period.where_is_admin_or_superadmin(request.user).count() > 0,
+        is_assignmentadmin = Assignment.where_is_admin_or_superadmin(request.user).count() > 0,
+    )
+    important = registry.iterimportant(request, **kw)
+    normal = registry.iternormal(request, **kw)
+    js = registry.iterjs(**kw)
     return render_to_response('devilry/dashboard/main.django.html', {
             'important': important,
             'normal': normal,
