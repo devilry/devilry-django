@@ -14,4 +14,45 @@
     </div>
   </div>
 </form>
+
+<div class="help">
+<h2>Format explanation</h2>
+<p>
+The format used to create the assignment groups is:
+</p>
+<ul>
+<li> One assignment group on each line.</li>
+<li> Each username is separated by a comma.</li>
+<li> Group name is identified by two colons at the end of the name, and must be placed at the beginning of the line.</li>
+<li> A group name or at least one username is required for each group.</li>
+<li> An optional candidate id for a candidate is denoted by a colon and the candidate id after the username.</li>
+</ul>
+
+<p>
+Example:
+</p>
+<pre>
+user1
+user2:5
+user3:9, user4, user5:10
+Group1::
+Group2::user5
+Group3::user6, user7
+Group4::user8:20, user9:21
+</pre>
+</div>
+
+<p>
+Gives the following assignment groups:
+</p>
+<ol></li>
+<li> Candidates: user1</li>
+<li> Candidates: user2 (with candidate id 5)</li>
+<li> Candidates: user3 (with candidate id 9), user4 and user3 (with candidate id 10)</li>
+<li> Name: Group1</li>
+<li> Name: Group2, Candidates: user5</li>
+<li> Name: Group3, Candidates: user6 and user7</li>
+<li> Name: Group3, Candidates: user8 (with candidate id 20) and user9 (with candidate id 21)</li>
+</ol>
+
 {% endblock %}

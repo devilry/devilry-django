@@ -110,10 +110,6 @@ def save_assignmentgroups(request, assignment_id):
 
 
 
-
-
-
-
 class AssignmentgroupForm(forms.Form):
         name = forms.CharField(required=False)
         candidates = forms.CharField(widget=DevilryMultiSelectFewCandidates, required=False)
@@ -126,7 +122,15 @@ class AssignmentgroupForm(forms.Form):
             if name.strip() == '' and cands.strip() == '':
                 # Only do something if both fields are valid so far.
                 raise forms.ValidationError("Either name or candidates must be filled in.")
-   
+
+            # Verify that the usernames are valid
+            if cands.strip() != '':
+                cands = cands.split(",")
+                for cand in cands:
+                    cand = cand.split(":")[0]
+                    if User.objects.filter(username=cand).count() == 0:
+                        raise forms.ValidationError("User %s could not be found." % cand)
+            
             # Always return the full collection of cleaned data.
             return cleaned_data
 
@@ -144,25 +148,36 @@ class CreateAssignmentgroups(object):
             else:
                 formset = AssignmentGroupsFormSet(request.POST)
 
-            if formset.is_valid() and not initial_data:
-                for i in range(0, formset.total_form_count()):
-                    form = formset.forms[i]
-                    name = None
-                    candidates = None
+            messages = UiMessages()
 
-                    if 'name' in form.cleaned_data:
-                        name = form.cleaned_data['name']
-                    if 'candidates' in form.cleaned_data:
-                        candidates = form.cleaned_data['candidates']
+            if not initial_data:
+                if not formset.is_valid():
+                    messages.add_error(_("There is an error in the input data."))
+                else:                
+                    success = True
 
-                    if name or candidates:
-                        self.save_group(assignment, name, candidates)
-                return HttpResponseRedirect(reverse(
-                    'devilry-admin-edit_assignment', args=[assignment.id]))
+                    for i in range(0, formset.total_form_count()):
+                        form = formset.forms[i]
+                        name = None
+                        candidates = None
+                        
+                        if 'name' in form.cleaned_data:
+                            name = form.cleaned_data['name']
+                            if 'candidates' in form.cleaned_data:
+                                candidates = form.cleaned_data['candidates']
+                                
+                        if name or candidates:
+                            if not self.save_group(assignment, name, candidates):
+                                success = False
+                                break
+                    if success:                        
+                        return HttpResponseRedirect(reverse(
+                                'devilry-admin-edit_assignment', args=[assignment.id]))
             return render_to_response(
                 'devilry/admin/verify_assignmentgroups.django.html', {
                     'formset': formset,
                     'assignment': assignment,
+                    'messages': messages,
                     }, context_instance=RequestContext(request))
         else:
             return HttpResponseForbidden('Forbidden')
@@ -191,10 +206,10 @@ class CreateAssignmentgroups(object):
                     ag.candidates.add(cand)
                     ag.save()
                 except Exception, e:
-                    print e
                     print "user %s doesnt exist" % (user_cand)
+                    return False
 
-
+        return True
 
 
 @login_required
@@ -202,7 +217,7 @@ def create_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
 
     class Form(forms.Form):
-        assignment_groups = forms.CharField(widget=forms.widgets.Textarea())
+        assignment_groups = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows':30, 'cols':70}))
 
     if request.POST:
         form = Form(request.POST) 
