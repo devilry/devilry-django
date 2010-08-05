@@ -11,8 +11,6 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='{% url devilry-admin-list_assignments %}'>{% trans "Assignments" %}</a></li>
-  <li>::</li>
   <li>
     {% if isnew %}
       {% trans "Create assignment" %}
@@ -38,11 +36,7 @@
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}
   </fieldset>
-  <div class='submit-row'>
-    {% if assignment.id %}
-      <a href='{% url devilry-admin-delete_assignment assignment.id %}'
-        class='delete button'>{% trans "Delete" %}</a>
-    {% endif %}
+  <div class='button-row'>
     <input type='submit' name='save' value='{% trans "Save" %}' class='button'/>
   </div>
 </form>

@@ -17,8 +17,6 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
 
-from shortcuts import list_nodes_generic
-
 
 
 class DeadlineForm(forms.ModelForm):
@@ -98,10 +96,6 @@ def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
         'messages': messages,
         'isnew': isnew,
         }, context_instance=RequestContext(request))
-
-@login_required
-def list_assignmentgroups(request):
-    return list_nodes_generic(request, AssignmentGroup)
 
 @login_required
 def save_assignmentgroups(request, assignment_id):

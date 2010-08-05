@@ -7,33 +7,6 @@ from django.utils.translation import ugettext as _
 from devilry.ui.messages import UiMessages
 
 
-
-def list_nodes_generic(request, nodecls):
-    return render_to_response('devilry/admin/list_nodes.django.html', {
-        'model_plural_name': nodecls._meta.verbose_name_plural,
-        'nodes': nodecls.where_is_admin(request.user),
-        }, context_instance=RequestContext(request))
-
-
-def delete_generic(request, nodecls, id, message=""):
-    node = get_object_or_404(nodecls, id=id)
-    clsname = nodecls.__name__.lower()
-    deleteurl = reverse('devilry-admin-delete_%s' % clsname,
-            args=[id])
-    cancelurl = reverse('devilry-admin-edit_%s' % clsname,
-            args=[id])
-    if "confirm" in request.GET:
-        node.delete()
-        successurl = reverse('main')
-        return HttpResponseRedirect(successurl)
-    return render_to_response('devilry/admin/confirm_delete.django.html', {
-        'deleteurl': deleteurl,
-        'cancelurl': cancelurl,
-        'message': message,
-        'what_to_delete': node,
-        }, context_instance=RequestContext(request))
-
-
 def deletemany_generic(request, nodecls):
     prefix = 'autocomplete-%s-cb' % nodecls.__name__.lower()
     if request.method == 'POST':
