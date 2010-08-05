@@ -2,7 +2,8 @@
 {% load i18n %}
 
 $(function() {
-    $("#autocomplete-{{ clsname }}").autocompletetable("{{ jsonurl }}", "edit",
+    $("#autocomplete-{{ clsname }}").autocompletetable("{{ jsonurl }}",
+        "{% trans "edit" %}",
         [{% for h in headings %}
             "{{ h }}",
         {% endfor %}],
