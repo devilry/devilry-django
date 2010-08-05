@@ -40,6 +40,13 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-create_assignmentgroup'),
 
+    url(r'^assignments/(?P<assignment_id>\d+)/create-assignmentgroups$',
+        'views.assignmentgroup.create_assignmentgroups',
+        name='devilry-admin-create_assignmentgroups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/save-assignmentgroups$',
+        'views.assignmentgroup.save_assignmentgroups',
+        name='devilry-admin-save_assignmentgroups'),
+
     url(r'^autocomplete-nodename$', 'views.json.nodename_json',
         name='admin-autocomplete-nodename'),
     url(r'^autocomplete-subjectname$', 'views.json.subjectname_json',
@@ -58,11 +65,5 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^autocomplete-assignmentname.js$', 'views.json.assignmentname_json_js',
         name='admin-autocomplete-assignmentname.js'),
 
-    url(r'^assignmentgroups/create-assignmentgroups/(?P<assignment_id>\d+)$',
-        'views.assignmentgroup.create_assignmentgroups',
-        name='devilry-admin-create_assignmentgroups'),
-    url(r'^assignmentgroups/save-assignmentgroups/(?P<assignment_id>\d+)$',
-        'views.assignmentgroup.save_assignmentgroups',
-        name='devilry-admin-save_assignmentgroups'),
     *generic_urls
 )
