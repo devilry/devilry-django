@@ -1,6 +1,21 @@
 [
     {
         "pk": 1, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 1, 
         "model": "core.node", 
         "fields": {
             "long_name": "Duckburg", 
@@ -81,6 +96,384 @@
             "long_name": "Money making basics", 
             "admins": [], 
             "anonymous": false
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "avoiding-work", 
+            "publishing_time": "2010-08-05 08:00:00", 
+            "parentnode": 1, 
+            "long_name": "Effective habits for lazy people", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 2, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 3, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 4, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 14, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 15, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 16, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 4
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 5
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 6
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 8
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "The boys", 
+            "parentnode": 2, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "The girls", 
+            "parentnode": 2, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 3, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 3, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 3, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 3, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 3, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 3, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "First try", 
+            "deadline": "2010-08-08 16:00:00", 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-08 16:00:00", 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 14, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-05 18:26:50", 
+            "number": 1, 
+            "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 14, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-05 18:26:40", 
+            "number": 1, 
+            "assignment_group": 6
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 2, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-05 18:26:15", 
+            "number": 1, 
+            "assignment_group": 3
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 2, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-05 18:15:07", 
+            "number": 2, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 2, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-05 18:14:03", 
+            "number": 1, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 13, 
+            "delivery": 2, 
+            "last_modified": "2010-08-05 18:16:15", 
+            "object_id": 1, 
+            "content_type": 21, 
+            "published": false
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "Not lazy at all!", 
+            "last_modified_by": 12, 
+            "delivery": 4, 
+            "last_modified": "2010-08-05 18:27:33", 
+            "object_id": 2, 
+            "content_type": 27, 
+            "published": false
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "You are lazy young man", 
+            "last_modified_by": 13, 
+            "delivery": 3, 
+            "last_modified": "2010-08-05 18:28:13", 
+            "object_id": 3, 
+            "content_type": 27, 
+            "published": false
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 1, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 2, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 3, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 4, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 5, 
+            "size": 13, 
+            "filename": "test.txt"
         }
     }
 ]

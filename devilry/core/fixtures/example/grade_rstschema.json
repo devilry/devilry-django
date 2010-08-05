@@ -1,1 +1,24 @@
-[]
+[
+    {
+        "pk": 3, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 9 ]]]"
+        }
+    }
+]
