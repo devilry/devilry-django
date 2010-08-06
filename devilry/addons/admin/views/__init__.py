@@ -1,9 +1,11 @@
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 
-from devilry.core.models import Node, Subject, Period, Assignment
+from devilry.core.models import Node, Subject, Period, Assignment, \
+        AssignmentGroup
 from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb
 from devilry.ui.fields import MultiSelectCharField
@@ -39,6 +41,12 @@ def delete_manyperiods(request):
 @login_required
 def delete_manyassignments(request):
     return deletemany_generic(request, Assignment)
+
+@login_required
+def delete_manyassignmentgroups(request, assignment_id):
+    return deletemany_generic(request, AssignmentGroup,
+            successurl=reverse('devilry-admin-edit_assignment',
+                args=[assignment_id]))
 
 
 class EditNode(EditBase):

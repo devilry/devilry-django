@@ -27,6 +27,13 @@ class DeadlineForm(forms.ModelForm):
         model = Deadline
 
 
+class CandidateForm(forms.ModelForm):
+    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
+    text = forms.CharField(required=False,
+            widget=forms.Textarea(attrs=dict(rows=5, cols=50)))
+    class Meta:
+        model = Deadline
+
 
 @login_required
 def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,

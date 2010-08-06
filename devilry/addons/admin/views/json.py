@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.simplejson import JSONEncoder
@@ -7,15 +7,12 @@ from django import http
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
-from devilry.core.models import Node, Subject, Period, Assignment
+from devilry.core.models import Node, Subject, Period, Assignment, \
+        AssignmentGroup
 
 
-def node_json_generic(request, nodecls, qrycallback,
+def node_json_generic(request, nodecls, editurl_callback, qrycallback,
         pathcallback = lambda n: n.get_path().split('.')):
-    def get_editurl(node):
-        return reverse('devilry-admin-edit_%s' % name,
-                args=[str(node.id)])
-
     maximum = 3
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
@@ -31,45 +28,82 @@ def node_json_generic(request, nodecls, qrycallback,
         nodes = nodes[:maximum]
     l = [dict(
             id = n.id,
-            short_name = n.short_name,
-            long_name = n.long_name,
             path = pathcallback(n),
-            editurl = get_editurl(n))
+            editurl = editurl_callback(n))
         for n in nodes]
     data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
 
+
 @login_required
 def nodename_json(request):
     return node_json_generic(request, Node,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t),
-            lambda n: [n.get_path()])
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_node', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t),
+            pathcallback = lambda n: [n.get_path()])
 
 @login_required
 def subjectname_json(request):
     return node_json_generic(request, Subject,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t)
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_subject', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t))
 
 @login_required
 def periodname_json(request):
     return node_json_generic(request, Period,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t)
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_period', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t)
                 | Q(parentnode__parentnode__short_name__istartswith=t))
 
 @login_required
 def assignmentname_json(request):
     return node_json_generic(request, Assignment,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t)
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_assignment', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t)
                 | Q(parentnode__parentnode__short_name__istartswith=t)
                 | Q(parentnode__parentnode__parentnode__short_name__istartswith=t))
+
+
+@login_required
+def assignmentgroupname_json(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return http.HttpResponseForbidden("Forbidden")
+    maximum = 3
+    term = request.GET.get('term', '')
+    showall = request.GET.get('all', 'no')
+
+    groups = assignment.assignmentgroups.all()
+    if term != '':
+        groups = groups.filter(
+            Q(name__contains=term)
+            | Q(examiners__username__startswith=term)
+            | Q(candidates__student__username__startswith=term)).distinct()
+    allcount = groups.count()
+
+    if showall != 'yes':
+        groups = groups[:maximum]
+    l = [dict(
+            id = g.id,
+            path = [str(g.id), g.get_candidates(), g.get_examiners(), g.name],
+            editurl = reverse('devilry-admin-edit_assignmentgroup',
+                args=[assignment_id, str(g.id)]))
+        for g in groups]
+    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
+    response = http.HttpResponse(data, content_type="text/plain")
+    return response
 
 
 def nodename_json_js_generic(request, clsname, headings, deletemessage):

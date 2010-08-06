@@ -7,7 +7,8 @@ from django.utils.translation import ugettext as _
 from devilry.ui.messages import UiMessages
 
 
-def deletemany_generic(request, nodecls):
+def deletemany_generic(request, nodecls, successurl=None):
+    successurl = successurl or reverse('main')
     prefix = 'autocomplete-%s-cb' % nodecls.__name__.lower()
     if request.method == 'POST':
         nodes = []
@@ -21,7 +22,6 @@ def deletemany_generic(request, nodecls):
                             "No permission to delete %(node)s" % node)
         for node in nodes:
             node.delete()
-        successurl = reverse('main')
         return HttpResponseRedirect(successurl)
 
 

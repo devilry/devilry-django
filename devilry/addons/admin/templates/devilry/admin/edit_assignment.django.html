@@ -44,46 +44,28 @@
 
 {% if not isnew %}
   <h2>Assignment groups</h2>
-  <table class='horizontal_ordered_table'>
-    <tr>
-      <th>Id</th>
-      <th>Candidates</th>
-      <th>Examiners</th>
-      <th>Name</th>
-      <th>&nbsp;</th>
-    </tr>
-
-    {% for assignmentgroup in assignment.assignmentgroups.all %}
-      <tr>
-        <td> 
-          {{ assignmentgroup.id }}
-        </td>
-        <td> 
-          {{ assignmentgroup.candidates.all|join:", " }}
-        </td>
-        <td> 
-          {{ assignmentgroup.examiners.all|join:", " }}
-        </td>
-        <td>
-          {% if assignmentgroup.name %} {{ assignmentgroup.name }} {% endif %}
-        </td>
-        <td>
-          <a href='{% url devilry-admin-edit_assignmentgroup assignment.id assignmentgroup.id %}'>
-            {% trans "Edit" %}
-          </a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+  <div id='autocomplete-assignmentgroup'></div>
+  <script type="text/javascript" src="/resources/ui/js/jquery.autocompletetable.js"></script> 
+  <script type="text/javascript">
+    $(function() {
+      $("#autocomplete-assignmentgroup").autocompletetable(
+        "{% url admin-autocomplete-assignmentgroupname assignment.id %}",
+        "{% trans "edit" %}",
+        ["Id", "Candidates", "Examiners", "Name"],
+        "{% trans "Show all" %}",
+        "{% trans "Create new" %}",
+        "{% url devilry-admin-create_assignmentgroup assignment.id %}",
+        "{% trans "Delete selected" %}", "{% trans "Confirm delete" %}",
+        '{% trans "This will delete all selected assignmentgroups and all deliveries and feedbacks within them." %}',
+        "{% url devilry-admin-delete_manyassignmentgroups assignment.id %}",
+        "{% trans "Cancel" %}"
+      );
+    });
+  </script>
 
 
   <h3>{% trans "Actions" %}:</h3>
   <ul>
-    <li>
-      <a href='{% url devilry-admin-create_assignmentgroup assignment.id %}'>
-        Create assignment group
-      </a>
-    </li>
     <li>
       <a href='{% url devilry-admin-create_assignmentgroups assignment.id %}'>
         Create many assignment groups (advanced)
