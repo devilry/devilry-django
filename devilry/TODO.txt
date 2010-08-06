@@ -8,9 +8,9 @@
             - can be added by examiners or admins depending on the options set
               for the assignment.
             - have a connection to a disapproved delivery+feedback.
-- Delete in admin
 - Selenium tests
 - Clean up student views
 - Tests for grade_rstschema
     - Including implemenation and testing of deleting SchemaDefinition
       pre_delete Assignment.
+- Error when entering invalid usernames
