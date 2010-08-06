@@ -48,7 +48,7 @@ class EditNode(EditBase):
     def create_form(self):
         class NodeForm(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=False,
-                    queryset = Node.where_is_admin(self.request.user))
+                    queryset = Node.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
@@ -64,7 +64,7 @@ class EditSubject(EditBase):
     def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Node.where_is_admin(self.request.user))
+                    queryset = Node.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
@@ -80,7 +80,7 @@ class EditPeriod(EditBase):
     def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Subject.where_is_admin(self.request.user))
+                    queryset = Subject.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:

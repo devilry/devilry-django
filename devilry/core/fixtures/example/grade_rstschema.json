@@ -1,10 +1,24 @@
 [
     {
-        "pk": 13, 
+        "pk": 3, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
             "let_students_see_schema": false, 
-            "schemadef": "=====================================================================\r\nFantasy course AA4500 Spring 2010 home exam 2\r\n=====================================================================\r\n\r\n\r\nLink layer\r\n---------------------------------------------------------------------\r\n\r\nThe link layer is *the hardest part* of the assignment, so you should\r\n*not* require complete perfection to give full score.\r\n\r\nHow do you rate the quality of the link-layer implementation?\r\n\r\n.. field:: 0-5\r\n\r\nDoes package format contain all the required header-fields?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\n\r\nCode quality\r\n---------------------------------------------------------------------\r\n\r\nSince this is the last exam, students should have learned to structure\r\nand organize their code in a sane manner. So full score should not\r\nbe given lightly.\r\n\r\nWould you say the code is easy to read?\r\n\r\n.. field:: no/somewhat/yes\r\n\r\nHave the students split the code over multiple files in a sane manner?\r\n\r\n.. field:: no/somewhat/yes\r\n    :default: yes\r\n"
+            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 9 ]]]"
         }
     }
 ]

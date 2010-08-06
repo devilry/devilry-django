@@ -447,6 +447,19 @@ class Period(models.Model, BaseNode):
         return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
 
     @classmethod
+    def not_ended_where_is_admin_or_superadmin(cls, user_obj):
+        """ Returns a QuerySet matching all Periods where the given user is
+        admin or superadmin and end_time is in the future.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        if user_obj.is_superuser:
+            return cls.objects.filter(end_time__gt=datetime.now())
+        else:
+            return cls.not_ended_where_is_admin(user_obj)
+
+    @classmethod
     def get_by_path(self, path):
         """ Get a Period by path.
 
@@ -470,8 +483,10 @@ class Period(models.Model, BaseNode):
 
         Raises ValidationError if start_time is after end_time.
         """
-        if self.start_time > self.end_time:
-            raise ValidationError(_('Start time must be before end time.'))
+        if self.start_time and self.end_time:
+            if self.start_time > self.end_time:
+                raise ValidationError(_('Start time must be before end time.'))
+        super(Period, self).clean(*args, **kwargs)
 
     def is_active(self):
         """ Returns true if the period is active

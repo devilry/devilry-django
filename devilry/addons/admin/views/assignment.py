@@ -28,7 +28,7 @@ def edit_assignment(request, assignment_id=None, successful_save=False):
     
     class Form(forms.ModelForm):
         parentnode = forms.ModelChoiceField(required=True,
-                queryset = Period.not_ended_where_is_admin(request.user))
+                queryset = Period.not_ended_where_is_admin_or_superadmin(request.user))
         admins = MultiSelectCharField(required=False,
                 widget=DevilryMultiSelectFewUsersDb)
         class Meta:

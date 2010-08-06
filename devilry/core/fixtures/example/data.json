@@ -1,163 +1,111 @@
 [
     {
         "pk": 1, 
-        "model": "core.node", 
-        "fields": {
-            "long_name": "Department of Informatics", 
-            "admins": [
-                3
-            ], 
-            "parentnode": 3, 
-            "short_name": "ifi"
-        }
+        "model": "core.grademodel", 
+        "fields": {}
     }, 
     {
         "pk": 2, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 1, 
         "model": "core.node", 
         "fields": {
-            "long_name": "University of Oslo", 
+            "long_name": "Duckburg", 
+            "admins": [], 
+            "parentnode": null, 
+            "short_name": "duckburg"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "How to get away with beeing lazy", 
             "admins": [
-                2, 
                 9
             ], 
-            "parentnode": null, 
-            "short_name": "uio"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "core.node", 
-        "fields": {
-            "long_name": "Faculty of Mathematics and Natural Sciences", 
-            "admins": [], 
-            "parentnode": 2, 
-            "short_name": "matnat"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "core.subject", 
-        "fields": {
-            "long_name": "INF1010", 
-            "admins": [
-                4, 
-                5
-            ], 
             "parentnode": 1, 
-            "short_name": "inf1010"
+            "short_name": "lazy101"
         }
     }, 
     {
         "pk": 2, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "INF1100", 
+            "long_name": "Introduction to making money and beeing greedy", 
             "admins": [
-                4
+                10
             ], 
             "parentnode": 1, 
-            "short_name": "inf1100"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "core.subject", 
-        "fields": {
-            "long_name": "INF2100 - Programmeringslaboratorium", 
-            "admins": [
-                3, 
-                5
-            ], 
-            "parentnode": 1, 
-            "short_name": "inf2100"
+            "short_name": "money101"
         }
     }, 
     {
         "pk": 1, 
         "model": "core.period", 
         "fields": {
-            "short_name": "2010-2040", 
-            "start_time": "2010-01-01 00:00:00", 
-            "parentnode": 2, 
-            "long_name": "Year 2010-2040", 
+            "short_name": "forever", 
+            "start_time": "2010-08-01 12:00:00", 
+            "parentnode": 1, 
+            "long_name": "forever", 
             "admins": [], 
-            "end_time": "2040-01-01 00:00:00"
+            "end_time": "2210-08-01 12:00:00"
         }
     }, 
     {
         "pk": 2, 
         "model": "core.period", 
         "fields": {
-            "short_name": "spring2009", 
-            "start_time": "2009-01-24 18:24:36", 
-            "parentnode": 1, 
-            "long_name": "Spring 2009", 
+            "short_name": "long", 
+            "start_time": "2010-08-03 12:00:00", 
+            "parentnode": 2, 
+            "long_name": "A long period", 
             "admins": [], 
-            "end_time": "2009-06-24 18:24:37"
+            "end_time": "2210-08-10 12:00:00"
         }
     }, 
     {
         "pk": 3, 
         "model": "core.period", 
         "fields": {
-            "short_name": "fall2009", 
-            "start_time": "2009-08-24 00:00:00", 
-            "parentnode": 2, 
-            "long_name": "Fall 2009", 
+            "short_name": "spring08", 
+            "start_time": "2008-01-01 00:00:00", 
+            "parentnode": 1, 
+            "long_name": "String 2008", 
             "admins": [], 
-            "end_time": "2009-12-09 00:00:00"
+            "end_time": "2010-06-15 00:00:00"
         }
     }, 
     {
         "pk": 4, 
         "model": "core.period", 
         "fields": {
-            "short_name": "2010-2030", 
-            "start_time": "2010-01-01 00:00:00", 
-            "parentnode": 1, 
-            "long_name": "Year 2010-2030", 
-            "admins": [], 
-            "end_time": "2030-01-01 00:00:00"
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "core.period", 
-        "fields": {
-            "short_name": "spring2008", 
-            "start_time": "2008-01-09 00:00:00", 
-            "parentnode": 1, 
+            "short_name": "spring08", 
+            "start_time": "2008-01-01 00:00:00", 
+            "parentnode": 2, 
             "long_name": "Spring 2008", 
             "admins": [], 
-            "end_time": "2008-06-15 00:00:00"
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "core.period", 
-        "fields": {
-            "short_name": "h2010", 
-            "start_time": "2010-03-11 21:33:00", 
-            "parentnode": 3, 
-            "long_name": "H\u00f8st 2010", 
-            "admins": [], 
-            "end_time": "2010-12-11 21:33:01"
+            "end_time": "2010-06-15 00:00:00"
         }
     }, 
     {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "week1", 
-            "publishing_time": "2010-01-01 00:00:00", 
-            "parentnode": 1, 
-            "long_name": "Week 1", 
-            "admins": [
-                3, 
-                4, 
-                5
-            ], 
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "greed", 
+            "publishing_time": "2010-08-05 10:00:00", 
+            "parentnode": 2, 
+            "long_name": "Learning greed through case studies", 
+            "admins": [], 
             "anonymous": false
         }
     }, 
@@ -166,149 +114,49 @@
         "model": "core.assignment", 
         "fields": {
             "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "oblig2", 
-            "publishing_time": "2010-01-01 00:00:00", 
+            "short_name": "money", 
+            "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 2, 
-            "long_name": "Oblig2", 
+            "long_name": "Money making basics", 
             "admins": [], 
             "anonymous": false
         }
     }, 
     {
         "pk": 3, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "oblig2", 
-            "publishing_time": "2010-02-01 06:00:00", 
-            "parentnode": 4, 
-            "long_name": "Oblig 2", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "oblig1", 
-            "publishing_time": "2010-03-01 06:00:00", 
-            "parentnode": 4, 
-            "long_name": "Oblig 1", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "Oblig1", 
-            "publishing_time": "2010-03-10 20:22:00", 
-            "parentnode": 5, 
-            "long_name": "Obligatory assignment 1", 
-            "admins": [
-                3
-            ], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "week2", 
-            "publishing_time": "2010-03-11 21:19:27", 
-            "parentnode": 3, 
-            "long_name": "Week 2", 
-            "admins": [
-                4, 
-                5
-            ], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "del0", 
-            "publishing_time": "2010-03-11 21:34:04", 
-            "parentnode": 6, 
-            "long_name": "Del 0", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "del1", 
-            "publishing_time": "2010-03-11 21:34:49", 
-            "parentnode": 6, 
-            "long_name": "Del 1", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 10, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "del2", 
-            "publishing_time": "2010-03-11 21:35:09", 
-            "parentnode": 6, 
-            "long_name": "Del 2", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 11, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_approved:approvedgrade", 
-            "short_name": "oblig2", 
-            "publishing_time": "2008-03-11 21:38:03", 
-            "parentnode": 5, 
-            "long_name": "Oblig 2", 
-            "admins": [
-                4
-            ], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 12, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "oblig1", 
-            "publishing_time": "2008-03-11 21:39:43", 
-            "parentnode": 5, 
-            "long_name": "Oblig 1", 
-            "admins": [
-                6
-            ], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 13, 
         "model": "core.assignment", 
         "fields": {
             "grade_plugin": "grade_rstschema:rstschemagrade", 
-            "short_name": "rstschematest", 
-            "publishing_time": "2010-07-06 15:03:00", 
+            "short_name": "avoiding-work", 
+            "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 1, 
-            "long_name": "rstSchemaTest", 
+            "long_name": "Effective habits for lazy people", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "sleeping1", 
+            "publishing_time": "2010-08-06 08:00:00", 
+            "parentnode": 1, 
+            "long_name": "Locating good sleeping areas", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "sleeping2", 
+            "publishing_time": "2010-08-06 16:00:00", 
+            "parentnode": 1, 
+            "long_name": "Look like you are working while  sleeping", 
             "admins": [], 
             "anonymous": false
         }
@@ -318,7 +166,16 @@
         "model": "core.candidate", 
         "fields": {
             "candidate_id": "", 
-            "student": 6, 
+            "student": 2, 
+            "assignment_group": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 3, 
             "assignment_group": 1
         }
     }, 
@@ -327,8 +184,8 @@
         "model": "core.candidate", 
         "fields": {
             "candidate_id": "", 
-            "student": 7, 
-            "assignment_group": 2
+            "student": 4, 
+            "assignment_group": 1
         }
     }, 
     {
@@ -336,7 +193,7 @@
         "model": "core.candidate", 
         "fields": {
             "candidate_id": "", 
-            "student": 8, 
+            "student": 14, 
             "assignment_group": 2
         }
     }, 
@@ -345,8 +202,8 @@
         "model": "core.candidate", 
         "fields": {
             "candidate_id": "", 
-            "student": 6, 
-            "assignment_group": 3
+            "student": 15, 
+            "assignment_group": 2
         }
     }, 
     {
@@ -354,26 +211,26 @@
         "model": "core.candidate", 
         "fields": {
             "candidate_id": "", 
-            "student": 7, 
-            "assignment_group": 4
+            "student": 16, 
+            "assignment_group": 2
         }
     }, 
     {
         "pk": 7, 
         "model": "core.candidate", 
         "fields": {
-            "candidate_id": "", 
-            "student": 8, 
-            "assignment_group": 5
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 3
         }
     }, 
     {
         "pk": 8, 
         "model": "core.candidate", 
         "fields": {
-            "candidate_id": "", 
-            "student": 6, 
-            "assignment_group": 6
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 4
         }
     }, 
     {
@@ -381,16 +238,34 @@
         "model": "core.candidate", 
         "fields": {
             "candidate_id": null, 
-            "student": 6, 
-            "assignment_group": 7
+            "student": 4, 
+            "assignment_group": 5
         }
     }, 
     {
         "pk": 10, 
         "model": "core.candidate", 
         "fields": {
-            "candidate_id": "", 
-            "student": 7, 
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 6
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
             "assignment_group": 8
         }
     }, 
@@ -399,9 +274,11 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "is_open": true, 
-            "name": "Stuff", 
-            "parentnode": 1, 
-            "examiners": []
+            "name": "The boys", 
+            "parentnode": 2, 
+            "examiners": [
+                13
+            ]
         }
     }, 
     {
@@ -409,10 +286,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "is_open": true, 
-            "name": null, 
-            "parentnode": 1, 
+            "name": "The girls", 
+            "parentnode": 2, 
             "examiners": [
-                10
+                12
             ]
         }
     }, 
@@ -421,10 +298,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "is_open": true, 
-            "name": null, 
-            "parentnode": 1, 
+            "name": "", 
+            "parentnode": 3, 
             "examiners": [
-                10
+                13
             ]
         }
     }, 
@@ -433,10 +310,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "is_open": true, 
-            "name": null, 
-            "parentnode": 1, 
+            "name": "", 
+            "parentnode": 3, 
             "examiners": [
-                10
+                6
             ]
         }
     }, 
@@ -445,10 +322,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "is_open": true, 
-            "name": null, 
-            "parentnode": 1, 
+            "name": "", 
+            "parentnode": 3, 
             "examiners": [
-                10
+                12
             ]
         }
     }, 
@@ -457,10 +334,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "is_open": true, 
-            "name": null, 
+            "name": "", 
             "parentnode": 3, 
             "examiners": [
-                10
+                12
             ]
         }
     }, 
@@ -470,9 +347,10 @@
         "fields": {
             "is_open": true, 
             "name": "", 
-            "parentnode": 13, 
+            "parentnode": 3, 
             "examiners": [
-                10
+                12, 
+                13
             ]
         }
     }, 
@@ -482,31 +360,27 @@
         "fields": {
             "is_open": true, 
             "name": "", 
-            "parentnode": 13, 
+            "parentnode": 3, 
             "examiners": [
-                10
+                13
             ]
         }
     }, 
     {
-        "pk": 7, 
-        "model": "core.delivery", 
+        "pk": 1, 
+        "model": "core.deadline", 
         "fields": {
-            "delivered_by": 6, 
-            "successful": true, 
-            "time_of_delivery": "2010-07-29 15:18:19", 
-			"number": 1,
-            "assignment_group": 7
+            "text": "First try", 
+            "deadline": "2010-08-08 16:00:00", 
+            "assignment_group": 1
         }
     }, 
     {
-        "pk": 6, 
-        "model": "core.delivery", 
+        "pk": 2, 
+        "model": "core.deadline", 
         "fields": {
-            "delivered_by": 8, 
-            "successful": true, 
-            "time_of_delivery": "2010-07-18 15:33:01", 
-			"number": 2,
+            "text": "", 
+            "deadline": "2010-08-08 16:00:00", 
             "assignment_group": 2
         }
     }, 
@@ -514,10 +388,10 @@
         "pk": 5, 
         "model": "core.delivery", 
         "fields": {
-            "delivered_by": 8, 
+            "delivered_by": 14, 
             "successful": true, 
-            "time_of_delivery": "2010-07-18 15:32:35", 
-			"number": 1,
+            "time_of_delivery": "2010-08-05 18:26:50", 
+            "number": 1, 
             "assignment_group": 2
         }
     }, 
@@ -525,32 +399,32 @@
         "pk": 4, 
         "model": "core.delivery", 
         "fields": {
-            "delivered_by": 6, 
+            "delivered_by": 14, 
             "successful": true, 
-            "time_of_delivery": "2010-07-18 15:22:18", 
-			"number": 3,
-            "assignment_group": 1
+            "time_of_delivery": "2010-08-05 18:26:40", 
+            "number": 1, 
+            "assignment_group": 6
         }
     }, 
     {
         "pk": 3, 
         "model": "core.delivery", 
         "fields": {
-            "delivered_by": 6, 
+            "delivered_by": 2, 
             "successful": true, 
-            "time_of_delivery": "2010-07-03 16:13:54", 
-			"number": 1,
-            "assignment_group": 6
+            "time_of_delivery": "2010-08-05 18:26:15", 
+            "number": 1, 
+            "assignment_group": 3
         }
     }, 
     {
         "pk": 2, 
         "model": "core.delivery", 
         "fields": {
-            "delivered_by": 6, 
+            "delivered_by": 2, 
             "successful": true, 
-            "time_of_delivery": "2010-07-02 02:25:35", 
-			"number": 2,
+            "time_of_delivery": "2010-08-05 18:15:07", 
+            "number": 2, 
             "assignment_group": 1
         }
     }, 
@@ -558,74 +432,53 @@
         "pk": 1, 
         "model": "core.delivery", 
         "fields": {
-            "delivered_by": 6, 
+            "delivered_by": 2, 
             "successful": true, 
-            "time_of_delivery": "2010-07-02 02:25:25", 
-			"number": 1,
+            "time_of_delivery": "2010-08-05 18:14:03", 
+            "number": 1, 
             "assignment_group": 1
         }
     }, 
     {
-        "pk": 3, 
-        "model": "core.filemeta", 
+        "pk": 1, 
+        "model": "core.feedback", 
         "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 13, 
             "delivery": 2, 
-            "size": 16, 
-            "filename": "example.py"
+            "last_modified": "2010-08-05 18:16:15", 
+            "object_id": 1, 
+            "content_type": 21, 
+            "published": false
         }
     }, 
     {
-        "pk": 4, 
-        "model": "core.filemeta", 
+        "pk": 2, 
+        "model": "core.feedback", 
         "fields": {
-            "delivery": 3, 
-            "size": 16, 
-            "filename": "example.py"
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "core.filemeta", 
-        "fields": {
+            "format": "rst", 
+            "text": "Not lazy at all!", 
+            "last_modified_by": 12, 
             "delivery": 4, 
-            "size": 12, 
-            "filename": "hello.txt"
+            "last_modified": "2010-08-05 18:27:33", 
+            "object_id": 2, 
+            "content_type": 27, 
+            "published": false
         }
     }, 
     {
-        "pk": 6, 
-        "model": "core.filemeta", 
+        "pk": 3, 
+        "model": "core.feedback", 
         "fields": {
-            "delivery": 5, 
-            "size": 12, 
-            "filename": "hello.txt"
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 7, 
-            "size": 12, 
-            "filename": "hello.txt"
-        }
-    }, 
-    {
-        "pk": 7, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 6, 
-            "size": 15, 
-            "filename": "hello2.txt"
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "core.filemeta", 
-        "fields": {
-            "delivery": 7, 
-            "size": 15, 
-            "filename": "hello2.txt"
+            "format": "rst", 
+            "text": "You are lazy young man", 
+            "last_modified_by": 13, 
+            "delivery": 3, 
+            "last_modified": "2010-08-05 18:28:13", 
+            "object_id": 3, 
+            "content_type": 27, 
+            "published": false
         }
     }, 
     {
@@ -633,7 +486,7 @@
         "model": "core.filemeta", 
         "fields": {
             "delivery": 1, 
-            "size": 5, 
+            "size": 13, 
             "filename": "test.txt"
         }
     }, 
@@ -642,7 +495,34 @@
         "model": "core.filemeta", 
         "fields": {
             "delivery": 2, 
-            "size": 5, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 3, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 4, 
+            "size": 13, 
+            "filename": "test.txt"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 5, 
+            "size": 13, 
             "filename": "test.txt"
         }
     }

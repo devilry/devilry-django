@@ -10,13 +10,14 @@ from dashboardplugin_registry import registry
 
 @login_required
 def main(request):
+    is_superuser = request.user.is_superuser
     kw = dict(
         is_candidate = AssignmentGroup.where_is_candidate(request.user).count() > 0,
         is_examiner = AssignmentGroup.where_is_examiner(request.user).count() > 0,
-        is_nodeadmin = Node.where_is_admin_or_superadmin(request.user).count() > 0,
-        is_subjectadmin = Subject.where_is_admin_or_superadmin(request.user).count() > 0,
-        is_periodadmin = Period.where_is_admin_or_superadmin(request.user).count() > 0,
-        is_assignmentadmin = Assignment.where_is_admin_or_superadmin(request.user).count() > 0,
+        is_nodeadmin = (is_superuser or Node.where_is_admin(request.user).count() > 0),
+        is_subjectadmin = (is_superuser or Subject.where_is_admin(request.user).count() > 0),
+        is_periodadmin = (is_superuser or Period.where_is_admin(request.user).count() > 0),
+        is_assignmentadmin = (is_superuser or Assignment.where_is_admin(request.user).count() > 0),
     )
     important = registry.iterimportant(request, **kw)
     normal = registry.iternormal(request, **kw)
