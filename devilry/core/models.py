@@ -734,6 +734,10 @@ class AssignmentGroup(models.Model, CommonInterface):
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
 
+    .. attribute:: name
+
+        A optional name for the group.
+
     .. attribute:: candidates
 
         A django ``RelatedManager`` that holds the candidates on this group.
@@ -1376,7 +1380,8 @@ def filemeta_deleted_handler(sender, **kwargs):
 
 def feedback_grade_delete_handler(sender, **kwargs):
     feedback = kwargs['instance']
-    feedback.grade.delete()
+    if feedback.grade != None:
+        feedback.grade.delete()
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
