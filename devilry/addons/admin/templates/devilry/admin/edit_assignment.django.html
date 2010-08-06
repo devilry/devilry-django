@@ -50,16 +50,27 @@
     $(function() {
       $("#autocomplete-assignmentgroup").autocompletetable(
         "{% url admin-autocomplete-assignmentgroupname assignment.id %}",
-        "{% trans "edit" %}",
         ["Id", "Candidates", "Examiners", "Name"],
-        "{% trans "Show all" %}",
-        "{% trans "Create new" %}",
-        "{% url devilry-admin-create_assignmentgroup assignment.id %}",
-        "{% trans "Delete selected" %}", "{% trans "Confirm delete" %}",
-        '{% trans "This will delete all selected assignmentgroups and all deliveries and feedbacks within them." %}',
-        "{% url devilry-admin-delete_manyassignmentgroups assignment.id %}",
-        "{% trans "Cancel" %}"
-      );
+        "{% trans "edit" %}", "{% trans "Show all" %}",
+        {
+          links: {
+            createnew: {
+              label: "{% trans "Create new" %}",
+              url: "{% url devilry-admin-create_assignmentgroup assignment.id %}"
+            }
+          },
+          buttons: {
+            deleteselected: {
+              label: "{% trans "Delete selected" %}",
+              classes: ['delete'],
+              confirmtitle: "{% trans "Confirm delete" %}",
+              confirmlabel: "{% trans "Confirm delete" %}",
+              cancel_label: "{% trans "Cancel" %}",
+              confirm_message: '{% trans "This will delete all selected assignmentgroups and all deliveries and feedbacks within them." %}',
+              url: "{% url devilry-admin-delete_manyassignmentgroups assignment.id %}"
+            }
+          }
+        })
     });
   </script>
 

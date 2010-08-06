@@ -2,16 +2,28 @@
 {% load i18n %}
 
 $(function() {
-    $("#autocomplete-{{ clsname }}").autocompletetable("{{ jsonurl }}",
-        "{% trans "edit" %}",
-        [{% for h in headings %}
-            "{{ h }}",
-        {% endfor %}],
-        "{% trans "Show all" %}",
-        "{% trans "Create new" %}", "{{ createurl }}",
-        "{% trans "Delete selected" %}", "{% trans "Confirm delete" %}",
-        "{{ deletemessage }}",
-        "{{ deleteurl }}",
-        "{% trans "Cancel" %}"
-        );
+    $("#autocomplete-{{ clsname }}").autocompletetable(
+        "{{ jsonurl }}",
+        [{% for h in headings %}"{{ h }}",{% endfor %}],
+        "{% trans "edit" %}", "{% trans "Show all" %}",
+        {
+          links: {
+            createnew: {
+              label: "{% trans "Create new" %}",
+              url: "{{ createurl }}"
+            }
+          },
+          buttons: {
+            deleteselected: {
+              label: "{% trans "Delete selected" %}",
+              classes: ['delete'],
+              confirmtitle: "{% trans "Confirm delete" %}",
+              confirmlabel: "{% trans "Confirm delete" %}",
+              cancel_label: "{% trans "Cancel" %}",
+              confirm_message: "{{ deletemessage }}",
+              classes: ['delete'],
+              url: "{{ deleteurl }}"
+            }
+          }
+        })
 });

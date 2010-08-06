@@ -1,7 +1,7 @@
 // vim: set ts=4 sts=4 et sw=4:
 
 jQuery.autocompletetable = {
-    fill: function(searchfield, showall_label, headings,
+    refreshtable: function(searchfield, showall_label, headings,
                   editlabel, jsonurl, term, showall) {
         var tbl = $("<table></table>")
             .addClass("autocompletetable-result")
@@ -43,12 +43,13 @@ jQuery.autocompletetable = {
             searchfield.next("button").remove();
             if(data.allcount > data.result.length) {
                 var showallbutton =
-                    $("<button>" + showall_label + " (" + data.allcount + ")</button>")
-                    .attr("class", "button").button();
+                    $("<button></button>")
+                        .html(showall_label + " (" + data.allcount + ")")
+                        .button();
                 searchfield.after(showallbutton);
                 showallbutton.click(function(e) {
                     var term = searchfield.val();
-                    jQuery.autocompletetable.fill(searchfield, showall_label,
+                    jQuery.autocompletetable.refreshtable(searchfield, showall_label,
                         headings, editlabel, jsonurl, term, "yes");
                     return false;
                 });
@@ -64,15 +65,13 @@ jQuery.autocompletetable = {
 }
 
 
-jQuery.fn.autocompletetable = function(jsonurl, editlabel, headings,
-        showall_label, createlabel, createurl,
-        deletelabel, deletetitle, deletemessage, deleteurl,
-        cancel_label) {
+jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
+        showall_label, args) {
 
     return this.each(function(){
         var form = $("<form></form>")
             .attr("method", "post")
-            .attr("action", deleteurl)
+            .attr("action", '#') //.attr("action", deleteurl)
             .appendTo(this);
 
         var searchfieldid = $(this).attr("id") + "-searchfield";
@@ -90,44 +89,74 @@ jQuery.fn.autocompletetable = function(jsonurl, editlabel, headings,
             .appendTo(form);
 
         // Initialize with default search results
-        jQuery.autocompletetable.fill(searchfield, showall_label,
+        jQuery.autocompletetable.refreshtable(searchfield, showall_label,
             headings, editlabel, jsonurl, "", "no");
 
         // Add buttonbar
         var buttonbar = $("<div></div>")
             .addClass("autocompletetable-buttonbar")
             .appendTo(this);
-        var deletebutton = $("<button></button>")
-            .html(deletelabel)
-            .button()
-            .addClass("delete")
-            .appendTo(buttonbar);
-        $("<a>" + createlabel + "</a>").button()
-            .attr("href", createurl)
-            .appendTo(buttonbar);
 
-        // Create confirm delete dialog
-        var confirmdelete_buttons = {}
-        confirmdelete_buttons[deletelabel] = function() {
-            form.submit();
-        };
-        confirmdelete_buttons[cancel_label] = function() {
-            $(this).dialog('close');
-        };
-        var confirmdelete_dialog = $('<div></div>')
-            .html(deletemessage)
-            .dialog({
-                autoOpen: false,
-                title: deletetitle,
-                modal: true,
-                buttons: confirmdelete_buttons
+        if(args.buttons) {
+            // Create buttons
+            $.each(args.buttons, function(key, button) {
+                //$.log("button:: key: " + key
+                    //+ " label:" + button.label
+                    //+ " confirmtitle:" + button.confirmtitle
+                    //+ " confirmlabel:" + button.confirmlabel
+                    //+ " cancel_label:" + button.cancel_label
+                    //+ " confirm_message:" + button.confirm_message
+                    //+ " url:" + button.url);
+                var htmlbutton = $("<button></button>")
+                    .html(button.label)
+                    .button()
+                    .appendTo(buttonbar);
+                if(button.classes) {
+                    $.each(button.classes, function(i, cls) {
+                        htmlbutton.addClass(cls);
+                    });
+                }
+
+                // Create confirm delete dialog
+                var confirmbuttons = {}
+                confirmbuttons[button.confirmlabel] = function() {
+                    form.attr("action", button.url);
+                    form.submit();
+                };
+                confirmbuttons[button.cancel_label] = function() {
+                    $(this).dialog('close');
+                };
+                var confirmdialog = $('<div>' + button.confirm_message + '</div>')
+                    .dialog({
+                        autoOpen: false,
+                        title: button.confirmtitle,
+                        modal: true,
+                        buttons: confirmbuttons
+                    });
+
+                // Open confirm-delete dialog when delete button is clicked.
+                htmlbutton.click(function() {
+                    confirmdialog.dialog('open');
+                    return false;
+                });
             });
+        }
 
-        // Open confirm-delete dialog when delete button is clicked.
-        deletebutton.click(function() {
-            confirmdelete_dialog.dialog('open');
-            return false;
-        });
+        if(args.links) {
+            // Create links
+            $.each(args.links, function(key, link) {
+                var html_link = $("<a></a>").html(link.label)
+                    .attr("href", link.url)
+                    .button()
+                    .appendTo(buttonbar);
+                if(link.classes) {
+                    $.each(link.classes, function(i, cls) {
+                        html_link.addClass(cls);
+                    });
+                }
+                //$.log("link:: key: " + key + " label:" + link.label + " url:" + link.url);
+            });
+        }
 
         // Search when at least 2 characters are in the searchfield, and reset
         // when searchfield is empty.
@@ -137,7 +166,7 @@ jQuery.fn.autocompletetable = function(jsonurl, editlabel, headings,
             }
             var term = $(this).val();
             if(term.length > 1 || term.length == 0) {
-                jQuery.autocompletetable.fill(searchfield, showall_label,
+                jQuery.autocompletetable.refreshtable(searchfield, showall_label,
                     headings, editlabel, jsonurl, term, "no");
             }
         });
