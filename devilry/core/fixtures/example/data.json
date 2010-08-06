@@ -73,6 +73,30 @@
         }
     }, 
     {
+        "pk": 3, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "spring08", 
+            "start_time": "2008-01-01 00:00:00", 
+            "parentnode": 1, 
+            "long_name": "String 2008", 
+            "admins": [], 
+            "end_time": "2010-06-15 00:00:00"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "spring08", 
+            "start_time": "2008-01-01 00:00:00", 
+            "parentnode": 2, 
+            "long_name": "Spring 2008", 
+            "admins": [], 
+            "end_time": "2010-06-15 00:00:00"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
@@ -107,6 +131,32 @@
             "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 1, 
             "long_name": "Effective habits for lazy people", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "sleeping1", 
+            "publishing_time": "2010-08-06 08:00:00", 
+            "parentnode": 1, 
+            "long_name": "Locating good sleeping areas", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "sleeping2", 
+            "publishing_time": "2010-08-06 16:00:00", 
+            "parentnode": 1, 
+            "long_name": "Look like you are working while  sleeping", 
             "admins": [], 
             "anonymous": false
         }
