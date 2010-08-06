@@ -925,6 +925,14 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_status(self):
+        """ Get status as a translated string.
+        
+        Returns one of:
+            
+            - "No deliveries"
+            - "Not corrected"
+            - "Corrected"
+        """
         if self.deliveries.all().count() == 0:
             return _('No deliveries')
         else:
@@ -934,7 +942,9 @@ class AssignmentGroup(models.Model, CommonInterface):
             else:
                 return _('Corrected')
 
-    def get_grade_as_short_string(self):
+    def get_latest_delivery(self):
+        """ Get the latest delivery by this assignment group with feedback,
+        or ``None`` if there is no deliveries with feedback. """
         if self.deliveries.all().count() == 0:
             return None
         else:
@@ -943,9 +953,18 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return None
             else:
                 return qry.annotate(
-                        models.Max('time_of_delivery'))[0].feedback.get_grade_as_short_string()
+                        models.Max('time_of_delivery'))[0]
+
+    def get_grade_as_short_string(self):
+        """ Get the grade  """
+        d = self.get_latest_delivery()
+        if d:
+            return d.feedback.get_grade_as_short_string()
+        else:
+            return None
 
     def get_number_of_deliveries(self):
+        """ Get the number of deliveries by this assignment group. """
         return self.deliveries.all().count()
 
     def _can_save_id_none(self, user_obj):
