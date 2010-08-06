@@ -15,6 +15,16 @@
         "fields": {}
     }, 
     {
+        "pk": 4, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -270,6 +280,15 @@
         }
     }, 
     {
+        "pk": 13, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": "", 
+            "student": 2, 
+            "assignment_group": 9
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
@@ -367,6 +386,18 @@
         }
     }, 
     {
+        "pk": 9, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 1, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.deadline", 
         "fields": {
@@ -382,6 +413,17 @@
             "text": "", 
             "deadline": "2010-08-08 16:00:00", 
             "assignment_group": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 2, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-06 21:46:31", 
+            "number": 1, 
+            "assignment_group": 9
         }
     }, 
     {
@@ -447,8 +489,8 @@
             "text": "", 
             "last_modified_by": 13, 
             "delivery": 2, 
-            "last_modified": "2010-08-05 18:16:15", 
-            "object_id": 1, 
+            "last_modified": "2010-08-06 21:41:37", 
+            "object_id": 4, 
             "content_type": 21, 
             "published": false
         }
@@ -479,6 +521,29 @@
             "object_id": 3, 
             "content_type": 27, 
             "published": false
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 13, 
+            "delivery": 6, 
+            "last_modified": "2010-08-06 21:47:16", 
+            "object_id": 5, 
+            "content_type": 20, 
+            "published": false
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 6, 
+            "size": 12, 
+            "filename": "hello.txt"
         }
     }, 
     {

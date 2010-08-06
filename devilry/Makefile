@@ -32,6 +32,8 @@ create-exampledata:
 	python manage.py dumpdata core --indent=4 > core/fixtures/example/data.json
 	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/users.json
 	python manage.py dumpdata grade_rstschema --indent=4 > core/fixtures/example/grade_rstschema.json
+	python manage.py dumpdata grade_default --indent=4 > core/fixtures/example/grade_default.json
+	python manage.py dumpdata grade_approved --indent=4 > core/fixtures/example/grade_approved.json
 
 reset-exampledb:
 	rm -f db.sqlite3
@@ -39,6 +41,8 @@ reset-exampledb:
 	python manage.py loaddata -v0 core/fixtures/example/users.json
 	python manage.py loaddata -v0 core/fixtures/example/data.json
 	python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
+	python manage.py loaddata -v0 core/fixtures/example/grade_default.json
+	python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
 	git checkout deliverystore.dbm.dat
 	git checkout deliverystore.dbm.dir
 
