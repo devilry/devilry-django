@@ -45,3 +45,55 @@ def choose_assignment(request):
             'devilry/examiner/choose_assignment.django.html', {
                 'subjects': subjects,
             }, context_instance=RequestContext(request))
+
+
+from django.db.models import Q
+from django.utils.simplejson import JSONEncoder
+from django.core.urlresolvers import reverse
+from django import http
+
+@login_required
+def assignmentgroup_filtertable_json(request):
+    def latestdeliverytime(g):
+        d = g.get_latest_delivery()
+        if d:
+            return d.time_of_delivery.strftime("%Y-%m-%d %H:%M")
+        else:
+            return ""
+
+    maximum = 20
+    term = request.GET.get('term', '')
+    showall = request.GET.get('all', 'no')
+
+    groups = AssignmentGroup.where_is_examiner(request.user).order_by(
+            'parentnode__parentnode__parentnode__short_name',
+            'parentnode__parentnode__short_name',
+            'parentnode__short_name',
+            )
+    if term != '':
+        groups = groups.filter(
+            Q(name__contains=term)
+            | Q(examiners__username__contains=term)
+            | Q(candidates__student__username__contains=term))
+    groups = groups.distinct()
+    allcount = groups.count()
+
+    if showall != 'yes':
+        groups = groups[:maximum]
+    l = [dict(
+            id = g.id,
+            path = [
+                g.parentnode.parentnode.parentnode.short_name,
+                g.parentnode.parentnode.short_name,
+                g.parentnode.short_name,
+                str(g.id), g.get_candidates(), g.name,
+                #str(g.get_number_of_deliveries()),
+                latestdeliverytime(g),
+                g.get_status(),
+            ],
+            editurl = reverse('devilry-examiner-show_assignmentgroup',
+                    args=[str(g.id)]))
+        for g in groups]
+    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
+    response = http.HttpResponse(data, content_type="text/plain")
+    return response

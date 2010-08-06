@@ -11,14 +11,14 @@ def list_nodes_generic(request, nodecls, orderby='short_name'):
         'clsname': clsname
         }, context_instance=RequestContext(request))
 
-def list_nodes(request, *args):
+def list_nodes(request, *args, **kwargs):
     return list_nodes_generic(request, Node)
 
-def list_subjects(request, *args):
+def list_subjects(request, *args, **kwargs):
     return list_nodes_generic(request, Subject)
 
-def list_periods(request, *args):
+def list_periods(request, *args, **kwargs):
     return list_nodes_generic(request, Period)
 
-def list_assignments(request, *args):
+def list_assignments(request, *args, **kwargs):
     return list_nodes_generic(request, Assignment)
