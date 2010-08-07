@@ -10,16 +10,14 @@
 			"{% trans "Show" %}", "{% trans "Show all" %}",
       {
         filters: {
-          "Show groups with": {
-            nodeliveries: {
-              label: "No deliveries"
+          "Include": {
+            include_nodeliveries: {
+              label: "No deliveries",
+              enabled: false
             },
-            notcorrected: {
-              label: "Not corrected",
-              enabled: false 
-            },
-            corrected: {
-              label: "Corrected"
+            include_corrected: {
+              label: "Corrected",
+              enabled: false
             }
           }
         }

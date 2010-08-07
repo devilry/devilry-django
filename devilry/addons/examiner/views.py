@@ -77,8 +77,13 @@ def assignmentgroup_filtertable_json(request):
             | Q(examiners__username__contains=term)
             | Q(candidates__student__username__contains=term))
 
-    if not request.GET.get('nodeliveries'):
-        groups = groups.filter(Q(deliveries__isnull=False))
+    if not request.GET.get('include_nodeliveries'):
+        groups = groups.exclude(Q(deliveries__isnull=True))
+    if not request.GET.get('include_corrected'):
+        #groups = groups.exclude(Q(deliveries__isnull=True))
+        groups = groups.annotate(
+                num_feedback=Count('deliveries__feedback')
+                ).filter(num_feedback=0)
 
     groups = groups.distinct()
     allcount = groups.count()
