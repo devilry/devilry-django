@@ -37,7 +37,7 @@ def node_json_generic(request, nodecls, editurl_callback, qrycallback,
 
 
 @login_required
-def nodename_json(request):
+def node_json(request):
     return node_json_generic(request, Node,
             editurl_callback = lambda n:
                 reverse('devilry-admin-edit_node', args=[str(n.id)]),
@@ -46,7 +46,7 @@ def nodename_json(request):
             pathcallback = lambda n: [n.get_path()])
 
 @login_required
-def subjectname_json(request):
+def subject_json(request):
     return node_json_generic(request, Subject,
             editurl_callback = lambda n:
                 reverse('devilry-admin-edit_subject', args=[str(n.id)]),
@@ -55,7 +55,7 @@ def subjectname_json(request):
                 | Q(parentnode__short_name__istartswith=t))
 
 @login_required
-def periodname_json(request):
+def period_json(request):
     return node_json_generic(request, Period,
             editurl_callback = lambda n:
                 reverse('devilry-admin-edit_period', args=[str(n.id)]),
@@ -65,7 +65,7 @@ def periodname_json(request):
                 | Q(parentnode__parentnode__short_name__istartswith=t))
 
 @login_required
-def assignmentname_json(request):
+def assignment_json(request):
     return node_json_generic(request, Assignment,
             editurl_callback = lambda n:
                 reverse('devilry-admin-edit_assignment', args=[str(n.id)]),
@@ -77,7 +77,7 @@ def assignmentname_json(request):
 
 
 @login_required
-def assignmentgroupname_json(request, assignment_id):
+def assignmentgroup_json(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
         return http.HttpResponseForbidden("Forbidden")
@@ -106,7 +106,7 @@ def assignmentgroupname_json(request, assignment_id):
     return response
 
 
-def nodename_json_js_generic(request, clsname, headings, deletemessage):
+def node_json_js_generic(request, clsname, headings, deletemessage):
     return render_to_response('devilry/admin/autocomplete-nodename.js', {
             'jsonurl': reverse('admin-autocomplete-%sname' % clsname),
             'createurl': reverse('devilry-admin-create_%s' % clsname),
@@ -117,29 +117,29 @@ def nodename_json_js_generic(request, clsname, headings, deletemessage):
         context_instance=RequestContext(request),
         mimetype='text/javascript')
 
-def nodename_json_js(request):
-    return nodename_json_js_generic(request, 'node',
+def node_json_js(request):
+    return node_json_js_generic(request, 'node',
             ["Node"],
             _('This will delete all selected nodes and all subjects, periods, '\
             'assignments, assignment groups, deliveries and feedbacks within '\
             'them.'))
 
-def subjectname_json_js(request):
-    return nodename_json_js_generic(request, 'subject',
+def subject_json_js(request):
+    return node_json_js_generic(request, 'subject',
             ["Subject"],
             _('This will delete all selected subjects and all periods, '\
             'assignments, assignment groups, deliveries and feedbacks within '\
             'them.'))
 
-def periodname_json_js(request):
-    return nodename_json_js_generic(request, 'period',
+def period_json_js(request):
+    return node_json_js_generic(request, 'period',
             ["Subject", "Period"],
             _('This will delete all selected periods and all '\
             'assignments, assignment groups, deliveries and feedbacks within '\
             'them.'))
 
-def assignmentname_json_js(request):
-    return nodename_json_js_generic(request, 'assignment',
+def assignment_json_js(request):
+    return node_json_js_generic(request, 'assignment',
             ["Subject", "Period", "Assignment"],
             _('This will delete all selected assignments and all '\
             'assignment groups, deliveries and feedbacks within '\

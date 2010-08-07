@@ -11,19 +11,20 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 
 from shortcuts import EditBase, deletemany_generic
+from assignment import edit_assignment
 
 
 @login_required
-def edit_node(request, obj_id=None, successful_save=False):
-    return EditNode(request, obj_id, successful_save).create_view()
+def edit_node(request, node_id=None, successful_save=False):
+    return EditNode(request, node_id, successful_save).create_view()
 
 @login_required
-def edit_subject(request, obj_id=None, successful_save=False):
-    return EditSubject(request, obj_id, successful_save).create_view()
+def edit_subject(request, subject_id=None, successful_save=False):
+    return EditSubject(request, subject_id, successful_save).create_view()
 
 @login_required
-def edit_period(request, obj_id=None, successful_save=False):
-    return EditPeriod(request, obj_id, successful_save).create_view()
+def edit_period(request, period_id=None, successful_save=False):
+    return EditPeriod(request, period_id, successful_save).create_view()
 
 
 @login_required

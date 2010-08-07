@@ -1,34 +1,32 @@
 from django.conf.urls.defaults import *
 
 
+# Node, Subject, Period and Assignment has exactly the same url-format
 generic_urls = []
-for x in ('node', 'subject', 'period'):
+for clsname in ('node', 'subject', 'period', 'assignment'):
     generic_urls += [
-        url(r'^%ss/(?P<obj_id>\d+)/edit$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-edit_%s' % x),
-        url(r'^%ss/successful-save/(?P<obj_id>\d+)$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-edit_%s-success' % x,
+        url(r'^%(clsname)ss/(?P<%(clsname)s_id>\d+)/edit$' % vars(),
+            'views.edit_%(clsname)s' % vars(),
+            name='devilry-admin-edit_%(clsname)s' % vars()),
+        url(r'^%(clsname)ss/successful-save/(?P<%(clsname)s_id>\d+)$' % vars(),
+            'views.edit_%(clsname)s' % vars(),
+            name='devilry-admin-edit_%(clsname)s-success' % vars(),
             kwargs = {'successful_save':True}),
-        url(r'^%ss/create$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-create_%s' % x),
-        url(r'^%ss/deletemany$' % x, 'views.delete_many%ss' % x,
-            name='devilry-admin-delete_many%ss' % x),
+        url(r'^%(clsname)ss/create$' % vars(),
+            'views.edit_%(clsname)s' % vars(),
+            name='devilry-admin-create_%(clsname)s' % vars()),
+        url(r'^%(clsname)ss/deletemany$' % vars(),
+            'views.delete_many%(clsname)ss' % vars(),
+            name='devilry-admin-delete_many%(clsname)ss' % vars()),
+        url(r'^autocomplete-%(clsname)sname.js$' % vars(),
+            'views.json.%(clsname)s_json_js' % vars(),
+            name='admin-autocomplete-%(clsname)sname.js' % vars()),
+        url(r'^autocomplete-%(clsname)sname$' % vars(),
+            'views.json.%(clsname)s_json' % vars(),
+            name='admin-autocomplete-%(clsname)sname' % vars()),
         ]
 
 urlpatterns = patterns('devilry.addons.admin',
-    url(r'^assignments/(?P<assignment_id>\d+)/edit$',
-        'views.assignment.edit_assignment',
-        name='devilry-admin-edit_assignment'),
-    url(r'^assignments/(?P<assignment_id>\d+)/successful-save$',
-        'views.assignment.edit_assignment',
-        name = 'devilry-admin-edit_assignment-success',
-        kwargs = {'successful_save':True}),
-    url(r'^assignments/create$',
-        'views.assignment.edit_assignment',
-        name='devilry-admin-create_assignment'),
-    url(r'^assignments/deletemany$', 'views.delete_manyassignments',
-        name='devilry-admin-delete_manyassignments'),
-
     url(r'^assignments/(?P<assignment_id>\d+)/group/edit/(?P<assignmentgroup_id>\d+)$',
         'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-edit_assignmentgroup'),
@@ -50,26 +48,9 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignmentgroup.save_assignmentgroups',
         name='devilry-admin-save_assignmentgroups'),
 
-    url(r'^autocomplete-nodename$', 'views.json.nodename_json',
-        name='admin-autocomplete-nodename'),
-    url(r'^autocomplete-subjectname$', 'views.json.subjectname_json',
-        name='admin-autocomplete-subjectname'),
-    url(r'^autocomplete-periodname$', 'views.json.periodname_json',
-        name='admin-autocomplete-periodname'),
-    url(r'^autocomplete-assignmentname$', 'views.json.assignmentname_json',
-        name='admin-autocomplete-assignmentname'),
     url(r'^autocomplete-assignmentgroupname/(?P<assignment_id>\d+)$',
-        'views.json.assignmentgroupname_json',
+        'views.json.assignmentgroup_json',
         name='admin-autocomplete-assignmentgroupname'),
-
-    url(r'^autocomplete-nodename.js$', 'views.json.nodename_json_js',
-        name='admin-autocomplete-nodename.js'),
-    url(r'^autocomplete-subjectname.js$', 'views.json.subjectname_json_js',
-        name='admin-autocomplete-subjectname.js'),
-    url(r'^autocomplete-periodname.js$', 'views.json.periodname_json_js',
-        name='admin-autocomplete-periodname.js'),
-    url(r'^autocomplete-assignmentname.js$', 'views.json.assignmentname_json_js',
-        name='admin-autocomplete-assignmentname.js'),
 
     *generic_urls
 )
