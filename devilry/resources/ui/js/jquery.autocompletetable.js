@@ -137,28 +137,34 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                     });
                 }
 
-                // Create confirm delete dialog
-                var confirmbuttons = {}
-                confirmbuttons[button.confirmlabel] = function() {
+                submitfunc = function() {
                     form.attr("action", button.url);
                     form.submit();
                 };
-                confirmbuttons[button.cancel_label] = function() {
-                    $(this).dialog('close');
-                };
-                var confirmdialog = $('<div>' + button.confirm_message + '</div>')
-                    .dialog({
-                        autoOpen: false,
-                        title: button.confirmtitle,
-                        modal: true,
-                        buttons: confirmbuttons
-                    });
 
-                // Open confirm-delete dialog when delete button is clicked.
-                htmlbutton.click(function() {
-                    confirmdialog.dialog('open');
-                    return false;
-                });
+                if(button.confirmlabel) {
+                    // Create confirm delete dialog
+                    var confirmbuttons = {}
+                    confirmbuttons[button.confirmlabel] = submitfunc;
+                    confirmbuttons[button.cancel_label] = function() {
+                        $(this).dialog('close');
+                    };
+                    var confirmdialog = $('<div>' + button.confirm_message + '</div>')
+                        .dialog({
+                            autoOpen: false,
+                            title: button.confirmtitle,
+                            modal: true,
+                            buttons: confirmbuttons
+                        });
+
+                    // Open confirm-delete dialog when delete button is clicked.
+                    htmlbutton.click(function() {
+                        confirmdialog.dialog('open');
+                        return false;
+                    });
+                } else {
+                    htmlbutton.click(submitfunc);
+                }
             });
         }
 

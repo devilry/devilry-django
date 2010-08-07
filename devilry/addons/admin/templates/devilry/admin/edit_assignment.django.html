@@ -68,6 +68,10 @@
               cancel_label: "{% trans "Cancel" %}",
               confirm_message: '{% trans "This will delete all selected assignmentgroups and all deliveries and feedbacks within them." %}',
               url: "{% url devilry-admin-delete_manyassignmentgroups assignment.id %}"
+            },
+            setexaminers: {
+              label: "{% trans "Set examiners" %}",
+              url: "{% url devilry-admin-set_examiners assignment.id %}"
             }
           }
         })

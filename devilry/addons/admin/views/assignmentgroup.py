@@ -17,6 +17,8 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
 
+from shortcuts import iter_filtertable_selected
+
 
 
 class DeadlineForm(forms.ModelForm):
@@ -112,28 +114,28 @@ def save_assignmentgroups(request, assignment_id):
 
 
 class AssignmentgroupForm(forms.Form):
-        name = forms.CharField(required=False)
-        candidates = forms.CharField(widget=DevilryMultiSelectFewCandidates, required=False)
+    name = forms.CharField(required=False)
+    candidates = forms.CharField(widget=DevilryMultiSelectFewCandidates, required=False)
+    
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        name = cleaned_data.get("name")
+        cands = cleaned_data.get("candidates")
+
+        if name.strip() == '' and cands.strip() == '':
+            # Only do something if both fields are valid so far.
+            raise forms.ValidationError("Either name or candidates must be filled in.")
+
+        # Verify that the usernames are valid
+        if cands.strip() != '':
+            cands = cands.split(",")
+            for cand in cands:
+                cand = cand.split(":")[0]
+                if User.objects.filter(username=cand).count() == 0:
+                    raise forms.ValidationError("User %s could not be found." % cand)
         
-        def clean(self):
-            cleaned_data = self.cleaned_data
-            name = cleaned_data.get("name")
-            cands = cleaned_data.get("candidates")
-
-            if name.strip() == '' and cands.strip() == '':
-                # Only do something if both fields are valid so far.
-                raise forms.ValidationError("Either name or candidates must be filled in.")
-
-            # Verify that the usernames are valid
-            if cands.strip() != '':
-                cands = cands.split(",")
-                for cand in cands:
-                    cand = cand.split(":")[0]
-                    if User.objects.filter(username=cand).count() == 0:
-                        raise forms.ValidationError("User %s could not be found." % cand)
-            
-            # Always return the full collection of cleaned data.
-            return cleaned_data
+        # Always return the full collection of cleaned data.
+        return cleaned_data
 
 
 class CreateAssignmentgroups(object):
@@ -251,3 +253,43 @@ def create_assignmentgroups(request, assignment_id):
             'form': form,
             'assignment': assignment,
             }, context_instance=RequestContext(request))
+
+
+
+@login_required
+def set_examiners(request, assignment_id, success=False):
+    if success:
+        return render_to_response('devilry/admin/set-examiners.django.html', {
+                }, context_instance=RequestContext(request))
+
+    class ExaminerForm(forms.Form):
+        users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
+                required=True)
+
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if request.method == 'POST':
+        groups = []
+        for key, group_id in iter_filtertable_selected(request.POST,
+                'assignmentgroup'):
+            group = get_object_or_404(AssignmentGroup, id=group_id)
+            groups.append((key, group))
+
+        if 'onsite' in request.POST:
+            form = ExaminerForm(request.POST)
+            if form.is_valid():
+                user_ids = MultiSelectCharField.from_string(form.cleaned_data['users'])
+                for key, group in groups:
+                    group.examiners.clear()
+                    for id in user_ids:
+                        group.examiners.add(User.objects.get(id=id))
+                return HttpResponseRedirect(reverse(
+                    'devilry-admin-set_examiners-success',
+                    args=[assignment_id]))
+        else:
+            form = ExaminerForm()
+
+        return render_to_response('devilry/admin/set-examiners.django.html', {
+                'form': form,
+                'assignment': assignment,
+                'groups': groups
+                }, context_instance=RequestContext(request))

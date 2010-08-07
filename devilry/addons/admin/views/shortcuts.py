@@ -7,19 +7,26 @@ from django.utils.translation import ugettext as _
 from devilry.ui.messages import UiMessages
 
 
+def iter_filtertable_selected(postdata, clsname):
+    prefix = 'autocomplete-%s-cb' % clsname
+    for key, value in postdata.iteritems():
+        if key.startswith(prefix):
+            yield key, value
+
+
 def deletemany_generic(request, nodecls, successurl=None):
     successurl = successurl or reverse('main')
-    prefix = 'autocomplete-%s-cb' % nodecls.__name__.lower()
+    clsname = nodecls.__name__.lower()
+    prefix = 'autocomplete-%s-cb' % clsname
     if request.method == 'POST':
         nodes = []
-        for key, value in request.POST.iteritems():
-            if key.startswith(prefix):
-                node = nodecls.objects.get(id=value)
-                if node.can_save(request.user):
-                    nodes.append(node)
-                else:
-                    raise ValueError(
-                            "No permission to delete %(node)s" % node)
+        for key, value in iter_filtertable_selected(request.POST, clsname):
+            node = nodecls.objects.get(id=value)
+            if node.can_save(request.user):
+                nodes.append(node)
+            else:
+                raise ValueError(
+                        "No permission to delete %(node)s" % node)
         for node in nodes:
             node.delete()
         return HttpResponseRedirect(successurl)

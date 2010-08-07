@@ -15,7 +15,8 @@ from devilry.core import gradeplugin
 
 
 @login_required
-def edit_assignment(request, assignment_id=None, successful_save=False):
+def edit_assignment(request, assignment_id=None, successful_save=False,
+        success_message=None):
     isnew = assignment_id == None
     if isnew:
         assignment = Assignment()
@@ -25,6 +26,8 @@ def edit_assignment(request, assignment_id=None, successful_save=False):
 
     if successful_save:
         messages.add_success(_("Assignment successfully saved."))
+    if success_message:
+        messages.add_success(success_message)
     
     class Form(forms.ModelForm):
         parentnode = forms.ModelChoiceField(required=True,

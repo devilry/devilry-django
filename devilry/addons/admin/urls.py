@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from django.conf.urls.defaults import *
 
 
@@ -48,6 +49,14 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^autocomplete-assignmentgroupname/(?P<assignment_id>\d+)$',
         'views.json.assignmentgroup_json',
         name='admin-autocomplete-assignmentgroupname'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/set-examiners$',
+        'views.assignmentgroup.set_examiners',
+        name='devilry-admin-set_examiners'),
+    url(r'^assignments/(?P<assignment_id>\d+)/set-examiners-success$',
+        'views.assignment.edit_assignment',
+        name='devilry-admin-set_examiners-success',
+        kwargs={'success_message': _('Examiners successfully changed')}),
 
     *generic_urls
 )
