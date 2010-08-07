@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.template import RequestContext
+from django.db.models import Count
 
 from devilry.core.models import Delivery, AssignmentGroup, Assignment
 from devilry.core import gradeplugin
@@ -75,6 +76,10 @@ def assignmentgroup_filtertable_json(request):
             Q(name__contains=term)
             | Q(examiners__username__contains=term)
             | Q(candidates__student__username__contains=term))
+
+    if not request.GET.get('nodeliveries'):
+        groups = groups.filter(Q(deliveries__isnull=False))
+
     groups = groups.distinct()
     allcount = groups.count()
 
@@ -87,7 +92,6 @@ def assignmentgroup_filtertable_json(request):
                 g.parentnode.parentnode.short_name,
                 g.parentnode.short_name,
                 str(g.id), g.get_candidates(), g.name,
-                #str(g.get_number_of_deliveries()),
                 latestdeliverytime(g),
                 g.get_status(),
             ],

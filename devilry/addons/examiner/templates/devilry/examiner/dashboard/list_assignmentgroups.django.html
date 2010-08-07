@@ -8,6 +8,21 @@
 			"{% url devilry-examiner-assignmentgroup_filtertable_json %}",
 			["Subject", "Period", "Assignment", "Group id", "Candidates", "Name", "Latest delivery", "Status"],
 			"{% trans "Show" %}", "{% trans "Show all" %}",
-      {})
+      {
+        filters: {
+          "Show groups with": {
+            nodeliveries: {
+              label: "No deliveries"
+            },
+            notcorrected: {
+              label: "Not corrected",
+              enabled: false 
+            },
+            corrected: {
+              label: "Corrected"
+            }
+          }
+        }
+      })
 	});
 </script>

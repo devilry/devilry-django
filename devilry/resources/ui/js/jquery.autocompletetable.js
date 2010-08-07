@@ -1,22 +1,31 @@
 // vim: set ts=4 sts=4 et sw=4:
 
 jQuery.autocompletetable = {
-    refreshtable: function(searchfield, showall_label, headings,
-                  editlabel, jsonurl, term, showall) {
+    refreshtable: function(properties, term, showall) {
         var tbl = $("<table></table>")
             .addClass("autocompletetable-result")
             .addClass("horizontal_ordered_table");
         var headrow = $("<tr></tr>");
         $("<th>&nbsp;</th>").appendTo(headrow);
-        $.each(headings, function(i, heading) {
+        $.each(properties.headings, function(i, heading) {
             $("<th>" + heading + "</th>").appendTo(headrow);
         });
         $("<th>&nbsp;</th>").appendTo(headrow);
         $("<thead></thead>").append(headrow).appendTo(tbl);
         var result = $("<tbody></tbody>").appendTo(tbl);
-        var idprefix = searchfield.parent().parent().attr("id") + "-cb";
+        var idprefix = properties.searchfield.parent().parent().attr("id") + "-cb";
 
-        $.getJSON(jsonurl, {"term": term, "all": showall}, function(data) {
+        var postdata = {
+            "term": properties.term,
+            "all": properties.showall
+        };
+        if(properties.filters) {
+            $.each(properties.filters, function(key, f) {
+                postdata[key] = f.enabled?"yes": "";
+            });
+        }
+
+        $.getJSON(properties.jsonurl, postdata, function(data) {
             $.each(data.result, function(i, item) {
                 var id = idprefix + "-" + i;
                 var tr = $("<tr></tr>");
@@ -28,38 +37,39 @@ jQuery.autocompletetable = {
                         .attr("name", id))
                 .appendTo(tr);
                 $.each(item.path, function(index, part) {
-                    var p = part.replace(term,
-                            "<strong>" + term + "</strong>");
+                    var p = part.replace(properties.term,
+                            "<strong>" + properties.term + "</strong>");
                     $("<td></td>")
                         .append($("<label>" + p + "</label>").attr("for", id))
                     .appendTo(tr);
                 });
-                $("<td></td>").append($("<a>" + editlabel + "</a>")
+                $("<td></td>").append($("<a>" + properties.editlabel + "</a>")
                     .attr("href", item.editurl))
                 .appendTo(tr);
                 tr.appendTo(result);
             });
 
-            searchfield.next("button").remove();
+            properties.searchfield.next("button").remove();
             if(data.allcount > data.result.length) {
                 var showallbutton =
                     $("<button></button>")
-                        .html(showall_label + " (" + data.allcount + ")")
+                        .html(properties.showall_label + " (" + data.allcount + ")")
                         .button();
-                searchfield.after(showallbutton);
+                properties.searchfield.after(showallbutton);
                 showallbutton.click(function(e) {
-                    var term = searchfield.val();
-                    jQuery.autocompletetable.refreshtable(searchfield, showall_label,
-                        headings, editlabel, jsonurl, term, "yes");
+                    var term = properties.searchfield.val();
+                    properties.term = term;
+                    properties.showall = 'yes';
+                    jQuery.autocompletetable.refreshtable(properties);
                     return false;
                 });
             }
         });
 
-        if(searchfield.parent().children("table").length == 0) {
-            searchfield.parent().append(tbl);
+        if(properties.searchfield.parent().children("table").length == 0) {
+            properties.searchfield.parent().append(tbl);
         } else {
-            searchfield.parent().children("table").first().replaceWith(tbl);
+            properties.searchfield.parent().children("table").first().replaceWith(tbl);
         }
     },
 }
@@ -69,13 +79,21 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
         showall_label, args) {
 
     return this.each(function(){
+        properties = {};
+        properties.jsonurl = jsonurl;
+        properties.headings = headings;
+        properties.editlabel = editlabel;
+        properties.showall_label = showall_label;
+        properties.showall = 'no';
+        properties.term = '';
+
         var form = $("<form></form>")
             .attr("method", "post")
             .attr("action", '#') //.attr("action", deleteurl)
             .appendTo(this);
 
         var searchfieldid = $(this).attr("id") + "-searchfield";
-        $("<label>Filter: </label>")
+        $("<label>Search: </label>")
             .addClass("autocompletetable-filterlabel")
             .attr("for", searchfieldid)
             .appendTo(form);
@@ -87,10 +105,12 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                 .addClass("ui-widget-content")
                 .addClass("ui-corner-all")
             .appendTo(form);
+        properties.searchfield = searchfield;
 
-        // Initialize with default search results
-        jQuery.autocompletetable.refreshtable(searchfield, showall_label,
-            headings, editlabel, jsonurl, "", "no");
+        // Add filterbar
+        var filterbar = $("<div></div>")
+            .addClass("autocompletetable-filterbar")
+            .appendTo(form);
 
         // Add buttonbar
         var buttonbar = $("<div></div>")
@@ -158,6 +178,54 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             });
         }
 
+        if(args.filters) {
+            properties.filters = {}
+            var filterid_prefix= $(this).attr("id") + "-filter-";
+
+            $.each(args.filters, function(filtertitle, filters) {
+                var filterbox = $("<div></div>").appendTo(filterbar);
+                $("<h3></h3>")
+                    .html(filtertitle)
+                    .appendTo(filterbox);
+                var filterlist = $("<ul></ul>").appendTo(filterbox);
+                $.each(filters, function(key, filter) {
+                    var id = filterid_prefix + key;
+                    var li = $("<li></li>").appendTo(filterlist);
+                    $("<label></label>")
+                        .html(filter.label)
+                        .attr("for", id)
+                        .appendTo(li);
+                    var checkbox = $("<input/>")
+                        .attr("type", "checkbox")
+                        .attr("id", id)
+                        .appendTo(li);
+                    if(filter.classes) {
+                        $.each(filter.classes, function(i, cls) {
+                            checkbox.addClass(cls);
+                        });
+                    }
+                    properties.filters[key] = filter
+                    //properties.filters[key].enabled = false;
+                    if(filter.enabled) {
+                        checkbox.attr('checked', 'checked');
+                    } else {
+                        filter.enabled = false;
+                    }
+                    checkbox.button();
+
+                    checkbox.click(function() {
+                        properties.filters[key].enabled = !properties.filters[key].enabled;
+                        $.each(properties.filters, function(k, f) {
+                            $.log(k + ":" + f.enabled);
+                        });
+                        jQuery.autocompletetable.refreshtable(properties);
+                        return false;
+                    });
+                });
+            });
+        }
+
+
         // Search when at least 2 characters are in the searchfield, and reset
         // when searchfield is empty.
         searchfield.keyup(function(e) {
@@ -166,10 +234,14 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             }
             var term = $(this).val();
             if(term.length > 1 || term.length == 0) {
-                jQuery.autocompletetable.refreshtable(searchfield, showall_label,
-                    headings, editlabel, jsonurl, term, "no");
+                properties.term = term;
+                jQuery.autocompletetable.refreshtable(properties);
             }
         });
+
+
+        // Initialize with default search results
+        jQuery.autocompletetable.refreshtable(properties);
     });
 };
 jQuery.log = function(message) {
