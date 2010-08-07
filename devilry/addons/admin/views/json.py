@@ -1,14 +1,11 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.simplejson import JSONEncoder
 from django.db.models import Q
 from django import http
-from django.template import RequestContext
-from django.utils.translation import ugettext as _
 
-from devilry.core.models import Node, Subject, Period, Assignment, \
-        AssignmentGroup
+from devilry.core.models import Node, Subject, Period, Assignment
 
 
 def node_json_generic(request, nodecls, editurl_callback, qrycallback,
@@ -104,43 +101,3 @@ def assignmentgroup_json(request, assignment_id):
     data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
-
-
-def node_json_js_generic(request, clsname, headings, deletemessage):
-    return render_to_response('devilry/admin/autocomplete-nodename.js', {
-            'jsonurl': reverse('admin-autocomplete-%sname' % clsname),
-            'createurl': reverse('devilry-admin-create_%s' % clsname),
-            'deleteurl': reverse('devilry-admin-delete_many%ss' % clsname),
-            'headings': headings,
-            'deletemessage': deletemessage,
-            'clsname': clsname},
-        context_instance=RequestContext(request),
-        mimetype='text/javascript')
-
-def node_json_js(request):
-    return node_json_js_generic(request, 'node',
-            ["Node"],
-            _('This will delete all selected nodes and all subjects, periods, '\
-            'assignments, assignment groups, deliveries and feedbacks within '\
-            'them.'))
-
-def subject_json_js(request):
-    return node_json_js_generic(request, 'subject',
-            ["Subject"],
-            _('This will delete all selected subjects and all periods, '\
-            'assignments, assignment groups, deliveries and feedbacks within '\
-            'them.'))
-
-def period_json_js(request):
-    return node_json_js_generic(request, 'period',
-            ["Subject", "Period"],
-            _('This will delete all selected periods and all '\
-            'assignments, assignment groups, deliveries and feedbacks within '\
-            'them.'))
-
-def assignment_json_js(request):
-    return node_json_js_generic(request, 'assignment',
-            ["Subject", "Period", "Assignment"],
-            _('This will delete all selected assignments and all '\
-            'assignment groups, deliveries and feedbacks within '\
-            'them.'))

@@ -11,9 +11,8 @@ registry.register_normal(DashboardItem(
          title = _('Nodes'),
          view = dashboardviews.list_nodes,
          nodeadmin_access = True,
-         js = [
-             settings.DEVILRY_RESOURCES_URL + '/ui/js/jquery.autocompletetable.js',
-             reverse('admin-autocomplete-nodename.js')]
+         js = [settings.DEVILRY_RESOURCES_URL +
+             '/ui/js/jquery.autocompletetable.js']
 ))
 
 registry.register_normal(DashboardItem(
@@ -21,9 +20,8 @@ registry.register_normal(DashboardItem(
          view = dashboardviews.list_subjects,
          nodeadmin_access = True,
          subjectadmin_access = True,
-         js = [
-             settings.DEVILRY_RESOURCES_URL + '/ui/js/jquery.autocompletetable.js',
-             reverse('admin-autocomplete-subjectname.js')]
+         js = [settings.DEVILRY_RESOURCES_URL +
+             '/ui/js/jquery.autocompletetable.js']
 ))
 
 registry.register_normal(DashboardItem(
@@ -32,9 +30,8 @@ registry.register_normal(DashboardItem(
          nodeadmin_access = True,
          subjectadmin_access = True,
          periodadmin_access = True,
-         js = [
-             settings.DEVILRY_RESOURCES_URL + '/ui/js/jquery.autocompletetable.js',
-             reverse('admin-autocomplete-periodname.js')]
+         js = [settings.DEVILRY_RESOURCES_URL +
+             '/ui/js/jquery.autocompletetable.js']
 ))
 
 registry.register_important(DashboardItem(
@@ -44,7 +41,6 @@ registry.register_important(DashboardItem(
          subjectadmin_access = True,
          periodadmin_access = True,
          assignmentadmin_access = True,
-         js = [
-             settings.DEVILRY_RESOURCES_URL + '/ui/js/jquery.autocompletetable.js',
-             reverse('admin-autocomplete-assignmentname.js')]
+         js = [settings.DEVILRY_RESOURCES_URL +
+             '/ui/js/jquery.autocompletetable.js']
 ))
