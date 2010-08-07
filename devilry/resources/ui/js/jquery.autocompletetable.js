@@ -79,13 +79,13 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
         showall_label, args) {
 
     return this.each(function(){
-        properties = {};
-        properties.jsonurl = jsonurl;
-        properties.headings = headings;
-        properties.editlabel = editlabel;
-        properties.showall_label = showall_label;
-        properties.showall = 'no';
-        properties.term = '';
+        this.properties = {};
+        this.properties.jsonurl = jsonurl;
+        this.properties.headings = headings;
+        this.properties.editlabel = editlabel;
+        this.properties.showall_label = showall_label;
+        this.properties.showall = 'no';
+        this.properties.term = '';
 
         var form = $("<form></form>")
             .attr("method", "post")
@@ -105,7 +105,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                 .addClass("ui-widget-content")
                 .addClass("ui-corner-all")
             .appendTo(form);
-        properties.searchfield = searchfield;
+        this.properties.searchfield = searchfield;
 
         // Add filterbar
         var filterbar = $("<div></div>")
@@ -179,9 +179,10 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
         }
 
         if(args.filters) {
-            properties.filters = {}
+            this.properties.filters = {}
             var filterid_prefix= $(this).attr("id") + "-filter-";
 
+            var properties = this.properties;
             $.each(args.filters, function(filtertitle, filters) {
                 var filterbox = $("<div></div>").appendTo(filterbar);
                 $("<h3></h3>")
@@ -205,7 +206,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                         });
                     }
                     properties.filters[key] = filter
-                    //properties.filters[key].enabled = false;
+                    //this.properties.filters[key].enabled = false;
                     if(filter.enabled) {
                         checkbox.attr('checked', 'checked');
                     } else {
@@ -228,6 +229,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
 
         // Search when at least 2 characters are in the searchfield, and reset
         // when searchfield is empty.
+        var properties = this.properties;
         searchfield.keyup(function(e) {
             if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
                 return;
@@ -241,7 +243,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
 
 
         // Initialize with default search results
-        jQuery.autocompletetable.refreshtable(properties);
+        jQuery.autocompletetable.refreshtable(this.properties);
     });
 };
 jQuery.log = function(message) {
