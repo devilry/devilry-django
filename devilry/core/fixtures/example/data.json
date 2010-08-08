@@ -187,10 +187,10 @@
         "pk": 1, 
         "model": "core.period", 
         "fields": {
-            "short_name": "forever", 
+            "short_name": "from2010", 
             "start_time": "2010-08-01 12:00:00", 
             "parentnode": 1, 
-            "long_name": "forever", 
+            "long_name": "From 2010 to 2210", 
             "admins": [], 
             "end_time": "2210-08-01 12:00:00"
         }
@@ -199,10 +199,10 @@
         "pk": 2, 
         "model": "core.period", 
         "fields": {
-            "short_name": "long", 
+            "short_name": "from2010", 
             "start_time": "2010-08-03 12:00:00", 
             "parentnode": 2, 
-            "long_name": "A long period", 
+            "long_name": "From 2010 to 2210", 
             "admins": [], 
             "end_time": "2210-08-10 12:00:00"
         }

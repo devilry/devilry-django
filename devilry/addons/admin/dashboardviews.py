@@ -19,7 +19,7 @@ def list_nodes_generic(request, nodecls, headings, deletemessage):
 
 def list_nodes(request, *args, **kwargs):
     return list_nodes_generic(request, Node,
-            ["Node"],
+            ["Node", "Administrators"],
             _('This will delete all selected nodes and all subjects, periods, '\
             'assignments, assignment groups, deliveries and feedbacks within '\
             'them.'))
@@ -33,14 +33,14 @@ def list_subjects(request, *args, **kwargs):
 
 def list_periods(request, *args, **kwargs):
     return list_nodes_generic(request, Period,
-            ["Subject", "Period", "Start time", "End time"],
+            ["Subject", "Period", "Start time", "Administrators"],
             _('This will delete all selected periods and all '\
             'assignments, assignment groups, deliveries and feedbacks within '\
             'them.'))
 
 def list_assignments(request, *args, **kwargs):
     return list_nodes_generic(request, Assignment,
-            ["Subject", "Period", "Assignment"],
+            ["Subject", "Period", "Assignment", "Publishing time", "Administrators"],
             _('This will delete all selected assignments and all '\
             'assignment groups, deliveries and feedbacks within '\
             'them.'))

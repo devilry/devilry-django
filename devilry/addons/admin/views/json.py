@@ -43,7 +43,9 @@ def node_json(request):
                 reverse('devilry-admin-edit_node', args=[str(n.id)]),
             qrycallback = lambda t:
                 Q(short_name__istartswith=t),
-            pathcallback = lambda n: [n.get_path()])
+            pathcallback = lambda n: [
+                n.get_path(),
+                n.get_admins()])
 
 @login_required
 def subject_json(request):
@@ -70,7 +72,7 @@ def period_json(request):
                     p.parentnode.short_name,
                     p.short_name,
                     p.start_time.strftime(defaults.DATETIME_FORMAT),
-                    p.end_time.strftime(defaults.DATETIME_FORMAT)],
+                    p.get_admins()],
             order_by = ['-start_time'])
 
 @login_required
@@ -82,7 +84,14 @@ def assignment_json(request):
                 Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t)
                 | Q(parentnode__parentnode__short_name__istartswith=t)
-                | Q(parentnode__parentnode__parentnode__short_name__istartswith=t))
+                | Q(parentnode__parentnode__parentnode__short_name__istartswith=t),
+            pathcallback = lambda a: [
+                    a.parentnode.parentnode.short_name,
+                    a.parentnode.short_name,
+                    a.short_name,
+                    a.publishing_time.strftime(defaults.DATETIME_FORMAT),
+                    a.get_admins()],
+            order_by = ['-publishing_time'])
 
 
 @login_required
