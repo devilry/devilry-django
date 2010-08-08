@@ -7,6 +7,7 @@ from django.db.models import Count
 from devilry.core.models import Delivery, AssignmentGroup, Assignment
 from devilry.core import gradeplugin
 from devilry.core.utils.GroupNodes import group_assignments
+from devilry.addons.dashboard import defaults
 
 
 @login_required
@@ -58,7 +59,7 @@ def assignmentgroup_filtertable_json(request):
     def latestdeliverytime(g):
         d = g.get_latest_delivery()
         if d:
-            return d.time_of_delivery.strftime("%Y-%m-%d %H:%M")
+            return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
         else:
             return ""
 

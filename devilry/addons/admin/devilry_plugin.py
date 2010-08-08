@@ -24,7 +24,7 @@ registry.register_normal(DashboardItem(
              '/ui/js/jquery.autocompletetable.js']
 ))
 
-registry.register_normal(DashboardItem(
+registry.register_important(DashboardItem(
          title = _('Periods'),
          view = dashboardviews.list_periods,
          nodeadmin_access = True,

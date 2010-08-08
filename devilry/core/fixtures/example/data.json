@@ -107,6 +107,66 @@
         }
     }, 
     {
+        "pk": 5, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "fall07", 
+            "start_time": "2007-08-01 00:00:00", 
+            "parentnode": 1, 
+            "long_name": "Fall 2007", 
+            "admins": [], 
+            "end_time": "2007-11-29 00:00:00"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "spring07", 
+            "start_time": "2007-01-01 12:00:00", 
+            "parentnode": 1, 
+            "long_name": "Spring 2007", 
+            "admins": [], 
+            "end_time": "2007-06-16 16:00:00"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "fall08", 
+            "start_time": "2008-08-19 14:00:00", 
+            "parentnode": 1, 
+            "long_name": "Fall 2008", 
+            "admins": [], 
+            "end_time": "2008-11-19 16:00:00"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "spring209", 
+            "start_time": "2009-01-17 12:00:00", 
+            "parentnode": 1, 
+            "long_name": "Spring 2009", 
+            "admins": [], 
+            "end_time": "2009-06-20 16:00:00"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "fall2009", 
+            "start_time": "2009-09-01 10:00:00", 
+            "parentnode": 1, 
+            "long_name": "Fall 2009", 
+            "admins": [], 
+            "end_time": "2009-12-14 12:00:00"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {

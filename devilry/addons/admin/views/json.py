@@ -6,10 +6,12 @@ from django.db.models import Q
 from django import http
 
 from devilry.core.models import Node, Subject, Period, Assignment
+from devilry.addons.dashboard import defaults
 
 
 def node_json_generic(request, nodecls, editurl_callback, qrycallback,
-        pathcallback = lambda n: n.get_path().split('.')):
+        pathcallback = lambda n: n.get_path().split('.'),
+        order_by = ['short_name']):
     maximum = 3
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
@@ -18,6 +20,7 @@ def node_json_generic(request, nodecls, editurl_callback, qrycallback,
     if term != '':
         nodes = nodes.filter(
                 qrycallback(term)).distinct()
+    nodes = nodes.order_by(*order_by)
     allcount = nodes.count()
 
     name = nodecls.__name__.lower()
@@ -59,7 +62,13 @@ def period_json(request):
             qrycallback = lambda t:
                 Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t)
-                | Q(parentnode__parentnode__short_name__istartswith=t))
+                | Q(parentnode__parentnode__short_name__istartswith=t),
+            pathcallback = lambda p: [
+                    p.parentnode.short_name,
+                    p.short_name,
+                    p.start_time.strftime(defaults.DATETIME_FORMAT),
+                    p.end_time.strftime(defaults.DATETIME_FORMAT)],
+            order_by = ['-start_time'])
 
 @login_required
 def assignment_json(request):
