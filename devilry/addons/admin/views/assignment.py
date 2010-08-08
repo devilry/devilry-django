@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from devilry.core.models import Period, Assignment
 from devilry.ui.messages import UiMessages
 from devilry.ui.widgets import DevilryDateTimeWidget, \
-    DevilryMultiSelectFewUsersDb
+    DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
 from devilry.ui.fields import MultiSelectCharField
 from devilry.core import gradeplugin
 
@@ -37,6 +37,7 @@ def edit_assignment(request, assignment_id=None):
                 fields.append('grade_plugin')
             widgets = {
                 'publishing_time': DevilryDateTimeWidget,
+                'long_name': DevilryLongNameWidget
                 }
 
     if not isnew:

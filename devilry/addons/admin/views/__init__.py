@@ -7,7 +7,7 @@ from django import forms
 from devilry.core.models import Node, Subject, Period, Assignment, \
         AssignmentGroup
 from devilry.ui.widgets import DevilryDateTimeWidget, \
-    DevilryMultiSelectFewUsersDb
+    DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
 from devilry.ui.fields import MultiSelectCharField
 
 from shortcuts import EditBase, deletemany_generic
@@ -63,6 +63,7 @@ class EditNode(EditBase):
             class Meta:
                 model = Node
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
+                widgets = {'long_name': DevilryLongNameWidget}
         return NodeForm
 
 
@@ -79,6 +80,7 @@ class EditSubject(EditBase):
             class Meta:
                 model = Subject
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
+                widgets = {'long_name': DevilryLongNameWidget}
         return Form
 
 
@@ -98,5 +100,6 @@ class EditPeriod(EditBase):
                 widgets = {
                     'start_time': DevilryDateTimeWidget,
                     'end_time': DevilryDateTimeWidget,
+                    'long_name': DevilryLongNameWidget
                     }
         return Form
