@@ -79,7 +79,7 @@ class DeliveryStoreInterface(object):
         Note that this method is called *before* the filemeta_obj is
         removed. This means that the file might be removed, and the removal
         of the filemeta_obj can still fail. To prevent users from having to
-        manually resolv such cases implementations should check if the file
+        manually resolve such cases implementations should check if the file
         exists, and raise FileNotFoundError if it does not.
 
         The calling function has to check for FileNotFoundError and

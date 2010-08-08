@@ -117,7 +117,7 @@ class LongNameField(models.CharField):
 class BaseNode(CommonInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
-    used by the other Node classes. This is a abstract datamodel, so it
+    used by the other Node classes. This is an abstract datamodel, so it
     is never used directly.
 
 
