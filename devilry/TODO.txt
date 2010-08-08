@@ -14,3 +14,6 @@
     - Including implemenation and testing of deleting SchemaDefinition
       pre_delete Assignment.
 - Error when entering invalid usernames
+    - MultiSelectCharField should be renamed to something with User in the
+      name, and should probably use:
+        http://docs.djangoproject.com/en/dev/howto/custom-model-fields/#the-subfieldbase-metaclass
