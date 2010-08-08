@@ -12,7 +12,7 @@ from devilry.addons.dashboard import defaults
 def node_json_generic(request, nodecls, editurl_callback, qrycallback,
         pathcallback = lambda n: n.get_path().split('.'),
         order_by = ['short_name']):
-    maximum = 7
+    maximum = defaults.DEFAULT_DISPLAYNUM
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
 
@@ -96,10 +96,17 @@ def assignment_json(request):
 
 @login_required
 def assignmentgroup_json(request, assignment_id):
+    def latestdeliverytime(g):
+        d = g.get_latest_delivery()
+        if d:
+            return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
+        else:
+            return ""
+
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
         return http.HttpResponseForbidden("Forbidden")
-    maximum = 3
+    maximum = defaults.DEFAULT_DISPLAYNUM
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
 
@@ -115,7 +122,14 @@ def assignmentgroup_json(request, assignment_id):
         groups = groups[:maximum]
     l = [dict(
             id = g.id,
-            path = [str(g.id), g.get_candidates(), g.get_examiners(), g.name],
+            path = [
+                str(g.id),
+                g.get_candidates(),
+                g.get_examiners(),
+                g.name,
+                str(g.get_number_of_deliveries()),
+                latestdeliverytime(g),
+                g.get_status()],
             editurl = reverse('devilry-admin-edit_assignmentgroup',
                 args=[assignment_id, str(g.id)]))
         for g in groups]
