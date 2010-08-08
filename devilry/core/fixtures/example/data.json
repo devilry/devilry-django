@@ -35,6 +35,46 @@
         }
     }, 
     {
+        "pk": 2, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Duckburgh Highschool", 
+            "admins": [], 
+            "parentnode": 1, 
+            "short_name": "high"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Duckburgh Junior", 
+            "admins": [], 
+            "parentnode": 1, 
+            "short_name": "junior"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Duckburgh Preschool", 
+            "admins": [], 
+            "parentnode": 1, 
+            "short_name": "pre"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.node", 
+        "fields": {
+            "long_name": "Duckburgh College", 
+            "admins": [], 
+            "parentnode": 1, 
+            "short_name": "college"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.subject", 
         "fields": {
@@ -42,7 +82,7 @@
             "admins": [
                 9
             ], 
-            "parentnode": 1, 
+            "parentnode": 5, 
             "short_name": "lazy101"
         }
     }, 
@@ -54,8 +94,93 @@
             "admins": [
                 10
             ], 
-            "parentnode": 1, 
+            "parentnode": 5, 
             "short_name": "money101"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "More methods for lazy people", 
+            "admins": [
+                5, 
+                9
+            ], 
+            "parentnode": 5, 
+            "short_name": "lazy202"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "Advanced methods for lazy people", 
+            "admins": [
+                5
+            ], 
+            "parentnode": 5, 
+            "short_name": "lazy303"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "Making laziness into an art", 
+            "admins": [
+                9
+            ], 
+            "parentnode": 5, 
+            "short_name": "lazy404"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "Advanced Greed", 
+            "admins": [
+                10
+            ], 
+            "parentnode": 5, 
+            "short_name": "money203"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "Making money", 
+            "admins": [
+                10
+            ], 
+            "parentnode": 5, 
+            "short_name": "money303"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "Investing money", 
+            "admins": [
+                10
+            ], 
+            "parentnode": 5, 
+            "short_name": "money404"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "Mastering not using money", 
+            "admins": [
+                10
+            ], 
+            "parentnode": 5, 
+            "short_name": "money505"
         }
     }, 
     {

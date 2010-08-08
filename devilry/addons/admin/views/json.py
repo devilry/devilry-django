@@ -12,7 +12,7 @@ from devilry.addons.dashboard import defaults
 def node_json_generic(request, nodecls, editurl_callback, qrycallback,
         pathcallback = lambda n: n.get_path().split('.'),
         order_by = ['short_name']):
-    maximum = 3
+    maximum = 7
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
 
@@ -51,8 +51,11 @@ def subject_json(request):
             editurl_callback = lambda n:
                 reverse('devilry-admin-edit_subject', args=[str(n.id)]),
             qrycallback = lambda t:
-                Q(short_name__istartswith=t)
-                | Q(parentnode__short_name__istartswith=t))
+                Q(short_name__contains=t)
+                | Q(admins__username__contains=t),
+            pathcallback = lambda s: [
+                    s.short_name,
+                    s.get_admins()])
 
 @login_required
 def period_json(request):

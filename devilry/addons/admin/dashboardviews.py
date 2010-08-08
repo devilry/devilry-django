@@ -26,7 +26,7 @@ def list_nodes(request, *args, **kwargs):
 
 def list_subjects(request, *args, **kwargs):
     return list_nodes_generic(request, Subject,
-            ["Subject"],
+            ["Subject", "Administrators"],
             _('This will delete all selected subjects and all periods, '\
             'assignments, assignment groups, deliveries and feedbacks within '\
             'them.'))
