@@ -57,6 +57,10 @@
             createnew: {
               label: "{% trans "Create new" %}",
               url: "{% url devilry-admin-create_assignmentgroup assignment.id %}"
+            },
+            createmany: {
+              label: "{% trans "Create many (advanced)" %}",
+              url: "{% url devilry-admin-create_assignmentgroups assignment.id %}"
             }
           },
           buttons: {
@@ -77,15 +81,5 @@
         })
     });
   </script>
-
-
-  <h3>{% trans "Actions" %}:</h3>
-  <ul>
-    <li>
-      <a href='{% url devilry-admin-create_assignmentgroups assignment.id %}'>
-        Create many assignment groups (advanced)
-      </a>
-    </li>
-  </ul>
 {% endif %}
 {% endblock %}
