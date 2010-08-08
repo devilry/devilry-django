@@ -25,10 +25,16 @@ def deletemany_generic(request, nodecls, successurl=None):
             if node.can_save(request.user):
                 nodes.append(node)
             else:
-                raise ValueError(
+                return HttpResponseForbidden(
                         "No permission to delete %(node)s" % node)
+        nodestr = []
         for node in nodes:
+            nodestr.append(str(node))
             node.delete()
+        messages = UiMessages()
+        messages.add_success(_("Successfully deleted: %(nodes)s" % dict(
+            nodes = ', '.join(nodestr))))
+        messages.save(request)
         return HttpResponseRedirect(successurl)
 
 
@@ -36,16 +42,13 @@ class EditBase(object):
     VIEW_NAME = None
     MODEL_CLASS = None
 
-    def __init__(self, request, obj_id, successful_save):
+    def __init__(self, request, obj_id):
         self.request = request
         self.messages = UiMessages()
+        self.messages.load(request)
         self.parent_model = self.MODEL_CLASS.parentnode.field.related.parent_model
         model_name = self.MODEL_CLASS._meta.verbose_name
         self.model_name_dict = {'model_name': model_name}
-
-        if successful_save:
-            self.messages.add_success(_("%(model_name)s successfully saved." % 
-                self.model_name_dict))
 
         if obj_id == None:
             self.is_new = True
@@ -75,8 +78,12 @@ class EditBase(object):
                 if not self.obj.can_save(self.request.user):
                     return HttpResponseForbidden("Forbidden")
                 objform.save()
+                messages = UiMessages()
+                messages.add_success(_("%(model_name)s successfully saved." % 
+                    self.model_name_dict))
+                messages.save(self.request)
                 success_url = reverse(
-                        'devilry-admin-edit_%s-success' % self.VIEW_NAME,
+                        'devilry-admin-edit_%s' % self.VIEW_NAME,
                         args = [str(self.obj.pk)])
                 return HttpResponseRedirect(success_url)
         else:

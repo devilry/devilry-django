@@ -15,16 +15,16 @@ from assignment import edit_assignment
 
 
 @login_required
-def edit_node(request, node_id=None, successful_save=False):
-    return EditNode(request, node_id, successful_save).create_view()
+def edit_node(request, node_id=None):
+    return EditNode(request, node_id).create_view()
 
 @login_required
-def edit_subject(request, subject_id=None, successful_save=False):
-    return EditSubject(request, subject_id, successful_save).create_view()
+def edit_subject(request, subject_id=None):
+    return EditSubject(request, subject_id).create_view()
 
 @login_required
-def edit_period(request, period_id=None, successful_save=False):
-    return EditPeriod(request, period_id, successful_save).create_view()
+def edit_period(request, period_id=None):
+    return EditPeriod(request, period_id).create_view()
 
 
 @login_required

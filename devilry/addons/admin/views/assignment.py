@@ -15,20 +15,15 @@ from devilry.core import gradeplugin
 
 
 @login_required
-def edit_assignment(request, assignment_id=None, successful_save=False,
-        success_message=None):
+def edit_assignment(request, assignment_id=None):
     isnew = assignment_id == None
     if isnew:
         assignment = Assignment()
     else:
         assignment = get_object_or_404(Assignment, id=assignment_id)
     messages = UiMessages()
+    messages.load(request)
 
-    if successful_save:
-        messages.add_success(_("Assignment successfully saved."))
-    if success_message:
-        messages.add_success(success_message)
-    
     class Form(forms.ModelForm):
         parentnode = forms.ModelChoiceField(required=True,
                 queryset = Period.not_ended_where_is_admin_or_superadmin(request.user))
@@ -62,9 +57,11 @@ def edit_assignment(request, assignment_id=None, successful_save=False,
         if form.is_valid():
             if not assignment.can_save(request.user):
                 return HttpResponseForbidden("Forbidden")
-            
             form.save()
-            success_url = reverse('devilry-admin-edit_assignment-success',
+            messages = UiMessages()
+            messages.add_success(_('Assignment successfully saved.'))
+            messages.save(request)
+            success_url = reverse('devilry-admin-edit_assignment',
                     args=[str(assignment.pk)])
             return HttpResponseRedirect(success_url)
     else:

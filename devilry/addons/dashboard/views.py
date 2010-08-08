@@ -4,6 +4,7 @@ from django.template import RequestContext
 
 from devilry.core.models import Node, Subject, Period, Assignment, \
         AssignmentGroup
+from devilry.ui.messages import UiMessages
 
 from dashboardplugin_registry import registry
 
@@ -22,8 +23,11 @@ def main(request):
     important = registry.iterimportant(request, **kw)
     normal = registry.iternormal(request, **kw)
     js = registry.iterjs(**kw)
+    messages = UiMessages()
+    messages.load(request)
     return render_to_response('devilry/dashboard/main.django.html', {
             'important': important,
             'normal': normal,
-            'js': js
+            'js': js,
+            'messages': messages
             }, context_instance=RequestContext(request))

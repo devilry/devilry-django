@@ -12,3 +12,13 @@ class UiMessages(list):
 
     def add_error(self, msg, raw_html=False):
         self.append(('error_message', raw_html, msg))
+
+    def save(self, request):
+        request.session['uimessages'] = self
+
+    def load(self, request):
+        messages = request.session.get('uimessages')
+        if messages:
+            for m in messages:
+                self.append(m)
+            del request.session['uimessages']

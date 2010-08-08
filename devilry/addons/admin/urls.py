@@ -9,10 +9,6 @@ for clsname in ('node', 'subject', 'period', 'assignment'):
         url(r'^%(clsname)ss/(?P<%(clsname)s_id>\d+)/edit$' % vars(),
             'views.edit_%(clsname)s' % vars(),
             name='devilry-admin-edit_%(clsname)s' % vars()),
-        url(r'^%(clsname)ss/successful-save/(?P<%(clsname)s_id>\d+)$' % vars(),
-            'views.edit_%(clsname)s' % vars(),
-            name='devilry-admin-edit_%(clsname)s-success' % vars(),
-            kwargs = {'successful_save':True}),
         url(r'^%(clsname)ss/create$' % vars(),
             'views.edit_%(clsname)s' % vars(),
             name='devilry-admin-create_%(clsname)s' % vars()),
@@ -53,10 +49,6 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/set-examiners$',
         'views.assignmentgroup.set_examiners',
         name='devilry-admin-set_examiners'),
-    url(r'^assignments/(?P<assignment_id>\d+)/set-examiners-success$',
-        'views.assignment.edit_assignment',
-        name='devilry-admin-set_examiners-success',
-        kwargs={'success_message': _('Examiners successfully changed')}),
 
     *generic_urls
 )

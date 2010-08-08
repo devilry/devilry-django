@@ -282,8 +282,11 @@ def set_examiners(request, assignment_id, success=False):
                     group.examiners.clear()
                     for id in user_ids:
                         group.examiners.add(User.objects.get(id=id))
+                messages = UiMessages()
+                messages.add_success(_('Examiners successfully changed'))
+                messages.save(request)
                 return HttpResponseRedirect(reverse(
-                    'devilry-admin-set_examiners-success',
+                    'devilry-admin-edit_assignment',
                     args=[assignment_id]))
         else:
             form = ExaminerForm()
