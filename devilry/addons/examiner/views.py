@@ -81,7 +81,6 @@ def assignmentgroup_filtertable_json(request):
     if not request.GET.get('include_nodeliveries'):
         groups = groups.exclude(Q(deliveries__isnull=True))
     if not request.GET.get('include_corrected'):
-        #groups = groups.exclude(Q(deliveries__isnull=True))
         groups = groups.annotate(
                 num_feedback=Count('deliveries__feedback')
                 ).filter(num_feedback=0)

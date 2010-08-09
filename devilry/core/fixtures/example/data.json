@@ -601,6 +601,61 @@
         }
     }, 
     {
+        "pk": 11, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-09 05:22:02", 
+            "number": 3, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-09 05:21:54", 
+            "number": 2, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-09 05:21:33", 
+            "number": 1, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-09 05:21:20", 
+            "number": 2, 
+            "assignment_group": 8
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-09 05:20:50", 
+            "number": 1, 
+            "assignment_group": 8
+        }
+    }, 
+    {
         "pk": 6, 
         "model": "core.delivery", 
         "fields": {
@@ -729,6 +784,69 @@
             "delivery": 6, 
             "size": 12, 
             "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 7, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 9, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 10, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 11, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 8, 
+            "size": 15, 
+            "filename": "hello2.txt"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 10, 
+            "size": 15, 
+            "filename": "hello2.txt"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 11, 
+            "size": 15, 
+            "filename": "hello2.txt"
         }
     }, 
     {

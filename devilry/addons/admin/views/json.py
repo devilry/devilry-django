@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.simplejson import JSONEncoder
-from django.db.models import Q
+from django.db.models import Q, Count
 from django import http
 
 from devilry.core.models import Node, Subject, Period, Assignment
@@ -94,6 +94,23 @@ def assignment_json(request):
             order_by = ['-publishing_time'])
 
 
+
+def filter_assignmentgroup(postdata, groupsqry, term):
+    if term != '':
+        # TODO not username on anonymous assignments
+        groupsqry = groupsqry.filter(
+            Q(name__contains=term)
+            | Q(examiners__username__contains=term)
+            | Q(candidates__student__username__contains=term))
+    if not postdata.get('include_nodeliveries'):
+        groupsqry = groupsqry.exclude(Q(deliveries__isnull=True))
+    if not postdata.get('include_corrected'):
+        groupsqry = groupsqry.annotate(
+                num_feedback=Count('deliveries__feedback')
+                ).filter(num_feedback=0)
+    return groupsqry
+
+
 @login_required
 def assignmentgroup_json(request, assignment_id):
     def latestdeliverytime(g):
@@ -111,11 +128,7 @@ def assignmentgroup_json(request, assignment_id):
     showall = request.GET.get('all', 'no')
 
     groups = assignment.assignmentgroups.all()
-    if term != '':
-        groups = groups.filter(
-            Q(name__contains=term)
-            | Q(examiners__username__startswith=term)
-            | Q(candidates__student__username__startswith=term)).distinct()
+    groups = filter_assignmentgroup(request.GET, groups, term)
     allcount = groups.count()
 
     if showall != 'yes':
