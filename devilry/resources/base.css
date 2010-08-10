@@ -507,3 +507,43 @@ ul.autocomplete-list-result li {
 input.autocomplete-list {
 	width: 98%;
 }
+
+
+/*******************************
+ * Examiner
+ *******************************/
+
+.deadline-box {
+	/*border: 1px solid red;*/
+	margin-bottom: 20px;
+	padding: 5px;
+}
+
+.deadline-box h3 {
+	margin: 5px 0 10px 0;
+}
+
+.deadline-box-after {
+	border: 1px solid #aa0000;
+	background-color: #dd0000;
+}
+.deadline-box-latest {
+	border: 1px solid #315C00;
+	background-color: #67C200;
+}
+
+/*******************************
+ * Student
+ *******************************/
+.student-assignments-accordion h4 {
+	font-size: 1.0em;
+	font-weight: bold;
+	margin-top: 10px;
+}
+.student-assignments-accordion h4:first-child {
+	margin-top: 0;
+}
+.student-assignments-accordion ul {
+	margin-left: 0;
+	padding-left: 25px;
+}

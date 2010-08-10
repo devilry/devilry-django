@@ -601,6 +601,57 @@
         }
     }, 
     {
+        "pk": 3, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-07 22:00:00", 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-10 12:00:00", 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-10 12:46:32", 
+            "number": 6, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-10 12:00:01", 
+            "number": 5, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-10 12:00:00", 
+            "number": 4, 
+            "assignment_group": 7
+        }
+    }, 
+    {
         "pk": 11, 
         "model": "core.delivery", 
         "fields": {
@@ -608,28 +659,6 @@
             "successful": true, 
             "time_of_delivery": "2010-08-09 05:22:02", 
             "number": 3, 
-            "assignment_group": 7
-        }
-    }, 
-    {
-        "pk": 10, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 15, 
-            "successful": true, 
-            "time_of_delivery": "2010-08-09 05:21:54", 
-            "number": 2, 
-            "assignment_group": 7
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "core.delivery", 
-        "fields": {
-            "delivered_by": 15, 
-            "successful": true, 
-            "time_of_delivery": "2010-08-09 05:21:33", 
-            "number": 1, 
             "assignment_group": 7
         }
     }, 
@@ -653,6 +682,28 @@
             "time_of_delivery": "2010-08-09 05:20:50", 
             "number": 1, 
             "assignment_group": 8
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-07 05:21:54", 
+            "number": 2, 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 15, 
+            "successful": true, 
+            "time_of_delivery": "2010-08-07 05:21:33", 
+            "number": 1, 
+            "assignment_group": 7
         }
     }, 
     {
@@ -823,6 +874,24 @@
         }
     }, 
     {
+        "pk": 14, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 12, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 14, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
         "pk": 8, 
         "model": "core.filemeta", 
         "fields": {
@@ -845,6 +914,24 @@
         "model": "core.filemeta", 
         "fields": {
             "delivery": 11, 
+            "size": 15, 
+            "filename": "hello2.txt"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 13, 
+            "size": 15, 
+            "filename": "hello2.txt"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 14, 
             "size": 15, 
             "filename": "hello2.txt"
         }

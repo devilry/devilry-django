@@ -102,12 +102,12 @@ def filter_assignmentgroup(postdata, groupsqry, term):
             Q(name__contains=term)
             | Q(examiners__username__contains=term)
             | Q(candidates__student__username__contains=term))
-    if not postdata.get('include_nodeliveries'):
-        groupsqry = groupsqry.exclude(Q(deliveries__isnull=True))
-    if not postdata.get('include_corrected'):
-        groupsqry = groupsqry.annotate(
-                num_feedback=Count('deliveries__feedback')
-                ).filter(num_feedback=0)
+    #if not postdata.get('include_nodeliveries'):
+        #groupsqry = groupsqry.exclude(Q(deliveries__isnull=True))
+    #if not postdata.get('include_corrected'):
+        #groupsqry = groupsqry.annotate(
+                #num_feedback=Count('deliveries__feedback')
+                #).filter(num_feedback=0)
     return groupsqry
 
 

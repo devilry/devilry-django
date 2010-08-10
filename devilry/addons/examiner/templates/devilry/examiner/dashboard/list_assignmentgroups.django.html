@@ -8,6 +8,8 @@
 			"{% url devilry-examiner-assignmentgroup_filtertable_json %}",
 			["Subject", "Period", "Assignment", "Group id", "Candidates", "Name", "Latest delivery", "Status"],
 			"{% trans "Show" %}", "{% trans "Show all" %}",
+      {}
+      {% comment %}
       {
         filters: {
           "Include": {
@@ -21,6 +23,8 @@
             }
           }
         }
-      })
+      }
+      {% endcomment %}
+      )
 	});
 </script>

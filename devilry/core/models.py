@@ -1015,6 +1015,9 @@ class Deadline(models.Model):
                       % dict(period=unicode(self.assignment_group.parentnode.parentnode))))
         super(Deadline, self).clean(*args, **kwargs)
 
+    def __unicode__(self):
+        return unicode(self.deadline)
+
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?

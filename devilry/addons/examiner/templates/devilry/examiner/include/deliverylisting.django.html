@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<h4><a href="#">
+	{{ delivery.number }} - {{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}
+	{% spaceless %}
+		(
+		{% if delivery.feedback %}
+			{{ delivery.feedback.get_grade_as_short_string }}
+		{% else %}
+			{% trans "Not corrected" %}
+		{% endif %}
+		)
+	{% endspaceless %}
+</a></h4>
+<div>
+	<p>
+		<a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
+			{% if delivery.feedback %}
+				{% trans "Edit feedback" %}
+			{% else %}
+				{% trans "Create feedback" %}
+			{% endif %}
+		</a>
+	</p>
+	{% if delivery.feedback %}
+		{% include "devilry/ui/include/show_feedback.django.html" %}
+	{% endif %}
+</div>
