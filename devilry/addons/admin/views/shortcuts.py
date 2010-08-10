@@ -7,6 +7,9 @@ from django.utils.translation import ugettext as _
 from devilry.ui.messages import UiMessages
 
 
+admins_help_text = _('Comma-separated list of administrators.')
+
+
 def iter_filtertable_selected(postdata, clsname):
     prefix = 'autocomplete-%s-cb' % clsname
     for key, value in postdata.iteritems():

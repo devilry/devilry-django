@@ -99,7 +99,9 @@ class ShortNameField(models.SlugField):
             max_length = 20,
             verbose_name = _('Short name'),
             db_index = True,
-            help_text=_("Max 20 characters. Only numbers, letters, '_' and '-'."))
+            help_text=_(
+                "Max 20 characters. Only numbers, letters, '_' and '-'. "\
+                "Only visible to examiners and admins."))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
 
@@ -109,7 +111,9 @@ class LongNameField(models.CharField):
         kw = dict(max_length=100,
             verbose_name='Long name',
             db_index = True,
-            help_text=_('A longer name, more descriptive than "Short name".'))
+            help_text=_(
+                'A longer name, more descriptive than "Short name". '\
+                'This is the name visible to students.'))
         kw.update(kwargs)
         super(LongNameField, self).__init__(*args, **kw)
 
@@ -418,8 +422,12 @@ class Period(models.Model, BaseNode):
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Subject, related_name='periods')
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.DateTimeField(
+            help_text=_(
+                'Start time and end time defines when the period is active.'))
+    end_time = models.DateTimeField(
+            help_text=_(
+                'Start time and end time defines when the period is active.'))
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
@@ -967,6 +975,13 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Get the number of deliveries by this assignment group. """
         return self.deliveries.all().count()
 
+    def get_corrected_deliveries(self):
+        """
+        Get the the deliveries by this assignment group which have
+        been corrected.
+        """
+        return self.deliveries.filter(feedback__isnull=False)
+
     def _can_save_id_none(self, user_obj):
         """ Used by all except Node, which overrides. """
         return self.parentnode.is_admin(user_obj)
@@ -984,7 +999,8 @@ class AssignmentGroup(models.Model, CommonInterface):
     def can_add_deliveries(self):
         """ Returns true if a student can add deliveries on this assignmengroup
         
-        Both the assignmentgroups is_open attribute, and the periods start and end time is checked.
+        Both the assignmentgroups is_open attribute, and the periods start
+        and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
 
