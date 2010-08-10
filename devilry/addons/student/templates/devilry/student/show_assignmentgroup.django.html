@@ -2,8 +2,8 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}{{ assignment_group.parentnode }}{% endblock %}
-{% block heading %}{{ assignment_group.parentnode }}{% endblock %}
+{% block title %} {{ assignment_group.parentnode.long_name }} {% endblock %}
+{% block heading %} {{ assignment_group.parentnode.long_name }}{% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
@@ -18,6 +18,22 @@
 {% block content %}
 
 <table class='vertical_infotable'>
+  <tr>
+    <th>{% trans "Subject" %}:</th>
+    <td>{{ assignment_group.parentnode.parentnode.parentnode.long_name }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Period" %}:</th>
+    <td>{{ assignment_group.parentnode.parentnode.long_name }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Assignment" %}:</th>
+    <td>{{ assignment_group.parentnode.long_name }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Group memebers" %}:</th>
+    <td>{{ assignment_group.get_candidates }}</td>
+  </tr>
   <tr>
     <th>{% trans "Deadline" %}:</th>
     <td>{{ assignment_group.parentnode.deadline }}</td>
