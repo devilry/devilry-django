@@ -60,7 +60,7 @@
   <div class="accordion">
   {% for delivery in assignment_group.deliveries.all %}
     <h3><a href="#">
-      {{ delivery.time_of_delivery }}
+      {{ delivery.number }} - {{ delivery.time_of_delivery }}
       {% spaceless %}
         (
         {% if delivery.feedback %}
