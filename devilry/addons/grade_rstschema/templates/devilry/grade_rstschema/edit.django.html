@@ -5,6 +5,29 @@
 
 {% block main %}
 
+{% if assignment.filenames %}
+  <script type="text/javascript">
+    $(function() {
+      $("#create_schema_from_filenames").click(function() {
+        var filenames = [
+          {% for f in assignment.get_filenames %}
+            "{{ f|escapejs }}" {% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ];
+        var schema = "";
+        $.each(filenames, function(i, filename) {
+          schema += "\nIs " + filename + " approved?\n\n.. field:: no/yes\n    :default: yes\n";
+        });
+        $("#id_schemadef").val(schema);
+      });
+    });
+  </script>
+
+  <a href="#" class="button" id="create_schema_from_filenames">
+    Create schema from filenames</a>
+{% endif %}
+
+
 <form method='post' action='{% url devilry-grade_rstschema-edit_schema schema.assignment.id %}'>
   <fieldset class='stdfieldset'>
     {% include "devilry/ui/include/form-list.django.html" %}

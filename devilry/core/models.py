@@ -534,6 +534,10 @@ class Assignment(models.Model, BaseNode):
     .. attribute:: assignmentgroups
 
         A set of the assignmentgroups for this assignment.
+
+    .. attribute:: filenames
+    
+        A optional string of filenames separated by whitespace.
     """
 
     class Meta:
@@ -550,11 +554,18 @@ class Assignment(models.Model, BaseNode):
     grade_plugin = models.CharField(max_length=100,
             choices=gradeplugin.registry,
             default=gradeplugin.registry.getdefaultkey())
+    filenames = models.TextField(blank=True, null=True,
+            help_text=_('Filenames separated by newline or space.'))
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
         for the current :attr:`grade_plugin`. """
         return gradeplugin.registry.getitem(self.grade_plugin)
+
+
+    def get_filenames(self):
+        """ Get the filenames as a list of strings. """
+        return self.filenames.split()
 
     @classmethod
     def where_is_admin(cls, user_obj):

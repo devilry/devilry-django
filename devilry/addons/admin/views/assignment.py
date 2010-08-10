@@ -32,7 +32,7 @@ def edit_assignment(request, assignment_id=None):
         class Meta:
             model = Assignment
             fields = ['parentnode', 'short_name', 'long_name', 
-                    'publishing_time', 'admins']
+                    'publishing_time', 'filenames', 'admins']
             if isnew:
                 fields.append('grade_plugin')
             widgets = {
