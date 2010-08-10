@@ -507,3 +507,26 @@ ul.autocomplete-list-result li {
 input.autocomplete-list {
 	width: 98%;
 }
+
+
+/*******************************
+ * Examiner
+ *******************************/
+
+.deadline-box {
+	/*border: 1px solid red;*/
+	margin-bottom: 20px;
+	padding: 5px;
+}
+
+.deadline-box h3 {
+	margin: 5px 0 10px 0;
+}
+
+.deadline-box-after {
+	background-color: #dd0000;
+}
+.deadline-box-latest {
+	border: 1px solid #315C00;
+	background-color: #67C200;
+}

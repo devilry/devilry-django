@@ -26,9 +26,35 @@ def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
+
+
+    after_deadline = []
+    within_a_deadline = []
+    deadlines = assignment_group.deadlines.all().order_by('deadline')
+    if deadlines.count() > 0:
+        last_deadline = deadlines[deadlines.count()-1]
+        after_deadline = assignment_group.deliveries.filter(
+                time_of_delivery__gt = last_deadline)
+
+        deliveries = []
+        deadlineindex = 0
+        deadline = deadlines[deadlineindex]
+        for delivery in assignment_group.deliveries.filter(
+                time_of_delivery__lte = last_deadline).order_by('time_of_delivery'):
+            if delivery.time_of_delivery > deadline.deadline:
+                within_a_deadline.append((deadline, deliveries))
+                deliveries = []
+                deadlineindex += 1
+                deadline = deadlines[deadlineindex]
+            deliveries.insert(0, delivery)
+        within_a_deadline.append((deadline, deliveries))
+        within_a_deadline.reverse()
+
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
+                'after_deadline': after_deadline,
+                'within_a_deadline': within_a_deadline
             }, context_instance=RequestContext(request))
 
 @login_required

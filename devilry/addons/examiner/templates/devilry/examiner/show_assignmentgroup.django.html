@@ -23,7 +23,8 @@
       autoHeight: false,
       navigation: true,
       collapsible: true,
-      active: 0
+      active: false,
+      header: 'h4'
     });
   });
 </script>
@@ -57,36 +58,30 @@
 
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>
-  <div class="accordion">
-  {% for delivery in assignment_group.deliveries.all %}
-    <h3><a href="#">
-      {{ delivery.number }} - {{ delivery.time_of_delivery }}
-      {% spaceless %}
-        (
-        {% if delivery.feedback %}
-          {{ delivery.feedback.get_grade_as_short_string }}
-        {% else %}
-          {% trans "Not corrected" %}
-        {% endif %}
-        )
-      {% endspaceless %}
-    </a></h3>
-    <div>
-      <p>
-        <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
-          {% if delivery.feedback %}
-            {% trans "Edit feedback" %}
-          {% else %}
-            {% trans "Create feedback" %}
-          {% endif %}
-        </a>
-      </p>
-      {% if delivery.feedback %}
-        {% include "devilry/ui/include/show_feedback.django.html" %}
-      {% endif %}
+
+  <div class='deadline-box deadline-box-after'>
+    <h3>{% trans "After deadline" %}</h3>
+    <div class="accordion">
+    {% for delivery in after_deadline %}
+      {% include "devilry/examiner/include/deliverylisting.django.html" %}
+    {% endfor %}
+    </div>
+  </div>
+
+  {% for deadline, deliveries in within_a_deadline %}
+    <div class='deadline-box {% if forloop.first %}deadline-box-latest{% endif %}'>
+      <h3>
+        {% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
+          {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
+        {% endwith %}
+      </h3>
+      <div class="accordion">
+        {% for delivery in deliveries %}
+          {% include "devilry/examiner/include/deliverylisting.django.html" %}
+        {% endfor %}
+      </div>
     </div>
   {% endfor %}
-  </div>
 {% endif %}
 
 
