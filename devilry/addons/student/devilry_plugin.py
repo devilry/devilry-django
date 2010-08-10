@@ -6,12 +6,7 @@ from devilry.addons.dashboard.dashboardplugin_registry import registry, \
         DashboardItem
 import dashboardviews
 
-def simpleview(request, *args):
-    return mark_safe(u"""Student dashboard-view(s) is not finished.
-        <a href='%s'>Click here</a> for the
-        main student view.""" % reverse('devilry-student-show-assignments'))
-
 registry.register_important(DashboardItem(
-         title = _('Student'),
+         title = _('Assignments'),
          candidate_access = True,
          view = dashboardviews.list_assignments))
