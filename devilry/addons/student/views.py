@@ -71,7 +71,7 @@ def show_assignments(request):
     subjects = group_assignmentgroups(assignment_groups)
     old_assignment_groups = AssignmentGroup.old_where_is_candidate(request.user)
     old_subjects = group_assignmentgroups(old_assignment_groups)
-    return render_to_response('devilry/student/show-assignments.django.html', {
+    return render_to_response('devilry/student/dashboard/show_assignments.django.html', {
             'subjects': subjects,
             'old_subjects': old_subjects,
             }, context_instance=RequestContext(request))

@@ -1,13 +1,12 @@
-<ul>
 {% for subject in subjects %}
   {% for period in subject %}
-    <li>{{ subject }} - {{ period }} </li>
+    <h2>{{ subject }} - {{ period }}</h2>
     <ul>
 	  {% for assignment in period %}
       {% for assignment_group in assignment %}
       <li>
-        <a href='{{ assignment_group.node.id }}'>
-					{{ assignment_group.get_name }}
+		<a href='{% url devilry-student-show-assignmentgroup assignment_group.node.id %}'>
+		  {{ assignment_group.get_name }}
         </a>
       </li>
       {% endfor %}
@@ -15,4 +14,3 @@
     </ul>
   {% endfor %}
 {% endfor %}
-</ul>
