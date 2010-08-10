@@ -7,47 +7,48 @@ from django.utils.translation import ugettext as _
 from devilry.ui.messages import UiMessages
 
 
+def iter_filtertable_selected(postdata, clsname):
+    prefix = 'autocomplete-%s-cb' % clsname
+    for key, value in postdata.iteritems():
+        if key.startswith(prefix):
+            yield key, value
 
-def list_nodes_generic(request, nodecls):
-    return render_to_response('devilry/admin/list_nodes.django.html', {
-        'model_plural_name': nodecls._meta.verbose_name_plural,
-        'nodes': nodecls.where_is_admin(request.user),
-        }, context_instance=RequestContext(request))
 
-
-def delete_generic(request, nodecls, id, message=""):
-    node = get_object_or_404(nodecls, id=id)
+def deletemany_generic(request, nodecls, successurl=None):
+    successurl = successurl or reverse('main')
     clsname = nodecls.__name__.lower()
-    deleteurl = reverse('devilry-admin-delete_%s' % clsname,
-            args=[id])
-    cancelurl = reverse('devilry-admin-edit_%s' % clsname,
-            args=[id])
-    if "confirm" in request.GET:
-        node.delete()
-        successurl = reverse('main')
+    prefix = 'autocomplete-%s-cb' % clsname
+    if request.method == 'POST':
+        nodes = []
+        for key, value in iter_filtertable_selected(request.POST, clsname):
+            node = nodecls.objects.get(id=value)
+            if node.can_save(request.user):
+                nodes.append(node)
+            else:
+                return HttpResponseForbidden(
+                        "No permission to delete %(node)s" % node)
+        nodestr = []
+        for node in nodes:
+            nodestr.append(str(node))
+            node.delete()
+        messages = UiMessages()
+        messages.add_success(_("Successfully deleted: %(nodes)s" % dict(
+            nodes = ', '.join(nodestr))))
+        messages.save(request)
         return HttpResponseRedirect(successurl)
-    return render_to_response('devilry/admin/confirm_delete.django.html', {
-        'deleteurl': deleteurl,
-        'cancelurl': cancelurl,
-        'message': message,
-        'what_to_delete': node,
-        }, context_instance=RequestContext(request))
 
 
 class EditBase(object):
     VIEW_NAME = None
     MODEL_CLASS = None
 
-    def __init__(self, request, obj_id, successful_save):
+    def __init__(self, request, obj_id):
         self.request = request
         self.messages = UiMessages()
+        self.messages.load(request)
         self.parent_model = self.MODEL_CLASS.parentnode.field.related.parent_model
         model_name = self.MODEL_CLASS._meta.verbose_name
         self.model_name_dict = {'model_name': model_name}
-
-        if successful_save:
-            self.messages.add_success(_("%(model_name)s successfully saved." % 
-                self.model_name_dict))
 
         if obj_id == None:
             self.is_new = True
@@ -77,8 +78,12 @@ class EditBase(object):
                 if not self.obj.can_save(self.request.user):
                     return HttpResponseForbidden("Forbidden")
                 objform.save()
+                messages = UiMessages()
+                messages.add_success(_("%(model_name)s successfully saved." % 
+                    self.model_name_dict))
+                messages.save(self.request)
                 success_url = reverse(
-                        'devilry-admin-edit_%s-success' % self.VIEW_NAME,
+                        'devilry-admin-edit_%s' % self.VIEW_NAME,
                         args = [str(self.obj.pk)])
                 return HttpResponseRedirect(success_url)
         else:

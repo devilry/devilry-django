@@ -20,8 +20,6 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href='{% url devilry-admin-list_assignments %}'>{% trans "Assignments" %}</a></li>
-  <li>::</li>
   <li>
     <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
       {{ assignment.get_path }}</a>
@@ -69,13 +67,8 @@
     {% endwith %}
   </fieldset>
 
-  <div class='submit-row'>
-    <div class='submit-row-right'>
-      <input type='submit' name='save' value='{% trans "Save" %}'/>
-    </div>
-    <div class='submit-row-left'>
-      <div class='form-link-as-button delete'><a href='#'>{% trans "Delete" %}</a></div>
-    </div>
+  <div class='button-row'>
+    <input type='submit' name='save' class='button' value='{% trans "Save" %}'/>
   </div>
 </form>
 {% endblock %}

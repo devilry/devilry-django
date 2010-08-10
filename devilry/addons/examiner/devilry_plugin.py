@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from devilry.addons.dashboard.dashboardplugin_registry import registry, \
         DashboardItem
@@ -6,6 +7,9 @@ import dashboardviews
 
 
 registry.register_important(DashboardItem(
-         title = _('Examiner'),
+         title = _('Assignment groups'),
          examiner_access = True,
-         view = dashboardviews.simpleview))
+         view = dashboardviews.list_assignmentgroups,
+         js = [settings.DEVILRY_RESOURCES_URL +
+             '/ui/js/jquery.autocompletetable.js']
+))

@@ -1,21 +1,18 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.simplejson import JSONEncoder
-from django.db.models import Q
+from django.db.models import Q, Count
 from django import http
-from django.template import RequestContext
 
 from devilry.core.models import Node, Subject, Period, Assignment
+from devilry.addons.dashboard import defaults
 
 
-def node_json_generic(request, nodecls, qrycallback,
-        pathcallback = lambda n: n.get_path().split('.')):
-    def get_editurl(node):
-        return reverse('devilry-admin-edit_%s' % name,
-                args=[str(node.id)])
-
-    maximum = 3
+def node_json_generic(request, nodecls, editurl_callback, qrycallback,
+        pathcallback = lambda n: n.get_path().split('.'),
+        order_by = ['short_name']):
+    maximum = defaults.DEFAULT_DISPLAYNUM
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
 
@@ -23,74 +20,132 @@ def node_json_generic(request, nodecls, qrycallback,
     if term != '':
         nodes = nodes.filter(
                 qrycallback(term)).distinct()
+    nodes = nodes.order_by(*order_by)
     allcount = nodes.count()
 
     name = nodecls.__name__.lower()
     if showall != 'yes':
         nodes = nodes[:maximum]
     l = [dict(
-            short_name = n.short_name,
-            long_name = n.long_name,
+            id = n.id,
             path = pathcallback(n),
-            editurl = get_editurl(n))
+            editurl = editurl_callback(n))
         for n in nodes]
     data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
 
+
 @login_required
-def nodename_json(request):
+def node_json(request):
     return node_json_generic(request, Node,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t),
-            lambda n: [n.get_path()])
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_node', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t),
+            pathcallback = lambda n: [
+                n.get_path(),
+                n.get_admins()])
 
 @login_required
-def subjectname_json(request):
+def subject_json(request):
     return node_json_generic(request, Subject,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t)
-                | Q(parentnode__short_name__istartswith=t))
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_subject', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__contains=t)
+                | Q(admins__username__contains=t),
+            pathcallback = lambda s: [
+                    s.short_name,
+                    s.get_admins()])
 
 @login_required
-def periodname_json(request):
+def period_json(request):
     return node_json_generic(request, Period,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t)
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_period', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t)
-                | Q(parentnode__parentnode__short_name__istartswith=t))
+                | Q(parentnode__parentnode__short_name__istartswith=t),
+            pathcallback = lambda p: [
+                    p.parentnode.short_name,
+                    p.short_name,
+                    p.start_time.strftime(defaults.DATETIME_FORMAT),
+                    p.get_admins()],
+            order_by = ['-start_time'])
 
 @login_required
-def assignmentname_json(request):
+def assignment_json(request):
     return node_json_generic(request, Assignment,
-            lambda t:
-                Q(short_name__istartswith=t) | Q(long_name__istartswith=t)
+            editurl_callback = lambda n:
+                reverse('devilry-admin-edit_assignment', args=[str(n.id)]),
+            qrycallback = lambda t:
+                Q(short_name__istartswith=t)
                 | Q(parentnode__short_name__istartswith=t)
                 | Q(parentnode__parentnode__short_name__istartswith=t)
-                | Q(parentnode__parentnode__parentnode__short_name__istartswith=t))
+                | Q(parentnode__parentnode__parentnode__short_name__istartswith=t),
+            pathcallback = lambda a: [
+                    a.parentnode.parentnode.short_name,
+                    a.parentnode.short_name,
+                    a.short_name,
+                    a.publishing_time.strftime(defaults.DATETIME_FORMAT),
+                    a.get_admins()],
+            order_by = ['-publishing_time'])
 
 
-def nodename_json_js_generic(request, clsname, headings):
-    return render_to_response('devilry/admin/autocomplete-nodename.js', {
-            'jsonurl': reverse('admin-autocomplete-%sname' % clsname),
-            'createurl': reverse('devilry-admin-create_%s' % clsname),
-            'headings': headings,
-            'clsname': clsname},
-        context_instance=RequestContext(request),
-        mimetype='text/javascript')
 
-def nodename_json_js(request):
-    return nodename_json_js_generic(request, 'node',
-            ["Node"])
+def filter_assignmentgroup(postdata, groupsqry, term):
+    if term != '':
+        # TODO not username on anonymous assignments
+        groupsqry = groupsqry.filter(
+            Q(name__contains=term)
+            | Q(examiners__username__contains=term)
+            | Q(candidates__student__username__contains=term))
+    if not postdata.get('include_nodeliveries'):
+        groupsqry = groupsqry.exclude(Q(deliveries__isnull=True))
+    if not postdata.get('include_corrected'):
+        groupsqry = groupsqry.annotate(
+                num_feedback=Count('deliveries__feedback')
+                ).filter(num_feedback=0)
+    return groupsqry
 
-def subjectname_json_js(request):
-    return nodename_json_js_generic(request, 'subject',
-            ["Subject"])
 
-def periodname_json_js(request):
-    return nodename_json_js_generic(request, 'period',
-            ["Subject", "Period"])
+@login_required
+def assignmentgroup_json(request, assignment_id):
+    def latestdeliverytime(g):
+        d = g.get_latest_delivery()
+        if d:
+            return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
+        else:
+            return ""
 
-def assignmentname_json_js(request):
-    return nodename_json_js_generic(request, 'assignment',
-            ["Subject", "Period", "Assignment"])
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return http.HttpResponseForbidden("Forbidden")
+    maximum = defaults.DEFAULT_DISPLAYNUM
+    term = request.GET.get('term', '')
+    showall = request.GET.get('all', 'no')
+
+    groups = assignment.assignmentgroups.all()
+    groups = filter_assignmentgroup(request.GET, groups, term)
+    allcount = groups.count()
+
+    if showall != 'yes':
+        groups = groups[:maximum]
+    l = [dict(
+            id = g.id,
+            path = [
+                str(g.id),
+                g.get_candidates(),
+                g.get_examiners(),
+                g.name,
+                str(g.get_number_of_deliveries()),
+                latestdeliverytime(g),
+                g.get_status()],
+            editurl = reverse('devilry-admin-edit_assignmentgroup',
+                args=[assignment_id, str(g.id)]))
+        for g in groups]
+    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
+    response = http.HttpResponse(data, content_type="text/plain")
+    return response

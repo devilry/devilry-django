@@ -40,8 +40,8 @@ organize administrators. A Node can be organized below another Node, and it
 can only have one parent.
 
 Let us say you use Devilry within two departments at *Fantasy University*;
-mathematics and physics. The university have a administration, and each
-department have their own administration. You would end ut with this
+informatics and mathematics. The university has an administration, and each
+department have their own administration. You would end up with this
 node-hierarchy:
 
     - Fantasy University
@@ -54,7 +54,7 @@ node-hierarchy:
 Subject
 #########################################################
 
-A subject is a course, seminar, class or something else beeing given
+A subject is a course, seminar, class or something else being given
 regularly. A subject is further divided into periods.
 
 .. autoclass:: devilry.core.models.Subject
@@ -110,7 +110,7 @@ use :meth:`Delivery.begin`, :meth:`~Delivery.add_file` and
 
     delivery = Delivery.begin(myassignmentgroup, currentuser)
     delivery.add_file('hello.txt', ['hello', 'world'])
-    delivery.add_file('example.py', ['print "hello world"])
+    delivery.add_file('example.py', ['print "hello world"'])
     delivery.finish()
 
 The input to :meth:`add_file` will normally be a file-like object,

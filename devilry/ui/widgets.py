@@ -95,3 +95,10 @@ class RstEditWidget(forms.Textarea):
             attrs["rows"] = 35
         attrs["class"] = "devilry_rstedit"
         super(RstEditWidget, self).__init__(attrs)
+
+
+class DevilryLongNameWidget(forms.TextInput):
+    def __init__(self, attrs={}):
+        attrs["size"] = 60
+        attrs["class"] = "devilry_long_name"
+        super(DevilryLongNameWidget, self).__init__(attrs)

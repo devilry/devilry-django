@@ -1,41 +1,53 @@
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 
 from devilry.core.models import Node, Subject, Period, Assignment, \
-    AssignmentGroup
+        AssignmentGroup
 from devilry.ui.widgets import DevilryDateTimeWidget, \
-    DevilryMultiSelectFewUsersDb
+    DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
 from devilry.ui.fields import MultiSelectCharField
 
-from shortcuts import EditBase, list_nodes_generic
-from assignment import edit_assignment, list_assignments
-from assignmentgroup import list_assignmentgroups, edit_assignmentgroup, \
-        create_assignmentgroups, save_assignmentgroups
+from shortcuts import EditBase, deletemany_generic
+from assignment import edit_assignment
 
 
 @login_required
-def main(request):
-    return render_to_response('devilry/admin/main.django.html', {
-        'nodes': Node.where_is_admin(request.user),
-        'subjects': Subject.where_is_admin(request.user),
-        'periods': Period.where_is_admin(request.user),
-        'assignments': Assignment.where_is_admin(request.user),
-        }, context_instance=RequestContext(request))
+def edit_node(request, node_id=None):
+    return EditNode(request, node_id).create_view()
 
 @login_required
-def list_nodes(request):
-    return list_nodes_generic(request, Node)
+def edit_subject(request, subject_id=None):
+    return EditSubject(request, subject_id).create_view()
 
 @login_required
-def list_subjects(request):
-    return list_nodes_generic(request, Subject)
+def edit_period(request, period_id=None):
+    return EditPeriod(request, period_id).create_view()
+
 
 @login_required
-def list_periods(request):
-    return list_nodes_generic(request, Period)
+def delete_manynodes(request):
+    return deletemany_generic(request, Node)
 
+@login_required
+def delete_manysubjects(request):
+    return deletemany_generic(request, Subject)
+
+@login_required
+def delete_manyperiods(request):
+    return deletemany_generic(request, Period)
+
+@login_required
+def delete_manyassignments(request):
+    return deletemany_generic(request, Assignment)
+
+@login_required
+def delete_manyassignmentgroups(request, assignment_id):
+    return deletemany_generic(request, AssignmentGroup,
+            successurl=reverse('devilry-admin-edit_assignment',
+                args=[assignment_id]))
 
 
 class EditNode(EditBase):
@@ -45,12 +57,13 @@ class EditNode(EditBase):
     def create_form(self):
         class NodeForm(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=False,
-                    queryset = Node.where_is_admin(self.request.user))
+                    queryset = Node.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
                 model = Node
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
+                widgets = {'long_name': DevilryLongNameWidget}
         return NodeForm
 
 
@@ -61,12 +74,13 @@ class EditSubject(EditBase):
     def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Node.where_is_admin(self.request.user))
+                    queryset = Node.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
                 model = Subject
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
+                widgets = {'long_name': DevilryLongNameWidget}
         return Form
 
 
@@ -77,7 +91,7 @@ class EditPeriod(EditBase):
     def create_form(self):
         class Form(forms.ModelForm):
             parentnode = forms.ModelChoiceField(required=True,
-                    queryset = Subject.where_is_admin(self.request.user))
+                    queryset = Subject.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
                                           required=False)
             class Meta:
@@ -86,19 +100,6 @@ class EditPeriod(EditBase):
                 widgets = {
                     'start_time': DevilryDateTimeWidget,
                     'end_time': DevilryDateTimeWidget,
+                    'long_name': DevilryLongNameWidget
                     }
         return Form
-
-
-
-@login_required
-def edit_node(request, obj_id=None, successful_save=False):
-    return EditNode(request, obj_id, successful_save).create_view()
-
-@login_required
-def edit_subject(request, obj_id=None, successful_save=False):
-    return EditSubject(request, obj_id, successful_save).create_view()
-
-@login_required
-def edit_period(request, obj_id=None, successful_save=False):
-    return EditPeriod(request, obj_id, successful_save).create_view()

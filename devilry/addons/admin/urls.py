@@ -1,70 +1,54 @@
+from django.utils.translation import ugettext as _
 from django.conf.urls.defaults import *
 
 
+# Node, Subject, Period and Assignment has exactly the same url-format
 generic_urls = []
-for x in ('node', 'subject', 'period'):
+for clsname in ('node', 'subject', 'period', 'assignment'):
     generic_urls += [
-        url(r'^%ss/(?P<obj_id>\d+)/edit$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-edit_%s' % x),
-        url(r'^%ss/successful-save/(?P<obj_id>\d+)$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-edit_%s-success' % x,
-            kwargs = {'successful_save':True}),
-        url(r'^%ss/create$' % x, 'views.edit_%s' % x,
-            name='devilry-admin-create_%s' % x),
-        url(r'^%ss/$' % x, 'views.list_%ss' % x,
-            name='devilry-admin-list_%ss' % x)
+        url(r'^%(clsname)ss/(?P<%(clsname)s_id>\d+)/edit$' % vars(),
+            'views.edit_%(clsname)s' % vars(),
+            name='devilry-admin-edit_%(clsname)s' % vars()),
+        url(r'^%(clsname)ss/create$' % vars(),
+            'views.edit_%(clsname)s' % vars(),
+            name='devilry-admin-create_%(clsname)s' % vars()),
+        url(r'^%(clsname)ss/deletemany$' % vars(),
+            'views.delete_many%(clsname)ss' % vars(),
+            name='devilry-admin-delete_many%(clsname)ss' % vars()),
+        url(r'^autocomplete-%(clsname)sname$' % vars(),
+            'views.json.%(clsname)s_json' % vars(),
+            name='admin-autocomplete-%(clsname)sname' % vars()),
         ]
 
 urlpatterns = patterns('devilry.addons.admin',
-    url(r'^$', 'views.main', name='devilry-admin-main'),
-
-    url(r'^assignments/$',
-        'views.list_assignments', name='devilry-admin-list_assignments'),
-    url(r'^assignments/(?P<assignment_id>\d+)/edit$',
-        'views.edit_assignment', name='devilry-admin-edit_assignment'),
-    url(r'^assignments/(?P<assignment_id>\d+)/successful-save$',
-        'views.edit_assignment',
-        name = 'devilry-admin-edit_assignment-success',
-        kwargs = {'successful_save':True}),
-    url(r'^assignments/create$',
-        'views.edit_assignment', name='devilry-admin-create_assignment'),
-    url(r'^assignments/(?P<assignment_id>\d+)/delete$',
-        'views.assignment.delete_assignment',
-        name='devilry-admin-delete_assignment'),
-
     url(r'^assignments/(?P<assignment_id>\d+)/group/edit/(?P<assignmentgroup_id>\d+)$',
-        'views.edit_assignmentgroup',
+        'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-edit_assignmentgroup'),
     url(r'^assignments/(?P<assignment_id>\d+)/group/successful-save/(?P<assignmentgroup_id>\d+)$',
-        'views.edit_assignmentgroup',
+        'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-edit_assignmentgroup-success',
         kwargs = {'successful_save':True}),
-    url(r'^assignments/(?P<assignment_id>\d+)/group/create$', 'views.edit_assignmentgroup',
+    url(r'^assignments/(?P<assignment_id>\d+)/group/create$',
+        'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-create_assignmentgroup'),
-    #url(r'^assignmentgroups/$', 'views.list_assignmentgroups',
-        #name='devilry-admin-list_assignmentgroups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/group/deletemany$',
+        'views.delete_manyassignmentgroups',
+        name='devilry-admin-delete_manyassignmentgroups'),
 
-    url(r'^autocomplete-nodename$', 'views.json.nodename_json',
-        name='admin-autocomplete-nodename'),
-    url(r'^autocomplete-subjectname$', 'views.json.subjectname_json',
-        name='admin-autocomplete-subjectname'),
-    url(r'^autocomplete-periodname$', 'views.json.periodname_json',
-        name='admin-autocomplete-periodname'),
-    url(r'^autocomplete-assignmentname$', 'views.json.assignmentname_json',
-        name='admin-autocomplete-assignmentname'),
+    url(r'^assignments/(?P<assignment_id>\d+)/create-assignmentgroups$',
+        'views.assignmentgroup.create_assignmentgroups',
+        name='devilry-admin-create_assignmentgroups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/save-assignmentgroups$',
+        'views.assignmentgroup.save_assignmentgroups',
+        name='devilry-admin-save_assignmentgroups'),
 
-    url(r'^autocomplete-nodename.js$', 'views.json.nodename_json_js',
-        name='admin-autocomplete-nodename.js'),
-    url(r'^autocomplete-subjectname.js$', 'views.json.subjectname_json_js',
-        name='admin-autocomplete-subjectname.js'),
-    url(r'^autocomplete-periodname.js$', 'views.json.periodname_json_js',
-        name='admin-autocomplete-periodname.js'),
-    url(r'^autocomplete-assignmentname.js$', 'views.json.assignmentname_json_js',
-        name='admin-autocomplete-assignmentname.js'),
+    url(r'^autocomplete-assignmentgroupname/(?P<assignment_id>\d+)$',
+        'views.json.assignmentgroup_json',
+        name='admin-autocomplete-assignmentgroupname'),
 
-    url(r'^assignmentgroups/create-assignmentgroups/(?P<assignment_id>\d+)$',
-        'views.create_assignmentgroups', name='devilry-admin-create_assignmentgroups'),
-    url(r'^assignmentgroups/save-assignmentgroups/(?P<assignment_id>\d+)$',
-        'views.save_assignmentgroups', name='devilry-admin-save_assignmentgroups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/set-examiners$',
+        'views.assignmentgroup.set_examiners',
+        name='devilry-admin-set_examiners'),
+
     *generic_urls
 )

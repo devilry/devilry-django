@@ -117,7 +117,7 @@ class LongNameField(models.CharField):
 class BaseNode(CommonInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
-    used by the other Node classes. This is a abstract datamodel, so it
+    used by the other Node classes. This is an abstract datamodel, so it
     is never used directly.
 
 
@@ -447,6 +447,19 @@ class Period(models.Model, BaseNode):
         return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
 
     @classmethod
+    def not_ended_where_is_admin_or_superadmin(cls, user_obj):
+        """ Returns a QuerySet matching all Periods where the given user is
+        admin or superadmin and end_time is in the future.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        if user_obj.is_superuser:
+            return cls.objects.filter(end_time__gt=datetime.now())
+        else:
+            return cls.not_ended_where_is_admin(user_obj)
+
+    @classmethod
     def get_by_path(self, path):
         """ Get a Period by path.
 
@@ -470,8 +483,10 @@ class Period(models.Model, BaseNode):
 
         Raises ValidationError if start_time is after end_time.
         """
-        if self.start_time > self.end_time:
-            raise ValidationError(_('Start time must be before end time.'))
+        if self.start_time and self.end_time:
+            if self.start_time > self.end_time:
+                raise ValidationError(_('Start time must be before end time.'))
+        super(Period, self).clean(*args, **kwargs)
 
     def is_active(self):
         """ Returns true if the period is active
@@ -719,6 +734,10 @@ class AssignmentGroup(models.Model, CommonInterface):
         A django.db.models.ForeignKey_ that points to the parent node,
         which is always an `Assignment`_.
 
+    .. attribute:: name
+
+        A optional name for the group.
+
     .. attribute:: candidates
 
         A django ``RelatedManager`` that holds the candidates on this group.
@@ -906,6 +925,14 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_status(self):
+        """ Get status as a translated string.
+        
+        Returns one of:
+            
+            - "No deliveries"
+            - "Not corrected"
+            - "Corrected"
+        """
         if self.deliveries.all().count() == 0:
             return _('No deliveries')
         else:
@@ -915,7 +942,9 @@ class AssignmentGroup(models.Model, CommonInterface):
             else:
                 return _('Corrected')
 
-    def get_grade_as_short_string(self):
+    def get_latest_delivery(self):
+        """ Get the latest delivery by this assignment group with feedback,
+        or ``None`` if there is no deliveries with feedback. """
         if self.deliveries.all().count() == 0:
             return None
         else:
@@ -924,9 +953,18 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return None
             else:
                 return qry.annotate(
-                        models.Max('time_of_delivery'))[0].feedback.get_grade_as_short_string()
+                        models.Max('time_of_delivery'))[0]
+
+    def get_grade_as_short_string(self):
+        """ Get the grade  """
+        d = self.get_latest_delivery()
+        if d:
+            return d.feedback.get_grade_as_short_string()
+        else:
+            return None
 
     def get_number_of_deliveries(self):
+        """ Get the number of deliveries by this assignment group. """
         return self.deliveries.all().count()
 
     def _can_save_id_none(self, user_obj):
@@ -1361,7 +1399,8 @@ def filemeta_deleted_handler(sender, **kwargs):
 
 def feedback_grade_delete_handler(sender, **kwargs):
     feedback = kwargs['instance']
-    feedback.grade.delete()
+    if feedback.grade != None:
+        feedback.grade.delete()
 
 from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)

@@ -1,2 +1,33 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
 <div id='autocomplete-{{ clsname }}'></div>
+
+<script type="text/javascript">
+$(function() {
+    $("#autocomplete-{{ clsname }}").autocompletetable(
+        "{{ jsonurl }}",
+        [{% for h in headings %}"{{ h }}",{% endfor %}],
+        "{% trans "edit" %}", "{% trans "Show all" %}",
+        {
+          links: {
+            createnew: {
+              label: "{% trans "Create new" %}",
+              url: "{{ createurl }}"
+            }
+          },
+          buttons: {
+            deleteselected: {
+              label: "{% trans "Delete selected" %}",
+              classes: ['delete'],
+              confirmtitle: "{% trans "Confirm delete" %}",
+              confirmlabel: "{% trans "Confirm delete" %}",
+              cancel_label: "{% trans "Cancel" %}",
+              confirm_message: "{{ deletemessage }}",
+              classes: ['delete'],
+              url: "{{ deleteurl }}"
+            }
+          }
+        })
+});
+</script>

@@ -7,22 +7,31 @@ from itertools import chain
 
 class DashboardItem(object):
     def __init__(self, title, view=None, candidate_access=False,
-            examiner_access=False, admin_access=False, cssclass='',
+            examiner_access=False, nodeadmin_access=False,
+            subjectadmin_access=False, periodadmin_access=False,
+            assignmentadmin_access=False, cssclass='',
             js=[]):
         self.title = title
         self.view = view
         self.candidate_access = candidate_access
         self.examiner_access = examiner_access
-        self.admin_access = admin_access
+        self.nodeadmin_access = nodeadmin_access
+        self.subjectadmin_access = subjectadmin_access
+        self.periodadmin_access = periodadmin_access
+        self.assignmentadmin_access = assignmentadmin_access
         self.js = js
     
-    def can_show(self, is_candidate, is_examiner, is_admin):
+    def can_show(self, is_candidate, is_examiner, is_nodeadmin,
+            is_subjectadmin, is_periodadmin, is_assignmentadmin):
         return (self.candidate_access and is_candidate) \
                 or (self.examiner_access and is_examiner) \
-                or (self.admin_access and is_admin)
+                or (self.nodeadmin_access and is_nodeadmin) \
+                or (self.subjectadmin_access and is_subjectadmin) \
+                or (self.periodadmin_access and is_periodadmin) \
+                or (self.assignmentadmin_access and is_assignmentadmin)
 
-    def getview(self, request, is_candidate, is_examiner, is_admin):
-        return self.view(request, is_candidate, is_examiner, is_admin)
+    def getview(self, request, *args, **kw):
+        return self.view(request, *args, **kw)
 
 
 class DashboardRegistry(object):
@@ -54,31 +63,33 @@ class DashboardRegistry(object):
         """
         return self._registry[key]
 
-    def iterjs(self, is_candidate=False, is_examiner=False, is_admin=False):
+    def iterjs(self, is_candidate=False, is_examiner=False,
+            is_nodeadmin=False, is_subjectadmin=False, is_periodadmin=False,
+            is_assignmentadmin=False):
         s = set()
         for item in chain(self._important, self._normal):
-            if item.can_show(is_candidate, is_examiner, is_admin):
+            if item.can_show(is_candidate, is_examiner, is_nodeadmin,
+                    is_subjectadmin, is_periodadmin, is_assignmentadmin):
                 s.update(item.js)
         return s.__iter__()
 
     def _itervalues(self, request, lst, is_candidate=False, is_examiner=False,
-            is_admin=False):
+            is_nodeadmin=False, is_subjectadmin=False, is_periodadmin=False,
+            is_assignmentadmin=False):
         for item in lst:
-            if item.can_show(is_candidate, is_examiner, is_admin):
+            if item.can_show(is_candidate, is_examiner, is_nodeadmin,
+                    is_subjectadmin, is_periodadmin, is_assignmentadmin):
                 view = item.getview(request, is_candidate, is_examiner,
-                        is_admin)
+                        is_nodeadmin, is_subjectadmin, is_periodadmin,
+                        is_assignmentadmin)
                 if view != None:
                     yield item, view
 
-    def iterimportant(self, request, is_candidate=False, is_examiner=False,
-                is_admin=False):
-        return self._itervalues(request, self._important, is_candidate,
-                is_examiner, is_admin)
+    def iterimportant(self, request, *args, **kw):
+        return self._itervalues(request, self._important, *args, **kw)
 
-    def iternormal(self, request, is_candidate=False, is_examiner=False,
-                is_admin=False):
-        return self._itervalues(request, self._normal, is_candidate,
-                is_examiner, is_admin)
+    def iternormal(self, request, *args, **kw):
+        return self._itervalues(request, self._normal, *args, **kw)
 
 
 registry = DashboardRegistry()

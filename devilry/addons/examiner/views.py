@@ -2,10 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.template import RequestContext
+from django.db.models import Count
 
 from devilry.core.models import Delivery, AssignmentGroup, Assignment
 from devilry.core import gradeplugin
 from devilry.core.utils.GroupNodes import group_assignments
+from devilry.addons.dashboard import defaults
 
 
 @login_required
@@ -45,3 +47,62 @@ def choose_assignment(request):
             'devilry/examiner/choose_assignment.django.html', {
                 'subjects': subjects,
             }, context_instance=RequestContext(request))
+
+
+from django.db.models import Q
+from django.utils.simplejson import JSONEncoder
+from django.core.urlresolvers import reverse
+from django import http
+
+@login_required
+def assignmentgroup_filtertable_json(request):
+    def latestdeliverytime(g):
+        d = g.get_latest_delivery()
+        if d:
+            return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
+        else:
+            return ""
+
+    maximum = 20
+    term = request.GET.get('term', '')
+    showall = request.GET.get('all', 'no')
+
+    groups = AssignmentGroup.where_is_examiner(request.user).order_by(
+            'parentnode__parentnode__parentnode__short_name',
+            'parentnode__parentnode__short_name',
+            'parentnode__short_name',
+            )
+    if term != '':
+        groups = groups.filter(
+            Q(name__contains=term)
+            | Q(examiners__username__contains=term)
+            | Q(candidates__student__username__contains=term))
+
+    if not request.GET.get('include_nodeliveries'):
+        groups = groups.exclude(Q(deliveries__isnull=True))
+    if not request.GET.get('include_corrected'):
+        groups = groups.annotate(
+                num_feedback=Count('deliveries__feedback')
+                ).filter(num_feedback=0)
+
+    groups = groups.distinct()
+    allcount = groups.count()
+
+    if showall != 'yes':
+        groups = groups[:maximum]
+    l = [dict(
+            id = g.id,
+            path = [
+                g.parentnode.parentnode.parentnode.short_name,
+                g.parentnode.parentnode.short_name,
+                g.parentnode.short_name,
+                str(g.id), g.get_candidates(), g.name,
+                latestdeliverytime(g),
+                g.get_status(),
+            ],
+            editurl = reverse('devilry-examiner-show_assignmentgroup',
+                    args=[str(g.id)]))
+        for g in groups]
+    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
+    response = http.HttpResponse(data, content_type="text/plain")
+    return response

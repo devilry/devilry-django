@@ -49,7 +49,7 @@ steps:
 When you wish to update the local sync with new deliveries, or feedback
 submitted by other examiners (if you work on assignments with more than one
 examiner on each group), just repeat steps 3 and 4 within any directory
-below the checout-directory. You might not have to login more than about
+below the checkout-directory. You might not have to login more than about
 once a day, but this varies depending on how the devilry-server is
 configured.
 """
