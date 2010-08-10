@@ -47,8 +47,12 @@ def insert_values(rst, values):
         offset += len(value) - len(current)
     return rst
 
+
+def extract_values(rst):
+    return re.findall(valuepatt, rst)
+
 def extract_valuedict(rst):
     r = {}
-    for i, value in enumerate(re.findall(valuepatt, rst)):
+    for i, value in enumerate(extract_values(rst)):
         r['rstschema_field_%s' % i] = value
     return r

@@ -14,6 +14,19 @@ class AbstractSpec(object):
     def validate(self, value):
         raise NotImplementedError()
 
+    def get_points(self, value):
+        """
+        Get points for the given value.
+        Raises ValuError of value is not valid.
+        """
+        raise NotImplementedError()
+
+    def get_max_points(self):
+        """
+        Get maximum number of points for this spec.
+        """
+        raise NotImplementedError()
+
     def __str__(self):
         return self.specstring
 
@@ -32,6 +45,7 @@ class AbstractSpec(object):
         hint = self.get_hint()
         if hint:
             self.add_hint(htmltranslator, hint)
+
 
 
 class NumberRangeSpec(AbstractSpec):
@@ -63,6 +77,13 @@ class NumberRangeSpec(AbstractSpec):
         if self.manyvalues:
             return 'A number between %(start)s and %(end)s' % dict(
                     start=self.start, end=self.end)
+
+    def get_points(self, value):
+        self.validate(value)
+        return int(value)
+
+    def get_max_points(self, spec):
+        return self.end
 
     def create_html_formfield(self, field, field_id, htmltranslator,
             value=None):
@@ -120,7 +141,12 @@ class SequenceSpec(AbstractSpec):
             value=None):
         SequenceSpec.create_radio_fields(field, field_id, htmltranslator,
                 value, self.valid_values)
-        
+
+    def get_points(self, value):
+        return self.valid_values.index(value)
+
+    def get_max_points(self, spec):
+        return 1
 
 
 class Spec(object):

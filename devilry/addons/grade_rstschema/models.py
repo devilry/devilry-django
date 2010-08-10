@@ -16,17 +16,31 @@ class RstSchemaDefinition(models.Model):
             help_text=_('Selecting this will let users see the ' \
                     'entire schema, instead of just the resulting grade.'))
 
+def get_schemadef_document(feedback_obj):
+    assignment = feedback_obj.get_assignment()
+    schemadef = RstSchemaDefinition.objects.get(assignment=assignment)
+    schemadef_document = rstdoc_from_string(schemadef.schemadef)
+    return schemadef_document
+
+
 class RstSchemaGrade(GradeModel):
     schema = models.TextField()
 
     def get_grade_as_short_string(self, feedback_obj):
-        print text.extract_valuedict(self.schema)
-        return "TODO"
+        #print text.extract_valuedict(self.schema)
+        schemadef_document = get_schemadef_document(feedback_obj)
+        fields = field.extract_fields(schemadef_document)
+        values = text.extract_values(self.schema)
+        #print values
+        points = 0
+        maxpoints = 0
+        for f, v in zip(fields, values):
+            points += f.spec.get_points(v)
+            maxpoints += f.spec.get_max_points(v)
+        return "%s/%s" % (points, maxpoints)
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
-        assignment = feedback_obj.get_assignment()
-        schemadef = RstSchemaDefinition.objects.get(assignment=assignment)
-        schemadef_document = rstdoc_from_string(schemadef.schemadef)
+        schemadef_document = get_schemadef_document(feedback_obj)
         fields = field.extract_fields(schemadef_document)
 
         grade = text.strip_messages(grade)
