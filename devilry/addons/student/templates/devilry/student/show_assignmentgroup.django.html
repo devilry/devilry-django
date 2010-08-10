@@ -7,13 +7,7 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-
-<li><a href='{% url devilry-student-show-assignments %}'>{% trans "Assignments" %}</a></li>
-<li>::</li>
-<li>{{ assignment_group.parentnode }}</li>
-
 {% endblock %}
-
 
 {% block content %}
 
