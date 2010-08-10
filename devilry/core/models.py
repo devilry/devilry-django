@@ -975,12 +975,12 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Get the number of deliveries by this assignment group. """
         return self.deliveries.all().count()
 
-    def get_corrected_deliveries(self):
+    def get_published_deliveries(self):
         """
         Get the the deliveries by this assignment group which have
-        been corrected.
+        published feedback.
         """
-        return self.deliveries.filter(feedback__isnull=False)
+        return self.deliveries.filter(feedback__published=True)
 
     def _can_save_id_none(self, user_obj):
         """ Used by all except Node, which overrides. """

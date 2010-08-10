@@ -20,6 +20,7 @@ class RstSchemaGrade(GradeModel):
     schema = models.TextField()
 
     def get_grade_as_short_string(self, feedback_obj):
+        print text.extract_valuedict(self.schema)
         return "TODO"
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):

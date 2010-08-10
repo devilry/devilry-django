@@ -22,7 +22,7 @@
     $(".accordion").accordion({
       autoHeight: false,
       navigation: true,
-      collapsible: true,
+      collapsible: false,
       active: false,
       header: 'h4'
     });
@@ -40,19 +40,8 @@
     <td>{{ assignment_group.get_status }}</td>
   </tr>
   <tr>
-    <th>{% trans "Corrected deliveries" %}:</th>
-    <td>{{ assignment_group.get_corrected_deliveries.count }}
-      {% if assignment_group.get_corrected_deliveries.count > 0 %}
-        (
-          {% for delivery in assignment_group.get_corrected_deliveries %}
-            <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
-              {{ delivery.number }}
-            </a>
-            {% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        )
-      {% endif %}
-    </td>
+    <th>{% trans "Published deliveries" %}:</th>
+    <td>{{ assignment_group.get_published_deliveries.count }}</td>
   </tr>
 
   {% if assignment_group.get_grade_as_short_string %}
