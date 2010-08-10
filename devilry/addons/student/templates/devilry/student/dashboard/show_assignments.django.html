@@ -1,18 +1,8 @@
-{% extends "devilry/student/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block title %}
-  {% trans "Assignments" %}
-{% endblock %}
-
 {% block heading %}
   {% trans "Assignments" %}
-{% endblock %}
-
-{% block breadcrumbs %}
-{{ block.super }}
-<li>{% trans "Assignments" %}</li>
 {% endblock %}
 
 
@@ -34,7 +24,7 @@
 	  Active
   </a></h3>
   <div>
-	{% include "devilry/ui/include/assignment_group_chooser.django.html" %}
+	{% include "devilry/student/include/assignment_group_chooser.django.html" %}
   </div>
 
   <h3><a href="#">
@@ -42,7 +32,7 @@
   </a></h3>
   <div>
 	{% with old_subjects as subjects %}
-	{% include "devilry/ui/include/assignment_group_chooser.django.html" %}
+	{% include "devilry/student/include/assignment_group_chooser.django.html" %}
 	{% endwith %}
   </div>
 </div>
