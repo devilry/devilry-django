@@ -2,12 +2,6 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block breadcrumbs %}
-{{ block.super }}
-<li><a href='{% url devilry-examiner-choose_assignment%}'>{% trans "Correct deliveries" %}</a></li>
-<li>::</li>
-{% endblock %}
-
 {% block content %}
   {% block main %}{% endblock %}
 {% endblock %}
