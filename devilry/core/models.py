@@ -975,6 +975,13 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Get the number of deliveries by this assignment group. """
         return self.deliveries.all().count()
 
+    def get_corrected_deliveries(self):
+        """
+        Get the the deliveries by this assignment group which have
+        been corrected.
+        """
+        return self.deliveries.filter(feedback__isnull=False)
+
     def _can_save_id_none(self, user_obj):
         """ Used by all except Node, which overrides. """
         return self.parentnode.is_admin(user_obj)
@@ -992,7 +999,8 @@ class AssignmentGroup(models.Model, CommonInterface):
     def can_add_deliveries(self):
         """ Returns true if a student can add deliveries on this assignmengroup
         
-        Both the assignmentgroups is_open attribute, and the periods start and end time is checked.
+        Both the assignmentgroups is_open attribute, and the periods start
+        and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
 

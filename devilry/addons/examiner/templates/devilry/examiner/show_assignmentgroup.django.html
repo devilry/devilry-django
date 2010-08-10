@@ -39,6 +39,21 @@
     <th>{% trans "Status" %}:</th>
     <td>{{ assignment_group.get_status }}</td>
   </tr>
+  <tr>
+    <th>{% trans "Corrected deliveries" %}:</th>
+    <td>{{ assignment_group.get_corrected_deliveries.count }}
+      {% if assignment_group.get_corrected_deliveries.count > 0 %}
+        (
+          {% for delivery in assignment_group.get_corrected_deliveries %}
+            <a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
+              {{ delivery.number }}
+            </a>
+            {% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        )
+      {% endif %}
+    </td>
+  </tr>
 
   {% if assignment_group.get_grade_as_short_string %}
   <tr>

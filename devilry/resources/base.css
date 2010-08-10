@@ -533,6 +533,11 @@ input.autocomplete-list {
 	font-style: italic;
 	font-weight: normal;
 }
+.delivery_published_msg {
+	color: green;
+	font-style: italic;
+	font-weight: normal;
+}
 
 /*******************************
  * Student

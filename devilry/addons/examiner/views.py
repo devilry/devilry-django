@@ -34,13 +34,13 @@ def show_assignmentgroup(request, assignmentgroup_id):
     if deadlines.count() > 0:
         last_deadline = deadlines[deadlines.count()-1]
         after_deadline = assignment_group.deliveries.filter(
-                time_of_delivery__gt = last_deadline)
+                time_of_delivery__gte = last_deadline)
 
         deliveries = []
         deadlineindex = 0
         deadline = deadlines[deadlineindex]
         for delivery in assignment_group.deliveries.filter(
-                time_of_delivery__lte = last_deadline).order_by('time_of_delivery'):
+                time_of_delivery__lt = last_deadline).order_by('time_of_delivery'):
             if delivery.time_of_delivery > deadline.deadline:
                 within_a_deadline.append((deadline, deliveries))
                 deliveries = []
