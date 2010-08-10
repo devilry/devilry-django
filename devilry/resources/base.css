@@ -198,17 +198,18 @@ body {
 	margin: 45px 0 0 0;
 }
 #sidebar a {
-	color: #acc2d6;
+	color: #7A9DBD;
 }
 #sidebar a:visited {
-	color: #acacd6;
+	color: #9A7ABD;
 }
 #sidebar .section {
-	background-color: #fff;
 	margin-bottom: 20px;
 	padding: 15px;
 	background-color: #303030;
-	color: #ccc;
+	border: 1px solid #D4D2CE;
+	background-color: #fff;
+	color: #444;
 }
 /*#sidebar .section:first-child {*/
 	/*background-color: #44513c;*/
@@ -229,9 +230,9 @@ body {
 	margin-left: 20px;
 }
 #sidebar ul {
-	margin: 4px 0 0 4px;
+	margin: 4px 0 0 20px;
 	padding: 0;
-	list-style: disc url(listbullet.png) inside;
+	list-style: disc url(listbullet.png);
 }
 
 
