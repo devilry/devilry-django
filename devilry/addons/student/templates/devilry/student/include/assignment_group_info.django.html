@@ -6,7 +6,7 @@
 	{% for delivery in assignment_group.deliveries.all %}
 		<li>
 			<a href='{% url devilry-student-show-delivery delivery.id %}'>
-				{{ delivery.time_of_delivery }}
+				{{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}
 			</a>
 		</li>
 	{% endfor %}
