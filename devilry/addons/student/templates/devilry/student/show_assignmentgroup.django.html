@@ -48,17 +48,26 @@
 {% if assignment_group.deliveries.all.count == 0 %}
   <p>{% trans "No deliveries" %}</p>
 {% else %}
-  <ul>
-  {% for delivery in assignment_group.deliveries.all %}
-    <li>
-      <a href='{% url devilry-student-show-delivery delivery.id %}'>
-        {{ delivery.time_of_delivery }}
-      </a>
-    </li>
-  {% endfor %}
-  </ul>
+  <table class='vertical_infotable'>
+	<tr>
+	  <th>Time</th>
+	  <th>Delivered by</th>
+	  <th>Status</th>
+	  <th></th>
+	</tr>
+	
+	{% for delivery in assignment_group.deliveries.all %}
+	<tr>
+	  <td> {{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }} </td>
+	  <td> {{ delivery.delivered_by }} </td>
+	  <td> {{ delivery.get_status }} </td>
+	  <td><a href='{% url devilry-student-show-delivery delivery.id %}'>
+          show
+	  </a></td>
+	</tr>
+	{% endfor %}
+  </table> 
 {% endif %}
-
 
 {% if assignment_group.can_add_deliveries %}
 <p>
