@@ -1057,6 +1057,10 @@ class Delivery(models.Model):
 
         A set of filemetas for this delivery.
 
+    .. attribute:: feedback
+
+       A django.db.models.OneToOneField to Feedback.
+
     """
     
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
@@ -1149,6 +1153,16 @@ class Delivery(models.Model):
             return self.feedback
         except Feedback.DoesNotExist:
             return Feedback(delivery=self)
+
+    def get_status(self):
+        """ Get the status for this delivery; 'Corrected' or
+        'Not Corrected'.
+        """
+        try:
+            if self.feedback:
+                return "Corrected"
+        except Feedback.DoesNotExist:
+            return "Not Corrected"
 
     def save(self, *args, **kwargs):
         """
