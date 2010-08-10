@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
+from django.utils.translation import ugettext as _
 
 from devilry.core.models import Node, Subject, Period, Assignment, \
         AssignmentGroup
@@ -10,8 +11,9 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
 from devilry.ui.fields import MultiSelectCharField
 
-from shortcuts import EditBase, deletemany_generic
+from shortcuts import EditBase, deletemany_generic, admins_help_text
 from assignment import edit_assignment
+
 
 
 @login_required
@@ -59,7 +61,8 @@ class EditNode(EditBase):
             parentnode = forms.ModelChoiceField(required=False,
                     queryset = Node.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
-                                          required=False)
+                                          required=False,
+                                          help_text=admins_help_text)
             class Meta:
                 model = Node
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
@@ -76,7 +79,8 @@ class EditSubject(EditBase):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Node.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
-                                          required=False)
+                                          required=False,
+                                          help_text=admins_help_text)
             class Meta:
                 model = Subject
                 fields = ['parentnode', 'short_name', 'long_name', 'admins']
@@ -93,7 +97,8 @@ class EditPeriod(EditBase):
             parentnode = forms.ModelChoiceField(required=True,
                     queryset = Subject.where_is_admin_or_superadmin(self.request.user))
             admins = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb, 
-                                          required=False)
+                                          required=False,
+                                          help_text=admins_help_text)
             class Meta:
                 model = Period
                 fields = ['parentnode', 'short_name', 'long_name', 'start_time', 'end_time', 'admins']
