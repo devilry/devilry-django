@@ -18,6 +18,7 @@
       name, and should probably use:
         http://docs.djangoproject.com/en/dev/howto/custom-model-fields/#the-subfieldbase-metaclass
 - Published integration with student
+- Filename validation on delivery.
 
 -XMLRPC-client:
 	-The grade plug-in used for the current assignment should be listed when running 
