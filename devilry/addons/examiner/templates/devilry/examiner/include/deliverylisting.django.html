@@ -10,6 +10,9 @@
 			{% trans "Not corrected" %}
 		{% endif %}
 		)
+		{% if after_last_deadline_msg %}
+		  <span class='after_last_deadline_msg'>({% trans "After last deadline" %})</span>
+		{% endif %}
 	{% endspaceless %}
 </a></h4>
 <div>

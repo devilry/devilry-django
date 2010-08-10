@@ -524,13 +524,14 @@ input.autocomplete-list {
 	margin: 5px 0 10px 0;
 }
 
-.deadline-box-after {
-	border: 1px solid #aa0000;
-	background-color: #dd0000;
-}
-.deadline-box-latest {
-	border: 1px solid #315C00;
-	background-color: #67C200;
+/*.deadline-box-after {*/
+	/*border: 1px solid #aa0000;*/
+	/*background-color: #dd0000;*/
+/*}*/
+.after_last_deadline_msg {
+	color: #aa0000;
+	font-style: italic;
+	font-weight: normal;
 }
 
 /*******************************

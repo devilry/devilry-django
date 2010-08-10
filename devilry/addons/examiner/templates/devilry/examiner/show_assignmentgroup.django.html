@@ -59,17 +59,21 @@
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>
 
-  <div class='deadline-box deadline-box-after'>
-    <h3>{% trans "After deadline" %}</h3>
-    <div class="accordion">
-    {% for delivery in after_deadline %}
-      {% include "devilry/examiner/include/deliverylisting.django.html" %}
-    {% endfor %}
-    </div>
-  </div>
+  {% if after_deadline %}
+    {% with "yes" as after_last_deadline_msg %}
+      <div class='deadline-box deadline-box-after'>
+        <h3>{% trans "After last deadline" %}</h3>
+        <div class="accordion">
+        {% for delivery in after_deadline %}
+          {% include "devilry/examiner/include/deliverylisting.django.html" %}
+        {% endfor %}
+        </div>
+      </div>
+    {% endwith %}
+  {% endif %}
 
   {% for deadline, deliveries in within_a_deadline %}
-    <div class='deadline-box {% if forloop.first %}deadline-box-latest{% endif %}'>
+    <div class='deadline-box'>
       <h3>
         {% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
           {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
