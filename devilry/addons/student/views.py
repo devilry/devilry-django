@@ -58,11 +58,11 @@ def add_delivery(request, assignment_group_id, messages=None):
         'messages': messages,
         }, context_instance=RequestContext(request))
 
-
 def successful_delivery(request, assignment_group_id):
     messages = UiMessages()
     messages.add_info(_('Successful delivery'))
-    return add_delivery(request, assignment_group_id, messages)
+    #return add_delivery(request, assignment_group_id, messages)
+    return show_assignmentgroup(request, assignment_group_id, messages)
 
 
 @login_required
@@ -86,12 +86,13 @@ def show_history(request):
             }, context_instance=RequestContext(request))
 
 @login_required
-def show_assignmentgroup(request, assignmentgroup_id):
+def show_assignmentgroup(request, assignmentgroup_id, messages=None):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_assignmentgroup.django.html', {
         'assignment_group': assignment_group,
+        'messages': messages,
         }, context_instance=RequestContext(request))
 
 @login_required
