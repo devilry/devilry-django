@@ -6,7 +6,11 @@ jQuery.autocompletetable = {
             .addClass("autocompletetable-result")
             .addClass("horizontal_ordered_table");
         var headrow = $("<tr></tr>");
-        $("<th>&nbsp;</th>").appendTo(headrow);
+        var checkall = $("<input/>")
+            .attr("type", "checkbox");
+        $("<th></th>")
+            .append(checkall)
+            .appendTo(headrow);
         $.each(properties.headings, function(i, heading) {
             $("<th>" + heading + "</th>").appendTo(headrow);
         });
@@ -71,6 +75,16 @@ jQuery.autocompletetable = {
         } else {
             properties.searchfield.parent().children("table").first().replaceWith(tbl);
         }
+
+
+        // Check all checkboxes when clicking checkall
+        checkall.click(function() {
+            var qry ="#" + properties.id + " input:checkbox";
+            var checked = checkall.is(":checked");
+            //$.log(qry);
+            //$.log(checked);
+            $(qry).attr("checked", checked);
+        });
     },
 }
 
@@ -80,6 +94,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
 
     return this.each(function(){
         this.properties = {};
+        this.properties.id = $(this).attr("id");
         this.properties.jsonurl = jsonurl;
         this.properties.headings = headings;
         this.properties.editlabel = editlabel;
