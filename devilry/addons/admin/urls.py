@@ -49,6 +49,9 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/set-examiners$',
         'views.assignmentgroup.set_examiners',
         name='devilry-admin-set_examiners'),
+    url(r'^assignments/(?P<assignment_id>\d+)/copy-groups$',
+        'views.assignmentgroup.copy_groups',
+        name='devilry-admin-copy_groups'),
 
     *generic_urls
 )

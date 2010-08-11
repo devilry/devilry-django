@@ -61,6 +61,10 @@
             createmany: {
               label: "{% trans "Create many (advanced)" %}",
               url: "{% url devilry-admin-create_assignmentgroups assignment.id %}"
+            },
+            copygroups: {
+              label: "{% trans "Create by copy" %}",
+              url: "{% url devilry-admin-copy_groups assignment.id %}"
             }
           },
           buttons: {

@@ -29,14 +29,6 @@ class DeadlineForm(forms.ModelForm):
         model = Deadline
 
 
-class CandidateForm(forms.ModelForm):
-    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
-    text = forms.CharField(required=False,
-            widget=forms.Textarea(attrs=dict(rows=5, cols=50)))
-    class Meta:
-        model = Deadline
-
-
 @login_required
 def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
         successful_save=False):
@@ -267,6 +259,8 @@ def set_examiners(request, assignment_id, success=False):
                 required=True)
 
     assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
     if request.method == 'POST':
         groups = []
         for key, group_id in iter_filtertable_selected(request.POST,
@@ -296,3 +290,50 @@ def set_examiners(request, assignment_id, success=False):
                 'assignment': assignment,
                 'groups': groups
                 }, context_instance=RequestContext(request))
+
+
+
+@login_required
+def copy_groups(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+    
+    assignments_in_period = Assignment.where_is_admin_or_superadmin(
+            request.user).filter(parentnode=assignment.parentnode).exclude(
+                    id=assignment.id)
+    class AssignmentSelectForm(forms.Form):
+        assignment = forms.ModelChoiceField(queryset=assignments_in_period,
+                empty_label=None,
+                label = _("Assignments"))
+
+    if request.method == 'POST':
+        form = AssignmentSelectForm(request.POST)
+        if form.is_valid():
+            copy_assignment = form.cleaned_data['assignment']
+            for copy_group in copy_assignment.assignmentgroups.all():
+                group = AssignmentGroup(parentnode=assignment)
+                group.name = copy_group.name
+                group.save()
+                for examiner in copy_group.examiners.all():
+                    group.examiners.add(examiner)
+                for copy_candidate in copy_group.candidates.all():
+                    candidate = Candidate()
+                    candidate.student = copy_candidate.student
+                    candidate.candidate_id = copy_candidate.candidate_id
+                    group.candidates.add(candidate)
+                assignment.assignmentgroups.add(group)
+            assignment.save()
+            messages = UiMessages()
+            messages.add_success(_('Assignment groups successfully copied.'))
+            messages.save(request)
+            return HttpResponseRedirect(reverse(
+                'devilry-admin-edit_assignment',
+                args=[assignment_id]))
+    else:
+        form = AssignmentSelectForm()
+    return render_to_response('devilry/admin/copy-groups.django.html', {
+            'assignment': assignment,
+            'form': form,
+            'assignments_in_period': assignments_in_period,
+            }, context_instance=RequestContext(request))

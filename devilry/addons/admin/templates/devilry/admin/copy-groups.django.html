@@ -1,0 +1,46 @@
+{% extends "devilry/admin/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Copy groups" %}
+{% endblock %}
+{% block heading %}
+	{% trans "Copy groups" %}
+{% endblock %}
+
+
+{% block admin-breadcrumbs %}
+  {{ block.super }}
+  <li>
+    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
+      {{ assignment.get_path }}</a>
+  </li>
+  <li>::</li>
+  <li>
+		{% trans "Copy groups" %}
+  </li>
+{% endblock %}
+
+{% block main %}
+
+{% if message %}
+	<p>{{ message }}</p>
+{% endif %}
+
+<p>
+{% blocktrans %}
+	Copy groups (examiners and candidates (students)) from the following assignment
+	into {{ assignment }}.
+{% endblocktrans %}
+</p>
+<form method='post' action='{% url devilry-admin-copy_groups assignment.id %}'>
+  <fieldset class='stdfieldset'>
+    {% include "devilry/ui/include/form-list.django.html" %}
+  </fieldset>
+
+  <div class='button-row'>
+    <input type='submit' name='save' class='button' value='{% trans "Copy groups" %}'/>
+  </div>
+</form>
+{% endblock %}
