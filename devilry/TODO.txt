@@ -9,7 +9,6 @@
               for the assignment.
             - have a connection to a disapproved delivery+feedback.
 - Selenium tests
-- Clean up student views
 - Tests for grade_rstschema
     - Including implemenation and testing of deleting SchemaDefinition
       pre_delete Assignment.
@@ -17,7 +16,8 @@
     - MultiSelectCharField should be renamed to something with User in the
       name, and should probably use:
         http://docs.djangoproject.com/en/dev/howto/custom-model-fields/#the-subfieldbase-metaclass
-- Published integration with student
+- Published feedback integration with student and grade-display.
+    - Show the grade of the latest published feedback, not the latest feedback.
 - Filename validation on delivery.
 
 -XMLRPC-client:
