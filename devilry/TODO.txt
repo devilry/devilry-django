@@ -32,4 +32,7 @@
 	Preferably, this distribution of examiners should be done automatically and should rotate each week, so that
 	each student gets his deliveries corrected by different examiners throughout the period.
 
-	
+- Should not be possible to change rstschemadef if any schemas has been created.
+- Email on delivery and feedback.
+- Examiner create new deadline when giving feedback.
+- Check permissions on all views.
