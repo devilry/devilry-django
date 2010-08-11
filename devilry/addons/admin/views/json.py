@@ -108,7 +108,7 @@ def filter_assignmentgroup(postdata, groupsqry, term):
         #groupsqry = groupsqry.annotate(
                 #num_feedback=Count('deliveries__feedback')
                 #).filter(num_feedback=0)
-    return groupsqry
+    return groupsqry.distinct()
 
 
 @login_required
