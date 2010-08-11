@@ -555,7 +555,9 @@ class Assignment(models.Model, BaseNode):
             choices=gradeplugin.registry,
             default=gradeplugin.registry.getdefaultkey())
     filenames = models.TextField(blank=True, null=True,
-            help_text=_('Filenames separated by newline or space.'))
+            help_text=_('Filenames separated by newline or space. If '
+                'filenames are used, students will not be able to deliver '
+                'files where the filename is among the given filenames.'))
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
