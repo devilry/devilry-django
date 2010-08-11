@@ -978,9 +978,9 @@ class AssignmentGroup(models.Model, CommonInterface):
 
     def get_grade_as_short_string(self):
         """ Get the grade  """
-        d = self.get_latest_delivery()
-        if d:
-            return d.feedback.get_grade_as_short_string()
+        q = self.get_published_deliveries().order_by('-time_of_delivery')
+        if q.count() > 0:
+            return q[0].feedback.get_grade_as_short_string()
         else:
             return None
 
@@ -1188,11 +1188,12 @@ class Delivery(models.Model):
         'Not Corrected'.
         """
         try:
-            if self.feedback:
-                return "Corrected"
+            if self.feedback.published:
+                return _("Corrected")
         except Feedback.DoesNotExist:
-            return "Not Corrected"
-
+            pass
+        return _("Not Corrected")
+            
     def save(self, *args, **kwargs):
         """
         Set :attr:`number` automatically to one greater than what is was
