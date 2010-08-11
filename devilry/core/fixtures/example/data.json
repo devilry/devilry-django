@@ -314,6 +314,7 @@
             "short_name": "greed", 
             "publishing_time": "2010-08-05 10:00:00", 
             "parentnode": 2, 
+            "filenames": null, 
             "long_name": "Learning greed through case studies", 
             "admins": [], 
             "anonymous": false
@@ -327,6 +328,7 @@
             "short_name": "money", 
             "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 2, 
+            "filenames": null, 
             "long_name": "Money making basics", 
             "admins": [], 
             "anonymous": false
@@ -340,6 +342,7 @@
             "short_name": "avoiding-work", 
             "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 1, 
+            "filenames": null, 
             "long_name": "Effective habits for lazy people", 
             "admins": [], 
             "anonymous": false
@@ -353,6 +356,7 @@
             "short_name": "sleeping1", 
             "publishing_time": "2010-08-06 08:00:00", 
             "parentnode": 1, 
+            "filenames": null, 
             "long_name": "Locating good sleeping areas", 
             "admins": [], 
             "anonymous": false
@@ -366,6 +370,7 @@
             "short_name": "sleeping2", 
             "publishing_time": "2010-08-06 16:00:00", 
             "parentnode": 1, 
+            "filenames": null, 
             "long_name": "Look like you are working while  sleeping", 
             "admins": [], 
             "anonymous": false

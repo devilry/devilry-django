@@ -21,16 +21,10 @@
 
   <tr>
     <th>{% trans "Status" %}</th>
-    <td>
-      {% if delivery.feedback %}
-        {% trans "Corrected" %}
-      {% else %}
-        {% trans "Not corrected" %}
-      {% endif %}
-    </td>
+    <td>{{ delivery.get_status }}</td>
   </tr>
 
-  {% if delivery.feedback %}
+  {% if delivery.feedback.published %}
     <tr>
       <th>{% trans "Grade" %}</th>
       <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
