@@ -37,3 +37,7 @@
 - Examiner create new deadline when giving feedback.
 - Check permissions on all views.
 - Status must not be shown as corrected when there are no deliveries!
+- Logging of important actions, like
+    - delete
+    - deliver
+    - change feedback
