@@ -65,7 +65,7 @@
             copygroups: {
               label: "{% trans "Create by copy" %}",
               url: "{% url devilry-admin-copy_groups assignment.id %}"
-            }
+            },
           },
           buttons: {
             deleteselected: {
@@ -76,6 +76,19 @@
               cancel_label: "{% trans "Cancel" %}",
               confirm_message: '{% trans "This will delete all selected assignmentgroups and all deliveries and feedbacks within them." %}',
               url: "{% url devilry-admin-delete_manyassignmentgroups assignment.id %}"
+            },
+            cleardeadlines: {
+              label: "{% trans "Clear deadlines" %}",
+              classes: ['delete'],
+              confirmtitle: "{% trans "Clear deadlines from selected?" %}",
+              confirmlabel: "{% trans "Clear deadlines" %}",
+              cancel_label: "{% trans "Cancel" %}",
+              confirm_message: '{% trans "This will delete all deadlines on all selected assignmentgroups." %}',
+              url: "{% url devilry-admin-clear_deadlines assignment.id %}"
+            },
+            createdeadline: {
+              label: "{% trans "Create/replace deadline" %}",
+              url: "{% url devilry-admin-create_deadline assignment.id %}"
             },
             setexaminers: {
               label: "{% trans "Set examiners" %}",

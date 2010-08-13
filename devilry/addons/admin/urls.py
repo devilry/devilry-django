@@ -52,6 +52,12 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/copy-groups$',
         'views.assignmentgroup.copy_groups',
         name='devilry-admin-copy_groups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/create-deadline$',
+        'views.assignmentgroup.create_deadline',
+        name='devilry-admin-create_deadline'),
+    url(r'^assignments/(?P<assignment_id>\d+)/clear-deadlines$',
+        'views.assignmentgroup.clear_deadlines',
+        name='devilry-admin-clear_deadlines'),
 
     *generic_urls
 )
