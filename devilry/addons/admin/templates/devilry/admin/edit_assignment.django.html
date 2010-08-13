@@ -50,7 +50,7 @@
     $(function() {
       $("#autocomplete-assignmentgroup").autocompletetable(
         "{% url admin-autocomplete-assignmentgroupname assignment.id %}",
-        ["Id", "Candidates", "Examiners", "Name", "Deliveries", "Latest delivery", "Status"],
+        ["Id", "Candidates", "Examiners", "Name", "Deliveries", "Latest delivery", "Deadlines", "Status"],
         "{% trans "edit" %}", "{% trans "Show all" %}",
         {
           links: {

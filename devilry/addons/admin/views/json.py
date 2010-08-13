@@ -120,6 +120,11 @@ def assignmentgroup_json(request, assignment_id):
         else:
             return ""
 
+    def get_deadlines(g):
+        return '<br />'.join([
+            d.deadline.strftime(defaults.DATETIME_FORMAT)
+            for d in g.deadlines.all()])
+
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
         return http.HttpResponseForbidden("Forbidden")
@@ -142,6 +147,7 @@ def assignmentgroup_json(request, assignment_id):
                 g.name,
                 str(g.get_number_of_deliveries()),
                 latestdeliverytime(g),
+                get_deadlines(g),
                 g.get_status()],
             editurl = reverse('devilry-admin-edit_assignmentgroup',
                 args=[assignment_id, str(g.id)]))

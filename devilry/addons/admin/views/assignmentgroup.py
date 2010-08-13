@@ -337,3 +337,50 @@ def copy_groups(request, assignment_id):
             'form': form,
             'assignments_in_period': assignments_in_period,
             }, context_instance=RequestContext(request))
+
+
+
+@login_required
+def create_deadline(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+    
+    current_deadlines = Assignment.where_is_admin_or_superadmin(
+            request.user).filter(parentnode=assignment.parentnode).exclude(
+                    id=assignment.id)
+    class AssignmentSelectForm(forms.Form):
+        assignment = forms.ModelChoiceField(queryset=assignments_in_period,
+                empty_label=None,
+                label = _("Assignments"))
+
+    if request.method == 'POST':
+        form = AssignmentSelectForm(request.POST)
+        if form.is_valid():
+            copy_assignment = form.cleaned_data['assignment']
+            for copy_group in copy_assignment.assignmentgroups.all():
+                group = AssignmentGroup(parentnode=assignment)
+                group.name = copy_group.name
+                group.save()
+                for examiner in copy_group.examiners.all():
+                    group.examiners.add(examiner)
+                for copy_candidate in copy_group.candidates.all():
+                    candidate = Candidate()
+                    candidate.student = copy_candidate.student
+                    candidate.candidate_id = copy_candidate.candidate_id
+                    group.candidates.add(candidate)
+                assignment.assignmentgroups.add(group)
+            assignment.save()
+            messages = UiMessages()
+            messages.add_success(_('Assignment groups successfully copied.'))
+            messages.save(request)
+            return HttpResponseRedirect(reverse(
+                'devilry-admin-edit_assignment',
+                args=[assignment_id]))
+    else:
+        form = AssignmentSelectForm()
+    return render_to_response('devilry/admin/copy-groups.django.html', {
+            'assignment': assignment,
+            'form': form,
+            'assignments_in_period': assignments_in_period,
+            }, context_instance=RequestContext(request))
