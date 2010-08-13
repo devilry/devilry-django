@@ -1037,9 +1037,28 @@ class AssignmentGroup(models.Model, CommonInterface):
 
 
 class Deadline(models.Model):
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deadlines') 
+    """
+    .. attribute:: assignment_group
+
+        The assignment group where the deadline is registered.
+
+    .. attribute:: deadline
+
+        The deadline a DateTimeField.
+
+    .. attribute:: text
+
+        A optional deadline text.
+    """
+    assignment_group = models.ForeignKey(AssignmentGroup,
+            related_name='deadlines') 
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = _('Deadline')
+        verbose_name_plural = _('Deadlines')
+        ordering = ['-deadline']
     
     def clean(self, *args, **kwargs):
         """Validate the deadline.
