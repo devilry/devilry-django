@@ -557,7 +557,7 @@ class Assignment(models.Model, BaseNode):
     filenames = models.TextField(blank=True, null=True,
             help_text=_('Filenames separated by newline or space. If '
                 'filenames are used, students will not be able to deliver '
-                'files where the filename is among the given filenames.'))
+                'files where the filename is not among the given filenames.'))
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
@@ -703,6 +703,23 @@ class Assignment(models.Model, BaseNode):
 
 
 class Candidate(models.Model):
+    """
+    .. attribute:: assignment_group
+
+        The :class:`AssignmentGroup` where this groups belongs.
+
+    .. attribute:: student
+
+        A student (a foreign key to a User).
+
+    .. attribute:: candidate_id
+
+        A optional candidate id. This can be anything as long as it is not
+        more than 30 characters. When the assignment is anonymous, this is
+        the "name" shown to examiners instead of the username of the
+        student.
+    """
+
     student = models.ForeignKey(User)
     assignment_group = models.ForeignKey('AssignmentGroup',
             related_name='candidates')
@@ -761,7 +778,8 @@ class AssignmentGroup(models.Model, CommonInterface):
 
     .. attribute:: candidates
 
-        A django ``RelatedManager`` that holds the candidates on this group.
+        A django ``RelatedManager`` that holds the :class:`candidates
+        <Candidate>` on this group.
 
     .. attribute:: examiners
 
@@ -1019,9 +1037,28 @@ class AssignmentGroup(models.Model, CommonInterface):
 
 
 class Deadline(models.Model):
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deadlines') 
+    """
+    .. attribute:: assignment_group
+
+        The assignment group where the deadline is registered.
+
+    .. attribute:: deadline
+
+        The deadline a DateTimeField.
+
+    .. attribute:: text
+
+        A optional deadline text.
+    """
+    assignment_group = models.ForeignKey(AssignmentGroup,
+            related_name='deadlines') 
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = _('Deadline')
+        verbose_name_plural = _('Deadlines')
+        ordering = ['-deadline']
     
     def clean(self, *args, **kwargs):
         """Validate the deadline.

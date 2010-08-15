@@ -108,7 +108,7 @@ def filter_assignmentgroup(postdata, groupsqry, term):
         #groupsqry = groupsqry.annotate(
                 #num_feedback=Count('deliveries__feedback')
                 #).filter(num_feedback=0)
-    return groupsqry
+    return groupsqry.distinct()
 
 
 @login_required
@@ -119,6 +119,11 @@ def assignmentgroup_json(request, assignment_id):
             return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
         else:
             return ""
+
+    def get_deadlines(g):
+        return '<br />'.join([
+            d.deadline.strftime(defaults.DATETIME_FORMAT)
+            for d in g.deadlines.all()])
 
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
@@ -142,6 +147,7 @@ def assignmentgroup_json(request, assignment_id):
                 g.name,
                 str(g.get_number_of_deliveries()),
                 latestdeliverytime(g),
+                get_deadlines(g),
                 g.get_status()],
             editurl = reverse('devilry-admin-edit_assignmentgroup',
                 args=[assignment_id, str(g.id)]))

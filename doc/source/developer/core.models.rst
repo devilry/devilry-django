@@ -87,6 +87,11 @@ We have three main classifications of assignments:
 .. autoclass:: devilry.core.models.Assignment
 
 
+Candidate
+#########################################################
+
+.. autoclass:: devilry.core.models.Candidate
+
 AssignmentGroup
 #########################################################
 

@@ -8,7 +8,6 @@
         http://docs.djangoproject.com/en/dev/howto/custom-model-fields/#the-subfieldbase-metaclass
 - Published feedback integration with student and grade-display.
     - Show the grade of the latest published feedback, not the latest feedback.
-- Filename validation on delivery.
 
 -XMLRPC-client:
 	-The grade plug-in used for the current assignment should be listed when running 
@@ -32,7 +31,13 @@
 	Preferably, this distribution of examiners should be done automatically and should rotate each week, so that
 	each student gets his deliveries corrected by different examiners throughout the period.
 
+- Filename validation on delivery.
 - Should not be possible to change rstschemadef if any schemas has been created.
 - Email on delivery and feedback.
 - Examiner create new deadline when giving feedback.
 - Check permissions on all views.
+- Status must not be shown as corrected when there are no deliveries!
+- Logging of important actions, like
+    - delete
+    - deliver
+    - change feedback
