@@ -4,11 +4,26 @@ from django.http import HttpResponseForbidden
 from django.template import RequestContext
 from django.db.models import Count
 
-from devilry.core.models import Delivery, AssignmentGroup, Assignment
+from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
 from devilry.core.utils.GroupNodes import group_assignments
 from devilry.addons.dashboard import defaults
 
+from django import forms
+from devilry.ui.widgets import DevilryDateTimeWidget
+from django.forms.models import inlineformset_factory, formset_factory
+
+class DeadlineForm(forms.ModelForm):
+    is_open = forms.BooleanField(required=False,
+                                 initial=False,
+                                 label='Is open')
+    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
+    text = forms.CharField(required=False,
+                           widget=forms.Textarea(attrs=dict(rows=5, cols=50)))
+    
+    class Meta:
+        model = Deadline
+        fields = ['deadline', 'text']
 
 @login_required
 def list_assignmentgroups(request, assignment_id):
@@ -50,11 +65,16 @@ def show_assignmentgroup(request, assignmentgroup_id):
         within_a_deadline.append((deadline, deliveries))
         within_a_deadline.reverse()
 
+    #DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
+    #                                        extra=0, form=DeadlineForm)
+    deadline_form = DeadlineForm()
+
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
                 'after_deadline': after_deadline,
-                'within_a_deadline': within_a_deadline
+                'within_a_deadline': within_a_deadline,
+                'deadline_form': deadline_form,
             }, context_instance=RequestContext(request))
 
 @login_required
@@ -132,3 +152,5 @@ def assignmentgroup_filtertable_json(request):
     data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
+
+

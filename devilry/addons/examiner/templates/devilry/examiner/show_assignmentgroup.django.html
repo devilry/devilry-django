@@ -57,8 +57,17 @@
       <td>{{ assignment_group.students.all|join:", " }} </td>
     </tr>
   {% endif %}
+  <tr>
+    <th>{% trans "Open for deliveries" %}:</th>
+    <td>{% if assignment_group.is_open %} Yes {% else %} No {% endif %}</td>
+  </tr> 
 </table>
 
+{{ deadline_form }}
+
+<div class='button-row'>
+    <input type='submit' name='save' class='button' value='{% trans "Create deadline" %}'/>
+</div>
 
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>
