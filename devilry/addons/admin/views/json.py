@@ -144,7 +144,7 @@ def assignmentgroup_json(request, assignment_id):
                 str(g.id),
                 g.get_candidates(),
                 g.get_examiners(),
-                g.name,
+                g.name or '',
                 str(g.get_number_of_deliveries()),
                 latestdeliverytime(g),
                 get_deadlines(g),
