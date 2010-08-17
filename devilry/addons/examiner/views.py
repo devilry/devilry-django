@@ -3,6 +3,10 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.template import RequestContext
 from django.db.models import Count
+from django.db.models import Q
+from django.utils.simplejson import JSONEncoder
+from django.core.urlresolvers import reverse
+from django import http
 
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
@@ -94,12 +98,6 @@ def choose_assignment(request):
                 'subjects': subjects,
             }, context_instance=RequestContext(request))
 
-
-from django.db.models import Q
-from django.utils.simplejson import JSONEncoder
-from django.core.urlresolvers import reverse
-from django import http
-
 @login_required
 def assignmentgroup_filtertable_json(request):
     def latestdeliverytime(g):
@@ -142,7 +140,9 @@ def assignmentgroup_filtertable_json(request):
                 g.parentnode.parentnode.parentnode.short_name,
                 g.parentnode.parentnode.short_name,
                 g.parentnode.short_name,
-                str(g.id), g.get_candidates(), g.name,
+                str(g.id),
+                g.get_candidates(),
+                g.name or '',
                 latestdeliverytime(g),
                 g.get_status(),
             ],
