@@ -63,11 +63,17 @@
   </tr> 
 </table>
 
-{{ deadline_form }}
 
-<div class='button-row'>
+<fieldset class='stdfieldset'>
+  <h2 class='legend'>{% trans "Deadline" %}</h2>
+  {% with deadline_form as form %}
+    {% include "devilry/ui/include/form-list.django.html" %}
+  {% endwith %}
+  <div class='button-row'>
     <input type='submit' name='save' class='button' value='{% trans "Create deadline" %}'/>
-</div>
+  </div>
+</fieldset>
+
 
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>

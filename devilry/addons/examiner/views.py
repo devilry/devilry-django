@@ -72,7 +72,6 @@ def show_assignmentgroup(request, assignmentgroup_id):
     #DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
     #                                        extra=0, form=DeadlineForm)
     deadline_form = DeadlineForm()
-
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
