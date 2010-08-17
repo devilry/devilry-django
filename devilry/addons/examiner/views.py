@@ -119,6 +119,9 @@ def assignmentgroup_filtertable_json(request):
     if term != '':
         groups = groups.filter(
             Q(name__contains=term)
+            | Q(parentnode__parentnode__parentnode__short_name__contains=term)
+            | Q(parentnode__parentnode__short_name__contains=term)
+            | Q(parentnode__short_name__contains=term)
             | Q(examiners__username__contains=term)
             | Q(candidates__student__username__contains=term))
 
