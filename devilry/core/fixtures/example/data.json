@@ -40,6 +40,11 @@
         "fields": {}
     }, 
     {
+        "pk": 9, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -603,6 +608,69 @@
         }
     }, 
     {
+        "pk": 5, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-28 12:00:00", 
+            "assignment_group": 8
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-28 12:00:00", 
+            "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-28 12:00:00", 
+            "assignment_group": 4
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-28 12:00:00", 
+            "assignment_group": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-28 12:00:00", 
+            "assignment_group": 6
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-28 12:00:00", 
+            "assignment_group": 5
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-10 12:00:00", 
+            "assignment_group": 7
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.deadline", 
         "fields": {
@@ -626,15 +694,6 @@
         "fields": {
             "text": "", 
             "deadline": "2010-08-07 22:00:00", 
-            "assignment_group": 7
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "core.deadline", 
-        "fields": {
-            "text": "", 
-            "deadline": "2010-08-10 12:00:00", 
             "assignment_group": 7
         }
     }, 
@@ -908,6 +967,20 @@
             "delivery": 16, 
             "last_modified": "2010-08-10 15:25:19", 
             "object_id": 8, 
+            "content_type": 27, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "Hello world", 
+            "last_modified_by": 13, 
+            "delivery": 8, 
+            "last_modified": "2010-08-23 12:26:03", 
+            "object_id": 9, 
             "content_type": 27, 
             "published": true
         }
