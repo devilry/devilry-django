@@ -12,19 +12,12 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li><a href='{% url devilry-student-show-assignments %}'>{% trans "Assignments" %}</a></li>
+<li><a href='{% url devilry-student-show-assignmentgroup assignment_group.id %}'>
+  {{ assignment_group }}</a></li>
 <li>::</li>
-<li><a href='{% url devilry-student-show-assignmentgroup assignment_group.id %}'>{{ assignment_group.parentnode }}</a></li>
-<li>::</li>
-
-<li>{{ assignment_group.parentnode.parentnode }}</li>
+<li>{% trans "Add delivery" %}</li>
 {% endblock %}
 
-{% block sidebar %}
-<div id='sidebar' class='assignment_group_info'>
-  {% include "devilry/student/include/assignment_group_info.django.html" %}
-</div>
-{% endblock %}
 
 {% block content %}
 
