@@ -3,10 +3,11 @@
 {% load i18n %}
 
 {% block title %} {{ assignment_group.parentnode.long_name }} {% endblock %}
-{% block heading %} {{ assignment_group.parentnode.long_name }}{% endblock %}
+{% block heading %} {{ assignment_group.parentnode.long_name }} {% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
+<li>{{ assignment_group }}</li>
 {% endblock %}
 
 {% block content %}
