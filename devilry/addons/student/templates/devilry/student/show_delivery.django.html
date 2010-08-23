@@ -7,10 +7,8 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-
-<li><a href='{% url devilry-student-show-assignments %}'>{% trans "Assignments" %}</a></li>
-<li>::</li>
-<li><a href='{% url devilry-student-show-assignmentgroup delivery.assignment_group.id %}'>{{ delivery.assignment_group.parentnode }}</a></li>
+<li><a href='{% url devilry-student-show-assignmentgroup delivery.assignment_group.id %}'>
+  {{ delivery.assignment_group }}</a></li>
 <li>::</li>
 
 <li>{{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</li>
@@ -19,11 +17,16 @@
 {% block main %}
 
 {% include "devilry/ui/include/show_delivery_default.django.html" %}
+
 {% if delivery.feedback.published %}
-  <fieldset>
-    <h2 class='legend'>{% trans "Feedback" %}</h2>
-    {% include "devilry/ui/include/show_feedback.django.html" %}
-  </fieldset>
+  {% if delivery.feedback.text.strip %}
+    <fieldset>
+      <h2 class='legend'>{% trans "Feedback" %}</h2>
+      {% include "devilry/ui/include/show_feedback.django.html" %}
+    </fieldset>
+  {% else %}
+    <p>{% blocktrans %}The examiner has not provided any feedback text.</p>{% endblocktrans %}
+  {% endif %}
 {% endif %}
 
 {% endblock %}
