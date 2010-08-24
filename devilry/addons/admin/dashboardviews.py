@@ -57,7 +57,7 @@ def list_periods(request, *args, **kwargs):
 
 def list_assignments(request, *args, **kwargs):
     return list_nodes_generic(request, Assignment,
-            headings = ["Subject", "Period", "Assignment",
+            headings = ["Assignment",
                     "Publishing time", "Administrators"],
             deletemessage = \
                 _('This will delete all selected assignments and all '\
