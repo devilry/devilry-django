@@ -26,6 +26,10 @@
       active: false,
       header: 'h4'
     });
+
+    $("#deadline-button").click(function() {
+      $("#deadline-box").show('blind');
+    });
   });
 </script>
 
@@ -66,14 +70,16 @@
 {% if not assignment_group.is_open %}
 <div class='group_closed-hint'>
   {% trans "This group is closed for deliveries. To open the group click" %} 
-  <a href="">{% trans "Open" %}</a>
+  <a href="#" id='openclosebtn'>{% trans "Open" %}</a>
 </div>
 {% endif %}
 
 {% if show_deadline_hint %}
 <div class='deadline-hint'>
 {% trans "You should create a new deadline or close for more deliveries:" %} 
-<a href="">Close group</a>
+<ul>
+  <li><a href="#" id='openclosebtn'>Close group</a></li>
+  <li><a href="#" id='deadline-button'>Create deadline</a></li>
 </div>
 {% endif %}
 
@@ -85,18 +91,20 @@
 </form>
 {% endcomment %}
 
-<fieldset class='stdfieldset'>
-  <h2 class='legend'>{% trans "Deadline" %}</h2>
-  <form action="" method="post">
-	{% with deadline_form as form %}
-    {% include "devilry/ui/include/form-list.django.html" %}
-	{% endwith %}
-	
-	<div class='button-row'>
-      <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
-	</div>
-  </form>
-</fieldset>
+<div id="deadline-box" style='display:none;'>
+  <fieldset class='stdfieldset'>
+    <h2 class='legend'>{% trans "Deadline" %}</h2>
+    <form action="" method="post">
+    {% with deadline_form as form %}
+      {% include "devilry/ui/include/form-list.django.html" %}
+    {% endwith %}
+    
+    <div class='button-row'>
+        <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
+    </div>
+    </form>
+  </fieldset>
+</div>
 
 
 {% if assignment_group.get_number_of_deliveries > 0 %}

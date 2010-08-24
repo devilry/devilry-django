@@ -64,6 +64,4 @@ def list_assignments(request, *args, **kwargs):
                 'assignment groups, deliveries and feedbacks within '\
                 'them.'),
             help_text = \
-                 _('A assignment within a period, that students or groups '\
-                 'of students solve, and examiners or groups of '\
-                 'examiners correct.'))
+                 _('A assignment within a period.'))

@@ -166,6 +166,16 @@ body {
 	padding: 0;
 }
 
+#messages ul ul {
+	list-style: disc outside none;
+	margin-left: 40px;
+	padding: 0;
+}
+#messages ul ul li {
+	padding: 2px;
+	margin: 0;
+}
+
 #messages li {
 	padding: 5px;
 	font-size: 0.8em;
@@ -543,8 +553,8 @@ input.autocomplete-list {
 }
 
 .deadline-hint {
-	border: 1px solid #aa0000;
-	background-color: #6960EC;
+	border: 1px solid #315C00;
+	background-color: #BFFF75;
 	padding: 5px;
 }
 

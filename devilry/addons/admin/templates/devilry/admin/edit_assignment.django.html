@@ -93,6 +93,10 @@
             setexaminers: {
               label: "{% trans "Set examiners" %}",
               url: "{% url devilry-admin-set_examiners assignment.id %}"
+            },
+            random_dist_examiners: {
+              label: "{% trans "Randomly distribute examiners" %}",
+              url: "{% url devilry-admin-random_dist_examiners assignment.id %}"
             }
           }
 //          filters: {
