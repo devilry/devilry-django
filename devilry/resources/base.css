@@ -474,6 +474,12 @@ table.xmlrpc-function-constraints li {
 #dashboard-normal .dashboarditem-body a{
 	color: #555;
 }
+#dashboard-normal .ui-button-text {
+	color: #555;
+}
+#dashboard-normal .delete .ui-button-text {
+	color: #a44;
+}
 #dashboard-normal .buttonbar,
 #dashboard-important .buttonbar {
 	margin-top: 10px;
