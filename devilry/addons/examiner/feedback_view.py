@@ -31,8 +31,8 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
 
 def redirect_after_successful_save(delivery_obj):
     return HttpResponseRedirect(
-            reverse('devilry-examiner-correct_delivery',
-                args=(delivery_obj.id,)))
+            reverse('devilry-examiner-show_assignmentgroup',
+                args=(delivery_obj.assignment_group.id,)))
 
 def render_response(request, delivery_obj, feedback_form, grade_form,
         template_path='devilry/examiner/correct_delivery.django.html'):

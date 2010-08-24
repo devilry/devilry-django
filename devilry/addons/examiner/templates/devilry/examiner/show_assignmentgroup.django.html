@@ -92,37 +92,47 @@
 </fieldset>
 
 
-
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>
 
-  {% if after_deadline %}
-    {% with "yes" as after_last_deadline_msg %}
-      <div class='deadline-box deadline-box-after'>
-        <h3>{% trans "After last deadline" %}</h3>
-        <div class="accordion">
-        {% for delivery in after_deadline %}
-          {% include "devilry/examiner/include/deliverylisting.django.html" %}
-        {% endfor %}
-        </div>
-      </div>
-    {% endwith %}
-  {% endif %}
+  {% if ungrouped_deliveries %} 
+        <div class='deadline-box'>
+          <h3>{% trans "Deliveries" %}</h3>
+          <div class="accordion">
+			{% for delivery in ungrouped_deliveries %}
+			  {% include "devilry/examiner/include/deliverylisting.django.html" %}
+			{% endfor %}
+          </div>
+		</div>
+  {% else %}
+    {% if after_deadline %}
+      {% with "yes" as after_last_deadline_msg %}
+        <div class='deadline-box deadline-box-after'>
+          <h3>{% trans "After last deadline" %}</h3>
+          <div class="accordion">
+			{% for delivery in after_deadline %}
+			{% include "devilry/examiner/include/deliverylisting.django.html" %}
+			{% endfor %}
+          </div>
+		</div>
+      {% endwith %}
+	{% endif %}
 
-  {% for deadline, deliveries in within_a_deadline %}
-    <div class='deadline-box'>
-      <h3>
-        {% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
-          {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
-        {% endwith %}
-      </h3>
-      <div class="accordion">
-        {% for delivery in deliveries %}
-          {% include "devilry/examiner/include/deliverylisting.django.html" %}
-        {% endfor %}
-      </div>
-    </div>
-  {% endfor %}
+    {% for deadline, deliveries in within_a_deadline %}
+		<div class='deadline-box'>
+		  <h3>
+			{% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
+			{% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
+			{% endwith %}
+		  </h3>
+		  <div class="accordion">
+			{% for delivery in deliveries %}
+			{% include "devilry/examiner/include/deliverylisting.django.html" %}
+			{% endfor %}
+		  </div>
+		</div>
+    {% endfor %}
+  {% endif %}
 {% endif %}
 
 
