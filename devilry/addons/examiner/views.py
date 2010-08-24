@@ -21,8 +21,8 @@ class DeadlineForm(forms.ModelForm):
     is_open = forms.BooleanField(required=False,
                                  initial=False,
                                  label='Is open')
-    #deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
-    deadline = forms.DateTimeField(required=False)
+    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
+    #deadline = forms.DateTimeField(required=False)
     text = forms.CharField(required=False,
                            widget=forms.Textarea(attrs=dict(rows=5, cols=30)))
     
@@ -63,7 +63,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
 
         print "data:", request.POST['create-deadline']
         print "errors:", form.errors 
-        return None
+        #return None
 
     after_deadline = []
     within_a_deadline = []
