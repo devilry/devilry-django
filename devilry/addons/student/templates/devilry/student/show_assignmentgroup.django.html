@@ -3,13 +3,16 @@
 {% load i18n %}
 
 {% block title %} {{ assignment_group.parentnode.long_name }} {% endblock %}
-{% block heading %} {{ assignment_group.parentnode.long_name }}{% endblock %}
+{% block heading %} {{ assignment_group.parentnode.long_name }} {% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
+<li>{{ assignment_group }}</li>
 {% endblock %}
 
 {% block content %}
+
+
 
 <table class='vertical_infotable'>
   <tr>
@@ -40,21 +43,20 @@
   {% if assignment_group.get_grade_as_short_string %}
   <tr>
     <th>{% trans "Grade" %}:</th>
-    <td>{{ assignment_group.get_grade_as_short_string }}</td>
+    <td>
+      {{ assignment_group.get_grade_as_short_string }}
+      &nbsp;&nbsp;(<a href="{% url devilry-student-show-delivery assignment_group.get_latest_delivery.id %}">
+        {% trans "Show feedback" %}
+      </a>)
+    </td>
   </tr> 
   {% endif %}
-
-  {% if assignment_group.students.count > 1 %}
-    <tr>
-      <th>{% trans "Group members" %}:</th>
-      <td>{{ assignment_group.students.all|join:", " }} </td>
-    </tr>
-  {% endif %}
-
 </table>
 
 
-<h2>Deliveries</h2>
+<h2>{% trans "Deliveries" %}</h2>
+<p>{% blocktrans %}Current deliveries, with the latest delivery first. You can
+add as many deliveries as you like.{% endblocktrans %}</p>
 {% if assignment_group.deliveries.all.count == 0 %}
   <p>{% trans "No deliveries" %}</p>
 {% else %}

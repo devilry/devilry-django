@@ -975,7 +975,8 @@ class AssignmentGroup(models.Model, CommonInterface):
         if self.deliveries.all().count() == 0:
             return _('No deliveries')
         else:
-            qry = self.deliveries.filter(feedback__isnull=False)
+            qry = self.deliveries.filter(
+                    feedback__published=True)
             if qry.count() == 0:
                 return _('Not corrected')
             else:

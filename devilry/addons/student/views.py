@@ -21,16 +21,6 @@ class UploadFileForm(forms.Form):
 UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
 
-@login_required
-def add_delivery_choose_assignment(request):
-    active_assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
-    subjects = group_assignmentgroups(active_assignment_groups)
-
-    return render_to_response('devilry/student/add_delivery_choose_assignment.django.html', {
-            'subjects': subjects,
-            'urlname': 'devilry-student-add_delivery',
-            }, context_instance=RequestContext(request))
-
 
 @login_required
 @transaction.autocommit
@@ -64,26 +54,6 @@ def successful_delivery(request, assignment_group_id):
     #return add_delivery(request, assignment_group_id, messages)
     return show_assignmentgroup(request, assignment_group_id, messages)
 
-
-@login_required
-def show_assignments(request):
-    assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
-    subjects = group_assignmentgroups(assignment_groups)
-    old_assignment_groups = AssignmentGroup.old_where_is_candidate(request.user)
-    old_subjects = group_assignmentgroups(old_assignment_groups)
-    return render_to_response('devilry/student/dashboard/show_assignments.django.html', {
-            'subjects': subjects,
-            'old_subjects': old_subjects,
-            }, context_instance=RequestContext(request))
-
-@login_required
-def show_history(request):
-    old_assignment_groups = AssignmentGroup.published_where_is_candidate(request.user)
-    subjects = group_assignmentgroups(old_assignment_groups)
-
-    return render_to_response('devilry/student/show-history.django.html', {
-            'subjects': subjects,
-            }, context_instance=RequestContext(request))
 
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id, messages=None):
