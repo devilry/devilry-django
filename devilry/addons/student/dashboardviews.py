@@ -1,13 +1,10 @@
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
 
-from django.contrib.auth.decorators import login_required
-from devilry.core.models import Delivery, AssignmentGroup
-from devilry.core.utils.GroupNodes import group_assignmentgroups, print_tree
+from devilry.core.models import AssignmentGroup
+from devilry.core.utils.GroupNodes import group_assignmentgroups
 
-@login_required
+
 def list_assignments(request, *args, **kwargs):
     assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
     subjects = group_assignmentgroups(assignment_groups)

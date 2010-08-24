@@ -569,6 +569,18 @@ class Assignment(models.Model, BaseNode):
         """ Get the filenames as a list of strings. """
         return self.filenames.split()
 
+
+    def validate_filenames(self, filenames):
+        """ Raise ValueError unless each filename in the iterable
+        ``filenames`` is one of the filenames on this assignment. Nothing is
+        done if :attr:`filenames` is not set, or set to a empty string. """
+        if self.filenames:
+            valid = self.get_filenames()
+            for filename in filenames:
+                if not filename in valid:
+                    raise ValueError(_("Invalid filename: %(filename)s." %
+                        dict(filename=filename)))
+
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Returns a QuerySet matching all Assignments where the given user is admin.
