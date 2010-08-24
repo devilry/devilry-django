@@ -478,6 +478,12 @@ table.xmlrpc-function-constraints li {
 #dashboard-important .buttonbar {
 	margin-top: 10px;
 }
+#dashboard-normal .dashboarditem .dashboard-help-box,
+#dashboard-important .dashboarditem .dashboard-help-box {
+	margin-bottom: 10px;
+	font-size: 0.8em;
+	color: #456;
+}
 
 
 /*******************************
