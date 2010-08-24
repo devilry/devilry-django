@@ -74,6 +74,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
         
     after_deadline = []
     within_a_deadline = []
+    ungrouped_deliveries = []
     deadlines = assignment_group.deadlines.all().order_by('deadline')
     show_deadline_hint = False
     if deadlines.count() > 0:
@@ -105,12 +106,16 @@ def show_assignmentgroup(request, assignmentgroup_id):
 
         if not assignment_group.is_open:
             show_deadline_hint = False
-       
+    else:
+        ungrouped_deliveries = assignment_group.deliveries.order_by('time_of_delivery')
+
+
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
                 'after_deadline': after_deadline,
                 'within_a_deadline': within_a_deadline,
+                'ungrouped_deliveries': ungrouped_deliveries,
                 'deadline_form': deadline_form,
                 'show_deadline_hint': show_deadline_hint,
             }, context_instance=RequestContext(request))
