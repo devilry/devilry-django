@@ -13,3 +13,11 @@ registry.register_important(DashboardItem(
          js = [settings.DEVILRY_RESOURCES_URL +
              '/ui/js/jquery.autocompletetable.js']
 ))
+
+registry.register_important(DashboardItem(
+         title = _('Assignments'),
+         examiner_access = True,
+         view = dashboardviews.list_assignments,
+         js = [settings.DEVILRY_RESOURCES_URL +
+             '/ui/js/jquery.autocompletetable.js']
+))

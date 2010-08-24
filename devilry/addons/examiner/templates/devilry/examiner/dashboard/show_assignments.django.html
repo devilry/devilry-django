@@ -1,0 +1,14 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+
+{% for subject in subjects %}
+  {% for period in subject %}
+    <h3>{{ subject }} - {{ period }}</h3>
+    <ul>
+      {% for assignment in period %}
+        <li><a href='{% url devilry-examiner-list_assignmentgroups assignment.node.id %}'>{{ assignment }}</a> </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endfor %}
