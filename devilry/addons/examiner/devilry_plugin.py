@@ -6,13 +6,13 @@ from devilry.addons.dashboard.dashboardplugin_registry import registry, \
 import dashboardviews
 
 
-registry.register_important(DashboardItem(
-         title = _('Assignment groups'),
-         examiner_access = True,
-         view = dashboardviews.list_assignmentgroups,
-         js = [settings.DEVILRY_RESOURCES_URL +
-             '/ui/js/jquery.autocompletetable.js']
-))
+#registry.register_important(DashboardItem(
+         #title = _('Assignment groups'),
+         #examiner_access = True,
+         #view = dashboardviews.list_assignmentgroups,
+         #js = [settings.DEVILRY_RESOURCES_URL +
+             #'/ui/js/jquery.autocompletetable.js']
+#))
 
 registry.register_important(DashboardItem(
          title = _('Assignments'),
