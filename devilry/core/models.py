@@ -1049,6 +1049,26 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.is_open and self.parentnode.parentnode.is_active()
 
 
+    def get_active_deadline(self):
+        """ Get the active deadline. Checked id the following order:
+            
+            1. None if no deadline is set.
+            2. First deadline after current date/time.
+            3. Previous deadline before current date/time.
+        """
+        if self.deadlines.all().count() == 0:
+            return None
+        now = datetime.now()
+        d = self.deadlines.filter(
+                deadline__gt=now).order_by('deadline')
+        if d.count() == 0:
+            d = self.deadlines.filter(
+                    deadline__lt=now).order_by('-deadline')
+            return d[0]
+        else:
+            return d[0]
+
+
 class Deadline(models.Model):
     """
     .. attribute:: assignment_group
@@ -1096,6 +1116,10 @@ class Deadline(models.Model):
 
     def __unicode__(self):
         return unicode(self.deadline)
+
+    def is_old(self):
+        """ Return True if :attr:`deadline` is in the past. """
+        return self.deadline < datetime.now()
 
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
