@@ -18,8 +18,9 @@ def node_json_generic(request, nodecls, editurl_callback, qrycallback,
 
     nodes = nodecls.where_is_admin_or_superadmin(request.user)
     if term != '':
-        nodes = nodes.filter(
-                qrycallback(term)).distinct()
+        terms = term.split("AND")
+        filters = [qrycallback(t.strip()) for t in terms]
+        nodes = nodes.filter(*filters).distinct()
     nodes = nodes.order_by(*order_by)
     allcount = nodes.count()
 
@@ -86,9 +87,7 @@ def assignment_json(request):
                 | Q(parentnode__parentnode__short_name__istartswith=t)
                 | Q(parentnode__parentnode__parentnode__short_name__istartswith=t),
             pathcallback = lambda a: [
-                    a.parentnode.parentnode.short_name,
-                    a.parentnode.short_name,
-                    a.short_name,
+                    a.get_path(),
                     a.publishing_time.strftime(defaults.DATETIME_FORMAT),
                     a.get_admins()],
             order_by = ['-publishing_time'])
