@@ -126,9 +126,15 @@
 			{% endwith %}
 		  </h3>
 		  <div class="accordion">
-			{% for delivery in deliveries %}
-			{% include "devilry/examiner/include/deliverylisting.django.html" %}
-			{% endfor %}
+			{% if not  deliveries %}
+			<div class='no-deliveries'>
+			  {% trans "No deliveries on this deadline" %}
+			</div>
+			{% else %}
+			  {% for delivery in deliveries %}
+			    {% include "devilry/examiner/include/deliverylisting.django.html" %}
+			  {% endfor %}
+			{% endif %}
 		  </div>
 		</div>
     {% endfor %}
