@@ -40,8 +40,8 @@
     <td>{{ assignment_group.get_status }}</td>
   </tr>
   <tr>
-    <th>{% trans "Published deliveries" %}:</th>
-    <td>{{ assignment_group.get_published_deliveries.count }}</td>
+    <th>{% trans "Published feedbacks" %}:</th>
+    <td>{{ assignment_group.get_deliveries_with_published_feedback.count }}</td>
   </tr>
 
   {% if assignment_group.get_grade_as_short_string %}
@@ -72,8 +72,8 @@
 
 {% if show_deadline_hint %}
 <div class='deadline-hint'>
-{% trans "You should create a new deadline or close for more deliveries" %} 
-<a href="">Close group for more deliveries</a>
+{% trans "You should create a new deadline or close for more deliveries:" %} 
+<a href="">Close group</a>
 </div>
 {% endif %}
 
