@@ -63,6 +63,12 @@
   </tr> 
 </table>
 
+{% if show_deadline_hint %}
+<div class='deadline-hint'>
+{% trans "You should create a new deadline or close for more deliveries" %}
+</div>
+
+{% endif %}
 
 {% comment %}
 <form action="" method="post">
@@ -74,10 +80,11 @@
 
 <fieldset class='stdfieldset'>
   <h2 class='legend'>{% trans "Deadline" %}</h2>
-  {% with deadline_form as form %}
-    {% include "devilry/ui/include/form-list.django.html" %}
-  {% endwith %}
   <form action="" method="post">
+	{% with deadline_form as form %}
+    {% include "devilry/ui/include/form-list.django.html" %}
+	{% endwith %}
+	
 	<div class='button-row'>
       <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
 	</div>

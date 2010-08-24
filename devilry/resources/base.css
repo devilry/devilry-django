@@ -524,6 +524,12 @@ input.autocomplete-list {
 	margin: 5px 0 10px 0;
 }
 
+.deadline-hint {
+	border: 1px solid #aa0000;
+	background-color: #6960EC;
+	padding: 5px;
+}
+
 /*.deadline-box-after {*/
 	/*border: 1px solid #aa0000;*/
 	/*background-color: #dd0000;*/
