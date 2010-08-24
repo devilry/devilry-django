@@ -1,0 +1,54 @@
+{% extends "devilry/admin/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+	{% trans "Set examiners" %}
+{% endblock %}
+{% block heading %}
+	{% trans "Set examiners" %}
+{% endblock %}
+
+
+{% block admin-breadcrumbs %}
+  {{ block.super }}
+  <li>
+    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
+      {{ assignment.get_path }}</a>
+  </li>
+  <li>::</li>
+  <li>
+		{% trans "Set examiners" %}
+  </li>
+{% endblock %}
+
+{% block main %}
+
+{% if message %}
+	<p>{{ message }}</p>
+{% endif %}
+
+<form method='post' action='{% url devilry-admin-random_dist_examiners assignment.id %}'>
+	<input type='hidden' name='onsite' value='yes'/>
+
+	{% for key, group in groups %}
+	  <input type='hidden' name='{{ key }}' value='{{ group.id }}'/>
+	{% endfor %}
+
+	<h2>Randomly distribute the following examiners:</h2>
+  <fieldset class='stdfieldset'>
+    {% include "devilry/ui/include/form-list.django.html" %}
+  </fieldset>
+
+	<h2>... on the following groups:</h2>
+	<ul>
+	{% for key, group in groups %}
+	  <li>{{ group.get_students }}</li>
+	{% endfor %}
+	</ul>
+
+  <div class='button-row'>
+    <input type='submit' name='save' class='button' value='{% trans "Randomly distribute examiners" %}'/>
+  </div>
+</form>
+{% endblock %}

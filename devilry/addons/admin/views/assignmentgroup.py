@@ -1,3 +1,4 @@
+from random import randint
 import re
 from datetime import datetime
 
@@ -287,14 +288,10 @@ def _groups_from_filtertable(request):
 
 
 @login_required
-def set_examiners(request, assignment_id, success=False):
+def set_examiners(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
         return HttpResponseForbidden("Forbidden")
-
-    if success:
-        return render_to_response('devilry/admin/set-examiners.django.html', {
-                }, context_instance=RequestContext(request))
 
     class ExaminerForm(forms.Form):
         users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
@@ -323,6 +320,82 @@ def set_examiners(request, assignment_id, success=False):
             form = ExaminerForm()
 
         return render_to_response('devilry/admin/set-examiners.django.html', {
+                'form': form,
+                'assignment': assignment,
+                'groups': groups
+                }, context_instance=RequestContext(request))
+    else:
+        return HttpResponseBadRequest()
+
+
+
+def random_distribute_examiners(assignment, assignmentgroups, examiners):
+    assignments_per_examiner = len(assignmentgroups) / len(examiners)
+    result = {}
+    for examiner in examiners:
+        groups = []
+        for x in xrange(assignments_per_examiner):
+            r = randint(0, len(assignmentgroups)-1)
+            group = assignmentgroups[r]
+            del assignmentgroups[r]
+            groups.append(group)
+            group.examiners.clear()
+            group.examiners.add(examiner)
+        result[examiner.username] = groups
+    if len(assignmentgroups) > 0:
+        # Distribute the rest, if assignmentgroups is not dividable on
+        # examiners
+        for group in assignmentgroups:
+            r = randint(0, len(examiners)-1)
+            examiner = examiners[r]
+            del examiners[r]
+            result[examiner.username].append(group)
+            group.examiners.add(examiner)
+    return result
+
+@login_required
+def random_dist_examiners(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+
+    class ExaminerForm(forms.Form):
+        users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
+                required=True)
+    if request.method == 'POST':
+        try:
+            groups = _groups_from_filtertable(request)
+        except GroupCountError, e:
+            return e.get_response(assignment_id)
+
+        if 'onsite' in request.POST:
+            form = ExaminerForm(request.POST)
+            if form.is_valid():
+                examiner_ids = MultiSelectCharField.from_string(
+                        form.cleaned_data['users'])
+                groupobjs = [group for key, group in groups]
+                examinerobjs = [User.objects.get(id=id)
+                        for id in examiner_ids]
+                result = random_distribute_examiners(assignment, groupobjs,
+                        examinerobjs)
+                m = ['<p>', _('Examiners successfully random distributed.'), '</p>']
+                for examiner, assignmentgroups in result.iteritems():
+                    print examiner, [g.get_candidates() for g in
+                            assignmentgroups]
+                    m.append('%s:<ul>%s</ul>' % (
+                            examiner,
+                            '\n'.join(['<li>%s</li>' % g.get_candidates()
+                                for g in assignmentgroups])))
+                messages = UiMessages()
+                messages.add_success('\n'.join(m), raw_html=True)
+                messages.save(request)
+                return HttpResponseRedirect(reverse(
+                    'devilry-admin-edit_assignment',
+                    args=[assignment_id]))
+        else:
+            form = ExaminerForm()
+
+        return render_to_response('devilry/admin/random-dist-examiners.django.html', {
                 'form': form,
                 'assignment': assignment,
                 'groups': groups
