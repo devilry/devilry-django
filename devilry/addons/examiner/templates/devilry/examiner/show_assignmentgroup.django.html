@@ -63,11 +63,18 @@
   </tr> 
 </table>
 
+{% if not assignment_group.is_open %}
+<div class='group_closed-hint'>
+  {% trans "This group is closed for deliveries. To open the group click" %} 
+  <a href="">{% trans "Open" %}</a>
+</div>
+{% endif %}
+
 {% if show_deadline_hint %}
 <div class='deadline-hint'>
-{% trans "You should create a new deadline or close for more deliveries" %}
+{% trans "You should create a new deadline or close for more deliveries" %} 
+<a href="">Close group for more deliveries</a>
 </div>
-
 {% endif %}
 
 {% comment %}

@@ -16,11 +16,9 @@ from devilry.addons.dashboard import defaults
 from django import forms
 from devilry.ui.widgets import DevilryDateTimeWidget
 from django.forms.models import inlineformset_factory, formset_factory
+from devilry.ui.messages import UiMessages
 
 class DeadlineForm(forms.ModelForm):
-    is_open = forms.BooleanField(required=False,
-                                 initial=False,
-                                 label='Is open')
     deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
     #deadline = forms.DateTimeField(required=False)
     text = forms.CharField(required=False,
@@ -117,6 +115,9 @@ def show_assignmentgroup(request, assignmentgroup_id):
     if not assignment_group.is_open:
         show_deadline_hint = False
 
+    messages = UiMessages()
+    messages.load(request)
+    
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
@@ -125,6 +126,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
                 'ungrouped_deliveries': ungrouped_deliveries,
                 'deadline_form': deadline_form,
                 'show_deadline_hint': show_deadline_hint,
+                'messages': messages,
             }, context_instance=RequestContext(request))
 
 @login_required

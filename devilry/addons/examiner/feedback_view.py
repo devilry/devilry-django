@@ -7,6 +7,8 @@ from django import forms
 from devilry.core.models import Feedback
 from devilry.ui.widgets import RstEditWidget
 
+from devilry.ui.messages import UiMessages
+from django.utils.translation import ugettext as _
 
 class FeedbackForm(forms.ModelForm):
     """ A ModelForm for the :class:`devilry.core.models.Feedback`-class. """
@@ -29,7 +31,13 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
     else:
         return FeedbackForm(instance=feedback_obj, prefix=prefix)
 
-def redirect_after_successful_save(delivery_obj):
+def redirect_after_successful_save(request, delivery_obj):
+    if not delivery_obj.feedback.published:
+        print "Not publishd"
+        messages = UiMessages()
+        messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
+        messages.save(request)
+    
     return HttpResponseRedirect(
             reverse('devilry-examiner-show_assignmentgroup',
                 args=(delivery_obj.assignment_group.id,)))
@@ -71,7 +79,7 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
             grade_form.save()
             feedback_form.instance.grade = grade_form.instance
             feedback_form.save()
-            return redirect_after_successful_save(delivery_obj)
+            return redirect_after_successful_save(request, delivery_obj)
 
     return render_response(request, delivery_obj,
             feedback_form, grade_form)
