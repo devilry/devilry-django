@@ -17,13 +17,18 @@ class DeadlineForm(forms.ModelForm):
     is_open = forms.BooleanField(required=False,
                                  initial=False,
                                  label='Is open')
-    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
+    #deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
+    deadline = forms.DateTimeField(required=False)
     text = forms.CharField(required=False,
-                           widget=forms.Textarea(attrs=dict(rows=5, cols=50)))
+                           widget=forms.Textarea(attrs=dict(rows=5, cols=30)))
     
     class Meta:
         model = Deadline
         fields = ['deadline', 'text']
+
+    def clean(self):
+        print "Deadlineform clean"
+        return self.cleaned_data
 
 @login_required
 def list_assignmentgroups(request, assignment_id):
@@ -36,13 +41,25 @@ def list_assignmentgroups(request, assignment_id):
                 'assignment': assignment,
             }, context_instance=RequestContext(request))
 
+
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
 
+    if 'create-deadline' in request.POST:
+        form = DeadlineForm(request.POST)
+        if form.is_valid():
+            print "valid"
+            print "data:", form.cleaned_data
+            print "Create deadline pressed"
+        else:
+            print "invalid"
 
+        print "data:", request.POST['create-deadline']
+        print "errors:", form.errors 
+        
     after_deadline = []
     within_a_deadline = []
     deadlines = assignment_group.deadlines.all().order_by('deadline')

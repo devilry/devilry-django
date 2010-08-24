@@ -65,9 +65,12 @@
 
 {{ deadline_form }}
 
+<form action="" method="post">
 <div class='button-row'>
-    <input type='submit' name='save' class='button' value='{% trans "Create deadline" %}'/>
+    <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
 </div>
+</form>
+
 
 {% if assignment_group.get_number_of_deliveries > 0 %}
   <h2>{% trans "Deliveries" %}</h2>
