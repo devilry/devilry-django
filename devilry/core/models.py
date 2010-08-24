@@ -1009,7 +1009,7 @@ class AssignmentGroup(models.Model, CommonInterface):
 
     def get_grade_as_short_string(self):
         """ Get the grade  """
-        q = self.get_published_deliveries().order_by('-time_of_delivery')
+        q = self.get_deliveries_with_published_feedback().order_by('-time_of_delivery')
         if q.count() > 0:
             return q[0].feedback.get_grade_as_short_string()
         else:
@@ -1019,7 +1019,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Get the number of deliveries by this assignment group. """
         return self.deliveries.all().count()
 
-    def get_published_deliveries(self):
+    def get_deliveries_with_published_feedback(self):
         """
         Get the the deliveries by this assignment group which have
         published feedback.
