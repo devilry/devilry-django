@@ -560,3 +560,7 @@ input.autocomplete-list {
 	margin-left: 0;
 	padding-left: 25px;
 }
+.old-deadline {
+	color: #a00;
+	font-style: italic;
+}

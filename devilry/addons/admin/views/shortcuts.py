@@ -7,7 +7,13 @@ from django.utils.translation import ugettext as _
 from devilry.ui.messages import UiMessages
 
 
-admins_help_text = _('Comma-separated list of administrators.')
+admins_help_text = _('Comma-separated list of administrators. Just start '\
+        'typing a username, and you will get a dropdown of matching names. ' \
+        'Administrator rights are inherited from the ' \
+        'parentnode, and any parentnode higher up in the hierarchy. ' \
+        'Administrators have full access, so you should be careful ' \
+        'about who you give this '
+        'privilege.')
 
 
 def iter_filtertable_selected(postdata, clsname):

@@ -33,7 +33,12 @@
   </tr>
   <tr>
     <th>{% trans "Deadline" %}:</th>
-    <td>{{ assignment_group.parentnode.deadline }}</td>
+    <td>
+      {{ assignment_group.get_active_deadline }}
+      {% if assignment_group.get_active_deadline.is_old %}
+        <span class='old-deadline'>({% trans "Deadline is in the past" %})</span>
+      {% endif %}
+    </td>
   </tr>
   <tr>
     <th>{% trans "Status" %}:</th>

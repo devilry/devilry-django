@@ -32,17 +32,25 @@
 <table class='horizontal_ordered_table'>
   <thead>
     <tr>
+      <th>{% trans "Group id" %}</th>
       <th>{% trans "Group members" %}</th>
       <th>{% trans "Deliveries" %}</th>
+      <th>{% trans "Latest delivery" %}</th>
+      <th>{% trans "Status" %}</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
     {% for assignment_group in assignment_groups %}
       <tr>
-        <td><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.id %}'>
-          {{ assignment_group.get_students }}
-        </a></td>
+        <td>{{ assignment_group.id }}</td>
+        <td>{{ assignment_group.get_students }}</td>
         <td>{{ assignment_group.get_number_of_deliveries }}</td>
+        <td>{{ assignment_group.get_latest_delivery.time_of_delivery }}</td>
+        <td>{{ assignment_group.get_status}}</td>
+        <td><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.id %}'>
+          {% trans "Show" %}
+        </a></td>
       </tr>
     {% endfor %}
   </tbody>
