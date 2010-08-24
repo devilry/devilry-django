@@ -45,6 +45,8 @@ def list_assignmentgroups(request, assignment_id):
                 'assignment': assignment,
             }, context_instance=RequestContext(request))
 
+from django.http import HttpResponseRedirect, HttpResponseForbidden, \
+        HttpResponseBadRequest
 
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
@@ -53,21 +55,27 @@ def show_assignmentgroup(request, assignmentgroup_id):
         return HttpResponseForbidden("Forbidden")
 
     if 'create-deadline' in request.POST:
-        form = DeadlineForm(request.POST)
-        if form.is_valid():
-            print "valid"
-            print "data:", form.cleaned_data
-            print "Create deadline pressed"
+        deadline = Deadline()
+        deadline.assignment_group = assignment_group
+        deadline_form = DeadlineForm(request.POST, instance=deadline)
+
+        if deadline_form.is_valid():
+            deadline.save()
+            print "Saved for assignment group ", assignment_group
+            return HttpResponseRedirect(reverse(
+                    'devilry-examiner-show_assignmentgroup',
+                    args=[assignmentgroup_id]))
         else:
             print "invalid"
-
-        print "data:", request.POST['create-deadline']
-        print "errors:", form.errors 
-        #return None
-
+            print "errors:", deadline_form.errors
+            
+    else:
+        deadline_form = DeadlineForm()
+        
     after_deadline = []
     within_a_deadline = []
     deadlines = assignment_group.deadlines.all().order_by('deadline')
+    show_deadline_hint = False
     if deadlines.count() > 0:
         last_deadline = deadlines[deadlines.count()-1]
         after_deadline = assignment_group.deliveries.filter(
@@ -86,16 +94,25 @@ def show_assignmentgroup(request, assignmentgroup_id):
             deliveries.insert(0, delivery)
         within_a_deadline.append((deadline, deliveries))
         within_a_deadline.reverse()
+        
+        # Testing if any published deliveries on last deadline
+        tmp = list(within_a_deadline[0][1])
+        tmp.extend(list(after_deadline))
+        for d in tmp:
+            if d.get_feedback().published:
+                show_deadline_hint = True
+                break
 
-    #DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
-    #                                        extra=0, form=DeadlineForm)
-    deadline_form = DeadlineForm()
+        if not assignment_group.is_open:
+            show_deadline_hint = False
+       
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
                 'after_deadline': after_deadline,
                 'within_a_deadline': within_a_deadline,
                 'deadline_form': deadline_form,
+                'show_deadline_hint': show_deadline_hint,
             }, context_instance=RequestContext(request))
 
 @login_required
