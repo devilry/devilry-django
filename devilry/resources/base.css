@@ -546,6 +546,12 @@ input.autocomplete-list {
 	margin: 5px 0 10px 0;
 }
 
+.group_closed-hint {
+	border: 1px solid #aa0000;
+	background-color: #6960EC;
+	padding: 5px;
+}
+
 .deadline-hint {
 	border: 1px solid #aa0000;
 	background-color: #6960EC;
@@ -563,6 +569,12 @@ input.autocomplete-list {
 }
 .delivery_published_msg {
 	color: green;
+	font-style: italic;
+	font-weight: normal;
+}
+
+.delivery_unpublished_msg {
+	color: red;
 	font-style: italic;
 	font-weight: normal;
 }

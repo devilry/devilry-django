@@ -40,8 +40,8 @@
     <td>{{ assignment_group.get_status }}</td>
   </tr>
   <tr>
-    <th>{% trans "Published deliveries" %}:</th>
-    <td>{{ assignment_group.get_published_deliveries.count }}</td>
+    <th>{% trans "Published feedbacks" %}:</th>
+    <td>{{ assignment_group.get_deliveries_with_published_feedback.count }}</td>
   </tr>
 
   {% if assignment_group.get_grade_as_short_string %}
@@ -63,11 +63,18 @@
   </tr> 
 </table>
 
+{% if not assignment_group.is_open %}
+<div class='group_closed-hint'>
+  {% trans "This group is closed for deliveries. To open the group click" %} 
+  <a href="">{% trans "Open" %}</a>
+</div>
+{% endif %}
+
 {% if show_deadline_hint %}
 <div class='deadline-hint'>
-{% trans "You should create a new deadline or close for more deliveries" %}
+{% trans "You should create a new deadline or close for more deliveries:" %} 
+<a href="">Close group</a>
 </div>
-
 {% endif %}
 
 {% comment %}
@@ -126,9 +133,15 @@
 			{% endwith %}
 		  </h3>
 		  <div class="accordion">
-			{% for delivery in deliveries %}
-			{% include "devilry/examiner/include/deliverylisting.django.html" %}
-			{% endfor %}
+			{% if not  deliveries %}
+			<div class='no-deliveries'>
+			  {% trans "No deliveries on this deadline" %}
+			</div>
+			{% else %}
+			  {% for delivery in deliveries %}
+			    {% include "devilry/examiner/include/deliverylisting.django.html" %}
+			  {% endfor %}
+			{% endif %}
 		  </div>
 		</div>
     {% endfor %}
