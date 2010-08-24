@@ -63,7 +63,8 @@ def show_assignmentgroup(request, assignmentgroup_id):
 
         print "data:", request.POST['create-deadline']
         print "errors:", form.errors 
-        
+        return None
+
     after_deadline = []
     within_a_deadline = []
     deadlines = assignment_group.deadlines.all().order_by('deadline')

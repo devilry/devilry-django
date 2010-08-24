@@ -77,9 +77,11 @@
   {% with deadline_form as form %}
     {% include "devilry/ui/include/form-list.django.html" %}
   {% endwith %}
-  <div class='button-row'>
-    <input type='submit' name='save' class='button' value='{% trans "Create deadline" %}'/>
-  </div>
+  <form action="" method="post">
+	<div class='button-row'>
+      <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
+	</div>
+  </form>
 </fieldset>
 
 
