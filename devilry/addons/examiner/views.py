@@ -68,13 +68,13 @@ def show_assignmentgroup(request, assignmentgroup_id):
         else:
             print "invalid"
             print "errors:", deadline_form.errors
-            
     else:
         deadline_form = DeadlineForm()
         
     after_deadline = []
     within_a_deadline = []
     ungrouped_deliveries = []
+    tmp_deliveries = []
     deadlines = assignment_group.deadlines.all().order_by('deadline')
     show_deadline_hint = False
     if deadlines.count() > 0:
@@ -85,8 +85,9 @@ def show_assignmentgroup(request, assignmentgroup_id):
         deliveries = []
         deadlineindex = 0
         deadline = deadlines[deadlineindex]
-        for delivery in assignment_group.deliveries.filter(
-                time_of_delivery__lt = last_deadline).order_by('time_of_delivery'):
+        deliveries_all = assignment_group.deliveries.filter(
+                time_of_delivery__lt = last_deadline).order_by('time_of_delivery')
+        for delivery in deliveries_all:
             if delivery.time_of_delivery > deadline.deadline:
                 within_a_deadline.append((deadline, deliveries))
                 deliveries = []
@@ -94,21 +95,27 @@ def show_assignmentgroup(request, assignmentgroup_id):
                 deadline = deadlines[deadlineindex]
             deliveries.insert(0, delivery)
         within_a_deadline.append((deadline, deliveries))
-        within_a_deadline.reverse()
-        
-        # Testing if any published deliveries on last deadline
-        tmp = list(within_a_deadline[0][1])
-        tmp.extend(list(after_deadline))
-        for d in tmp:
-            if d.get_feedback().published:
-                show_deadline_hint = True
-                break
 
-        if not assignment_group.is_open:
-            show_deadline_hint = False
+        # Adding deadlines that are left
+        for i in xrange(deadlineindex+1, len(deadlines)):
+            within_a_deadline.append((deadlines[i], list()))
+
+        within_a_deadline.reverse()
+    
+        if len(within_a_deadline) > 0:
+            tmp_deliveries.extend(list(within_a_deadline[0][1]))
     else:
         ungrouped_deliveries = assignment_group.deliveries.order_by('time_of_delivery')
 
+    # Testing if any published deliveries on last deadline
+    tmp_deliveries.extend(list(after_deadline))
+    tmp_deliveries.extend(list(ungrouped_deliveries))
+    for d in tmp_deliveries:
+        if d.get_feedback().published:
+            show_deadline_hint = True
+            break
+    if not assignment_group.is_open:
+        show_deadline_hint = False
 
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
