@@ -100,7 +100,7 @@ class ShortNameField(models.SlugField):
             verbose_name = _('Short name'),
             db_index = True,
             help_text=_(
-                "Max 20 characters. Only numbers, letters, '_' and '-'. "\
+                "Max 20 characters. Only numbers, lowercase characters, '_' and '-'. "\
                 "Only visible to examiners and admins."))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
@@ -184,6 +184,21 @@ class BaseNode(CommonInterface):
             return True
         else:
             return False
+
+    def clean(self, *args, **kwargs):
+        """Validate the node, making sure it does not do something stupid.
+
+        Always call this before save()! Read about validation here:
+        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+
+        Raises ValidationError if:
+
+            - The nodes short_name is not lowercase.
+        """
+        if self.short_name != None and self.short_name != self.short_name.lower():
+            raise ValidationError(_('The short name must contain lowercase characters only.'))
+
+        super(BaseNode, self).clean(*args, **kwargs)
 
 
 class Node(models.Model, BaseNode):
@@ -381,6 +396,10 @@ class Subject(models.Model, BaseNode):
         """ Only returns :attr:`short_name` for subject since it is
         guaranteed to be unique. """
         return self.short_name
+
+    def clean(self, *args, **kwargs):
+        print "Subject clean"
+        super(Subject, self).clean(*args, **kwargs)
 
 
 class Period(models.Model, BaseNode):
