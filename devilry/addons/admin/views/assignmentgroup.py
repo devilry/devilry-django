@@ -129,9 +129,9 @@ class AssignmentgroupForm(forms.Form):
         name = cleaned_data.get("name")
         cands = cleaned_data.get("candidates")
 
-        if name.strip() == '' and cands.strip() == '':
+        #if name.strip() == '' and cands.strip() == '':
             # Only do something if both fields are valid so far.
-            raise forms.ValidationError("Either name or candidates must be filled in.")
+         #   raise forms.ValidationError("Either name or candidates must be filled in.")
 
         # Verify that the usernames are valid
         if cands.strip() != '':
@@ -168,15 +168,16 @@ class CreateAssignmentgroups(object):
 
                     for i in range(0, formset.total_form_count()):
                         form = formset.forms[i]
-                        name = None
-                        candidates = None
+                        name = ''
+                        candidates = ''
                         
                         if 'name' in form.cleaned_data:
                             name = form.cleaned_data['name']
-                            if 'candidates' in form.cleaned_data:
-                                candidates = form.cleaned_data['candidates']
-                                
-                        if name or candidates:
+                        
+                        if 'candidates' in form.cleaned_data:
+                            candidates = form.cleaned_data['candidates']
+                            
+                        if name != '' or candidates != '':
                             if not self.save_group(assignment, name, candidates):
                                 success = False
                                 break
