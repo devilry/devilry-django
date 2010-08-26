@@ -87,6 +87,20 @@ class TestNode(TestCase):
     def test_can_save(self):
         self.assertFalse(Node().can_save(self.ifiadmin))
 
+    def test_short_name_validation(self):
+        self.uio.short_name = '1'
+        self.uio.full_clean()
+        self.uio.short_name = '_'
+        self.uio.full_clean()
+        self.uio.short_name = '-'
+        self.uio.full_clean()
+        self.uio.short_name = 'u'
+        self.uio.full_clean()
+        self.uio.short_name = 'u-i_o--0'
+        self.uio.full_clean()
+        self.uio.short_name = 'L'
+        self.assertRaises(ValidationError, self.uio.full_clean)
+
     def test_unicode(self):
         self.assertEquals(unicode(self.deepdummy3),
                 'uio.deepdummy1.deepdummy2.deepdummy3')
