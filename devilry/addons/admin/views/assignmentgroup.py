@@ -127,19 +127,18 @@ class AssignmentgroupForm(forms.Form):
     def clean(self):
         cleaned_data = self.cleaned_data
         name = cleaned_data.get("name")
-        cands = cleaned_data.get("candidates")
-
-        #if name.strip() == '' and cands.strip() == '':
-            # Only do something if both fields are valid so far.
-         #   raise forms.ValidationError("Either name or candidates must be filled in.")
+        candidates = cleaned_data.get("candidates").strip()
 
         # Verify that the usernames are valid
-        if cands.strip() != '':
-            cands = cands.split(",")
+        if candidates != '':
+            sep = re.compile(r'\s*,\s*')
+            cands = sep.split(candidates)
             for cand in cands:
-                cand = cand.split(":")[0]
+                if cand == '':
+                    continue
+                cand = cand.split(":")[0].strip()
                 if User.objects.filter(username=cand).count() == 0:
-                    raise forms.ValidationError("User %s could not be found." % cand)
+                    raise forms.ValidationError("User %s could not be found." % (cand))
         
         # Always return the full collection of cleaned data.
         return cleaned_data
@@ -179,6 +178,7 @@ class CreateAssignmentgroups(object):
                             
                         if name != '' or candidates != '':
                             if not self.save_group(assignment, name, candidates):
+                                messages.add_error(_("Failed to save group") + name + ":" + candidates)
                                 success = False
                                 break
                     if success:                        
@@ -200,12 +200,14 @@ class CreateAssignmentgroups(object):
             ag.name = name
         ag.save()
         if candidates:
-            sep = re.compile(r',\s*')
+            candidates = candidates.strip()
+            sep = re.compile(r'\s*,\s*')
             candsplit = sep.split(candidates)
             for user in candsplit:
+                if user == '':
+                    continue
                 user_cand = user.split(':')
                 try:
-                    print "finding user:", user_cand[0]
                     userobj = User.objects.get(username=user_cand[0])
                     cand = Candidate()
                     cand.student = userobj
@@ -217,11 +219,11 @@ class CreateAssignmentgroups(object):
                     ag.candidates.add(cand)
                     ag.save()
                 except Exception, e:
-                    print "user %s doesnt exist" % (user_cand)
+                    #print "user %s doesnt exist" % (user_cand)
                     return False
 
         return True
-
+       
 
 @login_required
 def create_assignmentgroups(request, assignment_id):
@@ -381,8 +383,6 @@ def random_dist_examiners(request, assignment_id):
                         examinerobjs)
                 m = ['<p>', _('Examiners successfully random distributed.'), '</p>']
                 for examiner, assignmentgroups in result.iteritems():
-                    print examiner, [g.get_candidates() for g in
-                            assignmentgroups]
                     m.append('%s:<ul>%s</ul>' % (
                             examiner,
                             '\n'.join(['<li>%s</li>' % g.get_candidates()
@@ -494,7 +494,6 @@ def create_deadline(request, assignment_id):
                 text = deadlineform.cleaned_data['text']
                 deadline_to_copy = request.POST.get('deadline_to_copy', '')
                 if deadline_to_copy:
-                    print type(deadline_to_copy), deadline_to_copy
                     deadline_to_copy = datetime.strptime(deadline_to_copy,
                             datetimefullformat)
                     for d in selected_deadlines.filter(deadline=deadline_to_copy):
