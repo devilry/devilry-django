@@ -127,19 +127,19 @@ class AssignmentgroupForm(forms.Form):
     def clean(self):
         cleaned_data = self.cleaned_data
         name = cleaned_data.get("name")
-        cands = cleaned_data.get("candidates")
-
-        #if name.strip() == '' and cands.strip() == '':
-            # Only do something if both fields are valid so far.
-         #   raise forms.ValidationError("Either name or candidates must be filled in.")
+        candidates = cleaned_data.get("candidates").strip()
 
         # Verify that the usernames are valid
-        if cands.strip() != '':
-            cands = cands.split(",")
+        if candidates != '':
+            sep = re.compile(r'\s*,\s*')
+            cands = sep.split(candidates)
             for cand in cands:
+                if cand == '':
+                    continue
                 cand = cand.split(":")[0].strip()
                 if User.objects.filter(username=cand).count() == 0:
-                    raise forms.ValidationError("User %s could not be found." % cand)
+                    print "User %s could not be found." % (cand)
+                    raise forms.ValidationError("User %s could not be found." % (cand))
         
         # Always return the full collection of cleaned data.
         return cleaned_data
