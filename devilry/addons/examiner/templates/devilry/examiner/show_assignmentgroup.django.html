@@ -18,6 +18,20 @@
 {% block content %}
 
 <script type="text/javascript">
+  
+  var deadline_form_visible = {% if valid_deadlineform %}true{% else %}false{% endif %};
+  function handle_deadlineform_click() {
+    if(deadline_form_visible) {
+      $("#deadline-box").hide();
+      deadline_form_visible = false;
+      $(this).children("span").first().html('{% trans "Create deadline" %}');
+    } else {
+      $("#deadline-box").show('blind');
+      deadline_form_visible = true;
+      $(this).children("span").first().html('{% trans "Hide deadline form" %}');
+    }
+  };
+
   $(function() {
     $(".accordion").accordion({
       autoHeight: false,
@@ -27,18 +41,33 @@
       header: 'h4'
     });
 
-    $("#deadline-button").click(function() {
-      $("#deadline-box").show('blind');
+    $("#deadline-button").click(handle_deadlineform_click);
+    handle_deadlineform_click();
+
+    $(".delete-deadline-button").mousedown(function() {
+      var href = $(this).attr ('href');
+      $(this).attr ('href', '#');
+      var confirm_delete_dialog = $('<div>{% trans "Are you sure you want to delete the deadline? Note that this DOES NOT delete any deliveries or feedbacks within the deadline." %}</div>')
+          .dialog({
+              autoOpen: true,
+              title: "{% trans "Confirm delete deadline" %}",
+              modal: true,
+              buttons: {
+                "{% trans "Delete" %}": function () {
+                    document.location = href;
+                    return false;
+                  },
+                "{% trans "Cancel" %}": function() {
+                    $(this).dialog('close');
+                  }
+              }
+          });
     });
   });
 </script>
 
 
 <table class='vertical_infotable'>
-  <tr>
-    <th>{% trans "Deadline" %}:</th>
-    <td>{{ assignment_group.parentnode.deadline }}</td>
-  </tr>
   <tr>
     <th>{% trans "Status" %}:</th>
     <td>{{ assignment_group.get_status }}</td>
@@ -67,31 +96,28 @@
   </tr> 
 </table>
 
-{% if not assignment_group.is_open %}
-<div class='group_closed-hint'>
-  {% trans "This group is closed for deliveries. To open the group click" %} 
-  <a href="#" id='openclosebtn'>{% trans "Open" %}</a>
-</div>
+{% if assignment_group.is_open %}
+  {% if show_deadline_hint %}
+    <div class='deadline-hint'>
+      {% blocktrans %}You have published feedback, but have not given the
+      student(s) a new deadline. You should create a new deadline or close for
+      more deliveries. Closing the group makes it impossible for the student to add
+      more deliveries.{% endblocktrans %}
+    </div>
+  {% endif %}
+  <p>
+    <a href="#" class='button' id='deadline-button'>{% trans "Create deadline" %}</a>
+    <a href="#" class='button' id='openclosebtn'>{% trans "Close group" %}</a>
+  </p>
+{% else %}
+  <div class='group_closed-hint'>
+    <p>{% trans "This group is closed for deliveries. Click 'Open group' to allow for new deliverues." %}</p>
+    <p><a href="#" id='openclosebtn' class='button'>{% trans "Open group" %}</a></p>
+  </div>
 {% endif %}
 
-{% if show_deadline_hint %}
-<div class='deadline-hint'>
-{% trans "You should create a new deadline or close for more deliveries:" %} 
-<ul>
-  <li><a href="#" id='openclosebtn'>Close group</a></li>
-  <li><a href="#" id='deadline-button'>Create deadline</a></li>
-</div>
-{% endif %}
 
-{% comment %}
-<form action="" method="post">
-<div class='button-row'>
-    <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
-</div>
-</form>
-{% endcomment %}
-
-<div id="deadline-box" style='display:none;'>
+<div id="deadline-box">
   <fieldset class='stdfieldset'>
     <h2 class='legend'>{% trans "Deadline" %}</h2>
     <form action="" method="post">
@@ -100,7 +126,7 @@
     {% endwith %}
     
     <div class='button-row'>
-        <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
+      <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
     </div>
     </form>
   </fieldset>
@@ -111,47 +137,59 @@
   <h2>{% trans "Deliveries" %}</h2>
 
   {% if ungrouped_deliveries %} 
-        <div class='deadline-box'>
-          <h3>{% trans "Deliveries" %}</h3>
-          <div class="accordion">
-			{% for delivery in ungrouped_deliveries %}
-			  {% include "devilry/examiner/include/deliverylisting.django.html" %}
-			{% endfor %}
-          </div>
-		</div>
+    <div class='deadline-box'>
+      <h3>{% trans "Deliveries" %}</h3>
+      <div class="accordion">
+      {% for delivery in ungrouped_deliveries %}
+        {% include "devilry/examiner/include/deliverylisting.django.html" %}
+      {% endfor %}
+      </div>
+    </div>
   {% else %}
     {% if after_deadline %}
       {% with "yes" as after_last_deadline_msg %}
         <div class='deadline-box deadline-box-after'>
           <h3>{% trans "After last deadline" %}</h3>
           <div class="accordion">
-			{% for delivery in after_deadline %}
-			{% include "devilry/examiner/include/deliverylisting.django.html" %}
-			{% endfor %}
+            {% for delivery in after_deadline %}
+            {% include "devilry/examiner/include/deliverylisting.django.html" %}
+            {% endfor %}
           </div>
-		</div>
+        </div>
       {% endwith %}
-	{% endif %}
+    {% endif %}
 
     {% for deadline, deliveries in within_a_deadline %}
-		<div class='deadline-box'>
-		  <h3>
-			{% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
-			{% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
-			{% endwith %}
-		  </h3>
-		  <div class="accordion">
-			{% if not  deliveries %}
-			<div class='no-deliveries'>
-			  {% trans "No deliveries on this deadline" %}
-			</div>
-			{% else %}
-			  {% for delivery in deliveries %}
-			    {% include "devilry/examiner/include/deliverylisting.django.html" %}
-			  {% endfor %}
-			{% endif %}
-		  </div>
-		</div>
+    <div class='deadline-box'>
+      <div class='delete-deadline'>
+        <a class='button delete delete-deadline-button'
+            href='{% url devilry-examiner-delete_deadline assignment_group.id deadline.id %}'>
+          {% trans "Delete deadline" %}
+        </a>
+      </div>
+      <h3>
+      {% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
+        {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
+      {% endwith %}
+      </h3>
+      {% if deadline.text %}
+        <div class='deadline-text'>
+          <div class='deadline-text-prefix'>{% trans "Deadline text" %}:</div>
+          <div class='deadline-text-text'>{{ deadline.text }}</div>
+        </div>
+      {% endif %}
+      <div class="accordion">
+      {% if not  deliveries %}
+      <div class='no-deliveries'>
+        {% trans "No deliveries on this deadline" %}
+      </div>
+      {% else %}
+        {% for delivery in deliveries %}
+          {% include "devilry/examiner/include/deliverylisting.django.html" %}
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
     {% endfor %}
   {% endif %}
 {% endif %}
