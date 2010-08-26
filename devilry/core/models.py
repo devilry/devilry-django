@@ -7,6 +7,7 @@
 
 
 from datetime import datetime
+import re
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -94,16 +95,23 @@ class ShortNameField(models.SlugField):
     strictly equal (eg. we cannot use a superclass because Subject has a
     unique short_name).
     """
+    patt = re.compile(r'^[a-z0-9_-]+$')
     def __init__(self, *args, **kwargs):
         kw = dict(
             max_length = 20,
             verbose_name = _('Short name'),
             db_index = True,
             help_text=_(
-                "Max 20 characters. Only numbers, letters, '_' and '-'. "\
+                "Max 20 characters. Only numbers, lowercase letters, '_' and '-'. "\
                 "Only visible to examiners and admins."))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
+
+    def validate(self, value, *args, **kwargs):
+        super(ShortNameField, self).validate(value, *args, **kwargs)
+        if not self.patt.match(value):
+            raise ValidationError(_(
+                "Can only contain numbers, lowercase letters, '_' and '-'. "))
 
 
 class LongNameField(models.CharField):
@@ -704,14 +712,13 @@ class Assignment(models.Model, BaseNode):
         Raises ValidationError if ``publishing_time`` is not between
         :attr:`Period.start_time` and ``Period.end_time``.
         """
-        if self.publishing_time != None:
+        super(Assignment, self).clean(*args, **kwargs)
+        if self.publishing_time != None and self.parentnode != None:
             if self.publishing_time < self.parentnode.start_time  or \
                     self.publishing_time > self.parentnode.end_time:
                 raise ValidationError(
                     _("Publishing time must be within it's period (%(period)s)."
                       % dict(period=unicode(self.parentnode))))
-       
-        super(Assignment, self).clean(*args, **kwargs)
 
 
 class Candidate(models.Model):
