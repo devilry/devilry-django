@@ -37,16 +37,25 @@
     {% with feedback_form as form %}
       <fieldset class='stdfieldset'>
         <h2 class='legend'>{% trans "Feedback" %}</h2>
+        <div class='help-box'>
+          {% with "http://docutils.sourceforge.net/docs/user/rst/quickref.html" as docurl %}
+            <p>{% blocktrans %}
+              Feedback text should be formatted using <em>ReStructured Text</em>
+              (a simple markup language). Use the buttons above the text
+              area for the most common markup, and read <a href="{{ docurl }}">the
+              documentation</a> if you need more advanced markup. The rightmost
+              button above the text-area provides you with a preview.
+            {% endblocktrans %}</p>
+          {% endwith %}
+        </div>
         {% include "devilry/ui/include/form-list.django.html" %}
       </fieldset>
     {% endwith %}
   {% endblock formfields %}
   
-  <div class='submit-row'>
-    <div class='submit-row-right'>
-      <input type='submit' name='save'
-        value='{% if delivery.feedback %}{% trans "Update" %}{% else %}{% trans "Create" %}{% endif %}'/>
-    </div>
+  <div class='button-row'>
+    <input type='submit' name='save' class='button'
+      value='{% if delivery.feedback %}{% trans "Update" %}{% else %}{% trans "Create" %}{% endif %}'/>
   </div>
 </form>
 

@@ -1341,12 +1341,23 @@ class Feedback(models.Model):
 
     text_formats = (
        ('rst', 'ReStructured Text'),
-       ('txt', 'Text'),
+       ('txt', 'Plain text'),
     )
-    text = models.TextField(blank=True, null=True, default='')
+    text = models.TextField(blank=True, null=True, default='',
+            verbose_name = _('Feedback text'))
     format = models.CharField(max_length=20, choices=text_formats,
-            default=text_formats[0])
-    published = models.BooleanField(blank=True, default=False)
+            default = text_formats[0],
+            verbose_name = _('Feedback text format'),
+            help_text = _(
+                'Unless you have problems with "ReStructured Text", you '\
+                'should use it, as it allows you to mark up your ' \
+                'feedback and thus make it more readable by the student. ' \
+                'Only use "Plain text" as a fallback/last resort.')
+            )
+    published = models.BooleanField(blank=True, default=False,
+            verbose_name = _('Published'),
+            help_text = _(
+                'Check this to make the feedback visible to the student(s).'))
     delivery = models.OneToOneField(Delivery)
     last_modified = models.DateTimeField(auto_now=True, blank=False,
             null=False)
