@@ -98,7 +98,7 @@
         "pk": 1, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "How to get away with beeing lazy", 
+            "long_name": "LAZY101- How to get away with beeing lazy", 
             "admins": [
                 9
             ], 
@@ -110,7 +110,7 @@
         "pk": 2, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "Introduction to making money and beeing greedy", 
+            "long_name": "MONEY101 - Introduction to making money and beeing greedy", 
             "admins": [
                 10
             ], 
@@ -122,7 +122,7 @@
         "pk": 3, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "More methods for lazy people", 
+            "long_name": "LAZY202- More methods for lazy people", 
             "admins": [
                 5, 
                 9
@@ -135,7 +135,7 @@
         "pk": 4, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "Advanced methods for lazy people", 
+            "long_name": "LAZY303 - Advanced methods for lazy people", 
             "admins": [
                 5
             ], 
@@ -183,7 +183,7 @@
         "pk": 8, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "Investing money", 
+            "long_name": "MONEY404 - Investing money", 
             "admins": [
                 10
             ], 
@@ -195,12 +195,52 @@
         "pk": 9, 
         "model": "core.subject", 
         "fields": {
-            "long_name": "Mastering not using money", 
+            "long_name": "MONEY505 - Mastering not using money", 
             "admins": [
                 10
             ], 
             "parentnode": 5, 
             "short_name": "money505"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF1100 - Introduction to programming Python", 
+            "admins": [], 
+            "parentnode": 5, 
+            "short_name": "inf1100"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF1060 - Introduction to Operating Systems and Networks", 
+            "admins": [], 
+            "parentnode": 5, 
+            "short_name": "inf1060"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF2100 - Programming project", 
+            "admins": [], 
+            "parentnode": 5, 
+            "short_name": "inf2100"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.subject", 
+        "fields": {
+            "long_name": "INF1000 - Introduction to object-oriented programming", 
+            "admins": [], 
+            "parentnode": 5, 
+            "short_name": "inf1000"
         }
     }, 
     {
@@ -312,6 +352,54 @@
         }
     }, 
     {
+        "pk": 10, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "semester1", 
+            "start_time": "2010-08-01 18:00:00", 
+            "parentnode": 10, 
+            "long_name": "Semester 1", 
+            "admins": [], 
+            "end_time": "2010-12-15 00:00:00"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "semester1", 
+            "start_time": "2010-08-01 00:00:00", 
+            "parentnode": 11, 
+            "long_name": "Semester 1", 
+            "admins": [], 
+            "end_time": "2010-12-31 00:00:00"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "semester1", 
+            "start_time": "2010-08-09 00:00:00", 
+            "parentnode": 12, 
+            "long_name": "First Semester", 
+            "admins": [], 
+            "end_time": "2015-12-28 00:00:00"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "semester1", 
+            "start_time": "2010-08-09 10:00:00", 
+            "parentnode": 13, 
+            "long_name": "First semester", 
+            "admins": [], 
+            "end_time": "2015-12-31 00:00:00"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
@@ -377,6 +465,190 @@
             "parentnode": 1, 
             "filenames": null, 
             "long_name": "Look like you are working while  sleeping", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig1", 
+            "publishing_time": "2010-08-02 00:00:00", 
+            "parentnode": 11, 
+            "filenames": "", 
+            "long_name": "Oblig 1", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "home_exam1", 
+            "publishing_time": "2010-08-10 00:00:00", 
+            "parentnode": 11, 
+            "filenames": "", 
+            "long_name": "Home Exam 1", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "home_exam2", 
+            "publishing_time": "2010-10-20 08:00:00", 
+            "parentnode": 11, 
+            "filenames": "", 
+            "long_name": "Home Exam 2", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "week1", 
+            "publishing_time": "2010-08-17 00:00:00", 
+            "parentnode": 10, 
+            "filenames": "week1.py\r\nweek1_test.py\r\nweek1_test2.py\r\n", 
+            "long_name": "Week1", 
+            "admins": [
+                13
+            ], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "week2", 
+            "publishing_time": "2010-08-17 12:00:00", 
+            "parentnode": 10, 
+            "filenames": "week2.py\r\nweek2_test.py\r\n", 
+            "long_name": "Week 2", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "assignment0", 
+            "publishing_time": "2010-09-15 12:00:00", 
+            "parentnode": 12, 
+            "filenames": "", 
+            "long_name": "Assignment 0", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "assignment1", 
+            "publishing_time": "2010-10-27 12:00:00", 
+            "parentnode": 12, 
+            "filenames": "", 
+            "long_name": "Assignment 1", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "assignment2", 
+            "publishing_time": "2010-11-24 12:00:00", 
+            "parentnode": 12, 
+            "filenames": "", 
+            "long_name": "Assignment 2", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "week3", 
+            "publishing_time": "2010-08-17 10:00:00", 
+            "parentnode": 10, 
+            "filenames": "", 
+            "long_name": "Week 3", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig1", 
+            "publishing_time": "2010-09-07 12:00:00", 
+            "parentnode": 13, 
+            "filenames": "", 
+            "long_name": "Obligatory Assignment 1", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig2", 
+            "publishing_time": "2010-10-01 12:00:00", 
+            "parentnode": 13, 
+            "filenames": "", 
+            "long_name": "Obligatory Assignment 2", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig3", 
+            "publishing_time": "2010-10-22 12:00:00", 
+            "parentnode": 13, 
+            "filenames": "", 
+            "long_name": "Obligatory Assignment 3", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_approved:approvedgrade", 
+            "short_name": "oblig4", 
+            "publishing_time": "2010-11-12 12:00:00", 
+            "parentnode": 13, 
+            "filenames": "", 
+            "long_name": "Obligatory Assignment 4", 
             "admins": [], 
             "anonymous": false
         }
@@ -499,10 +771,730 @@
         }
     }, 
     {
+        "pk": 14, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 22, 
+            "assignment_group": 10
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 24, 
+            "assignment_group": 11
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 22, 
+            "assignment_group": 12
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 23, 
+            "assignment_group": 12
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 24, 
+            "assignment_group": 13
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 25, 
+            "assignment_group": 13
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 26, 
+            "assignment_group": 14
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 27, 
+            "assignment_group": 14
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 28, 
+            "assignment_group": 15
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 29, 
+            "assignment_group": 15
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 30, 
+            "assignment_group": 16
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 31, 
+            "assignment_group": 16
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 32, 
+            "assignment_group": 17
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 33, 
+            "assignment_group": 17
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 34, 
+            "assignment_group": 18
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 35, 
+            "assignment_group": 18
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 36, 
+            "assignment_group": 19
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 37, 
+            "assignment_group": 19
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 22, 
+            "assignment_group": 20
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 23, 
+            "assignment_group": 20
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 24, 
+            "assignment_group": 21
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 25, 
+            "assignment_group": 21
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 26, 
+            "assignment_group": 22
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 27, 
+            "assignment_group": 22
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 28, 
+            "assignment_group": 23
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 29, 
+            "assignment_group": 23
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 30, 
+            "assignment_group": 24
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 31, 
+            "assignment_group": 24
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 32, 
+            "assignment_group": 25
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 33, 
+            "assignment_group": 25
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 34, 
+            "assignment_group": 26
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 35, 
+            "assignment_group": 26
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 36, 
+            "assignment_group": 27
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 37, 
+            "assignment_group": 27
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 22, 
+            "assignment_group": 28
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 23, 
+            "assignment_group": 28
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 24, 
+            "assignment_group": 29
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 25, 
+            "assignment_group": 29
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 26, 
+            "assignment_group": 30
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 27, 
+            "assignment_group": 30
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 28, 
+            "assignment_group": 31
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 29, 
+            "assignment_group": 31
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 30, 
+            "assignment_group": 32
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 31, 
+            "assignment_group": 32
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 32, 
+            "assignment_group": 33
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 33, 
+            "assignment_group": 33
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 34, 
+            "assignment_group": 34
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 35, 
+            "assignment_group": 34
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 36, 
+            "assignment_group": 35
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 37, 
+            "assignment_group": 35
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 22, 
+            "assignment_group": 36
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 23, 
+            "assignment_group": 37
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 24, 
+            "assignment_group": 38
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 25, 
+            "assignment_group": 39
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 26, 
+            "assignment_group": 40
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 27, 
+            "assignment_group": 41
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 28, 
+            "assignment_group": 42
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 29, 
+            "assignment_group": 43
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 30, 
+            "assignment_group": 44
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 31, 
+            "assignment_group": 45
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 32, 
+            "assignment_group": 46
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 33, 
+            "assignment_group": 47
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 34, 
+            "assignment_group": 48
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 35, 
+            "assignment_group": 49
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 36, 
+            "assignment_group": 50
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 37, 
+            "assignment_group": 51
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 38, 
+            "assignment_group": 52
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 41, 
+            "assignment_group": 53
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 39, 
+            "assignment_group": 54
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 40, 
+            "assignment_group": 55
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 42, 
+            "assignment_group": 56
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 43, 
+            "assignment_group": 57
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 44, 
+            "assignment_group": 58
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 45, 
+            "assignment_group": 59
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 46, 
+            "assignment_group": 60
+        }
+    }, 
+    {
+        "pk": 89, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 47, 
+            "assignment_group": 61
+        }
+    }, 
+    {
+        "pk": 90, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 48, 
+            "assignment_group": 62
+        }
+    }, 
+    {
+        "pk": 91, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 49, 
+            "assignment_group": 63
+        }
+    }, 
+    {
+        "pk": 92, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 50, 
+            "assignment_group": 64
+        }
+    }, 
+    {
+        "pk": 93, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 51, 
+            "assignment_group": 65
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "is_open": false, 
             "name": "The boys", 
             "parentnode": 2, 
             "examiners": [
@@ -608,6 +1600,566 @@
         }
     }, 
     {
+        "pk": 10, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 6, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 6, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 11, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 12, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 13, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "is_open": true, 
+            "name": null, 
+            "parentnode": 15, 
+            "examiners": []
+        }
+    }, 
+    {
         "pk": 5, 
         "model": "core.deadline", 
         "fields": {
@@ -659,6 +2211,24 @@
             "text": "", 
             "deadline": "2010-08-28 12:00:00", 
             "assignment_group": 5
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-18 14:00:00", 
+            "assignment_group": 11
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.deadline", 
+        "fields": {
+            "text": "", 
+            "deadline": "2010-08-18 14:00:00", 
+            "assignment_group": 10
         }
     }, 
     {
@@ -881,7 +2451,7 @@
             "text": "", 
             "last_modified_by": 13, 
             "delivery": 2, 
-            "last_modified": "2010-08-06 21:41:37", 
+            "last_modified": "2010-08-25 22:28:37", 
             "object_id": 4, 
             "content_type": 21, 
             "published": false
