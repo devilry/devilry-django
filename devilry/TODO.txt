@@ -52,3 +52,7 @@ If a user is admin and examiner, the views on the dashboard should indicate.
 Student should get a message when the group is closed for deliveries.
 
 Add button 'create and add new' for period/subject/assignments
+
+Improve setting (publishing) time when e.g. creating new assignment.
+
+Users who are not admins on any nodes, should not be able to view the create-pages.  
