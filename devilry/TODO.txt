@@ -42,3 +42,10 @@
     - deliver
     - change feedback
 - Make examiner interface work when no deadline is set.
+
+
+clean method in BaseNode is not called when e.g. creating new subject
+
+If a user is admin and examiner, the views on the dashboard should indicate.
+
+Student should get a message when the group is closed for deliveries.
