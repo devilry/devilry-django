@@ -537,9 +537,25 @@ input.autocomplete-list {
  *******************************/
 
 .deadline-box {
-	/*border: 1px solid red;*/
+	border: 1px solid #ccc;
 	margin-bottom: 20px;
 	padding: 5px;
+	background-color: #fff;
+}
+
+.deadline-box .delete-deadline {
+	float: right;
+}
+.deadline-box .deadline-text {
+	font-size: 0.8em;
+	color: #555;
+	margin-bottom: 10px;
+}
+.deadline-box .deadline-text-prefix {
+	font-style: italic;
+}
+.deadline-box .deadline-text-text {
+	margin-left: 20px;
 }
 
 .deadline-box h3 {
@@ -553,8 +569,8 @@ input.autocomplete-list {
 }
 
 .deadline-hint {
-	border: 1px solid #315C00;
-	background-color: #BFFF75;
+	border: 1px solid #B34700;
+	background-color: #FFB380;
 	padding: 5px;
 }
 

@@ -34,7 +34,6 @@ class DeadlineForm(forms.ModelForm):
         fields = ['deadline', 'text']
 
     def clean(self):
-        print "Deadlineform clean"
         return self.cleaned_data
 
 @login_required
@@ -50,11 +49,28 @@ def list_assignmentgroups(request, assignment_id):
 
 
 @login_required
+def delete_deadline(request, assignmentgroup_id, deadline_id):
+    assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
+    if not assignment_group.is_examiner(request.user):
+        return HttpResponseForbidden("Forbidden")
+    deadline = get_object_or_404(Deadline, pk=deadline_id)
+    deadline.delete()
+    messages = UiMessages()
+    messages.add_success(_('Deadline "%(deadline)s" successfully deleted.' %
+        dict(deadline=deadline)))
+    messages.save(request)
+    return HttpResponseRedirect(reverse(
+            'devilry-examiner-show_assignmentgroup',
+            args=[assignmentgroup_id]))
+
+
+@login_required
 def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.is_examiner(request.user):
         return HttpResponseForbidden("Forbidden")
 
+    valid_deadlineform = True
     if 'create-deadline' in request.POST:
         deadline = Deadline()
         deadline.assignment_group = assignment_group
@@ -62,13 +78,11 @@ def show_assignmentgroup(request, assignmentgroup_id):
 
         if deadline_form.is_valid():
             deadline.save()
-            print "Saved for assignment group ", assignment_group
             return HttpResponseRedirect(reverse(
                     'devilry-examiner-show_assignmentgroup',
                     args=[assignmentgroup_id]))
         else:
-            print "invalid"
-            print "errors:", deadline_form.errors
+            valid_deadlineform = False
     else:
         deadline_form = DeadlineForm()
         
@@ -130,6 +144,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
                 'deadline_form': deadline_form,
                 'show_deadline_hint': show_deadline_hint,
                 'messages': messages,
+                'valid_deadlineform': valid_deadlineform
             }, context_instance=RequestContext(request))
 
 @login_required
