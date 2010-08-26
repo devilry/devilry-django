@@ -42,6 +42,7 @@
     - deliver
     - change feedback
 - Make examiner interface work when no deadline is set.
+- Examine CLOSE GROUP
 
 
 clean method in BaseNode is not called when e.g. creating new subject

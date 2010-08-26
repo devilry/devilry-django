@@ -41,7 +41,7 @@ def view(request, delivery_obj):
             grade_obj.save()
             feedback_form.instance.grade = grade_obj
             feedback_form.save()
-            return redirect_after_successful_save(delivery_obj)
+            return redirect_after_successful_save(request, delivery_obj)
     else:
         if grade_obj.schema:
             input_data = text.extract_valuedict(grade_obj.schema)

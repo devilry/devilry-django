@@ -43,7 +43,7 @@ def view(request, delivery_obj):
             grade_form.save()
             feedback_form.instance.grade = grade_form.instance
             feedback_form.save()
-            return feedback_view.redirect_after_successful_save(delivery_obj)
+            return feedback_view.redirect_after_successful_save(request, delivery_obj)
 
     return render_to_response('devilry/grade_schema/feedback.django.html', {
             'delivery': delivery_obj,
