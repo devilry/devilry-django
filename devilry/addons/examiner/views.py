@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.template import RequestContext
 from django.db.models import Count
 from django.db.models import Q
 from django.utils.simplejson import JSONEncoder
 from django.core.urlresolvers import reverse
 from django import http
+from django.utils.translation import ugettext as _
 
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
@@ -19,10 +20,14 @@ from django.forms.models import inlineformset_factory, formset_factory
 from devilry.ui.messages import UiMessages
 
 class DeadlineForm(forms.ModelForm):
-    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget)
-    #deadline = forms.DateTimeField(required=False)
+    deadline = forms.DateTimeField(widget=DevilryDateTimeWidget,
+            help_text=_('The exact date and time of the deadline.'))
     text = forms.CharField(required=False,
-                           widget=forms.Textarea(attrs=dict(rows=5, cols=30)))
+           widget=forms.Textarea(attrs=dict(rows=10,
+               cols=70)),
+           help_text=_('A optional text about the deadline. You could use '\
+               'this to tell the student something extra about the ' \
+               'deadline. (Example: "this is your last chance").'))
     
     class Meta:
         model = Deadline
@@ -43,8 +48,6 @@ def list_assignmentgroups(request, assignment_id):
                 'assignment': assignment,
             }, context_instance=RequestContext(request))
 
-from django.http import HttpResponseRedirect, HttpResponseForbidden, \
-        HttpResponseBadRequest
 
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
