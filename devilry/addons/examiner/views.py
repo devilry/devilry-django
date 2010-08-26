@@ -64,6 +64,31 @@ def delete_deadline(request, assignmentgroup_id, deadline_id):
             args=[assignmentgroup_id]))
 
 
+
+def _close_open_assignmentgroup(request, assignmentgroup_id, is_open, msg):
+    assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
+    if not assignment_group.is_examiner(request.user):
+        return HttpResponseForbidden("Forbidden")
+    assignment_group.is_open = is_open;
+    assignment_group.save()
+    messages = UiMessages()
+    messages.add_success(msg)
+    messages.save(request)
+    return HttpResponseRedirect(reverse(
+            'devilry-examiner-show_assignmentgroup',
+            args=[assignmentgroup_id]))
+
+@login_required
+def close_assignmentgroup(request, assignmentgroup_id):
+    return _close_open_assignmentgroup(request, assignmentgroup_id, False,
+        _('Assignment group successfully closed.'))
+
+@login_required
+def open_assignmentgroup(request, assignmentgroup_id):
+    return _close_open_assignmentgroup(request, assignmentgroup_id, True,
+        _('Assignment group successfully opened.'))
+
+
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)

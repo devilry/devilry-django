@@ -98,22 +98,28 @@
 
 {% if assignment_group.is_open %}
   {% if show_deadline_hint %}
-    <div class='deadline-hint'>
+    <p class='warning-box'>
       {% blocktrans %}You have published feedback, but have not given the
       student(s) a new deadline. You should create a new deadline or close for
       more deliveries. Closing the group makes it impossible for the student to add
       more deliveries.{% endblocktrans %}
-    </div>
+    </p>
   {% endif %}
   <p>
     <a href="#" class='button' id='deadline-button'>{% trans "Create deadline" %}</a>
-    <a href="#" class='button' id='openclosebtn'>{% trans "Close group" %}</a>
+    <a href="{% url devilry-examiner-close_assignmentgroup assignment_group.id %}"
+        class='button' id='openclosebtn'>
+      {% trans "Close group" %}
+    </a>
   </p>
 {% else %}
-  <div class='group_closed-hint'>
-    <p>{% trans "This group is closed for deliveries. Click 'Open group' to allow for new deliverues." %}</p>
-    <p><a href="#" id='openclosebtn' class='button'>{% trans "Open group" %}</a></p>
-  </div>
+  <p class='info-box'>{% trans "This group is closed for deliveries. Click 'Open group' to allow students to add new deliveries." %}</p>
+  <p>
+    <a href="{% url devilry-examiner-open_assignmentgroup assignment_group.id %}"
+        id='openclosebtn' class='button'>
+      {% trans "Open group" %}
+    </a>
+  </p>
 {% endif %}
 
 

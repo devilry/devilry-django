@@ -181,22 +181,35 @@ body {
 	font-size: 0.8em;
 	margin: 10px 0 10px 0;
 }
-#messages li.success_message{
+#messages li.success_message,
+.success-box{
 	border: 1px solid #315C00;
 	background-color: #BFFF75;
 }
-#messages li.info_message {
+#messages li.info_message,
+.info-box {
 	border: 1px solid #808000;
 	background-color: #FFFFCC;
 }
-#messages li.warning_message {
+#messages li.warning_message,
+.warning-box {
 	border: 1px solid #B34700;
 	background-color: #FFB380;
 }
-#messages li.error_message {
+#messages li.error_message
+.error-box {
 	border: 3px solid #000;
 	background-color: #CC0000;
 }
+
+
+.error-box,
+.warning-box,
+.info-box,
+.success-box {
+	padding: 10px;
+}
+
 
 /***********************************************************
  * Page sidebar
@@ -565,12 +578,6 @@ input.autocomplete-list {
 .group_closed-hint {
 	border: 1px solid #aa0000;
 	background-color: #6960EC;
-	padding: 5px;
-}
-
-.deadline-hint {
-	border: 1px solid #B34700;
-	background-color: #FFB380;
 	padding: 5px;
 }
 
