@@ -400,6 +400,30 @@
         }
     }, 
     {
+        "pk": 14, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "semester1", 
+            "start_time": "2010-08-16 08:00:00", 
+            "parentnode": 3, 
+            "long_name": "Semester 1", 
+            "admins": [], 
+            "end_time": "2015-12-29 00:00:00"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.period", 
+        "fields": {
+            "short_name": "semester1", 
+            "start_time": "2010-08-01 00:00:00", 
+            "parentnode": 4, 
+            "long_name": "Semester 1", 
+            "admins": [], 
+            "end_time": "2015-12-31 00:00:00"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
@@ -649,6 +673,62 @@
             "parentnode": 13, 
             "filenames": "", 
             "long_name": "Obligatory Assignment 4", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "lazy-intro", 
+            "publishing_time": "2010-08-16 12:00:00", 
+            "parentnode": 14, 
+            "filenames": "", 
+            "long_name": "Introduction to lazyness", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "lazy-improved", 
+            "publishing_time": "2010-09-13 08:00:00", 
+            "parentnode": 14, 
+            "filenames": "", 
+            "long_name": "Improving your current lazyness", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "lazy-advanced", 
+            "publishing_time": "2010-08-17 10:00:00", 
+            "parentnode": 15, 
+            "filenames": "", 
+            "long_name": "Advanced lazyness", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_default:charfieldgrade", 
+            "short_name": "lazy-possible", 
+            "publishing_time": "2010-09-22 14:00:00", 
+            "parentnode": 15, 
+            "filenames": "", 
+            "long_name": "How to be as lazy as possible", 
             "admins": [], 
             "anonymous": false
         }
