@@ -138,7 +138,6 @@ class AssignmentgroupForm(forms.Form):
                     continue
                 cand = cand.split(":")[0].strip()
                 if User.objects.filter(username=cand).count() == 0:
-                    print "User %s could not be found." % (cand)
                     raise forms.ValidationError("User %s could not be found." % (cand))
         
         # Always return the full collection of cleaned data.
