@@ -193,21 +193,6 @@ class BaseNode(CommonInterface):
         else:
             return False
 
-    def clean(self, *args, **kwargs):
-        """Validate the node, making sure it does not do something stupid.
-
-        Always call this before save()! Read about validation here:
-        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
-
-        Raises ValidationError if:
-
-            - The nodes short_name is not lowercase.
-        """
-        if self.short_name != None and self.short_name != self.short_name.lower():
-            raise ValidationError(_('The short name must contain lowercase characters only.'))
-
-        super(BaseNode, self).clean(*args, **kwargs)
-
 
 class Node(models.Model, BaseNode):
     """
@@ -406,7 +391,6 @@ class Subject(models.Model, BaseNode):
         return self.short_name
 
     def clean(self, *args, **kwargs):
-        print "Subject clean"
         super(Subject, self).clean(*args, **kwargs)
 
 
