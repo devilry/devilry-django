@@ -13,7 +13,7 @@
 		{% if delivery.feedback.published %}
 		  <span class='delivery_published_msg'>({% trans "Published" %})</span>
 		{% endif %}
-		{% if not delivery.feedback.published %}
+		{% if delivery.feedback and not delivery.feedback.published %}
 		  <span class='delivery_unpublished_msg'>({% trans "Feedback is not published, and not viewable to the student(s)" %})</span>
 		{% endif %}
 		{% if after_last_deadline_msg %}
