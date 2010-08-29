@@ -15,6 +15,7 @@ from devilry.core.utils.GroupNodes import group_assignmentgroups, print_tree
 from devilry.core.models import Delivery, AssignmentGroup
 from devilry.ui.defaults import DATETIME_FORMAT
 from devilry.core.utils.verify_unique_entries import verify_unique_entries
+from devilry.core.devilry_email import DevilryEmail
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -25,7 +26,8 @@ UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 @transaction.autocommit
 def add_delivery(request, assignment_group_id, messages=None):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignment_group_id)
-    if not assignment_group.is_candidate(request.user):
+    if not assignment_group.is_candidate(request.user) or \
+            not assignment_group.can_add_deliveries():
         return HttpResponseForbidden("Forbidden")
     if request.method == 'POST':
         formset = UploadFileFormSet(request.POST, request.FILES)
@@ -52,8 +54,6 @@ def add_delivery(request, assignment_group_id, messages=None):
         'messages': messages,
         }, context_instance=RequestContext(request))
 
-from devilry.core.devilry_email import DevilryEmail
-
 def successful_delivery(request, assignment_group_id):
     messages = UiMessages()
     messages.add_info(_('Successful delivery'))
@@ -61,29 +61,24 @@ def successful_delivery(request, assignment_group_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignment_group_id)
     period = assignment_group.parentnode.parentnode
     subject = period.parentnode
-    
     latest = assignment_group.deliveries.all()[0]
-    print "time of del:", latest.time_of_delivery.strftime(DATETIME_FORMAT)
-
+    
     email_message = "This is a receipt for your delivery."
-    email_message += '\n\n'
+    email_message += "\n\n"
     email_message += "Subject: %s - %s\n" % (subject.long_name, period.long_name)
     email_message += "Time of delivery: %s\n" % latest.time_of_delivery.strftime(DATETIME_FORMAT)
     email_message += "Files:\n"
 
     for fm in latest.filemetas.all():
         email_message += " - %s (%d bytes)\n" % (fm.filename, fm.size)
-        
-    email_message += '\n\n'
+    
+    email_message += "\n\n"
 
     mail = DevilryEmail()
     mail.send_email(request.user, 
                     "Receipt for your delivery on %s" % (subject.short_name), 
                     email_message)
     
-    
-    latest.time_of_delivery.strftime(DATETIME_FORMAT)
-
     return show_assignmentgroup(request, assignment_group_id, messages)
 
 
