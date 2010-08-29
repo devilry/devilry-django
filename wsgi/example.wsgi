@@ -3,7 +3,7 @@
 import os
 import sys
 
-# Path to the TG django site
+# Path to the django site
 sys.path.append('/mnt/hgfs/code/devilry-django')
 
 # Select which settings to use
