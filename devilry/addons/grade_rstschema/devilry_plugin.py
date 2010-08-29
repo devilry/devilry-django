@@ -28,8 +28,12 @@ gradeplugin.registry.register(gradeplugin.RegistryItem(
         label = _('reStructuredText schema'),
         description = _(
             'Examiners fill in a schema defined by you (the ' \
-            'administrator) using reStructuredText' \
-            '(a quite simple plain-text format).')
+            'administrator) using %(rsturl)s ' \
+            '(a simple plain-text format). It supports ' \
+            'autogenerating a schema from the *filenames* field.' % dict(
+                rsturl='`reStructuredText <http://docutils.sourceforge.' \
+                        'net/docs/user/rst/quickref.html>`_')
+        )
 ))
 
 # register .. field:: with rst
