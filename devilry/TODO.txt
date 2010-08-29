@@ -59,3 +59,5 @@ Users who are not admins on any nodes, should not be able to view the create-pag
 
 
 One user can now be added to the same group twice. Should not be possible. 
+
+Inteligent file size. (eg. 'ls -h')

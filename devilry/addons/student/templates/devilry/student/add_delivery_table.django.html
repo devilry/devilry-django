@@ -5,22 +5,22 @@
 <table class='vertical_infotable'>
   <tr>
     <th>{% trans "Subject" %}</th>
-    <td>{{ assignment_group.parentnode.parentnode }}</td>
+    <td>{{ assignment_group.parentnode.parentnode.parentnode.long_name }}</td>
   </tr>
   <tr>
     <th>{% trans "Name" %}</th>
     <td>{{ assignment_group.parentnode.long_name }}</td>
   </tr>
   <tr>
-    <th>{% trans "Deadline" %}</th>
-    <td>{{ assignment_group.parentnode.deadline }}</td>
-  </tr>
-  <tr>
-    <th>{% trans "Status" %}</th>
-    <td>{{ assignment_group.get_status }}</td>
-  </tr>
-
-  {% if delivery.feedback %}
+	 <tr>
+    <th>{% trans "Deadline" %}:</th>
+    <td>
+      {{ assignment_group.get_active_deadline }}
+      {% if assignment_group.get_active_deadline.is_old %}
+        <span class='old-deadline'>({% trans "Deadline is in the past" %})</span>
+      {% endif %}
+    </td>
+   {% if delivery.feedback %}
     <tr>
       <th>{% trans "Grade" %}</th>
       <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
