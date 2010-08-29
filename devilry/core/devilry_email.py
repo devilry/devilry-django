@@ -1,17 +1,13 @@
+from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
+from devilry.settings import email_subject_prefix
 
-
-class DevilryEmail(object):
-    
-    def __init__(self):
-        self.subject_prefix = '[devilry] '
-    
-    def send_email(self, user, subject, message):
-        
-        message += "\n\nThis is a message from Devilry delivery system."
-        
-        send_mail(self.subject_prefix + subject, message, 'devilry@example.com',
-                  [user.email], fail_silently=False)
+def send_email(user, subject, message):
+    message += "\n\n"
+    message += _("This is a message from the Devilry assignment delivery system. " \
+                     "Please do not respond to this email.")
+    send_mail(email_subject_prefix + subject, message, 'devilry@example.com',
+              [user.email], fail_silently=False)
 
         
         
