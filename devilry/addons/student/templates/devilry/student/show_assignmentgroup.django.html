@@ -50,7 +50,7 @@
     <th>{% trans "Grade" %}:</th>
     <td>
       {{ assignment_group.get_grade_as_short_string }}
-      &nbsp;&nbsp;(<a href="{% url devilry-student-show-delivery assignment_group.get_latest_delivery.id %}">
+      &nbsp;&nbsp;(<a href="{% url devilry-student-show-delivery assignment_group.get_latest_delivery_with_feedback.id %}">
         {% trans "Show feedback" %}
       </a>)
     </td>
@@ -92,7 +92,7 @@ add as many deliveries as you like.{% endblocktrans %}</p>
 
 {% if assignment_group.can_add_deliveries %}
 <p>
-<a href='{% url devilry-student-add-delivery assignment_group.id %}'>
+<a class='button' href='{% url devilry-student-add-delivery assignment_group.id %}'>
         Add new delivery
       </a>
 </p>
