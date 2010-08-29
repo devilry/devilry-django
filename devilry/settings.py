@@ -61,18 +61,13 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-)
+]
 
-
-#AUTHENTICATION_BACKENDS = (
-    ##'devilry.core.authbackend.SettingsBackend',
-    #'devilry.auth.backend.DjangoModelBackend',
-#)
 
 ROOT_URLCONF = 'devilry.urls'
 
