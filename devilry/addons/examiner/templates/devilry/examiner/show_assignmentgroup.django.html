@@ -107,7 +107,7 @@ delivery with published feeback.{% endblocktrans %}</p>
 
 {% if not ungrouped_deliveries %} 
 <p>{% blocktrans %}Deliveries are grouped by deadlines. Deadlines use the same
-datetime-format as deliveries, and are simply a date with a optional text. You
+datetime-format as deliveries, and are simply a date with an optional text. You
 can safely delete and create deadlines, as they only serve to group deliveries
 and to give the student information about when to deliver the assignment.
 Creation and deletion of deliveries does not affect existing deliveries at all.
@@ -121,9 +121,9 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 {% if assignment_group.is_open %}
   {% if show_deadline_hint %}
     <p class='warning-box'>
-      {% blocktrans %}You have published feedback, but have not given the
+      {% blocktrans %}You have published a feedback, but have not given the
       student(s) a new deadline. You should create a new deadline or close for
-      more deliveries. Closing the group makes it impossible for the student to add
+      more deliveries. Closing the group leave the students unable to add
       more deliveries.{% endblocktrans %}
     </p>
   {% endif %}
