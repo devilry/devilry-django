@@ -9,6 +9,7 @@ from devilry.ui.widgets import RstEditWidget
 
 from devilry.ui.messages import UiMessages
 from django.utils.translation import ugettext as _
+from devilry.core.devilry_email import send_email
 
 class FeedbackForm(forms.ModelForm):
     """ A ModelForm for the :class:`devilry.core.models.Feedback`-class. """
@@ -32,7 +33,21 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
         return FeedbackForm(instance=feedback_obj, prefix=prefix)
 
 def redirect_after_successful_save(request, delivery_obj):
-    if not delivery_obj.feedback.published:
+    if delivery_obj.feedback.published:
+        assignment = delivery_obj.assignment_group.parentnode
+        period = assignment.parentnode
+        subject = period.parentnode
+        
+        email_message = "Your assignment has been corrected."
+        email_message += "\n\n"
+        email_message += "Subject: %s - %s\n" % (subject.long_name, period.long_name)
+        email_message += "Assignment: %s\n" % (assignment.long_name)
+        #email_message += "Time of : %s\n" % latest.time_of_delivery.strftime(DATETIME_FORMAT)
+            
+        send_email(request.user, 
+                   "New feedback - %s" % (subject.short_name), 
+                   email_message)
+    else:
         messages = UiMessages()
         messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
         messages.save(request)
