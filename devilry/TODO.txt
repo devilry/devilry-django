@@ -34,15 +34,14 @@
 - Filename validation on delivery.
 - Should not be possible to change rstschemadef if any schemas has been created.
 - Email on delivery and feedback.
-- Examiner create new deadline when giving feedback.
 - Check permissions on all views.
 - Status must not be shown as corrected when there are no deliveries!
 - Logging of important actions, like
     - delete
     - deliver
     - change feedback
-- Make examiner interface work when no deadline is set.
-- Examine CLOSE GROUP
+- Deadlines in cli
+- Publish feedback with cli
 
 
 clean method in BaseNode is not called when e.g. creating new subject

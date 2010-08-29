@@ -67,7 +67,11 @@
 </script>
 
 
-<table class='vertical_infotable'>
+<table class='vertical_infotable' style='float: right; margin: 0 0 20px 20px;'>
+  <tr>
+    <th>{% trans "Group members" %}:</th>
+    <td>{{ assignment_group.candidates.all|join:", " }} </td>
+  </tr>
   <tr>
     <th>{% trans "Status" %}:</th>
     <td>{{ assignment_group.get_status }}</td>
@@ -76,25 +80,43 @@
     <th>{% trans "Published feedbacks" %}:</th>
     <td>{{ assignment_group.get_deliveries_with_published_feedback.count }}</td>
   </tr>
-
   {% if assignment_group.get_grade_as_short_string %}
-  <tr>
-    <th>{% trans "Grade" %}:</th>
-    <td>{{ assignment_group.get_grade_as_short_string }}</td>
-  </tr> 
+    <tr>
+      <th>{% trans "Grade" %}:</th>
+      <td>{{ assignment_group.get_grade_as_short_string }}</td>
+    </tr> 
   {% endif %}
 
-  {% if assignment_group.students.count > 1 %}
-    <tr>
-      <th>{% trans "Group members" %}:</th>
-      <td>{{ assignment_group.students.all|join:", " }} </td>
-    </tr>
-  {% endif %}
   <tr>
     <th>{% trans "Open for deliveries" %}:</th>
     <td>{% if assignment_group.is_open %} Yes {% else %} No {% endif %}</td>
   </tr> 
 </table>
+
+<div class='help-box'>
+<p>{% blocktrans %}In this section you find all deliveries by the selected
+<em>assignment group</em>. You can see group members and information about the
+group in the table to the right.{% endblocktrans %}</p>
+
+<p>{% blocktrans %}In the <em>deliveries section</em> you will find all deliveries by the
+group. Each delivery has a number starting with <em>1</em> and counting up for
+each new delivery, making the highest number the latest delivery. Each delivery
+also have a time of delivery (YYYY-MM-DD hh:mm:ss). You may create feedback on
+as many deliveries as you like. The grade is determined from the latest
+delivery with published feeback.{% endblocktrans %}</p>
+
+{% if not ungrouped_deliveries %} 
+<p>{% blocktrans %}Deliveries are grouped by deadlines. Deadlines use the same
+datetime-format as deliveries, and are simply a date with a optional text. You
+can safely delete and create deadlines, as they only serve to group deliveries
+and to give the student information about when to deliver the assignment.
+Creation and deletion of deliveries does not affect existing deliveries at all.
+{% endblocktrans %}</p>
+{% endif %}
+</div>
+
+<!-- Prevent the table from floating beside anything below here. -->
+<div style='clear: both;'></div>
 
 {% if assignment_group.is_open %}
   {% if show_deadline_hint %}
