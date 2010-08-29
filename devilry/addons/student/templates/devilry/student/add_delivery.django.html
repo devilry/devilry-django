@@ -27,8 +27,8 @@
     action="{% url devilry-student-add-delivery assignment_group.id %}"
     method="post" id='add_delivery-form'>
 
+  {{ formset.management_form }}
   <table>
-    {{ formset.management_form }}
     {% for form in formset.forms %}
     <tr>
       <td>{{ form.file }}</td>
