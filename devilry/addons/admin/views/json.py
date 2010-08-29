@@ -113,7 +113,7 @@ def filter_assignmentgroup(postdata, groupsqry, term):
 @login_required
 def assignmentgroup_json(request, assignment_id):
     def latestdeliverytime(g):
-        d = g.get_latest_delivery()
+        d = g.get_latest_delivery_with_feedback()
         if d:
             return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
         else:
