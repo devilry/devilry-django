@@ -8,6 +8,22 @@
         }
     }, 
     {
+        "pk": 23, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {

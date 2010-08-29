@@ -536,36 +536,6 @@
         }
     }, 
     {
-        "pk": 9, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "week1", 
-            "publishing_time": "2010-08-17 00:00:00", 
-            "parentnode": 10, 
-            "filenames": "week1.py\r\nweek1_test.py\r\nweek1_test2.py\r\n", 
-            "long_name": "Week1", 
-            "admins": [
-                13
-            ], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 10, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "week2", 
-            "publishing_time": "2010-08-17 12:00:00", 
-            "parentnode": 10, 
-            "filenames": "week2.py\r\nweek2_test.py\r\n", 
-            "long_name": "Week 2", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
         "pk": 11, 
         "model": "core.assignment", 
         "fields": {
@@ -603,20 +573,6 @@
             "parentnode": 12, 
             "filenames": "", 
             "long_name": "Assignment 2", 
-            "admins": [], 
-            "anonymous": false
-        }
-    }, 
-    {
-        "pk": 14, 
-        "model": "core.assignment", 
-        "fields": {
-            "grade_plugin": "grade_default:charfieldgrade", 
-            "short_name": "week3", 
-            "publishing_time": "2010-08-17 10:00:00", 
-            "parentnode": 10, 
-            "filenames": "", 
-            "long_name": "Week 3", 
             "admins": [], 
             "anonymous": false
         }
@@ -729,6 +685,34 @@
             "parentnode": 15, 
             "filenames": "", 
             "long_name": "How to be as lazy as possible", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "week1", 
+            "publishing_time": "2010-08-15 21:51:00", 
+            "parentnode": 10, 
+            "filenames": "kick.py\r\nGaussian_function1.py", 
+            "long_name": "Week 1", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "week2", 
+            "publishing_time": "2010-08-29 21:52:00", 
+            "parentnode": 10, 
+            "filenames": "ball_table2.py\r\nball_table3.py\r\ncompute_sum_while.py", 
+            "long_name": "Week 2", 
             "admins": [], 
             "anonymous": false
         }
