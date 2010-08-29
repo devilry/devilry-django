@@ -1004,7 +1004,7 @@ class AssignmentGroup(models.Model, CommonInterface):
             else:
                 return _('Corrected')
 
-    def get_latest_delivery(self):
+    def get_latest_delivery_with_feedback(self):
         """ Get the latest delivery by this assignment group with feedback,
         or ``None`` if there is no deliveries with feedback. """
         if self.deliveries.all().count() == 0:
