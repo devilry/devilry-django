@@ -6,5 +6,5 @@ from settings import *
 
 DEVILRY_MAIN_PAGE = '/django/example/'
 LOGIN_URL = '/django/example/ui/login'
-DEVILRY_RESOURCES_URL = '/devilry-resources'
+DEVILRY_RESOURCES_URL = '/resources'
 ADMIN_MEDIA_PREFIX = DEVILRY_RESOURCES_URL + '/superadminmedia/'
