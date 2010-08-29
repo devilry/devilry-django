@@ -30,7 +30,16 @@
           <ul id='links'>
             {% block links %}
               {% if user.is_authenticated %}
-                <li><a href='{% url logout %}'>{% trans "Log out" %} - {{ user.username }}</a></li>
+                <li>
+                  {% with user.username as username %}
+                    {% blocktrans %}Welcome, {{ username }}.{% endblocktrans %}
+                  {% endwith %}
+                </li>
+                {% if DEVILRY_LOGOUT_URL %}
+                  <li>
+                    <a href='{{ DEVILRY_LOGOUT_URL }}'>{% trans "Log out" %}</a>
+                  </li>
+                {% endif %}
               {% endif %}
               {% block links-extra %}{% endblock %}
             {% endblock %}

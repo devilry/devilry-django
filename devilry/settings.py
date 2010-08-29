@@ -80,6 +80,7 @@ TEMPLATE_DIRS = (
 
 
 LOGIN_URL = '/ui/login'
+DEVILRY_LOGOUT_URL = '/ui/logout'
 
 
 INSTALLED_APPS = (
