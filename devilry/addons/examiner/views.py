@@ -192,7 +192,7 @@ def choose_assignment(request):
 @login_required
 def assignmentgroup_filtertable_json(request):
     def latestdeliverytime(g):
-        d = g.get_latest_delivery()
+        d = g.get_latest_delivery_with_feedback()
         if d:
             return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
         else:
