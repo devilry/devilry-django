@@ -15,7 +15,8 @@ from devilry.core.utils.GroupNodes import group_assignmentgroups, print_tree
 from devilry.core.models import Delivery, AssignmentGroup
 from devilry.ui.defaults import DATETIME_FORMAT
 from devilry.core.utils.verify_unique_entries import verify_unique_entries
-from devilry.core.devilry_email import DevilryEmail
+from devilry.core.devilry_email import send_email
+
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -72,10 +73,7 @@ def successful_delivery(request, assignment_group_id):
     for fm in latest.filemetas.all():
         email_message += " - %s (%d bytes)\n" % (fm.filename, fm.size)
     
-    email_message += "\n\n"
-
-    mail = DevilryEmail()
-    mail.send_email(request.user, 
+    send_email(request.user, 
                     "Receipt for your delivery on %s" % (subject.short_name), 
                     email_message)
     
