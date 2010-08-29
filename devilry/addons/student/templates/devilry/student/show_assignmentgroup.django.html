@@ -92,10 +92,14 @@ add as many deliveries as you like.{% endblocktrans %}</p>
 
 {% if assignment_group.can_add_deliveries %}
 <p>
-<a class='button' href='{% url devilry-student-add-delivery assignment_group.id %}'>
-        Add new delivery
-      </a>
+  <a class='button' href='{% url devilry-student-add-delivery assignment_group.id %}'>
+    Add new delivery
+  </a>
 </p>
+{% else %}
+<div class='warning-box'>
+  <p>{% blocktrans %} This assignment is closed for more deliveries. {% endblocktrans %}</p>
+</div>
 {% endif %}
 
 {% endblock %}
