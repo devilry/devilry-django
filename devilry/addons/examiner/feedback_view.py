@@ -33,7 +33,6 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
 
 def redirect_after_successful_save(request, delivery_obj):
     if not delivery_obj.feedback.published:
-        print "Not publishd"
         messages = UiMessages()
         messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
         messages.save(request)
