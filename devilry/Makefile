@@ -1,3 +1,6 @@
+PRODTEST=devilry.cfg.test1
+
+
 help:
 	@echo "Targets:"
 	@echo "  test:                 Run tests with coverage."
@@ -85,12 +88,12 @@ clear-prodtestdb:
 	-psql -d devilry_test -c "DROP TABLE grade_rstschema_rstschemagrade CASCADE;";
 
 init-prodtestdb:
-	python manage.py syncdb --settings=devilry.settings_productiontest --noinput
-	python manage.py loaddata --settings=devilry.settings_productiontest -v0 core/fixtures/example/users.json
-	python manage.py loaddata --settings=devilry.settings_productiontest -v0 core/fixtures/example/data.json
-	python manage.py loaddata --settings=devilry.settings_productiontest -v0 core/fixtures/example/grade_rstschema.json
-	python manage.py loaddata --settings=devilry.settings_productiontest -v0 core/fixtures/example/grade_default.json
-	python manage.py loaddata --settings=devilry.settings_productiontest -v0 core/fixtures/example/grade_approved.json
+	python manage.py syncdb --settings=${PRODTEST} --noinput
+	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/users.json
+	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/data.json
+	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/grade_rstschema.json
+	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/grade_default.json
+	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/grade_approved.json
 
 reset-prodtest: clear-prodtestdb init-prodtestdb
 
