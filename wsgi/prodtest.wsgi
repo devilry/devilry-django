@@ -4,8 +4,10 @@ import os
 import sys
 
 # Add the python libraries to the path
-sys.path.append('/devilry/lib/django') # django
-sys.path.append('/devilry/lib/devilry-django') # devilry
+if not '/devilry/lib/django' in sys.path:
+    sys.path.append('/devilry/lib/django') # django
+if not '/devilry/lib/devilry-django' in sys.path:
+    sys.path.append('/devilry/lib/devilry-django') # devilry
 
 # Select which settings to use
 os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.settings_productiontest'
