@@ -39,7 +39,6 @@
 - Deadlines in cli
 - Publish feedback with cli
 - Login to UiO from cli
-- Grade-plugin help
 
 
 clean method in BaseNode is not called when e.g. creating new subject

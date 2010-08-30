@@ -1,19 +1,31 @@
-	@import "forms.css";
-	@import "rst.css";
+@import "forms.css";
+@import "rst.css";
 
 
-	body {
-		font-family: "Tahoma", "Geneva", sans-serif;
-		margin: 0;
-		padding: 0;
-		/*background-color: #fff;*/
-		/*background-image: url("theme-bg.gif");*/
-		background-color: #fff;
-	}
+body {
+	font-family: "Tahoma", "Geneva", sans-serif;
+	margin: 0;
+	padding: 0;
+	/*background-color: #fff;*/
+	/*background-image: url("theme-bg.gif");*/
+	background-color: #fff;
+}
 
-	#top {
+#top {
 	padding: 0 6%;
 	background-color: #000;
+}
+
+pre {
+	font-family: "Lucida Console", "Andale Mono", monospace;
+}
+
+pre.blockpre {
+	border-color: #D4D2CE;
+	border-style: solid;
+	border-width: 1px 1px 1px 5px;
+	padding: 5px;
+	background-color: #fff;
 }
 
 
