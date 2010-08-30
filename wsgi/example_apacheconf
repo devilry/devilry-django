@@ -19,7 +19,7 @@
 	</Directory>
 
 	# Configure basic auth. This sets the REMOTE_USER envvar, which the the
-	# auth-plugin configured in settings_apache.py uses to authenticate users.
+	# auth-plugin configured in settings_production.py uses to authenticate users.
 	<Files *>
 		AuthUserFile /devilry/passwordlist
 		AuthName "Devilry auth."
