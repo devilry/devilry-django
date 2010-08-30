@@ -6,7 +6,11 @@ from django.contrib.auth.models import User
 
 
 
-p = OptionParser(usage="%prog [options] <username>")
+p = OptionParser(
+        usage = "%prog <add|modify|info> " \
+                    "[options] <username>",
+        description = "*add* and *modify* takes the documented options, "\
+            "while *info* only takes a username.")
 p.add_option("--first-name", dest="first_name", default=None,
         help="First name", metavar="FIRSTNAME")
 p.add_option("--last-name", dest="last_name", default=None,
@@ -16,22 +20,23 @@ p.add_option("--email", dest="email", default=None,
 p.add_option("--superuser", dest="superuser", default=None,
         metavar = 'yes/no',
         help="Make the user a superuser. A superuser has access to " \
-                "everything in the system.")
-p.add_option("--modify",
-        action="store_true", dest="modify", default=False,
-        help="Modify existing user instead of adding a new user.")
-p.add_option("--info",
-        action="store_true", dest="info", default=False,
-        help="Show info about the user. No changes is made to the user.")
+            "everything in the system. With *add* this defaults to " \
+            "'no', and with *modify* this defaults to no change made.")
+p.add_option("--active", dest="active", default=None,
+        metavar = 'yes/no',
+        help="Activate or deactivate a user. With *add* this defaults to " \
+            "'yes', and with *modify* this defaults to no change made.")
 
 (opt, args) = p.parse_args()
 
 
-if len(args) != 1:
+if len(args) != 2:
     p.print_help()
     raise SystemExit()
 
-username = args[0]
+action = args[0]
+username = args[1]
+
 kw = {}
 for x in 'first_name', 'last_name', 'email':
     value = getattr(opt, x)
@@ -39,17 +44,21 @@ for x in 'first_name', 'last_name', 'email':
         kw[x] = value
 if opt.superuser != None:
     kw['is_superuser'] = opt.superuser == 'yes'
+if opt.active != None:
+    kw['is_active'] = opt.active == 'yes'
 
-if opt.info:
+if action == "info":
     u = User.objects.get(username=username)
     for key, label in (
             ('username', 'Username'),
             ('first_name', 'First name'),
             ('last_name', 'Last name'),
             ('email', 'Email'),
+            ('is_active', 'Is active'),
             ('is_superuser', 'Is superuser')):
         print '%s: %s' % (label, getattr(u, key))
-elif opt.modify:
+
+elif action == "modify":
     try:
         u = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -59,16 +68,18 @@ elif opt.modify:
         setattr(u, key, value)
     u.save()
     print 'User "%s" modified successfully.' % username
-else:
+
+elif action == "add":
     if User.objects.filter(username=username).count() == 0:
         u = User(
                 username = username,
-                is_active = True,
                 is_staff = False,
-                is_superuser = False,
                 **kw)
         u.save()
         print 'User "%s" created successfully.' % username
     else:
         print 'ERROR: User "%s" already exists.' % username
         raise SystemExit()
+
+else:
+    raise SystemExit("Invalid action: %s" % action)
