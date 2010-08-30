@@ -4,8 +4,8 @@ import os
 import sys
 
 # Add the python libraries to the path
-sys.path.append('/uio/arkimedes/s11/espeak/devilry/django') # django
-sys.path.append('/uio/arkimedes/s11/espeak/devilry/devilry-django') # devilry
+sys.path.append('/devilry/django') # django
+sys.path.append('/devilry/devilry-django') # devilry
 
 # Select which settings to use
 os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.settings_production'

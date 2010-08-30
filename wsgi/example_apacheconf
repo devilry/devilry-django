@@ -1,9 +1,43 @@
-# Example apache mod_wsgi configuration for devilry
-# /mnt/hgfs/code/devilry-django/ is the path to the devilry-django repo root.
+# vim: ft=apache
+# Example apache configuration for devilry
 
-<Directory /mnt/hgfs/code/devilry-django/devilry>
-	Options FollowSymLinks Indexes
-	Allow from all
-</Directory>
-WSGIScriptAliasMatch ^/django/([^/]+) /mnt/hgfs/code/devilry-django/wsgi/$1.wsgi
-Alias /devilry-resources/ /mnt/hgfs/code/devilry-django/devilry/resources/
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /devilry/www_docs
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+	<Directory "/devilry/www_docs">
+		Options Indexes FollowSymLinks MultiViews
+		Order allow,deny
+		Allow from all
+		AllowOverride None
+		DirectoryIndex index.html index.cgi index.wsgi
+	</Directory>
+
+	# Configure basic auth. This sets the REMOTE_USER envvar, which the the
+	# auth-plugin configured in settings_apache.py uses to authenticate users.
+	<Files *>
+		AuthUserFile /devilry/passwordlist
+		AuthName "Devilry auth."
+		AuthType Basic
+		Require valid-user
+	</Files>
+
+	# Devilry sites will be hosted at /django/<name of site>/
+	# this enables us to run multiple devilry instances (for testing and
+	# production)
+	WSGIScriptAliasMatch ^/django/([^/]+) /devilry/wsgi/$1.wsgi
+
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	# Do not use "debug" in production!
+	ErrorLog /var/log/apache2/error.log
+	LogLevel debug
+
+	CustomLog /var/log/apache2/access.log combined
+</VirtualHost>
