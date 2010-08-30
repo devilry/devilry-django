@@ -10,7 +10,7 @@ if not '/devilry/lib/devilry-django' in sys.path:
     sys.path.append('/devilry/lib/devilry-django') # devilry
 
 # Select which settings to use
-os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.cfg.test1'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.cfg.test2'
 
 # Create the django wsgi application
 import django.core.handlers.wsgi

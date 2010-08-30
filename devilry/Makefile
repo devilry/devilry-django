@@ -1,4 +1,5 @@
-PRODTEST=devilry.cfg.test1
+PRODTEST=devilry.cfg.test2
+PROD=devilry.cfg.prod1
 
 
 help:
@@ -48,6 +49,14 @@ reset-exampledb:
 	python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
 	git checkout deliverystore.dbm.dat
 	git checkout deliverystore.dbm.dir
+	chmod a+rw db.sqlite3
+
+reset-proddb:
+	rm -f prod.db.sqlite3
+	python manage.py syncdb --settings=${PROD} --noinput
+	DJANGO_SETTINGS_MODULE=${PROD} ../adminscripts/bin/devilry-adduser.py --first-name "Espen" --last-name "Angell Kristiansen" espeak
+	DJANGO_SETTINGS_MODULE=${PROD} ../adminscripts/bin/devilry-adduser.py --modify --superuser yes espeak
+	chmod a+rw prod.db.sqlite3
 
 
 clear-prodtestdb:
