@@ -40,6 +40,7 @@
 - Publish feedback with cli
 - Login to UiO from cli
 - RstSchemaDefinition matching query does not exist
+- Let student see the schema
 
 
 clean method in BaseNode is not called when e.g. creating new subject
