@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 
 p = OptionParser(
-        usage = "%prog <add|modify|info> " \
+        usage = "%prog <add|modify|addormodify|info> " \
                     "[options] <username>",
         description = "*add* and *modify* takes the documented options, "\
             "while *info* only takes a username.")
@@ -42,10 +42,21 @@ for x in 'first_name', 'last_name', 'email':
     value = getattr(opt, x)
     if value:
         kw[x] = value
+
 if opt.superuser != None:
     kw['is_superuser'] = opt.superuser == 'yes'
+    kw['is_staff'] = kw['is_superuser']
 if opt.active != None:
     kw['is_active'] = opt.active == 'yes'
+
+if not action in ('info', 'add', 'modify', 'addormodify'):
+    raise SystemExit("Invalid action: %s" % action)
+
+if action == "addormodify":
+    if User.objects.filter(username=username).count() == 0:
+        action = "add"
+    else:
+        action = "modify"
 
 if action == "info":
     u = User.objects.get(username=username)
@@ -55,6 +66,7 @@ if action == "info":
             ('last_name', 'Last name'),
             ('email', 'Email'),
             ('is_active', 'Is active'),
+            ('is_staff', 'Has access to superadmin interface'),
             ('is_superuser', 'Is superuser')):
         print '%s: %s' % (label, getattr(u, key))
 
@@ -73,13 +85,9 @@ elif action == "add":
     if User.objects.filter(username=username).count() == 0:
         u = User(
                 username = username,
-                is_staff = False,
                 **kw)
         u.save()
         print 'User "%s" created successfully.' % username
     else:
         print 'ERROR: User "%s" already exists.' % username
         raise SystemExit()
-
-else:
-    raise SystemExit("Invalid action: %s" % action)

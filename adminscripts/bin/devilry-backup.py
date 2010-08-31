@@ -49,7 +49,7 @@ def fsdeliverystore_clear(filesroot):
             rmtree(os.path.join(filesroot, dirname))
 
 
-def backup(settings, backupdir, djangoadmin):
+def backup(settings, opt, backupdir, djangoadmin):
     os.makedirs(backupdir)
     logging.info("Creating backup in %(backupdir)s." % vars())
 
@@ -86,7 +86,7 @@ def backup(settings, backupdir, djangoadmin):
 
     logging.info("*** Successful backup to: %(backupdir)s" % vars())
 
-def restore(settings, restoredir, djangoadmin):
+def restore(settings, opt, restoredir, djangoadmin):
     print
     q = textwrap.fill("We are about to to a restore of a backup. " \
             "This action will destroy all data in the database " \
@@ -101,19 +101,21 @@ def restore(settings, restoredir, djangoadmin):
 
     # Clear db
     logging.info("Clearing the database")
+    #if settings.DATABASE_ENGINE.startswith('postgresql'):
+        #os.system("%(sql sqlreset myapp | sed 's/DROP TABLE
+                #\(.*\);/DROP TABLE \1 CASCADE;/g' | psql --username
+                #myusername mydbname
     for app in settings.INSTALLED_APPS:
         appname = app.split('.')[-1]
-        cmd = "%(djangoadmin)s reset --noinput %(appname)s" % vars()
+        settingsmod = opt.settings
+        cmd = "%(djangoadmin)s reset --settings %(settingsmod)s --noinput %(appname)s" % vars()
         callexp(cmd)
 
     # DB restore
-    f = open(dbdumpfile, 'rb')
     logging.info("Restoring the database from %(dbdumpfile)s..." % vars())
-    p = Popen([djangoadmin, 'loaddata', '--settings', opt.settings],
-        stdout=PIPE, stderr=STDOUT, stdin=f)
-    stdout = p.communicate()[0]
-    f.close()
-    logging.info(stdout)
+    settingsmod = opt.settings
+    callexp("%(djangoadmin)s loaddata --settings %(settingsmod)s " \
+            "%(dbdumpfile)s" % vars())
     logging.info("... database restore complete")
 
     # Remove existing files
@@ -162,7 +164,8 @@ if __name__ == "__main__":
     def exit_help():
         p.print_help()
         raise SystemExit()
-
+    if len(args) < 2:
+        exit_help()
 
     logging.basicConfig(level=opt.loglevel)
     try:
@@ -183,8 +186,8 @@ if __name__ == "__main__":
     if action == "backup" or opt.backup_on_restore:
         backupdir = os.path.join(args[1], opt.settings,
                 datetime.now().isoformat())
-        backup(settings, backupdir, djangoadmin)
+        backup(settings, opt, backupdir, djangoadmin)
 
     if action == "restore":
         restoredir = args[2]
-        restore(settings, restoredir, djangoadmin)
+        restore(settings, opt, restoredir, djangoadmin)

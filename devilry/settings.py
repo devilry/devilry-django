@@ -75,7 +75,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    join(this_dir, 'templates')
+    join(this_dir, 'templates'),
 )
 
 
@@ -84,14 +84,10 @@ DEVILRY_LOGOUT_URL = '/ui/logout'
 
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.markup', 
     'django.contrib.sessions',
     'django.contrib.sites',
 	'django.contrib.admin',
-    #'django.contrib.admindocs',
-    'devilry.core',
-    #'devilry.ui',
     'devilry.addons.student',
     'devilry.addons.examiner',
     'devilry.addons.admin',
@@ -100,10 +96,13 @@ INSTALLED_APPS = (
     'devilry.addons.grade_schema',
     'devilry.addons.grade_rstschema',
     'devilry.addons.dashboard',
-    'devilry.xmlrpc',
     'devilry.addons.xmlrpc_examiner',
+    'devilry.xmlrpc',
     'devilry.xmlrpc_client',
-    'django.contrib.markup', 
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'devilry.core',
+    'devilry.ui'
     )
 
 
