@@ -9,7 +9,7 @@ $(function() {
 		
 		$(".devilry_multiselect_few").autocomplete({
 				source: function(request, response) {
-					$.getJSON("/ui/user_json", {
+					$.getJSON(DEVILRY_MAIN_PAGE + "/ui/user_json", {
 						  term: extractLast(request.term)
 						  }, response);
 				},

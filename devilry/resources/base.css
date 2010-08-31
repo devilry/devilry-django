@@ -16,6 +16,18 @@ body {
 	background-color: #000;
 }
 
+pre {
+	font-family: "Lucida Console", "Andale Mono", monospace;
+}
+
+pre.blockpre {
+	border-color: #D4D2CE;
+	border-style: solid;
+	border-width: 1px 1px 1px 5px;
+	padding: 5px;
+	background-color: #fff;
+}
+
 
 .help-box {
 	font-size: 0.9em;
@@ -70,10 +82,10 @@ body {
 	display: inline-block;
 	padding: 0;
 	margin: 0 0 0 20px;
-	color: #888;
+	color: #999;
 }
 #linkbar a {
-	color: #aaa;
+	color: #bbb;
 	font-weight: bold;
 	text-decoration: none;
 }
@@ -201,10 +213,12 @@ body {
 	border: 1px solid #B34700;
 	background-color: #FFB380;
 }
-#messages li.error_message
+#messages li.error_message,
 .error-box {
-	border: 3px solid #000;
-	background-color: #CC0000;
+	border: 1px solid #700;
+	background-color: #a00;
+	color: #fff;
+	font-weight: bold;
 }
 
 

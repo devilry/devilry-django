@@ -73,4 +73,5 @@ def edit_assignment(request, assignment_id=None):
         'assignment': assignment,
         'messages': messages,
         'isnew': isnew,
+        'gradeplugins': gradeplugin.registry.iteritems()
         }, context_instance=RequestContext(request))

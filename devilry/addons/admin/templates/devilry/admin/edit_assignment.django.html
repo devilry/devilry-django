@@ -1,6 +1,7 @@
 {% extends "devilry/admin/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
+{% load rst_to_html %}
 
 {% block title %}{% trans "Assignments" %}{% endblock %}
 {% block heading %}
@@ -40,6 +41,14 @@
     <input type='submit' name='save' value='{% trans "Save" %}' class='button'/>
   </div>
 </form>
+
+{% if isnew %}
+  <h2>Grade plugins</h2>
+  {% for key, gradeplugin in gradeplugins %}
+    <h3>{{ gradeplugin.label }}</h3>
+    <p>{{ gradeplugin.description|rst_to_html }}</p>
+  {% endfor %}
+{% endif %}
 
 
 {% if not isnew %}
