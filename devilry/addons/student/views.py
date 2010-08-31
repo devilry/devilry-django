@@ -20,7 +20,7 @@ from devilry.core.devilry_email import send_email
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
-UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
+#UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
 
 @login_required
@@ -30,22 +30,47 @@ def add_delivery(request, assignment_group_id, messages=None):
     if not assignment_group.is_candidate(request.user) or \
             not assignment_group.can_add_deliveries():
         return HttpResponseForbidden("Forbidden")
+
+    if not messages:
+        messages = UiMessages()
+
+    filenames = None
+    upload_file_count = 10
+    filenames_to_deliver = None
+
+    if assignment_group.parentnode.filenames:
+        filenames = assignment_group.parentnode.get_filenames() 
+        upload_file_count = len(filenames)
+        filenames_to_deliver = ''.join([f + ", " for f in filenames])
+        filenames_to_deliver = filenames_to_deliver[:-2]
+
+    UploadFileFormSet = formset_factory(UploadFileForm, extra=upload_file_count)
+
     if request.method == 'POST':
         formset = UploadFileFormSet(request.POST, request.FILES)
         if formset.is_valid():
             if not verify_unique_entries(request.FILES.values()):
-                if not messages:
-                    messages = UiMessages()
                 messages.add_warning(_("The filenames are not unique."))
             else:
-                delivery = Delivery.begin(assignment_group, request.user)
-                for f in request.FILES.values():
-                    filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
-                    delivery.add_file(filename, f.chunks())
-                delivery.finish()
-                return HttpResponseRedirect(
-                    reverse('devilry-student-successful_delivery',
-                            args=[assignment_group_id]))
+                valid_filenames = True
+
+                if assignment_group.parentnode.filenames:
+                    try:
+                        assignment_group.parentnode.validate_filenames(filenames)
+                    except ValueError, e:
+                        valid_filenames = False
+                        
+                        messages.add_warning(_("The file name does not match the expected."), str(e))
+
+                if valid_filenames:
+                    delivery = Delivery.begin(assignment_group, request.user)
+                    for f in request.FILES.values():
+                        filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
+                        delivery.add_file(filename, f.chunks())
+                    delivery.finish()
+                    return HttpResponseRedirect(
+                        reverse('devilry-student-successful_delivery',
+                                args=[assignment_group_id]))
     else:
         formset = UploadFileFormSet()
 
@@ -53,6 +78,7 @@ def add_delivery(request, assignment_group_id, messages=None):
         'assignment_group': assignment_group,
         'formset': formset,
         'messages': messages,
+        'filenames_to_deliver': filenames_to_deliver,
         }, context_instance=RequestContext(request))
 
 def successful_delivery(request, assignment_group_id):
