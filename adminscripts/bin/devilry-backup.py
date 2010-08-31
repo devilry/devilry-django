@@ -7,6 +7,7 @@ import os.path
 from subprocess import call, Popen, PIPE, STDOUT
 from datetime import datetime
 import logging
+from shutil import rmtree
 
 from django.utils.importlib import import_module
 
@@ -18,6 +19,7 @@ class BackupError(Exception):
 
 def callexp(cmd):
     """ Like os.system, but with good error handling. """
+    logging.info("Running: %(cmd)s" % vars())
     try:
         retcode = call(cmd, shell=True)
         if retcode < 0:
@@ -31,8 +33,19 @@ def callexp(cmd):
                 "Excecution of %(cmd)s failed: %(e)s" % vars())
 
 def fsdeliverystore_backup(tarfile, filesroot):
-    cmd = "tar -cjf %(tarfile)s %(filesdir)s" % vars()
+    cmd = "tar -cvjf %(tarfile)s --exclude \"lost+found\" %(filesroot)s" % vars()
     callexp(cmd)
+
+def fsdeliverystore_restore(tarfile, filesroot):
+    cmd = "tar -xvjf %(tarfile)s -C %(filesroot)s" % vars()
+    callexp(cmd)
+
+def fsdeliverystore_clear(filesroot):
+    logging.info("Removing all directories with digits as name from "\
+            "%(filesroot)s" % vars())
+    for dirname in os.listdir(filesroot):
+        if dirname.isdigit():
+            rmtree(os.path.join(filesroot, dirname))
 
 
 
@@ -123,7 +136,6 @@ if __name__ == "__main__":
         for app in settings.INSTALLED_APPS:
             appname = app.split('.')[-1]
             cmd = "%(djangoadmin)s reset --noinput %(appname)s" % vars()
-            logging.info("Running: %(cmd)s" % vars())
             callexp(cmd)
 
         # DB restore
@@ -136,17 +148,21 @@ if __name__ == "__main__":
         logging.info(stdout)
         logging.info("... database restore complete")
 
+        # Remove existing files
+        logging.info("Removing old the delivery-files ...")
+
         # File restore
         logging.info("Restoring the files ...")
         if settings.DELIVERY_STORE_BACKEND == 'devilry.core.deliverystore.FsDeliveryStore':
-            logging.info("Restoring files from %(fsdeliverystore_tarfile)s." %
+            logging.info("Restoring delivery-files from %(fsdeliverystore_tarfile)s." %
                     vars())
-            #try:
-                #fsdeliverystore_backup(fsdeliverystore_tarfile,
-                        #settings.DELIVERY_STORE_ROOT)
-            #except BackupError, e:
-                #logging.error(str(e))
-            logging.info("... file restore complete")
+            try:
+                fsdeliverystore_clear(settings.DELIVERY_STORE_ROOT)
+                fsdeliverystore_restore(fsdeliverystore_tarfile,
+                        settings.DELIVERY_STORE_ROOT)
+            except BackupError, e:
+                logging.error(str(e))
+            logging.info("... delivery-files restore complete")
         else:
             logging.error(
                     "The backup script only supports FsDeliveryStoreBackend")
