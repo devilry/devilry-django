@@ -102,8 +102,8 @@ class ShortNameField(models.SlugField):
             verbose_name = _('Short name'),
             db_index = True,
             help_text=_(
-                "Max 20 characters. Only numbers, lowercase characters, '_' and '-'. "\
-                "Only visible to examiners and admins."))
+                "Max 20 characters. Only numbers, lowercase characters, '_' " \
+                    "and '-'. " ))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
 
