@@ -1,6 +1,8 @@
 PRODTEST=devilry.cfg.test2
 PROD=devilry.cfg.prod1
 
+USER=../adminscripts/bin/devilry-user.py
+
 
 help:
 	@echo "Targets:"
@@ -54,8 +56,9 @@ reset-exampledb:
 reset-proddb:
 	rm -f prod.db.sqlite3
 	python manage.py syncdb --settings=${PROD} --noinput
-	DJANGO_SETTINGS_MODULE=${PROD} ../adminscripts/bin/devilry-adduser.py --first-name "Espen" --last-name "Angell Kristiansen" espeak
-	DJANGO_SETTINGS_MODULE=${PROD} ../adminscripts/bin/devilry-adduser.py --modify --superuser yes espeak
+	#DJANGO_SETTINGS_MODULE=${PROD} ${USER} add espeak --superuser yes --first-name "Espen" --last-name "Kristiansen"
+	#DJANGO_SETTINGS_MODULE=${PROD} ${USER} add bendiko --superuser yes --first-name "Bendik" --last-name "Opstad"
+	#DJANGO_SETTINGS_MODULE=${PROD} ${USER} add fredva --first-name "Fredrik" --last-name "Valdemais"
 	chmod a+rw prod.db.sqlite3
 
 

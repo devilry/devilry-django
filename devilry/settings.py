@@ -91,7 +91,7 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
     #'django.contrib.admindocs',
     'devilry.core',
-    'devilry.ui',
+    #'devilry.ui',
     'devilry.addons.student',
     'devilry.addons.examiner',
     'devilry.addons.admin',
