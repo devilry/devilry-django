@@ -11,7 +11,7 @@ def url_callback(assignment_id):
 gradeplugin.registry.register(gradeplugin.RegistryItem(
         view = view,
         model_cls = SchemaGradeResults,
-        label = _('Schema'),
+        label = _('Schema - for demonstration not for production use'),
         admin_url_callback = url_callback,
-        description = _('Examiner fills in a schema.')
+        description = _('Only for demonstration and documentation purposes.')
 ))
