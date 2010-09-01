@@ -6,7 +6,7 @@ from setuptools import setup
 
 
 setup(name = 'devilry_xmlrpc_client',
-      version = '0.1',
+      version = '0.1.1',
       description = 'The devilry xmlrpc client and shell scripts.',
       url = 'http://devilry.github.com',
       author = 'Espen Angell Kristiansen',
