@@ -64,7 +64,7 @@ class Cli(object):
         or ``args[1]=='help', show help and raise :exc:`SystemExit`.
         """
         prog = os.path.basename(args[0])
-        if len(args) < 2:
+        if len(args) < 2 or not args[1] in self.commands_dict:
             print 'usage: %s <command>' % prog
             print
             self._print_commands()
@@ -83,9 +83,10 @@ class Cli(object):
                 raise SystemExit()
             c = self.commands_dict[args[2]]()
             c.exit_help()
+            raise SystemExit()
         else:
             c = self.commands_dict[command]()
-            c.cli(args[2:])
+            c.cli(args[2:], prog)
 
     def set_extra_help(self, extra_help):
         """
@@ -249,8 +250,9 @@ class Command(object):
             log.addHandler(f)
 
 
-    def cli(self, argv):
+    def cli(self, argv, prog=None):
         """ Start the cli. """
+        self.prog = prog
         self.opt, self.args = self.op.parse_args(argv)
         log.setLevel(logging.DEBUG)
         self.configure_loghandlers(self.opt.loglevel)
