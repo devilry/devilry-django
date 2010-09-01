@@ -50,7 +50,7 @@ def add_delivery(request, assignment_group_id, messages=None):
         formset = UploadFileFormSet(request.POST, request.FILES)
         if formset.is_valid():
             if not verify_unique_entries(request.FILES.values()):
-                messages.add_warning(_("The filenames are not unique."))
+                messages.add_error(_("The filenames are not unique."))
             else:
                 valid_filenames = True
 
@@ -59,7 +59,6 @@ def add_delivery(request, assignment_group_id, messages=None):
                         assignment_group.parentnode.validate_filenames(filenames)
                     except ValueError, e:
                         valid_filenames = False
-                        
                         messages.add_warning(_("The file name does not match the expected."), str(e))
 
                 if valid_filenames:
