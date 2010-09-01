@@ -356,12 +356,21 @@ class Login(CommandUsingConfig):
 
     def command(self):
         server = self.get_serverproxy()
-        password = self.get_password()
+        try:
+            password = self.get_password()
+        except EOFError, e:
+            print
+            raise SystemExit("Aborting..")
         try:
             ret = server.login(self.opt.username, password)
         except xmlrpclib.Fault, e:
             log_fault(e)
             raise SystemExit()
+        except xmlrpclib.ProtocolError, e:
+            log.error('ProtocolError: %s' % e)
+            raise SystemExit(
+                    "This error might happen when you try to abort "\
+                    "(ctrl-c) the password prompt.")
         if ret == self.successful_login:
             log.info('Login successful')
         else:
