@@ -589,7 +589,7 @@ class Assignment(models.Model, BaseNode):
             valid = self.get_filenames()
             for filename in filenames:
                 if not filename in valid:
-                    raise ValueError(_("Invalid filename: %(filename)s." %
+                    raise ValueError(_("Invalid filename: %(filename)s" %
                         dict(filename=filename)))
 
     @classmethod
