@@ -55,8 +55,14 @@ def login_view(request):
 @login_required
 def download_file(request, filemeta_id):
     filemeta = get_object_or_404(FileMeta, pk=filemeta_id)
+    assignment_group = filemeta.delivery.assignment_group
+    if not (assignment_group.is_candidate(request.user) \
+            or assignment_group.is_examiner(request.user) \
+            or request.user.is_superuser \
+            or assignment_group.parentnode.is_admin(request.user)):
+        return http.HttpResponseForbidden("Forbidden")
+
     # TODO: make this work on any storage backend
-    # TODO: restrict to admins and examiners and students on the AssignmentGroup
     response = http.HttpResponse(
             FileWrapper(filemeta.read_open()),
             content_type=guess_type(filemeta.filename)[0])
