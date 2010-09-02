@@ -147,3 +147,5 @@ EMAIL_FILE_PATH = this_dir + '/email_log/'
 #EMAIL_HOST_PASSWORD = 
 
 email_subject_prefix = '[devilry] '
+
+WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'
