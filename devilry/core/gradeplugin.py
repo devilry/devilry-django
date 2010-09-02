@@ -10,6 +10,17 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
 
+class GradePluginError(Exception):
+    """ Base class for grade plugin errors. """
+
+class GradePluginDoesNotExistError(GradePluginError):
+    """ Raised when a grade plugin does not exist. """
+
+class WrongContentTypeError(GradePluginError):
+    """ Raised when the grade object on a feedback is not using the grade
+    plugin on the assignment. """
+
+
 class XmlrpcGradeConf(object):
     """ Provides the configuration-wrapper between a grade-plugin and the
     xmlrpc. """

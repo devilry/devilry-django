@@ -575,11 +575,23 @@ class Assignment(models.Model, BaseNode):
         for the current :attr:`grade_plugin`. """
         return gradeplugin.registry.getitem(self.grade_plugin)
 
+    def validate_gradeplugin(self):
+        """ Check if grade plugin is valid (exists). 
+        Raise :exc:`devilry.core.gradeplugin.GradePluginDoesNotExistError`
+        on error. """
+        try:
+            ri = self.get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise gradeplugin.GradePluginDoesNotExistError(
+                'Invalid grade plugin "%s" on assignment: %s. This is '\
+                'usually because a grade plugin has been removed from '\
+                'the INSTALLED_APPS setting. There is no easy fix for '\
+                'this except to re-enable the missing grade plugin.' % (
+                    self.grade_plugin, self))
 
     def get_filenames(self):
         """ Get the filenames as a list of strings. """
         return self.filenames.split()
-
 
     def validate_filenames(self, filenames):
         """ Raise ValueError unless each filename in the iterable
@@ -1382,21 +1394,24 @@ class Feedback(models.Model):
         object is not a subclass of
         :class:`devilry.core.gradeplugin.GradeModel`. """
         if self.grade:
-            self._validate_gradeobj()
+            self.validate_gradeobj()
         return self.grade
 
-    def _validate_gradeobj(self):
+    def validate_gradeobj(self):
         """ Validate the grade object integrity. When this fails, the
-        database integrity is corrupt. """
+        database integrity is corrupt. Raises one of the subclasses of
+        :exc:`devilry.core.gradeplugin.GradePluginError` on error. """
         assignment = self.delivery.assignment_group.parentnode
         try:
             ri = self.get_assignment().get_gradeplugin_registryitem()
         except KeyError, e:
-            raise ValueError("Invalid grade plugin on assignment: %s." %
-                    assignment)
+            raise gradeplugin.GradePluginDoesNotExistError('Feedback with '\
+                    'id %s (%s) belongs in a assignment (%s) with a '\
+                    'invalid gradeplugin. ' % (
+                        self.id, self, assignment))
         if not isinstance(self.grade, ri.model_cls):
             correct_ct = ri.get_content_type()
-            raise ValueError(
+            raise gradeplugin.WrongContentTypeError(
                 'Grade-plugin on feedback with id "%s" (%s) must be "%s", as on the ' \
                 'assignment: %s. It is: %s. The content type on the feedback '\
                 'should be "%s (pk:%s)", not "%s (pk:%s)".' % (self.id, self, ri.get_key(), assignment,
@@ -1486,7 +1501,7 @@ class Feedback(models.Model):
             - The node is the child of itself or one of its childnodes.
         """
         if self.grade:
-            self._validate_gradeobj()
+            self.validate_gradeobj()
         super(Feedback, self).clean(*args, **kwargs)
 
 
