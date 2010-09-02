@@ -1381,13 +1381,28 @@ class Feedback(models.Model):
         """ Get :attr:`grade`, but raise :exc:`ValueError` if the grade
         object is not a subclass of
         :class:`devilry.core.gradeplugin.GradeModel`. """
-        if not isinstance(self.grade, gradeplugin.GradeModel):
-            raise ValueError('The "grade" attribute of feedback object with '\
-                    'id %s (%s) is not a subclass of ' \
-                    'devilry.core.gradeplugin.GradeModel. It is "%s", which is '\
-                    'of type %s. About the current grade object: %s.' % (
-                    self.id, self, self.grade, type(self.grade),
-                    self.get_grade_object_info()))
+        if self.grade:
+            self._validate_gradeobj()
+        return self.grade
+
+    def _validate_gradeobj(self):
+        """ Validate the grade object integrity. When this fails, the
+        database integrity is corrupt. """
+        assignment = self.delivery.assignment_group.parentnode
+        try:
+            ri = self.get_assignment().get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise ValueError("Invalid grade plugin on assignment: %s." %
+                    assignment)
+        if not isinstance(self.grade, ri.model_cls):
+            correct_ct = ri.get_content_type()
+            raise ValueError(
+                'Grade-plugin on feedback with id "%s" (%s) must be "%s", as on the ' \
+                'assignment: %s. It is: %s. The content type on the feedback '\
+                'should be "%s (pk:%s)", not "%s (pk:%s)".' % (self.id, self, ri.get_key(), assignment,
+                    self.get_grade_object_info(),
+                    correct_ct, correct_ct.pk, 
+                    self.content_type, self.content_type.pk))
 
     def get_grade_as_short_string(self):
         """
@@ -1470,23 +1485,8 @@ class Feedback(models.Model):
               referred by :attr:`Assignment.grade_plugin`.
             - The node is the child of itself or one of its childnodes.
         """
-
-        #    raise ValidationError(_('A node can not be it\'s own parent.'))
-        assignment = self.delivery.assignment_group.parentnode
-        try:
-            ri = self.get_assignment().get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise ValidationError(_(
-                'The assignment, %s, has a invalid grade-plugin. Contact ' \
-                'the system administrators to get this fixed.' %
-                assignment))
-        else:
-            if self.grade:
-                if not isinstance(self.grade, ri.model_cls):
-                    raise ValidationError(_(
-                        'Grade-plugin on feedback must be "%s", as on the ' \
-                        'assignment, %s.' % (ri.label, assignment)))
-
+        if self.grade:
+            self._validate_gradeobj()
         super(Feedback, self).clean(*args, **kwargs)
 
 

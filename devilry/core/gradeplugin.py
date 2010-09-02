@@ -7,6 +7,7 @@
 
 from django.db import models
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 
 class XmlrpcGradeConf(object):
@@ -130,6 +131,15 @@ class RegistryItem(object):
     def get_key(self):
         meta = self.model_cls._meta
         return '%s:%s' % (meta.app_label, meta.module_name)
+
+    def get_content_type(self):
+        meta = self.model_cls._meta
+        #print dir(meta)
+        #for ct in ContentType.objects.all():
+        #    print ct.model
+        #print meta.app_label, meta.module_name
+        return ContentType.objects.get(app_label=meta.app_label,
+                model=meta.module_name)
 
     def __str__(self):
         return self.label
