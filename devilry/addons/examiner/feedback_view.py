@@ -42,8 +42,19 @@ def redirect_after_successful_save(request, delivery_obj):
         email_message += "\n\n"
         email_message += "Subject: %s - %s\n" % (subject.long_name, period.long_name)
         email_message += "Assignment: %s\n" % (assignment.long_name)
-        #email_message += "Time of : %s\n" % latest.time_of_delivery.strftime(DATETIME_FORMAT)
-            
+        
+        cands = delivery_obj.assignment_group.candidates.all()
+        users = []
+        for candidate in cands:
+            s = candidate.student
+            users.append(s)
+
+        rev = reverse('devilry-student-show-delivery', args=(delivery_obj.id,))
+        url = WEB_PAGE_PREFIX + rev
+        url2 = request.get_host() + rev
+        
+        email_message += "\n\nThe feedback can be viewed at\n%s or\n%s\n" % (url, url2)
+        
         send_email(request.user, 
                    "New feedback - %s" % (subject.short_name), 
                    email_message)
