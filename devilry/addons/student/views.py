@@ -82,7 +82,7 @@ def add_delivery(request, assignment_group_id, messages=None):
                         reverse('devilry-student-successful_delivery',
                                 args=[assignment_group_id]))
         else:
-            messages.add_error(_("An unknown error occured."))
+            messages.add_error("%s, %s" % (_("An unknown error occured."), formset.errors))
     else:
         formset = UploadFileFormSet()
 
@@ -110,8 +110,13 @@ def successful_delivery(request, assignment_group_id):
 
     for fm in latest.filemetas.all():
         email_message += " - %s (%d bytes)\n" % (fm.filename, fm.size)
+        
+    cands = assignment_group.candidates.all()
+    user_list = []
+    for cand in cands:
+        user_list.append(cand.student)
     
-    send_email(request.user, 
+    send_email(user_list, 
                     "Receipt for your delivery on %s" % (subject.short_name), 
                     email_message)
     
