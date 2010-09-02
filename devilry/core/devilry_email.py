@@ -6,10 +6,10 @@ def send_email(user_objects_to_send_to, subject, message):
     message += "\n\n"
     message += _("This is a message from the Devilry assignment delivery system. " \
                      "Please do not respond to this email.")
-	emails = []
-	for u in user_objects_to_send_to:
+    emails = []
+    for u in user_objects_to_send_to:
         emails.append(u.email)
-	send_mail(email_subject_prefix + subject, message, 'devilry@example.com',
+    send_mail(email_subject_prefix + subject, message, 'devilry@example.com',
              emails, fail_silently=False)
 
         
