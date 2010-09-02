@@ -427,7 +427,7 @@
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
-            "grade_plugin": "grade_approved:approvedgraded", 
+            "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "greed", 
             "publishing_time": "2010-08-05 10:00:00", 
             "parentnode": 2, 
@@ -2531,7 +2531,7 @@
             "delivery": 4, 
             "last_modified": "2010-08-05 18:27:33", 
             "object_id": 2, 
-            "content_type": 14, 
+            "content_type": 11, 
             "published": false
         }
     }, 
