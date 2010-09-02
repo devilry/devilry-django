@@ -146,6 +146,6 @@ EMAIL_FILE_PATH = this_dir + '/email_log/'
 #EMAIL_HOST_USER = 
 #EMAIL_HOST_PASSWORD = 
 
-email_subject_prefix = '[devilry] '
-
+EMAIL_SUBJECT_PREFIX = '[devilry] '
 WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'
+EMAIL_DEFAULT_FROM = 'devilry-support@ifi.uio.no'
