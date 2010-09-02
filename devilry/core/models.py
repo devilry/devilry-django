@@ -1367,6 +1367,28 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+
+    def __unicode__(self):
+        return "Feedback on %s" % self.delivery
+
+    def get_grade_object_info(self):
+        """ Get information about the grade object as a string. """
+        return 'content_type: %s, object_id:%s, ' \
+                'grade: %s' % (self.content_type, self.object_id,
+                        self.grade)
+
+    def get_grade(self):
+        """ Get :attr:`grade`, but raise :exc:`ValueError` if the grade
+        object is not a subclass of
+        :class:`devilry.core.gradeplugin.GradeModel`. """
+        if not isinstance(self.grade, gradeplugin.GradeModel):
+            raise ValueError('The "grade" attribute of feedback object with '\
+                    'id %s (%s) is not a subclass of ' \
+                    'devilry.core.gradeplugin.GradeModel. It is "%s", which is '\
+                    'of type %s. About the current grade object: %s.' % (
+                    self.id, self, self.grade, type(self.grade),
+                    self.get_grade_object_info()))
+
     def get_grade_as_short_string(self):
         """
         Get the grade as a short string suitable for short one-line
