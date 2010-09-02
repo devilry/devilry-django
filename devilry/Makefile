@@ -53,6 +53,19 @@ reset-exampledb:
 	git checkout deliverystore.dbm.dir
 	chmod a+rw db.sqlite3
 
+create-minimal-exampledata:
+	python manage.py dumpdata core --indent=4 > core/fixtures/example/minimaldata.json
+	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/minimalusers.json
+
+reset-minimal-exampledb:
+	rm -f db.sqlite3
+	python manage.py syncdb --noinput
+	python manage.py loaddata -v0 core/fixtures/example/minimalusers.json
+	python manage.py loaddata -v0 core/fixtures/example/minimaldata.json
+	git checkout deliverystore.dbm.dat
+	git checkout deliverystore.dbm.dir
+	chmod a+rw db.sqlite3
+
 reset-proddb:
 	rm -f prod.db.sqlite3
 	python manage.py syncdb --settings=${PROD} --noinput
