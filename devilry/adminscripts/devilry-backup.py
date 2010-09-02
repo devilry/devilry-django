@@ -1,45 +1,27 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import os.path
 import logging
 import textwrap
 from shutil import rmtree
-from subprocess import call, Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE
 from datetime import datetime
 from optparse import OptionParser
 
 from django.utils.importlib import import_module
 
-
-class BackupError(Exception):
-    pass
+from common import SystemCallError, systemcall, setup_logging, add_quiet_opt
 
 
-
-def callexp(cmd):
-    """ Like os.system, but with good error handling. """
-    logging.info("Running: %(cmd)s" % vars())
-    try:
-        retcode = call(cmd, shell=True)
-        if retcode < 0:
-            raise BackupError(
-                    "'%(cmd)s' was terminated by signal -%(retcode)s" % vars())
-        elif retcode > 0:
-            raise BackupError(
-                    "'%(cmd)s' returned error code: %(retcode)s" % vars())
-    except OSError, e:
-        raise BackupError(
-                "Excecution of %(cmd)s failed: %(e)s" % vars())
 
 def fsdeliverystore_backup(tarfile, filesroot):
     cmd = "tar -cvjf %(tarfile)s -C %(filesroot)s ./" % vars()
-    callexp(cmd)
+    systemcall(cmd)
 
 def fsdeliverystore_restore(tarfile, filesroot):
     cmd = "tar -xvjf %(tarfile)s -C %(filesroot)s" % vars()
-    callexp(cmd)
+    systemcall(cmd)
 
 def fsdeliverystore_clear(filesroot):
     logging.info("Removing all directories with digits as name from "\
@@ -76,7 +58,7 @@ def backup(settings, opt, backupdir, djangoadmin):
         try:
             fsdeliverystore_backup(fsdeliverystore_tarfile,
                     settings.DELIVERY_STORE_ROOT)
-        except BackupError, e:
+        except SystemCallError, e:
             logging.error(str(e))
         logging.info("... file backup complete")
     else:
@@ -109,12 +91,12 @@ def restore(settings, opt, restoredir, djangoadmin):
         appname = app.split('.')[-1]
         settingsmod = opt.settings
         cmd = "%(djangoadmin)s reset --settings %(settingsmod)s --noinput %(appname)s" % vars()
-        callexp(cmd)
+        systemcall(cmd)
 
     # DB restore
     logging.info("Restoring the database from %(dbdumpfile)s..." % vars())
     settingsmod = opt.settings
-    callexp("%(djangoadmin)s loaddata --settings %(settingsmod)s " \
+    systemcall("%(djangoadmin)s loaddata --settings %(settingsmod)s " \
             "%(dbdumpfile)s" % vars())
     logging.info("... database restore complete")
 
@@ -130,7 +112,7 @@ def restore(settings, opt, restoredir, djangoadmin):
             fsdeliverystore_clear(settings.DELIVERY_STORE_ROOT)
             fsdeliverystore_restore(fsdeliverystore_tarfile,
                     settings.DELIVERY_STORE_ROOT)
-        except BackupError, e:
+        except SystemCallError, e:
             logging.error(str(e))
         logging.info("... delivery-files restore complete")
     else:
@@ -151,13 +133,11 @@ if __name__ == "__main__":
             help="Path to the django-admin.py script. Defaults to "\
                 "'django-admin.py', which means that it must be on the PATH.",
                 metavar="PATH")
-    p.add_option("-q", "--quiet", action="store_const",
-        const=logging.ERROR, dest="loglevel", default=logging.INFO,
-        help="Don't show extra information (only errors).")
     p.add_option("--no-backup-on-restore", action="store_false",
         dest="backup_on_restore", default=True,
         help="Normally a backup is made before a restore (because restore "\
             "destroys data). Use this to skip the backup.")
+    add_quiet_opt(p)
     (opt, args) = p.parse_args()
 
 
@@ -167,7 +147,7 @@ if __name__ == "__main__":
     if len(args) < 2:
         exit_help()
 
-    logging.basicConfig(level=opt.loglevel)
+    setup_logging(opt)
     try:
         settings = import_module(opt.settings)
     except ImportError, e:

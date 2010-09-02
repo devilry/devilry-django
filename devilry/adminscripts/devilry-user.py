@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 from optparse import OptionParser
+import logging
 
-from django.contrib.auth.models import User
+from common import (setup_logging,
+    add_quiet_opt, add_settings_option, set_django_settings_module)
+
 
 
 
@@ -11,6 +14,7 @@ p = OptionParser(
                     "[options] <username>",
         description = "*add* and *modify* takes the documented options, "\
             "while *info* only takes a username.")
+add_settings_option(p)
 p.add_option("--first-name", dest="first_name", default=None,
         help="First name", metavar="FIRSTNAME")
 p.add_option("--last-name", dest="last_name", default=None,
@@ -26,9 +30,13 @@ p.add_option("--active", dest="active", default=None,
         metavar = 'yes/no',
         help="Activate or deactivate a user. With *add* this defaults to " \
             "'yes', and with *modify* this defaults to no change made.")
-
+add_quiet_opt(p)
 (opt, args) = p.parse_args()
+setup_logging(opt)
+set_django_settings_module(opt)
 
+# Django must be imported after setting DJANGO_SETTINGS_MODULE
+from django.contrib.auth.models import User
 
 if len(args) != 2:
     p.print_help()
@@ -59,27 +67,31 @@ if action == "addormodify":
         action = "modify"
 
 if action == "info":
-    u = User.objects.get(username=username)
-    for key, label in (
-            ('username', 'Username'),
-            ('first_name', 'First name'),
-            ('last_name', 'Last name'),
-            ('email', 'Email'),
-            ('is_active', 'Is active'),
-            ('is_staff', 'Has access to superadmin interface'),
-            ('is_superuser', 'Is superuser')):
-        print '%s: %s' % (label, getattr(u, key))
+    try:
+        u = User.objects.get(username=username)
+    except User.DoesNotExist, e:
+        logging.error("User '%s' does not exist." % username)
+    else:
+        for key, label in (
+                ('username', 'Username'),
+                ('first_name', 'First name'),
+                ('last_name', 'Last name'),
+                ('email', 'Email'),
+                ('is_active', 'Is active'),
+                ('is_staff', 'Has access to superadmin interface'),
+                ('is_superuser', 'Is superuser')):
+            logging.info('%s: %s' % (label, getattr(u, key)))
 
 elif action == "modify":
     try:
         u = User.objects.get(username=username)
     except User.DoesNotExist:
-        print 'ERROR: User "%s" does not exist.' % username
+        logging.error('User "%s" does not exist.' % username)
         raise SystemExit()
     for key, value in kw.iteritems():
         setattr(u, key, value)
     u.save()
-    print 'User "%s" modified successfully.' % username
+    logging.info('User "%s" modified successfully.' % username)
 
 elif action == "add":
     if User.objects.filter(username=username).count() == 0:
@@ -87,7 +99,7 @@ elif action == "add":
                 username = username,
                 **kw)
         u.save()
-        print 'User "%s" created successfully.' % username
+        logging.info('User "%s" created successfully.' % username)
     else:
-        print 'ERROR: User "%s" already exists.' % username
+        logging.error('User "%s" already exists.' % username)
         raise SystemExit()

@@ -2517,7 +2517,7 @@
             "delivery": 2, 
             "last_modified": "2010-08-25 22:28:37", 
             "object_id": 4, 
-            "content_type": 21, 
+            "content_type": 5, 
             "published": false
         }
     }, 
@@ -2531,7 +2531,7 @@
             "delivery": 4, 
             "last_modified": "2010-08-05 18:27:33", 
             "object_id": 2, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": false
         }
     }, 
@@ -2545,7 +2545,7 @@
             "delivery": 3, 
             "last_modified": "2010-08-05 18:28:13", 
             "object_id": 3, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": false
         }
     }, 
@@ -2559,7 +2559,7 @@
             "delivery": 6, 
             "last_modified": "2010-08-06 21:47:16", 
             "object_id": 5, 
-            "content_type": 20, 
+            "content_type": 4, 
             "published": false
         }
     }, 
@@ -2573,7 +2573,7 @@
             "delivery": 9, 
             "last_modified": "2010-08-10 15:37:06", 
             "object_id": 6, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": false
         }
     }, 
@@ -2587,7 +2587,7 @@
             "delivery": 14, 
             "last_modified": "2010-08-10 15:31:50", 
             "object_id": 7, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": true
         }
     }, 
@@ -2601,7 +2601,7 @@
             "delivery": 16, 
             "last_modified": "2010-08-10 15:25:19", 
             "object_id": 8, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": true
         }
     }, 
@@ -2615,7 +2615,7 @@
             "delivery": 8, 
             "last_modified": "2010-08-23 12:26:03", 
             "object_id": 9, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": true
         }
     }, 
