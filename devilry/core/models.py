@@ -102,8 +102,8 @@ class ShortNameField(models.SlugField):
             verbose_name = _('Short name'),
             db_index = True,
             help_text=_(
-                "Max 20 characters. Only numbers, lowercase characters, '_' and '-'. "\
-                "Only visible to examiners and admins."))
+                "Max 20 characters. Only numbers, lowercase characters, '_' " \
+                    "and '-'. " ))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
 
@@ -575,11 +575,23 @@ class Assignment(models.Model, BaseNode):
         for the current :attr:`grade_plugin`. """
         return gradeplugin.registry.getitem(self.grade_plugin)
 
+    def validate_gradeplugin(self):
+        """ Check if grade plugin is valid (exists). 
+        Raise :exc:`devilry.core.gradeplugin.GradePluginDoesNotExistError`
+        on error. """
+        try:
+            ri = self.get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise gradeplugin.GradePluginDoesNotExistError(
+                'Invalid grade plugin "%s" on assignment: %s. This is '\
+                'usually because a grade plugin has been removed from '\
+                'the INSTALLED_APPS setting. There is no easy fix for '\
+                'this except to re-enable the missing grade plugin.' % (
+                    self.grade_plugin, self))
 
     def get_filenames(self):
         """ Get the filenames as a list of strings. """
         return self.filenames.split()
-
 
     def validate_filenames(self, filenames):
         """ Raise ValueError unless each filename in the iterable
@@ -589,7 +601,7 @@ class Assignment(models.Model, BaseNode):
             valid = self.get_filenames()
             for filename in filenames:
                 if not filename in valid:
-                    raise ValueError(_("Invalid filename: %(filename)s." %
+                    raise ValueError(_("Invalid filename: %(filename)s" %
                         dict(filename=filename)))
 
     @classmethod
@@ -1367,6 +1379,46 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+
+    def __unicode__(self):
+        return "Feedback on %s" % self.delivery
+
+    def get_grade_object_info(self):
+        """ Get information about the grade object as a string. """
+        return 'content_type: %s, object_id:%s, ' \
+                'grade: %s' % (self.content_type, self.object_id,
+                        self.grade)
+
+    def get_grade(self):
+        """ Get :attr:`grade`, but raise :exc:`ValueError` if the grade
+        object is not a subclass of
+        :class:`devilry.core.gradeplugin.GradeModel`. """
+        if self.grade:
+            self.validate_gradeobj()
+        return self.grade
+
+    def validate_gradeobj(self):
+        """ Validate the grade object integrity. When this fails, the
+        database integrity is corrupt. Raises one of the subclasses of
+        :exc:`devilry.core.gradeplugin.GradePluginError` on error. """
+        assignment = self.delivery.assignment_group.parentnode
+        try:
+            ri = self.get_assignment().get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise gradeplugin.GradePluginDoesNotExistError('Feedback with '\
+                    'id %s (%s) belongs in a assignment (%s) with a '\
+                    'invalid gradeplugin. ' % (
+                        self.id, self, assignment))
+        if not isinstance(self.grade, ri.model_cls):
+            correct_ct = ri.get_content_type()
+            raise gradeplugin.WrongContentTypeError(
+                'Grade-plugin on feedback with id "%s" (%s) must be "%s", as on the ' \
+                'assignment: %s. It is: %s. The content type on the feedback '\
+                'should be "%s (pk:%s)", not "%s (pk:%s)".' % (self.id, self, ri.get_key(), assignment,
+                    self.get_grade_object_info(),
+                    correct_ct, correct_ct.pk, 
+                    self.content_type, self.content_type.pk))
+
     def get_grade_as_short_string(self):
         """
         Get the grade as a short string suitable for short one-line
@@ -1448,23 +1500,8 @@ class Feedback(models.Model):
               referred by :attr:`Assignment.grade_plugin`.
             - The node is the child of itself or one of its childnodes.
         """
-
-        #    raise ValidationError(_('A node can not be it\'s own parent.'))
-        assignment = self.delivery.assignment_group.parentnode
-        try:
-            ri = self.get_assignment().get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise ValidationError(_(
-                'The assignment, %s, has a invalid grade-plugin. Contact ' \
-                'the system administrators to get this fixed.' %
-                assignment))
-        else:
-            if self.grade:
-                if not isinstance(self.grade, ri.model_cls):
-                    raise ValidationError(_(
-                        'Grade-plugin on feedback must be "%s", as on the ' \
-                        'assignment, %s.' % (ri.label, assignment)))
-
+        if self.grade:
+            self.validate_gradeobj()
         super(Feedback, self).clean(*args, **kwargs)
 
 

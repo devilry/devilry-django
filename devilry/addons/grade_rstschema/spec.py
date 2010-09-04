@@ -146,7 +146,7 @@ class SequenceSpec(AbstractSpec):
         return self.valid_values.index(value)
 
     def get_max_points(self, spec):
-        return 1
+        return len(self.valid_values)-1
 
 
 class Spec(object):

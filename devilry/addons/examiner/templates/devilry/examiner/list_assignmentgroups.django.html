@@ -30,6 +30,7 @@ on the groups below.</p>{% endblocktrans %}</p>
     <tr>
       <th>{% trans "Group id" %}</th>
       <th>{% trans "Group members" %}</th>
+      <th>{% trans "Group name" %}</th>
       <th>{% trans "Deliveries" %}</th>
       <th>{% trans "Latest delivery" %}</th>
       <th>{% trans "Status" %}</th>
@@ -42,8 +43,9 @@ on the groups below.</p>{% endblocktrans %}</p>
       <tr>
         <td>{{ assignment_group.id }}</td>
         <td>{{ assignment_group.get_students }}</td>
+        <td>{{ assignment_group.name }}</td>
         <td>{{ assignment_group.get_number_of_deliveries }}</td>
-        <td>{{ assignment_group.get_latest_delivery_with_feedback.time_of_delivery }}</td>
+        <td>{{ assignment_group.get_latest_delivery_with_feedback.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
         <td>{{ assignment_group.get_status}}</td>
         <td>
           {% if assignment_group.get_grade_as_short_string %}

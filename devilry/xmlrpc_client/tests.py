@@ -473,10 +473,10 @@ class TestFeedback(TestCommandBaseWithSync):
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
         f.cli(['-g', '+', '-t', 'ok', '-f', 'txt', self.deliverypath])
-        self.assertEquals(self.logdata.getvalue().strip(),
+        self.assertTrue(self.logdata.getvalue().strip().startswith(
                 'DEBUG:Feedback found in commandline argument -t.\n' \
             'INFO:Feedback format: txt.\n' \
-                'INFO:Feedback successfully saved.')
+                'INFO:Feedback successfully saved.'))
         self.assertEquals(self.delivery.feedback.text, 'ok')
         self.assertEquals(self.delivery.feedback.format, 'txt')
         self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),
@@ -495,7 +495,10 @@ class TestFeedback(TestCommandBaseWithSync):
             'DEBUG:Feedback not found in commandline argument -t. Trying file feedback.rst.\n' \
             'INFO:Found feedback in file feedback.rst.\n' \
             'INFO:Feedback format: rst.\n' \
-            'INFO:Feedback successfully saved.')
+            'INFO:Feedback successfully saved.\n' \
+            'INFO:\nINFO:The feedback you saved was not published and is therefore not visible to the student. Use: \n' \
+            'INFO:   devilry-examiner.py publish\n'\
+            'INFO:to publish the feedback.')
         self.assertEquals(self.delivery.feedback.text, 'ok')
         self.assertEquals(self.delivery.feedback.format, 'rst')
         self.assertEquals(self.delivery.feedback.get_grade_as_short_string(),

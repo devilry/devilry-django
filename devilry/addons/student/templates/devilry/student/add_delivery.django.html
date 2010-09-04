@@ -23,18 +23,17 @@
 
 {% include "devilry/student/add_delivery_table.django.html" %}
 
+{% if filenames_to_deliver %}
+<div class="info-box">
+{% trans "You should deliver the following files: " %} {{ filenames_to_deliver }}
+</div>
+{% endif %}
+
 <form enctype="multipart/form-data"
     action="{% url devilry-student-add-delivery assignment_group.id %}"
     method="post" id='add_delivery-form'>
 
-  {{ formset.management_form }}
-  <table>
-    {% for form in formset.forms %}
-    <tr>
-      <td>{{ form.file }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+  {% include "devilry/ui/include/tabular-inline-noheader.django.html" %}
 
   <div class='mainsubmit'>
     <input class="button" type="submit" name="deliver" value="{% trans "Deliver" %}" />

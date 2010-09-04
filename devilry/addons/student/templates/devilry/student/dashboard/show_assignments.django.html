@@ -14,12 +14,15 @@
 </script>
 
 <div class="accordion student-assignments-accordion">
+
+  {% if subjects %}
   <h3><a href="#">
-    {% trans "Active" %}
+      {% trans "Active" %} 
   </a></h3>
   <div>
 	{% include "devilry/student/include/assignment_group_chooser.django.html" %}
   </div>
+  {% endif %}
 
   {% if old_subjects.count > 0 %}
     <h3><a href="#">

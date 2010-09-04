@@ -24,7 +24,7 @@ def view(request, delivery_obj):
     feedback_form = parse_feedback_form(request, delivery_obj)
     feedback_obj = feedback_form.instance
     if feedback_obj.grade:
-        grade_obj = feedback_obj.grade
+        grade_obj = feedback_obj.get_grade()
     else:
         grade_obj = RstSchemaGrade()
 

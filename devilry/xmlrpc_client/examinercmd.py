@@ -1,6 +1,7 @@
 import xmlrpclib
 import os
 import logging
+from string import Template
 
 from assignmenttree import AssignmentSync, Info, overwriteable_filename, \
     overwrite
@@ -99,19 +100,9 @@ option with the feedback command.
             log_fault(e)
 
 
-class Feedback(ExaminerCommand):
-    name = 'feedback'
-    short_info = 'Submit feedback on a delivery.'
 
-    def add_options(self):
-        help = 'Id of a existing delivery.'
-        self.op.add_option("-t", "--feedback-text", metavar="TEXT",
-            dest="text", default='', help='Feedback text.')
-        self.op.add_option("-g", "--grade", metavar="GRADE",
-            dest="grade", default=None, help='Grade.')
-        self.op.add_option("-f", "--feedback-format",
-            metavar="rst|txt", dest="format",
-            default='rst', help='Feedback format.')
+class FeedbackCmdBase(ExaminerCommand):
+    """ Base class for Feedback and PublishFeedback. """
 
     def direrror(self):
         if len(self.args) > 0:
@@ -119,6 +110,40 @@ class Feedback(ExaminerCommand):
         else:
             log.error('You are not in a delivery-directory.')
         raise SystemExit()
+
+    def _get_info(self, deliverydir):
+        try:
+            return Info.read_open(deliverydir, 'Delivery')
+        except Info.FileWrongTypeError, e:
+            self.direrror()
+        except Info.FileDoesNotExistError, e:
+            self.direrror()
+
+    def _get_deliverydir(self):
+        if len(self.args) > 0:
+            deliverydir = os.path.abspath(os.path.normpath(self.args[0]))
+        else:
+            deliverydir = os.path.abspath(os.getcwd())
+        return deliverydir
+
+    def _refresh_info(self, server, deliveryinfo):
+        feedback = server.get_feedback(deliveryinfo.get_id())
+        AssignmentSync.set_feedbackinfo(deliveryinfo.get_dirpath(),
+                feedback)
+
+
+class Feedback(FeedbackCmdBase):
+    name = 'feedback'
+    short_info = 'Submit feedback on a delivery.'
+
+    def add_options(self):
+        self.op.add_option("-t", "--feedback-text", metavar="TEXT",
+            dest="text", default='', help='Feedback text.')
+        self.op.add_option("-g", "--grade", metavar="GRADE",
+            dest="grade", default=None, help='Grade.')
+        self.op.add_option("-f", "--feedback-format",
+            metavar="rst|txt", dest="format",
+            default='rst', help='Feedback format.')
 
     def _get_feedback_text(self, deliverydir):
         """ Get feedback text from arguments or file. """
@@ -157,25 +182,10 @@ class Feedback(ExaminerCommand):
                 raise SystemExit()
         return grade
 
-    def _refresh_info(self, server, deliveryinfo):
-        feedback = server.get_feedback(deliveryinfo.get_id())
-        AssignmentSync.set_feedbackinfo(deliveryinfo.get_dirpath(),
-                feedback)
-
     def command(self):
         self.read_config()
-
-        if len(self.args) > 0:
-            deliverydir = os.path.abspath(os.path.normpath(self.args[0]))
-        else:
-            deliverydir = os.path.abspath(os.getcwd())
-        try:
-            info = Info.read_open(deliverydir, 'Delivery')
-        except Info.FileWrongTypeError, e:
-            self.direrror()
-        except Info.FileDoesNotExistError, e:
-            self.direrror()
-
+        deliverydir = self._get_deliverydir()
+        info = self._get_info(deliverydir)
         assignmentinfo = self._get_assignmentinfo(deliverydir)
         grade = self._get_grade(assignmentinfo)
         text, feedbackfile = self._get_feedback_text(deliverydir)
@@ -198,6 +208,41 @@ class Feedback(ExaminerCommand):
             else:
                 log.info('Feedback successfully saved.')
             self._refresh_info(server, info)
+            info = self._get_info(deliverydir)
+            if info.get('feedback_published') == "False":
+                log.info('')
+                log.info('The feedback you saved was not published and is '\
+                        'therefore not visible to the student. Use: ')
+                log.info('   devilry-examiner.py publish')
+                log.info('to publish the feedback.')
+
+
+class PublishFeedback(FeedbackCmdBase):
+    name = 'publish'
+    short_info = 'Publish a feedback.'
+    publish = True
+
+    def command(self):
+        self.read_config()
+        deliverydir = self._get_deliverydir()
+        info = self._get_info(deliverydir)
+        server = self.get_serverproxy()
+        try:
+            ok_message = server.set_feedback_published(info.get_id(),
+                    self.publish)
+        except xmlrpclib.Fault, e:
+            log_fault(e)
+        else:
+            if self.publish:
+                log.info('Feedback successfully published.')
+            else:
+                log.info('Feedback unpublished.')
+            self._refresh_info(server, info)
+
+class UnpublishFeedback(PublishFeedback):
+    name = 'unpublish'
+    short_info = 'Un-publish a feedback.'
+    publish = False
 
 
 class InfoCmd(Command):
@@ -229,6 +274,7 @@ class InfoCmd(Command):
         print 'Id: %(id)s' % info
         print 'Number: %(number)s' % info
         if info.get('feedback_text'):
+            print 'Feedback published: %(feedback_published)s' % info
             print 'Feedback last modified: %(feedback_last_modified)s' % info
             print 'Feedback last modified by: %(feedback_last_modified_by)s' % info
             print 'Current feedback format: %(feedback_format)s' % info
@@ -252,3 +298,56 @@ class InfoCmd(Command):
         else:
             log.error('Invalid type: %s.' % typename)
             raise SystemExit()
+
+
+
+class Guide(Command):
+    name = 'guide'
+    short_info = 'Show a tutorial/howto.'
+    def command(self):
+        guide = """To get started, initialize a devilry-checkout with these
+steps:
+    1. Create a new directory (we will call this the checkout-directory) and
+       change to it.
+        
+        ~$ mkdir ~/devilrycheckout
+        ~$ cd ~/devilrycheckout
+
+    2. Initialize with the devilry-server:
+
+        ~devilrycheckout/$ $prog init <server-url>
+
+       Where server-url is the url to the root of the devilry-site you wish
+       to initialize with. This might be something like
+       "http://example.com/", or "http://example.com/devilry/". You can
+       check if the url is correct by suffixing it with "/xmlrpc/" and open
+       it in a browser. If the url takes you to the xmlrpc documentation,
+       you have the correct url.
+
+    3. Login using:
+
+        ~devilrycheckout/$ $prog login
+
+        If your username in the current shell session is not the same as your
+        username with the devilry server, you must use:
+
+        ~devilrycheckout/$ $prog login -u myuser
+
+    4. Sync every delivery on every active assignment using:
+
+        ~devilrycheckout/$ $prog sync
+
+    5. See the help for 'sync', 'info' and 'feedback' for more information:
+
+        ~devilrycheckout/$ $prog help sync
+        ~devilrycheckout/$ $prog help info
+        ~devilrycheckout/$ $prog help feedback
+
+When you wish to update the local sync with new deliveries, or feedback
+submitted by other examiners (if you work on assignments with more than one
+examiner on each group), just repeat steps 3 and 4 within any directory
+below the checkout-directory. You might not have to login more than about
+once a day, but this varies depending on how the devilry-server is
+configured.
+"""
+        print Template(guide).safe_substitute(prog=self.prog)

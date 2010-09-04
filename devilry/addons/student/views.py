@@ -18,10 +18,9 @@ from devilry.core.utils.verify_unique_entries import verify_unique_entries
 from devilry.core.devilry_email import send_email
 
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
-UploadFileFormSet = formset_factory(UploadFileForm, extra=10)
 
+class UploadFileForm(forms.Form):
+        file = forms.FileField()
 
 @login_required
 @transaction.autocommit
@@ -30,22 +29,59 @@ def add_delivery(request, assignment_group_id, messages=None):
     if not assignment_group.is_candidate(request.user) or \
             not assignment_group.can_add_deliveries():
         return HttpResponseForbidden("Forbidden")
+
+    if not messages:
+        messages = UiMessages()
+
+    valid_filenames = None
+    upload_file_count = 10
+    filenames_to_deliver = None
+
+    if assignment_group.parentnode.filenames:
+        valid_filenames = assignment_group.parentnode.get_filenames() 
+        upload_file_count = len(valid_filenames)
+        filenames_to_deliver = ''.join([f + ", " for f in valid_filenames])
+        filenames_to_deliver = filenames_to_deliver[:-2]
+
+    UploadFileFormSet = formset_factory(UploadFileForm, extra=upload_file_count)
+
     if request.method == 'POST':
         formset = UploadFileFormSet(request.POST, request.FILES)
         if formset.is_valid():
             if not verify_unique_entries(request.FILES.values()):
-                if not messages:
-                    messages = UiMessages()
-                messages.add_warning(_("The filenames are not unique."))
+                messages.add_error(_("The filenames are not unique."))
             else:
-                delivery = Delivery.begin(assignment_group, request.user)
-                for f in request.FILES.values():
-                    filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
-                    delivery.add_file(filename, f.chunks())
-                delivery.finish()
-                return HttpResponseRedirect(
-                    reverse('devilry-student-successful_delivery',
-                            args=[assignment_group_id]))
+                filenames_valid = True
+                if assignment_group.parentnode.filenames:
+                    filenames = []
+                    for i in range(0, formset.total_form_count()):
+                        form = formset.forms[i]
+                        
+                        if 'file' in form.cleaned_data:
+                            filename = form.cleaned_data['file']
+                            if filename != '':
+                                filenames.append(filename)
+                    try:
+                        assignment_group.parentnode.validate_filenames(filenames)
+                                                
+                        if len(filenames) == 0:
+                            messages.add_error(_("You must choose at least one file to deliver."))
+                            filenames_valid = False
+
+                    except ValueError, e:
+                        filenames_valid = False
+                        messages.add_error(_("%s" % e))
+
+                if filenames_valid:
+                    delivery = Delivery.begin(assignment_group, request.user)
+                    for f in request.FILES.values():
+                        filename = basename(f.name) # do not think basename is needed, but at least we *know* we only get the filename.
+                        delivery.add_file(filename, f.chunks())
+                    delivery.finish()
+                    return HttpResponseRedirect(
+                        reverse('devilry-student-successful_delivery',
+                                args=[assignment_group_id]))
+
     else:
         formset = UploadFileFormSet()
 
@@ -53,6 +89,7 @@ def add_delivery(request, assignment_group_id, messages=None):
         'assignment_group': assignment_group,
         'formset': formset,
         'messages': messages,
+        'filenames_to_deliver': filenames_to_deliver,
         }, context_instance=RequestContext(request))
 
 def successful_delivery(request, assignment_group_id):
@@ -72,8 +109,13 @@ def successful_delivery(request, assignment_group_id):
 
     for fm in latest.filemetas.all():
         email_message += " - %s (%d bytes)\n" % (fm.filename, fm.size)
+        
+    cands = assignment_group.candidates.all()
+    user_list = []
+    for cand in cands:
+        user_list.append(cand.student)
     
-    send_email(request.user, 
+    send_email(user_list, 
                     "Receipt for your delivery on %s" % (subject.short_name), 
                     email_message)
     

@@ -4,6 +4,8 @@
 
 from settings import *
 
+DEBUG = False
+
 DEVILRY_MAIN_PAGE = '/django/example/'
 LOGIN_URL = '/django/example/'
 DEVILRY_LOGOUT_URL = None
@@ -19,3 +21,6 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.RemoteUserBackend',
 )
+
+DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
+DELIVERY_STORE_ROOT = '/devilry/upload'
