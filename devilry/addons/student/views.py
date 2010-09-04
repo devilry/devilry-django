@@ -18,10 +18,6 @@ from devilry.core.utils.verify_unique_entries import verify_unique_entries
 from devilry.core.devilry_email import send_email
 
 
-
-class UploadFileForm(forms.Form):
-        file = forms.FileField()
-
 @login_required
 @transaction.autocommit
 def add_delivery(request, assignment_group_id, messages=None):
@@ -38,10 +34,25 @@ def add_delivery(request, assignment_group_id, messages=None):
     filenames_to_deliver = None
 
     if assignment_group.parentnode.filenames:
-        valid_filenames = assignment_group.parentnode.get_filenames() 
+        filenames_to_deliver = assignment_group.parentnode.get_filenames()
+        valid_filenames = {}
+        for fname in filenames_to_deliver:
+            valid_filenames[fname] = fname
         upload_file_count = len(valid_filenames)
-        filenames_to_deliver = ''.join([f + ", " for f in valid_filenames])
-        filenames_to_deliver = filenames_to_deliver[:-2]
+
+    class UploadFileForm(forms.Form):
+        file = forms.FileField()
+    
+        def __init__(self, *args, **kwargs):
+            super(UploadFileForm, self).__init__(*args, **kwargs)
+
+        def clean(self):
+            f = super(UploadFileForm, self).clean()
+            #if 'file' in f:
+            #    filename = self.cleaned_data['file'].name
+            #    if not valid_filenames.has_key(filename):
+            #        raise forms.ValidationError("Incorrect filename %s" % filename)
+            return f
 
     UploadFileFormSet = formset_factory(UploadFileForm, extra=upload_file_count)
 
@@ -52,26 +63,11 @@ def add_delivery(request, assignment_group_id, messages=None):
                 messages.add_error(_("The filenames are not unique."))
             else:
                 filenames_valid = True
-                if assignment_group.parentnode.filenames:
-                    filenames = []
-                    for i in range(0, formset.total_form_count()):
-                        form = formset.forms[i]
-                        
-                        if 'file' in form.cleaned_data:
-                            filename = form.cleaned_data['file']
-                            if filename != '':
-                                filenames.append(filename)
-                    try:
-                        assignment_group.parentnode.validate_filenames(filenames)
-                                                
-                        if len(filenames) == 0:
-                            messages.add_error(_("You must choose at least one file to deliver."))
-                            filenames_valid = False
 
-                    except ValueError, e:
-                        filenames_valid = False
-                        messages.add_error(_("%s" % e))
-
+                if len(request.FILES.values()) == 0:
+                    messages.add_error(_("You must choose at least one file to deliver."))
+                    filenames_valid = False
+                    
                 if filenames_valid:
                     delivery = Delivery.begin(assignment_group, request.user)
                     for f in request.FILES.values():
@@ -91,6 +87,7 @@ def add_delivery(request, assignment_group_id, messages=None):
         'messages': messages,
         'filenames_to_deliver': filenames_to_deliver,
         }, context_instance=RequestContext(request))
+
 
 def successful_delivery(request, assignment_group_id):
     messages = UiMessages()
