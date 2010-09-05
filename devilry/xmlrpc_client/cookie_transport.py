@@ -70,7 +70,7 @@ class CookieTransportMixin(object):
         self.send_host(h, host)
 
         # Add cookie headers
-        cookie_request = _CookieRequest(h, 'http', host, handler)
+        cookie_request = _CookieRequest(h, self.urltype, host, handler)
         cj.add_cookie_header(cookie_request)
 
         self.send_user_agent(h)
