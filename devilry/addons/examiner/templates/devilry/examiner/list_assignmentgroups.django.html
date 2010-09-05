@@ -5,6 +5,18 @@
 {% block title %}{{ assignment }}{% endblock %}
 {% block heading %}{{ assignment }}{% endblock %}
 
+{% block customcss %}
+  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/tablesorter.css" />
+{% endblock %}
+{% block customjs %}
+  <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/thirdparty/jquery.tablesorter.min.js"></script>          
+  <script type="text/javascript">
+    $(function() {
+      $(".tablesorter").tablesorter();
+    });
+  </script>          
+{% endblock %}
+
 {% block breadcrumbs %}
 {{ block.super }}
 <li>{{ assignment }} </li>
@@ -25,7 +37,7 @@ one person examiner for a single group, so you might not be the only examiner
 on the groups below.</p>{% endblocktrans %}</p>
 </div>
 
-<table class='horizontal_ordered_table'>
+<table class='horizontal_ordered_table tablesorter'>
   <thead>
     <tr>
       <th>{% trans "Group id" %}</th>
