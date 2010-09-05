@@ -175,7 +175,11 @@ class Info(object):
         """ Set a value. """
         if value == None:
             value = ''
-        self.cfg.set(self.sectionname, key, str(value))
+        if isinstance(value, basestring):
+            value = value.encode("utf-8")
+        else:
+            value = str(value)
+        self.cfg.set(self.sectionname, key, value)
 
     def setmany(self, **values):
         """ Set many values. """
