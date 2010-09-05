@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from cli import Cli, Login, Init
+from cli import Cli, Login, Init, FormLogin
 from examinercmd import ListAssignmentGroups, Sync, ListAssignments, \
         Feedback, UnpublishFeedback, PublishFeedback, InfoCmd, Guide
 
@@ -14,6 +14,7 @@ if __name__ == '__main__':
         Guide,
         Init,
         Login,
+        FormLogin,
         ListAssignments,
         ListAssignmentGroups,
         Sync,

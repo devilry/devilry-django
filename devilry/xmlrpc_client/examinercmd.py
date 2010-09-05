@@ -95,7 +95,8 @@ option with the feedback command.
         self.read_config()
         try:
             AssignmentSync(self.find_rootdir(), self.get_cookiepath(),
-                    self.get_serverproxy(), self.get_url())
+                    self.get_serverproxy(), self.get_url(),
+                    self.get_auth_cookiepath())
         except xmlrpclib.Fault, e:
             log_fault(e)
 

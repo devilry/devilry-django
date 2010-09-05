@@ -451,7 +451,9 @@ class AssignmentSync(AssignmentTreeWalker):
     """
     bufsize = 65536
 
-    def __init__(self, rootdir, cookiepath, server, serverurl):
+    def __init__(self, rootdir, cookiepath, server, serverurl,
+            authcookiefile=None):
+        self.authcookiefile = authcookiefile
         cwd = os.getcwd()
         os.chdir(rootdir)
         try:
@@ -556,21 +558,34 @@ class AssignmentSync(AssignmentTreeWalker):
 
     def filemeta_new(self, filemeta, filepath):
         log.info('+ %s' % filepath)
-        url = urljoin(self.serverurl,
-            "/ui/download-file/%s" % filemeta['id'])
+        serverurl = self.serverurl
+        if self.serverurl.endswith('/'):
+            serverurl = serverurl[:-1]
+        url = "%s/ui/download-file/%s" % (serverurl, filemeta['id'])
         log.debug('Downloading file: %s' % url)
         size = filemeta['size']
         left_bytes = size
-        input = self.urlopener.open(url)
-        output = open(filepath, 'wb')
-        while left_bytes > 0:
-            out = input.read(self.bufsize)
-            left_bytes -= len(out)
-            if len(out) == 0:
-                break
-            output.write(out)
-        input.close()
-        output.close()
+        request = urllib2.Request(url)
+        if self.authcookiefile and os.path.isfile(self.authcookiefile):
+            for line in open(self.authcookiefile, 'rb').readlines():
+                request.add_header("Cookie", line.strip())
+        try:
+            input = self.urlopener.open(request)
+        except urllib2.HTTPError, e:
+            log.warning("Could not download file: %s. This is probably "\
+                    "because the delivery exists on the server, but the "\
+                    "file has been deleted from the file backend by a " \
+                    "administrator." % url)
+        else:
+            output = open(filepath, 'wb')
+            while left_bytes > 0:
+                out = input.read(self.bufsize)
+                left_bytes -= len(out)
+                if len(out) == 0:
+                    break
+                output.write(out)
+            input.close()
+            output.close()
 
     def filemeta_exists(self, filemeta, filepath):
         log.debug('%s already exists.' % filepath)

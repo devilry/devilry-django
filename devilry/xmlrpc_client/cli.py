@@ -4,14 +4,15 @@ from ConfigParser import ConfigParser
 import xmlrpclib
 from optparse import OptionParser
 import os
-from urlparse import urljoin
 import logging
 import logging.handlers
 import sys
+from Cookie import SimpleCookie
+import urllib
+import httplib
+from urlparse import urlparse
 
 from cookie_transport import CookieTransport, SafeCookieTransport
-
-
 
 log = logging.getLogger('devilry')
 
@@ -218,9 +219,18 @@ class Command(object):
 
     def get_cookiepath(self):
         """ The cli uses cookies to maintain a session. The cookie-file is
-        stored in the configdir. This method returns the path to the cookie
-        file. """
+        stored in *cookie.txt* in the configdir using cookielib.LWPCookieJar format.  This
+        method returns the path to the cookie file. """
         return os.path.join(self.get_configdir(), 'cookies.txt')
+
+    def get_auth_cookiepath(self):
+        """ The cli uses cookies to send authentication tokens when using
+        form based authentication. Authentication cookies are stored in
+        *authcookies.txt* in the configdir. Format is one cookie per line
+        just like they where returned from the http response, but without
+        any header name (like "Set-Cookie: ") .
+        This method returns the path to the auth cookie file. """
+        return os.path.join(self.get_configdir(), 'authcookies.txt')
 
     def get_logfilepath(self):
         """ Get path to the log-file. """
@@ -290,11 +300,16 @@ class Command(object):
     def get_serverproxy(self):
         """ Get a server-proxy object. If the url starts with https, a
         server-proxy with SSL-support is created. """
-        url = urljoin(self.get_url(), self.urlpath)
+        prefix = self.get_url()
+        if prefix.endswith('/'):
+            prefix = prefix[:-1]
+        url = prefix + self.urlpath
         if url.startswith('https'):
-            transport=SafeCookieTransport(self.get_cookiepath())
+            transport=SafeCookieTransport(self.get_cookiepath(),
+                    self.get_auth_cookiepath())
         else:
-            transport=CookieTransport(self.get_cookiepath())
+            transport=CookieTransport(self.get_cookiepath(),
+                    self.get_auth_cookiepath())
         return xmlrpclib.ServerProxy(url, transport=transport, allow_none=True)
 
 
@@ -339,7 +354,15 @@ class Init(Command):
         self.write_config()
 
 
-class Login(CommandUsingConfig):
+class LoginBase(CommandUsingConfig):
+    def add_options(self):
+        self.add_user_option()
+
+    def get_password(self):
+        return getpass.getpass('Password for user "%s": ' % self.opt.username)
+
+
+class Login(LoginBase):
     """ Login command. """
     name = 'login'
     short_info ='Login to the devilry server.' 
@@ -381,4 +404,77 @@ class Login(CommandUsingConfig):
                 log.error('Your user is disabled.')
             elif ret == self.login_failed:
                 log.error('Invalid username/password.')
+            raise SystemExit()
+
+
+class FormLogin(LoginBase):
+    """ Login via a http POST request. """
+    name = 'formlogin'
+    short_info ='Authenticate with a external server using a HTTP POST '\
+        ' request. This login method might be used if the Devilry server '\
+        'does not handle authorization.'
+    args_help = '[login-url]'
+
+
+    def add_options(self):
+        super(FormLogin, self).add_options()
+        self.op.add_option("--login-url", metavar="/login",
+            dest="loginurl", help='Login url. Defaults to /login on the '\
+                'url specified in "init".')
+        self.op.add_option("--login-username-field", metavar="user",
+            dest="login_usernamefield", default="user",
+            help='You should get this value from your server admin. It is '\
+                'the name of the html form input field containing the '\
+                'username. Defaults to "user".')
+        self.op.add_option("--login-passworld-field", metavar="password",
+            dest="login_passworldfield", default="password",
+            help='You should get this value from your server admin. It is '\
+                'the name of the html form input field containing the '\
+                'password. Defaults to "password".')
+
+    def command(self):
+        logindata = {
+            self.opt.login_usernamefield: self.opt.username,
+            self.opt.login_passworldfield: self.get_password()
+        }
+
+        if self.opt.loginurl:
+            u = urlparse(self.opt.loginurl)
+            path = u.path
+        else:
+            u = urlparse(self.get_url())
+            path = '/login'
+        host = u.netloc
+        if u.scheme == "https":
+            conn = httplib.HTTPSConnection(host)
+        else:
+            conn = httplib.HTTPConnection(host)
+        #conn.set_debuglevel(1)
+        conn.request("POST", path, urllib.urlencode(logindata),
+            headers = {
+                "Content-type": "application/x-www-form-urlencoded"})
+        response = conn.getresponse()
+        if response.status < 400:
+            data = response.read()
+            setcookie = response.getheader("Set-Cookie")
+            if setcookie == None:
+                log.error("Login failed. This is usually because of "\
+                        "invalid username/password, but might be "\
+                        "caused by wrong login url or server errors. "\
+                        "Technical error message: Login url did not " \
+                        "respond with any authorization cookies.")
+                raise SystemExit()
+            else:
+                cookie = SimpleCookie()
+                cookie.load(setcookie)
+
+                # Writing to cookiefile. See get_auth_cookiepath() for format info.
+                cookieout = cookie.output().replace("Set-Cookie: ", "")
+                open(self.get_auth_cookiepath(), "wb").write(cookieout)
+
+                log.info("Login successful.")
+        else:
+            log.error(
+                "Login failed with the following message: %s %s (%s)" % (
+                    response.status, response.reason, response.msg))
             raise SystemExit()

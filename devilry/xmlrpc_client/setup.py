@@ -6,11 +6,11 @@ from setuptools import setup
 
 
 setup(name = 'devilry_xmlrpc_client',
-      version = '0.1.2',
+      version = '0.1.3',
       description = 'The devilry xmlrpc client and shell scripts.',
       url = 'http://devilry.github.com',
-      author = 'Espen Angell Kristiansen',
-      author_email = 'espeak@ifi.uio.no',
+      author = 'Devilry',
+      author_email = 'devilry-support@ifi.uio.no',
       package_dir = {'devilry_xmlrpc_client': ''},
       packages = ['devilry_xmlrpc_client'],
       scripts = ['devilry-examiner.py']
