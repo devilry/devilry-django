@@ -8,5 +8,5 @@ def template_variables(request):
         'DEVILRY_MAIN_PAGE': settings.DEVILRY_MAIN_PAGE,
         'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
         'BASE_TEMPLATE': settings.BASE_TEMPLATE,
-        'DEVILRY_DATETIME_FORMAT': "Y-m-d G:i",
+        'DEVILRY_DATETIME_FORMAT': "Y-m-d H:i",
     }
