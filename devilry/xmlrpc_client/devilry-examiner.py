@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 try:
     from devilry_xmlrpc_client.cli import (Cli, Login, Init, FormLogin)
     from devilry_xmlrpc_client.examinercmd import (ListAssignmentGroups,
