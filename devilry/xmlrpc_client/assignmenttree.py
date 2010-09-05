@@ -620,5 +620,6 @@ class AssignmentSync(AssignmentTreeWalker):
         self._handle_gradeconf(deliverydir, gradeconf,
                 feedback.get('grade_as_xmlrpcstring'))
         self.__class__.set_feedbackinfo(deliverydir, feedback)
-        overwrite_with_backup(deliverydir, 'feedback.rst', feedback['text'],
+        overwrite_with_backup(deliverydir, 'feedback.rst',
+                feedback['text'].encode("utf-8"),
                 'feedback.lastsave.rst')
