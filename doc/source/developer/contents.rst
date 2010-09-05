@@ -7,7 +7,9 @@ Developers
 .. :maxdepth: 2
 
 .. toctree::
-
+    
+    overview
+    
     core.models
     core.utils
     core.deliverystore

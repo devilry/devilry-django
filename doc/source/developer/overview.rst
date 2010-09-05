@@ -1,7 +1,7 @@
-.. _overview:
+.. _developer-overview:
 
 ======================================================================
-Devilry documentation overview
+Devilry developer documentation overview
 ======================================================================
 
 Core
