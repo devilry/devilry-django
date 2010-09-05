@@ -606,18 +606,27 @@ input.autocomplete-list {
 /*}*/
 .after_last_deadline_msg {
 	color: #aa0000;
-	font-style: italic;
 	font-weight: normal;
 }
-.delivery_published_msg {
-	color: green;
+.delivery_published_msg,
+.corrected_msg {
+	color: #00aa00;
 	font-style: italic;
 	font-weight: normal;
 }
 
 .delivery_unpublished_msg {
-	color: red;
+	color: #aa0000;
 	font-style: italic;
+	font-weight: normal;
+}
+
+.not_corrected_msg {
+	color: #aaaa00;
+	font-weight: bold;
+}
+.no_deliveries_msg {
+	color: #aa0000;
 	font-weight: normal;
 }
 
