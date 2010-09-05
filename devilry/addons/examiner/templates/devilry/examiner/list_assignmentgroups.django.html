@@ -45,7 +45,7 @@ on the groups below.</p>{% endblocktrans %}</p>
         <td>{{ assignment_group.get_students }}</td>
         <td>{{ assignment_group.name }}</td>
         <td>{{ assignment_group.get_number_of_deliveries }}</td>
-        <td>{{ assignment_group.get_latest_delivery_with_feedback.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
+        <td>{{ assignment_group.get_latest_delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
         <td>{{ assignment_group.get_status}}</td>
         <td>
           {% if assignment_group.get_grade_as_short_string %}

@@ -1016,6 +1016,16 @@ class AssignmentGroup(models.Model, CommonInterface):
             else:
                 return _('Corrected')
 
+    def get_latest_delivery(self):
+        """ Get the latest delivery by this assignment group,
+        or ``None`` if there is no deliveries. """
+        qry = self.deliveries.all()
+        if qry.count() == 0:
+            return None
+        else:
+            return qry.annotate(
+                    models.Max('time_of_delivery'))[0]
+
     def get_latest_delivery_with_feedback(self):
         """ Get the latest delivery by this assignment group with feedback,
         or ``None`` if there is no deliveries with feedback. """
