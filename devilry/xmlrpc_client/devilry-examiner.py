@@ -6,8 +6,8 @@ try:
             Sync, ListAssignments, Feedback, UnpublishFeedback,
             PublishFeedback, InfoCmd, Guide)
 except ImportError:
-    from devilry.xmlrpc_client.cli import (Cli, Login, Init, FormLogin)
-    from devilry.xmlrpc_client.examinercmd import (ListAssignmentGroups,
+    from cli import (Cli, Login, Init, FormLogin)
+    from examinercmd import (ListAssignmentGroups,
             Sync, ListAssignments, Feedback, UnpublishFeedback,
             PublishFeedback, InfoCmd, Guide)
 
