@@ -13,7 +13,14 @@ Install
 Quick install
 -------------
 
-On Mac and Linux, run the following command to install the Devilry command line client:
+You need the ``python-setuptools`` package to install the Devilry command line client. This package is installed on Mac OS X 10.5 and up.
+On Ubuntu, run the following command to install it:
+
+::
+
+    sudo apt-get install python-setuptools
+
+Then, run the following command to install the client:
 
 ::
 
