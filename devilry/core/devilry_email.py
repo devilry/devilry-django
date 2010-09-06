@@ -4,7 +4,7 @@ from devilry.settings import EMAIL_SUBJECT_PREFIX
 from devilry.settings import EMAIL_DEFAULT_FROM
 
 def send_email(user_objects_to_send_to, subject, message):
-    message += "\n\n"
+    message += "\n\n--\n"
     message += _("This is a message from the Devilry assignment delivery system. " \
                      "Please do not respond to this email.")
     emails = []
