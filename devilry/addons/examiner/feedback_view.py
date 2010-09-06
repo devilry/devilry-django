@@ -43,7 +43,8 @@ def redirect_after_successful_save(request, delivery_obj):
         
         email_message = _("Your delivery has been corrected." \
                           "\n\n" \
-                          "Subject: %s - %s\n" \
+                          "Subject: %s\n" \
+                          "Period: %s\n" \
                           "Assignment: %s\n") % (subject.long_name,
                                                  period.long_name,
                                                  assignment.long_name)
@@ -54,23 +55,10 @@ def redirect_after_successful_save(request, delivery_obj):
             users.append(candidate.student)
 
         rev = reverse('devilry-student-show-delivery', args=(delivery_obj.id,))
-        url = WEB_PAGE_PREFIX + rev
-        url2 = request.get_host() + rev
-        
-        #full_url = urljoin(request.get_host(), DEVILRY_MAIN_PAGE, rev)
-        #print "request.get_host():", request.get_host()
-        #print "DEVILRY_MAIN_PAGE:", DEVILRY_MAIN_PAGE
-        #print "rev:", rev
-        #print "full_url:", full_url
-        
-        #print "is_secure:", request.is_secure()
-        #print "path:", request.path
-        #print "path_info:", request.path_info
-        
-        email_message += "\n\nThe feedback can be viewed at\n%s or\n%s\n or %s\n" % (url, url2, request.build_absolute_uri(rev))
-        
+        email_message += _("\nThe feedback can be viewed at:\n%s\n") % \
+                         (request.build_absolute_uri(rev))
         send_email(users, 
-                   _("New feedback - %s") % (subject.short_name), 
+                   _("New feedback - %s") % (assignment.get_path()), 
                    email_message)
     else:
         messages = UiMessages()
