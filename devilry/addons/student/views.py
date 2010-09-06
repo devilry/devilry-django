@@ -98,11 +98,13 @@ def successful_delivery(request, assignment_group_id):
     subject = period.parentnode
     latest = assignment_group.deliveries.all()[0]
     
-    email_message = "This is a receipt for your delivery."
+    email_message = _("This is a receipt for your delivery.")
     email_message += "\n\n"
-    email_message += "Subject: %s - %s\n" % (subject.long_name, period.long_name)
-    email_message += "Time of delivery: %s\n" % latest.time_of_delivery.strftime(DATETIME_FORMAT)
-    email_message += "Files:\n"
+    email_message += _("Time of delivery: %s\n") \
+                     % latest.time_of_delivery.strftime(DATETIME_FORMAT)
+    email_message += _("Subject: %s\n") % subject.long_name
+    email_message += _("Period: %s\n") % period.long_name
+    email_message += _("\nFiles:\n")
 
     for fm in latest.filemetas.all():
         email_message += " - %s (%d bytes)\n" % (fm.filename, fm.size)
@@ -113,8 +115,9 @@ def successful_delivery(request, assignment_group_id):
         user_list.append(cand.student)
     
     send_email(user_list, 
-                    "Receipt for your delivery on %s" % (subject.short_name), 
-                    email_message)
+               _("Receipt for delivery on %s") \
+               % (assignment_group.parentnode.get_path()), 
+               email_message)
     
     return show_assignmentgroup(request, assignment_group_id, messages)
 
