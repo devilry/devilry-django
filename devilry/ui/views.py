@@ -66,7 +66,8 @@ def download_file(request, filemeta_id):
     response = http.HttpResponse(
             FileWrapper(filemeta.read_open()),
             content_type=guess_type(filemeta.filename)[0])
-    response['Content-Disposition'] = "attachment; filename=" + filemeta.filename
+    response['Content-Disposition'] = "attachment; filename=%s" % \
+                        filemeta.filename.encode("ascii", 'replace')
     response['Content-Length'] = filemeta.size
 
     return response
