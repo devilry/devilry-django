@@ -109,23 +109,29 @@
             }
           },
           filters: {
-            "Status": {
-              include_no_deliveries: {
-                label: "{% trans "No deliveries" %}",
-                enabled: false
-              },
-              include_not_corrected: {
-                label: "{% trans "Not corrected" %}",
-                enabled: true
-              },
-              include_corrected_not_published: {
-                label: "{% trans "Corrected, not published" %}",
-                enabled: true
-              },
-              include_corrected_and_published: {
-                label: "{% trans "Corrected and published" %}",
-                enabled: true
-              }
+            status: {
+              title: "{% trans "Status" %}",
+              choices: [
+                {label: "No deliveries", enabled: false},
+                {label: "Not corrected", enabled: true},
+                {label: "Corrected, not published", enabled: true},
+                {label: "Corrected and published", enabled: true}
+              ],
+            },
+            examiner_bulk: {
+              title: "{% trans "Has examiner(s)?" %}",
+              choices: [
+                {label: "Yes", enabled: false},
+                {label: "No", enabled: false},
+              ],
+            },
+            examiner: {
+              title: "{% trans "Exclude with examiner" %}",
+              choices: [
+                {% for examiner in examiners %}
+                  {label: "{{ examiner }}", enabled: false, value: "{{ examiner }}"},
+                {% endfor %}
+              ],
             }
           }
         })

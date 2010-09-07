@@ -102,18 +102,35 @@ def filter_assignmentgroup(postdata, groupsqry, term):
             Q(name__contains=term)
             | Q(examiners__username__contains=term)
             | Q(candidates__student__username__contains=term))
-    if not postdata.get('include_no_deliveries'):
+
+    # Status
+    if not postdata.get('filter-status-0'):
        groupsqry = groupsqry.exclude(
                status=AssignmentGroup.NO_DELIVERIES)
-    if not postdata.get('include_not_corrected'):
+    if not postdata.get('filter-status-1'):
        groupsqry = groupsqry.exclude(
                status=AssignmentGroup.NOT_CORRECTED)
-    if not postdata.get('include_corrected_not_published'):
+    if not postdata.get('filter-status-2'):
        groupsqry = groupsqry.exclude(
                status=AssignmentGroup.CORRECTED_NOT_PUBLISHED)
-    if not postdata.get('include_corrected_and_published'):
+    if not postdata.get('filter-status-3'):
        groupsqry = groupsqry.exclude(
                status=AssignmentGroup.CORRECTED_AND_PUBLISHED)
+
+    # Examiner bulk
+    if postdata.get('filter-examiner_bulk-0'):
+        groupsqry = groupsqry.exclude(examiners__isnull=False)
+    if postdata.get('filter-examiner_bulk-1'):
+        groupsqry = groupsqry.exclude(examiners__isnull=True)
+
+    # Examiner
+    for key, v in postdata.iteritems():
+        if key.startswith('filter-examiner-'):
+            if v:
+                if v == "## no examiners ##":
+                    groupsqry = groupsqry.exclude(examiners__isnull=True)
+                else:
+                    groupsqry = groupsqry.exclude(examiners__username=v)
     return groupsqry.distinct()
 
 

@@ -24,8 +24,8 @@ jQuery.autocompletetable = {
             "all": properties.showall
         };
         if(properties.filters) {
-            $.each(properties.filters, function(key, f) {
-                postdata[key] = f.enabled?"yes": "";
+            $.each(properties.filters, function(key, choice) {
+                postdata["filter-" + key] = choice.enabled?choice.value: "";
             });
         }
 
@@ -208,42 +208,41 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             var filterid_prefix= $(this).attr("id") + "-filter-";
 
             var properties = this.properties;
-            $.each(args.filters, function(filtertitle, filters) {
+            $.each(args.filters, function(filterkey, filter) {
                 var filterbox = $("<div></div>").appendTo(filterbar);
                 $("<h3></h3>")
-                    .html(filtertitle)
+                    .html(filter.title)
                     .appendTo(filterbox);
-                var filterlist = $("<ul></ul>").appendTo(filterbox);
-                $.each(filters, function(key, filter) {
+                var choicelist = $("<ul></ul>").appendTo(filterbox);
+                var prefix = filterkey + "-"
+                $.each(filter.choices, function(i, choice) {
+                    var key = prefix + i;
                     var id = filterid_prefix + key;
-                    var li = $("<li></li>").appendTo(filterlist);
+                    var li = $("<li></li>").appendTo(choicelist);
                     $("<label></label>")
-                        .html(filter.label)
+                        .html(choice.label)
                         .attr("for", id)
                         .appendTo(li);
                     var checkbox = $("<input/>")
                         .attr("type", "checkbox")
                         .attr("id", id)
                         .appendTo(li);
-                    if(filter.classes) {
-                        $.each(filter.classes, function(i, cls) {
-                            checkbox.addClass(cls);
-                        });
+                    if(!choice.value) {
+                        choice.value = "yes";
                     }
-                    properties.filters[key] = filter
-                    //this.properties.filters[key].enabled = false;
-                    if(filter.enabled) {
+                    properties.filters[key] = choice
+                    if(choice.enabled) {
                         checkbox.attr('checked', 'checked');
                     } else {
-                        filter.enabled = false;
+                        choice.enabled = false;
                     }
                     checkbox.button();
 
                     checkbox.click(function() {
                         properties.filters[key].enabled = !properties.filters[key].enabled;
-                        $.each(properties.filters, function(k, f) {
-                            $.log(k + ":" + f.enabled);
-                        });
+                        //$.each(properties.filters, function(k, choice) {
+                            //$.log(k + ":" + choice.enabled + " (" + choice.value + ")");
+                        //});
                         jQuery.autocompletetable.refreshtable(properties);
                         return false;
                     });
