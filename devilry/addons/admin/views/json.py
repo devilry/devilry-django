@@ -19,6 +19,7 @@ def node_json_generic(request, nodecls, editurl_callback, qrycallback,
     showall = request.GET.get('all', 'no')
 
     nodes = nodecls.where_is_admin_or_superadmin(request.user)
+    total = nodes.count()
     if term != '':
         terms = term.split("AND")
         filters = [qrycallback(t.strip()) for t in terms]
@@ -37,7 +38,10 @@ def node_json_generic(request, nodecls, editurl_callback, qrycallback,
                 url = editurl_callback(n))
             ])
         for n in nodes]
-    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
+    data = JSONEncoder().encode(dict(
+        result = l,
+        allcount = allcount,
+        total = total))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
 
@@ -168,6 +172,7 @@ def assignmentgroup_json(request, assignment_id):
     showall = request.GET.get('all', 'no')
 
     groups = assignment.assignmentgroups.all()
+    total = groups.count()
     groups = filter_assignmentgroup(request.GET, groups, term)
     allcount = groups.count()
 
@@ -192,6 +197,9 @@ def assignmentgroup_json(request, assignment_id):
                             args=[assignment_id, str(g.id)]))]
             )
         for g in groups]
-    data = JSONEncoder().encode(dict(result=l, allcount=allcount))
+    data = JSONEncoder().encode(dict(
+        result = l,
+        allcount = allcount,
+        total = total))
     response = http.HttpResponse(data, content_type="text/plain")
     return response

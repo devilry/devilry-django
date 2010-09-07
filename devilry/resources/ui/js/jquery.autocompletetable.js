@@ -88,13 +88,18 @@ jQuery.autocompletetable = {
                     return false;
                 });
             }
+
+            properties.resultcount.html("Current filters match "
+                    + data.allcount + " of " + data.total + ".");
         });
 
-        if(properties.searchfield.parent().parent().children("table").length == 0) {
-            properties.searchfield.parent().parent().append(tbl);
-        } else {
-            properties.searchfield.parent().parent().children("table").first().replaceWith(tbl);
-        }
+        //if(properties.searchfield.parent().parent().children("table").length == 0) {
+            //properties.searchfield.parent().parent().append(tbl);
+        //} else {
+            //properties.searchfield.parent().parent().children("table").first().replaceWith(tbl);
+        //}
+        properties.resulttable.replaceWith(tbl);
+        properties.resulttable = tbl;
 
 
         // Check all checkboxes when clicking checkall
@@ -167,7 +172,13 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
                 .addClass("ui-widget-content")
                 .addClass("ui-corner-all")
             .appendTo(searchfieldcontainer);
+        var resulttable = $("<table></table>").appendTo(form);
+        var resultcount = $("<div></div>")
+            .addClass("autocompletetable-resultcount")
+            .appendTo(form);
         this.properties.searchfield = searchfield;
+        this.properties.resulttable = resulttable;
+        this.properties.resultcount = resultcount;
 
 
         // Buttonbar actions
@@ -246,7 +257,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
             // Add filterbar
             var filterbar = $("<div></div>")
                 .addClass("autocompletetable-filterbar")
-                .appendTo(form);
+                .insertBefore(resulttable);
             $("<div></div>")
                 .html("Filters")
                 .addClass("autocompletetable-filter-title")
