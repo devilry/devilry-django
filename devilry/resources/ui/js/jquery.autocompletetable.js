@@ -106,10 +106,15 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
         this.properties.showall = 'no';
         this.properties.term = '';
 
+        // Add buttonbar
+        var buttonbar = $("<div></div>")
+            .addClass("autocompletetable-buttonbar")
+            .appendTo(this);
         var form = $("<form></form>")
             .attr("method", "post")
             .attr("action", '#') //.attr("action", deleteurl)
             .appendTo(this);
+
 
         var searchfieldid = $(this).attr("id") + "-searchfield";
         $("<label>Search: </label>")
@@ -125,16 +130,6 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                 .addClass("ui-corner-all")
             .appendTo(form);
         this.properties.searchfield = searchfield;
-
-        // Add filterbar
-        var filterbar = $("<div></div>")
-            .addClass("autocompletetable-filterbar")
-            .appendTo(form);
-
-        // Add buttonbar
-        var buttonbar = $("<div></div>")
-            .addClass("autocompletetable-buttonbar")
-            .appendTo(this);
 
         if(args.buttons) {
             // Create buttons
@@ -203,15 +198,26 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             });
         }
 
+
         if(args.filters) {
+            // Add filterbar
+            var filterbar = $("<div></div>")
+                .addClass("autocompletetable-filterbar")
+                .appendTo(form);
+            $("<div></div>")
+                .html("Filters")
+                .addClass("autocompletetable-filter-title")
+                .appendTo(filterbar);
+
             this.properties.filters = {}
             var filterid_prefix= $(this).attr("id") + "-filter-";
 
             var properties = this.properties;
             $.each(args.filters, function(filterkey, filter) {
                 var filterbox = $("<div></div>").appendTo(filterbar);
-                $("<h3></h3>")
+                $("<div></div>")
                     .html(filter.title)
+                    .addClass("autocompletetable-filter-subtitle")
                     .appendTo(filterbox);
                 var choicelist = $("<ul></ul>").appendTo(filterbox);
                 var prefix = filterkey + "-"
