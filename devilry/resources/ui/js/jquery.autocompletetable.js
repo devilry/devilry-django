@@ -106,16 +106,38 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
         this.properties.showall = 'no';
         this.properties.term = '';
 
-        // Add buttonbar
-        var buttonbar = $("<div></div>")
-            .addClass("autocompletetable-buttonbar")
+        // Add actions
+        var actionscontainer = $("<div></div>")
+            .addClass("autocompletetable-actionscontainer")
             .appendTo(this);
+        $("<span></span>")
+            .html("Select a action")
+            .addClass("autocompletetable-selectaction")
+            .appendTo(actionscontainer);
+        var showhideactions= $("<button></button>")
+            .html("Show actions")
+            .addClass("autocompletetable-showhide-actions")
+            .button({
+                icons: {primary: 'ui-icon-triangle-1-s'},
+                text: false
+            })
+            .appendTo(actionscontainer);
+        var actions = $("<div></div>")
+            .addClass("autocompletetable-actions")
+            .appendTo(actionscontainer)
+            .hide();
         var form = $("<form></form>")
             .attr("method", "post")
-            .attr("action", '#') //.attr("action", deleteurl)
+            .attr("action", '#')
             .appendTo(this);
 
+        showhideactions.click(function() {
+            actions.toggle('blind', {}, 200);
+            return false;
+        });
 
+
+        // Searchfield
         var searchfieldid = $(this).attr("id") + "-searchfield";
         $("<label>Search: </label>")
             .addClass("autocompletetable-filterlabel")
@@ -131,6 +153,8 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             .appendTo(form);
         this.properties.searchfield = searchfield;
 
+
+        // Buttonbar actions
         if(args.buttons) {
             // Create buttons
             $.each(args.buttons, function(key, button) {
@@ -141,10 +165,12 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                     //+ " cancel_label:" + button.cancel_label
                     //+ " confirm_message:" + button.confirm_message
                     //+ " url:" + button.url);
-                var htmlbutton = $("<button></button>")
+                var htmlbutton = $("<a></a>")
+                    .attr("href", "#")
+                    .addClass("autocompletetable-action")
+                    .addClass("autocompletetable-action-button")
                     .html(button.label)
-                    .button()
-                    .appendTo(buttonbar);
+                    .appendTo(actions);
                 if(button.classes) {
                     $.each(button.classes, function(i, cls) {
                         htmlbutton.addClass(cls);
@@ -187,8 +213,9 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             $.each(args.links, function(key, link) {
                 var html_link = $("<a></a>").html(link.label)
                     .attr("href", link.url)
-                    .button()
-                    .appendTo(buttonbar);
+                    .addClass("autocompletetable-action")
+                    .addClass("autocompletetable-action-link")
+                    .appendTo(actions);
                 if(link.classes) {
                     $.each(link.classes, function(i, cls) {
                         html_link.addClass(cls);

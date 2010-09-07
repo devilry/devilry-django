@@ -563,6 +563,46 @@ input.autocomplete-list {
 	width: 98%;
 }
 
+div.autocompletetable-actionscontainer {
+	margin: 0 0 10px 0;
+}
+button.autocompletetable-showhide-actions {
+}
+span.autocompletetable-selectaction {
+	width: 300px;
+	height: 20px;
+	display: inline-block;
+	border: 1px solid #aaa;
+	color: #444;
+	padding: 1px 3px;
+}
+#content div.autocompletetable-actions {
+}
+#content a.autocompletetable-action {
+	display: block;
+	width: 300px;
+	height: 20px;
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #aaa;
+	border-right: 1px solid #aaa;
+	color: #444 !important;
+	padding: 3px;
+}
+
+#content a.autocompletetable-action:hover {
+	background-color: #0B5A9D;
+	text-decoration: none;
+	color: #fff !important;
+}
+#content .autocompletetable-actions a.delete:hover {
+	background-color: #aa0000;
+	text-decoration: none;
+	color: #fff !important;
+}
+input.autocompletetable-searchfield {
+	width: 250px;
+}
+
 
 /*******************************
  * Examiner
