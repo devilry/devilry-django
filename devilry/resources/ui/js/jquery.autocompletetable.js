@@ -255,6 +255,11 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
         // Search when at least 2 characters are in the searchfield, and reset
         // when searchfield is empty.
         var properties = this.properties;
+        searchfield.keydown(function(e) {
+            if (e.keyCode==13) {
+                return false;
+            }
+            });
         searchfield.keyup(function(e) {
             if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
                 return;
