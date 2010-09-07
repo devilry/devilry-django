@@ -60,7 +60,7 @@
       $("#autocomplete-assignmentgroup").autocompletetable(
         "{% url admin-autocomplete-assignmentgroupname assignment.id %}",
         ["Id", "Candidates", "Examiners", "Name", "Deliveries", "Latest delivery", "Deadlines", "Status"],
-        "{% trans "edit" %}", "{% trans "Show all" %}",
+        "{% trans "Show all" %}",
         {
           links: {
             createnew: {
@@ -121,8 +121,8 @@
             examiner_bulk: {
               title: "{% trans "Has examiner(s)?" %}",
               choices: [
-                {label: "Yes", enabled: false},
-                {label: "No", enabled: false},
+                {label: "Yes", enabled: true},
+                {label: "No", enabled: true},
               ],
             },
             examiner: {

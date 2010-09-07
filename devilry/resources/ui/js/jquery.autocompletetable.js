@@ -51,9 +51,15 @@ jQuery.autocompletetable = {
                         .append($("<label>" + p + "</label>").attr("for", id))
                     .appendTo(tr);
                 });
-                $("<td></td>").append($("<a>" + properties.editlabel + "</a>")
-                    .attr("href", item.editurl))
-                .appendTo(tr);
+                var td = $("<td></td>");
+                $.each(item.actions, function(key, a) {
+                    $("<a></a>")
+                        .addClass("autocompletetable-singleaction")
+                        .html(a.label)
+                        .attr("href", a.url)
+                        .appendTo(td);
+                });
+                td.appendTo(tr);
                 tr.appendTo(result);
             });
 
@@ -93,15 +99,13 @@ jQuery.autocompletetable = {
 }
 
 
-jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
-        showall_label, args) {
-
+jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
+{
     return this.each(function(){
         this.properties = {};
         this.properties.id = $(this).attr("id");
         this.properties.jsonurl = jsonurl;
         this.properties.headings = headings;
-        this.properties.editlabel = editlabel;
         this.properties.showall_label = showall_label;
         this.properties.showall = 'no';
         this.properties.term = '';

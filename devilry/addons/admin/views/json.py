@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -31,7 +32,10 @@ def node_json_generic(request, nodecls, editurl_callback, qrycallback,
     l = [dict(
             id = n.id,
             path = pathcallback(n),
-            editurl = editurl_callback(n))
+            actions = [dict(
+                label = _('edit'),
+                url = editurl_callback(n))
+            ])
         for n in nodes]
     data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
@@ -118,19 +122,16 @@ def filter_assignmentgroup(postdata, groupsqry, term):
                status=AssignmentGroup.CORRECTED_AND_PUBLISHED)
 
     # Examiner bulk
-    if postdata.get('filter-examiner_bulk-0'):
+    if not postdata.get('filter-examiner_bulk-0'):
         groupsqry = groupsqry.exclude(examiners__isnull=False)
-    if postdata.get('filter-examiner_bulk-1'):
+    if not postdata.get('filter-examiner_bulk-1'):
         groupsqry = groupsqry.exclude(examiners__isnull=True)
 
     # Examiner
     for key, v in postdata.iteritems():
         if key.startswith('filter-examiner-'):
             if v:
-                if v == "## no examiners ##":
-                    groupsqry = groupsqry.exclude(examiners__isnull=True)
-                else:
-                    groupsqry = groupsqry.exclude(examiners__username=v)
+                groupsqry = groupsqry.exclude(examiners__username=v)
     return groupsqry.distinct()
 
 
@@ -172,8 +173,12 @@ def assignmentgroup_json(request, assignment_id):
                 latestdeliverytime(g),
                 get_deadlines(g),
                 g.get_localized_status()],
-            editurl = reverse('devilry-admin-edit_assignmentgroup',
-                args=[assignment_id, str(g.id)]))
+            actions = [
+                dict(
+                    label = _('edit'),
+                    url = reverse('devilry-admin-edit_assignmentgroup',
+                            args=[assignment_id, str(g.id)]))]
+            )
         for g in groups]
     data = JSONEncoder().encode(dict(result=l, allcount=allcount))
     response = http.HttpResponse(data, content_type="text/plain")
