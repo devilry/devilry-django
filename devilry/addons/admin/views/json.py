@@ -127,11 +127,18 @@ def filter_assignmentgroup(postdata, groupsqry, term):
     if not postdata.get('filter-examiner_bulk-1'):
         groupsqry = groupsqry.exclude(examiners__isnull=True)
 
+    # Closed
+    if not postdata.get('filter-closed-0'):
+        groupsqry = groupsqry.exclude(is_open=False)
+    if not postdata.get('filter-closed-1'):
+        groupsqry = groupsqry.exclude(is_open=True)
+
     # Examiner
     for key, v in postdata.iteritems():
         if key.startswith('filter-examiner-'):
             if v:
                 groupsqry = groupsqry.exclude(examiners__username=v)
+
     return groupsqry.distinct()
 
 
