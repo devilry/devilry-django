@@ -569,7 +569,8 @@ div.autocompletetable-actionscontainer {
 button.autocompletetable-showhide-actions {
 }
 span.autocompletetable-selectaction {
-	width: 300px;
+	width: 80%;
+	max-width: 300px;
 	height: 20px;
 	display: inline-block;
 	border: 1px solid #aaa;
@@ -580,7 +581,8 @@ span.autocompletetable-selectaction {
 }
 #content a.autocompletetable-action {
 	display: block;
-	width: 300px;
+	width: 80%;
+	max-width: 300px;
 	height: 20px;
 	border-bottom: 1px solid #ccc;
 	border-left: 1px solid #aaa;
@@ -599,8 +601,42 @@ span.autocompletetable-selectaction {
 	text-decoration: none;
 	color: #fff !important;
 }
+div.autocompletetable-searchfieldcontainer {
+	margin-bottom: 5px;
+}
 input.autocompletetable-searchfield {
-	width: 250px;
+	width: 40%;
+	max-width: 250px;
+}
+
+.autocompletetable-filterbar {
+	float: right;
+	width: 170px;
+	margin: 0 0 0 20px;
+	padding: 0 0 10px 0;
+	background-color: #fff;
+	border: 1px solid #D4D2CE;
+}
+.autocompletetable-filter-title {
+	background-color: #ECEBE9;
+	padding: 4px 8px;
+	font-style: italic;
+	border-bottom: 3px solid #D4D2CE;
+}
+.autocompletetable-filter-subtitle {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color: #ECEBE9;
+	padding: 2px 8px;
+}
+.autocompletetable-filterbar ul {
+	list-style: none;
+	margin: 0 8px;
+	padding: 0;
+}
+
+table.autocompletetable-result {
+	margin-top: 0;
 }
 
 
@@ -699,21 +735,4 @@ input.autocompletetable-searchfield {
 .old-deadline {
 	color: #a00;
 	font-style: italic;
-}
-
-
-
-/****************************
- * autocomplete table
- ***************************/
-.autocompletetable-filterbar {
-	float: right;
-	width: 200px;
-	margin: 0 0 0 20px;
-	padding: 0 10px 10px 10px;
-}
-.autocompletetable-filterbar ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
 }

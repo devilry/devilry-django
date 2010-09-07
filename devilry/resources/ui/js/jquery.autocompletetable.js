@@ -17,7 +17,7 @@ jQuery.autocompletetable = {
         $("<th>&nbsp;</th>").appendTo(headrow);
         $("<thead></thead>").append(headrow).appendTo(tbl);
         var result = $("<tbody></tbody>").appendTo(tbl);
-        var idprefix = properties.searchfield.parent().parent().attr("id") + "-cb";
+        var idprefix = properties.searchfield.parent().parent().parent().attr("id") + "-cb";
 
         var postdata = {
             "term": properties.term,
@@ -74,10 +74,10 @@ jQuery.autocompletetable = {
             }
         });
 
-        if(properties.searchfield.parent().children("table").length == 0) {
-            properties.searchfield.parent().append(tbl);
+        if(properties.searchfield.parent().parent().children("table").length == 0) {
+            properties.searchfield.parent().parent().append(tbl);
         } else {
-            properties.searchfield.parent().children("table").first().replaceWith(tbl);
+            properties.searchfield.parent().parent().children("table").first().replaceWith(tbl);
         }
 
 
@@ -111,7 +111,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             .addClass("autocompletetable-actionscontainer")
             .appendTo(this);
         $("<span></span>")
-            .html("Select a action")
+            .html("Select an action")
             .addClass("autocompletetable-selectaction")
             .appendTo(actionscontainer);
         var showhideactions= $("<button></button>")
@@ -126,11 +126,6 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
             .addClass("autocompletetable-actions")
             .appendTo(actionscontainer)
             .hide();
-        var form = $("<form></form>")
-            .attr("method", "post")
-            .attr("action", '#')
-            .appendTo(this);
-
         showhideactions.click(function() {
             actions.toggle('blind', {}, 200);
             return false;
@@ -138,11 +133,18 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
 
 
         // Searchfield
+        var form = $("<form></form>")
+            .attr("method", "post")
+            .attr("action", '#')
+            .appendTo(this);
+        var searchfieldcontainer = $("<div></div>")
+            .addClass("autocompletetable-searchfieldcontainer")
+            .appendTo(form);
         var searchfieldid = $(this).attr("id") + "-searchfield";
         $("<label>Search: </label>")
             .addClass("autocompletetable-filterlabel")
             .attr("for", searchfieldid)
-            .appendTo(form);
+            .appendTo(searchfieldcontainer);
         var searchfield =
             $("<input />")
                 .attr("id", searchfieldid)
@@ -150,7 +152,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, editlabel,
                 .addClass("ui-widget")
                 .addClass("ui-widget-content")
                 .addClass("ui-corner-all")
-            .appendTo(form);
+            .appendTo(searchfieldcontainer);
         this.properties.searchfield = searchfield;
 
 
