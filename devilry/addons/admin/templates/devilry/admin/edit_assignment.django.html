@@ -107,19 +107,27 @@
               label: "{% trans "Randomly distribute examiners" %}",
               url: "{% url devilry-admin-random_dist_examiners assignment.id %}"
             }
+          },
+          filters: {
+            "Status": {
+              include_no_deliveries: {
+                label: "{% trans "No deliveries" %}",
+                enabled: false
+              },
+              include_not_corrected: {
+                label: "{% trans "Not corrected" %}",
+                enabled: true
+              },
+              include_corrected_not_published: {
+                label: "{% trans "Corrected, not published" %}",
+                enabled: true
+              },
+              include_corrected_and_published: {
+                label: "{% trans "Corrected and published" %}",
+                enabled: true
+              }
+            }
           }
-//          filters: {
-//            "Include": {
-//              include_nodeliveries: {
-//                label: "No deliveries",
-//                enabled: false
-//              },
-//              include_corrected: {
-//                label: "Corrected",
-//                enabled: false
-//              }
-//            }
-//          }
         })
     });
   </script>
