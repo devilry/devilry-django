@@ -608,8 +608,7 @@ input.autocomplete-list {
 	color: #aa0000;
 	font-weight: normal;
 }
-.delivery_published_msg,
-.corrected_msg {
+.delivery_published_msg {
 	color: #00aa00;
 	font-style: italic;
 	font-weight: normal;
@@ -621,12 +620,24 @@ input.autocomplete-list {
 	font-weight: normal;
 }
 
-.not_corrected_msg {
-	color: #aaaa00;
-	font-weight: bold;
-}
+
+/* Status */
 .no_deliveries_msg {
 	color: #aa0000;
+	font-weight: bold;
+}
+.not_corrected_msg {
+	color: #A85400;
+	font-weight: normal;
+}
+.corrected_not_published_msg {
+	color: #0000aa;
+	font-style: italic;
+	font-weight: normal;
+}
+.corrected_and_published_msg {
+	color: #00aa00;
+	font-style: italic;
 	font-weight: normal;
 }
 

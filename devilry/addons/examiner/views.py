@@ -238,7 +238,7 @@ def assignmentgroup_filtertable_json(request):
                 g.get_candidates(),
                 g.name or '',
                 latestdeliverytime(g),
-                g.get_status(),
+                g.get_localized_status(),
             ],
             editurl = reverse('devilry-examiner-show_assignmentgroup',
                     args=[str(g.id)]))

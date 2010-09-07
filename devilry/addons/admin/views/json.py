@@ -147,7 +147,7 @@ def assignmentgroup_json(request, assignment_id):
                 str(g.get_number_of_deliveries()),
                 latestdeliverytime(g),
                 get_deadlines(g),
-                g.get_status()],
+                g.get_localized_status()],
             editurl = reverse('devilry-admin-edit_assignmentgroup',
                 args=[assignment_id, str(g.id)]))
         for g in groups]

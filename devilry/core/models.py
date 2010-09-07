@@ -1063,9 +1063,6 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
-    def get_status(self):
-        return self.get_localized_student_status()
-
     def get_localized_status(self):
         """ Returns the current status string from :attr:`status_mapping`. """
         return self.status_mapping[self.status]

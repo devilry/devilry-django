@@ -34,7 +34,7 @@
 	  {% if assignment_group.get_grade_as_short_string %}
 	  ({{ assignment_group.get_grade_as_short_string }})
 	  {% else %}
-	  ({{ assignment_group.get_status }})
+	  ({{ assignment_group.get_localized_status }})
 	  {% endif %}
 	</li>
     {% endfor %}
