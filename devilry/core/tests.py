@@ -18,10 +18,10 @@ from django.core.exceptions import ValidationError
 from devilry.addons.grade_approved.models import ApprovedGrade
 from devilry.core import pluginloader
 
-from models import Node, Subject, Period, Assignment, AssignmentGroup, \
-        Delivery, Candidate
-from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
-    DbmDeliveryStore
+from models import (Node, Subject, Period, Assignment, AssignmentGroup,
+        Delivery, Candidate, Feedback)
+from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
+    DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
 
 pluginloader.autodiscover()
@@ -506,6 +506,36 @@ class TestAssignmentGroup(TestCase):
         oblig1.publishing_time = datetime(2012, 12, 24)
         deadline = assignment_group.deadlines.create(deadline=datetime(2011, 12, 24), text=None)
         self.assertRaises(ValidationError, deadline.clean)
+
+    def test_status(self):
+        teacher1 = User.objects.get(username='teacher1')
+        ag = AssignmentGroup(
+                parentnode = Assignment.objects.get(id=1))
+        ag.save()
+        self.assertEquals(ag.status,
+                AssignmentGroup.NO_DELIVERIES)
+
+        ag = AssignmentGroup.objects.get(id=1)
+        d = ag.deliveries.all()[0]
+        d.save()
+        self.assertEquals(ag.status,
+                AssignmentGroup.NOT_CORRECTED)
+
+        d.feedback = Feedback(
+                format = 'rst',
+                text = 'test',
+                last_modified_by = teacher1)
+        d.feedback.set_grade_from_xmlrpcstring("+")
+        d.feedback.save()
+        d.save()
+        self.assertEquals(AssignmentGroup.objects.get(id=1).status,
+                AssignmentGroup.CORRECTED_NOT_PUBLISHED)
+
+        d.feedback.published = True
+        d.feedback.save()
+        self.assertEquals(AssignmentGroup.objects.get(id=1).status,
+                AssignmentGroup.CORRECTED_AND_PUBLISHED)
+
         
 class TestCandidate(TestCase):
     fixtures = ['tests/core/users.json', 'tests/core/core.json']

@@ -832,7 +832,69 @@ class AssignmentGroup(models.Model, CommonInterface):
     .. attribute:: deadlines
 
         A set of deadlines for this assignmentgroup 
+
+    .. attribute:: status
+
+        Stores data that can be deduces from other data in the database, but
+        since this requires complex queries, we store it as a integer
+        instead, with the following values:
+
+            0. No deliveries
+            1. Not corrected
+            2. Corrected, not published
+            3. Corrected and published
+
+        A assignment group gets the status ``"Corrected and published"`` if
+        it has any published feedbacks.
+
+    .. attribute:: status_mapping
+
+        Maps :attr:`status` to a translated string for examiners and
+        admins. ``status_mapping[0]`` contains a localized version of ``"No
+        deliveries"``, and so on.
+
+    .. attribute:: status_mapping_student
+
+        Maps :attr:`status` to a translated string for students. The same as
+        :attr:`status_mapping` except that ``status_mapping_student[2]``
+        contains ``"Not corrected"``, and ``status_mapping_student[3]``
+        contains ``"Corrected"``. This is because the student should never
+        know about unpublished feedback.
+
+    .. attribute:: NO_DELIVERIES
+
+        The numberic value corresponding to :attr:`status` *no deliveries*.
+
+    .. attribute:: NOT_CORRECTED
+
+        The numberic value corresponding to :attr:`status` *not corrected*.
+
+    .. attribute:: CORRECTED_NOT_PUBLISHED
+
+        The numberic value corresponding to :attr:`status` *corrected, not
+        published*.
+
+    .. attribute:: CORRECTED_AND_PUBLISHED
+
+        The numberic value corresponding to :attr:`status` *corrected, and
+        published*.
     """
+    status_mapping = (
+        _("No deliveries"),
+        _("Not corrected"),
+        _("Corrected, not published"),
+        _("Corrected and published"),
+    )
+    status_mapping_student = (
+        status_mapping[0],
+        status_mapping[1],
+        status_mapping[1], # "not published" means not "not corrected" is displayed to student
+        _("Corrected"),
+    )
+    NO_DELIVERIES = 0
+    NOT_CORRECTED = 1
+    CORRECTED_NOT_PUBLISHED = 2
+    CORRECTED_AND_PUBLISHED = 3
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
@@ -840,6 +902,10 @@ class AssignmentGroup(models.Model, CommonInterface):
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
+    status = models.PositiveIntegerField(
+            default = 0,
+            choices = enumerate(status_mapping),
+            verbose_name = _('Status'))
     
     
     @classmethod
@@ -1015,6 +1081,25 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return _('Not corrected')
             else:
                 return _('Corrected')
+
+    def _get_status_from_qry(self):
+        if self.deliveries.all().count() == 0:
+            return self.NOT_CORRECTED
+        else:
+            qry = self.deliveries.filter(
+                    feedback__isnull=False)
+            if qry.count() == 0:
+                return self.NOT_CORRECTED
+            else:
+                qry = qry.filter(feedback__published=True)
+                if qry.count() == 0:
+                    return self.CORRECTED_NOT_PUBLISHED
+                else:
+                    return self.CORRECTED_AND_PUBLISHED
+
+    def _update_status(self):
+        """ Query for the correct status, and set :attr:`status`. """
+        self.status = self._get_status_from_qry()
 
     def get_latest_delivery(self):
         """ Get the latest delivery by this assignment group,
@@ -1591,6 +1676,21 @@ def feedback_grade_delete_handler(sender, **kwargs):
     if feedback.grade != None:
         feedback.grade.delete()
 
-from django.db.models.signals import pre_delete
+
+def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
+    feedback = kwargs['instance']
+    feedback.delivery.assignment_group._update_status()
+    feedback.delivery.assignment_group.save()
+
+def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
+    delivery = kwargs['instance']
+    delivery.assignment_group._update_status()
+    delivery.assignment_group.save()
+
+from django.db.models.signals import pre_delete, post_save
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
 pre_delete.connect(feedback_grade_delete_handler, sender=Feedback)
+post_save.connect(feedback_update_assignmentgroup_status_handler,
+        sender=Feedback)
+post_save.connect(delivery_update_assignmentgroup_status_handler,
+        sender=Delivery)
