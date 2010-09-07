@@ -699,7 +699,7 @@ table.autocompletetable-result {
 
 /* Status */
 .no_deliveries_msg {
-	color: #aa0000;
+	color: #aa0000 !important;
 	font-weight: bold;
 }
 .not_corrected_msg {

@@ -41,15 +41,25 @@ jQuery.autocompletetable = {
                         .attr("name", id))
                 .appendTo(tr);
                 $.each(item.path, function(index, part) {
+                    var td = $("<td></td>");
                     var terms = properties.term.split(" AND ");
-                    var p = part;
+                    var label = part;
+                    var cssclasses = false;
+                    if(part instanceof Object) {
+                        label = part.label;
+                        cssclasses = part.cssclasses;
+                    }
+                    var p = label;
                     $.each(terms, function(index, term) {
                         p = p.replace(term.trim(),
                                 "<strong>" + term + "</strong>");
                     });
-                    $("<td></td>")
-                        .append($("<label>" + p + "</label>").attr("for", id))
-                    .appendTo(tr);
+                    var labeltag = $("<label>" + p + "</label>").attr("for", id);
+                    if(cssclasses) {
+                        labeltag.attr("class", cssclasses);
+                    }
+                    td.append(labeltag);
+                    td.appendTo(tr);
                 });
                 var td = $("<td></td>");
                 $.each(item.actions, function(key, a) {

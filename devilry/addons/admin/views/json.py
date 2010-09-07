@@ -135,6 +135,10 @@ def filter_assignmentgroup(postdata, groupsqry, term):
     return groupsqry.distinct()
 
 
+status_css_classes = (
+    'no_deliveries_msg', 'not_corrected_msg', 'corrected_not_published_msg',
+    'corrected_and_published_msg')
+
 @login_required
 def assignmentgroup_json(request, assignment_id):
     def latestdeliverytime(g):
@@ -172,7 +176,8 @@ def assignmentgroup_json(request, assignment_id):
                 str(g.get_number_of_deliveries()),
                 latestdeliverytime(g),
                 get_deadlines(g),
-                g.get_localized_status()],
+                dict(label=g.get_localized_status(),
+                    cssclasses=status_css_classes[g.status])],
             actions = [
                 dict(
                     label = _('edit'),
