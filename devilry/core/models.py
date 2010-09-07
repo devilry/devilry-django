@@ -1064,23 +1064,16 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_status(self):
-        """ Get status as a translated string.
-        
-        Returns one of:
-            
-            - "No deliveries"
-            - "Not corrected"
-            - "Corrected"
-        """
-        if self.deliveries.all().count() == 0:
-            return _('No deliveries')
-        else:
-            qry = self.deliveries.filter(
-                    feedback__published=True)
-            if qry.count() == 0:
-                return _('Not corrected')
-            else:
-                return _('Corrected')
+        return self.get_student_status_string()
+
+    def get_status_string(self):
+        """ Returns the current status string from :attr:`status_mapping`. """
+        return self.status_mapping[self.status]
+
+    def get_student_status_string(self):
+        """ Returns the current status string from
+        :attr:`status_mapping_student`. """
+        return self.status_mapping_student[self.status]
 
     def _get_status_from_qry(self):
         if self.deliveries.all().count() == 0:

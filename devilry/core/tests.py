@@ -514,12 +514,20 @@ class TestAssignmentGroup(TestCase):
         ag.save()
         self.assertEquals(ag.status,
                 AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(ag.get_status_string(),
+                "No deliveries")
+        self.assertEquals(ag.get_student_status_string(),
+                "No deliveries")
 
         ag = AssignmentGroup.objects.get(id=1)
         d = ag.deliveries.all()[0]
         d.save()
         self.assertEquals(ag.status,
                 AssignmentGroup.NOT_CORRECTED)
+        self.assertEquals(ag.get_status_string(),
+                "Not corrected")
+        self.assertEquals(ag.get_student_status_string(),
+                "Not corrected")
 
         d.feedback = Feedback(
                 format = 'rst',
@@ -528,13 +536,24 @@ class TestAssignmentGroup(TestCase):
         d.feedback.set_grade_from_xmlrpcstring("+")
         d.feedback.save()
         d.save()
-        self.assertEquals(AssignmentGroup.objects.get(id=1).status,
+        ag = AssignmentGroup.objects.get(id=1)
+        self.assertEquals(ag.status,
                 AssignmentGroup.CORRECTED_NOT_PUBLISHED)
+        self.assertEquals(ag.get_status_string(),
+                "Corrected, not published")
+        self.assertEquals(ag.get_student_status_string(),
+                "Not corrected")
 
         d.feedback.published = True
         d.feedback.save()
-        self.assertEquals(AssignmentGroup.objects.get(id=1).status,
+        ag = AssignmentGroup.objects.get(id=1)
+        self.assertEquals(ag.status,
                 AssignmentGroup.CORRECTED_AND_PUBLISHED)
+        self.assertEquals(ag.get_status_string(),
+                "Corrected and published")
+        self.assertEquals(ag.get_student_status_string(),
+                "Corrected")
+
 
         
 class TestCandidate(TestCase):
