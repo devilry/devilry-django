@@ -1064,13 +1064,13 @@ class AssignmentGroup(models.Model, CommonInterface):
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_status(self):
-        return self.get_student_status_string()
+        return self.get_localized_student_status()
 
-    def get_status_string(self):
+    def get_localized_status(self):
         """ Returns the current status string from :attr:`status_mapping`. """
         return self.status_mapping[self.status]
 
-    def get_student_status_string(self):
+    def get_localized_student_status(self):
         """ Returns the current status string from
         :attr:`status_mapping_student`. """
         return self.status_mapping_student[self.status]

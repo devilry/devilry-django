@@ -514,9 +514,9 @@ class TestAssignmentGroup(TestCase):
         ag.save()
         self.assertEquals(ag.status,
                 AssignmentGroup.NO_DELIVERIES)
-        self.assertEquals(ag.get_status_string(),
+        self.assertEquals(ag.get_localized_status(),
                 "No deliveries")
-        self.assertEquals(ag.get_student_status_string(),
+        self.assertEquals(ag.get_localized_student_status(),
                 "No deliveries")
 
         ag = AssignmentGroup.objects.get(id=1)
@@ -524,9 +524,9 @@ class TestAssignmentGroup(TestCase):
         d.save()
         self.assertEquals(ag.status,
                 AssignmentGroup.NOT_CORRECTED)
-        self.assertEquals(ag.get_status_string(),
+        self.assertEquals(ag.get_localized_status(),
                 "Not corrected")
-        self.assertEquals(ag.get_student_status_string(),
+        self.assertEquals(ag.get_localized_student_status(),
                 "Not corrected")
 
         d.feedback = Feedback(
@@ -539,9 +539,9 @@ class TestAssignmentGroup(TestCase):
         ag = AssignmentGroup.objects.get(id=1)
         self.assertEquals(ag.status,
                 AssignmentGroup.CORRECTED_NOT_PUBLISHED)
-        self.assertEquals(ag.get_status_string(),
+        self.assertEquals(ag.get_localized_status(),
                 "Corrected, not published")
-        self.assertEquals(ag.get_student_status_string(),
+        self.assertEquals(ag.get_localized_student_status(),
                 "Not corrected")
 
         d.feedback.published = True
@@ -549,9 +549,9 @@ class TestAssignmentGroup(TestCase):
         ag = AssignmentGroup.objects.get(id=1)
         self.assertEquals(ag.status,
                 AssignmentGroup.CORRECTED_AND_PUBLISHED)
-        self.assertEquals(ag.get_status_string(),
+        self.assertEquals(ag.get_localized_status(),
                 "Corrected and published")
-        self.assertEquals(ag.get_student_status_string(),
+        self.assertEquals(ag.get_localized_student_status(),
                 "Corrected")
 
 
