@@ -45,7 +45,8 @@ def set_django_settings_module(opt):
     os.environ['DJANGO_SETTINGS_MODULE'] = opt.settings
 
 def setup_logging(opt):
-    logging.basicConfig(level=opt.loglevel or logging.INFO, format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=opt.loglevel or logging.INFO,
+            format='%(levelname)7s: %(message)s')
 
 def load_devilry_plugins():
     from devilry.core import pluginloader

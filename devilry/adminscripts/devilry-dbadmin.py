@@ -21,6 +21,16 @@ Actions:
     fix-gradeplugin-content-type-errors
         Fixes any of the errors explained in the
         <validate-gradeplugin-content-types> action.
+
+    check-assignmentgroup-status
+        We store the status of a AssignmentGroup as a number in the status
+        field. This number is set by post_save events, using a query, so
+        it might become corrupted over time. This action checks all these
+        numbers, but changes nothing.
+
+    set-correct-assignmentgroup-status
+        Fixes the status attribute on all AssignmentGroups with wrong
+        status.
 """
 
 
@@ -77,11 +87,23 @@ def check_assignmentgroup_status():
     for ag in AssignmentGroup.objects.all():
         correct_status = ag._get_status_from_qry()
         if ag.status == correct_status:
-            logging.info("%-70s  [ OK ]" % ag)
+            logging.info("%s correct status:%s, current status: %s." % (ag,
+                ag.status, correct_status))
         else:
-            logging.error("%-70s  [ WRONG STATUS ]" % ag)
-            logging.error("%s status is %s, should be %s." % (ag, ag.status,
-                correct_status))
+            logging.error("%s correct status:%s, current status: %s." % (ag,
+                ag.status, correct_status))
+
+def set_correct_assignmentgroup_status():
+    for ag in AssignmentGroup.objects.all():
+        correct_status = ag._get_status_from_qry()
+        if ag.status == correct_status:
+            logging.info("%s skipped (has correct status: %s)" % (ag,
+                ag.status))
+        else:
+            logging.error("%s status changed from %s to %s." % (ag,
+                ag.status, correct_status))
+            ag.status = correct_status
+            ag.save()
 
 
 if len(args) == 0:
@@ -108,5 +130,9 @@ elif action == "validate-gradeplugins":
     validate_gradeplugins()
 elif action == "validate-gradeplugin-content-types":
     validate_gradeplugin_contenttypes()
+elif action == "check-assignmentgroup-status":
+    check_assignmentgroup_status()
+elif action == "set-correct-assignmentgroup-status":
+    set_correct_assignmentgroup_status()
 else:
     exit_help("ERROR: Invalid action.")
