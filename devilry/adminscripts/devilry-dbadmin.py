@@ -8,8 +8,19 @@ from common import (setup_logging, load_devilry_plugins, add_debug_opt,
 
 
 extra_help = """
+Actions:
+    validate-gradeplugins
+        Check that all grade plugins used in the database is
+        available/correct.
+    
+    validate-gradeplugin-content-types
+        AssignmentGroup objects have a grade attribute that should be a
+        instance of the grade plugin of the Assignment. This that this is
+        correct onchecks all AssignmentGroups.
 
-
+    fix-gradeplugin-content-type-errors
+        Fixes any of the errors explained in the
+        <validate-gradeplugin-content-types> action.
 """
 
 
@@ -33,9 +44,9 @@ setup_logging(opt)
 # Django must be imported after setting DJANGO_SETTINGS_MODULE
 set_django_settings_module(opt)
 load_devilry_plugins()
-from devilry.core.models import Feedback, Assignment
-from devilry.core.gradeplugin import GradePluginDoesNotExistError, \
-    WrongContentTypeError, GradePluginError
+from devilry.core.models import Feedback, Assignment, AssignmentGroup
+from devilry.core.gradeplugin import (GradePluginDoesNotExistError,
+        WrongContentTypeError, GradePluginError)
 
 
 def exit_help(msg=""):
@@ -61,6 +72,16 @@ def validate_gradeplugin_contenttypes():
             logging.error("%s: %s" % (feedback, str(e)))
         else:
             logging.info("%-70s  [ OK ]" % feedback)
+
+def check_assignmentgroup_status():
+    for ag in AssignmentGroup.objects.all():
+        correct_status = ag._get_status_from_qry()
+        if ag.status == correct_status:
+            logging.info("%-70s  [ OK ]" % ag)
+        else:
+            logging.error("%-70s  [ WRONG STATUS ]" % ag)
+            logging.error("%s status is %s, should be %s." % (ag, ag.status,
+                correct_status))
 
 
 if len(args) == 0:
