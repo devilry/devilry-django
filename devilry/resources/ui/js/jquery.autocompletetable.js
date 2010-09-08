@@ -104,7 +104,7 @@ jQuery.autocompletetable = {
 
         // Check all checkboxes when clicking checkall
         checkall.click(function() {
-            var qry ="#" + properties.id + " input:checkbox";
+            var qry ="#" + properties.id + " .autocompletetable-result input:checkbox";
             var checked = checkall.is(":checked");
             //$.log(qry);
             //$.log(checked);
@@ -279,13 +279,13 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
                     var key = prefix + i;
                     var id = filterid_prefix + key;
                     var li = $("<li></li>").appendTo(choicelist);
-                    $("<label></label>")
-                        .html(choice.label)
-                        .attr("for", id)
-                        .appendTo(li);
                     var checkbox = $("<input/>")
                         .attr("type", "checkbox")
                         .attr("id", id)
+                        .appendTo(li);
+                    $("<label></label>")
+                        .html(choice.label)
+                        .attr("for", id)
                         .appendTo(li);
                     if(!choice.value) {
                         choice.value = "yes";
@@ -296,7 +296,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
                     } else {
                         choice.enabled = false;
                     }
-                    checkbox.button();
+                    //checkbox.button();
 
                     checkbox.click(function() {
                         properties.filters[key].enabled = !properties.filters[key].enabled;
@@ -304,7 +304,7 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
                             //$.log(k + ":" + choice.enabled + " (" + choice.value + ")");
                         //});
                         jQuery.autocompletetable.refreshtable(properties);
-                        return false;
+                        //return false;
                     });
                 });
             });

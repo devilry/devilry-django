@@ -589,6 +589,7 @@ span.autocompletetable-selectaction {
 	border-right: 1px solid #aaa;
 	color: #444 !important;
 	padding: 3px;
+	background-color: #fff;
 }
 
 #content a.autocompletetable-action:hover {
