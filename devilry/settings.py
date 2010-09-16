@@ -130,7 +130,7 @@ DEVILRY_MAIN_PAGE = ''
 BASE_TEMPLATE = 'devilry/base.django.html'
 
 MEDIA_ICONS_URL = 'media/icons/'
-JQUERY_UI_THEME = 'smoothness'
+JQUERY_UI_THEME = 'devilry'
 
 
 ## The default grade-plugin
