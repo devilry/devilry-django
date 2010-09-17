@@ -113,11 +113,16 @@ def successful_delivery(request, assignment_group_id):
     user_list = []
     for cand in cands:
         user_list.append(cand.student)
-    
-    send_email(user_list, 
-               _("Receipt for delivery on %s") \
-               % (assignment_group.parentnode.get_path()), 
-               email_message)
+
+    try:
+        send_email(user_list, 
+                   _("Receipt for delivery on %s") \
+                   % (assignment_group.parentnode.get_path()), 
+                   email_message)
+    except Exception, e:
+        email_list = "".join(["%s (%s), " % (u.username, u.email) for u in user_list])[:-2]
+        messages.add_warning(_('An error occured when sending email to the following users: %s.' \
+                               % email_list))
     
     return show_assignmentgroup(request, assignment_group_id, messages)
 

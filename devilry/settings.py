@@ -133,18 +133,14 @@ MEDIA_ICONS_URL = 'media/icons/'
 JQUERY_UI_THEME = 'devilry'
 
 
+SEND_EMAIL_TO_USERS = True
+
 ## The default grade-plugin
 DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
 #DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:approvedgrade'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = this_dir + '/email_log/'
-
-#EMAIL_HOST = 'smtp.ifi.uio.no'
-#EMAIL_PORT = 25
-
-#EMAIL_HOST_USER = 
-#EMAIL_HOST_PASSWORD = 
 
 EMAIL_SUBJECT_PREFIX = '[devilry] '
 WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'

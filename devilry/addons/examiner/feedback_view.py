@@ -50,16 +50,23 @@ def redirect_after_successful_save(request, delivery_obj):
                                                  assignment.long_name)
         
         cands = delivery_obj.assignment_group.candidates.all()
-        users = []
+        user_list = []
         for candidate in cands:
-            users.append(candidate.student)
+            user_list.append(candidate.student)
 
         rev = reverse('devilry-student-show-delivery', args=(delivery_obj.id,))
         email_message += _("\nThe feedback can be viewed at:\n%s\n") % \
                          (request.build_absolute_uri(rev))
-        send_email(users, 
-                   _("New feedback - %s") % (assignment.get_path()), 
-                   email_message)
+        try:
+            send_email(user_list, 
+                       _("New feedback - %s") % (assignment.get_path()), 
+                       email_message)
+        except Exception, e:
+            email_list = "".join(["%s (%s), " % (u.username, u.email) for u in user_list])[:-2]
+            messages = UiMessages()
+            messages.add_warning(_('An error occured when sending email to the followin users: %s.'
+                                   % email_list))
+            messages.save(request)
     else:
         messages = UiMessages()
         messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
