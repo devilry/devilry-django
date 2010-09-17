@@ -122,11 +122,18 @@ init-prodtestdb:
 
 reset-prodtest: clear-prodtestdb init-prodtestdb
 
-selenium-test: cleardb
-	python manage.py loaddata -v0 addons/student/fixtures/exampleusers.json
-	python manage.py loaddata -v0 addons/student/fixtures/exampledata.json
+
+selenium-clear-db: cleardb
+	git checkout deliverystore.dbm.dat
+	git checkout deliverystore.dbm.dir
+
+selenium-student-test: selenium-clear-db
+	python manage.py loaddata -v0 addons/student/fixtures/selenium/student/*.json
+	sleep 2
 	export DJANGO_SETTINGS_MODULE=devilry.settings
 	python addons/student/seleniumtests.py
+
+selenium-tests: selenium-student-test
 
 clean:
 	coverage erase
