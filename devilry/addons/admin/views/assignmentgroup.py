@@ -303,8 +303,10 @@ def set_examiners(request, assignment_id):
         return HttpResponseForbidden("Forbidden")
 
     class ExaminerForm(forms.Form):
-        users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
-                required=True)
+         examiners = forms.CharField(widget=DevilryMultiSelectFewCandidates,
+                required=False,
+                help_text=_('Usernames separated by ",". Leave empty to '\
+                    'clear examiners'))
     if request.method == 'POST':
         try:
             groups = _groups_from_filtertable(request)
@@ -314,13 +316,17 @@ def set_examiners(request, assignment_id):
         if 'onsite' in request.POST:
             form = ExaminerForm(request.POST)
             if form.is_valid():
-                user_ids = MultiSelectCharField.from_string(form.cleaned_data['users'])
+                examiners = form.cleaned_data['examiners']
+                user_ids = MultiSelectCharField.from_string(examiners)
                 for key, group in groups:
                     group.examiners.clear()
                     for id in user_ids:
                         group.examiners.add(User.objects.get(id=id))
                 messages = UiMessages()
-                messages.add_success(_('Examiners successfully changed'))
+                if user_ids:
+                    messages.add_success(_('Examiners successfully changed'))
+                else:
+                    messages.add_success(_('Examiners successfully cleared'))
                 messages.save(request)
                 return HttpResponseRedirect(reverse(
                     'devilry-admin-edit_assignment',
