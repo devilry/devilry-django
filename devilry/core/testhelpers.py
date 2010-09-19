@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import unittest
 
 from django.contrib.auth.models import User
 
@@ -142,3 +143,14 @@ class TestDeliveryStoreMixin(object):
         store.remove(self.filemeta)
         self.assertFalse(store.exists(self.filemeta))
         self.assertRaises(FileNotFoundError, store.remove, self.filemeta)
+
+
+class SeleniumTestBase(unittest.TestCase):
+    def assert403(self, f, *args, **kw):
+        try:
+            f(*args, **kw)
+        except Exception, e:
+            self.assertTrue("403" in str(e))
+            self.assertTrue("FORBIDDEN" in str(e))
+        else:
+            self.fail("403 not raised for %s, %s, %s" % (f, args, kw))
