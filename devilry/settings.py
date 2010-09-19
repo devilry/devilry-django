@@ -1,5 +1,6 @@
 # Django settings for devilry project.
 from os.path import abspath, dirname, join
+from django.utils.translation import ugettext as _
 
 this_dir = dirname(abspath(__file__))
 
@@ -145,3 +146,5 @@ EMAIL_FILE_PATH = this_dir + '/email_log/'
 EMAIL_SUBJECT_PREFIX = '[devilry] '
 WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'
 EMAIL_DEFAULT_FROM = 'devilry-support@ifi.uio.no'
+EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
+                  "Please do not respond to this email."
