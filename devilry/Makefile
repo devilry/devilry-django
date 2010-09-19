@@ -133,9 +133,7 @@ selenium-student-test: selenium-clear-db
 	export DJANGO_SETTINGS_MODULE=devilry.settings
 	python addons/student/seleniumtests.py
 
-selenium-examiner-test: selenium-clear-db
-	python manage.py loaddata -v0 addons/examiner/fixtures/selenium.json
-	sleep 2
+selenium-examiner-test:
 	export DJANGO_SETTINGS_MODULE=devilry.settings
 	python addons/examiner/seleniumtests.py
 

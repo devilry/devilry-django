@@ -331,14 +331,14 @@ class TestAssignment(TestCase):
 
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(1,
-                oblig1.assignment_groups_where_is_examiner_or_admin(examiner1)[0].id)
+                oblig1.assignment_groups_where_can_examine(examiner1)[0].id)
         self.assertEquals(2,
-                oblig1.assignment_groups_where_is_examiner_or_admin(examiner1).count())
+                oblig1.assignment_groups_where_can_examine(examiner1).count())
 
         self.assertEquals(1,
-                oblig1.assignment_groups_where_is_examiner_or_admin(ifiadmin)[0].id)
+                oblig1.assignment_groups_where_can_examine(ifiadmin)[0].id)
         self.assertEquals(4,
-                oblig1.assignment_groups_where_is_examiner_or_admin(ifiadmin).count())
+                oblig1.assignment_groups_where_can_examine(ifiadmin).count())
 
     def test_clean_publishing_time_before(self):
         oblig1 = Assignment.objects.get(id=1)

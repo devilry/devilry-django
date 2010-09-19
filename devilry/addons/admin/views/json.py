@@ -191,10 +191,13 @@ def assignmentgroup_json(request, assignment_id):
                 dict(label=g.get_localized_status(),
                     cssclasses=status_css_classes[g.status])],
             actions = [
-                dict(
-                    label = _('edit'),
-                    url = reverse('devilry-admin-edit_assignmentgroup',
-                            args=[assignment_id, str(g.id)]))]
+                {'label': _('edit'),
+                    'url': reverse('devilry-admin-edit_assignmentgroup',
+                            args=[assignment_id, str(g.id)])},
+                {'label': _('examine'),
+                    'url': reverse('devilry-examiner-show_assignmentgroup',
+                            args=[str(g.id)])}
+                ]
             )
         for g in groups]
     data = JSONEncoder().encode(dict(
