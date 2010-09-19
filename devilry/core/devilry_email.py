@@ -1,14 +1,14 @@
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
-from devilry.settings import EMAIL_SUBJECT_PREFIX
-from devilry.settings import EMAIL_DEFAULT_FROM
+from django.core.mail import mail_admins
+from django.conf import settings
 
 def send_email(user_objects_to_send_to, subject, message):
-    if not SEND_EMAIL_TO_USERS:
+    if not settings.SEND_EMAIL_TO_USERS:
         return
+    
     message += "\n\n--\n"
-    message += _("This is a message from the Devilry assignment delivery system. " \
-                     "Please do not respond to this email.")
+    message += settings.EMAIL_SIGNATURE
     emails = []
 
     for u in user_objects_to_send_to:
@@ -18,7 +18,7 @@ def send_email(user_objects_to_send_to, subject, message):
         else:
             emails.append(u.email)
     try:
-        send_mail(EMAIL_SUBJECT_PREFIX + subject, message, EMAIL_DEFAULT_FROM,
+        send_mail(settings.EMAIL_SUBJECT_PREFIX + subject, message, settings.EMAIL_DEFAULT_FROM,
                   emails, fail_silently=False)
     except Exception, e:
         mail_admins("[devilry]", "Error when sending email to user %s on address %s. Exception: %s" %
