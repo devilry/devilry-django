@@ -704,19 +704,23 @@ class Assignment(models.Model, BaseNode):
         return self.assignmentgroups.filter(
             Q(examiners=user_obj))
     
-    def assignment_groups_where_is_examiner_or_admin(self, user_obj):
+    def assignment_groups_where_can_examine(self, user_obj):
         """ Get all assignment groups within this assignment where the given
-        ``user_obj`` is examiner or is admin.
+        ``user_obj`` is examiner or admin. If the user is superadmin, all
+        assignments are returned.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return self.assignmentgroups.filter(
-            Q(examiners=user_obj) |
-            Q(parentnode__admins=user_obj) |
-            Q(parentnode__parentnode__admins=user_obj) |
-            Q(parentnode__parentnode__parentnode__admins=user_obj) |
-            Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
+        if user_obj.is_superuser:
+            return self.assignmentgroups.all()
+        else:
+            return self.assignmentgroups.filter(
+                Q(examiners=user_obj) |
+                Q(parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
             
     def clean(self, *args, **kwargs):
         """Validate the assignment.
@@ -1062,6 +1066,14 @@ class AssignmentGroup(models.Model, CommonInterface):
     def is_examiner(self, user_obj):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(pk=user_obj.pk).count() > 0
+
+    def can_examine(self, user_obj):
+        """ Return True if the user has permission to examine (creeate
+        feedback and browse files) on this assignment group.
+        
+        Examiners, admins and superusers has this permission. """
+        return user_obj.is_superuser or self.is_admin(user_obj) \
+                or self.is_examiner(user_obj)
 
     def get_localized_status(self):
         """ Returns the current status string from :attr:`status_mapping`. """

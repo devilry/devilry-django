@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 import unittest
+import os
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 import gradeplugin
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
@@ -146,6 +148,23 @@ class TestDeliveryStoreMixin(object):
 
 
 class SeleniumTestBase(unittest.TestCase):
+    fixtures = []
+
+    def clear_testdb(self):
+        os.system('git checkout deliverystore.dbm.dat')
+        os.system('git checkout deliverystore.dbm.dir')
+        if os.path.exists(settings.DATABASE_NAME):
+            os.remove(settings.DATABASE_NAME)
+        os.system('python manage.py syncdb --noinput')
+
+    def load_fixtures(self):
+        if not self.fixtures:
+            raise ValueError("No fixtures in testcase: %s." %
+                    self.__class__.__name__)
+        self.clear_testdb()
+        os.system('python manage.py loaddata -v0 %s' % \
+                ' '.join(self.fixtures))
+
     def assert403(self, f, *args, **kw):
         try:
             f(*args, **kw)

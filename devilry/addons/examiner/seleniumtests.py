@@ -4,29 +4,21 @@ import unittest
 from devilry.core.testhelpers import SeleniumTestBase
 
 
-class TestDashboard(SeleniumTestBase):
-    def setUp(self):
-        self.verificationErrors = []
+class CommonTestsMixin(object):
+    def _login(self, username):
         self.selenium = selenium("localhost", 4444, "*chrome", "http://localhost:8000/")
         self.selenium.start()
         sel = self.selenium
         sel.open("/ui/login")
-        sel.type("id_username", "clarabelle")
+        sel.type("id_username", username)
         sel.type("id_password", "test")
         sel.click("login")
         sel.wait_for_page_to_load("30000")
-    
-    def test_normal_workflow(self):
-        sel = self.selenium
-        self.failUnless(sel.is_text_present("Dashboard"))
-        self.failUnless(sel.is_text_present("Assignments"))
-        self.failUnless(sel.is_text_present("Money making basics"))
-        self.failUnless(sel.is_text_present("Tull 101 - The 21 century"))
-        self.failUnless(sel.is_text_present("Effective habits for lazy people"))
-        self.failUnless(sel.is_text_present("Oblig 1"))
 
-        sel.click("link=Money making basics")
-        sel.wait_for_page_to_load("30000")
+    def _common(self):
+        sel = self.selenium
+        sel.open("/examiner/list_assignmentgroups/2")
+
         self.failUnless(sel.is_text_present("huey, dewey, louie"))
         self.failUnless(sel.is_text_present("Corrected, not published"))
 
@@ -63,6 +55,28 @@ class TestDashboard(SeleniumTestBase):
         sel.wait_for_page_to_load("30000")
 
 
+class TestAsExaminer(SeleniumTestBase, CommonTestsMixin):
+    fixtures = ['addons/examiner/fixtures/selenium.json']
+
+    def setUp(self):
+        self.load_fixtures()
+        self._login("clarabelle")
+    
+    def test_normal_workflow(self):
+        sel = self.selenium
+        self.failUnless(sel.is_text_present("Dashboard"))
+        self.failUnless(sel.is_text_present("Assignments"))
+        self.failUnless(sel.is_text_present("Money making basics"))
+        self.failUnless(sel.is_text_present("Tull 101 - The 21 century"))
+        self.failUnless(sel.is_text_present("Effective habits for lazy people"))
+        self.failUnless(sel.is_text_present("Oblig 1"))
+
+        sel.click("link=Money making basics")
+        sel.wait_for_page_to_load("30000")
+        self.failUnless(sel.is_text_present("huey, dewey, louie"))
+        self.failUnless(sel.is_text_present("Corrected, not published"))
+        self._common()
+
     def test_forbidden(self):
         sel = self.selenium
         self.assert403(sel.open, "/examiner/show-assignmentgroup/2")
@@ -73,7 +87,34 @@ class TestDashboard(SeleniumTestBase):
     
     def tearDown(self):
         self.selenium.stop()
-        self.assertEqual([], self.verificationErrors)
+
+
+class TestAsSuperadmin(SeleniumTestBase, CommonTestsMixin):
+    fixtures = ['addons/examiner/fixtures/selenium.json']
+
+    def setUp(self):
+        self.load_fixtures()
+        self._login("grandma")
+    
+    def test_normal_workflow(self):
+        self._common()
+
+    def tearDown(self):
+        self.selenium.stop()
+
+
+class TestAsAdmin(SeleniumTestBase, CommonTestsMixin):
+    fixtures = ['addons/examiner/fixtures/selenium.json']
+
+    def setUp(self):
+        self.load_fixtures()
+        self._login("scrooge")
+    
+    def test_normal_workflow(self):
+        self._common()
+
+    def tearDown(self):
+        self.selenium.stop()
 
 
 if __name__ == "__main__":

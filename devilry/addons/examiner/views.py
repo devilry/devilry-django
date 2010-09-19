@@ -39,7 +39,7 @@ class DeadlineForm(forms.ModelForm):
 @login_required
 def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
-    assignment_groups = assignment.assignment_groups_where_is_examiner(
+    assignment_groups = assignment.assignment_groups_where_can_examine(
             request.user)
     if assignment_groups.count() == 0:
         return HttpResponseForbidden("Forbidden")
@@ -53,7 +53,7 @@ def list_assignmentgroups(request, assignment_id):
 @login_required
 def delete_deadline(request, assignmentgroup_id, deadline_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
-    if not assignment_group.is_examiner(request.user):
+    if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
     deadline = get_object_or_404(Deadline, pk=deadline_id)
     deadline.delete()
@@ -69,7 +69,7 @@ def delete_deadline(request, assignmentgroup_id, deadline_id):
 
 def _close_open_assignmentgroup(request, assignmentgroup_id, is_open, msg):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
-    if not assignment_group.is_examiner(request.user):
+    if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
     assignment_group.is_open = is_open;
     assignment_group.save()
@@ -94,7 +94,7 @@ def open_assignmentgroup(request, assignmentgroup_id):
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
-    if not assignment_group.is_examiner(request.user):
+    if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
 
     valid_deadlineform = True
@@ -177,7 +177,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
 @login_required
 def correct_delivery(request, delivery_id):
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
-    if not delivery_obj.assignment_group.is_examiner(request.user):
+    if not delivery_obj.assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
     key = delivery_obj.assignment_group.parentnode.grade_plugin
     return gradeplugin.registry.getitem(key).view(request, delivery_obj)

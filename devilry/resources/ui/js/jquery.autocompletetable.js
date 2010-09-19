@@ -62,12 +62,20 @@ jQuery.autocompletetable = {
                     td.appendTo(tr);
                 });
                 var td = $("<td></td>");
+                var first = true;
                 $.each(item.actions, function(key, a) {
+                    if(!first) {
+                        $("<span></span>")
+                            .html('&nbsp;|&nbsp;')
+                            .attr("href", a.url)
+                            .appendTo(td);
+                    }
                     $("<a></a>")
                         .addClass("autocompletetable-singleaction")
                         .html(a.label)
                         .attr("href", a.url)
                         .appendTo(td);
+                    first = false;
                 });
                 td.appendTo(tr);
                 tr.appendTo(result);
