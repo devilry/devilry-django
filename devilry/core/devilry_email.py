@@ -26,6 +26,10 @@ def send_email(user_objects_to_send_to, subject, message):
                           fail_silently=False)
         raise
 
+    # If one or more emails were not sent, a warning message is shown to the student who delivers.
+    if len(emails) < len(user_objects_to_send_to):
+        raise Exception()
+
 def send_email_admins(subject, message, fail_silently=False):
     if len(settings.ADMINS) == 0:
         return
