@@ -100,7 +100,7 @@ def set_correct_assignmentgroup_status():
             logging.info("%s skipped (has correct status: %s)" % (ag,
                 ag.status))
         else:
-            logging.error("%s status changed from %s to %s." % (ag,
+            logging.warning("%s status changed from %s to %s." % (ag,
                 ag.status, correct_status))
             ag.status = correct_status
             ag.save()
