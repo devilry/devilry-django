@@ -1133,17 +1133,15 @@ class AssignmentGroup(models.Model, CommonInterface):
         """
         return self.deliveries.filter(feedback__published=True)
 
-    def _can_save_id_none(self, user_obj):
-        """ Used by all except Node, which overrides. """
-        return self.parentnode.is_admin(user_obj)
-
     def can_save(self, user_obj):
+        """ Check if the user has permission to save this AssignmentGroup.
+        This only runs :meth:`Assignment.is_admin`, so there is no need to
+        use this if you have already used can_save() on the
+        :attr:`parentnode`. """
         if user_obj.is_superuser:
             return True
-        if self.id == None:
-            return self._can_save_id_none(user_obj)
-        elif self.is_admin(user_obj):
-            return True
+        elif self.parentnode:
+            return self.parentnode.is_admin(user_obj)
         else:
             return False
     

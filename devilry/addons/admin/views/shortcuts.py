@@ -58,6 +58,7 @@ class EditBase(object):
         self.parent_model = self.MODEL_CLASS.parentnode.field.related.parent_model
         model_name = self.MODEL_CLASS._meta.verbose_name
         self.model_name_dict = {'model_name': model_name}
+        self.forbidden = False
 
         if obj_id == None:
             self.is_new = True
@@ -67,7 +68,8 @@ class EditBase(object):
             self.is_new = False
             self.obj = get_object_or_404(self.MODEL_CLASS, pk=obj_id)
             if not self.obj.can_save(self.request.user):
-                return HttpResponseForbidden("Forbidden")
+                self.forbidden = True
+                return
             self.post_url = reverse(
                     'devilry-admin-edit_%s' % self.VIEW_NAME,
                     args = [str(self.obj.pk)])
@@ -79,6 +81,9 @@ class EditBase(object):
         return reverse('devilry.addons.admin.views.edit_' + self.VIEW_NAME, args=args)
 
     def create_view(self):
+        if self.forbidden:
+            return HttpResponseForbidden("Forbidden")
+
         form_cls = self.create_form()
 
         if self.request.POST:

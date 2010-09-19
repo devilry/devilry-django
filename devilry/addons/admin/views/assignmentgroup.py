@@ -48,6 +48,8 @@ class DeadlineForm(forms.ModelForm):
 def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
         successful_save=False):
     assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
     isnew = assignmentgroup_id == None
     if isnew:
         assignmentgroup = AssignmentGroup(parentnode=assignment)
@@ -116,6 +118,8 @@ def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
 @login_required
 def save_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
     return CreateAssignmentgroups().save_assignmentgroups(request, assignment)
 
 
@@ -228,6 +232,8 @@ class CreateAssignmentgroups(object):
 @login_required
 def create_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
 
     class Form(forms.Form):
         assignment_groups = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows':30, 'cols':70}))
