@@ -13,15 +13,29 @@ def send_email(user_objects_to_send_to, subject, message):
 
     for u in user_objects_to_send_to:
         if u.email == None or u.email.strip() == '':
-            mail_admins("[devilry] Invalid email", "User %s has no email address." % u.username,
-                        fail_silently=False)
+            send_email_admins("Invalid email", "User %s has no email address." %
+                              u.username)
         else:
             emails.append(u.email)
     try:
         send_mail(settings.EMAIL_SUBJECT_PREFIX + subject, message, settings.EMAIL_DEFAULT_FROM,
                   emails, fail_silently=False)
-    except Exception, e:
-        mail_admins("[devilry]", "Error when sending email to user %s on address %s. Exception: %s" %
-                    (u.username, u.email, e),
-                    fail_silently=False)
+    except smtplib.SMTPException, e:
+        send_email_admins("Invalid email", "Error when sending email to user %s on address %s. Exception: %s" %
+                          (u.username, u.email, e),
+                          fail_silently=False)
         raise
+
+    # If one or more emails were not sent, a warning message is shown to the student who delivers.
+    if len(emails) < len(user_objects_to_send_to):
+        raise Exception()
+
+def send_email_admins(subject, message, fail_silently=False):
+    if len(settings.ADMINS) == 0:
+        return
+    emails = []
+    for name, email in settings.ADMINS:
+        emails.append(email)
+
+    send_mail(settings.EMAIL_SUBJECT_PREFIX_ADMIN + subject, message, settings.EMAIL_DEFAULT_FROM,
+              emails, fail_silently)

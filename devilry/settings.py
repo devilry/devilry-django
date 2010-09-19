@@ -8,8 +8,9 @@ this_dir = dirname(abspath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# If no admins are set, no emails are sent to admins
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+     ('Devilry admin', 'admin@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -144,6 +145,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = this_dir + '/email_log/'
 
 EMAIL_SUBJECT_PREFIX = '[devilry] '
+EMAIL_SUBJECT_PREFIX_ADMIN = '[devilry-admin] '
+
 WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'
 EMAIL_DEFAULT_FROM = 'devilry-support@ifi.uio.no'
 EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
