@@ -1,5 +1,8 @@
 from selenium import selenium
-import unittest, time, re
+import unittest
+
+from devilry.core.testhelpers import SeleniumTestBase
+
 
 class TestDashboard(unittest.TestCase):
     def setUp(self):
