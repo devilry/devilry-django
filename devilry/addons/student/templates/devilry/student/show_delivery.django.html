@@ -15,7 +15,10 @@
 
 {% block main %}
 
-{% include "devilry/ui/include/show_delivery_default.django.html" %}
+<table class='vertical_infotable'>
+  {% include "devilry/ui/include/show_delivery_default.django.html" %}
+</table>
+
 
 {% if delivery.feedback.published %}
   {% if delivery.feedback.text.strip %}
@@ -26,6 +29,8 @@
   {% else %}
     <p>{% blocktrans %}The examiner has not provided any feedback text.</p>{% endblocktrans %}
   {% endif %}
+{% else %}
+  <p>This delivery has not been corrected yet.</p>
 {% endif %}
 
 {% endblock %}

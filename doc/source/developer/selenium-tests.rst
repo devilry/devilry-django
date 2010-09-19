@@ -7,38 +7,52 @@ Selenium tests
 Requirements for Selenium testing
 #######################################################################
 
+Install the selenium server
+---------------------------
 
-**robotframework** 
+Download *Selenium RC* from http://seleniumhq.org/. Put
+``selenium-server.jar`` somewhere of your choice. At the time of writing, the
+.jar-file is in ``selenium-server-VERSION/``.
 
-Download: http://code.google.com/p/robotframework/wiki/
 
-Install::
+Install the selenium python library
+-----------------------------------
 
- $ easy_install robotframework
+Two alternatives:
 
-**SeleniumLibrary** 
+1. Install from pypi:
 
-Download: http://code.google.com/p/robotframework-seleniumlibrary/wiki
+    Instructions here: http://pypi.python.org/pypi/selenium/
 
-Install::
+    Note that the instructions say to use ``pip install -U selenium``, but::
 
- $ hg clone https://robotframework-seleniumlibrary.googlecode.com/hg/ robotframework-seleniumlibrary
- $ python setup.py install
+        ~$ easy_install -U selenium
+
+    Works as well.
+
+2. Install from source:
+
+    The selenium python library is a single python file, ``selenium.py``, that
+    you need to add to you PYTHONPATH. At the time of writing it is located in
+    ``selenium-python-client-driver-VERSION/`` in the Selenium RC package you
+    downloaded to install the selenium server.
+
 
 Running the tests
 ########################################################################
 
-To run tests, first start the selenium server ::
+1. Start the selenium server with (from where you installed it)::
 
- robotframework-seleniumlibrary/demo$ python rundemo.py selenium start
+    ~$ java -jar selenium-server.jar
 
-Then run the tests with::
+2. Start the django server (from this directory)::
 
- devilry$ make selenium-test
+    ~$ python manage.py runserver
 
-The server is stopped with::
+3. Run the tests with::
 
- robotframework-seleniumlibrary/demo$ python rundemo.py selenium stop
+    ~$ make selenium-tests
+
 
 Creating Selenium tests using Firefox plugin
 ########################################################################
@@ -46,7 +60,7 @@ Creating Selenium tests using Firefox plugin
 To create tests through Firefox using Firefox pugin, install 
 `Selenium IDE <http://seleniumhq.org/download/>`_:
 
-**Creating the python test**
+To create the python test using the selenium firefox plugin:
 
 - Go to Tools->Selenium IDE in Firefox
 - Go to the web page you wish to record.

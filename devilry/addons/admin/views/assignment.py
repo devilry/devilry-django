@@ -22,6 +22,8 @@ def edit_assignment(request, assignment_id=None):
         assignment = Assignment()
     else:
         assignment = get_object_or_404(Assignment, id=assignment_id)
+        if not assignment.can_save(request.user):
+            return HttpResponseForbidden("Forbidden")
     messages = UiMessages()
     messages.load(request)
 

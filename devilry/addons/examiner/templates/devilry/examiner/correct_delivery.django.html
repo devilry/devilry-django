@@ -17,9 +17,13 @@
 
 {% block main %}
 
-{% with "yes" as show_feedback_modifier %}
+<table class='vertical_infotable'>
   {% include "devilry/ui/include/show_delivery_default.django.html" %}
-{% endwith %}
+  <tr>
+    <th>{% trans "Feedback last modified by" %}</th>
+    <td> {{ delivery.feedback.last_modified_by }} </td>
+  </tr>
+</table>
 
 <form method='post' action='{% url devilry-examiner-correct_delivery delivery.id %}'>
   {% block formfields %}
