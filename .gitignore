@@ -27,3 +27,6 @@ coverage_html_report/
 cookies.txt
 .devilry/
 *.bak
+devilry_xmlrpc_client.egg-info/
+dist/
+

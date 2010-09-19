@@ -4,7 +4,7 @@ import unittest
 from devilry.core.testhelpers import SeleniumTestBase
 
 
-class TestDashboard(unittest.TestCase):
+class TestDashboard(SeleniumTestBase):
     def setUp(self):
         self.verificationErrors = []
         self.selenium = selenium("localhost", 4444, "*chrome", "http://localhost:8000/")
@@ -15,15 +15,6 @@ class TestDashboard(unittest.TestCase):
         sel.type("id_password", "test")
         sel.click("login")
         sel.wait_for_page_to_load("30000")
-    
-    def assert403(self, f, *args, **kw):
-        try:
-            f(*args, **kw)
-        except Exception, e:
-            self.assertTrue("403" in str(e))
-            self.assertTrue("FORBIDDEN" in str(e))
-        else:
-            self.fail("403 not raised for %s, %s, %s" % (f, args, kw))
     
     def test_normal_workflow(self):
         sel = self.selenium

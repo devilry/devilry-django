@@ -133,7 +133,13 @@ selenium-student-test: selenium-clear-db
 	export DJANGO_SETTINGS_MODULE=devilry.settings
 	python addons/student/seleniumtests.py
 
-selenium-tests: selenium-student-test
+selenium-examiner-test: selenium-clear-db
+	python manage.py loaddata -v0 addons/examiner/fixtures/selenium.json
+	sleep 2
+	export DJANGO_SETTINGS_MODULE=devilry.settings
+	python addons/examiner/seleniumtests.py
+
+selenium-tests: selenium-student-test selenium-examiner-test
 
 clean:
 	coverage erase

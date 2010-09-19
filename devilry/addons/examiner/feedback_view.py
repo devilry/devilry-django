@@ -62,10 +62,11 @@ def redirect_after_successful_save(request, delivery_obj):
                        _("New feedback - %s") % (assignment.get_path()), 
                        email_message)
         except Exception, e:
-            email_list = "".join(["%s (%s), " % (u.username, u.email) for u in user_list])[:-2]
+            email_list = ", ".join(["%s (%s)" % (u.username, u.email) for u in user_list])[:-2]
             messages = UiMessages()
-            messages.add_warning(_('An error occured when sending email to the followin users: %s.'
-                                   % email_list))
+            messages.add_warning(_(
+                'An error occured when sending email to the following '\
+                'users: %s.' % email_list))
             messages.save(request)
     else:
         messages = UiMessages()
