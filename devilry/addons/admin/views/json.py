@@ -167,7 +167,7 @@ def assignmentgroup_json(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
         return http.HttpResponseForbidden("Forbidden")
-    maximum = defaults.DEFAULT_DISPLAYNUM
+    maximum = 25
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
 
