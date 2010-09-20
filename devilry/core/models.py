@@ -1086,7 +1086,7 @@ class AssignmentGroup(models.Model, CommonInterface):
 
     def _get_status_from_qry(self):
         if self.deliveries.all().count() == 0:
-            return self.NOT_CORRECTED
+            return self.NO_DELIVERIES
         else:
             qry = self.deliveries.filter(
                     feedback__isnull=False)
