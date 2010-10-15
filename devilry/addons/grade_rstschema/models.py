@@ -26,18 +26,25 @@ def get_schemadef_document(feedback_obj):
 class RstSchemaGrade(GradeModel):
     schema = models.TextField()
 
-    def get_grade_as_short_string(self, feedback_obj):
-        #print text.extract_valuedict(self.schema)
+    def iter_points(self, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
         fields = field.extract_fields(schemadef_document)
         values = text.extract_values(self.schema)
-        #print values
         points = 0
         maxpoints = 0
         for f, v in zip(fields, values):
-            points += f.spec.get_points(v)
-            maxpoints += f.spec.get_max_points(v)
-        return "%s/%s" % (points, maxpoints)
+            yield f.spec.get_points(v), f.spec.get_max_points(v)
+
+    def get_points(self, feedback_obj):
+        points = 0
+        maxpoints = 0
+        for p, m in self.iter_points(feedback_obj):
+            points += p
+            maxpoints += m
+        return points, maxpoints
+        
+    def get_grade_as_short_string(self, feedback_obj):
+        return "%s/%s" % self.get_points(feedback_obj)
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)

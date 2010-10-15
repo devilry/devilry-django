@@ -1,0 +1,25 @@
+{% extends "devilry/ui/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+
+{% block main %}
+
+{% for subject in subjects %}
+  {% for period in subject %}
+    <h4>{{ subject }} - {{ period }}</h4>
+    <ul>
+	  {% for assignment in period %}
+      {% for assignment_group in assignment %}
+      <li>
+		<a href='{% url devilry-student-show-assignmentgroup assignment_group.node.id %}'>
+		  {{ assignment_group.get_name }}
+        </a>
+      </li>
+      {% endfor %}
+    {% endfor %}
+    </ul>
+  {% endfor %}
+{% endfor %}
+
+{% endblock %}

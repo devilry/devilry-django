@@ -9,7 +9,8 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from devilry.ui.messages import UiMessages
-from devilry.core.models import Assignment
+from devilry.core.models import Assignment, Subject, Period, AssignmentGroup
+from devilry.core.utils.GroupNodes import group_assignmentgroups
 
 from html import input_form
 from models import RstSchemaDefinition
@@ -103,3 +104,29 @@ def preview_rstschemadef(request):
                 'rst': html,
             }, context_instance=RequestContext(request))
     return HttpResponseBadRequest('Could not find "rst" in POST-data.')
+
+
+@login_required
+def subject_summary(request, subject_id):
+    #period = get_object_or_404(Period, pk=subject_id)
+    #if not subject.can_save(request.user):
+        #return HttpResponseForbidden("Forbidden")
+    
+    assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
+    #assignment_groups = assignment_groups.filter(
+            #parentnode__grade_plugin='grade_rstschema:rstschemagrade')
+    subjects = group_assignmentgroups(assignment_groups)
+    for subject in subjects:
+        for period in subjects:
+            print unicode(period)
+
+    #print period
+    #for assignment in period.assignments.filter(
+            #grade_plugin='grade_rstschema:rstschemagrade'):
+        #print assignment, assignment.grade_plugin #dir(assignment)
+        #for group in assignment in 
+    
+    return render_to_response(
+        'devilry/grade_rstschema/subject_summary.django.html', {
+            'subjects': subjects,
+        }, context_instance=RequestContext(request))
