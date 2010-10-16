@@ -24,9 +24,20 @@
         }
     }, 
     {
+        "pk": 25, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-9"
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
+            "maxpoints": 11, 
+            "points": 2, 
+            "percent": 18.181818181818183, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
     }, 
@@ -34,6 +45,9 @@
         "pk": 3, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
+            "maxpoints": 11, 
+            "points": 10, 
+            "percent": 90.909090909090907, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 9 ]]]"
         }
     }, 
@@ -41,6 +55,9 @@
         "pk": 6, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
+            "maxpoints": 11, 
+            "points": 1, 
+            "percent": 9.0909090909090917, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 1 ]]]"
         }
     }, 
@@ -48,6 +65,9 @@
         "pk": 7, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
+            "maxpoints": 11, 
+            "points": 3, 
+            "percent": 27.272727272727273, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
     }, 
@@ -55,6 +75,9 @@
         "pk": 8, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
+            "maxpoints": 11, 
+            "points": 7, 
+            "percent": 63.636363636363633, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 6 ]]]"
         }
     }, 
@@ -62,6 +85,9 @@
         "pk": 9, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
+            "maxpoints": 11, 
+            "points": 3, 
+            "percent": 27.272727272727273, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
     }
