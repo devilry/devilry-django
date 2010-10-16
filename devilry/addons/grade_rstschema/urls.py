@@ -7,9 +7,6 @@ urlpatterns = patterns('devilry.addons.grade_rstschema',
         'views.edit_schema',
         name='devilry-grade_rstschema-edit_schema-success',
         kwargs={'save_successful':True}),
-    url(r'^subject-summary/(?P<subject_id>\d+)$',
-        'views.subject_summary',
-        name='devilry-grade_rstschema-subject_summary'),
     url(r'^preview_rstschemadef$', 'views.preview_rstschemadef',
         name='devilry-grade_rstschema-preview_rstschemadef')
 )

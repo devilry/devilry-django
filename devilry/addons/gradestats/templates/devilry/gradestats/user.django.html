@@ -6,9 +6,9 @@
 {% block content %}
 
 {% for period, plugins in periods %}
-  <h1>{{ period }}</h1>
-  {% for plugin, groups in plugins  %}
-    <h2>{{ plugin }}</h2>
+  <h2>{{ period }}</h2>
+  {% for plugin, final_grade, groups in plugins  %}
+    <h3>{{ plugin }}</h3>
     <table class="horizontal_ordered_table">
       <thead>
         <tr>
@@ -24,6 +24,14 @@
           </tr>
         {% endfor %}
       </tbody>
+      {% if final_grade != None %}
+        <tfoot>
+          <tr>
+            <td>{% trans "Sum" %}</td>
+            <td>{{ final_grade }}</td>
+          </tr>
+        </tfoot>
+      {% endif %}
     </table>
   {% endfor %}
 {% endfor %}

@@ -375,6 +375,9 @@ table.horizontal_ordered_table td {
 	border: 1px solid #D4D2CE;
 	background-color: #fff;
 }
+table.horizontal_ordered_table tfoot td {
+	font-weight: bold;
+}
 
 
 

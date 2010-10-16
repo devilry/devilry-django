@@ -3,7 +3,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 
 from devilry.core.gradeplugin import GradeModel
-from devilry.core.models import Assignment, Feedback
+from devilry.core.models import Assignment, Feedback, AssignmentGroup
 
 from parser import rstdoc_from_string
 import text
@@ -28,12 +28,23 @@ class RstSchemaGrade(GradeModel):
     schema = models.TextField()
     points = models.PositiveIntegerField(null=True, blank=True)
     maxpoints = models.PositiveIntegerField(null=True, blank=True)
-    percent = models.FloatField(null=True, blank=True)
 
-    def get_feedback_obj(self):
-        typ = ContentType.objects.get_for_model(self)
-        return Feedback.objects.get(content_type=typ.id,
-                object_id=self.id)
+    @classmethod
+    def calc_final_grade(self, period, gradeplugin_key, user):
+        q = AssignmentGroup.where_is_candidate(user).filter(
+                parentnode__parentnode=period,
+                parentnode__grade_plugin=gradeplugin_key)
+        points = 0
+        maxpoints = 0
+        for group in q:
+            delivery = group.get_latest_delivery_with_published_feedback()
+            if delivery:
+                grade = delivery.feedback.grade
+                points += grade.points
+                maxpoints += grade.maxpoints
+        return "%.2f%% (%d/%d)" % (
+                (points * 100.0) / maxpoints,
+                points, maxpoints)
 
     def iter_points(self, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
@@ -51,9 +62,13 @@ class RstSchemaGrade(GradeModel):
             points += p
             maxpoints += m
         return points, maxpoints
+
+    def get_percent(self):
+        return (self.points * 100.0) / self.maxpoints
         
     def get_grade_as_short_string(self, feedback_obj):
-        return "%.2f%% (%d/%d)" % (self.percent, self.points, self.maxpoints)
+        return "%.2f%% (%d/%d)" % (self.get_percent(), self.points,
+                self.maxpoints)
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
@@ -77,7 +92,6 @@ class RstSchemaGrade(GradeModel):
             pass
         else:
             self.points, self.maxpoints = self.get_points(feedback_obj)
-            self.percent = (self.points * 100.0) / self.maxpoints
         return super(RstSchemaGrade, self).save(*args, **kwargs)
 
     def __unicode__(self):

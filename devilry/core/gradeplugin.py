@@ -62,6 +62,16 @@ class XmlrpcGradeConf(object):
 
 
 class GradeModel(models.Model):
+    @classmethod
+    def calc_final_grade(self, period, gradeplugin_key, user):
+        return None
+
+    def get_feedback_obj(self):
+        from devilry.core.models import Feedback # must be imported here to avoid recursive include
+        typ = ContentType.objects.get_for_model(self)
+        return Feedback.objects.get(content_type=typ.id,
+                object_id=self.id)
+
     def get_grade_as_short_string(self, feedback_obj):
         """ Return a string representation of the grade suitable for
         short one-line display. This method is required.
