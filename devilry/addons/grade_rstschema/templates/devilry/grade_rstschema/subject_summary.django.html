@@ -5,24 +5,27 @@
 
 {% block content %}
 
-{% for period, groups in periods %}
-  <h4>{{ period }}</h4>
-  <table class="horizontal_ordered_table">
-    <thead>
-      <tr>
-        <th>{% trans "Assignment" %}</th>
-        <th>{% trans "Grade" %}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for group, grade in groups %}
+{% for period, plugins in periods %}
+  <h1>{{ period }}</h1>
+  {% for plugin, groups in plugins  %}
+    <h2>{{ plugin }}</h2>
+    <table class="horizontal_ordered_table">
+      <thead>
         <tr>
-          <td>{{ group.parentnode.long_name }}</td>
-          <td>{{ grade }}</td>
+          <th>{% trans "Assignment" %}</th>
+          <th>{% trans "Grade" %}</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for group, grade in groups %}
+          <tr>
+            <td>{{ group.parentnode.long_name }}</td>
+            <td>{{ grade }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endfor %}
 {% endfor %}
 
 {% endblock %}
