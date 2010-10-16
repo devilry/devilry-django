@@ -1103,6 +1103,10 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
 
+    def get_number_of_deliveries(self):
+        """ Get the number of deliveries by this assignment group. """
+        return self.deliveries.all().count()
+
     def get_latest_delivery(self):
         """ Get the latest delivery by this assignment group,
         or ``None`` if there is no deliveries. """
@@ -1126,24 +1130,31 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return qry.annotate(
                         models.Max('time_of_delivery'))[0]
 
-    def get_grade_as_short_string(self):
-        """ Get the grade  """
-        q = self.get_deliveries_with_published_feedback().order_by('-time_of_delivery')
-        if q.count() > 0:
-            return q[0].feedback.get_grade_as_short_string()
-        else:
-            return None
-
-    def get_number_of_deliveries(self):
-        """ Get the number of deliveries by this assignment group. """
-        return self.deliveries.all().count()
-
     def get_deliveries_with_published_feedback(self):
         """
         Get the the deliveries by this assignment group which have
         published feedback.
         """
         return self.deliveries.filter(feedback__published=True)
+
+    def get_latest_delivery_with_published_feedback(self):
+        """
+        Get the latest delivery with published feedback.
+        """
+        q = self.get_deliveries_with_published_feedback().order_by(
+                '-time_of_delivery')
+        if q.count() == 0:
+            return None
+        else:
+            return q[0]
+
+    def get_grade_as_short_string(self):
+        """ Get the grade as a "short string". """
+        d = self.get_latest_delivery_with_published_feedback()
+        if not d:
+            return None
+        else:
+            return d.feedback.get_grade_as_short_string()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup.
