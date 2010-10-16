@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
 
 from devilry.core.gradeplugin import GradeModel
-from devilry.core.models import Assignment
+from devilry.core.models import Assignment, Feedback
 
 from parser import rstdoc_from_string
 import text
@@ -25,6 +26,14 @@ def get_schemadef_document(feedback_obj):
 
 class RstSchemaGrade(GradeModel):
     schema = models.TextField()
+    points = models.PositiveIntegerField(null=True, blank=True)
+    maxpoints = models.PositiveIntegerField(null=True, blank=True)
+    percent = models.FloatField(null=True, blank=True)
+
+    def get_feedback_obj(self):
+        typ = ContentType.objects.get_for_model(self)
+        return Feedback.objects.get(content_type=typ.id,
+                object_id=self.id)
 
     def iter_points(self, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
@@ -44,7 +53,7 @@ class RstSchemaGrade(GradeModel):
         return points, maxpoints
         
     def get_grade_as_short_string(self, feedback_obj):
-        return "%s/%s" % self.get_points(feedback_obj)
+        return "%.2f%% (%d/%d)" % (self.percent, self.points, self.maxpoints)
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
@@ -60,3 +69,17 @@ class RstSchemaGrade(GradeModel):
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         return self.schema
+
+    def save(self, *args, **kwargs):
+        try:
+            feedback_obj = self.get_feedback_obj()
+        except Feedback.DoesNotExist:
+            pass
+        else:
+            self.points, self.maxpoints = self.get_points(feedback_obj)
+            self.percent = (self.points * 100.0) / self.maxpoints
+        return super(RstSchemaGrade, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return "RstSchemaGrade(id:%s) for %s" % (self.id,
+                self.get_feedback_obj())

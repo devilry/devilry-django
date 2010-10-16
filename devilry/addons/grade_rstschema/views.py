@@ -112,21 +112,32 @@ def subject_summary(request, subject_id):
     #if not subject.can_save(request.user):
         #return HttpResponseForbidden("Forbidden")
     
-    assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
-    #assignment_groups = assignment_groups.filter(
-            #parentnode__grade_plugin='grade_rstschema:rstschemagrade')
-    subjects = group_assignmentgroups(assignment_groups)
-    for subject in subjects:
-        for period in subjects:
-            print unicode(period)
+    def iter():
+        assignment_groups = AssignmentGroup.active_where_is_candidate(
+                request.user)
+        assignment_groups = assignment_groups.filter(
+               parentnode__grade_plugin='grade_rstschema:rstschemagrade')
+        assignment_groups = assignment_groups.order_by("parentnode__parentnode")
+        current_period = None
+        groups = []
+        for group in assignment_groups:
+            if current_period == None:
+                current_period = group.parentnode.parentnode
+            if current_period.id != group.parentnode.parentnode.id:
+                yield current_period, groups
+                current_period = group.parentnode.parentnode
+                groups = []
+            d = group.get_latest_delivery_with_published_feedback()
+            if d:
+                groups.append((
+                        group,
+                        d.feedback.get_grade_as_short_string()))
+        yield current_period, groups
 
-    #print period
-    #for assignment in period.assignments.filter(
-            #grade_plugin='grade_rstschema:rstschemagrade'):
-        #print assignment, assignment.grade_plugin #dir(assignment)
-        #for group in assignment in 
+    for x in iter():
+        print x
     
     return render_to_response(
         'devilry/grade_rstschema/subject_summary.django.html', {
-            'subjects': subjects,
+            'periods': iter(),
         }, context_instance=RequestContext(request))

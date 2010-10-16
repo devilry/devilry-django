@@ -45,6 +45,11 @@
         "fields": {}
     }, 
     {
+        "pk": 10, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -2426,7 +2431,7 @@
         "pk": 71, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "status": 1, 
+            "status": 3, 
             "is_open": true, 
             "name": "", 
             "parentnode": 25, 
@@ -2838,6 +2843,20 @@
             "delivery": 8, 
             "last_modified": "2010-10-16 16:50:34", 
             "object_id": 9, 
+            "content_type": 11, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 17, 
+            "last_modified": "2010-10-16 17:50:03", 
+            "object_id": 10, 
             "content_type": 11, 
             "published": true
         }

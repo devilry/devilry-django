@@ -3,23 +3,26 @@
 {% load i18n %}
 
 
-{% block main %}
+{% block content %}
 
-{% for subject in subjects %}
-  {% for period in subject %}
-    <h4>{{ subject }} - {{ period }}</h4>
-    <ul>
-	  {% for assignment in period %}
-      {% for assignment_group in assignment %}
-      <li>
-		<a href='{% url devilry-student-show-assignmentgroup assignment_group.node.id %}'>
-		  {{ assignment_group.get_name }}
-        </a>
-      </li>
+{% for period, groups in periods %}
+  <h4>{{ period }}</h4>
+  <table class="horizontal_ordered_table">
+    <thead>
+      <tr>
+        <th>{% trans "Assignment" %}</th>
+        <th>{% trans "Grade" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group, grade in groups %}
+        <tr>
+          <td>{{ group.parentnode.long_name }}</td>
+          <td>{{ grade }}</td>
+        </tr>
       {% endfor %}
-    {% endfor %}
-    </ul>
-  {% endfor %}
+    </tbody>
+  </table>
 {% endfor %}
 
 {% endblock %}

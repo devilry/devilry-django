@@ -90,5 +90,15 @@
             "percent": 27.272727272727273, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
+    }, 
+    {
+        "pk": 10, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "maxpoints": 10, 
+            "points": 4, 
+            "percent": 40.0, 
+            "schema": "Have the student delivered all required files? [no/yes]\n[[[ no ]]]\n\nHow do you rate the quality of the assignment? [0-9]\n[[[ 4 ]]]"
+        }
     }
 ]
