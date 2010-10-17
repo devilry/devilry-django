@@ -164,14 +164,20 @@ pre.blockpre {
 /***********************************************************
  * Page heading
  **********************************************************/
+#heading {
+	min-height: 65px;
+}
 #heading h1 {
 	color: #000;
-	font-size: 1.8em;
+	font-size: 1.6em;
 	font-family: "Georgia", serif;
 	font-weight: normal;
 	padding: 0;
-	height: 45px;
 	margin: 0;
+}
+#belowheading {
+	font-size: 0.8em;
+	color: #888;
 }
 
 
@@ -238,9 +244,10 @@ pre.blockpre {
 	width: 230px;
 	font-size: 0.8em;
 	float: right;
-	margin: 45px 0 0 0;
+	margin: 65px 0 0 10px;
 }
 #sidebar a {
+	color: #0B5A9D;
 	text-decoration: none;
 }
 #sidebar a:visited {

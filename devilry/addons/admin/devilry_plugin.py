@@ -2,45 +2,35 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from devilry.addons.dashboard.dashboardplugin_registry import registry, \
-        DashboardItem
+from devilry.addons.quickdash.dashboardplugin_registry import registry, \
+        DashboardItem, DashboardGroup
 import dashboardviews
 
 
-registry.register_normal(DashboardItem(
-         title = _('Nodes'),
-         view = dashboardviews.list_nodes,
-         nodeadmin_access = True,
-         js = [settings.DEVILRY_RESOURCES_URL +
-             '/ui/js/jquery.autocompletetable.js']
-))
-
-registry.register_normal(DashboardItem(
-         title = _('Subjects'),
-         view = dashboardviews.list_subjects,
-         nodeadmin_access = True,
-         subjectadmin_access = True,
-         js = [settings.DEVILRY_RESOURCES_URL +
-             '/ui/js/jquery.autocompletetable.js']
-))
-
-registry.register_important(DashboardItem(
-         title = _('Periods'),
-         view = dashboardviews.list_periods,
-         nodeadmin_access = True,
-         subjectadmin_access = True,
-         periodadmin_access = True,
-         js = [settings.DEVILRY_RESOURCES_URL +
-             '/ui/js/jquery.autocompletetable.js']
-))
-
-registry.register_important(DashboardItem(
-         title = _('Assignments'),
-         view = dashboardviews.list_assignments,
-         nodeadmin_access = True,
-         subjectadmin_access = True,
-         periodadmin_access = True,
-         assignmentadmin_access = True,
-         js = [settings.DEVILRY_RESOURCES_URL +
-             '/ui/js/jquery.autocompletetable.js']
-))
+admingroup = registry.create_group('admin', _('Administration'))
+admingroup.additems(
+    DashboardItem(
+        id = 'assignments',
+        title = _('Assignments'),
+        view = dashboardviews.list_assignments,
+        js = [settings.DEVILRY_RESOURCES_URL +
+            '/ui/js/jquery.autocompletetable.js']),
+    DashboardItem(
+        id = 'periods',
+        title = _('Periods'),
+        view = dashboardviews.list_periods,
+        js = [settings.DEVILRY_RESOURCES_URL +
+            '/ui/js/jquery.autocompletetable.js']),
+    DashboardItem(
+        id = 'subjects',
+        title = _('Subjects'),
+        view = dashboardviews.list_subjects,
+        js = [settings.DEVILRY_RESOURCES_URL +
+            '/ui/js/jquery.autocompletetable.js']),
+    DashboardItem(
+        id = 'nodes',
+        title = _('Nodes'),
+        view = dashboardviews.list_nodes,
+        js = [settings.DEVILRY_RESOURCES_URL +
+            '/ui/js/jquery.autocompletetable.js'])
+)
