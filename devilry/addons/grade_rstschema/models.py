@@ -31,9 +31,12 @@ class RstSchemaGrade(GradeModel):
 
     @classmethod
     def calc_final_grade(self, period, gradeplugin_key, user):
-        q = AssignmentGroup.where_is_candidate(user).filter(
+        q = AssignmentGroup.published_where_is_candidate(user).filter(
                 parentnode__parentnode=period,
                 parentnode__grade_plugin=gradeplugin_key)
+        if q.count() == 0:
+            return None
+
         points = 0
         maxpoints = 0
         for group in q:
@@ -42,9 +45,15 @@ class RstSchemaGrade(GradeModel):
                 grade = delivery.feedback.grade
                 points += grade.points
                 maxpoints += grade.maxpoints
-        return "%.2f%% (%d/%d)" % (
-                (points * 100.0) / maxpoints,
-                points, maxpoints)
+        if maxpoints == 0:
+            return None
+        try:
+            percent = (points * 100.0) / maxpoints
+        except ZeroDivisionError:
+            percent = 0.0
+        finally:
+            return "%.2f%% (%d/%d)" % (
+                    percent, points, maxpoints)
 
     def iter_points(self, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
@@ -64,7 +73,10 @@ class RstSchemaGrade(GradeModel):
         return points, maxpoints
 
     def get_percent(self):
-        return (self.points * 100.0) / self.maxpoints
+        try:
+            return (self.points * 100.0) / self.maxpoints
+        except ZeroDivisionError:
+            return 0.0
         
     def get_grade_as_short_string(self, feedback_obj):
         return "%.2f%% (%d/%d)" % (self.get_percent(), self.points,
