@@ -6,7 +6,9 @@
 {% block breadcrumbs %}
 {{ block.super }}
 <li>
-  {% trans "Grade statistics" %}
+  <a href="{% url devilry-gradestats-overview %}">
+    {% trans "Grade statistics" %}
+  </a>
 </li>
 <li>::</li>
 {% endblock %}

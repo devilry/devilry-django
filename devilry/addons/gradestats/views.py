@@ -35,6 +35,19 @@ def _iter_periodstats(period, user):
 
 
 @login_required
+def overview(request):
+    where_is_admin_or_superadmin = Period.where_is_admin_or_superadmin(
+            request.user)
+    where_is_student = Period.objects.filter(
+            assignments__assignmentgroups__candidates__student=request.user).distinct()
+    return render_to_response(
+        'devilry/gradestats/overview.django.html', {
+            'where_is_admin_or_superadmin': where_is_admin_or_superadmin,
+            'where_is_student': where_is_student,
+        }, context_instance=RequestContext(request))
+
+
+@login_required
 def userstats(request, period_id):
     period = get_object_or_404(Period, pk=period_id)
     return render_to_response(

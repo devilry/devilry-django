@@ -10,4 +10,7 @@ urlpatterns = patterns('devilry.addons.gradestats',
     url(r'^admin-periodstats/(?P<period_id>\d+)$',
         'views.admin_periodstats',
         name='devilry-gradestats-admin_periodstats'),
+    url(r'^$',
+        'views.overview',
+        name='devilry-gradestats-overview'),
 )
