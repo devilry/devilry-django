@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponseForbidden, \
@@ -8,57 +9,71 @@ from django.utils.translation import ugettext as _
 
 from devilry.core.models import AssignmentGroup, Period
 from devilry.core.gradeplugin import registry
+from devilry.core import pluginloader
 
+pluginloader.autodiscover()
 
-@login_required
-def userstats(request):
-    #period = get_object_or_404(Period, pk=subject_id)
-    #if not subject.can_save(request.user):
-        #return HttpResponseForbidden("Forbidden")
-
-    def iter():
-        assignment_groups = AssignmentGroup.active_where_is_candidate(
-                request.user)
-        assignment_groups = assignment_groups.order_by(
-                "parentnode__parentnode", "parentnode__grade_plugin")
-        current_period = None
-        plugins = None
-        for group in assignment_groups:
-            if current_period == None \
-                    or current_period.id != group.parentnode.parentnode.id:
-                if current_period != None:
-                    yield current_period, plugins
-                current_period = group.parentnode.parentnode
-                current_gradeplugin = None
-                plugins = []
-            if current_gradeplugin != group.parentnode.grade_plugin:
-                current_gradeplugin = group.parentnode.grade_plugin
-                ri = registry.getitem(current_gradeplugin)
-                final_grade = ri.model_cls.calc_final_grade(current_period,
-                        current_gradeplugin, request.user)
-                plugins.append((ri, final_grade, []))
+def _iter_periodstats(period, user):
+    groups = AssignmentGroup.published_where_is_candidate(user).filter(
+            parentnode__parentnode=period)
+    for gradeplugin_key, gradeplugin in registry.iteritems():
+        groups_in_gradeplugin = groups.filter(
+                parentnode__grade_plugin=gradeplugin_key)
+        grades = []
+        for group in groups_in_gradeplugin:
             d = group.get_latest_delivery_with_published_feedback()
-
             value = None
             if d:
                 value = d.feedback.get_grade_as_short_string()
             else:
                 value = group.get_localized_status()
-            plugins[-1][2].append((group, value))
-        yield current_period, plugins
+            grades.append((group, value))
+        if grades:
+            finalgrade = gradeplugin.model_cls.calc_final_grade(
+                    period, gradeplugin_key, user)
+            yield gradeplugin, finalgrade, grades
 
+
+@login_required
+def userstats(request, period_id):
+    period = get_object_or_404(Period, pk=period_id)
     return render_to_response(
         'devilry/gradestats/user.django.html', {
-            'periods': iter(),
+            'period': period,
+            'user': request.user,
+            'gradesbyplugin': _iter_periodstats(period, request.user),
         }, context_instance=RequestContext(request))
 
 
-def adminstats(request, period_id):
+@login_required
+def admin_userstats(request, period_id, username):
+    period = get_object_or_404(Period, pk=period_id)
+    user = get_object_or_404(User, username=username)
+    return render_to_response(
+        'devilry/gradestats/admin-user.django.html', {
+            'period': period,
+            'user': user,
+            'gradesbyplugin': _iter_periodstats(period, user),
+        }, context_instance=RequestContext(request))
+
+
+def admin_periodstats(request, period_id):
     period = get_object_or_404(Period, id=period_id)
-    for assignment in period.assignments.all():
-        for group in assignment.assignment_groups.all():
-            delivery = group.get_latest_delivery_with_published_feedback()
-            if delivery:
-                value = delivery.feedback.get_grade_as_short_string()
-            else:
-                value = group.get_localized_status()
+    from django.contrib.auth.models import User
+
+    def iter():
+        users = User.objects.filter(
+            candidate__assignment_group__parentnode__parentnode=period).distinct()
+        for user in users:
+            grades = []
+            for key, ri in registry.iteritems():
+                finalgrade = ri.model_cls.calc_final_grade(period, key, user)
+                if finalgrade:
+                    grades.append(finalgrade)
+            yield user, grades
+
+    return render_to_response(
+        'devilry/gradestats/admin-periodstats.django.html', {
+            'period': period,
+            'usergrades': iter()
+        }, context_instance=RequestContext(request))

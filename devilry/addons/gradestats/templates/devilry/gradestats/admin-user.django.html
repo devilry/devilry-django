@@ -4,8 +4,14 @@
 
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li>{{ period }}</li>
-  <li>::</li>
-  <li>{{ user }}</li>
+	{{ block.super }}
+	<li>
+		<a href="{% url devilry-gradestats-admin_periodstats period.id %}">
+			{{ period }}
+		</a>
+	</li>
+	<li>::</li>
+	<li>
+		{{ user }}
+	</li>
 {% endblock %}
