@@ -169,7 +169,8 @@ pre.blockpre {
 	font-size: 1.8em;
 	font-family: "Georgia", serif;
 	font-weight: normal;
-	padding: 0 0 15px 0;
+	padding: 0;
+	height: 45px;
 	margin: 0;
 }
 
@@ -240,10 +241,13 @@ pre.blockpre {
 	margin: 45px 0 0 0;
 }
 #sidebar a {
-	color: #7A9DBD;
+	text-decoration: none;
 }
 #sidebar a:visited {
-	color: #9A7ABD;
+	color: #0B5A9D;
+}
+#sidebar a:hover {
+	text-decoration: underline;
 }
 #sidebar .section {
 	margin-bottom: 20px;
@@ -534,6 +538,31 @@ table.xmlrpc-function-constraints li {
 	margin-bottom: 10px;
 	font-size: 0.8em;
 	color: #456;
+}
+
+
+/********************************
+ * Quickdash
+ ********************************/
+
+.quickdashitem {
+	background-color: #fff;
+	border: 1px solid #D4D2CE;
+	margin-right: 250px;
+	padding: 15px;
+}
+.quickdashitem h2 {
+	margin-top: 0;
+}
+.quickdashitem-hidden {
+	display: none;
+}
+.quickdashitem-focus {
+	display: block;
+}
+
+a.quickdashmenu-focus{
+	font-weight: bold;
 }
 
 

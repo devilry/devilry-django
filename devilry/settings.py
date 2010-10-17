@@ -100,12 +100,13 @@ INSTALLED_APPS = (
     'devilry.addons.gradestats',
     'devilry.addons.dashboard',
     'devilry.addons.xmlrpc_examiner',
+    'devilry.addons.quickdash',
     'devilry.xmlrpc',
     'devilry.xmlrpc_client',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'devilry.core',
-    'devilry.ui'
+    'devilry.ui',
     )
 
 

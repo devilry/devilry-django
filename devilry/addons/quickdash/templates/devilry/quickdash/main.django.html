@@ -1,0 +1,74 @@
+{% extends "devilry/ui/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Dashboard" %}
+{% endblock %}
+
+{% block heading %}
+{% trans "Dashboard" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block customjs %}
+  <script type="text/javascript">
+    $(function() {
+      $(".quickdashmenu-button").click(function(e) {
+        $('.quickdashmenu-focus').toggleClass('quickdashmenu-focus');
+        $(this).toggleClass('quickdashmenu-focus');
+        $('.quickdashitem-focus').addClass('quickdashitem-hidden');
+        $('.quickdashitem-focus').removeClass('quickdashitem-focus');
+        var id = this.id.replace("-MENUBUTTON", "-item");
+        $('#' + id).addClass('quickdashitem-focus');
+        return false;
+      });
+    });
+  </script>          
+{% endblock %}
+
+
+{% block content %}
+
+{% for src in js %}
+  <script type="text/javascript" src="{{ src }}"></script>
+{% endfor %}
+
+<div id='quickdash-items'>
+	{% for app, view in items %}
+    <div id="{{ app.title }}-item" class='quickdashitem {{ app.cssclass }}
+        {% if forloop.first %}
+          quickdashitem-focus
+        {% else %}
+          quickdashitem-hidden
+        {% endif %}'>
+      <h2>{{ app.title }}</h2>
+      <div class='quickdashitem-body'>
+        {{ view }}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block sidebar %}
+<div id='sidebar'>
+  <div class='section'>
+    <ul>
+    {% for app, view in items %}
+      <li class=''>
+        <a href="#" id="{{ app.title }}-MENUBUTTON"
+            class="quickdashmenu-button
+              {% if forloop.first %}quickdashmenu-focus{% endif %}">
+          {{ app.title }}
+        </a>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
+
