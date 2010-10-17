@@ -6,7 +6,8 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
-from devilry.core.models import AssignmentGroup
+from devilry.core.models import AssignmentGroup, Period
+from devilry.core.gradeplugin import registry
 
 
 @login_required
@@ -14,7 +15,6 @@ def userstats(request):
     #period = get_object_or_404(Period, pk=subject_id)
     #if not subject.can_save(request.user):
         #return HttpResponseForbidden("Forbidden")
-    from devilry.core.gradeplugin import registry
 
     def iter():
         assignment_groups = AssignmentGroup.active_where_is_candidate(
@@ -51,3 +51,14 @@ def userstats(request):
         'devilry/gradestats/user.django.html', {
             'periods': iter(),
         }, context_instance=RequestContext(request))
+
+
+def adminstats(request, period_id):
+    period = get_object_or_404(Period, id=period_id)
+    for assignment in period.assignments.all():
+        for group in assignment.assignment_groups.all():
+            delivery = group.get_latest_delivery_with_published_feedback()
+            if delivery:
+                value = delivery.feedback.get_grade_as_short_string()
+            else:
+                value = group.get_localized_status()
