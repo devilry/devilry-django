@@ -48,7 +48,10 @@ def userstats(request, period_id):
 @login_required
 def admin_userstats(request, period_id, username):
     period = get_object_or_404(Period, pk=period_id)
+    if not period.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
     user = get_object_or_404(User, username=username)
+
     return render_to_response(
         'devilry/gradestats/admin-user.django.html', {
             'period': period,
@@ -59,7 +62,8 @@ def admin_userstats(request, period_id, username):
 
 def admin_periodstats(request, period_id):
     period = get_object_or_404(Period, id=period_id)
-    from django.contrib.auth.models import User
+    if not period.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
 
     def iter():
         users = User.objects.filter(
