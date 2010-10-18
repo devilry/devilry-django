@@ -93,18 +93,21 @@ INSTALLED_APPS = (
     'devilry.addons.student',
     'devilry.addons.examiner',
     'devilry.addons.admin',
+    'devilry.addons.aboutme',
     'devilry.addons.grade_approved',
     'devilry.addons.grade_default',
     'devilry.addons.grade_schema',
     'devilry.addons.grade_rstschema',
-    'devilry.addons.dashboard',
+    'devilry.addons.gradestats',
+    #'devilry.addons.dashboard',
     'devilry.addons.xmlrpc_examiner',
+    'devilry.addons.quickdash',
     'devilry.xmlrpc',
     'devilry.xmlrpc_client',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'devilry.core',
-    'devilry.ui'
+    'devilry.ui',
     )
 
 
@@ -151,3 +154,5 @@ WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'
 EMAIL_DEFAULT_FROM = 'devilry-support@ifi.uio.no'
 EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
                   "Please do not respond to this email."
+
+DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'

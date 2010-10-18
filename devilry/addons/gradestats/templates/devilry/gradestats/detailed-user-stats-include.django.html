@@ -1,0 +1,30 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% for gradeplugin, final_grade, gradesbygroup in gradesbyplugin %}
+  <h2>{{ gradeplugin }}</h2>
+  <table class="horizontal_ordered_table">
+    <thead>
+      <tr>
+        <th>{% trans "Assignment" %}</th>
+        <th>{% trans "Grade" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group, grade in gradesbygroup %}
+        <tr>
+          <td>{{ group.parentnode.long_name }}</td>
+          <td>{{ grade }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    {% if final_grade != None %}
+      <tfoot>
+        <tr>
+          <td>{% trans "Sum" %}</td>
+          <td>{{ final_grade }}</td>
+        </tr>
+      </tfoot>
+    {% endif %}
+  </table>
+{% endfor %}

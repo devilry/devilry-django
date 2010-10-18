@@ -62,6 +62,31 @@ class XmlrpcGradeConf(object):
 
 
 class GradeModel(models.Model):
+    @classmethod
+    def calc_final_grade(self, period, gradeplugin_key, user):
+        """
+        Calculate the "final"/"sum of" the grade for the given ``user`` on all
+        assignments using this grade-plugin within the given ``period``. The
+        ``gradeplugin_key`` is the key where this gradeplugin is stored in
+        the :attr:`registry`.
+
+        Should return ``None`` if not supported/no data is available, and a string otherwise.
+        Note that the string can be a somewhat verbose string (30 characters
+        is no problem), so most plugins should be able to support this
+        method.
+        """
+        return None
+
+    def get_feedback_obj(self):
+        """
+        Reverse the feedback object which has a generic foreign key to this
+        grade model.
+        """
+        from devilry.core.models import Feedback # must be imported here to avoid recursive include
+        typ = ContentType.objects.get_for_model(self)
+        return Feedback.objects.get(content_type=typ.id,
+                object_id=self.id)
+
     def get_grade_as_short_string(self, feedback_obj):
         """ Return a string representation of the grade suitable for
         short one-line display. This method is required.

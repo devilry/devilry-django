@@ -45,6 +45,11 @@
         "fields": {}
     }, 
     {
+        "pk": 10, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -713,6 +718,20 @@
             "parentnode": 10, 
             "filenames": "ball_table2.py\r\nball_table3.py\r\ncompute_sum_while.py", 
             "long_name": "Week 2", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "cheating201", 
+            "publishing_time": "2010-10-15 08:00:00", 
+            "parentnode": 1, 
+            "filenames": "", 
+            "long_name": "Cheating 201", 
             "admins": [], 
             "anonymous": false
         }
@@ -1555,9 +1574,64 @@
         }
     }, 
     {
+        "pk": 94, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 66
+        }
+    }, 
+    {
+        "pk": 95, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 67
+        }
+    }, 
+    {
+        "pk": 96, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 68
+        }
+    }, 
+    {
+        "pk": 97, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 69
+        }
+    }, 
+    {
+        "pk": 98, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 70
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 71
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 2, 
             "is_open": false, 
             "name": "The boys", 
             "parentnode": 2, 
@@ -1570,6 +1644,7 @@
         "pk": 2, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 1, 
             "is_open": true, 
             "name": "The girls", 
             "parentnode": 2, 
@@ -1582,6 +1657,7 @@
         "pk": 3, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 2, 
             "is_open": true, 
             "name": "", 
             "parentnode": 3, 
@@ -1594,6 +1670,7 @@
         "pk": 4, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": "", 
             "parentnode": 3, 
@@ -1606,6 +1683,7 @@
         "pk": 5, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": "", 
             "parentnode": 3, 
@@ -1618,6 +1696,7 @@
         "pk": 6, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 2, 
             "is_open": true, 
             "name": "", 
             "parentnode": 3, 
@@ -1630,6 +1709,7 @@
         "pk": 7, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 3, 
             "is_open": true, 
             "name": "", 
             "parentnode": 3, 
@@ -1643,6 +1723,7 @@
         "pk": 8, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 3, 
             "is_open": true, 
             "name": "", 
             "parentnode": 3, 
@@ -1655,6 +1736,7 @@
         "pk": 9, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 2, 
             "is_open": true, 
             "name": "", 
             "parentnode": 1, 
@@ -1667,6 +1749,7 @@
         "pk": 10, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 6, 
@@ -1677,6 +1760,7 @@
         "pk": 11, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 6, 
@@ -1687,6 +1771,7 @@
         "pk": 12, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1697,6 +1782,7 @@
         "pk": 13, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1707,6 +1793,7 @@
         "pk": 14, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1717,6 +1804,7 @@
         "pk": 15, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1727,6 +1815,7 @@
         "pk": 16, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1737,6 +1826,7 @@
         "pk": 17, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1747,6 +1837,7 @@
         "pk": 18, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1757,6 +1848,7 @@
         "pk": 19, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 11, 
@@ -1767,6 +1859,7 @@
         "pk": 20, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1777,6 +1870,7 @@
         "pk": 21, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1787,6 +1881,7 @@
         "pk": 22, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1797,6 +1892,7 @@
         "pk": 23, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1807,6 +1903,7 @@
         "pk": 24, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1817,6 +1914,7 @@
         "pk": 25, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1827,6 +1925,7 @@
         "pk": 26, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1837,6 +1936,7 @@
         "pk": 27, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 12, 
@@ -1847,6 +1947,7 @@
         "pk": 28, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1857,6 +1958,7 @@
         "pk": 29, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1867,6 +1969,7 @@
         "pk": 30, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1877,6 +1980,7 @@
         "pk": 31, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1887,6 +1991,7 @@
         "pk": 32, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1897,6 +2002,7 @@
         "pk": 33, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1907,6 +2013,7 @@
         "pk": 34, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1917,6 +2024,7 @@
         "pk": 35, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 13, 
@@ -1927,6 +2035,7 @@
         "pk": 36, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1937,6 +2046,7 @@
         "pk": 37, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1947,6 +2057,7 @@
         "pk": 38, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1957,6 +2068,7 @@
         "pk": 39, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1967,6 +2079,7 @@
         "pk": 40, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1977,6 +2090,7 @@
         "pk": 41, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1987,6 +2101,7 @@
         "pk": 42, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -1997,6 +2112,7 @@
         "pk": 43, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2007,6 +2123,7 @@
         "pk": 44, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2017,6 +2134,7 @@
         "pk": 45, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2027,6 +2145,7 @@
         "pk": 46, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2037,6 +2156,7 @@
         "pk": 47, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2047,6 +2167,7 @@
         "pk": 48, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2057,6 +2178,7 @@
         "pk": 49, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2067,6 +2189,7 @@
         "pk": 50, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2077,6 +2200,7 @@
         "pk": 51, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2087,6 +2211,7 @@
         "pk": 52, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2097,6 +2222,7 @@
         "pk": 53, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2107,6 +2233,7 @@
         "pk": 54, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2117,6 +2244,7 @@
         "pk": 55, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2127,6 +2255,7 @@
         "pk": 56, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2137,6 +2266,7 @@
         "pk": 57, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2147,6 +2277,7 @@
         "pk": 58, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2157,6 +2288,7 @@
         "pk": 59, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2167,6 +2299,7 @@
         "pk": 60, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2177,6 +2310,7 @@
         "pk": 61, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2187,6 +2321,7 @@
         "pk": 62, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2197,6 +2332,7 @@
         "pk": 63, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2207,6 +2343,7 @@
         "pk": 64, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
@@ -2217,10 +2354,90 @@
         "pk": 65, 
         "model": "core.assignmentgroup", 
         "fields": {
+            "status": 0, 
             "is_open": true, 
             "name": null, 
             "parentnode": 15, 
             "examiners": []
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "examiners": [
+                13
+            ]
         }
     }, 
     {
@@ -2329,6 +2546,17 @@
             "text": "", 
             "deadline": "2010-08-07 22:00:00", 
             "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-16 17:27:21", 
+            "number": 1, 
+            "assignment_group": 71
         }
     }, 
     {
@@ -2611,10 +2839,24 @@
         "fields": {
             "format": "rst", 
             "text": "Hello world", 
-            "last_modified_by": 13, 
+            "last_modified_by": 1, 
             "delivery": 8, 
-            "last_modified": "2010-08-23 12:26:03", 
+            "last_modified": "2010-10-16 16:50:34", 
             "object_id": 9, 
+            "content_type": 11, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 17, 
+            "last_modified": "2010-10-16 17:50:03", 
+            "object_id": 10, 
             "content_type": 11, 
             "published": true
         }
@@ -2687,6 +2929,15 @@
         "model": "core.filemeta", 
         "fields": {
             "delivery": 15, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 17, 
             "size": 12, 
             "filename": "hello.txt"
         }

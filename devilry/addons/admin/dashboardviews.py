@@ -8,6 +8,10 @@ from devilry.core.models import Node, Subject, Period, Assignment
 
 def list_nodes_generic(request, nodecls, headings, deletemessage,
         help_text=None):
+
+    if nodecls.where_is_admin_or_superadmin(request.user).count() == 0:
+        return None # only show if the user is admin on at least one
+
     clsname = nodecls.__name__.lower()
     return render_to_string('devilry/admin/dashboard/list_nodes.django.html', {
             'jsonurl': reverse('admin-autocomplete-%sname' % clsname),

@@ -31,6 +31,15 @@ Actions:
     set-correct-assignmentgroup-status
         Fixes the status attribute on all AssignmentGroups with wrong
         status.
+
+    fix-grade-rstschema-points
+        The restructured text grade plugin stores points in the database in
+        addition to the schema each examiner submits for efficiency. This
+        could get out of sync. To recalculate all, run this. Use
+        grade_rstschema_check_points to check without changing anything.
+
+    check-grade-rstschema-points
+        See fix-grade-rstschema-points.
 """
 
 
@@ -57,6 +66,7 @@ load_devilry_plugins()
 from devilry.core.models import Feedback, Assignment, AssignmentGroup
 from devilry.core.gradeplugin import (GradePluginDoesNotExistError,
         WrongContentTypeError, GradePluginError)
+from devilry.addons.grade_rstschema.models import RstSchemaGrade
 
 
 def exit_help(msg=""):
@@ -72,7 +82,7 @@ def validate_gradeplugins():
         except GradePluginDoesNotExistError, e:
             logging.error("%s: %s" % (assignment, str(e)))
         else:
-            logging.info('%-70s  [ OK ]' % assignment)
+            logging.debug('%-70s  [ OK ]' % assignment)
 
 def validate_gradeplugin_contenttypes():
     for feedback in Feedback.objects.all():
@@ -81,13 +91,13 @@ def validate_gradeplugin_contenttypes():
         except GradePluginError, e:
             logging.error("%s: %s" % (feedback, str(e)))
         else:
-            logging.info("%-70s  [ OK ]" % feedback)
+            logging.debug("%-70s  [ OK ]" % feedback)
 
 def check_assignmentgroup_status():
     for ag in AssignmentGroup.objects.all():
         correct_status = ag._get_status_from_qry()
         if ag.status == correct_status:
-            logging.info("%s correct status:%s, current status: %s." % (ag,
+            logging.debug("%s correct status:%s, current status: %s." % (ag,
                 ag.status, correct_status))
         else:
             logging.error("%s correct status:%s, current status: %s." % (ag,
@@ -97,13 +107,28 @@ def set_correct_assignmentgroup_status():
     for ag in AssignmentGroup.objects.all():
         correct_status = ag._get_status_from_qry()
         if ag.status == correct_status:
-            logging.info("%s skipped (has correct status: %s)" % (ag,
+            logging.debug("%s skipped (has correct status: %s)" % (ag,
                 ag.status))
         else:
             logging.warning("%s status changed from %s to %s." % (ag,
                 ag.status, correct_status))
             ag.status = correct_status
             ag.save()
+
+def fix_grade_rstschema_points():
+    for rg in RstSchemaGrade.objects.all():
+        rg.save()
+    logging.info("All grade_rstschema points recalculated successfully.")
+
+def check_grade_rstschema_points():
+    for rg in RstSchemaGrade.objects.all():
+        feedback_obj = rg.get_feedback_obj()
+        points, maxpoints = rg.get_points(feedback_obj)
+        if points == rg.points and maxpoints == rg.maxpoints:
+            logging.debug("%s has correct points: %s" % (rg,
+                rg.get_grade_as_short_string(feedback_obj)))
+        else:
+            logging.warning("%s has incorrect points." % rg)
 
 
 if len(args) == 0:
@@ -134,5 +159,9 @@ elif action == "check-assignmentgroup-status":
     check_assignmentgroup_status()
 elif action == "set-correct-assignmentgroup-status":
     set_correct_assignmentgroup_status()
+elif action == "fix-grade-rstschema-points":
+    fix_grade_rstschema_points()
+elif action == "check-grade-rstschema-points":
+    check_grade_rstschema_points()
 else:
     exit_help("ERROR: Invalid action.")

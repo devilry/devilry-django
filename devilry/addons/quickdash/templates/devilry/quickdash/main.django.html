@@ -1,0 +1,101 @@
+{% extends "devilry/ui/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Dashboard" %}
+{% endblock %}
+
+{% block heading %}
+  {% trans "Select a action" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block customjs %}
+  <script type="text/javascript">
+    $(function() {
+      $(".quickdashmenu-button").click(function(e) {
+        $('.quickdashmenu-focus').removeClass('quickdashmenu-focus');
+        $(this).toggleClass('quickdashmenu-focus');
+
+        $('.quickdashitem-focus').addClass('quickdashitem-hidden');
+        $('.quickdashitem-focus').removeClass('quickdashitem-focus');
+        var id = this.id.replace("-MENUBUTTON", "");
+        $('#' + id + "-item").addClass('quickdashitem-focus');
+        $.get("{% url devilry-quickdash-set-focus %}", {"id": id});
+        return false;
+      });
+    });
+  </script>          
+{% endblock %}
+
+{% block belowheading %}
+... from the sidebar. The dashboard will remember your most recently used
+action and display it by default.
+{% endblock %}
+
+{% block content %}
+
+
+{% if not groups %}
+<p class='warning-box'>
+{% blocktrans %}You do not have access to anything. You should contanct the
+system administrators at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">
+{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a> and ask them to give you access.
+Include as much relevant information as possible.{% endblocktrans %}
+</p>
+{% endif %}
+
+<div id='quickdash-items'>
+  {% for group, items in groups %}
+    {% for app, js, view in items %}
+      {% if view %}
+        {% for src in js %}
+          <script type="text/javascript" src="{{ src }}"></script>
+        {% endfor %}
+        <div id="{{ app.getid }}-item" class='quickdashitem {{ app.cssclass }}
+            {% if app.getid == focus_id %}
+              quickdashitem-focus
+            {% else %}
+              quickdashitem-hidden
+            {% endif %}'>
+          <h2>{{ app.title }}</h2>
+          <div class='quickdashitem-body'>
+            {{ view }}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block sidebar %}
+<div id='sidebar'>
+  {% for group, items in groups %}
+    {% if items %}
+      <div class='section'>
+        <h2>{{ group.title }}</h2>
+        <ul>
+        {% for app, js, view in items %}
+          {% if view %}
+            <li>
+              <a href="#" id="{{ app.getid }}-MENUBUTTON"
+                  class="quickdashmenu-button
+                    {% if app.getid == focus_id %}
+                      quickdashmenu-focus
+                    {% endif %}
+                ">{{ app.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
+

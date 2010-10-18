@@ -7,6 +7,7 @@ def template_variables(request):
         'DEVILRY_RESOURCES_URL': settings.DEVILRY_RESOURCES_URL,
         'DEVILRY_MAIN_PAGE': settings.DEVILRY_MAIN_PAGE,
         'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
+        'DEVILRY_SYSTEM_ADMIN_EMAIL': settings.DEVILRY_SYSTEM_ADMIN_EMAIL,
         'BASE_TEMPLATE': settings.BASE_TEMPLATE,
         'DEVILRY_DATETIME_FORMAT': "Y-m-d H:i",
     }

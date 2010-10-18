@@ -1,12 +1,12 @@
 from django.utils.translation import ugettext as _
-from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse
 
-from devilry.addons.dashboard.dashboardplugin_registry import registry, \
-        DashboardItem
+from devilry.addons.quickdash.dashboardplugin_registry import registry, \
+        DashboardItem, personalgroup
+
 import dashboardviews
 
-registry.register_important(DashboardItem(
-         title = _('Assignments'),
-         candidate_access = True,
-         view = dashboardviews.list_assignments))
+personalgroup.additems(
+        DashboardItem(
+            id = 'assignments',
+            title = _('My assignments'),
+            view = dashboardviews.list_assignments))

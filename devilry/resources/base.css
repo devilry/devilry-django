@@ -164,13 +164,20 @@ pre.blockpre {
 /***********************************************************
  * Page heading
  **********************************************************/
+#heading {
+	min-height: 65px;
+}
 #heading h1 {
 	color: #000;
-	font-size: 1.8em;
+	font-size: 1.6em;
 	font-family: "Georgia", serif;
 	font-weight: normal;
-	padding: 0 0 15px 0;
+	padding: 0;
 	margin: 0;
+}
+#belowheading {
+	font-size: 0.8em;
+	color: #888;
 }
 
 
@@ -237,13 +244,17 @@ pre.blockpre {
 	width: 230px;
 	font-size: 0.8em;
 	float: right;
-	margin: 45px 0 0 0;
+	margin: 65px 0 0 10px;
 }
 #sidebar a {
-	color: #7A9DBD;
+	color: #0B5A9D;
+	text-decoration: none;
 }
 #sidebar a:visited {
-	color: #9A7ABD;
+	color: #0B5A9D;
+}
+#sidebar a:hover {
+	text-decoration: underline;
 }
 #sidebar .section {
 	margin-bottom: 20px;
@@ -374,6 +385,9 @@ table.horizontal_ordered_table td {
 	padding: 4px;
 	border: 1px solid #D4D2CE;
 	background-color: #fff;
+}
+table.horizontal_ordered_table tfoot td {
+	font-weight: bold;
 }
 
 
@@ -526,11 +540,36 @@ table.xmlrpc-function-constraints li {
 #dashboard-important .buttonbar {
 	margin-top: 10px;
 }
-#dashboard-normal .dashboarditem .dashboard-help-box,
-#dashboard-important .dashboarditem .dashboard-help-box {
+.dashboard-help-box,
+.dashboard-help-box {
 	margin-bottom: 10px;
 	font-size: 0.8em;
 	color: #456;
+}
+
+
+/********************************
+ * Quickdash
+ ********************************/
+
+.quickdashitem {
+	background-color: #fff;
+	border: 1px solid #D4D2CE;
+	margin-right: 250px;
+	padding: 15px;
+}
+.quickdashitem h2 {
+	margin-top: 0;
+}
+.quickdashitem-hidden {
+	display: none;
+}
+.quickdashitem-focus {
+	display: block;
+}
+
+a.quickdashmenu-focus{
+	font-weight: bold;
 }
 
 
