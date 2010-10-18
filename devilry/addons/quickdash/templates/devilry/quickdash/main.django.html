@@ -55,9 +55,9 @@ Include as much relevant information as possible.{% endblocktrans %}
         {% for src in js %}
           <script type="text/javascript" src="{{ src }}"></script>
         {% endfor %}
-        <div id="{{ app.id }}-item" class='quickdashitem {{ app.cssclass }}
+        <div id="{{ app.getid }}-item" class='quickdashitem {{ app.cssclass }}
             {% if focus_id %}
-              {% if app.id == focus_id %}
+              {% if app.getid == focus_id %}
                 quickdashitem-focus
               {% else %}
                 quickdashitem-hidden
@@ -91,10 +91,10 @@ Include as much relevant information as possible.{% endblocktrans %}
         {% for app, js, view in items %}
           {% if view %}
             <li>
-              <a href="#" id="{{ app.id }}-MENUBUTTON"
+              <a href="#" id="{{ app.getid }}-MENUBUTTON"
                   class="quickdashmenu-button
                     {% if focus_id %}
-                      {% if app.id == focus_id %}
+                      {% if app.getid == focus_id %}
                         quickdashmenu-focus
                       {% endif %}
                     {% else %}

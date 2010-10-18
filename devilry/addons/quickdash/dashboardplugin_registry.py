@@ -3,15 +3,19 @@
 
     A :class:`Registry`-object.
 """
+from django.utils.translation import ugettext as _
 
 class DashboardGroup(object):
     def __init__(self, id, title):
         self.id = id
         self.title = title
         self.items = []
+        self.group = None
 
     def additems(self, *items):
-        self.items += items
+        for item in items:
+            item.group = self
+            self.items.append(item)
 
     def parseitems(self, request, js_set):
         items = []
@@ -37,6 +41,9 @@ class DashboardItem(object):
 
     def getview(self, request, *args, **kw):
         return self.view(request, *args, **kw)
+
+    def getid(self):
+        return "%s-%s" % (self.group.id, self.id)
 
 
 class DashboardRegistry(object):
@@ -64,3 +71,4 @@ class DashboardRegistry(object):
 
 
 registry = DashboardRegistry()
+personalgroup = registry.create_group('Personal', _('Personal'))

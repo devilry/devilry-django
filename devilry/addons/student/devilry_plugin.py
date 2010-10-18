@@ -1,15 +1,12 @@
 from django.utils.translation import ugettext as _
 
 from devilry.addons.quickdash.dashboardplugin_registry import registry, \
-        DashboardItem
+        DashboardItem, personalgroup
 
 import dashboardviews
 
-
-studentgroup = registry.create_group('student', _('Student'))
-
-studentgroup.additems(
+personalgroup.additems(
         DashboardItem(
             id = 'assignments',
-            title = _('Assignments'),
+            title = _('My assignments'),
             view = dashboardviews.list_assignments))
