@@ -56,7 +56,9 @@ class DashboardRegistry(object):
         js_set = set()
         groups = []
         for group in self._groups:
-            groups.append((group, group.parseitems(request, js_set)))
+            items = group.parseitems(request, js_set)
+            if items:
+                groups.append((group, items))
         return groups
 
 

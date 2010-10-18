@@ -1,9 +1,9 @@
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from devilry.addons.quickdash.dashboardplugin_registry import registry, \
-        DashboardItem, DashboardGroup
+        DashboardItem
+
 import dashboardviews
 
 

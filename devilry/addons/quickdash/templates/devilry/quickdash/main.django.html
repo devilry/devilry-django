@@ -39,6 +39,15 @@ action and display it by default.
 {% block content %}
 
 
+{% if not groups %}
+<p class='warning-box'>
+{% blocktrans %}You do not have access to anything. You should contanct the
+system administrators at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">
+{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}</a> and ask them to give you access.
+Include as much relevant information as possible.{% endblocktrans %}
+</p>
+{% endif %}
+
 <div id='quickdash-items'>
   {% for group, items in groups %}
     {% for app, js, view in items %}
@@ -75,27 +84,29 @@ action and display it by default.
 {% block sidebar %}
 <div id='sidebar'>
   {% for group, items in groups %}
-    <div class='section'>
-      <h2>{{ group.title }}</h2>
-      <ul>
-      {% for app, js, view in items %}
-        {% if view %}
-          <li>
-            <a href="#" id="{{ app.id }}-MENUBUTTON"
-                class="quickdashmenu-button
-                  {% if focus_id %}
-                    {% if app.id == focus_id %}
-                      quickdashmenu-focus
+    {% if items %}
+      <div class='section'>
+        <h2>{{ group.title }}</h2>
+        <ul>
+        {% for app, js, view in items %}
+          {% if view %}
+            <li>
+              <a href="#" id="{{ app.id }}-MENUBUTTON"
+                  class="quickdashmenu-button
+                    {% if focus_id %}
+                      {% if app.id == focus_id %}
+                        quickdashmenu-focus
+                      {% endif %}
+                    {% else %}
+                      {% if forloop.first %}quickdashmenu-focus{% endif %} 
                     {% endif %}
-                  {% else %}
-                    {% if forloop.first %}quickdashmenu-focus{% endif %} 
-                  {% endif %}
-              ">{{ app.title }}</a>
-          </li>
-        {% endif %}
-      {% endfor %}
-      </ul>
-    </div>
+                ">{{ app.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
   {% endfor %}
 </div>
 {% endblock %}

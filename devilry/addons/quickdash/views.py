@@ -3,8 +3,6 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
 
-from devilry.core.models import Node, Subject, Period, Assignment, \
-        AssignmentGroup
 from devilry.ui.messages import UiMessages
 
 from devilry.addons.quickdash.dashboardplugin_registry import registry
@@ -27,6 +25,5 @@ def set_focus(request):
     id = request.GET.get('id')
     if id:
         request.session['quickdash-focus-id'] = id
-        print id
         return HttpResponse("ok", content_type="text/plain")
     return HttpResponse("missing id", content_type="text/plain")
