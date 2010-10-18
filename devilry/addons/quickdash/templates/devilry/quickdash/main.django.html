@@ -56,18 +56,10 @@ Include as much relevant information as possible.{% endblocktrans %}
           <script type="text/javascript" src="{{ src }}"></script>
         {% endfor %}
         <div id="{{ app.getid }}-item" class='quickdashitem {{ app.cssclass }}
-            {% if focus_id %}
-              {% if app.getid == focus_id %}
-                quickdashitem-focus
-              {% else %}
-                quickdashitem-hidden
-              {% endif %}
+            {% if app.getid == focus_id %}
+              quickdashitem-focus
             {% else %}
-              {% if forloop.first %}
-                quickdashitem-focus
-              {% else %}
-                quickdashitem-hidden
-              {% endif %}
+              quickdashitem-hidden
             {% endif %}'>
           <h2>{{ app.title }}</h2>
           <div class='quickdashitem-body'>
@@ -93,12 +85,8 @@ Include as much relevant information as possible.{% endblocktrans %}
             <li>
               <a href="#" id="{{ app.getid }}-MENUBUTTON"
                   class="quickdashmenu-button
-                    {% if focus_id %}
-                      {% if app.getid == focus_id %}
-                        quickdashmenu-focus
-                      {% endif %}
-                    {% else %}
-                      {% if forloop.first %}quickdashmenu-focus{% endif %} 
+                    {% if app.getid == focus_id %}
+                      quickdashmenu-focus
                     {% endif %}
                 ">{{ app.title }}</a>
             </li>

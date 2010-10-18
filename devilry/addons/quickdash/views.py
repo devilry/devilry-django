@@ -12,8 +12,10 @@ from devilry.addons.quickdash.dashboardplugin_registry import registry
 def main(request):
     messages = UiMessages()
     messages.load(request)
-    focus_id =request.session.get('quickdash-focus-id', None)
     groups = registry.parsegroups(request)
+    focus_id = request.session.get('quickdash-focus-id', None)
+    if not focus_id and groups:
+        focus_id = groups[0][1][0][0].getid()
     return render_to_response('devilry/quickdash/main.django.html', {
             'groups': groups,
             'focus_id': focus_id,
