@@ -531,6 +531,11 @@ class Assignment(models.Model, BaseNode):
         A django.db.models.DateTimeField_ representing the deadline of the
         assignment.
 
+    .. attribute:: anonymous
+
+        A models.BooleanField specifying if the assignment should be
+        anonymously for correcters.
+
     .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
