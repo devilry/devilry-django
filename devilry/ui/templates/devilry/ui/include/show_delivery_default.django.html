@@ -8,7 +8,11 @@
 </tr>
 <tr>
   <th>{% trans "Delivered by" %}</th>
-  <td>{{ delivery.delivered_by.username }}</td>
+  <td>
+	{% if not delivery.assignment_group.parentnode.anonymous %}
+	{{ delivery.delivered_by.username }}
+	{% endif %}
+  </td>
 </tr>
 
 {% if delivery.assignment_group.students.count > 1 %}
