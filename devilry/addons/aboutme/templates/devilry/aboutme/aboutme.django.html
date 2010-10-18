@@ -1,0 +1,14 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+<dl>
+	{% if user.first_name or user.last_name %}
+		<dt>{% trans "Name" %}</dt>
+		<dd>{{ user.first_name }} {{ user.last_name }}</dd>
+	{% endif %}
+
+	<dt>{% trans "Username" %}</dt>
+	<dd>{{ user.username }}</dd>
+
+	<dt>{% trans "Email" %}</dt>
+	<dd>{{ user.email }}</dd>
+</dl>
