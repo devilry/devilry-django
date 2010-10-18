@@ -1,11 +1,8 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseForbidden, \
-        HttpResponseBadRequest
-from django.core.urlresolvers import reverse
+from django.http import HttpResponseForbidden
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
 
 from devilry.core.models import AssignmentGroup, Period
 from devilry.core.gradeplugin import registry
@@ -32,20 +29,6 @@ def _iter_periodstats(period, user):
             finalgrade = gradeplugin.model_cls.calc_final_grade(
                     period, gradeplugin_key, user)
             yield gradeplugin, finalgrade, grades
-
-
-@login_required
-def overview(request):
-    where_is_admin_or_superadmin = Period.where_is_admin_or_superadmin(
-            request.user)
-    where_is_student = Period.objects.filter(
-            assignments__assignmentgroups__candidates__student=request.user).distinct()
-    return render_to_response(
-        'devilry/gradestats/overview.django.html', {
-            'where_is_admin_or_superadmin': where_is_admin_or_superadmin,
-            'where_is_student': where_is_student,
-        }, context_instance=RequestContext(request))
-
 
 @login_required
 def userstats(request, period_id):
@@ -78,9 +61,10 @@ def admin_periodstats(request, period_id):
     if not period.can_save(request.user):
         return HttpResponseForbidden("Forbidden")
 
+    users = User.objects.filter(
+        candidate__assignment_group__parentnode__parentnode=period).distinct()
+
     def iter():
-        users = User.objects.filter(
-            candidate__assignment_group__parentnode__parentnode=period).distinct()
         for user in users:
             grades = []
             for key, ri in registry.iteritems():
@@ -89,8 +73,13 @@ def admin_periodstats(request, period_id):
                     grades.append(finalgrade)
             yield user, grades
 
+    if users.count() == 0:
+        usergrades = None
+    else:
+        usergrades = iter()
+
     return render_to_response(
         'devilry/gradestats/admin-periodstats.django.html', {
             'period': period,
-            'usergrades': iter()
+            'usergrades': usergrades
         }, context_instance=RequestContext(request))

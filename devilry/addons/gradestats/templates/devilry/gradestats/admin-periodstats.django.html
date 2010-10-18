@@ -13,29 +13,33 @@
 
 {% block content %}
 
-<table class='horizontal_ordered_table'>
-	<thead>
-		<tr>
-			<th>{% trans "User" %}</th>
-			<th>{% trans "Grade" %}</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for user, grades in usergrades %}
-			<tr>
-				<td>
-          <a href="{% url devilry-gradestats-admin_userstats period.id user.username %}">
-            {{ user }}
-          </a>
-        </td>
-				<td>
-					{% for grade in grades %}
-						<span class="inline-infobox">{{ grade }}</span>
-					{% endfor %}
-				</td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
+{% if usergrades %}
+  <table class='horizontal_ordered_table'>
+    <thead>
+      <tr>
+        <th>{% trans "User" %}</th>
+        <th>{% trans "Grade" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user, grades in usergrades %}
+        <tr>
+          <td>
+            <a href="{% url devilry-gradestats-admin_userstats period.id user.username %}">
+              {{ user }}
+            </a>
+          </td>
+          <td>
+            {% for grade in grades %}
+              <span class="inline-infobox">{{ grade }}</span>
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class='warning-box'>{% trans "No statistics available." %}</p>
+{% endif %}
 
 {% endblock %}

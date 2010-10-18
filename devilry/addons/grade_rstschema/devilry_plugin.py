@@ -25,7 +25,7 @@ gradeplugin.registry.register(gradeplugin.RegistryItem(
             default_filecontents_callback=default_filecontents_callback),
         model_cls = RstSchemaGrade,
         admin_url_callback = url_callback,
-        label = _('reStructuredText schema'),
+        label = _('Schema-based grade'),
         description = _(
             'Examiners fill in a schema defined by you (the ' \
             'administrator) using %(rsturl)s ' \
