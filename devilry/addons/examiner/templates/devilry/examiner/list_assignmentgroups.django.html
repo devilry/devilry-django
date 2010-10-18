@@ -54,7 +54,7 @@ on the groups below.</p>{% endblocktrans %}</p>
     {% for assignment_group in assignment_groups %}
       <tr>
         <td>{{ assignment_group.id }}</td>
-        <td>{{ assignment_group.get_students }}</td>
+        <td>{{ assignment_group.get_candidates }}</td>
         <td>{{ assignment_group.name }}</td>
         <td>{{ assignment_group.get_number_of_deliveries }}</td>
         <td>{{ assignment_group.get_latest_delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
