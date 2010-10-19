@@ -1,28 +1,40 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% for gradeplugin, final_grade, gradesbygroup in gradesbyplugin %}
+{% for gradeplugin, gradestats in gradesbyplugin %}
   <h2>{{ gradeplugin }}</h2>
+  {% if gradestats.helptext %}
+    <p class='help-box'>{{ gradestats.helptext }}</p>
+  {% endif %}
   <table class="horizontal_ordered_table">
     <thead>
       <tr>
         <th>{% trans "Assignment" %}</th>
-        <th>{% trans "Grade" %}</th>
+        <th>{% trans "Group members" %}</th>
+        {% for colhead in gradestats.column_headings %}
+          <th>{{ colhead }}</th>
+        {% endfor %}
       </tr>
     </thead>
     <tbody>
-      {% for group, grade in gradesbygroup %}
+      {% for row in gradestats.iter_details %}
         <tr>
-          <td>{{ group.parentnode.long_name }}</td>
-          <td>{{ grade }}</td>
+          <td>{{ row.assignmentgroup.parentnode.long_name }}</td>
+          <td>{{ row.assignmentgroup.get_candidates }}</td>
+          {% for d in row.details %}
+            <td>{{ d }}</td>
+          {% endfor %}
         </tr>
       {% endfor %}
     </tbody>
-    {% if final_grade != None %}
+    {% if gradestats.get_sums %}
       <tfoot>
         <tr>
           <td>{% trans "Sum" %}</td>
-          <td>{{ final_grade }}</td>
+          <td></td>
+          {% for s in gradestats.get_sums %}
+            <td>{{ s }}</td>
+          {% endfor %}
         </tr>
       </tfoot>
     {% endif %}

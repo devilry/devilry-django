@@ -2,9 +2,51 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block heading %}Statistics for {{ user }} in {{ period }}{% endblock %}
-{% block title %}Statistics for {{ user }} in {{ period }}{% endblock %}
+{% block heading %}Statistics for {{ userobj }} in {{ period }}{% endblock %}
+{% block title %}Statistics for {{ userobj }} in {{ period }}{% endblock %}
 
 {% block content %}
-  {% include "devilry/gradestats/detailed-user-stats-include.django.html" %}
+  {% for gradeplugin, gradestats in gradesbyplugin %}
+    <h2>{{ gradeplugin }}</h2>
+    {% if gradestats.helptext %}
+      <p class='help-box'>{{ gradestats.helptext }}</p>
+    {% endif %}
+    <table class="horizontal_ordered_table">
+      <thead>
+        <tr>
+          <th>{% trans "Assignment" %}</th>
+          <th>{% trans "Group members" %}</th>
+          {% for colhead in gradestats.column_headings %}
+            <th>{{ colhead }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in gradestats.iter_details %}
+          <tr>
+            <td>
+              <a href="{% block groupurl %}{% endblock %}">
+                {{ row.assignmentgroup.parentnode.long_name }}
+              </a>
+            </td>
+            <td>{{ row.assignmentgroup.get_candidates }}</td>
+            {% for d in row.details %}
+              <td>{{ d }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+      {% if gradestats.get_sums %}
+        <tfoot>
+          <tr>
+            <td>{% trans "Sum" %}</td>
+            <td></td>
+            {% for s in gradestats.get_sums %}
+              <td>{{ s }}</td>
+            {% endfor %}
+          </tr>
+        </tfoot>
+      {% endif %}
+    </table>
+  {% endfor %}
 {% endblock %}
