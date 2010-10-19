@@ -91,10 +91,10 @@ class RstGradeStats(GradeStats):
 
             delivery = group.get_latest_delivery_with_published_feedback()
             if delivery:
-                grade = delivery.feedback.grade
-                p = grade.get_scaled_points(schemadef.scale)
+                gradeobj = delivery.feedback.grade
+                p = gradeobj.get_scaled_points(schemadef.scale)
                 scaledpoints += p
-                points = "%d/%d" % (grade.points, grade.maxpoints)
+                points = "%d/%d" % (gradeobj.points, gradeobj.maxpoints)
                 grade = "%.2f/%s" % (p, schemadef.scale)
             else:
                 points = ''
@@ -114,6 +114,9 @@ class RstGradeStats(GradeStats):
 
     def get_sums(self):
         return ('', '', self.final_grade)
+
+    def get_short_sum(self):
+        return self.final_grade
 
     def iter_details(self):
         return self.details.__iter__()

@@ -34,6 +34,20 @@ pre.blockpre {
 	color: #456;
 }
 
+.inline-infobox {
+	display: inline-block;
+	padding: 2px 5px;
+	margin: 0 3px;
+	background-color: #E5F3FF;
+	border: 1px solid #80C3FF;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+.inline-infobox-even {
+	background-color: #E7FFCC;
+	border: 1px solid #7AE600;
+}
+
 
 /***********************************************************
  * Branding

@@ -59,10 +59,15 @@ def admin_periodstats(request, period_id):
     def iter():
         for user in users:
             grades = []
-            for key, ri in registry.iteritems():
-                finalgrade = ri.model_cls.calc_final_grade(period, key, user)
-                if finalgrade:
-                    grades.append(finalgrade)
+            groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                    parentnode__parentnode=period)
+            for gradeplugin_key, gradeplugin in registry.iteritems():
+                groups_in_gradeplugin = groups.filter(
+                        parentnode__grade_plugin=gradeplugin_key)
+                gradestats = gradeplugin.model_cls.gradestats(
+                        groups_in_gradeplugin)
+                if gradestats:
+                    grades.append(gradestats.get_short_sum())
             yield user, grades
 
     if users.count() == 0:
