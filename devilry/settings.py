@@ -99,7 +99,6 @@ INSTALLED_APPS = (
     'devilry.addons.grade_schema',
     'devilry.addons.grade_rstschema',
     'devilry.addons.gradestats',
-    #'devilry.addons.dashboard',
     'devilry.addons.xmlrpc_examiner',
     'devilry.addons.quickdash',
     'devilry.xmlrpc',

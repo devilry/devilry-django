@@ -8,7 +8,7 @@ from django import http
 
 from devilry.core.models import (Node, Subject, Period, Assignment,
         AssignmentGroup)
-from devilry.addons.dashboard import defaults
+from devilry.addons.quickdash import defaults
 
 
 def node_json_generic(request, nodecls, editurl_callback, qrycallback,

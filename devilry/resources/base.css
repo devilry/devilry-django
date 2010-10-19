@@ -490,85 +490,6 @@ table.xmlrpc-function-constraints li {
 
 
 
-/*******************************
- * Dashboard
- *******************************/
-#dashboard-important {
-	width: 60%;
-	float: left;
-}
-#dashboard-important .dashboarditem {
-	border: 1px solid #D4D2CE;
-	padding: 0;
-	margin: 0;
-	background-color: #fff;
-	margin-bottom: 20px;
-	-moz-border-radius-topleft: 10px;
-	-webkit-border-top-left-radius: 10px;
-	-moz-border-radius-bottomright: 10px;
-	-webkit-border-bottom-right-radius: 10px;
-}
-#dashboard-important h2 {
-	border-bottom: 1px solid #D4D2CE;
-	margin: 0;
-	font-family: "Arial";
-	font-weight: bold;
-	font-size: 1.8em;
-	padding: 10px;
-}
-#dashboard-important .dashboarditem-body{
-	padding: 10px;
-}
-
-#dashboard-normal{
-	width: 35%;
-	float: right;
-	border-style: solid;
-	border-color: #D4D2CE;
-	border-width: 0 1px 1px 1px;
-	background-color: #fff;
-	-moz-border-radius-bottomleft: 10px;
-	-webkit-border-bottom-left-radius: 10px;
-	-moz-border-radius-bottomright: 10px;
-	-webkit-border-bottom-right-radius: 10px;
-}
-#dashboard-normal .dashboarditem {
-	border-top: 1px solid #D4D2CE;
-	padding: 0;
-	margin: 0;
-}
-#dashboard-normal h2 {
-	color: #555;
-	margin: 0;
-	padding: 10px;
-	font-family: "Arial";
-	font-weight: bold;
-	font-size: 1.2em;
-}
-#dashboard-normal .dashboarditem-body{
-	padding: 0 10px 10px 10px;
-	color: #555;
-}
-#dashboard-normal .dashboarditem-body a{
-	color: #555;
-}
-#dashboard-normal .ui-button-text {
-	color: #555;
-}
-#dashboard-normal .delete .ui-button-text {
-	color: #a44;
-}
-#dashboard-normal .buttonbar,
-#dashboard-important .buttonbar {
-	margin-top: 10px;
-}
-.dashboard-help-box,
-.dashboard-help-box {
-	margin-bottom: 10px;
-	font-size: 0.8em;
-	color: #456;
-}
-
 
 /********************************
  * Quickdash
@@ -592,6 +513,12 @@ table.xmlrpc-function-constraints li {
 
 a.quickdashmenu-focus{
 	font-weight: bold;
+}
+
+.dashboard-help-box {
+	margin-bottom: 10px;
+	font-size: 0.8em;
+	color: #456;
 }
 
 
