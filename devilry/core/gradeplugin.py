@@ -62,6 +62,8 @@ class XmlrpcGradeConf(object):
 
 
 class GradeModel(models.Model):
+    final_grade_help = None
+
     @classmethod
     def calc_final_grade(self, period, gradeplugin_key, user):
         """
@@ -76,6 +78,7 @@ class GradeModel(models.Model):
         method.
         """
         return None
+
 
     def get_feedback_obj(self):
         """
