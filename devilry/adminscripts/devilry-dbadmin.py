@@ -66,7 +66,8 @@ load_devilry_plugins()
 from devilry.core.models import Feedback, Assignment, AssignmentGroup
 from devilry.core.gradeplugin import (GradePluginDoesNotExistError,
         WrongContentTypeError, GradePluginError)
-from devilry.addons.grade_rstschema.models import RstSchemaGrade
+from devilry.addons.grade_rstschema.models import (RstSchemaGrade,
+        RstSchemaDefinition)
 
 
 def exit_help(msg=""):
@@ -118,17 +119,56 @@ def set_correct_assignmentgroup_status():
 def fix_grade_rstschema_points():
     for rg in RstSchemaGrade.objects.all():
         rg.save()
+    for schemadef in RstSchemaDefinition.objects.all():
+        schemadef.save()
+    from devilry.core.models import Period
+    from devilry.core.gradeplugin import get_registry_key
+    periods = Period.objects.filter(
+            assignments__grade_plugin=get_registry_key(RstSchemaGrade))
+    for period in periods:
+        RstSchemaDefinition.recalculate_percents(period)
     logging.info("All grade_rstschema points recalculated successfully.")
 
 def check_grade_rstschema_points():
     for rg in RstSchemaGrade.objects.all():
         feedback_obj = rg.get_feedback_obj()
-        points, maxpoints = rg.get_points(feedback_obj)
-        if points == rg.points and maxpoints == rg.maxpoints:
-            logging.debug("%s has correct points: %s" % (rg,
-                rg.get_grade_as_short_string(feedback_obj)))
+        points = rg._parse_points()
+        if points == rg.points:
+            logging.debug("%s has correct points: %s" % (rg, points))
         else:
             logging.warning("%s has incorrect points." % rg)
+
+    schemadef_ok = True
+    for schemadef in RstSchemaDefinition.objects.all():
+        correct = schemadef._parse_max_points() 
+        if schemadef.maxpoints == correct:
+            logging.debug("%s has correct maxpoints: %s" % (schemadef,
+                schemadef.maxpoints))
+        else:
+            logging.warning("%s has incorrect maxpoints. Current: %s. "\
+                    "Should be: %s." % (schemadef, schemadef.maxpoints,
+                        correct))
+            schemadef_ok = False
+
+    if schemadef_ok:
+        from devilry.core.models import Period
+        from devilry.core.gradeplugin import get_registry_key
+        periods = Period.objects.filter(
+                assignments__grade_plugin=get_registry_key(RstSchemaGrade))
+        for period in periods:
+            for schemadef, percent in RstSchemaDefinition.get_percents(period):
+                if int(schemadef.percent) == int(percent):
+                    logging.debug("%s has correct percent: %.2f%%" % (schemadef,
+                        schemadef.percent))
+                else:
+                    logging.warning("%s has incorrect percent. Current: %.2f%%. "\
+                            "Should be: %.2f%%." % (schemadef,
+                                schemadef.percent, percent))
+    else:
+        logging.warning("Will not check percents because tests on "\
+                "required fields failed.")
+
+        
 
 
 if len(args) == 0:
