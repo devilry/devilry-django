@@ -7,6 +7,7 @@ from devilry.core.models import Assignment, Feedback, AssignmentGroup
 
 from parser import rstdoc_from_string
 import text
+import html
 import field
 
 
@@ -179,6 +180,12 @@ class RstSchemaGrade(GradeModel):
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         return self.schema
+
+    #def get_grade_as_long_string(self, feedback_obj):
+        #return self.schema
+
+    #def supports_long_string(self):
+        #return True
 
     def save(self, *args, **kwargs):
         try:

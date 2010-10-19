@@ -75,6 +75,7 @@ class GradeStats(object):
         raise StopIteration()
 
 class GradeModel(models.Model):
+
     @classmethod
     def calc_final_grade(self, period, gradeplugin_key, user):
         """
@@ -114,6 +115,15 @@ class GradeModel(models.Model):
         """
         raise NotImplementedError()
 
+    def supports_long_string(self):
+        """
+        :return: Boolean telling if :meth:`get_grade_as_long_string` is
+            supported. This attribute exists to avoid having to create the
+            long string twice: once to check if it works, and once to
+            display it.
+        """
+        return False
+
     def get_grade_as_long_string(self, feedback_obj):
         """
         Return a string representation of the grade which might span
@@ -124,6 +134,9 @@ class GradeModel(models.Model):
             grade-object.
         :return: None if this operation is not supported (the default).
         """
+        return None
+
+    def get_grade_details_as_readonly_rst(self, feedback_obj):
         return None
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):

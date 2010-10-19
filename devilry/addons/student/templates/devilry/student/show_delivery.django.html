@@ -1,6 +1,7 @@
 {% extends "devilry/student/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
+{% load rst_to_html %}
 
 {% block title %}{{ delivery.assignment_group.parentnode.short_name }}{% endblock %}
 {% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
@@ -21,6 +22,14 @@
 
 
 {% if delivery.feedback.published %}
+  {% if delivery.feedback.grade.supports_long_string %}
+    <fieldset>
+      <h2 class='legend'>{% trans "Grade details" %}</h2>
+      <div class='rst-preview'>
+        {{ delivery.feedback.get_grade_as_long_string|rst_to_html }}
+      </div>
+    </fieldset>
+  {% endif %}
   {% if delivery.feedback.text.strip %}
     <fieldset>
       <h2 class='legend'>{% trans "Feedback" %}</h2>
