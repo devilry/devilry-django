@@ -325,6 +325,14 @@ h3 {
 	font-weight: bold;
 }
 
+h4 {
+	font-family: "Century Gothic", sans-serif;
+	font-size: 1.0em;
+	font-weight: normal;
+	font-style: italic;
+	margin: 20px 0 8px 0;
+}
+
 ul {
 	margin-top: 2px;
 	margin-bottom: 2px;
