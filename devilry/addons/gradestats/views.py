@@ -16,19 +16,11 @@ def _iter_periodstats(period, user):
     for gradeplugin_key, gradeplugin in registry.iteritems():
         groups_in_gradeplugin = groups.filter(
                 parentnode__grade_plugin=gradeplugin_key)
-        grades = []
-        for group in groups_in_gradeplugin:
-            d = group.get_latest_delivery_with_published_feedback()
-            value = None
-            if d:
-                value = d.feedback.get_grade_as_short_string()
-            else:
-                value = group.get_localized_status()
-            grades.append((group, value))
-        if grades:
-            finalgrade = gradeplugin.model_cls.calc_final_grade(
-                    period, gradeplugin_key, user)
-            yield gradeplugin, finalgrade, grades
+
+        gradestats = gradeplugin.model_cls.gradestats(groups_in_gradeplugin)
+        if not gradestats:
+            continue
+        yield gradeplugin, gradestats
 
 @login_required
 def userstats(request, period_id):
@@ -36,7 +28,7 @@ def userstats(request, period_id):
     return render_to_response(
         'devilry/gradestats/user.django.html', {
             'period': period,
-            'user': request.user,
+            'userobj': request.user,
             'gradesbyplugin': _iter_periodstats(period, request.user),
         }, context_instance=RequestContext(request))
 
@@ -51,7 +43,7 @@ def admin_userstats(request, period_id, username):
     return render_to_response(
         'devilry/gradestats/admin-user.django.html', {
             'period': period,
-            'user': user,
+            'userobj': user,
             'gradesbyplugin': _iter_periodstats(period, user),
         }, context_instance=RequestContext(request))
 
@@ -67,10 +59,15 @@ def admin_periodstats(request, period_id):
     def iter():
         for user in users:
             grades = []
-            for key, ri in registry.iteritems():
-                finalgrade = ri.model_cls.calc_final_grade(period, key, user)
-                if finalgrade:
-                    grades.append(finalgrade)
+            groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                    parentnode__parentnode=period)
+            for gradeplugin_key, gradeplugin in registry.iteritems():
+                groups_in_gradeplugin = groups.filter(
+                        parentnode__grade_plugin=gradeplugin_key)
+                gradestats = gradeplugin.model_cls.gradestats(
+                        groups_in_gradeplugin)
+                if gradestats:
+                    grades.append(gradestats.get_short_sum())
             yield user, grades
 
     if users.count() == 0:

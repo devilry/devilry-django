@@ -3,39 +3,66 @@
         "pk": 3, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "scale": 11, 
+            "autoscale": true, 
             "let_students_see_schema": false, 
-            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10"
+            "percent": 15.492957746478874, 
+            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10", 
+            "maxpoints": 11
         }
     }, 
     {
         "pk": 23, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "scale": 2, 
+            "autoscale": true, 
             "let_students_see_schema": false, 
-            "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
+            "percent": 40.0, 
+            "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n", 
+            "maxpoints": 2
         }
     }, 
     {
         "pk": 24, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "scale": 3, 
+            "autoscale": true, 
             "let_students_see_schema": false, 
-            "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
+            "percent": 60.0, 
+            "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n", 
+            "maxpoints": 3
         }
     }, 
     {
         "pk": 25, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "scale": 40, 
+            "autoscale": false, 
             "let_students_see_schema": false, 
-            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-9"
+            "percent": 56.338028169014088, 
+            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-9", 
+            "maxpoints": 10
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "scale": 20, 
+            "autoscale": false, 
+            "let_students_see_schema": true, 
+            "percent": 28.169014084507044, 
+            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-7", 
+            "maxpoints": 8
         }
     }, 
     {
         "pk": 2, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 11, 
             "points": 2, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
@@ -44,7 +71,6 @@
         "pk": 3, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 11, 
             "points": 10, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 9 ]]]"
         }
@@ -53,7 +79,6 @@
         "pk": 6, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 11, 
             "points": 1, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 1 ]]]"
         }
@@ -62,7 +87,6 @@
         "pk": 7, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 11, 
             "points": 3, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
@@ -71,7 +95,6 @@
         "pk": 8, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 11, 
             "points": 7, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 6 ]]]"
         }
@@ -80,7 +103,6 @@
         "pk": 9, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 11, 
             "points": 3, 
             "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
         }
@@ -89,9 +111,16 @@
         "pk": 10, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
-            "maxpoints": 10, 
             "points": 4, 
             "schema": "Have the student delivered all required files? [no/yes]\n[[[ no ]]]\n\nHow do you rate the quality of the assignment? [0-9]\n[[[ 4 ]]]"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "points": 3, 
+            "schema": "Have the student delivered all required files? [no/yes]\n[[[ yes ]]]\n\nHow do you rate the quality of the assignment? [0-7]\n[[[ 2 ]]]"
         }
     }
 ]

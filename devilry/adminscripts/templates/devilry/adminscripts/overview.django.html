@@ -1,0 +1,9 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+<ul>
+	<li><a href="{% url admin:index %}">{% trans "Django admin interface" %}</a></li>
+	<li><a href="{% url devilry-adminscripts-dbsanity_check %}">
+		{% trans "Database sanity checks" %}
+	</a></li>
+</ul>

@@ -5,6 +5,7 @@
 """
 
 
+from django.utils.translation import ugettext as _
 from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -61,7 +62,20 @@ class XmlrpcGradeConf(object):
                 default_filecontents=default_filecontents)
 
 
+class GradeStatsDetail(object):
+    def __init__(self, assignmentgroup, *details):
+        self.assignmentgroup = assignmentgroup
+        self.details = details
+
+class GradeStats(object):
+    helptext = None
+    column_headings = (_("Assignment"), _("Group members"), _("Grade"))
+
+    def iter_details(self):
+        raise StopIteration()
+
 class GradeModel(models.Model):
+
     @classmethod
     def calc_final_grade(self, period, gradeplugin_key, user):
         """
@@ -75,6 +89,10 @@ class GradeModel(models.Model):
         is no problem), so most plugins should be able to support this
         method.
         """
+        return None
+
+    @classmethod
+    def gradestats(self, assignmentgroups):
         return None
 
     def get_feedback_obj(self):
@@ -97,6 +115,15 @@ class GradeModel(models.Model):
         """
         raise NotImplementedError()
 
+    def supports_long_string(self):
+        """
+        :return: Boolean telling if :meth:`get_grade_as_long_string` is
+            supported. This attribute exists to avoid having to create the
+            long string twice: once to check if it works, and once to
+            display it.
+        """
+        return False
+
     def get_grade_as_long_string(self, feedback_obj):
         """
         Return a string representation of the grade which might span
@@ -107,6 +134,9 @@ class GradeModel(models.Model):
             grade-object.
         :return: None if this operation is not supported (the default).
         """
+        return None
+
+    def get_grade_details_as_readonly_rst(self, feedback_obj):
         return None
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
@@ -140,6 +170,13 @@ class GradeModel(models.Model):
         raise NotImplementedError()
 
 
+
+def get_registry_key(model_cls):
+    """ Get the registry key for the given model class. """
+    meta = model_cls._meta
+    return '%s:%s' % (meta.app_label, meta.module_name)
+
+
 class RegistryItem(object):
     """
     Information about a grade plugin.
@@ -165,8 +202,7 @@ class RegistryItem(object):
         self.admin_url_callback = admin_url_callback
 
     def get_key(self):
-        meta = self.model_cls._meta
-        return '%s:%s' % (meta.app_label, meta.module_name)
+        return get_registry_key(self.model_cls)
 
     def get_content_type(self):
         meta = self.model_cls._meta
@@ -200,6 +236,12 @@ class Registry(object):
         Get the :class:`RegistryItem` registered with the given ``key``.
         """
         return self._registry[key]
+
+    def getitem_from_cls(self, cls):
+        """
+        Get the :class:`RegistryItem` registered with the given class.
+        """
+        return self._registry[get_registry_key(cls)]
 
     def getdefaultkey(self):
         """

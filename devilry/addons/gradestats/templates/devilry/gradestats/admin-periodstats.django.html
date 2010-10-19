@@ -4,9 +4,7 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
-  <li>
-    {{ period }}
-  </li>
+  <li>{{ period }}</li>
 {% endblock %}
 
 {% block heading %}{{ period }}{% endblock %}
@@ -31,7 +29,10 @@
           </td>
           <td>
             {% for grade in grades %}
-              <span class="inline-infobox">{{ grade }}</span>
+              <span class="inline-infobox
+                  {% if forloop.counter|divisibleby:"2" %}inline-infobox-even{% endif %}">
+                {{ grade }}
+              </span>
             {% endfor %}
           </td>
         </tr>

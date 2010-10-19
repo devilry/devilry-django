@@ -12,7 +12,7 @@ from django.utils.translation import ugettext as _
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
 from devilry.core.utils.GroupNodes import group_assignments
-from devilry.addons.dashboard import defaults
+from devilry.addons.quickdash import defaults
 
 from django import forms
 from devilry.ui.widgets import DevilryDateTimeWidget

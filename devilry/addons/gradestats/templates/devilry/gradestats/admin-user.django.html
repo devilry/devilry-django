@@ -15,3 +15,7 @@
 		{{ user }}
 	</li>
 {% endblock %}
+
+{% block groupurl %}
+  {% url devilry-examiner-show_assignmentgroup row.assignmentgroup.id %}
+{% endblock %}

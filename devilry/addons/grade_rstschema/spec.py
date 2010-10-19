@@ -82,7 +82,7 @@ class NumberRangeSpec(AbstractSpec):
         self.validate(value)
         return int(value)
 
-    def get_max_points(self, spec):
+    def get_max_points(self):
         return self.end
 
     def create_html_formfield(self, field, field_id, htmltranslator,
@@ -145,7 +145,7 @@ class SequenceSpec(AbstractSpec):
     def get_points(self, value):
         return self.valid_values.index(value)
 
-    def get_max_points(self, spec):
+    def get_max_points(self):
         return len(self.valid_values)-1
 
 

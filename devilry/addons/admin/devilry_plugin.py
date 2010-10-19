@@ -2,12 +2,11 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from devilry.addons.quickdash.dashboardplugin_registry import registry, \
-        DashboardItem
+        DashboardItem, admingroup
 
 import dashboardviews
 
 
-admingroup = registry.create_group('admin', _('Administration'))
 admingroup.additems(
     DashboardItem(
         id = 'assignments',

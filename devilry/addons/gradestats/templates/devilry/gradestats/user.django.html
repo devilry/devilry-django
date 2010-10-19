@@ -6,6 +6,8 @@
 {% block breadcrumbs %}
   {{ block.super }}
   <li>{{ period }}</li>
-  <li>::</li>
-  <li>{{ user }}</li>
+{% endblock %}
+
+{% block groupurl %}
+  {% url devilry-student-show-assignmentgroup row.assignmentgroup.id %}
 {% endblock %}

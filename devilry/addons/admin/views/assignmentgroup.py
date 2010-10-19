@@ -19,7 +19,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
-from devilry.addons.dashboard import defaults
+from devilry.addons.quickdash import defaults
 
 from shortcuts import iter_filtertable_selected
 

@@ -1,32 +1,34 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% if where_is_admin_or_superadmin %}
-	{% if where_is_student %}
-		<h3>{% trans "Periods where you are admin" %}</h3>
-	{% endif %}
-	<ul>
-	{% for period in where_is_admin_or_superadmin %}
-		<li>
-			<a href="{% url devilry-gradestats-admin_periodstats period.id %}">
-				{{ period }}
-			</a>
-		</li>
-	{% endfor %}
-	</ul>
+{% if showboth %}
+  <h3>{% trans "Periods where you are admin" %}</h3>
 {% endif %}
+{% for subject in where_is_admin_or_superadmin %}
+  <h4>{{ subject }}</h4>
+  <ul>
+  {% for period in subject %}
+    <li>
+      <a href="{% url devilry-gradestats-admin_periodstats period.node.id %}">
+        {{ period }}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+{% endfor %}
 
-{% if where_is_student %}
-	{% if where_is_admin_or_superadmin %}
-		<h3>{% trans "Periods where you are student" %}</h3>
-	{% endif %}
-	<ul>
-	{% for period in where_is_student %}
-		<li>
-			<a href="{% url devilry-gradestats-userstats period.id %}">
-				{{ period }}
-			</a>
-		</li>
-	{% endfor %}
-	</ul>
+{% if showboth %}
+  <h3>{% trans "Periods where you are student" %}</h3>
 {% endif %}
+{% for subject in where_is_student %}
+  <h4>{{ subject }}</h4>
+  <ul>
+  {% for period in subject %}
+    <li>
+      <a href="{% url devilry-gradestats-userstats period.node.id %}">
+        {{ period }}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+{% endfor %}
