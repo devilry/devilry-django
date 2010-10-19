@@ -32,7 +32,7 @@
               {% if user.is_authenticated %}
                 <li>
                   {% with user.username as username %}
-                    {% blocktrans %}Welcome, {{ username }}.{% endblocktrans %}
+                    {% blocktrans %}Welcome, {{ username }} {% endblocktrans %}
                   {% endwith %}
                 </li>
                 {% if DEVILRY_LOGOUT_URL %}
