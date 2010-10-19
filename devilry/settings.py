@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'devilry.core',
     'devilry.ui',
+    'devilry.adminscripts',
     )
 
 

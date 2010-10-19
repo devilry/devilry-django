@@ -34,8 +34,6 @@ def overview(request):
     where_is_student = Period.objects.filter(
             assignments__assignmentgroups__candidates__student=request.user)
     where_is_student = where_is_student.distinct().order_by(*order)
-    print where_is_admin_or_superadmin
-    print where_is_student
     if where_is_student.count() == 0 \
             and where_is_admin_or_superadmin.count() == 0:
         return None

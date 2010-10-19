@@ -224,6 +224,12 @@ class Registry(object):
         """
         return self._registry[key]
 
+    def getitem_from_cls(self, cls):
+        """
+        Get the :class:`RegistryItem` registered with the given class.
+        """
+        return self._registry[get_registry_key(cls)]
+
     def getdefaultkey(self):
         """
         Get the default key (the key defined in the
