@@ -50,6 +50,21 @@
         "fields": {}
     }, 
     {
+        "pk": 11, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -732,6 +747,20 @@
             "parentnode": 1, 
             "filenames": "", 
             "long_name": "Cheating 201", 
+            "admins": [], 
+            "anonymous": false
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "core.assignment", 
+        "fields": {
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "avoiding-work2", 
+            "publishing_time": "2010-10-18 14:00:00", 
+            "parentnode": 1, 
+            "filenames": "", 
+            "long_name": "Really avoiding work", 
             "admins": [], 
             "anonymous": false
         }
@@ -1628,6 +1657,168 @@
         }
     }, 
     {
+        "pk": 100, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 72
+        }
+    }, 
+    {
+        "pk": 101, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 73
+        }
+    }, 
+    {
+        "pk": 102, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 74
+        }
+    }, 
+    {
+        "pk": 103, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 75
+        }
+    }, 
+    {
+        "pk": 104, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 76
+        }
+    }, 
+    {
+        "pk": 105, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 77
+        }
+    }, 
+    {
+        "pk": 106, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 78
+        }
+    }, 
+    {
+        "pk": 107, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 79
+        }
+    }, 
+    {
+        "pk": 108, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 80
+        }
+    }, 
+    {
+        "pk": 109, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 81
+        }
+    }, 
+    {
+        "pk": 110, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 82
+        }
+    }, 
+    {
+        "pk": 111, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 83
+        }
+    }, 
+    {
+        "pk": 112, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 84
+        }
+    }, 
+    {
+        "pk": 113, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 85
+        }
+    }, 
+    {
+        "pk": 114, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 86
+        }
+    }, 
+    {
+        "pk": 115, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 87
+        }
+    }, 
+    {
+        "pk": 116, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 88
+        }
+    }, 
+    {
+        "pk": 117, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 89
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
@@ -2441,6 +2632,243 @@
         }
     }, 
     {
+        "pk": 72, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 89, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_open": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
         "pk": 5, 
         "model": "core.deadline", 
         "fields": {
@@ -2546,6 +2974,39 @@
             "text": "", 
             "deadline": "2010-08-07 22:00:00", 
             "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-19 02:15:33", 
+            "number": 1, 
+            "assignment_group": 89
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-19 02:12:44", 
+            "number": 1, 
+            "assignment_group": 83
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-19 02:12:31", 
+            "number": 1, 
+            "assignment_group": 77
         }
     }, 
     {
@@ -2862,6 +3323,48 @@
         }
     }, 
     {
+        "pk": 10, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 18, 
+            "last_modified": "2010-10-19 02:13:00", 
+            "object_id": 11, 
+            "content_type": 4, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 19, 
+            "last_modified": "2010-10-19 02:13:21", 
+            "object_id": 12, 
+            "content_type": 4, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 20, 
+            "last_modified": "2010-10-19 02:17:02", 
+            "object_id": 13, 
+            "content_type": 11, 
+            "published": true
+        }
+    }, 
+    {
         "pk": 6, 
         "model": "core.filemeta", 
         "fields": {
@@ -3003,6 +3506,33 @@
             "delivery": 16, 
             "size": 15, 
             "filename": "hello2.txt"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 18, 
+            "size": 15, 
+            "filename": "nothing.txt"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 19, 
+            "size": 15, 
+            "filename": "nothing.txt"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 20, 
+            "size": 15, 
+            "filename": "nothing.txt"
         }
     }, 
     {

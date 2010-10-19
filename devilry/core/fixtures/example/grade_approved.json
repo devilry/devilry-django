@@ -5,5 +5,19 @@
         "fields": {
             "approved": true
         }
+    }, 
+    {
+        "pk": 11, 
+        "model": "grade_approved.approvedgrade", 
+        "fields": {
+            "approved": true
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "grade_approved.approvedgrade", 
+        "fields": {
+            "approved": false
+        }
     }
 ]

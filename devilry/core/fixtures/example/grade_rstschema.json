@@ -32,6 +32,14 @@
         }
     }, 
     {
+        "pk": 26, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": true, 
+            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-7"
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "grade_rstschema.rstschemagrade", 
         "fields": {
@@ -92,6 +100,15 @@
             "maxpoints": 10, 
             "points": 4, 
             "schema": "Have the student delivered all required files? [no/yes]\n[[[ no ]]]\n\nHow do you rate the quality of the assignment? [0-9]\n[[[ 4 ]]]"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "maxpoints": 8, 
+            "points": 3, 
+            "schema": "Have the student delivered all required files? [no/yes]\n[[[ yes ]]]\n\nHow do you rate the quality of the assignment? [0-7]\n[[[ 2 ]]]"
         }
     }
 ]
