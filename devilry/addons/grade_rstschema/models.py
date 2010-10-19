@@ -79,7 +79,7 @@ class RstSchemaDefinition(models.Model):
 
 def get_schemadef(feedback_obj):
     assignment = feedback_obj.get_assignment()
-    return RstSchemaDefinition.objects.get(assignment=assignment)
+    return assignment.rstschemadefinition
 
 def get_schemadef_document(feedback_obj):
     schemadef = get_schemadef(feedback_obj)
