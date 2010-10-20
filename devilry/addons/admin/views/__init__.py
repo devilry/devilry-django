@@ -101,7 +101,9 @@ class EditPeriod(EditBase):
                                           help_text=admins_help_text)
             class Meta:
                 model = Period
-                fields = ['parentnode', 'short_name', 'long_name', 'start_time', 'end_time', 'admins']
+                fields = ['parentnode', 'short_name', 'long_name',
+                        'start_time', 'end_time', 'minimum_points',
+                        'admins']
                 widgets = {
                     'start_time': DevilryDateTimeWidget,
                     'end_time': DevilryDateTimeWidget,

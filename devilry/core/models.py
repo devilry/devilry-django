@@ -440,6 +440,9 @@ class Period(models.Model, BaseNode):
             help_text=_(
                 'Start time and end time defines when the period is active.'))
     admins = models.ManyToManyField(User, blank=True)
+    minimum_points = models.PositiveIntegerField(default=0,
+            help_text=_('Students must get at least this many points to '\
+                    'pass the period.'))
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -574,6 +577,17 @@ class Assignment(models.Model, BaseNode):
             help_text=_('Filenames separated by newline or space. If '
                 'filenames are used, students will not be able to deliver '
                 'files where the filename is not among the given filenames.'))
+    must_pass = models.BooleanField(default=False,
+            help_text=_('Each student must get a passing grade on this ' \
+                'assignment to get a passing grade on the period.'))
+    gradescale = models.PositiveIntegerField(default=1,
+            help_text=_(
+                'The grade will be scaled down or up making the _this_ '\
+                'number the maximum number of points.'))
+    autoscale = models.BooleanField(default=True,
+            help_text=_('If this field is set, the gradescale will '\
+                'automatically be set to the maximum number of points '\
+                'possible with the selected grade plugin.'))
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
@@ -915,6 +929,10 @@ class AssignmentGroup(models.Model, CommonInterface):
             default = 0,
             choices = enumerate(status_mapping),
             verbose_name = _('Status'))
+    points = models.PositiveIntegerField(default=0,
+            help_text=_('Final number of points for this group. This '\
+                'number is controlled by the grade plugin, and should not '\
+                'be changed manually.'))
     
     
     @classmethod
