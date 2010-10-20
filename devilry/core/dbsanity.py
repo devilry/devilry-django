@@ -37,6 +37,30 @@ class GradepluginsSanityCheck(DbSanityCheck):
                 feedback.save()
 
 
+class AssignmentSanityCheck(DbSanityCheck):
+    @classmethod
+    def get_label(cls):
+        return _("Assignment")
+
+    def check(self):
+        for assignment in Assignment.objects.all():
+            if assignment.autoscale:
+                correct = assignment._get_autogradescale()
+                if not assignment.gradescale == correct:
+                    self.add_autofixable_error(
+                        "%s: Wrong automatic gradescale: %d. Should be: %d." % (
+                            assignment, assignment.gradescale, correct))
+
+
+    @classmethod
+    def fix(cls):
+        for assignment in Assignment.objects.all():
+            if assignment.autoscale:
+                correct = assignment._get_autogradescale()
+                if not assignment.gradescale == correct:
+                    assignment.save()
+
+
 class AssignmentGroupSanityCheck(DbSanityCheck):
     @classmethod
     def get_label(cls):

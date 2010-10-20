@@ -80,6 +80,7 @@ def edit_schema(request, assignment_id, save_successful=False):
         form = RstSchemaDefinitionForm(request.POST, instance=schema)
         if form.is_valid():
             form.save()
+            assignment.save()
             return HttpResponseRedirect(
                     reverse('devilry-grade_rstschema-edit_schema-success',
                         args=[str(assignment_id)]))

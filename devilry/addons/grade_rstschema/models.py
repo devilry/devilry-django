@@ -1,9 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from devilry.core.gradeplugin import (GradeModel, get_registry_key,
-        GradeStats, GradeStatsDetail)
-from devilry.core.models import Assignment, Feedback, AssignmentGroup
+from devilry.core.gradeplugin import GradeModel
+from devilry.core.models import Assignment
 
 from parser import rstdoc_from_string
 import text
@@ -36,7 +35,6 @@ class RstSchemaDefinition(models.Model):
                 self.assignment)
 
 
-
 def get_schemadef(feedback_obj):
     assignment = feedback_obj.get_assignment()
     return assignment.rstschemadefinition
@@ -47,66 +45,13 @@ def get_schemadef_document(feedback_obj):
     return schemadef_document
 
 
-
-class RstGradeStats(GradeStats):
-    column_headings = (_("Points"), _("Percent of total"), _("Grade"))
-
-    helptext = _(
-            '"Percent of total" is how much a assignment counts ' \
-            'towards the "sum". This percent might not be correct before ' \
-            'all the assignments has been corrected.')
-
-    def __init__(self, assignmentgroups):
-        self.final_grade = None
-        self.details = []
-        scaledpoints = 0
-        scaledmaxpoints = 0
-        for group in assignmentgroups:
-            schemadef = group.parentnode.rstschemadefinition
-            scaledmaxpoints += schemadef.scale
-            percent = "%.2f%%" % schemadef.percent
-
-            delivery = group.get_latest_delivery_with_published_feedback()
-            if delivery:
-                gradeobj = delivery.feedback.grade
-                p = (float(schemadef.scale) / schemadef.maxpoints) * gradeobj.points
-                scaledpoints += p
-                points = "%d/%d" % (gradeobj.points, schemadef.maxpoints)
-                grade = "%.2f/%s" % (p, schemadef.scale)
-            else:
-                points = ''
-                grade = "0/%d (%s)" % (schemadef.scale,
-                        group.get_localized_student_status())
-
-            self.details.append(GradeStatsDetail(group,
-                points, percent, grade))
-        if scaledmaxpoints != 0:
-            try:
-                percent = (scaledpoints * 100.0) / scaledmaxpoints
-            except ZeroDivisionError:
-                percent = 0.0
-            finally:
-                self.final_grade = "%.2f/%d (%.2f%%)" % (
-                        scaledpoints, scaledmaxpoints, percent)
-
-    def get_sums(self):
-        return ('', '', self.final_grade)
-
-    def get_short_sum(self):
-        return self.final_grade
-
-    def iter_details(self):
-        return self.details.__iter__()
-
-
-
 class RstSchemaGrade(GradeModel):
     schema = models.TextField()
     points = models.PositiveIntegerField(null=True, blank=True)
 
     @classmethod
-    def gradestats(self, assignmentgroups):
-        return RstGradeStats(assignmentgroups)
+    def get_autoscale(cls, assignment):
+        return assignment.rstschemadefinition.maxpoints
 
     def _iter_points(self, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)

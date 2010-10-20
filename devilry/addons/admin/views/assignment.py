@@ -71,7 +71,7 @@ def edit_assignment(request, assignment_id=None):
             return HttpResponseRedirect(success_url)
     else:
         form = Form(instance=assignment)
-        
+
     if not isnew:
         examiners = User.objects.filter(examiners__parentnode=assignment).distinct()
     else:

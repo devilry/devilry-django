@@ -589,6 +589,15 @@ class Assignment(models.Model, BaseNode):
                 'automatically be set to the maximum number of points '\
                 'possible with the selected grade plugin.'))
 
+
+    def _get_autogradescale(self):
+        return self.get_gradeplugin_registryitem().model_cls.get_autoscale(self)
+
+    def save(self, *args, **kwargs):
+        if self.autoscale:
+            self.gradescale = self._get_autogradescale()
+        super(Assignment, self).save()
+
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
         for the current :attr:`grade_plugin`. """
