@@ -17,7 +17,6 @@ class RstGradeDbSanityCheck(DbSanityCheck):
             if points != rg.points:
                 self.add_autofixable_error("%s has incorrect points." % rg)
 
-        schemadef_ok = True
         for schemadef in RstSchemaDefinition.objects.all():
             correct = schemadef._parse_max_points() 
             if schemadef.maxpoints != correct:
@@ -27,28 +26,9 @@ class RstGradeDbSanityCheck(DbSanityCheck):
                             correct))
                 schemadef_ok = False
 
-        if schemadef_ok:
-            periods = Period.objects.filter(
-                    assignments__grade_plugin=get_registry_key(RstSchemaGrade))
-            for period in periods:
-                for schemadef, percent in RstSchemaDefinition.get_percents(period):
-                    if int(schemadef.percent) != int(percent):
-                        self.add_autofixable_error(
-                                "%s has incorrect percent. Current: %.2f%%. "\
-                                "Should be: %.2f%%." % (schemadef,
-                                    schemadef.percent, percent))
-        else:
-            self.add_autofixable_error(
-                    "Will not check percents because tests on "\
-                    "required fields failed.")
-
     @classmethod
     def fix(cls):
         for rg in RstSchemaGrade.objects.all():
             rg.save()
         for schemadef in RstSchemaDefinition.objects.all():
             schemadef.save()
-        periods = Period.objects.filter(
-                assignments__grade_plugin=get_registry_key(RstSchemaGrade))
-        for period in periods:
-            RstSchemaDefinition.recalculate_percents(period)

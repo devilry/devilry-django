@@ -64,3 +64,15 @@ class ApprovedGrade(GradeModel):
             return 'approved'
         else:
             return 'notapproved'
+
+    def save(self, *args, **kwargs):
+        ret = super(GradeModel, self).save(*args, **kwargs)
+        feedback_obj = self.get_feedback_obj()
+        feedback_obj.delivery.assignment_group.set_points()
+        return ret
+
+    def get_points(self):
+        if self.approved:
+            return 1
+        else:
+            return 0

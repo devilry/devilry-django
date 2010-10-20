@@ -914,6 +914,18 @@ class AssignmentGroup(models.Model, CommonInterface):
         status_mapping[1], # "not published" means not "not corrected" is displayed to student
         _("Corrected"),
     )
+    status_mapping_cssclass = (
+        _("status_no_deliveries"),
+        _("status_not_corrected"),
+        _("status_corrected_not_published"),
+        _("status_corrected_and_published"),
+    )
+    status_mapping_student_cssclass = (
+        status_mapping_cssclass[0],
+        status_mapping_cssclass[1],
+        status_mapping_cssclass[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping_cssclass[2],
+    )
     NO_DELIVERIES = 0
     NOT_CORRECTED = 1
     CORRECTED_NOT_PUBLISHED = 2
@@ -1107,6 +1119,16 @@ class AssignmentGroup(models.Model, CommonInterface):
         :attr:`status_mapping_student`. """
         return self.status_mapping_student[self.status]
 
+    def get_status_cssclass(self):
+        """ Returns the current status string from
+        :attr:`status_mapping_cssclass`. """
+        return self.status_mapping_cssclass[self.status]
+
+    def get_status_student_cssclass(self):
+        """ Returns the current status string from
+        :attr:`status_mapping_student_cssclass`. """
+        return self.status_mapping_student_cssclass[self.status]
+
     def _get_status_from_qry(self):
         if self.deliveries.all().count() == 0:
             return self.NO_DELIVERIES
@@ -1170,6 +1192,23 @@ class AssignmentGroup(models.Model, CommonInterface):
             return None
         else:
             return q[0]
+
+    def _find_points(self):
+        """ Find the correct number of points for this assignment. Used to
+        validate :attr:`points`, and by :meth:`set_points`. """
+        d = self.get_latest_delivery_with_published_feedback()
+        if d:
+            return d.feedback.grade.get_points()
+        else:
+            return 0
+
+    def set_points(self):
+        """ Find the latest delivery with published feedback, and set
+        :attr:`points` from the grade-plugin on that delivery using
+        :meth:`devilry.core.gradeplugin.GradeModel.get_points`. This method
+        is used by the grade plugins to keep :attr:`points` up to date."""
+        self.points = self._find_points()
+        self.save()
 
     def get_grade_as_short_string(self):
         """ Get the grade as a "short string". """

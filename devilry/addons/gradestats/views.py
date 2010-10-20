@@ -48,6 +48,7 @@ def admin_userstats(request, period_id, username):
         }, context_instance=RequestContext(request))
 
 
+@login_required
 def admin_periodstats(request, period_id):
     period = get_object_or_404(Period, id=period_id)
     if not period.can_save(request.user):
@@ -55,20 +56,22 @@ def admin_periodstats(request, period_id):
 
     users = User.objects.filter(
         candidate__assignment_group__parentnode__parentnode=period).distinct()
+    assignments_in_period = period.assignments.all()
 
     def iter():
+        full = []
         for user in users:
-            grades = []
-            groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                    parentnode__parentnode=period)
-            for gradeplugin_key, gradeplugin in registry.iteritems():
-                groups_in_gradeplugin = groups.filter(
-                        parentnode__grade_plugin=gradeplugin_key)
-                gradestats = gradeplugin.model_cls.gradestats(
-                        groups_in_gradeplugin)
-                if gradestats:
-                    grades.append(gradestats.get_short_sum())
-            yield user, grades
+            points = 0
+            assignments = []
+            for assignment in assignments_in_period:
+                groups = assignment.assignmentgroups.filter(
+                        candidates__student=user)
+                assignmentpoints = 0
+                for group in groups:
+                    points += group.points
+                    assignmentpoints += group.points
+                assignments.append((assignment, assignmentpoints, groups))
+            yield user, assignments, points
 
     if users.count() == 0:
         usergrades = None
@@ -78,5 +81,6 @@ def admin_periodstats(request, period_id):
     return render_to_response(
         'devilry/gradestats/admin-periodstats.django.html', {
             'period': period,
-            'usergrades': usergrades
+            'usergrades': usergrades,
+            'assignments_in_period': assignments_in_period
         }, context_instance=RequestContext(request))

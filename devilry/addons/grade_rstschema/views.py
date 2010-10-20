@@ -44,8 +44,7 @@ class RstSchemaDefWidget(forms.Textarea):
 class RstSchemaDefinitionForm(forms.ModelForm):
     class Meta:
         model = RstSchemaDefinition
-        fields = ('schemadef', 'let_students_see_schema', 'autoscale', 'scale',
-                'percent')
+        fields = ('schemadef', 'let_students_see_schema', 'maxpoints')
         widgets = {
             'schemadef': RstSchemaDefWidget
         }
@@ -81,8 +80,6 @@ def edit_schema(request, assignment_id, save_successful=False):
         form = RstSchemaDefinitionForm(request.POST, instance=schema)
         if form.is_valid():
             form.save()
-            RstSchemaDefinition.recalculate_percents(
-                    schema.assignment.parentnode)
             return HttpResponseRedirect(
                     reverse('devilry-grade_rstschema-edit_schema-success',
                         args=[str(assignment_id)]))

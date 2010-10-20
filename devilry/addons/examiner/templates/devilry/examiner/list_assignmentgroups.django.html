@@ -58,20 +58,7 @@ on the groups below.</p>{% endblocktrans %}</p>
         <td>{{ assignment_group.name }}</td>
         <td>{{ assignment_group.get_number_of_deliveries }}</td>
         <td>{{ assignment_group.get_latest_delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
-        <td class="
-          {% if assignment_group.status == 0 %}
-            no_deliveries_msg
-          {% endif %}
-          {% if assignment_group.status == 1 %}
-            not_corrected_msg
-          {% endif %}
-          {% if assignment_group.status == 2 %}
-            corrected_not_published_msg
-          {% endif %}
-          {% if assignment_group.status == 3 %}
-            corrected_and_published_msg
-          {% endif %}
-          ">
+        <td class="{{ assignment_group.get_status_cssclass }}">
             {{ assignment_group.get_localized_status }}</td>
         <td>
           {% if assignment_group.get_grade_as_short_string %}

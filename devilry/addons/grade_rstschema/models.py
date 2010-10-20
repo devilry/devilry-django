@@ -7,7 +7,6 @@ from devilry.core.models import Assignment, Feedback, AssignmentGroup
 
 from parser import rstdoc_from_string
 import text
-import html
 import field
 
 
@@ -17,41 +16,8 @@ class RstSchemaDefinition(models.Model):
     let_students_see_schema = models.BooleanField(default=False,
             help_text=_('Selecting this will let users see the ' \
                     'entire schema, instead of just the resulting grade.'))
-    autoscale = models.BooleanField(blank=True, default=True)
-    scale = models.PositiveIntegerField(null=False, blank=True,
-            default=0)
     maxpoints = models.PositiveIntegerField(null=False, blank=True,
             default=0)
-    percent = models.FloatField(null=False, blank=True, default=0)
-
-
-    @classmethod
-    def get_percents(cls, period):
-        gradeplugin_key = get_registry_key(RstSchemaGrade)
-        schemadefs = []
-        for assignment in period.assignments.filter(
-                grade_plugin=gradeplugin_key):
-            try:
-                schemadef = assignment.rstschemadefinition
-            except RstSchemaDefinition.DoesNotExist:
-                pass
-            else:
-                schemadefs.append(schemadef)
-        scalesum = 0
-        for schemadef in schemadefs:
-            if schemadef.scale == None:
-                raise ValueError(
-                        "Can not calculate percents as long as any of the "\
-                        "fields are missing 'scale'.")
-            scalesum += schemadef.scale
-        return [(schemadef, (schemadef.scale*100.0) / scalesum)
-                for schemadef in schemadefs]
-
-    @classmethod
-    def recalculate_percents(cls, period):
-        for schemadef, percent in cls.get_percents(period):
-            schemadef.percent = percent
-            schemadef.save()
 
     def _parse_max_points(self):
         schemadef_document = rstdoc_from_string(self.schemadef)
@@ -61,15 +27,8 @@ class RstSchemaDefinition(models.Model):
             maxpoints += f.spec.get_max_points()
         return maxpoints
 
-    def set_scale(self):
-        if self.autoscale:
-            self.scale = self.maxpoints
-        elif self.scale == None:
-            self.scale = self.maxpoints
-
     def save(self, *args, **kwargs):
         self.maxpoints = self._parse_max_points()
-        self.set_scale()
         return super(RstSchemaDefinition, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -188,13 +147,12 @@ class RstSchemaGrade(GradeModel):
         #return True
 
     def save(self, *args, **kwargs):
-        try:
-            feedback_obj = self.get_feedback_obj()
-        except Feedback.DoesNotExist:
-            pass
-        else:
-            self.points = self._parse_points()
+        feedback_obj = self.get_feedback_obj()
+        self.points = self._parse_points()
         return super(RstSchemaGrade, self).save(*args, **kwargs)
+
+    def get_points(self):
+        return self.points
 
     def __unicode__(self):
         return "RstSchemaGrade(id:%s) for %s" % (self.id,

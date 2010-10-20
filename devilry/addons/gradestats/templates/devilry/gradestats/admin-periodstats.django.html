@@ -7,20 +7,53 @@
   <li>{{ period }}</li>
 {% endblock %}
 
-{% block heading %}{{ period }}{% endblock %}
+{% block customcss %}
+  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_table.css" />
+  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_table_jui.css" />
+  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_page.css" />
+  <style type="text/css">
+    .details_hidden {
+      display: none;
+    }
+  </style>
+{% endblock %}
+{% block customjs %}
+  <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/js/jquery.dataTables.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      $("#statstable").dataTable({
+        "bJQueryUI": true,
+        //"sPaginationType": "full_numbers"
+      });
+
+      $("#toggle_details").click(function(e) {
+        $(".details").toggleClass("details_hidden");
+      });
+    });
+  </script>          
+{% endblock %}
+
+{% block heading %}{{ period.parentnode.short_name }} - {{ period.long_name }}{% endblock %}
 
 {% block content %}
 
+
+<button class='button' id='toggle_details'>{% trans "Toggle details" %}</button>
+
+
 {% if usergrades %}
-  <table class='horizontal_ordered_table'>
+  <table id="statstable" class='display' cellpadding="0" cellspacing="0" border="0">
     <thead>
       <tr>
-        <th>{% trans "User" %}</th>
-        <th>{% trans "Grade" %}</th>
+        <th class='important'>{% trans "User" %}</th>
+        <th class='important'>{% trans "Sum" %}</th>
+        {% for assignment in assignments_in_period %}
+          <th>{{ assignment.short_name }}</th>
+        {% endfor %}
       </tr>
     </thead>
     <tbody>
-      {% for user, grades in usergrades %}
+      {% for user, assignments, points in usergrades %}
         <tr>
           <td>
             <a href="{% url devilry-gradestats-admin_userstats period.id user.username %}">
@@ -28,13 +61,28 @@
             </a>
           </td>
           <td>
-            {% for grade in grades %}
-              <span class="inline-infobox
-                  {% if forloop.counter|divisibleby:"2" %}inline-infobox-even{% endif %}">
-                {{ grade }}
-              </span>
-            {% endfor %}
+            {{ points }}
           </td>
+          {% for assignment, assignmentpoints, groups in assignments %}
+            <td>
+              <div>{{ assignmentpoints }}</div>
+              <div class='details details_hidden inline-infobox'>
+                {% for group in groups %}
+                  <span class="{{ group.get_status_cssclass }}">
+                    {{ group.get_localized_student_status }}
+                  </span>
+                  {% if not forloop.first %}
+                    ,
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if groups|length > 1 %}
+                <div class='inline-infobox inline-infobox-warning'>
+                  {% trans "More than one group" %}
+                </div>
+              {% endif %}
+           </td>
+          {% endfor %}
         </tr>
       {% endfor %}
     </tbody>

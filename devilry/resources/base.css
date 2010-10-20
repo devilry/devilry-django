@@ -40,12 +40,18 @@ pre.blockpre {
 	margin: 0 3px;
 	background-color: #E5F3FF;
 	border: 1px solid #80C3FF;
+	/*background-color: #E7FFCC;*/
+	/*border: 1px solid #7AE600;*/
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 }
-.inline-infobox-even {
+.inline-infobox-warning {
 	background-color: #E7FFCC;
 	border: 1px solid #7AE600;
+}
+.inline-infobox-faded {
+	background-color: #ccc;
+	border: 1px solid #888;
 }
 
 
@@ -411,6 +417,9 @@ table.horizontal_ordered_table td {
 table.horizontal_ordered_table tfoot td {
 	font-weight: bold;
 }
+table.horizontal_ordered_table td.important {
+	font-weight: bold;
+}
 
 
 
@@ -687,20 +696,20 @@ table.autocompletetable-result {
 
 
 /* Status */
-.no_deliveries_msg {
+.status_no_deliveries {
 	color: #aa0000 !important;
 	font-weight: bold;
 }
-.not_corrected_msg {
+.status_not_corrected {
 	color: #A85400;
 	font-weight: normal;
 }
-.corrected_not_published_msg {
+.status_corrected_not_published {
 	color: #0000aa;
 	font-style: italic;
 	font-weight: normal;
 }
-.corrected_and_published_msg {
+.status_corrected_and_published {
 	color: #00aa00;
 	font-style: italic;
 	font-weight: normal;

@@ -37,10 +37,10 @@ class GradepluginsSanityCheck(DbSanityCheck):
                 feedback.save()
 
 
-class AssignmentGroupStatusSanityCheck(DbSanityCheck):
+class AssignmentGroupSanityCheck(DbSanityCheck):
     @classmethod
     def get_label(cls):
-        return _("AssignmentGroup status")
+        return _("AssignmentGroup")
 
     def check(self):
         for ag in AssignmentGroup.objects.all():
@@ -48,7 +48,12 @@ class AssignmentGroupStatusSanityCheck(DbSanityCheck):
             if ag.status != correct_status:
                 self.add_autofixable_error(
                     "%s correct status:%s, current status: %s." % (
-                        ag, ag.status, correct_status))
+                        ag, correct_status, ag.status))
+            correct_points = ag._find_points()
+            if ag.points != correct_points:
+                self.add_autofixable_error(
+                    "%s correct points:%d, current points: %d." % (
+                        ag, correct_points, ag.points))
 
     @classmethod
     def fix(cls):
@@ -56,4 +61,8 @@ class AssignmentGroupStatusSanityCheck(DbSanityCheck):
             correct_status = ag._get_status_from_qry()
             if ag.status != correct_status:
                 ag.status = correct_status
+                ag.save()
+            correct_points = ag._find_points()
+            if ag.points != correct_points:
+                ag.points = correct_points
                 ag.save()

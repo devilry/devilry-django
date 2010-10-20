@@ -3,10 +3,7 @@
         "pk": 3, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
-            "scale": 11, 
-            "autoscale": true, 
             "let_students_see_schema": false, 
-            "percent": 15.492957746478874, 
             "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10", 
             "maxpoints": 11
         }
@@ -15,10 +12,7 @@
         "pk": 23, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
-            "scale": 2, 
-            "autoscale": true, 
             "let_students_see_schema": false, 
-            "percent": 40.0, 
             "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n", 
             "maxpoints": 2
         }
@@ -27,10 +21,7 @@
         "pk": 24, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
-            "scale": 3, 
-            "autoscale": true, 
             "let_students_see_schema": false, 
-            "percent": 60.0, 
             "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n", 
             "maxpoints": 3
         }
@@ -39,10 +30,7 @@
         "pk": 25, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
-            "scale": 40, 
-            "autoscale": false, 
             "let_students_see_schema": false, 
-            "percent": 56.338028169014088, 
             "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-9", 
             "maxpoints": 10
         }
@@ -51,10 +39,7 @@
         "pk": 26, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
-            "scale": 20, 
-            "autoscale": false, 
             "let_students_see_schema": true, 
-            "percent": 28.169014084507044, 
             "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-7", 
             "maxpoints": 8
         }

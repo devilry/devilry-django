@@ -169,6 +169,9 @@ class GradeModel(models.Model):
         """
         raise NotImplementedError()
 
+    def get_points(self):
+        raise NotImplementedError()
+
 
 
 def get_registry_key(model_cls):
