@@ -12,8 +12,11 @@
   <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_table_jui.css" />
   <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_page.css" />
   <style type="text/css">
-    .details_hidden {
+    .hidden {
       display: none;
+    }
+    .important {
+      font-weight: bold;
     }
   </style>
 {% endblock %}
@@ -27,7 +30,8 @@
       });
 
       $("#toggle_details").click(function(e) {
-        $(".details").toggleClass("details_hidden");
+        $(".details").toggleClass("hidden");
+        $(".nodetails").toggleClass("hidden");
       });
     });
   </script>          
@@ -45,7 +49,7 @@
   <table id="statstable" class='display' cellpadding="0" cellspacing="0" border="0">
     <thead>
       <tr>
-        <th class='important'>{% trans "User" %}</th>
+        <th>{% trans "User" %}</th>
         <th class='important'>{% trans "Sum" %}</th>
         {% for assignment in assignments_in_period %}
           <th>{{ assignment.short_name }}</th>
@@ -60,27 +64,28 @@
               {{ user }}
             </a>
           </td>
-          <td>
+          <td class='important'>
             {{ points }}
           </td>
           {% for assignment, assignmentpoints, groups in assignments %}
             <td>
-              <div>{{ assignmentpoints }}</div>
-              <div class='details details_hidden inline-infobox'>
+              <div class='nodetails'>{{ assignmentpoints }}</div>
+              <ul class='details hidden'>
+                <li>{% trans "Points" %}:{{ points }}</li>
                 {% for group in groups %}
-                  <span class="{{ group.get_status_cssclass }}">
-                    {{ group.get_localized_student_status }}
-                  </span>
-                  {% if not forloop.first %}
-                    ,
-                  {% endif %}
+                  <li>
+                    {% trans "Status" %}:
+                    <span class="{{ group.get_status_cssclass }}">
+                      {{ group.get_localized_student_status }}
+                    </span>
+                  </li>
                 {% endfor %}
-              </div>
-              {% if groups|length > 1 %}
-                <div class='inline-infobox inline-infobox-warning'>
-                  {% trans "More than one group" %}
-                </div>
-              {% endif %}
+                {% if groups|length > 1 %}
+                  <li class='warning'>
+                    {% trans "More than one group" %}
+                  </li>
+                {% endif %}
+              </ul>
            </td>
           {% endfor %}
         </tr>

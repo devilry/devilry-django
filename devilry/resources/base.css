@@ -417,9 +417,6 @@ table.horizontal_ordered_table td {
 table.horizontal_ordered_table tfoot td {
 	font-weight: bold;
 }
-table.horizontal_ordered_table td.important {
-	font-weight: bold;
-}
 
 
 

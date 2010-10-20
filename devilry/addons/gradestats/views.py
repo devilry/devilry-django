@@ -5,31 +5,26 @@ from django.http import HttpResponseForbidden
 from django.template import RequestContext
 
 from devilry.core.models import AssignmentGroup, Period
-from devilry.core.gradeplugin import registry
 from devilry.core import pluginloader
 
 pluginloader.autodiscover()
 
-def _iter_periodstats(period, user):
+def _get_periodstats(period, user):
     groups = AssignmentGroup.published_where_is_candidate(user).filter(
             parentnode__parentnode=period)
-    for gradeplugin_key, gradeplugin in registry.iteritems():
-        groups_in_gradeplugin = groups.filter(
-                parentnode__grade_plugin=gradeplugin_key)
-
-        gradestats = gradeplugin.model_cls.gradestats(groups_in_gradeplugin)
-        if not gradestats:
-            continue
-        yield gradeplugin, gradestats
+    s = sum([g.points for g in groups])
+    return s, groups
 
 @login_required
 def userstats(request, period_id):
     period = get_object_or_404(Period, pk=period_id)
+    total, groups = _get_periodstats(period, request.user)
     return render_to_response(
         'devilry/gradestats/user.django.html', {
             'period': period,
             'userobj': request.user,
-            'gradesbyplugin': _iter_periodstats(period, request.user),
+            'total': total,
+            'groups': groups,
         }, context_instance=RequestContext(request))
 
 
@@ -39,12 +34,13 @@ def admin_userstats(request, period_id, username):
     if not period.can_save(request.user):
         return HttpResponseForbidden("Forbidden")
     user = get_object_or_404(User, username=username)
-
+    total, groups = _get_periodstats(period, user)
     return render_to_response(
         'devilry/gradestats/admin-user.django.html', {
             'period': period,
             'userobj': user,
-            'gradesbyplugin': _iter_periodstats(period, user),
+            'total': total,
+            'groups': groups,
         }, context_instance=RequestContext(request))
 
 
