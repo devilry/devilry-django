@@ -24,7 +24,11 @@
             </a>
           </td>
           <td>{{ group.get_candidates }}</td>
-          <td>{{ group.get_grade_as_short_string|default_if_none:"" }}</td>
+          {% if group.status == 3 %}
+            <td>{{ group.get_grade_as_short_string }}</td>
+          {% else %}
+            <td class='{{ group.get_status_student_cssclass }}'>{{ group.get_localized_student_status }}</td>
+          {% endif %}
           <td>{{ group.scaled_points|floatformat:"-2" }}/{{ group.parentnode.pointscale|floatformat:"-2" }}</td>
         </tr>
       {% endfor %}
