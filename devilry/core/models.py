@@ -454,6 +454,9 @@ class Period(models.Model, BaseNode):
                 return False
         return totalpoints >= self.minimum_points
 
+    def get_must_pass_assignments(self):
+        return self.assignments.filter(must_pass=True)
+
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Returns a QuerySet matching all Periods where the given user is

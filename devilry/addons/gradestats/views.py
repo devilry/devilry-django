@@ -64,10 +64,14 @@ def admin_periodstats(request, period_id):
                 groups = assignment.assignmentgroups.filter(
                         candidates__student=user)
                 assignmentpoints = 0
+                is_passing_grade = True
                 for group in groups:
                     points += group.scaled_points
                     assignmentpoints += group.scaled_points
-                assignments.append((assignment, assignmentpoints, groups))
+                    if not group.is_passing_grade:
+                        is_passing_grade = False
+                assignments.append((assignment, assignmentpoints,
+                    is_passing_grade, groups))
             yield (user, assignments, points,
                     period.student_passes_period(user))
 
@@ -81,5 +85,6 @@ def admin_periodstats(request, period_id):
             'period': period,
             'maxpoints': maxpoints,
             'usergrades': usergrades,
+            'mustpass_assignments': period.get_must_pass_assignments(),
             'assignments_in_period': assignments_in_period
         }, context_instance=RequestContext(request))

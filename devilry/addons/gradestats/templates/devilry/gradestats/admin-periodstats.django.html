@@ -15,7 +15,13 @@
     .important {
       font-weight: bold;
     }
-
+    .passing_grade {
+      color: #090;
+    }
+    .failed_grade {
+      color: #d00;
+      font-weight: bold;
+    }
     tr.odd td.
   </style>
 {% endblock %}
@@ -44,14 +50,39 @@
 {% block content %}
 
 
+<p>This period requires each student to get at least <em>
+{{ period.minimum_points }} points</em>.</p>
+
+</p>
+{% if mustpass_assignments.count %}
+  <p>In addition the <strong>emphasized</strong> assignments below must be passed:</p>
+  <ul>
+  {% for a in period.assignments.all %}
+    <li>
+      <a href='{% url devilry-admin-edit_assignment a.id %}'
+        style='font-weight:{{ a.must_pass|yesno:"bold,normal"}};'>{{ a.long_name }}</a>
+    </li>
+  {% endfor %}
+  </ul>
+{% endif %}
+
+<h2>{% trans "Overview" %}</h2>
+
+<p class='help-box'>{% blocktrans %}Each row contains the points a student have
+been given on every assignments within this period and the sum of these points.
+The maximum number of points is the number in parentheses in each column
+header. If the grade on a single assignment is a failing grade, the points are
+shown as bold red. If the entire period is failed, the entire row has a red
+background. Passed assignments and periods are shown with green. Click "toggle
+details" to show/hide extra details, and click on a username for detailed statistics for
+that user in this period.{% endblocktrans %}</p>
+
 <button class='button' id='toggle_details'>{% trans "Toggle details" %}</button>
-
-
 {% if usergrades %}
   <table id="statstable" class='display' cellpadding="0" cellspacing="0" border="0">
     <thead>
       <tr>
-        <th>{% trans "User" %}</th>
+        <th>{% trans "Student" %}</th>
         <th class='important'>{% trans "Sum" %} ({{ maxpoints }})</th>
         {% for assignment in assignments_in_period %}
           <th>{{ assignment.short_name }} ({{ assignment.pointscale }})</th>
@@ -69,25 +100,29 @@
           <td class='important'>
             {{ points|floatformat:"-2" }}
           </td>
-          {% for assignment, assignmentpoints, groups in assignments %}
+          {% for assignment, assignmentpoints, is_passing_grade, groups in assignments %}
             <td>
-              <div class='nodetails'>{{ assignmentpoints|floatformat:"-2" }}</div>
-              <ul class='details hidden'>
-                <li>{% trans "Points" %}:{{ points|floatformat:"-2" }}</li>
-                {% for group in groups %}
-                  <li>
-                    {% trans "Status" %}:
-                    <span class="{{ group.get_status_cssclass }}">
-                      {{ group.get_localized_student_status }}
-                    </span>
-                  </li>
-                {% endfor %}
-                {% if groups|length > 1 %}
-                  <li class='warning'>
-                    {% trans "More than one group" %}
-                  </li>
-                {% endif %}
-              </ul>
+              <div class='nodetails {{ is_passing_grade|yesno:"passing_grade,failed_grade" }}'>
+                {{ assignmentpoints|floatformat:"-2" }}
+              </div>
+              {% if groups|length > 1 %}
+                <div class='warning'>
+                  {% trans "Student is in more than one group on this assignment" %}
+                </div>
+              {% else %}
+                <ul class='details hidden'>
+                  <li>{% trans "Points" %}:{{ assignmentpoints|floatformat:"-2" }}</li>
+                  {% for group in groups %}
+                    <li>{% trans "Grade" %}:{{ group.get_grade_as_short_string }}</li>
+                    <li>
+                      {% trans "Status" %}:
+                      <span class="{{ group.get_status_cssclass }}">
+                        {{ group.get_localized_student_status }}
+                      </span>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
            </td>
           {% endfor %}
         </tr>
