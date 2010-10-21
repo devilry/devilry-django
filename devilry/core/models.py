@@ -580,22 +580,22 @@ class Assignment(models.Model, BaseNode):
     must_pass = models.BooleanField(default=False,
             help_text=_('Each student must get a passing grade on this ' \
                 'assignment to get a passing grade on the period.'))
-    gradescale = models.PositiveIntegerField(default=1,
+    pointscale = models.PositiveIntegerField(default=1,
             help_text=_(
-                'The grade will be scaled down or up making the _this_ '\
+                'The points will be scaled down or up making the _this_ '\
                 'number the maximum number of points.'))
     autoscale = models.BooleanField(default=True,
-            help_text=_('If this field is set, the gradescale will '\
+            help_text=_('If this field is set, the pointscale will '\
                 'automatically be set to the maximum number of points '\
                 'possible with the selected grade plugin.'))
 
 
-    def _get_autogradescale(self):
-        return self.get_gradeplugin_registryitem().model_cls.get_autoscale(self)
+    def _get_maxpoints(self):
+        return self.get_gradeplugin_registryitem().model_cls.get_maxpoints(self)
 
     def save(self, *args, **kwargs):
         if self.autoscale:
-            self.gradescale = self._get_autogradescale()
+            self.pointscale = self._get_maxpoints()
         super(Assignment, self).save()
 
     def get_gradeplugin_registryitem(self):
@@ -954,6 +954,13 @@ class AssignmentGroup(models.Model, CommonInterface):
             help_text=_('Final number of points for this group. This '\
                 'number is controlled by the grade plugin, and should not '\
                 'be changed manually.'))
+
+
+    def _get_scaled_points(self):
+        scale = float(self.parentnode.pointscale)
+        maxpoints = self.parentnode._get_maxpoints()
+        return (scale/maxpoints) * self.points
+    scaled_points = property(_get_scaled_points) # using a propery because we might want to optimize/cache this in the database in the future, and this avoids having to change any code as a result
     
     
     @classmethod
@@ -1218,6 +1225,9 @@ class AssignmentGroup(models.Model, CommonInterface):
         is used by the grade plugins to keep :attr:`points` up to date."""
         self.points = self._find_points()
         self.save()
+        print
+        print "Set points", self.points
+        print
 
     def get_grade_as_short_string(self):
         """ Get the grade as a "short string". """

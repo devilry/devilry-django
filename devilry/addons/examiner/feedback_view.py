@@ -114,6 +114,7 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
             grade_form.save()
             feedback_form.instance.grade = grade_form.instance
             feedback_form.save()
+            grade_obj.set_points()
             return redirect_after_successful_save(request, delivery_obj)
 
     return render_response(request, delivery_obj,

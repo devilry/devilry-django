@@ -64,8 +64,8 @@ def admin_periodstats(request, period_id):
                         candidates__student=user)
                 assignmentpoints = 0
                 for group in groups:
-                    points += group.points
-                    assignmentpoints += group.points
+                    points += group.scaled_points
+                    assignmentpoints += group.scaled_points
                 assignments.append((assignment, assignmentpoints, groups))
             yield user, assignments, points
 

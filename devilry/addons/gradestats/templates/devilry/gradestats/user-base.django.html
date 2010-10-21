@@ -23,7 +23,7 @@
             </a>
           </td>
           <td>{{ group.get_candidates }}</td>
-          <td>{{ group.points }}</td>
+          <td>{{ group.scaled_points|floatformat:"-2" }}</td>
         </tr>
       {% endfor %}
     </tbody>

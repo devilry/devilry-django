@@ -5,8 +5,11 @@ class CharFieldGrade(GradeModel):
     grade = models.CharField(max_length=15)
 
     @classmethod
-    def get_autoscale(cls, assignment):
-        return 1
+    def get_maxpoints(cls, assignment):
+        return 0
+
+    def get_points(self):
+        return 0
 
     def get_grade_as_short_string(self, feedback_obj):
         return self.grade

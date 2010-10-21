@@ -45,19 +45,19 @@ class AssignmentSanityCheck(DbSanityCheck):
     def check(self):
         for assignment in Assignment.objects.all():
             if assignment.autoscale:
-                correct = assignment._get_autogradescale()
-                if not assignment.gradescale == correct:
+                correct = assignment._get_maxpoints()
+                if not assignment.pointscale == correct:
                     self.add_autofixable_error(
-                        "%s: Wrong automatic gradescale: %d. Should be: %d." % (
-                            assignment, assignment.gradescale, correct))
+                        "%s: Wrong automatic pointscale: %d. Should be: %d." % (
+                            assignment, assignment.pointscale, correct))
 
 
     @classmethod
     def fix(cls):
         for assignment in Assignment.objects.all():
             if assignment.autoscale:
-                correct = assignment._get_autogradescale()
-                if not assignment.gradescale == correct:
+                correct = assignment._get_maxpoints()
+                if not assignment.pointscale == correct:
                     assignment.save()
 
 

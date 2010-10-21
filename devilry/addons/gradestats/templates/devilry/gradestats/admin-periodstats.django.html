@@ -65,13 +65,13 @@
             </a>
           </td>
           <td class='important'>
-            {{ points }}
+            {{ points|floatformat:"-2" }}
           </td>
           {% for assignment, assignmentpoints, groups in assignments %}
             <td>
-              <div class='nodetails'>{{ assignmentpoints }}</div>
+              <div class='nodetails'>{{ assignmentpoints|floatformat:"-2" }}</div>
               <ul class='details hidden'>
-                <li>{% trans "Points" %}:{{ points }}</li>
+                <li>{% trans "Points" %}:{{ points|floatformat:"-2" }}</li>
                 {% for group in groups %}
                   <li>
                     {% trans "Status" %}:

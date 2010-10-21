@@ -64,7 +64,7 @@ class XmlrpcGradeConf(object):
 
 class GradeModel(models.Model):
     @classmethod
-    def get_autoscale(cls, assignment):
+    def get_maxpoints(cls, assignment):
         raise NotImplementedError()
 
     def get_feedback_obj(self):
@@ -144,6 +144,8 @@ class GradeModel(models.Model):
     def get_points(self):
         raise NotImplementedError()
 
+    def set_points(self):
+        self.get_feedback_obj().delivery.assignment_group.set_points()
 
 
 def get_registry_key(model_cls):

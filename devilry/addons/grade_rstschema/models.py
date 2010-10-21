@@ -50,7 +50,7 @@ class RstSchemaGrade(GradeModel):
     points = models.PositiveIntegerField(null=True, blank=True)
 
     @classmethod
-    def get_autoscale(cls, assignment):
+    def get_maxpoints(cls, assignment):
         return assignment.rstschemadefinition.maxpoints
 
     def _iter_points(self, feedback_obj):
@@ -94,7 +94,7 @@ class RstSchemaGrade(GradeModel):
     def save(self, *args, **kwargs):
         feedback_obj = self.get_feedback_obj()
         self.points = self._parse_points()
-        return super(RstSchemaGrade, self).save(*args, **kwargs)
+        super(RstSchemaGrade, self).save(*args, **kwargs)
 
     def get_points(self):
         return self.points
@@ -102,4 +102,3 @@ class RstSchemaGrade(GradeModel):
     def __unicode__(self):
         return "RstSchemaGrade(id:%s) for %s" % (self.id,
                 self.get_feedback_obj())
-

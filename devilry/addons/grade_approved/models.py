@@ -8,7 +8,7 @@ class ApprovedGrade(GradeModel):
     approved = models.BooleanField(blank=True, default=False)
 
     @classmethod
-    def get_autoscale(cls, assignment):
+    def get_maxpoints(cls, assignment):
         return 1
 
     def get_grade_as_short_string(self, feedback_obj):
@@ -33,12 +33,6 @@ class ApprovedGrade(GradeModel):
             return 'approved'
         else:
             return 'notapproved'
-
-    def save(self, *args, **kwargs):
-        ret = super(GradeModel, self).save(*args, **kwargs)
-        feedback_obj = self.get_feedback_obj()
-        feedback_obj.delivery.assignment_group.set_points()
-        return ret
 
     def get_points(self):
         if self.approved:
