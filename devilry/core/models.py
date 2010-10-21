@@ -972,6 +972,8 @@ class AssignmentGroup(models.Model, CommonInterface):
     def _get_scaled_points(self):
         scale = float(self.parentnode.pointscale)
         maxpoints = self.parentnode._get_maxpoints()
+        if maxpoints == 0:
+            return 0.0
         return (scale/maxpoints) * self.points
     scaled_points = property(_get_scaled_points) # using a propery because we might want to optimize/cache this in the database in the future, and this avoids having to change any code as a result
 
