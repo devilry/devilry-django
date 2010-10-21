@@ -272,7 +272,8 @@
             "parentnode": 1, 
             "long_name": "From 2010 to 2210", 
             "admins": [], 
-            "end_time": "2210-08-01 12:00:00"
+            "end_time": "2210-08-01 12:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -284,7 +285,8 @@
             "parentnode": 2, 
             "long_name": "From 2010 to 2210", 
             "admins": [], 
-            "end_time": "2210-08-10 12:00:00"
+            "end_time": "2210-08-10 12:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -296,7 +298,8 @@
             "parentnode": 1, 
             "long_name": "String 2008", 
             "admins": [], 
-            "end_time": "2010-06-15 00:00:00"
+            "end_time": "2010-06-15 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -308,7 +311,8 @@
             "parentnode": 2, 
             "long_name": "Spring 2008", 
             "admins": [], 
-            "end_time": "2010-06-15 00:00:00"
+            "end_time": "2010-06-15 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -320,7 +324,8 @@
             "parentnode": 1, 
             "long_name": "Fall 2007", 
             "admins": [], 
-            "end_time": "2007-11-29 00:00:00"
+            "end_time": "2007-11-29 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -332,7 +337,8 @@
             "parentnode": 1, 
             "long_name": "Spring 2007", 
             "admins": [], 
-            "end_time": "2007-06-16 16:00:00"
+            "end_time": "2007-06-16 16:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -344,7 +350,8 @@
             "parentnode": 1, 
             "long_name": "Fall 2008", 
             "admins": [], 
-            "end_time": "2008-11-19 16:00:00"
+            "end_time": "2008-11-19 16:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -356,7 +363,8 @@
             "parentnode": 1, 
             "long_name": "Spring 2009", 
             "admins": [], 
-            "end_time": "2009-06-20 16:00:00"
+            "end_time": "2009-06-20 16:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -368,7 +376,8 @@
             "parentnode": 1, 
             "long_name": "Fall 2009", 
             "admins": [], 
-            "end_time": "2009-12-14 12:00:00"
+            "end_time": "2009-12-14 12:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -380,7 +389,8 @@
             "parentnode": 10, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2010-12-15 00:00:00"
+            "end_time": "2010-12-15 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -392,7 +402,8 @@
             "parentnode": 11, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2010-12-31 00:00:00"
+            "end_time": "2010-12-31 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -404,7 +415,8 @@
             "parentnode": 12, 
             "long_name": "First Semester", 
             "admins": [], 
-            "end_time": "2015-12-28 00:00:00"
+            "end_time": "2015-12-28 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -416,7 +428,8 @@
             "parentnode": 13, 
             "long_name": "First semester", 
             "admins": [], 
-            "end_time": "2015-12-31 00:00:00"
+            "end_time": "2015-12-31 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -428,7 +441,8 @@
             "parentnode": 3, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2015-12-29 00:00:00"
+            "end_time": "2015-12-29 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -440,13 +454,16 @@
             "parentnode": 4, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2015-12-31 00:00:00"
+            "end_time": "2015-12-31 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "greed", 
             "publishing_time": "2010-08-05 10:00:00", 
@@ -454,13 +471,16 @@
             "filenames": null, 
             "long_name": "Learning greed through case studies", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 2, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "money", 
             "publishing_time": "2010-08-05 08:00:00", 
@@ -468,55 +488,67 @@
             "filenames": null, 
             "long_name": "Money making basics", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 3, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": false, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "avoiding-work", 
             "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 1, 
-            "filenames": null, 
-            "long_name": "Effective habits for lazy people", 
+            "filenames": "", 
+            "long_name": "Intro to avoid work", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 20
         }
     }, 
     {
         "pk": 4, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": false, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "sleeping1", 
             "publishing_time": "2010-08-06 08:00:00", 
             "parentnode": 1, 
-            "filenames": null, 
-            "long_name": "Locating good sleeping areas", 
+            "filenames": "", 
+            "long_name": "Sleeping 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 30
         }
     }, 
     {
         "pk": 5, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "sleeping2", 
             "publishing_time": "2010-08-06 16:00:00", 
             "parentnode": 1, 
-            "filenames": null, 
-            "long_name": "Look like you are working while  sleeping", 
+            "filenames": "", 
+            "long_name": "Advanced sleeping", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 6, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig1", 
             "publishing_time": "2010-08-02 00:00:00", 
@@ -524,13 +556,16 @@
             "filenames": "", 
             "long_name": "Oblig 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 7, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "home_exam1", 
             "publishing_time": "2010-08-10 00:00:00", 
@@ -538,13 +573,16 @@
             "filenames": "", 
             "long_name": "Home Exam 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 8, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "home_exam2", 
             "publishing_time": "2010-10-20 08:00:00", 
@@ -552,13 +590,16 @@
             "filenames": "", 
             "long_name": "Home Exam 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 11, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "assignment0", 
             "publishing_time": "2010-09-15 12:00:00", 
@@ -566,13 +607,16 @@
             "filenames": "", 
             "long_name": "Assignment 0", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 12, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "assignment1", 
             "publishing_time": "2010-10-27 12:00:00", 
@@ -580,13 +624,16 @@
             "filenames": "", 
             "long_name": "Assignment 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 13, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "assignment2", 
             "publishing_time": "2010-11-24 12:00:00", 
@@ -594,13 +641,16 @@
             "filenames": "", 
             "long_name": "Assignment 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 15, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig1", 
             "publishing_time": "2010-09-07 12:00:00", 
@@ -608,13 +658,16 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 16, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig2", 
             "publishing_time": "2010-10-01 12:00:00", 
@@ -622,13 +675,16 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 17, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig3", 
             "publishing_time": "2010-10-22 12:00:00", 
@@ -636,13 +692,16 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 3", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 18, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig4", 
             "publishing_time": "2010-11-12 12:00:00", 
@@ -650,13 +709,16 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 4", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 19, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-intro", 
             "publishing_time": "2010-08-16 12:00:00", 
@@ -664,13 +726,16 @@
             "filenames": "", 
             "long_name": "Introduction to lazyness", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 20, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-improved", 
             "publishing_time": "2010-09-13 08:00:00", 
@@ -678,13 +743,16 @@
             "filenames": "", 
             "long_name": "Improving your current lazyness", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 21, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-advanced", 
             "publishing_time": "2010-08-17 10:00:00", 
@@ -692,13 +760,16 @@
             "filenames": "", 
             "long_name": "Advanced lazyness", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 22, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-possible", 
             "publishing_time": "2010-09-22 14:00:00", 
@@ -706,13 +777,16 @@
             "filenames": "", 
             "long_name": "How to be as lazy as possible", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 23, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "week1", 
             "publishing_time": "2010-08-15 21:51:00", 
@@ -720,13 +794,16 @@
             "filenames": "kick.py\r\nGaussian_function1.py", 
             "long_name": "Week 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 2
         }
     }, 
     {
         "pk": 24, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "week2", 
             "publishing_time": "2010-08-29 21:52:00", 
@@ -734,13 +811,16 @@
             "filenames": "ball_table2.py\r\nball_table3.py\r\ncompute_sum_while.py", 
             "long_name": "Week 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 3
         }
     }, 
     {
         "pk": 25, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "cheating201", 
             "publishing_time": "2010-10-15 08:00:00", 
@@ -748,13 +828,16 @@
             "filenames": "", 
             "long_name": "Cheating 201", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 10
         }
     }, 
     {
         "pk": 26, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "avoiding-work2", 
             "publishing_time": "2010-10-18 14:00:00", 
@@ -762,7 +845,8 @@
             "filenames": "", 
             "long_name": "Really avoiding work", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "pointscale": 8
         }
     }, 
     {
@@ -1823,9 +1907,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
-            "is_open": false, 
             "name": "The boys", 
             "parentnode": 2, 
+            "points": 0, 
+            "is_open": false, 
             "examiners": [
                 13
             ]
@@ -1836,9 +1921,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 1, 
-            "is_open": true, 
             "name": "The girls", 
             "parentnode": 2, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -1849,9 +1935,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 3, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -1862,9 +1949,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 3, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 6
             ]
@@ -1875,9 +1963,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 3, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -1888,9 +1977,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 3, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -1901,9 +1991,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 3, 
+            "points": 7, 
+            "is_open": true, 
             "examiners": [
                 12, 
                 13
@@ -1915,9 +2006,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 3, 
+            "points": 3, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -1928,9 +2020,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 1, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -1941,9 +2034,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 6, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1952,9 +2046,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 6, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1963,9 +2058,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1974,9 +2070,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1985,9 +2082,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1996,9 +2094,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2007,9 +2106,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2018,9 +2118,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2029,9 +2130,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2040,9 +2142,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 11, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2051,9 +2154,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2062,9 +2166,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2073,9 +2178,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2084,9 +2190,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2095,9 +2202,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2106,9 +2214,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2117,9 +2226,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2128,9 +2238,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 12, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2139,9 +2250,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2150,9 +2262,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2161,9 +2274,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2172,9 +2286,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2183,9 +2298,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2194,9 +2310,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2205,9 +2322,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2216,9 +2334,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 13, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2227,9 +2346,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2238,9 +2358,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2249,9 +2370,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2260,9 +2382,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2271,9 +2394,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2282,9 +2406,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2293,9 +2418,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2304,9 +2430,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2315,9 +2442,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2326,9 +2454,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2337,9 +2466,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2348,9 +2478,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2359,9 +2490,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2370,9 +2502,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2381,9 +2514,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2392,9 +2526,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2403,9 +2538,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2414,9 +2550,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2425,9 +2562,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2436,9 +2574,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2447,9 +2586,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2458,9 +2598,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2469,9 +2610,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2480,9 +2622,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2491,9 +2634,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2502,9 +2646,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2513,9 +2658,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2524,9 +2670,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2535,9 +2682,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2546,9 +2694,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": null, 
             "parentnode": 15, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2557,9 +2706,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 25, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2570,9 +2720,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 25, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 6
             ]
@@ -2583,9 +2734,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 25, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2596,9 +2748,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 25, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2609,9 +2762,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 25, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12, 
                 13
@@ -2623,9 +2777,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 25, 
+            "points": 4, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2636,9 +2791,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 4, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2649,9 +2805,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 4, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 6
             ]
@@ -2662,9 +2819,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 4, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2675,9 +2833,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 4, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2688,9 +2847,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 4, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12, 
                 13
@@ -2702,9 +2862,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 4, 
+            "points": 1, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2715,9 +2876,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 5, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2728,9 +2890,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 5, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 6
             ]
@@ -2741,9 +2904,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 5, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2754,9 +2918,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 5, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2767,9 +2932,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 5, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12, 
                 13
@@ -2781,9 +2947,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 5, 
+            "points": 1, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2794,9 +2961,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 26, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -2807,9 +2975,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 26, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 6
             ]
@@ -2820,9 +2989,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 26, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2833,9 +3003,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 26, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -2846,9 +3017,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 26, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12, 
                 13
@@ -2860,9 +3032,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
-            "is_open": true, 
             "name": "", 
             "parentnode": 26, 
+            "points": 3, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -3302,7 +3475,7 @@
             "text": "Hello world", 
             "last_modified_by": 1, 
             "delivery": 8, 
-            "last_modified": "2010-10-16 16:50:34", 
+            "last_modified": "2010-10-21 02:46:25", 
             "object_id": 9, 
             "content_type": 11, 
             "published": true
@@ -3330,7 +3503,7 @@
             "text": "", 
             "last_modified_by": 1, 
             "delivery": 18, 
-            "last_modified": "2010-10-19 02:13:00", 
+            "last_modified": "2010-10-21 04:01:34", 
             "object_id": 11, 
             "content_type": 4, 
             "published": true
@@ -3344,7 +3517,7 @@
             "text": "", 
             "last_modified_by": 1, 
             "delivery": 19, 
-            "last_modified": "2010-10-19 02:13:21", 
+            "last_modified": "2010-10-21 02:18:55", 
             "object_id": 12, 
             "content_type": 4, 
             "published": true

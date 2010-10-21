@@ -142,9 +142,14 @@ class GradeModel(models.Model):
         raise NotImplementedError()
 
     def get_points(self):
+        """ Get points. Used by
+        :meth:`devilry.core.models.AssignmentGroup.set_points` to set
+        points. Must be overridden in subclasses. """
         raise NotImplementedError()
 
     def set_points(self):
+        """ Run this to update
+        :attr:`devilry.core.models.AssignmentGroup.points`. """
         self.get_feedback_obj().delivery.assignment_group.set_points()
 
 

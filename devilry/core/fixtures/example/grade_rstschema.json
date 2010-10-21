@@ -3,45 +3,45 @@
         "pk": 3, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "maxpoints": 11, 
             "let_students_see_schema": false, 
-            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10", 
-            "maxpoints": 11
+            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10"
         }
     }, 
     {
         "pk": 23, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "maxpoints": 2, 
             "let_students_see_schema": false, 
-            "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n", 
-            "maxpoints": 2
+            "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
         }
     }, 
     {
         "pk": 24, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "maxpoints": 3, 
             "let_students_see_schema": false, 
-            "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n", 
-            "maxpoints": 3
+            "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
         }
     }, 
     {
         "pk": 25, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "maxpoints": 10, 
             "let_students_see_schema": false, 
-            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-9", 
-            "maxpoints": 10
+            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-9"
         }
     }, 
     {
         "pk": 26, 
         "model": "grade_rstschema.rstschemadefinition", 
         "fields": {
+            "maxpoints": 8, 
             "let_students_see_schema": true, 
-            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-7", 
-            "maxpoints": 8
+            "schemadef": "Have the student delivered all required files?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow do you rate the quality of the assignment?\r\n\r\n.. field:: 0-7"
         }
     }, 
     {

@@ -8,9 +8,6 @@
 {% endblock %}
 
 {% block customcss %}
-  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_table.css" />
-  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_table_jui.css" />
-  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/css/demo_page.css" />
   <style type="text/css">
     .hidden {
       display: none;
@@ -18,15 +15,20 @@
     .important {
       font-weight: bold;
     }
+
+    tr.odd td.
   </style>
 {% endblock %}
 {% block customjs %}
-  <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/thirdparty/datatables/media/js/jquery.dataTables.js"></script>
+
+  {% include "devilry/ui/include/datatables.django.html" %}
+  
   <script type="text/javascript">
     $(function() {
-      $("#statstable").dataTable({
+      var statstable = $("#statstable").dataTable({
         "bJQueryUI": true,
-        //"sPaginationType": "full_numbers"
+        "bStateSave": true,
+        "sPaginationType": "full_numbers"
       });
 
       $("#toggle_details").click(function(e) {
@@ -50,9 +52,9 @@
     <thead>
       <tr>
         <th>{% trans "User" %}</th>
-        <th class='important'>{% trans "Sum" %}</th>
+        <th class='important'>{% trans "Sum" %} ({{ maxpoints }})</th>
         {% for assignment in assignments_in_period %}
-          <th>{{ assignment.short_name }}</th>
+          <th>{{ assignment.short_name }} ({{ assignment.pointscale }})</th>
         {% endfor %}
       </tr>
     </thead>

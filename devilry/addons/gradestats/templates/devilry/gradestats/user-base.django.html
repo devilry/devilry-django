@@ -11,6 +11,7 @@
       <tr>
         <th>{% trans "Assignment" %}</th>
         <th>{% trans "Group members" %}</th>
+        <th>{% trans "Grade" %}</th>
         <th>{% trans "Points" %}</th>
       </tr>
     </thead>
@@ -23,14 +24,15 @@
             </a>
           </td>
           <td>{{ group.get_candidates }}</td>
-          <td>{{ group.scaled_points|floatformat:"-2" }}</td>
+          <td>{{ group.get_grade_as_short_string|default_if_none:"" }}</td>
+          <td>{{ group.scaled_points|floatformat:"-2" }}/{{ group.parentnode.pointscale|floatformat:"-2" }}</td>
         </tr>
       {% endfor %}
     </tbody>
     <tfoot>
       <tr>
-        <td colspan='2'>{% trans "Sum" %}</td>
-        <td>{{ total }}</td>
+        <td colspan='3'>{% trans "Sum" %}</td>
+        <td>{{ total|floatformat:"-2" }}</td>
       </tr>
     </tfoot>
   </table>

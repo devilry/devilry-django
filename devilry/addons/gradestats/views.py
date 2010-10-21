@@ -12,7 +12,7 @@ pluginloader.autodiscover()
 def _get_periodstats(period, user):
     groups = AssignmentGroup.published_where_is_candidate(user).filter(
             parentnode__parentnode=period)
-    s = sum([g.points for g in groups])
+    s = sum([g.scaled_points for g in groups])
     return s, groups
 
 @login_required
@@ -53,6 +53,7 @@ def admin_periodstats(request, period_id):
     users = User.objects.filter(
         candidate__assignment_group__parentnode__parentnode=period).distinct()
     assignments_in_period = period.assignments.all()
+    maxpoints = sum([a.pointscale for a in assignments_in_period])
 
     def iter():
         full = []
@@ -77,6 +78,7 @@ def admin_periodstats(request, period_id):
     return render_to_response(
         'devilry/gradestats/admin-periodstats.django.html', {
             'period': period,
+            'maxpoints': maxpoints,
             'usergrades': usergrades,
             'assignments_in_period': assignments_in_period
         }, context_instance=RequestContext(request))
