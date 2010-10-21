@@ -1225,9 +1225,6 @@ class AssignmentGroup(models.Model, CommonInterface):
         is used by the grade plugins to keep :attr:`points` up to date."""
         self.points = self._find_points()
         self.save()
-        print
-        print "Set points", self.points
-        print
 
     def get_grade_as_short_string(self):
         """ Get the grade as a "short string". """
