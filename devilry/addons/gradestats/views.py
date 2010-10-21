@@ -68,7 +68,8 @@ def admin_periodstats(request, period_id):
                     points += group.scaled_points
                     assignmentpoints += group.scaled_points
                 assignments.append((assignment, assignmentpoints, groups))
-            yield user, assignments, points
+            yield (user, assignments, points,
+                    period.student_passes_period(user))
 
     if users.count() == 0:
         usergrades = None

@@ -5,6 +5,15 @@
 {% block heading %}Statistics for {{ userobj }} in {{ period }}{% endblock %}
 {% block title %}Statistics for {{ userobj }} in {{ period }}{% endblock %}
 
+{% block customcss %}
+  <style type="text/css">
+    .passing_grade {
+      background-color: green;
+    }
+
+  </style>
+{% endblock %}
+
 {% block content %}
   <table class="horizontal_ordered_table">
     <thead>
@@ -17,7 +26,16 @@
     </thead>
     <tbody>
       {% for group in groups %}
-        <tr>
+        <tr class="{% cycle "odd" "even" %}
+            {% if group.status < 3 %}
+              trash
+            {% else %}
+              {% if group.is_passing_grade %}
+                good
+              {% else %}
+                bad
+              {% endif %}
+            {% endif %}">
           <td>
             <a href="{% block groupurl %}{% endblock %}">
               {{ group.parentnode.long_name }}

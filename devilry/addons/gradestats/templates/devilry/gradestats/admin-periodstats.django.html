@@ -59,8 +59,8 @@
       </tr>
     </thead>
     <tbody>
-      {% for user, assignments, points in usergrades %}
-        <tr>
+      {% for user, assignments, points, passes_period in usergrades %}
+        <tr class="{{ passes_period|yesno:"good,bad" }}">
           <td>
             <a href="{% url devilry-gradestats-admin_userstats period.id user.username %}">
               {{ user }}

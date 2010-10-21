@@ -1,5 +1,6 @@
 @import "forms.css";
 @import "rst.css";
+@import "tables.css";
 
 
 body {
@@ -399,6 +400,7 @@ table.horizontal_ordered_table {
 	border-collapse:collapse;
 	border: 1px solid #D4D2CE;
 	margin: 15px 0 15px 0;
+	background-color:#fff;
 }
 table.horizontal_ordered_table th {
 	text-align: left;
@@ -412,12 +414,10 @@ table.horizontal_ordered_table th {
 table.horizontal_ordered_table td {
 	padding: 4px;
 	border: 1px solid #D4D2CE;
-	background-color: #fff;
 }
 table.horizontal_ordered_table tfoot td {
 	font-weight: bold;
 }
-
 
 
 /***********************************************************

@@ -444,6 +444,16 @@ class Period(models.Model, BaseNode):
             help_text=_('Students must get at least this many points to '\
                     'pass the period.'))
 
+    def student_passes_period(self, user):
+        groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                parentnode__parentnode=self)
+        totalpoints = 0
+        for group in groups:
+            totalpoints += group.scaled_points
+            if not group.is_passing_grade:
+                return False
+        return totalpoints >= self.minimum_points
+
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Returns a QuerySet matching all Periods where the given user is
@@ -961,6 +971,16 @@ class AssignmentGroup(models.Model, CommonInterface):
         maxpoints = self.parentnode._get_maxpoints()
         return (scale/maxpoints) * self.points
     scaled_points = property(_get_scaled_points) # using a propery because we might want to optimize/cache this in the database in the future, and this avoids having to change any code as a result
+
+    def _get_is_passing_grade(self):
+        if not self.parentnode.must_pass:
+            return True
+        d = self.get_latest_delivery_with_published_feedback()
+        if d:
+            return d.feedback.get_grade().is_passing_grade()
+        else:
+            return False
+    is_passing_grade = property(_get_is_passing_grade)
     
     
     @classmethod

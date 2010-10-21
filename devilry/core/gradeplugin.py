@@ -152,6 +152,9 @@ class GradeModel(models.Model):
         :attr:`devilry.core.models.AssignmentGroup.points`. """
         self.get_feedback_obj().delivery.assignment_group.set_points()
 
+    def is_passing_grade(self):
+        return True
+
 
 def get_registry_key(model_cls):
     """ Get the registry key for the given model class. """
