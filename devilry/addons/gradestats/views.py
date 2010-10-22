@@ -6,6 +6,7 @@ from django.template import RequestContext
 
 from devilry.core.models import AssignmentGroup, Period
 from devilry.core import pluginloader
+from devilry.ui.messages import UiMessages
 
 pluginloader.autodiscover()
 
@@ -46,25 +47,20 @@ def admin_userstats(request, period_id, username):
 
 
 def _user_stats(period, user, assignments_in_period):
-    points = 0
-    assignments = []
-    for assignment in assignments_in_period:
-        # using select_related makes scaled_points calculations go lots
-        # faster because of the references to parentnode
-        groups = assignment.assignmentgroups.filter(
-                candidates__student=user).select_related(depth=1)
-        assignmentpoints = 0
-        is_passing_grade = True
-        for group in groups:
-            points += group.scaled_points
-            assignmentpoints += group.scaled_points
-            if not group.is_passing_grade:
-                is_passing_grade = False
-        assignments.append((assignment, assignmentpoints,
-            is_passing_grade, groups))
+    assignments = AssignmentGroup.where_is_candidate(user).filter(
+            parentnode__parentnode=period).values_list("scaled_points",
+                    "is_passing_grade")
+    if len(assignments_in_period) > len(assignments):
+        assignments = [(0, False) for a in assignments_in_period]
+            
+    points = period.student_sum_scaled_points(user)
     return (user, assignments, points,
             period.student_passes_period(user))
 
+
+def _iter_user_stats(period, users, assignments_in_period):
+    for user in users:
+        yield _user_stats(period, user, assignments_in_period)
 
 @login_required
 def admin_periodstats(request, period_id):
@@ -73,19 +69,14 @@ def admin_periodstats(request, period_id):
         return HttpResponseForbidden("Forbidden")
 
     users = User.objects.filter(
-        candidate__assignment_group__parentnode__parentnode=period).distinct()
+            candidate__assignment_group__parentnode__parentnode=period).distinct()
     assignments_in_period = period.assignments.all()
     maxpoints = sum([a.pointscale for a in assignments_in_period])
-
-    def iter():
-        full = []
-        for user in users[:60]:
-            yield _user_stats(period, user, assignments_in_period)
 
     if users.count() == 0:
         usergrades = None
     else:
-        usergrades = iter()
+        usergrades = _iter_user_stats(period, users, assignments_in_period)
 
     return render_to_response(
         'devilry/gradestats/admin-periodstats.django.html', {

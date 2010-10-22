@@ -9,9 +9,6 @@
 
 {% block customcss %}
   <style type="text/css">
-    .hidden {
-      display: none;
-    }
     .important {
       font-weight: bold;
     }
@@ -22,7 +19,6 @@
       color: #d00;
       font-weight: bold;
     }
-    tr.odd td.
   </style>
 {% endblock %}
 {% block customjs %}
@@ -34,12 +30,8 @@
       var statstable = $("#statstable").dataTable({
         "bJQueryUI": true,
         "bStateSave": true,
-        "sPaginationType": "full_numbers"
-      });
-
-      $("#toggle_details").click(function(e) {
-        $(".details").toggleClass("hidden");
-        $(".nodetails").toggleClass("hidden");
+        "sPaginationType": "full_numbers",
+        "aLengthMenu": [[50, 100, 200, -1], [50, 100, 200, "All"]]
       });
     });
   </script>          
@@ -75,9 +67,10 @@ header. If the grade on a single assignment is a failing grade, the points are
 shown as bold red. If the entire period is failed, the entire row has a red
 background. Passed assignments and periods are shown with green. Click "toggle
 details" to show/hide extra details, and click on a username for detailed statistics for
-that user in this period.{% endblocktrans %}</p>
+that user in this period. If you have students in more than one group on a
+single assignment, the statistics will not work for that student (all
+assignments are shown as failed with 0 points).{% endblocktrans %}</p>
 
-<button class='button' id='toggle_details'>{% trans "Toggle details" %}</button>
 {% if usergrades %}
   <table id="statstable" class='display' cellpadding="0" cellspacing="0" border="0">
     <thead>
@@ -100,31 +93,9 @@ that user in this period.{% endblocktrans %}</p>
           <td class='important'>
             {{ points|floatformat:"-2" }}
           </td>
-          {% for assignment, assignmentpoints, is_passing_grade, groups in assignments %}
-            <td>
-              <div class='nodetails {{ is_passing_grade|yesno:"passing_grade,failed_grade" }}'>
-                {{ assignmentpoints|floatformat:"-2" }}
-              </div>
-              {% if groups|length > 1 %}
-                <div class='warning'>
-                  {% trans "Student is in more than one group on this assignment" %}
-                </div>
-              {% else %}
-                {% comment %}
-                <ul class='details hidden'>
-                  <li>{% trans "Points" %}:{{ assignmentpoints|floatformat:"-2" }}</li>
-                  {% for group in groups %}
-                    <li>{% trans "Grade" %}:{{ group.get_grade_as_short_string }}</li>
-                    <li>
-                      {% trans "Status" %}:
-                      <span class="{{ group.get_status_cssclass }}">
-                        {{ group.get_localized_student_status }}
-                      </span>
-                    </li>
-                  {% endfor %}
-                </ul>
-                {% endcomment %}
-              {% endif %}
+          {% for scaled_points, is_passing_grade in assignments %}
+            <td class='{{ is_passing_grade|yesno:"passing_grade,failed_grade" }}'>
+              {{ scaled_points|floatformat:"-2" }}
            </td>
           {% endfor %}
         </tr>
