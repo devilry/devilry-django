@@ -52,7 +52,7 @@ class RstSchemaDefinitionForm(forms.ModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
         try:
-            rstdoc_from_string(cleaned_data['schemadef'])
+            rstdoc_from_string(cleaned_data.get('schemadef', ""))
         except RstValidationError, e:
             msg = _('Line %(line)s: %(message)s') % e.__dict__
             self._errors['schemadef'] = self.error_class([msg])
