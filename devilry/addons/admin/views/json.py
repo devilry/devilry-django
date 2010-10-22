@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -157,24 +158,115 @@ def filter_assignmentgroup(postdata, groupsqry, term):
     return groupsqry
 
 
+
+def _assignmentgroups_json_configure(assignment):
+    examiners = User.objects.filter(examiners__parentnode=assignment).distinct()
+    data = JSONEncoder().encode(dict(
+        showall_label = _("Show all"),
+        headings = ["Candidates", "Examiners", "Name", "Status"],
+        sortcolumns = [3],
+        buttons = {
+            "deleteselected": {
+                'label': _("Delete selected"),
+                'classes': ['delete'],
+                'confirmtitle': _("Confirm delete"),
+                'confirmlabel': _("Confirm delete"),
+                'cancel_label': _("Cancel"),
+                'confirm_message': _("This will delete all selected assignmentgroups and all deliveries and feedbacks within them."),
+                'url': reverse("devilry-admin-delete_manyassignmentgroups",
+                    args=[str(assignment.id)])
+            },
+            "cleardeadlines": {
+                'label': _("Clear deadlines"),
+                'classes': ['delete'],
+                'confirmtitle': _("Clear deadlines from selected?"),
+                'confirmlabel': _("Clear deadlines"),
+                'cancel_label': _("Cancel"),
+                'confirm_message': _("This will delete all deadlines on all selected assignmentgroups."),
+                'url': reverse("devilry-admin-clear_deadlines",
+                    args=[str(assignment.id)])
+            },
+            "createdeadline": {
+                'label': _("Create/replace deadline"),
+                'url': reverse("devilry-admin-create_deadline",
+                    args=[str(assignment.id)])
+            },
+            "setexaminers": {
+                'label': _("Set examiners"),
+                'url': reverse("devilry-admin-set_examiners",
+                    args=[str(assignment.id)])
+            },
+            "random_dist_examiners": {
+                'label': _("Randomly distribute examiners"),
+                'url': reverse("devilry-admin-random_dist_examiners",
+                    args=[str(assignment.id)])
+            }
+        },
+        links = {
+            'createnew': {
+                'label': _("Create new"),
+                'url': reverse("devilry-admin-create_assignmentgroup",
+                    args=[str(assignment.id)])
+            },
+            'createmany': {
+                'label': _("Create many (advanced)"),
+                'url': reverse("devilry-admin-create_assignmentgroups",
+                    args=[str(assignment.id)])
+            },
+            'copygroups': {
+                'label': _("Create by copy"),
+                'url': reverse("devilry-admin-copy_groups",
+                    args=[str(assignment.id)])
+            },
+        },
+        filters = {
+          "status": {
+            "title": _("Status"),
+            "choices": [
+              {"label": "No deliveries", "enabled": True},
+              {"label": "Not corrected", "enabled": True},
+              {"label": "Corrected, not published", "enabled": True},
+              {"label": "Corrected and published", "enabled": True}
+            ],
+          },
+          "examiner_bulk": {
+            "title": _("Has examiner(s)?"),
+            "choices": [
+              {"label": "Yes", "enabled": True},
+              {"label": "No", "enabled": True},
+            ],
+          },
+          "closed": {
+            "title": _("Closed"),
+            "choices": [
+              {"label": "Yes", "enabled": True},
+              {"label": "No", "enabled": True},
+            ],
+          },
+          "examiner": {
+            "title": _("Exclude examiner"),
+            "choices": [
+                {"label": examiner.username,
+                    "enabled": False,
+                    "value": examiner.username}
+                for examiner in examiners],
+        
+          }
+        }
+    ))
+    response = http.HttpResponse(data, content_type="text/plain")
+    return response
+
+
 @login_required
 def assignmentgroups_json(request, assignment_id):
-    def latestdeliverytime(g):
-        d = g.get_latest_delivery_with_feedback()
-        if d:
-            return d.time_of_delivery.strftime(defaults.DATETIME_FORMAT)
-        else:
-            return ""
-
-    def get_deadlines(g):
-        return '<br />'.join([
-            d.deadline.strftime(defaults.DATETIME_FORMAT)
-            for d in g.deadlines.all()])
-
-
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
         return http.HttpResponseForbidden("Forbidden")
+
+    if "configure" in request.GET:
+        return _assignmentgroups_json_configure(assignment)
+
     maximum = 25
     term = request.GET.get('term', '')
     showall = request.GET.get('all', 'no')
@@ -205,9 +297,11 @@ def assignmentgroups_json(request, assignment_id):
                 ]
             )
         for g in groups]
+
     data = JSONEncoder().encode(dict(
         result = l,
         allcount = allcount,
-        total = total))
+        total = total,
+    ))
     response = http.HttpResponse(data, content_type="text/plain")
     return response
