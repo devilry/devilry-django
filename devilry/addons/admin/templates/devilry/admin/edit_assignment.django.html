@@ -58,7 +58,7 @@
   <script type="text/javascript">
     $(function() {
       $("#autocomplete-assignmentgroup").autocompletetable(
-        "{% url admin-autocomplete-assignmentgroupname assignment.id %}",
+        "{% url admin-assignmentgroups-json assignment.id %}",
         ["Id", "Candidates", "Examiners", "Name", "Deliveries", "Latest delivery", "Deadlines", "Status"],
         "{% trans "Show all" %}",
         {

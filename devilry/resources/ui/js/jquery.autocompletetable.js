@@ -29,6 +29,14 @@ jQuery.autocompletetable = {
             });
         }
 
+        //var qrystring = ""
+        //$.each(postdata, function(key, value) {
+            //if(value != "")
+                //qrystring += key + "=" + value + "&";
+            //$.log(key + ":" + value);
+        //});
+        //$.log(qrystring);
+
         $.getJSON(properties.jsonurl, postdata, function(data) {
             $.each(data.result, function(i, item) {
                 var id = idprefix + "-" + i;

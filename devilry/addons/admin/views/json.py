@@ -147,7 +147,7 @@ def filter_assignmentgroup(postdata, groupsqry, term):
 
 
 @login_required
-def assignmentgroup_json(request, assignment_id):
+def assignmentgroups_json(request, assignment_id):
     def latestdeliverytime(g):
         d = g.get_latest_delivery_with_feedback()
         if d:

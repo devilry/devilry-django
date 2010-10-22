@@ -42,9 +42,9 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignmentgroup.save_assignmentgroups',
         name='devilry-admin-save_assignmentgroups'),
 
-    url(r'^autocomplete-assignmentgroupname/(?P<assignment_id>\d+)$',
-        'views.json.assignmentgroup_json',
-        name='admin-autocomplete-assignmentgroupname'),
+    url(r'^assignmentgroups-json/(?P<assignment_id>\d+)$',
+        'views.json.assignmentgroups_json',
+        name='admin-assignmentgroups-json'),
 
     url(r'^assignments/(?P<assignment_id>\d+)/set-examiners$',
         'views.assignmentgroup.set_examiners',
