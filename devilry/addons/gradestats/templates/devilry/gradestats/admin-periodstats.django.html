@@ -110,6 +110,7 @@ that user in this period.{% endblocktrans %}</p>
                   {% trans "Student is in more than one group on this assignment" %}
                 </div>
               {% else %}
+                {% comment %}
                 <ul class='details hidden'>
                   <li>{% trans "Points" %}:{{ assignmentpoints|floatformat:"-2" }}</li>
                   {% for group in groups %}
@@ -122,6 +123,7 @@ that user in this period.{% endblocktrans %}</p>
                     </li>
                   {% endfor %}
                 </ul>
+                {% endcomment %}
               {% endif %}
            </td>
           {% endfor %}

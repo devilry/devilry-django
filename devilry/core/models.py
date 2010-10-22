@@ -444,14 +444,17 @@ class Period(models.Model, BaseNode):
             help_text=_('Students must get at least this many points to '\
                     'pass the period.'))
 
-    def student_passes_period(self, user):
+    def student_sum_scaled_points(self, user):
         groups = AssignmentGroup.published_where_is_candidate(user).filter(
                 parentnode__parentnode=self)
-        totalpoints = 0
-        for group in groups:
-            totalpoints += group.scaled_points
-            if not group.is_passing_grade:
-                return False
+        return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
+
+    def student_passes_period(self, user):
+        groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                parentnode__parentnode=self, is_passing_grade=False)
+        if groups.count() > 0:
+            return False
+        totalpoints = self.student_sum_scaled_points(user)
         return totalpoints >= self.minimum_points
 
     def get_must_pass_assignments(self):
@@ -597,6 +600,9 @@ class Assignment(models.Model, BaseNode):
             help_text=_(
                 'The points will be scaled down or up making the _this_ '\
                 'number the maximum number of points.'))
+    maxpoints = models.PositiveIntegerField(default=0,
+            help_text=_('The maximum number of points possible without '\
+                'scaling.'))
     autoscale = models.BooleanField(default=True,
             help_text=_('If this field is set, the pointscale will '\
                 'automatically be set to the maximum number of points '\
@@ -606,9 +612,18 @@ class Assignment(models.Model, BaseNode):
     def _get_maxpoints(self):
         return self.get_gradeplugin_registryitem().model_cls.get_maxpoints(self)
 
+    def _update_scalepoints(self):
+        for group in self.assignmentgroups.iterator():
+            group.scaled_points = group._get_scaled_points()
+            group.save()
+
     def save(self, *args, **kwargs):
+        """ Save and recalculate the value of :attr:`maxpoints` and
+        :attr:`pointscale`. """
+        self.maxpoints = self._get_maxpoints()
         if self.autoscale:
-            self.pointscale = self._get_maxpoints()
+            self.pointscale = self.maxpoints
+        self._update_scalepoints()
         super(Assignment, self).save()
 
     def get_gradeplugin_registryitem(self):
@@ -967,26 +982,20 @@ class AssignmentGroup(models.Model, CommonInterface):
             help_text=_('Final number of points for this group. This '\
                 'number is controlled by the grade plugin, and should not '\
                 'be changed manually.'))
+    scaled_points = models.FloatField(default=0.0)
+    is_passing_grade = models.BooleanField(default=False)
 
 
     def _get_scaled_points(self):
         scale = float(self.parentnode.pointscale)
-        maxpoints = self.parentnode._get_maxpoints()
+        maxpoints = self.parentnode.maxpoints
         if maxpoints == 0:
             return 0.0
         return (scale/maxpoints) * self.points
-    scaled_points = property(_get_scaled_points) # using a propery because we might want to optimize/cache this in the database in the future, and this avoids having to change any code as a result
 
-    def _get_is_passing_grade(self):
-        if not self.parentnode.must_pass:
-            return True
-        d = self.get_latest_delivery_with_published_feedback()
-        if d:
-            return d.feedback.get_grade().is_passing_grade()
-        else:
-            return False
-    is_passing_grade = property(_get_is_passing_grade)
-    
+    def save(self, *args, **kwargs):
+        self.scaled_points = self._get_scaled_points()
+        super(AssignmentGroup, self).save(*args, **kwargs)
     
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -1234,21 +1243,21 @@ class AssignmentGroup(models.Model, CommonInterface):
         else:
             return q[0]
 
-    def _find_points(self):
-        """ Find the correct number of points for this assignment. Used to
-        validate :attr:`points`, and by :meth:`set_points`. """
+    def _get_gradeplugin_cached_fields(self):
         d = self.get_latest_delivery_with_published_feedback()
-        if d:
-            return d.feedback.grade.get_points()
+        points = 0
+        if self.parentnode.must_pass:
+            is_passing_grade = False
+            if d:
+                is_passing_grade = d.feedback.get_grade().is_passing_grade()
         else:
-            return 0
+            is_passing_grade = True
+        if d:
+            points = d.feedback.grade.get_points()
+        return points, is_passing_grade
 
-    def set_points(self):
-        """ Find the latest delivery with published feedback, and set
-        :attr:`points` from the grade-plugin on that delivery using
-        :meth:`devilry.core.gradeplugin.GradeModel.get_points`. This method
-        is used by the grade plugins to keep :attr:`points` up to date."""
-        self.points = self._find_points()
+    def update_gradeplugin_cached_fields(self):
+        self.points, self.is_passing_grade = self._get_gradeplugin_cached_fields()
         self.save()
 
     def get_grade_as_short_string(self):

@@ -44,6 +44,28 @@ def admin_userstats(request, period_id, username):
         }, context_instance=RequestContext(request))
 
 
+
+def _user_stats(period, user, assignments_in_period):
+    points = 0
+    assignments = []
+    for assignment in assignments_in_period:
+        # using select_related makes scaled_points calculations go lots
+        # faster because of the references to parentnode
+        groups = assignment.assignmentgroups.filter(
+                candidates__student=user).select_related(depth=1)
+        assignmentpoints = 0
+        is_passing_grade = True
+        for group in groups:
+            points += group.scaled_points
+            assignmentpoints += group.scaled_points
+            if not group.is_passing_grade:
+                is_passing_grade = False
+        assignments.append((assignment, assignmentpoints,
+            is_passing_grade, groups))
+    return (user, assignments, points,
+            period.student_passes_period(user))
+
+
 @login_required
 def admin_periodstats(request, period_id):
     period = get_object_or_404(Period, id=period_id)
@@ -57,23 +79,8 @@ def admin_periodstats(request, period_id):
 
     def iter():
         full = []
-        for user in users:
-            points = 0
-            assignments = []
-            for assignment in assignments_in_period:
-                groups = assignment.assignmentgroups.filter(
-                        candidates__student=user)
-                assignmentpoints = 0
-                is_passing_grade = True
-                for group in groups:
-                    points += group.scaled_points
-                    assignmentpoints += group.scaled_points
-                    if not group.is_passing_grade:
-                        is_passing_grade = False
-                assignments.append((assignment, assignmentpoints,
-                    is_passing_grade, groups))
-            yield (user, assignments, points,
-                    period.student_passes_period(user))
+        for user in users[:60]:
+            yield _user_stats(period, user, assignments_in_period)
 
     if users.count() == 0:
         usergrades = None

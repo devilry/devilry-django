@@ -48,5 +48,11 @@ class DbSanityCheckRegistry(object):
             cls.fix()
             yield key, cls
 
+    def __getitem__(self, key):
+        return self.dbsanitychecks[key]
+
+    def iterkeys(self):
+        return self.dbsanitychecks.iterkeys()
+
 
 dbsanity_registry = DbSanityCheckRegistry()

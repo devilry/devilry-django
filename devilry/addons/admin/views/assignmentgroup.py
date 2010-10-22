@@ -69,7 +69,8 @@ def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
                     
         class Meta:
             model = AssignmentGroup
-            fields = ['name', 'examiners', 'is_open', 'points']
+            fields = ['name', 'examiners', 'is_open', 'points',
+                    'is_passing_grade']
             widgets = {
                 'examiners': DevilryMultiSelectFewUsersDb,
                 }
