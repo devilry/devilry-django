@@ -143,7 +143,18 @@ def filter_assignmentgroup(postdata, groupsqry, term):
             if v:
                 groupsqry = groupsqry.exclude(examiners__username=v)
 
-    return groupsqry.distinct()
+    groupsqry = groupsqry.distinct()
+    orders = {2:"name", 3:"status"}
+    ordercol = int(postdata.get('ordercol', -1))
+    if ordercol != -1:
+        orderby = orders.get(ordercol)
+        if orderby:
+            prefix = ""
+            orderdir = postdata.get('orderdir', 'asc')
+            if orderdir == "desc":
+                prefix = "-"
+            groupsqry = groupsqry.order_by(prefix + orderby)
+    return groupsqry
 
 
 @login_required
@@ -159,6 +170,7 @@ def assignmentgroups_json(request, assignment_id):
         return '<br />'.join([
             d.deadline.strftime(defaults.DATETIME_FORMAT)
             for d in g.deadlines.all()])
+
 
     assignment = get_object_or_404(Assignment, id=assignment_id)
     if not assignment.can_save(request.user):
@@ -176,14 +188,11 @@ def assignmentgroups_json(request, assignment_id):
         groups = groups[:maximum]
     l = [dict(
             id = g.id,
+            cssclass = g.get_status_cssclass(),
             path = [
-                str(g.id),
                 g.get_candidates(),
                 g.get_examiners(),
                 g.name or '',
-                str(g.get_number_of_deliveries()),
-                latestdeliverytime(g),
-                get_deadlines(g),
                 dict(label=g.get_localized_status(),
                     cssclasses=g.get_status_cssclass())],
             actions = [

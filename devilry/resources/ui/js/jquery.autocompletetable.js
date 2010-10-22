@@ -12,7 +12,21 @@ jQuery.autocompletetable = {
             .append(checkall)
             .appendTo(headrow);
         $.each(properties.headings, function(i, heading) {
-            $("<th>" + heading + "</th>").appendTo(headrow);
+            var th = $("<th>" + heading + "</th>")
+            th.appendTo(headrow);
+            if(properties.sortcolumns.indexOf(i) != -1) { // only sort configured columns
+                th.addClass("sortable");
+                th.click(function(e) {
+                    if(properties.ordercol == i) {
+                        properties.orderdir = properties.orderdir=="asc"?"desc":"asc";
+                    } else {
+                        properties.ordercol = i;
+                        properties.orderdir = "asc";
+                    }
+                    jQuery.autocompletetable.refreshtable(properties);
+                    return false;
+                });
+            }
         });
         $("<th>&nbsp;</th>").appendTo(headrow);
         $("<thead></thead>").append(headrow).appendTo(tbl);
@@ -21,7 +35,9 @@ jQuery.autocompletetable = {
 
         var postdata = {
             "term": properties.term,
-            "all": properties.showall
+            "all": properties.showall,
+            "ordercol": properties.ordercol,
+            "orderdir": properties.orderdir
         };
         if(properties.filters) {
             $.each(properties.filters, function(key, choice) {
@@ -41,6 +57,10 @@ jQuery.autocompletetable = {
             $.each(data.result, function(i, item) {
                 var id = idprefix + "-" + i;
                 var tr = $("<tr></tr>");
+                tr.addClass(i%2==0?"even":"odd");
+                if(item.cssclass) {
+                    tr.addClass(item.cssclass);
+                }
                 $("<td></td>")
                     .append($("<input />")
                         .attr("type", "checkbox")
@@ -140,6 +160,13 @@ jQuery.fn.autocompletetable = function(jsonurl, headings, showall_label, args)
         this.properties.showall_label = showall_label;
         this.properties.showall = 'no';
         this.properties.term = '';
+        this.properties.ordercol = -1;
+        this.properties.orderdir = "asc";
+        if(args.sortcolumns) {
+            this.properties.sortcolumns = args.sortcolumns;
+        } else {
+            this.properties.sortcolumns = [];
+        }
 
         // Add actions
         var actionscontainer = $("<div></div>")

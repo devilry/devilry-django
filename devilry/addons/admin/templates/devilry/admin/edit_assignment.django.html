@@ -59,7 +59,7 @@
     $(function() {
       $("#autocomplete-assignmentgroup").autocompletetable(
         "{% url admin-assignmentgroups-json assignment.id %}",
-        ["Id", "Candidates", "Examiners", "Name", "Deliveries", "Latest delivery", "Deadlines", "Status"],
+        ["Candidates", "Examiners", "Name", "Status"],
         "{% trans "Show all" %}",
         {
           links: {
@@ -76,6 +76,7 @@
               url: "{% url devilry-admin-copy_groups assignment.id %}"
             },
           },
+          sortcolumns: [3],
           buttons: {
             deleteselected: {
               label: "{% trans "Delete selected" %}",
