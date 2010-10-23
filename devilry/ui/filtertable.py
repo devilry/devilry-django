@@ -27,17 +27,17 @@ class Filter(object):
     def __init__(self, title):
         self.title = title
 
-    def getlabels(self):
-        return []
+    def getlabels(self, properties):
+        return ["All"]
 
-    def filter(self, dataset, selected):
+    def filter(self, properties, dataset, selected):
         return dataset
 
-    def as_dict(self, dataset, selected):
+    def as_dict(self, properties, dataset, selected):
         labels = [{
             'selected': i in selected,
             'label': label}
-            for i, label in enumerate(self.getlabels())]
+            for i, label in enumerate(self.getlabels(properties))]
         return dict(
                 title = self.title,
                 multiselect = self.multiselect,
@@ -49,23 +49,6 @@ class Filter(object):
             return current
         else:
             return [selected]
-
-
-from devilry.core.models import AssignmentGroup
-class FilterStatus(Filter):
-    multiselect = True
-
-    def getlabels(self):
-        l = ["All"]
-        l.extend(AssignmentGroup.status_mapping)
-        return l
-
-    def filter(self, dataset, selected):
-        status = selected[0] - 1
-        if status == -1:
-            return dataset
-        else:
-            return dataset.filter(status=status)
 
 
 class SessionInfo(object):
@@ -91,17 +74,18 @@ class FilterTable(object):
         return []
 
     def __init__(self, request):
-        self.properties = request.GET
-        self.start = int(self.properties.get("start", 0))
-        self.perpage = int(self.properties.get("perpage", self.default_perpage))
+        self.properties = {}
+        indata = request.GET
+        self.start = int(indata.get("start", 0))
+        self.perpage = int(indata.get("perpage", self.default_perpage))
 
         self.session = request.session.get(self.id, SessionInfo())
         for i, f in enumerate(self.filters):
             key = "filter_selected_%s" % i
             selected = None
-            if key in self.properties:
-                selected = int(self.properties[key])
-            current = self.session.filters.get(i, 0)
+            if key in indata:
+                selected = int(indata[key])
+            current = self.session.filters.get(i, [0])
             self.session.filters[i] = f.get_selected(current, selected)
 
         request.session[self.id] = self.session
@@ -114,13 +98,17 @@ class FilterTable(object):
     def create_dataset(self):
         raise NotImplementedError()
 
+    def set_properties(self, **properties):
+        self.properties.update(properties)
+
     def create_filterview(self, dataset):
-        return [f.as_dict(dataset, self.session.filters[i])
+        return [f.as_dict(self.properties, dataset, self.session.filters[i])
                 for i, f in enumerate(self.filters)]
 
     def filter(self, dataset):
         for i, selected in self.session.filters.iteritems():
-            dataset = self.filters[i].filter(dataset, selected)
+            dataset = self.filters[i].filter(self.properties,
+                    dataset, selected)
         return dataset
 
     def limit_dataset(self, dataset, start, perpage):
@@ -147,10 +135,57 @@ class FilterTable(object):
         return HttpResponse(json, content_type="text/plain")
 
 
-class AssignmentGroupsFilterTable(FilterTable):
 
+
+
+from devilry.core.models import AssignmentGroup
+from django.contrib.auth.models import User
+
+
+class FilterStatus(Filter):
+    multiselect = True
+
+    def getlabels(self, properties):
+        l = ["All"]
+        l.extend(AssignmentGroup.status_mapping)
+        return l
+
+    def filter(self, properties, dataset, selected):
+        status = selected[0] - 1
+        if status == -1:
+            return dataset
+        else:
+            return dataset.filter(status=status)
+
+
+class FilterExaminer(Filter):
+
+    def _get_examiners(self, properties):
+        assignment = properties['assignment']
+        examiners = User.objects.filter(examiners__parentnode=assignment).distinct()
+        examiners.order_by('username')
+        return examiners
+
+    def getlabels(self, properties):
+        examiners = self._get_examiners(properties)
+        l = ["All"]
+        l.extend([e.username for e in examiners])
+        return l
+
+    def filter(self, properties, dataset, selected):
+        examiners = self._get_examiners(properties)
+        i = selected[0] - 1
+        if i == -1:
+            return dataset
+        else:
+            selected = examiners[i]
+            return dataset.filter(examiners=selected)
+
+
+class AssignmentGroupsFilterTable(FilterTable):
     filters = [
-        FilterStatus('Status')
+        FilterStatus('Status'),
+        FilterExaminer('Examiners')
     ]
 
     @classmethod
@@ -159,6 +194,7 @@ class AssignmentGroupsFilterTable(FilterTable):
 
     def __init__(self, request, assignment):
         super(AssignmentGroupsFilterTable, self).__init__(request)
+        self.set_properties(assignment=assignment)
         self.assignment = assignment
 
     def create_row(self, group):
