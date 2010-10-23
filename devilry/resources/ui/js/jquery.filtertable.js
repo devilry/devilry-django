@@ -109,20 +109,25 @@
             var box = $("<div></div>").appendTo(store.filterbox);
             $("<h4></h4>").html(filter.title).appendTo(box);
             var ul = $("<ul></ul>").appendTo(box);
+            var idprefix = store.id + "-filter-" + filterindex + "-";
             $.each(filter.labels, function(i, label) {
+                var id = idprefix + i;
                 var li = $("<li></li>").appendTo(ul);
-                var button = $("<a></a>")
+                var button = $("<input></input>")
+                  .attr("type", "radio")
+                  .attr("id", id)
+                  .appendTo(li);
+                if (label.selected) {
+                  button.attr("checked", "checked");
+                };
+                var label = $("<label></label>")
                   .html(label.label)
-                  .attr("href", "#")
-                  .addClass("filtertable-filter")
-                  .addClass(label.selected?
-                    "filtertable-selected-filter":"filtertable-unselected-filter")
+                  .attr("for", id)
                   .appendTo(li);
                 button.click(function() {
                     var opt = {};
                     opt["filter_selected_"+filterindex] = i;
                     $.filtertable.refresh(store, opt);
-                    return false;
                   });
               });
           });
