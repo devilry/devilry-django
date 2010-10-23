@@ -1,12 +1,6 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 
 <style type='text/css'>
-.filtertable table td {
-  vertical-align: top;
-}
-.filtertable table table td {
-  vertical-align: middle;
-}
 .filtertable-table {
   margin-top: 0 !important;
   width:100%;
@@ -45,12 +39,34 @@
 .filtertable-pagelabel {
   margin-bottom: 8px;
 }
+.filtertable-checkboxcell {
+  text-align: center;
+}
+
+.devilry-th-ui-icon {
+  float: right;
+}
+.devilry-th-clickable {
+  cursor: pointer;
+}
+.filtertable-table th.ui-,
+.filtertable-table th.ui-state-active {
+  
+}
+
+
+table.zebra {
+}
+
+table.zebra tr.even td {
+  background-color: #fafafa;
+}
 </style>
 
 <div class='filtertable' id='{{ id }}'>
   <form action="#" method="post">
     <div id="filtertable-{{ id }}-sidebar" class="filtertable-sidebar">
-      <h3><a href="#">Actions</a></h3>
+      <h3><a href="#" class='filtertable-accordion-head'>Actions</a></h3>
       <div class="filtertable-actions">
         <h4>On selected rows</h4>
         <ul class="filtertable-selectionactions">
@@ -62,7 +78,7 @@
         </ul>
       </div>
 
-      <h3><a href="#">Filter</a></h3>
+      <h3><a href="#" class='filtertable-accordion-head'>Filter</a></h3>
       <div>
         <div class='filtertable-searchbox'>
           Search:
@@ -75,7 +91,7 @@
     </div>
 
     <div class="filtertable-main">
-      <table class="filtertable-table horizontal_ordered_table">
+      <table class="filtertable-table zebra">
         {% comment %}This is filled using javascript{% endcomment %}
       </table>
       <div class="filtertable-pagechanger">
@@ -90,5 +106,10 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $("#{{ id }}").filtertable("{{ jsonurl }}");
+
+    // Stop clicking from sending the user to the top of the page
+    $('.filtertable-accordion-head').click(function() {
+      return false;
+    });
   });
 </script>

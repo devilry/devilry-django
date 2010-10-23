@@ -4,10 +4,19 @@ from django.utils.simplejson import JSONEncoder
 from django.http import HttpResponse
 
 
+class Cell(object):
+    def __init__(self, value, cssclass=""):
+        self.value = value
+        self.cssclass = cssclass
+
+    def as_dict(self):
+        return dict(value=self.value, cssclass=self.cssclass)
+
+
 class Row(object):
-    def __init__(self, id, cells, cssclass=None):
+    def __init__(self, id, cells, cssclass=[]):
         self.id = id
-        self.cells = cells
+        self.cells = [Cell(c) for c in cells]
         self.cssclass = cssclass
         self.actions = []
 
@@ -17,10 +26,13 @@ class Row(object):
     def as_dict(self):
         return dict(
             id = self.id,
-            cells = self.cells,
+            cells = [c.as_dict() for c in self.cells],
             cssclass = self.cssclass,
             actions = self.actions
         )
+
+    def __getitem__(self, index):
+        return self.cells[index]
 
 
 class Col(object):
@@ -230,6 +242,8 @@ class FilterTable(object):
             use_rowactions = self.use_rowactions,
             selectionactions = self.get_selectionactions_as_dicts(),
             relatedactions = self.get_relatedactions_as_dicts(),
+            order_by = self.session.order_by,
+            order_asc = self.session.order_asc,
             data = rowlist
         )
         print "Session:"
@@ -312,7 +326,8 @@ class AssignmentGroupsFilterTable(FilterTable):
         FilterStatus('Status'),
         FilterExaminer('Examiners')
     ]
-    columns = [Col("Candidates"), Col("Examiners"), Col("Name"),
+    columns = [Col("Candidates"), Col("Examiners"),
+            Col("Name", can_order=True),
             Col("Status", can_order=True)]
     selectionactions = [
             AssignmentGroupsAction(_("Create/replace deadline"),
@@ -348,6 +363,7 @@ class AssignmentGroupsFilterTable(FilterTable):
         cells = [group.get_candidates(), group.get_examiners(),
                 group.name, group.get_localized_status()]
         row = Row(group.id, cells)
+        row[3].cssclass = group.get_status_cssclass()
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_assignmentgroup',
                         args=[self.assignment.id, str(group.id)]))
@@ -371,7 +387,11 @@ class AssignmentGroupsFilterTable(FilterTable):
         prefix = '-'
         if order_asc:
             prefix = ''
-        return dataset.order_by(prefix + 'status')
+        if colnum == 2:
+            key = 'name'
+        else:
+            key = 'status'
+        return dataset.order_by(prefix + key)
 
     def search(self, dataset, qry):
         return dataset.filter(

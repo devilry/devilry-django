@@ -24,12 +24,15 @@
           });
       },
 
-      create_header: function(store, has_selactions, columns, use_rowactions) {
-        var thead = $("<thead></thead>");
+      create_header: function(store, has_selactions, columns, use_rowactions,
+          order_by, order_asc) {
+        var thead = $("<thead></thead>")
+          .addClass("ui-widget-header");
         var tr = $("<tr></tr>").appendTo(thead);
         if(has_selactions) {
           var th = $("<th></th>")
             .addClass("filtertable-checkboxcell")
+            .addClass("ui-state-default")
             .appendTo(tr);
           var checkall = $("<input/>")
             .attr("type", "checkbox")
@@ -42,10 +45,24 @@
         }
         $.each(columns, function(i, col) {
             var th = $("<th></th>")
+              .addClass("ui-state-default")
               .html(col.title)
               .appendTo(tr);
             if(col.can_order) {
+              var icon = $("<span></span>")
+                .addClass("ui-icon")
+                .addClass("devilry-th-ui-icon")
+                .appendTo(th);
+
+              th.addClass("devilry-th-clickable")
+              if(order_by == i) {
+                icon.addClass(order_asc?"ui-icon-triangle-1-n":"ui-icon-triangle-1-s")
+                th.addClass("ui-state-active");
+              } else {
+                icon.addClass("ui-icon-carat-2-n-s")
+              }
               th.click(function() {
+                  icon.removeClass()
                   $.filtertable.refresh(store, {order_by:i});
                   return false;
                 });
@@ -53,6 +70,7 @@
           });
         if(use_rowactions) {
           var th = $("<th></th>")
+            .addClass("ui-state-default")
             .html("&nbsp;")
             .appendTo(tr);
         }
@@ -61,9 +79,12 @@
 
       create_body: function(data, has_selactions, id) {
         var name = id + "-checkbox";
-        var tbody = $("<tbody></tbody>");
+        var tbody = $("<tbody></tbody>")
+          .addClass("ui-widget-content");
         $.each(data, function(i, row) {
-            var tr = $("<tr></tr>").appendTo(tbody);
+            var tr = $("<tr></tr>")
+              .addClass(i%2?"even":"odd")
+              .appendTo(tbody);
             if(has_selactions) {
               var td = $("<td></td>")
                 .addClass("filtertable-checkboxcell")
@@ -76,8 +97,11 @@
             }
             $.each(row.cells, function(index, cell) {
                 var td = $("<td></td>")
-                  .html(cell)
+                  .html(cell.value)
                   .appendTo(tr);
+                if (cell.cssclass) {
+                  td.addClass(cell.cssclass);
+                };
               });
             if(row.actions.length > 0) {
                 var td = $("<td></td>").appendTo(tr);
@@ -93,12 +117,13 @@
         return tbody;
       },
 
-      refresh_table: function(store, has_selactions, columns, data, use_rowactions) {
+      refresh_table: function(store, json) {
         store.result_table.empty();
-        var thead = $.filtertable.create_header(store, has_selactions, columns,
-              use_rowactions);
+        var has_selactions = json.selectionactions.length > 0;
+        var thead = $.filtertable.create_header(store, has_selactions,
+          json.columns, json.use_rowactions, json.order_by, json.order_asc);
         thead.appendTo(store.result_table);
-        var tbody = $.filtertable.create_body(data, has_selactions, store.id);
+        var tbody = $.filtertable.create_body(json.data, has_selactions, store.id);
         tbody.appendTo(store.result_table);
       },
 
@@ -164,8 +189,7 @@
               json.selectionactions, store.selectionactionsbox);
             $.filtertable.refresh_actions(store,
               json.relatedactions, store.relatedactionsbox);
-            $.filtertable.refresh_table(store, json.selectionactions.length > 0,
-                json.columns, json.data, json.use_rowactions);
+            $.filtertable.refresh_table(store, json);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
