@@ -113,6 +113,10 @@
           store.result_table = $("#" + id + " .filtertable-table").first();
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
           store.searchfield = $("#" + id + " .filtertable-searchbox input").first();
+
+          var tabs = $("#" + id + " .filtertable-tabs").first();
+          tabs.tabs();
+
           $.filtertable.refresh(store);
 
           store.searchfield.keydown(function(e) {
@@ -122,6 +126,7 @@
               }
             });
         });
+
     };
 
     $.log = function(message) {

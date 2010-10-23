@@ -14,14 +14,22 @@
 
     <div class="filtertable-actions">
     </div>
+    <div class="filtertable-tabs">
+      <ul>
+        <li><a href="#{{ id }}-tabs-1">Data</a></li>
+        <li><a href="#{{ id }}-tabs-2">Filter data</a></li>
+      </ul>
 
-    <div class="filtertable-filters">
-    </div>
+      <div id="{{ id }}-tabs-1">
+        <table class="filtertable-table horizontal_ordered_table" style="width:100%">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </table>
+        <div class="filtertable-pagechanger">
+        </div>
+      </div>
 
-    <table class="filtertable-table horizontal_ordered_table">
-      {% comment %}This is filled using javascript{% endcomment %}
-    </table>
-    <div class="filtertable-pagechanger">
+      <div class="filtertable-filters" id="{{ id }}-tabs-2">
+      </div>
     </div>
   </form>
 </div>
