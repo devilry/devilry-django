@@ -1,0 +1,41 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+
+<style type='text/css'>
+.selected_filter {
+  background-color: #aaa;
+}
+</style>
+
+<div class='filtertable' id='{{ id }}'>
+  <form action="#" method="post">
+    <div class='filtertable-search'>
+      <input type="text"/>
+    </div>
+
+    <div class="filtertable-actions">
+    </div>
+
+    <div class="filtertable-filters">
+    </div>
+
+    <table class="filtertable-table horizontal_ordered_table">
+      <thead>
+        <tr>
+          {% for col in columns %}
+            <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </form>
+</div>
+
+
+<script type="text/javascript" src="/resources/ui/js/jquery.filtertable.js"></script> 
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#{{ id }}").filtertable("{{ jsonurl }}");
+  });
+</script>

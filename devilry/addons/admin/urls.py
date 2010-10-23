@@ -62,5 +62,9 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignmentgroup.clear_deadlines',
         name='devilry-admin-clear_deadlines'),
 
+    url(r'^assignments/(?P<assignment_id>\d+)/assignmentgroups-json$',
+        'views.assignment.assignmentgroups_json',
+        name='devilry-admin-assignmentgroups-json'),
+
     *generic_urls
 )

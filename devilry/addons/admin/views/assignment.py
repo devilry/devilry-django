@@ -13,6 +13,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
 from devilry.ui.fields import MultiSelectCharField
 from devilry.core import gradeplugin
+from devilry.ui.filtertable import AssignmentGroupsFilterTable
 
 
 @login_required
@@ -76,11 +77,28 @@ def edit_assignment(request, assignment_id=None):
         examiners = User.objects.filter(examiners__parentnode=assignment).distinct()
     else:
         examiners = []
+
+
+    assignmentgroupstbl = AssignmentGroupsFilterTable.initial_html(request,
+            reverse("devilry-admin-assignmentgroups-json",
+                args=[str(assignment.id)]))
+
     return render_to_response('devilry/admin/edit_assignment.django.html', {
         'form': form,
         'assignment': assignment,
         'messages': messages,
         'isnew': isnew,
         'gradeplugins': gradeplugin.registry.iteritems(),
-        'examiners': examiners
+        'examiners': examiners,
+        'assignmentgroupstbl': assignmentgroupstbl
         }, context_instance=RequestContext(request))
+
+
+@login_required
+def assignmentgroups_json(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+
+    a = AssignmentGroupsFilterTable(request, assignment)
+    return a.json_response()

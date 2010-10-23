@@ -53,6 +53,10 @@
 
 {% if not isnew %}
   <h2>Assignment groups</h2>
+
+  {{ assignmentgroupstbl }}
+
+  {% comment %}
   <div id='autocomplete-assignmentgroup'></div>
   <script type="text/javascript" src="/resources/ui/js/jquery.autocompletetable.js"></script> 
   <script type="text/javascript">
@@ -61,5 +65,6 @@
         "{% url admin-assignmentgroups-json assignment.id %}")
     });
   </script>
+  {% endcomment %}
 {% endif %}
 {% endblock %}
