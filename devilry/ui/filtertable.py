@@ -61,15 +61,26 @@ class Filter(object):
 
 
 class SessionInfo(object):
-    def __init__(self):
-        self.search = None
-        self.order_by = None
-        self.order_asc = False
+    def __init__(self, default_currentpage, default_perpage,
+            default_order_by, default_order_asc):
+        self.search = ""
+        self.order_by = default_order_by
+        self.order_asc = default_order_asc
         self.filters = {}
+        self.currentpage = default_currentpage
+        self.perpage = default_perpage
+
+    def __str__(self):
+        return "\n".join(["   %s:%s" % (k, v)
+            for k, v in self.__dict__.iteritems()
+            if not k.startswith("_")])
 
 class FilterTable(object):
     id = 'filtertable'
+    default_currentpage = 0
     default_perpage = 20
+    default_order_by = None
+    default_order_asc = False
     filters = []
     columns = []
 
@@ -81,11 +92,17 @@ class FilterTable(object):
             }, context_instance=RequestContext(request))
 
     def __init__(self, request):
+        #del request.session[self.id]
         self.properties = {}
         indata = request.GET
-        self.start = int(indata.get("start", 0))
-        self.perpage = int(indata.get("perpage", self.default_perpage))
-        self.session = request.session.get(self.id, SessionInfo())
+        self.session = request.session.get(self.id, SessionInfo(
+            self.default_currentpage, self.default_perpage,
+            self.default_order_by, self.default_order_asc))
+        
+        if "gotopage" in indata:
+            self.session.currentpage = int(indata["gotopage"])
+        if "perpage" in indata:
+            self.session.perpage = int(indata["perpage"])
 
         if "order_by" in indata:
             i = int(indata["order_by"])
@@ -104,13 +121,17 @@ class FilterTable(object):
             self.session.filters[i] = f.get_selected(current, selected)
 
         request.session[self.id] = self.session
-        print "Session:", self.session.filters
+        print "Session:"
+        print self.session
 
 
     def create_row(self, group):
         raise NotImplementedError()
 
     def create_dataset(self):
+        raise NotImplementedError()
+
+    def limit_dataset(self, dataset, currentpage, perpage):
         raise NotImplementedError()
 
 
@@ -130,9 +151,6 @@ class FilterTable(object):
                     dataset, selected)
         return dataset
 
-    def limit_dataset(self, dataset, start, perpage):
-        pass
-
     def dataset_to_rowlist(self, dataset):
         return [self.create_row(d).as_dict() for d in dataset]
 
@@ -143,12 +161,17 @@ class FilterTable(object):
         if self.session.order_by != None:
             dataset = self.order_by(dataset, self.session.order_by,
                     self.session.order_asc)
-        dataset = self.limit_dataset(dataset, self.start, self.perpage)
+        filteredsize, dataset = self.limit_dataset(dataset,
+                self.session.currentpage, self.session.perpage)
+        rowlist = self.dataset_to_rowlist(dataset) 
         out = dict(
-            total = totalsize,
+            totalsize = totalsize,
+            filteredsize = filteredsize,
+            currentpage = self.session.currentpage,
+            perpage = self.session.perpage,
             filterview = filterview,
             columns = [c.as_dict() for c in self.columns],
-            data = self.dataset_to_rowlist(dataset)
+            data = rowlist
         )
         return out
 
@@ -231,8 +254,10 @@ class AssignmentGroupsFilterTable(FilterTable):
         total = self.assignment.assignmentgroups.all().count()
         return total, dataset
 
-    def limit_dataset(self, dataset, start, perpage):
-        return dataset[start:perpage]
+    def limit_dataset(self, dataset, currentpage, perpage):
+        start = currentpage*perpage
+        end = start + perpage
+        return dataset.count(), dataset[start:end]
 
     def order_by(self, dataset, colnum, order_asc):
         prefix = '-'

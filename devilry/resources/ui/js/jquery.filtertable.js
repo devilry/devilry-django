@@ -35,6 +35,14 @@
         return thead;
       },
 
+      refresh_table: function(store, columns, data) {
+        store.result_table.empty();
+        var thead = $.filtertable.create_header(store, columns);
+        thead.appendTo(store.result_table);
+        var tbody = $.filtertable.create_body(data);
+        tbody.appendTo(store.result_table);
+      },
+
       refresh_filters: function(store, filterview) {
         store.filterbox.empty();
         $.each(filterview, function(filterindex, filter) {
@@ -49,34 +57,45 @@
                   .addClass(label.selected?"selected_filter":"unselected_filter")
                   .appendTo(li);
                 button.click(function() {
-                    var fs = [filterindex, i]
-                    $.filtertable.refresh(store, {filter_selected:fs});
+                    var opt = {};
+                    opt["filter_selected_"+filterindex] = i;
+                    $.filtertable.refresh(store, opt);
                     return false;
                   });
               });
           });
       },
 
+
+      refresh_pagechanger: function(store, filteredsize, currentpage, perpage) {
+        store.pagechangerbox.empty();
+        var pages = parseInt("" + filteredsize / perpage);
+        if(filteredsize % perpage == 0) {
+          pages --;
+        }
+        var pagelabel = $("<div></div>")
+          .html(currentpage + "/" + pages);
+        var slider = $("<div></div>");
+        pagelabel.appendTo(store.pagechangerbox);
+        slider.appendTo(store.pagechangerbox);
+        slider.slider({
+            max: pages,
+            value: currentpage,
+            slide: function(e, ui) {
+              pagelabel.html(ui.value + "/" + pages);
+            },
+            change: function(e, ui) {
+              $.filtertable.refresh(store, {gotopage:ui.value});
+            }
+        });
+      },
+
       refresh: function(store, options) {
-        var options = options==null?{}:options;
-        var prop = {
-          start: 0,
-          perpage: 20
-        }
-        if(options.filter_selected != null) {
-          var fs = options.filter_selected;
-          prop['filter_selected_' + fs[0]] = fs[1];
-        }
-        if(options.order_by != null) {
-          prop['order_by'] = options.order_by;
-        }
-        $.getJSON(store.jsonurl, prop, function(json) {
+        $.getJSON(store.jsonurl, options, function(json) {
             $.filtertable.refresh_filters(store, json.filterview);
-            store.result_table.empty();
-            var thead = $.filtertable.create_header(store, json.columns);
-            thead.appendTo(store.result_table);
-            var tbody = $.filtertable.create_body(json.data);
-            tbody.appendTo(store.result_table);
+            $.filtertable.refresh_table(store, json.columns, json.data);
+            $.filtertable.refresh_pagechanger(store, json.filteredsize,
+              json.currentpage, json.perpage);
           });
       }
     };
@@ -86,8 +105,10 @@
           var id = $(this).attr("id");
           var store = {};
           store.jsonurl = jsonurl;
-          store.result_table = $("#" + id + " .filtertable-table").first();
+          store.searchbox = $("#" + id + " .filtertable-searchbox").first();
           store.filterbox = $("#" + id + " .filtertable-filters").first();
+          store.result_table = $("#" + id + " .filtertable-table").first();
+          store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
           $.filtertable.refresh(store);
         });
     };
