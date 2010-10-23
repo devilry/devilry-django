@@ -4,15 +4,14 @@
 
 (function($){
     $.filtertable = {
-      refresh_actions: function(store, actions) {
-        store.actionsbox.empty();
+      refresh_actions: function(store, actions, targetbox) {
+        targetbox.empty();
         $.each(actions, function(i, action) {
-            var li = $("<li></li>").appendTo(store.actionsbox);
+            var box = $("<li></li>").appendTo(targetbox);
             var button = $("<a></a>")
               .html(action.label)
               .attr("href", "#")
-              .addClass("filtertable-action")
-              .appendTo(li);
+              .appendTo(box);
             $.each(action.cssclasses, function(ci, cssclass) {
                 button.addClass(cssclass);
               });
@@ -25,10 +24,10 @@
           });
       },
 
-      create_header: function(store, has_actions, columns, use_rowactions) {
+      create_header: function(store, has_selactions, columns, use_rowactions) {
         var thead = $("<thead></thead>");
         var tr = $("<tr></tr>").appendTo(thead);
-        if(has_actions) {
+        if(has_selactions) {
           var th = $("<th></th>")
             .addClass("filtertable-checkboxcell")
             .appendTo(tr);
@@ -60,12 +59,12 @@
         return thead;
       },
 
-      create_body: function(data, has_actions, id) {
+      create_body: function(data, has_selactions, id) {
         var name = id + "-checkbox";
         var tbody = $("<tbody></tbody>");
         $.each(data, function(i, row) {
             var tr = $("<tr></tr>").appendTo(tbody);
-            if(has_actions) {
+            if(has_selactions) {
               var td = $("<td></td>")
                 .addClass("filtertable-checkboxcell")
                 .appendTo(tr);
@@ -94,12 +93,12 @@
         return tbody;
       },
 
-      refresh_table: function(store, has_actions, columns, data, use_rowactions) {
+      refresh_table: function(store, has_selactions, columns, data, use_rowactions) {
         store.result_table.empty();
-        var thead = $.filtertable.create_header(store, has_actions, columns,
+        var thead = $.filtertable.create_header(store, has_selactions, columns,
               use_rowactions);
         thead.appendTo(store.result_table);
-        var tbody = $.filtertable.create_body(data, has_actions, store.id);
+        var tbody = $.filtertable.create_body(data, has_selactions, store.id);
         tbody.appendTo(store.result_table);
       },
 
@@ -160,12 +159,17 @@
       refresh: function(store, options) {
         $.getJSON(store.jsonurl, options, function(json) {
             $.filtertable.refresh_filters(store, json.filterview);
-            $.filtertable.refresh_actions(store, json.actions);
-            $.filtertable.refresh_table(store, json.actions.length > 0,
+            $.filtertable.refresh_actions(store,
+              json.selectionactions, store.selectionactionsbox);
+            $.filtertable.refresh_actions(store,
+              json.relatedactions, store.relatedactionsbox);
+            $.filtertable.refresh_table(store, json.selectionactions.length > 0,
                 json.columns, json.data, json.use_rowactions);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
+            store.sidebar.accordion("option", "autoHeight", true);
+            store.sidebar.accordion("resize");
           });
       }
     };
@@ -178,16 +182,19 @@
           store.jsonurl = jsonurl;
           store.form = $("#" + id + " form").first();
           store.searchbox = $("#" + id + " .filtertable-searchbox").first();
-          store.actionsbox = $("#" + id + " .filtertable-actions").first();
+          store.selectionactionsbox = $("#" + id + " .filtertable-selectionactions").first();
+          store.relatedactionsbox = $("#" + id + " .filtertable-relatedactions").first();
           store.filterbox = $("#" + id + " .filtertable-filters").first();
           store.result_table = $("#" + id + " .filtertable-table").first();
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
           store.searchfield = $("#" + id + " .filtertable-searchbox input").first();
-
-          var tabs = $("#" + id + " .filtertable-tabs").first();
-          tabs.tabs();
-
           $.filtertable.refresh(store);
+
+          store.sidebar = $("#" + id + "-filtertable-sidebar");
+          store.sidebar.accordion({
+            header: "h3",
+            autoHeight: false
+          });
 
           store.searchfield.keydown(function(e) {
               if (e.keyCode==13) {

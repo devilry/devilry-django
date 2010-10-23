@@ -113,7 +113,8 @@ class FilterTable(object):
     use_rowactions = False
     filters = []
     columns = []
-    actions = []
+    selectionactions = []
+    relatedactions = []
 
     @classmethod
     def initial_html(cls, request, jsonurl):
@@ -180,8 +181,10 @@ class FilterTable(object):
     def search(self, dataset, qry):
         raise NotImplementedError()
 
-    def get_actions_as_dicts(self):
-        return [a.as_dict(self.properties) for a in self.actions]
+    def get_selectionactions_as_dicts(self):
+        return [a.as_dict(self.properties) for a in self.selectionactions]
+    def get_relatedactions_as_dicts(self):
+        return [a.as_dict(self.properties) for a in self.relatedactions]
 
     def order_by(self, dataset, colnum):
         return dataset
@@ -223,7 +226,8 @@ class FilterTable(object):
             filterview = filterview,
             columns = [c.as_dict() for c in self.columns],
             use_rowactions = self.use_rowactions,
-            actions = self.get_actions_as_dicts(),
+            selectionactions = self.get_selectionactions_as_dicts(),
+            relatedactions = self.get_relatedactions_as_dicts(),
             data = rowlist
         )
         return out
@@ -288,21 +292,14 @@ class FilterExaminer(Filter):
             return dataset.filter(examiners=selected)
 
 
-class CreateReplaceDeadline(Action):
-    label = _("Create/replace deadline")
+class AssignmentGroupsAction(Action):
+    def __init__(self, label, urlname):
+        self.label = label
+        self.urlname = urlname
 
     def get_url(self, properties):
         assignment = properties['assignment']
-        return reverse("devilry-admin-create_deadline",
-                args=[str(assignment.id)])
-
-class SetExaminers(Action):
-    label = _("Set examiners")
-
-    def get_url(self, properties):
-        assignment = properties['assignment']
-        return reverse("devilry-admin-set_examiners",
-                args=[str(assignment.id)])
+        return reverse(self.urlname, args=[str(assignment.id)])
 
 
 class AssignmentGroupsFilterTable(FilterTable):
@@ -312,7 +309,20 @@ class AssignmentGroupsFilterTable(FilterTable):
     ]
     columns = [Col("Candidates"), Col("Examiners"), Col("Name"),
             Col("Status", can_order=True)]
-    actions = [CreateReplaceDeadline(), SetExaminers()]
+    selectionactions = [
+            AssignmentGroupsAction(_("Create/replace deadline"),
+                'devilry-admin-create_deadline'),
+            AssignmentGroupsAction(_("Set examiners"),
+                'devilry-admin-set_examiners')
+            ]
+    relatedactions = [
+            AssignmentGroupsAction(_("Create new"),
+                "devilry-admin-create_assignmentgroup"),
+            AssignmentGroupsAction(_("Create many (advanced)"),
+                "devilry-admin-create_assignmentgroups"),
+            AssignmentGroupsAction(_("Create by copy"),
+                "devilry-admin-copy_groups")
+            ]
     use_rowactions = True
 
 

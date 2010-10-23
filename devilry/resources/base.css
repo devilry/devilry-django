@@ -453,7 +453,7 @@ table.horizontal_ordered_table tfoot td {
 
 .ui-widget {
 	font-family: "Tahoma", "Geneva", sans-serif;
-	font-size: 0.8em;
+	/*font-size: 0.8em;*/
 }
 
 a.autocomplete_item span {
