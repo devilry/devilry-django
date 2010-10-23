@@ -25,7 +25,7 @@
           });
       },
 
-      create_header: function(store, has_actions, columns) {
+      create_header: function(store, has_actions, columns, use_rowactions) {
         var thead = $("<thead></thead>");
         var tr = $("<tr></tr>").appendTo(thead);
         if(has_actions) {
@@ -52,6 +52,11 @@
                 });
             }
           });
+        if(use_rowactions) {
+          var th = $("<th></th>")
+            .html("&nbsp;")
+            .appendTo(tr);
+        }
         return thead;
       },
 
@@ -75,13 +80,24 @@
                   .html(cell)
                   .appendTo(tr);
               });
+            if(row.actions.length > 0) {
+                var td = $("<td></td>").appendTo(tr);
+                $.each(row.actions, function(i, action) {
+                    $("<a></a>")
+                      .html(action.label)
+                      .attr("href", action.url)
+                      .button()
+                      .appendTo(td);
+                  });
+            };
           });
         return tbody;
       },
 
-      refresh_table: function(store, has_actions, columns, data) {
+      refresh_table: function(store, has_actions, columns, data, use_rowactions) {
         store.result_table.empty();
-        var thead = $.filtertable.create_header(store, has_actions, columns);
+        var thead = $.filtertable.create_header(store, has_actions, columns,
+              use_rowactions);
         thead.appendTo(store.result_table);
         var tbody = $.filtertable.create_body(data, has_actions, store.id);
         tbody.appendTo(store.result_table);
@@ -141,7 +157,7 @@
             $.filtertable.refresh_filters(store, json.filterview);
             $.filtertable.refresh_actions(store, json.actions);
             $.filtertable.refresh_table(store, json.actions.length > 0,
-                json.columns, json.data);
+                json.columns, json.data, json.use_rowactions);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);

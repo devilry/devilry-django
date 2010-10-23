@@ -110,6 +110,7 @@ class FilterTable(object):
     default_perpage = 20
     default_order_by = None
     default_order_asc = False
+    use_rowactions = False
     filters = []
     columns = []
     actions = []
@@ -221,6 +222,7 @@ class FilterTable(object):
             search = self.session.search,
             filterview = filterview,
             columns = [c.as_dict() for c in self.columns],
+            use_rowactions = self.use_rowactions,
             actions = self.get_actions_as_dicts(),
             data = rowlist
         )
@@ -311,6 +313,7 @@ class AssignmentGroupsFilterTable(FilterTable):
     columns = [Col("Candidates"), Col("Examiners"), Col("Name"),
             Col("Status", can_order=True)]
     actions = [CreateReplaceDeadline(), SetExaminers()]
+    use_rowactions = True
 
 
     @classmethod
@@ -330,6 +333,12 @@ class AssignmentGroupsFilterTable(FilterTable):
         cells = [group.get_candidates(), group.get_examiners(),
                 group.name, group.get_localized_status()]
         row = Row(group.id, cells)
+        row.add_action(_("edit"), 
+                reverse('devilry-admin-edit_assignmentgroup',
+                        args=[self.assignment.id, str(group.id)]))
+        row.add_action(_("examine"), 
+                reverse('devilry-examiner-show_assignmentgroup',
+                        args=[str(group.id)]))
         return row
 
     def create_dataset(self):
