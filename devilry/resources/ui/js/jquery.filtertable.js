@@ -168,7 +168,7 @@
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
-            store.sidebar.accordion("option", "autoHeight", true);
+            //store.sidebar.accordion("option", "autoHeight", true);
             store.sidebar.accordion("resize");
           });
       }
@@ -193,7 +193,8 @@
           store.sidebar = $("#" + id + "-filtertable-sidebar");
           store.sidebar.accordion({
             header: "h3",
-            autoHeight: false
+            autoHeight: false,
+            event: "mouseover"
           });
 
           store.searchfield.keydown(function(e) {

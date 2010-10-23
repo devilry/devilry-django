@@ -9,9 +9,7 @@
 }
 .filtertable-table {
   margin-top: 0 !important;
-}
-.filtertable-sidebar {
-  width: 300px;
+  width:100%;
 }
 .filtertable-actions a {
   width: 99%;
@@ -29,52 +27,54 @@
 .filtertable-actions ul {
   padding-left: 20px;
 }
+
+.filtertable-searchbox {
+  text-align: right;
+}
+
+.filtertable-main {
+  margin-left: 280px;
+}
+.filtertable-sidebar {
+  width: 250px;
+  float: left;
+}
 </style>
 
 <div class='filtertable' id='{{ id }}'>
   <form action="#" method="post">
-    <table style="width:100%">
-      <tbody>
-        <tr>
-          <td></td>
-          <td>
-            <div class='filtertable-searchbox'>
-              <input type="text"/>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table class="filtertable-table horizontal_ordered_table" style="width:100%">
-              {% comment %}This is filled using javascript{% endcomment %}
-            </table>
-            <div class="filtertable-pagechanger">
-              {% comment %}This is filled using javascript{% endcomment %}
-            </div>
-          </td>
-          <td>
-            <div id="filtertable-{{ id }}-sidebar" class="filtertable-sidebar">
-              <h3><a href="#">Actions</a></h3>
-              <div class="filtertable-actions">
-                <h4>On selected rows</h4>
-                <ul class="filtertable-selectionactions">
-                  {% comment %}This is filled using javascript{% endcomment %}
-                </ul>
-                <h4>Related</h4>
-                <ul class="filtertable-relatedactions">
-                  {% comment %}This is filled using javascript{% endcomment %}
-                </ul>
-              </div>
+    <div class='filtertable-searchbox'>
+      Search:
+      <input type="text"/>
+    </div>
 
-              <h3><a href="#">Filters</a></h3>
-              <div class="filtertable-filters">
-                {% comment %}This is filled using javascript{% endcomment %}
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div id="filtertable-{{ id }}-sidebar" class="filtertable-sidebar">
+      <h3><a href="#">Actions</a></h3>
+      <div class="filtertable-actions">
+        <h4>On selected rows</h4>
+        <ul class="filtertable-selectionactions">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </ul>
+        <h4>Related</h4>
+        <ul class="filtertable-relatedactions">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </ul>
+      </div>
+
+      <h3><a href="#">Filters</a></h3>
+      <div class="filtertable-filters">
+        {% comment %}This is filled using javascript{% endcomment %}
+      </div>
+    </div>
+
+    <div class="filtertable-main">
+      <table class="filtertable-table horizontal_ordered_table">
+        {% comment %}This is filled using javascript{% endcomment %}
+      </table>
+      <div class="filtertable-pagechanger">
+        {% comment %}This is filled using javascript{% endcomment %}
+      </div>
+    </div>
   </form>
 </div>
 
