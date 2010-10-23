@@ -103,6 +103,8 @@ class FilterTable(object):
             self.session.currentpage = int(indata["gotopage"])
         if "perpage" in indata:
             self.session.perpage = int(indata["perpage"])
+        if "search" in indata:
+            self.session.search = indata["search"]
 
         if "order_by" in indata:
             i = int(indata["order_by"])
@@ -134,6 +136,8 @@ class FilterTable(object):
     def limit_dataset(self, dataset, currentpage, perpage):
         raise NotImplementedError()
 
+    def search(self, dataset, qry):
+        raise NotImplementedError()
 
     def order_by(self, dataset, colnum):
         return dataset
@@ -157,6 +161,7 @@ class FilterTable(object):
     def create_jsondata(self):
         totalsize, dataset = self.create_dataset()
         filterview = self.create_filterview(dataset)
+        dataset = self.search(dataset, self.session.search)
         dataset = self.filter(dataset)
         if self.session.order_by != None:
             dataset = self.order_by(dataset, self.session.order_by,
@@ -169,6 +174,7 @@ class FilterTable(object):
             filteredsize = filteredsize,
             currentpage = self.session.currentpage,
             perpage = self.session.perpage,
+            search = self.session.search,
             filterview = filterview,
             columns = [c.as_dict() for c in self.columns],
             data = rowlist
@@ -264,3 +270,7 @@ class AssignmentGroupsFilterTable(FilterTable):
         if order_asc:
             prefix = ''
         return dataset.order_by(prefix + 'status')
+
+    def search(self, dataset, qry):
+        return dataset.filter(
+                candidates__student__username__contains=qry)

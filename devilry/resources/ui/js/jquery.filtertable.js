@@ -54,7 +54,9 @@
                 var button = $("<a></a>")
                   .html(label.label)
                   .attr("href", "#")
-                  .addClass(label.selected?"selected_filter":"unselected_filter")
+                  .addClass("filtertable-filter")
+                  .addClass(label.selected?
+                    "filtertable-selected-filter":"filtertable-unselected-filter")
                   .appendTo(li);
                 button.click(function() {
                     var opt = {};
@@ -96,6 +98,7 @@
             $.filtertable.refresh_table(store, json.columns, json.data);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
+            store.searchfield.val(json.search);
           });
       }
     };
@@ -109,7 +112,15 @@
           store.filterbox = $("#" + id + " .filtertable-filters").first();
           store.result_table = $("#" + id + " .filtertable-table").first();
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
+          store.searchfield = $("#" + id + " .filtertable-searchbox input").first();
           $.filtertable.refresh(store);
+
+          store.searchfield.keydown(function(e) {
+              if (e.keyCode==13) {
+                $.filtertable.refresh(store, {search:store.searchfield.val()});
+                return false;
+              }
+            });
         });
     };
 
