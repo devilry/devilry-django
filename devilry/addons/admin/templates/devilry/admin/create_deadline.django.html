@@ -31,8 +31,8 @@
 <form method='post' action='{% url devilry-admin-create_deadline assignment.id %}'>
 	<input type='hidden' name='onsite' value='yes'/>
 
-	{% for key, group in groups %}
-	  <input type='hidden' name='{{ key }}' value='{{ group.id }}'/>
+	{% for group in groups %}
+	  <input type='hidden' name='{{ checkbox_name }}' value='{{ group.id }}'/>
 	{% endfor %}
 
 	<h2>{% trans "Set the following deadline:" %}</h2>
@@ -68,7 +68,7 @@
 
 	<h2>{% trans "... on the following groups:" %}</h2>
 	<ul>
-	{% for key, group in groups %}
+	{% for group in groups %}
 	  <li>{{ group.get_students }}</li>
 	{% endfor %}
 	</ul>

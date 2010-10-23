@@ -4,23 +4,43 @@
 
 (function($){
     $.filtertable = {
-
-      create_body: function(data) {
-        var tbody = $("<tbody></tbody>");
-        $.each(data, function(i, row) {
-            var tr = $("<tr></tr>").appendTo(tbody);
-            $.each(row.cells, function(index, cell) {
-                var td = $("<td></td>")
-                  .html(cell)
-                  .appendTo(tr);
+      refresh_actions: function(store, actions) {
+        store.actionsbox.empty();
+        $.each(actions, function(i, action) {
+            var li = $("<li></li>").appendTo(store.actionsbox);
+            var button = $("<a></a>")
+              .html(action.label)
+              .attr("href", "#")
+              .addClass("filtertable-action")
+              .appendTo(li);
+            $.each(action.cssclasses, function(ci, cssclass) {
+                button.addClass(cssclass);
+              });
+            button.click(function() {
+                $.log(i);
+                store.form.attr("action", action.url);
+                store.form.submit();
+                return false;
               });
           });
-        return tbody;
       },
 
-      create_header: function(store, columns) {
+      create_header: function(store, has_actions, columns) {
         var thead = $("<thead></thead>");
         var tr = $("<tr></tr>").appendTo(thead);
+        if(has_actions) {
+          var th = $("<th></th>")
+            .addClass("filtertable-checkboxcell")
+            .appendTo(tr);
+          var checkall = $("<input/>")
+            .attr("type", "checkbox")
+            .appendTo(th);
+          checkall.click(function() {
+              var qry ="#" + store.id + " input:checkbox";
+              var checked = checkall.is(":checked");
+              $(qry).attr("checked", checked);
+            });
+        }
         $.each(columns, function(i, col) {
             var th = $("<th></th>")
               .html(col.title)
@@ -35,11 +55,35 @@
         return thead;
       },
 
-      refresh_table: function(store, columns, data) {
+      create_body: function(data, has_actions, id) {
+        var name = id + "-checkbox";
+        var tbody = $("<tbody></tbody>");
+        $.each(data, function(i, row) {
+            var tr = $("<tr></tr>").appendTo(tbody);
+            if(has_actions) {
+              var td = $("<td></td>")
+                .addClass("filtertable-checkboxcell")
+                .appendTo(tr);
+              var checkbox = $("<input/>")
+                .attr("type", "checkbox")
+                .attr("name", name)
+                .attr("value", row.id)
+                .appendTo(td);
+            }
+            $.each(row.cells, function(index, cell) {
+                var td = $("<td></td>")
+                  .html(cell)
+                  .appendTo(tr);
+              });
+          });
+        return tbody;
+      },
+
+      refresh_table: function(store, has_actions, columns, data) {
         store.result_table.empty();
-        var thead = $.filtertable.create_header(store, columns);
+        var thead = $.filtertable.create_header(store, has_actions, columns);
         thead.appendTo(store.result_table);
-        var tbody = $.filtertable.create_body(data);
+        var tbody = $.filtertable.create_body(data, has_actions, store.id);
         tbody.appendTo(store.result_table);
       },
 
@@ -95,7 +139,9 @@
       refresh: function(store, options) {
         $.getJSON(store.jsonurl, options, function(json) {
             $.filtertable.refresh_filters(store, json.filterview);
-            $.filtertable.refresh_table(store, json.columns, json.data);
+            $.filtertable.refresh_actions(store, json.actions);
+            $.filtertable.refresh_table(store, json.actions.length > 0,
+                json.columns, json.data);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
@@ -107,8 +153,11 @@
       return this.each(function() {
           var id = $(this).attr("id");
           var store = {};
+          store.id = id;
           store.jsonurl = jsonurl;
+          store.form = $("#" + id + " form").first();
           store.searchbox = $("#" + id + " .filtertable-searchbox").first();
+          store.actionsbox = $("#" + id + " .filtertable-actions").first();
           store.filterbox = $("#" + id + " .filtertable-filters").first();
           store.result_table = $("#" + id + " .filtertable-table").first();
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();

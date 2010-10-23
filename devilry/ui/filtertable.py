@@ -5,7 +5,8 @@ from django.http import HttpResponse
 
 
 class Row(object):
-    def __init__(self, cells, cssclass=None):
+    def __init__(self, id, cells, cssclass=None):
+        self.id = id
         self.cells = cells
         self.cssclass = cssclass
         self.actions = []
@@ -15,6 +16,7 @@ class Row(object):
 
     def as_dict(self):
         return dict(
+            id = self.id,
             cells = self.cells,
             cssclass = self.cssclass,
             actions = self.actions
@@ -60,6 +62,32 @@ class Filter(object):
             return [selected]
 
 
+class Confirm(object):
+    def __init__(self, title, buttonlabel, confirm_message=None):
+        self.title = title
+        self.buttonlabel = buttonlabel
+        self.confirm_message = confirm_message
+
+    def as_dict(self):
+        return dict(title=self.title, buttonlabel=self.buttonlabel,
+                confirm_message=self.confirm_message)
+
+class Action(object):
+    label = None
+    cssclasses = []
+
+    def as_dict(self, properties):
+        d = dict(label=self.label, url=self.get_url(properties),
+                cssclasses=self.cssclasses)
+        return d
+
+    def get_confirm_message(self, properties):
+        return None
+
+    def get_url(self, properties):
+        raise NotImplementedError()
+
+
 class SessionInfo(object):
     def __init__(self, default_currentpage, default_perpage,
             default_order_by, default_order_asc):
@@ -75,6 +103,7 @@ class SessionInfo(object):
             for k, v in self.__dict__.iteritems()
             if not k.startswith("_")])
 
+
 class FilterTable(object):
     id = 'filtertable'
     default_currentpage = 0
@@ -83,6 +112,7 @@ class FilterTable(object):
     default_order_asc = False
     filters = []
     columns = []
+    actions = []
 
     @classmethod
     def initial_html(cls, request, jsonurl):
@@ -91,14 +121,24 @@ class FilterTable(object):
             'jsonurl': jsonurl
             }, context_instance=RequestContext(request))
 
+    @classmethod
+    def get_checkbox_name(cls):
+        return '%s-checkbox' % cls.id
+
+    @classmethod
+    def get_selected_ids(cls, request):
+        return request.POST.getlist(cls.get_checkbox_name())
+
     def __init__(self, request):
-        #del request.session[self.id]
         self.properties = {}
-        indata = request.GET
+        self.request = request
         self.session = request.session.get(self.id, SessionInfo(
             self.default_currentpage, self.default_perpage,
             self.default_order_by, self.default_order_asc))
         
+
+    def session_from_indata(self):
+        indata = self.request.GET
         if "gotopage" in indata:
             self.session.currentpage = int(indata["gotopage"])
         if "perpage" in indata:
@@ -122,7 +162,7 @@ class FilterTable(object):
             current = self.session.filters.get(i, [0])
             self.session.filters[i] = f.get_selected(current, selected)
 
-        request.session[self.id] = self.session
+        self.request.session[self.id] = self.session
         print "Session:"
         print self.session
 
@@ -138,6 +178,9 @@ class FilterTable(object):
 
     def search(self, dataset, qry):
         raise NotImplementedError()
+
+    def get_actions_as_dicts(self):
+        return [a.as_dict(self.properties) for a in self.actions]
 
     def order_by(self, dataset, colnum):
         return dataset
@@ -159,6 +202,7 @@ class FilterTable(object):
         return [self.create_row(d).as_dict() for d in dataset]
 
     def create_jsondata(self):
+        self.session_from_indata()
         totalsize, dataset = self.create_dataset()
         filterview = self.create_filterview(dataset)
         dataset = self.search(dataset, self.session.search)
@@ -177,6 +221,7 @@ class FilterTable(object):
             search = self.session.search,
             filterview = filterview,
             columns = [c.as_dict() for c in self.columns],
+            actions = self.get_actions_as_dicts(),
             data = rowlist
         )
         return out
@@ -190,8 +235,13 @@ class FilterTable(object):
 
 
 
-from devilry.core.models import AssignmentGroup
+
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
+from django.shortcuts import get_object_or_404
+
+from devilry.core.models import AssignmentGroup
 
 
 class FilterStatus(Filter):
@@ -236,6 +286,23 @@ class FilterExaminer(Filter):
             return dataset.filter(examiners=selected)
 
 
+class CreateReplaceDeadline(Action):
+    label = _("Create/replace deadline")
+
+    def get_url(self, properties):
+        assignment = properties['assignment']
+        return reverse("devilry-admin-create_deadline",
+                args=[str(assignment.id)])
+
+class SetExaminers(Action):
+    label = _("Set examiners")
+
+    def get_url(self, properties):
+        assignment = properties['assignment']
+        return reverse("devilry-admin-set_examiners",
+                args=[str(assignment.id)])
+
+
 class AssignmentGroupsFilterTable(FilterTable):
     filters = [
         FilterStatus('Status'),
@@ -243,6 +310,16 @@ class AssignmentGroupsFilterTable(FilterTable):
     ]
     columns = [Col("Candidates"), Col("Examiners"), Col("Name"),
             Col("Status", can_order=True)]
+    actions = [CreateReplaceDeadline(), SetExaminers()]
+
+
+    @classmethod
+    def get_selected_groups(cls, request):
+        groups = []
+        for group_id in cls.get_selected_ids(request):
+            group = get_object_or_404(AssignmentGroup, id=group_id)
+            groups.append(group)
+        return groups
 
     def __init__(self, request, assignment):
         super(AssignmentGroupsFilterTable, self).__init__(request)
@@ -252,7 +329,7 @@ class AssignmentGroupsFilterTable(FilterTable):
     def create_row(self, group):
         cells = [group.get_candidates(), group.get_examiners(),
                 group.name, group.get_localized_status()]
-        row = Row(cells)
+        row = Row(group.id, cells)
         return row
 
     def create_dataset(self):

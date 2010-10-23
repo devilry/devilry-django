@@ -20,6 +20,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
 from devilry.addons.quickdash import defaults
+from devilry.ui.filtertable import AssignmentGroupsFilterTable
 
 from shortcuts import iter_filtertable_selected
 
@@ -294,7 +295,6 @@ def _groups_from_filtertable(request):
         groups.append((key, group))
     if len(groups) == 0:
         raise GroupCountError(request)
-    return groups
 
 
 @login_required
@@ -309,17 +309,14 @@ def set_examiners(request, assignment_id):
                 help_text=_('Usernames separated by ",". Leave empty to '\
                     'clear examiners'))
     if request.method == 'POST':
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
 
         if 'onsite' in request.POST:
             form = ExaminerForm(request.POST)
             if form.is_valid():
                 examiners = form.cleaned_data['examiners']
                 user_ids = MultiSelectCharField.from_string(examiners)
-                for key, group in groups:
+                for group in groups:
                     group.examiners.clear()
                     for id in user_ids:
                         group.examiners.add(User.objects.get(id=id))
@@ -338,7 +335,8 @@ def set_examiners(request, assignment_id):
         return render_to_response('devilry/admin/set-examiners.django.html', {
                 'form': form,
                 'assignment': assignment,
-                'groups': groups
+                'groups': groups,
+                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name()
                 }, context_instance=RequestContext(request))
     else:
         return HttpResponseBadRequest()
@@ -474,11 +472,8 @@ def create_deadline(request, assignment_id):
     
     if request.method == 'POST':
         datetimefullformat = '%Y-%m-%d %H:%M:%S'
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
-        ids = [g.id for key, g in groups]
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+        ids = [g.id for g in groups]
         selected_deadlines = Deadline.objects.filter(
                 assignment_group__in=ids)
         distinct_deadlines = selected_deadlines.values('deadline').distinct()
@@ -527,7 +522,8 @@ def create_deadline(request, assignment_id):
                 'deadlineform': deadlineform,
                 'selectform': selectform,
                 'has_shared_deadlines': has_shared_deadlines,
-                'groups': groups
+                'groups': groups,
+                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name()
                 }, context_instance=RequestContext(request))
     else:
         return HttpResponseBadRequest()
