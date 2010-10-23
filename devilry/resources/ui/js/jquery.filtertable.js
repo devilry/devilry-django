@@ -135,20 +135,21 @@
 
       refresh_pagechanger: function(store, filteredsize, currentpage, perpage) {
         store.pagechangerbox.empty();
-        var pages = parseInt("" + filteredsize / perpage);
+        var pages = parseInt("" + filteredsize / perpage) + 1;
         if(filteredsize % perpage == 0) {
           pages --;
         }
         var pagelabel = $("<div></div>")
-          .html(currentpage + "/" + pages);
+          .addClass("filtertable-pagelabel")
+          .html("Showing page " + (currentpage+1) + " of " + pages);
         var slider = $("<div></div>");
         pagelabel.appendTo(store.pagechangerbox);
         slider.appendTo(store.pagechangerbox);
         slider.slider({
-            max: pages,
+            max: pages - 1,
             value: currentpage,
             slide: function(e, ui) {
-              pagelabel.html(ui.value + "/" + pages);
+              pagelabel.html("Showing page " + (ui.value+1) + " of " + pages);
             },
             change: function(e, ui) {
               $.filtertable.refresh(store, {gotopage:ui.value});

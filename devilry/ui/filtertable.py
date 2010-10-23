@@ -107,7 +107,7 @@ class SessionInfo(object):
 class FilterTable(object):
     id = 'filtertable'
     default_currentpage = 0
-    default_perpage = 20
+    default_perpage = 10
     default_order_by = None
     default_order_asc = False
     use_rowactions = False
@@ -164,11 +164,6 @@ class FilterTable(object):
             current = self.session.filters.get(i, [0])
             self.session.filters[i] = f.get_selected(current, selected)
 
-        self.request.session[self.id] = self.session
-        print "Session:"
-        print self.session
-
-
     def create_row(self, group):
         raise NotImplementedError()
 
@@ -214,9 +209,16 @@ class FilterTable(object):
         if self.session.order_by != None:
             dataset = self.order_by(dataset, self.session.order_by,
                     self.session.order_asc)
-        filteredsize, dataset = self.limit_dataset(dataset,
-                self.session.currentpage, self.session.perpage)
-        rowlist = self.dataset_to_rowlist(dataset) 
+
+        filteredsize = self.get_dataset_size(dataset)
+        start = self.session.currentpage*self.session.perpage
+        end = start + self.session.perpage
+        if start > filteredsize:
+            start = 0
+            self.session.currentpage = 0
+
+        dataset = self.limit_dataset(dataset, start, end)
+        rowlist = self.dataset_to_rowlist(dataset)
         out = dict(
             totalsize = totalsize,
             filteredsize = filteredsize,
@@ -230,6 +232,9 @@ class FilterTable(object):
             relatedactions = self.get_relatedactions_as_dicts(),
             data = rowlist
         )
+        print "Session:"
+        print self.session
+        self.request.session[self.id] = self.session
         return out
 
     def json_response(self):
@@ -356,10 +361,11 @@ class AssignmentGroupsFilterTable(FilterTable):
         total = self.assignment.assignmentgroups.all().count()
         return total, dataset
 
-    def limit_dataset(self, dataset, currentpage, perpage):
-        start = currentpage*perpage
-        end = start + perpage
-        return dataset.count(), dataset[start:end]
+    def get_dataset_size(self, dataset):
+        return dataset.count()
+
+    def limit_dataset(self, dataset, start, end):
+        return dataset[start:end]
 
     def order_by(self, dataset, colnum, order_asc):
         prefix = '-'
