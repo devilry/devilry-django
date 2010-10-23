@@ -5,14 +5,34 @@
 (function($){
     $.filtertable = {
 
-      create_table_row: function(i, row) {
-        var tr = $("<tr></tr>");
-        $.each(row.cells, function(index, cell) {
-            var td = $("<td></td>")
-            .html(cell)
-            .appendTo(tr);
+      create_body: function(data) {
+        var tbody = $("<tbody></tbody>");
+        $.each(data, function(i, row) {
+            var tr = $("<tr></tr>").appendTo(tbody);
+            $.each(row.cells, function(index, cell) {
+                var td = $("<td></td>")
+                  .html(cell)
+                  .appendTo(tr);
+              });
           });
-        return tr;
+        return tbody;
+      },
+
+      create_header: function(store, columns) {
+        var thead = $("<thead></thead>");
+        var tr = $("<tr></tr>").appendTo(thead);
+        $.each(columns, function(i, col) {
+            var th = $("<th></th>")
+              .html(col.title)
+              .appendTo(tr);
+            if(col.can_order) {
+              th.click(function() {
+                  $.filtertable.refresh(store, {order_by:i});
+                  return false;
+                });
+            }
+          });
+        return thead;
       },
 
       refresh_filters: function(store, filterview) {
@@ -30,28 +50,33 @@
                   .appendTo(li);
                 button.click(function() {
                     var fs = [filterindex, i]
-                    $.filtertable.refresh(store, fs);
+                    $.filtertable.refresh(store, {filter_selected:fs});
                     return false;
                   });
               });
           });
       },
 
-      refresh: function(store, filter_selected) {
+      refresh: function(store, options) {
+        var options = options==null?{}:options;
         var prop = {
           start: 0,
           perpage: 20
         }
-        if(filter_selected != null) {
-          prop['filter_selected_' + filter_selected[0]] = filter_selected[1];
+        if(options.filter_selected != null) {
+          var fs = options.filter_selected;
+          prop['filter_selected_' + fs[0]] = fs[1];
+        }
+        if(options.order_by != null) {
+          prop['order_by'] = options.order_by;
         }
         $.getJSON(store.jsonurl, prop, function(json) {
             $.filtertable.refresh_filters(store, json.filterview);
-            store.result_tbody.empty();
-            $.each(json.data, function(i, row) {
-                var tr = $.filtertable.create_table_row(i, row);
-                tr.appendTo(store.result_tbody);
-              });
+            store.result_table.empty();
+            var thead = $.filtertable.create_header(store, json.columns);
+            thead.appendTo(store.result_table);
+            var tbody = $.filtertable.create_body(json.data);
+            tbody.appendTo(store.result_table);
           });
       }
     };
@@ -61,7 +86,7 @@
           var id = $(this).attr("id");
           var store = {};
           store.jsonurl = jsonurl;
-          store.result_tbody = $("#" + id + " .filtertable-table tbody").first();
+          store.result_table = $("#" + id + " .filtertable-table").first();
           store.filterbox = $("#" + id + " .filtertable-filters").first();
           $.filtertable.refresh(store);
         });
