@@ -46,6 +46,12 @@ class Col(object):
 
 
 class Filter(object):
+    """
+    .. attribute:: multiselect
+
+        Is the filter multiselect or not? If it is multiselect, the user can
+        choose more than one label at one time.
+    """
     multiselect = False
 
     def __init__(self, title):
@@ -65,14 +71,36 @@ class Filter(object):
         return dict(
                 title = self.title,
                 multiselect = self.multiselect,
-                selected = selected,
                 labels = labels)
 
-    def get_selected(self, current, selected):
-        if selected == None:
+    def get_selected(self, current, selected, properties):
+        """
+        :param current: A list with indexes of the currently selected items.
+        :param selected: The index of the selected label.
+        :return:
+            A list with the index of selected items. If this filter is not
+            :attr:`multiselect`, only the first item in the list is used.
+        """
+        if self.multiselect:
+            if selected in current:
+                current.remove(selected)
+            else:
+                current.append(selected)
             return current
         else:
             return [selected]
+
+    def get_default_selected(self, properties):
+        """ A list of the index of the labels that are selected by default.
+        If this filter is not :attr:`multiselect`, only the first item in
+        the list is used. """
+        return [0]
+
+    def get_all_selected(self, properties):
+        return range(len(self.get_labels(properties)))
+
+    def get_all_unselected(self, properties):
+        return []
 
 
 class Confirm(object):
@@ -103,11 +131,11 @@ class Action(object):
 
 class SessionInfo(object):
     def __init__(self, default_currentpage, default_perpage,
-            default_order_by, default_order_asc):
+            default_order_by, default_order_asc, filters):
         self.search = ""
         self.order_by = default_order_by
         self.order_asc = default_order_asc
-        self.filters = {}
+        self.filters = filters
         self.currentpage = default_currentpage
         self.perpage = default_perpage
 
@@ -147,13 +175,26 @@ class FilterTable(object):
     def __init__(self, request):
         self.properties = {}
         self.request = request
-        self.session = request.session.get(self.id, SessionInfo(
-            self.default_currentpage, self.default_perpage,
-            self.default_order_by, self.default_order_asc))
+        self.session_from_indata()
         
+    def get_default_session(self):
+        default_filters = {}
+        for i, f in enumerate(self.filters):
+            default_filters[i] = f.get_default_selected(self.properties)
+        default_session = SessionInfo(
+            self.default_currentpage, self.default_perpage,
+            self.default_order_by, self.default_order_asc,
+            default_filters)
+        return default_session
 
     def session_from_indata(self):
         indata = self.request.GET
+        default_session = self.get_default_session()
+        if "reset_filters" in indata:
+            self.session = default_session
+            return
+        self.session = self.request.session.get(self.id, default_session)
+
         if "gotopage" in indata:
             self.session.currentpage = int(indata["gotopage"])
         if "perpage" in indata:
@@ -169,13 +210,25 @@ class FilterTable(object):
                 self.session.order_asc = True
                 self.session.order_by = i
 
+        checkall_in_filter = int(indata.get("checkall_in_filter", -1))
         for i, f in enumerate(self.filters):
-            key = "filter_selected_%s" % i
-            selected = None
-            if key in indata:
-                selected = int(indata[key])
-            current = self.session.filters.get(i, [0])
-            self.session.filters[i] = f.get_selected(current, selected)
+            current = self.session.filters[i]
+            if i == checkall_in_filter:
+                allselected = f.get_all_selected(self.properties)
+                if len(current) == len(allselected):
+                    value = f.get_all_unselected(self.properties)
+                else:
+                    value = allselected
+            else:
+                selectedkey = "filter_selected_%s" % i
+                if selectedkey in indata:
+                    selected = int(indata[selectedkey])
+                    value = f.get_selected(current, selected,
+                            self.properties)
+                else:
+                    value = current
+            self.session.filters[i] = value
+                
 
     def create_row(self, group):
         raise NotImplementedError()
@@ -214,7 +267,6 @@ class FilterTable(object):
         return [self.create_row(d).as_dict() for d in dataset]
 
     def create_jsondata(self):
-        self.session_from_indata()
         totalsize, dataset = self.create_dataset()
         filterview = self.create_filterview(dataset)
         if self.session.search:

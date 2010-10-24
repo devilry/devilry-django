@@ -41,7 +41,7 @@
             .attr("type", "checkbox")
             .appendTo(th);
           checkall.click(function() {
-              var qry ="#" + store.id + " input:checkbox";
+              var qry ="#" + store.id + " .filtertable-table input:checkbox";
               var checked = checkall.is(":checked");
               $(qry).attr("checked", checked);
             });
@@ -134,22 +134,33 @@
             var box = $("<div></div>").appendTo(store.filterbox);
             $("<h4></h4>").html(filter.title).appendTo(box);
             var ul = $("<ul></ul>").appendTo(box);
-            var idprefix = store.id + "-filter-" + filterindex + "-";
+            //var idprefix = store.id + "-filter-" + filterindex + "-";
+            if(filter.multiselect) {
+              var li = $("<li></li>").appendTo(ul);
+              var toggleall = $("<a></a>")
+                .attr("href", "#")
+                .html("Check/uncheck all")
+                .appendTo(li);
+              toggleall.click(function() {
+                  $.filtertable.refresh(store, 
+                    {checkall_in_filter:filterindex});
+                  return false;
+                });
+            }
             $.each(filter.labels, function(i, label) {
-                var id = idprefix + i;
+                //var id = idprefix + i;
                 var li = $("<li></li>").appendTo(ul);
                 var button = $("<input></input>")
-                  .attr("type", "radio")
-                  .attr("id", id)
+                  .attr("type", filter.multiselect?"checkbox":"radio")
                   .appendTo(li);
                 if (label.selected) {
                   button.attr("checked", "checked");
                 };
-                var label = $("<a></a>")
+                var lbl = $("<a></a>")
                   .attr("href", "#")
                   .html(label.label)
                   .appendTo(li);
-                label.click(function() {
+                lbl.click(function() {
                     button.click();
                     return false;
                   });
@@ -157,6 +168,7 @@
                     var opt = {};
                     opt["filter_selected_"+filterindex] = i;
                     $.filtertable.refresh(store, opt);
+                    return false;
                   });
               });
           });
@@ -168,6 +180,9 @@
         var pages = parseInt("" + filteredsize / perpage) + 1;
         if(filteredsize % perpage == 0) {
           pages --;
+        }
+        if(pages == 0) {
+          pages = 1;
         }
         var pagelabel = $("<div></div>")
           .addClass("filtertable-pagelabel")
@@ -199,7 +214,7 @@
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
-            //store.sidebar.accordion("option", "autoHeight", true);
+            store.sidebar.accordion("option", "autoHeight", true);
             store.sidebar.accordion("resize");
             store.statusmsgbox.html(json.statusmsg);
           });
@@ -219,7 +234,7 @@
           store.filterbox = $("#" + id + " .filtertable-filters").first();
           store.result_table = $("#" + id + " .filtertable-table").first();
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
-          store.searchfield = $("#" + id + " .filtertable-searchbox input").first();
+          store.searchfield = $("#" + id + " .filtertable-searchfield").first();
           store.statusmsgbox = $("#" + id + " .filtertable-statusmsg").first();
 
           // Show this dialog when selecting a action when no rows are
@@ -235,6 +250,7 @@
               },
             });
 
+          // Setup the accordion sidebar
           store.sidebar = $("#" + id + "-filtertable-sidebar");
           store.sidebar.accordion({
             header: "h3",
@@ -242,14 +258,30 @@
             event: "mouseover"
           });
 
-
+          // Set initial data
           $.filtertable.refresh(store);
 
+          // Events
           store.searchfield.keydown(function(e) {
               if (e.keyCode==13) {
                 $.filtertable.refresh(store, {search:store.searchfield.val()});
                 return false;
               }
+            });
+          var searchbtn = $("#" + id + " .filtertable-searchbtn").first();
+          searchbtn.button({
+            text: false,
+            icons: {primary: "ui-icon-search"}
+          });
+          searchbtn.click(function(e) {
+              $.filtertable.refresh(store, {search:store.searchfield.val()});
+              return false;
+            });
+
+          var resetfiltersbtn = $("#" + id + " .filtertable-resetfilters-button").first();
+          resetfiltersbtn.click(function(e) {
+              $.filtertable.refresh(store, {reset_filters:"yes"});
+              return false;
             });
         });
 

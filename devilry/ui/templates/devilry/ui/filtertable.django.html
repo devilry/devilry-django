@@ -25,8 +25,8 @@
 .filtertable-searchbox {
   text-align: left;
 }
-.filtertable-searchbox input {
-  width: 99%;
+.filtertable-searchfield {
+  width: 70%;
 }
 
 .filtertable-main {
@@ -41,6 +41,10 @@
 }
 .filtertable-checkboxcell {
   text-align: center;
+}
+
+.filtertable-resetfilters {
+  margin-top: 20px;
 }
 
 .devilry-th-ui-icon {
@@ -87,14 +91,18 @@ table.zebra tr.even td {
         </ul>
       </div>
 
-      <h3><a href="#" class='filtertable-accordion-head'>Filter</a></h3>
+      <h3 id="filtertop"><a href="#" class='filtertable-accordion-head'>Search / Filter</a></h3>
       <div>
         <div class='filtertable-searchbox'>
-          Search:
-          <input type="text"/>
+          <h4>Search:</h4>
+          <input type="text" class="filtertable-searchfield" />
+          <button class="filtertable-searchbtn">Search</button>
         </div>
         <div class="filtertable-filters">
           {% comment %}This is filled using javascript{% endcomment %}
+        </div>
+        <div class='filtertable-resetfilters'>
+          <button class='filtertable-resetfilters-button button'>Reset filters</button>
         </div>
       </div>
     </div>

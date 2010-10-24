@@ -11,16 +11,15 @@ class FilterStatus(Filter):
     multiselect = True
 
     def get_labels(self, properties):
-        l = ["All"]
+        l = []
         l.extend(AssignmentGroup.status_mapping)
         return l
 
     def filter(self, properties, dataset, selected):
-        status = selected[0] - 1
-        if status == -1:
-            return dataset
-        else:
-            return dataset.filter(status=status)
+        return dataset.filter(status__in=selected)
+
+    def get_default_selected(self, properties):
+        return [0, 1, 2, 3]
 
 
 class FilterExaminer(Filter):
