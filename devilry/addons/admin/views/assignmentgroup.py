@@ -20,7 +20,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
 from devilry.addons.quickdash import defaults
-from devilry.ui.filtertable import AssignmentGroupsFilterTable
+from assignmentgroup_filtertable import AssignmentGroupsFilterTable
 
 from shortcuts import iter_filtertable_selected
 

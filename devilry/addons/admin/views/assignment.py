@@ -13,7 +13,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
 from devilry.ui.fields import MultiSelectCharField
 from devilry.core import gradeplugin
-from devilry.ui.filtertable import AssignmentGroupsFilterTable
+from assignmentgroup_filtertable import AssignmentGroupsFilterTable
 
 
 @login_required
