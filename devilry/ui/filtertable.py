@@ -262,8 +262,8 @@ class FilterTable(object):
             data = rowlist,
             statusmsg = statusmsg
         )
-        print "Session:"
-        print self.session
+        #print "Session:"
+        #print self.session
         self.request.session[self.id] = self.session
         return out
 
