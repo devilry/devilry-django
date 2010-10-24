@@ -141,7 +141,7 @@ table.zebra tr.even td {
 <script type="text/javascript" src="/resources/ui/js/jquery.filtertable.js"></script> 
 <script type="text/javascript">
   $(document).ready(function() {
-    $("#{{ id }}").filtertable("{{ jsonurl }}");
+    $("#{{ id }}").filtertable("{{ jsonurl }}", {{ resultcount_supported }});
 
     // Stop clicking from sending the user to the top of the page
     $('.filtertable-accordion-head').click(function() {

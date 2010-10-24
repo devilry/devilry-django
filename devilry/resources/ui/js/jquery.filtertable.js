@@ -77,6 +77,7 @@
                     return false;
                   });
 
+                if(store.resultcount_supported) {
                   var opt = {countonly:"yes"};
                   opt["filter_selected_"+filterindex] = i;
                   $.getJSON(store.jsonurl, opt, function(json) {
@@ -89,6 +90,7 @@
                       count.html(" (" + v + ")");
                       $.filtertable.recalc_accordion(store);
                     });
+                }
               });
           });
       },
@@ -248,7 +250,7 @@
       }
     };
 
-    $.fn.filtertable = function(jsonurl) {
+    $.fn.filtertable = function(jsonurl, resultcount_supported) {
       return this.each(function() {
           var id = $(this).attr("id");
           var store = {};
@@ -263,6 +265,7 @@
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
           store.searchfield = $("#" + id + " .filtertable-searchfield").first();
           store.statusmsgbox = $("#" + id + " .filtertable-statusmsg").first();
+          store.resultcount_supported = resultcount_supported;
 
           // Show this dialog when selecting a action when no rows are
           // selected.
