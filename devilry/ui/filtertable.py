@@ -175,6 +175,7 @@ class FilterTable(object):
     def __init__(self, request):
         self.properties = {}
         self.request = request
+        self.indata = request.GET
         self.session_from_indata()
         
     def get_default_session(self):
@@ -188,7 +189,7 @@ class FilterTable(object):
         return default_session
 
     def session_from_indata(self):
-        indata = self.request.GET
+        indata = self.indata
         default_session = self.get_default_session()
         if "reset_filters" in indata:
             self.session = default_session
@@ -254,6 +255,12 @@ class FilterTable(object):
         self.properties.update(properties)
 
     def create_filterview(self, dataset):
+        """ Get a list containing a dictionary for each filter. The
+        dictionary is created with :meth:`Filter.as_dict`.
+
+        :param dataset:
+            The **unfiltered** dataset returned by :meth:`create_dataset`.
+        """
         return [f.as_dict(self.properties, dataset, self.session.filters[i])
                 for i, f in enumerate(self.filters)]
 
@@ -263,20 +270,31 @@ class FilterTable(object):
                     dataset, selected)
         return dataset
 
+    def search_and_filter(self, dataset):
+        """ Search and filter the given dataset.
+
+        :return: (dataset, filteredsize) where ``dataset`` is the searched
+            and filtered dataset, and ``filteredsize`` is the size of the
+            dataset.
+        """
+        if self.session.search:
+            dataset = self.search(dataset, self.session.search)
+        dataset = self.filter(dataset)
+        filteredsize = self.get_dataset_size(dataset)
+        return dataset, filteredsize
+
     def dataset_to_rowlist(self, dataset):
         return [self.create_row(d).as_dict() for d in dataset]
 
     def create_jsondata(self):
         totalsize, dataset = self.create_dataset()
         filterview = self.create_filterview(dataset)
-        if self.session.search:
-            dataset = self.search(dataset, self.session.search)
-        dataset = self.filter(dataset)
+        dataset, filteredsize = self.search_and_filter(dataset)
+
         if self.session.order_by != None:
             dataset = self.order_by(dataset, self.session.order_by,
                     self.session.order_asc)
 
-        filteredsize = self.get_dataset_size(dataset)
         start = self.session.currentpage*self.session.perpage
         end = start + self.session.perpage
         if start > filteredsize:
@@ -316,10 +334,22 @@ class FilterTable(object):
         )
         #print "Session:"
         #print self.session
-        self.request.session[self.id] = self.session
+        self.save_session()
         return out
 
+    def save_session(self):
+        self.request.session[self.id] = self.session
+
+    def create_json_count(self):
+        totalsize, dataset = self.create_dataset()
+        filterview = self.create_filterview(dataset)
+        dataset, filteredsize = self.search_and_filter(dataset)
+        return dict(filteredsize=filteredsize)
+
     def json_response(self):
-        json = JSONEncoder(ensure_ascii=False, indent=4).encode(
-                self.create_jsondata())
+        if "countonly" in self.indata:
+            out = self.create_json_count()
+        else:
+            out = self.create_jsondata()
+        json = JSONEncoder(ensure_ascii=False, indent=4).encode(out)
         return HttpResponse(json, content_type="text/plain")

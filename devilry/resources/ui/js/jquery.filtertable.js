@@ -4,6 +4,7 @@
 
 (function($){
     $.filtertable = {
+
       refresh_actions: function(store, actions, targetbox, requires_selection) {
         targetbox.empty();
         $.each(actions, function(i, action) {
@@ -26,6 +27,73 @@
               });
           });
       },
+
+
+      refresh_filters: function(store, filterview, filteredsize) {
+        store.filterbox.empty();
+        $.each(filterview, function(filterindex, filter) {
+            var box = $("<div></div>").appendTo(store.filterbox);
+            $("<h4></h4>").html(filter.title).appendTo(box);
+            var ul = $("<ul></ul>").appendTo(box);
+            //var idprefix = store.id + "-filter-" + filterindex + "-";
+            if(filter.multiselect) {
+              var li = $("<li></li>").appendTo(ul);
+              var toggleall = $("<a></a>")
+                .attr("href", "#")
+                .html("Check/uncheck all")
+                .appendTo(li);
+              toggleall.click(function() {
+                  $.filtertable.refresh(store, 
+                    {checkall_in_filter:filterindex});
+                  return false;
+                });
+            }
+            $.each(filter.labels, function(i, label) {
+                //var id = idprefix + i;
+                var li = $("<li></li>").appendTo(ul);
+                var button = $("<input></input>")
+                  .attr("type", filter.multiselect?"checkbox":"radio")
+                  .appendTo(li);
+                if (label.selected) {
+                  button.attr("checked", "checked");
+                };
+                var lbl = $("<a></a>")
+                  .attr("href", "#")
+                  .html(label.label)
+                  .appendTo(li);
+                var count = $("<span></span>")
+                  .addClass("filtertable-filtercount")
+                  .appendTo(lbl);
+
+                // Events
+                lbl.click(function() {
+                    button.click();
+                    return false;
+                  });
+                button.click(function() {
+                    var opt = {};
+                    opt["filter_selected_"+filterindex] = i;
+                    $.filtertable.refresh(store, opt);
+                    return false;
+                  });
+
+                  var opt = {countonly:"yes"};
+                  opt["filter_selected_"+filterindex] = i;
+                  $.getJSON(store.jsonurl, opt, function(json) {
+                      var v = json.filteredsize;
+                      if(filter.multiselect) {
+                        v = json.filteredsize - filteredsize;
+                        if(v >= 0)
+                          v = "+" + v;
+                      }
+                      count.html(" (" + v + ")");
+                      $.filtertable.recalc_accordion(store);
+                    });
+              });
+          });
+      },
+
+
 
       create_header: function(store, has_selactions, columns, use_rowactions,
           order_by, order_asc) {
@@ -128,52 +196,6 @@
         tbody.appendTo(store.result_table);
       },
 
-      refresh_filters: function(store, filterview) {
-        store.filterbox.empty();
-        $.each(filterview, function(filterindex, filter) {
-            var box = $("<div></div>").appendTo(store.filterbox);
-            $("<h4></h4>").html(filter.title).appendTo(box);
-            var ul = $("<ul></ul>").appendTo(box);
-            //var idprefix = store.id + "-filter-" + filterindex + "-";
-            if(filter.multiselect) {
-              var li = $("<li></li>").appendTo(ul);
-              var toggleall = $("<a></a>")
-                .attr("href", "#")
-                .html("Check/uncheck all")
-                .appendTo(li);
-              toggleall.click(function() {
-                  $.filtertable.refresh(store, 
-                    {checkall_in_filter:filterindex});
-                  return false;
-                });
-            }
-            $.each(filter.labels, function(i, label) {
-                //var id = idprefix + i;
-                var li = $("<li></li>").appendTo(ul);
-                var button = $("<input></input>")
-                  .attr("type", filter.multiselect?"checkbox":"radio")
-                  .appendTo(li);
-                if (label.selected) {
-                  button.attr("checked", "checked");
-                };
-                var lbl = $("<a></a>")
-                  .attr("href", "#")
-                  .html(label.label)
-                  .appendTo(li);
-                lbl.click(function() {
-                    button.click();
-                    return false;
-                  });
-                button.click(function() {
-                    var opt = {};
-                    opt["filter_selected_"+filterindex] = i;
-                    $.filtertable.refresh(store, opt);
-                    return false;
-                  });
-              });
-          });
-      },
-
 
       refresh_pagechanger: function(store, filteredsize, currentpage, perpage) {
         store.pagechangerbox.empty();
@@ -202,9 +224,15 @@
         });
       },
 
+
+      recalc_accordion: function(store) {
+        store.sidebar.accordion("option", "autoHeight", true);
+        store.sidebar.accordion("resize");
+      },
+
       refresh: function(store, options) {
         $.getJSON(store.jsonurl, options, function(json) {
-            $.filtertable.refresh_filters(store, json.filterview);
+            $.filtertable.refresh_filters(store, json.filterview, json.filteredsize);
             $.filtertable.refresh_actions(store,
               json.selectionactions, store.selectionactionsbox,
               true);
@@ -214,9 +242,8 @@
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
-            store.sidebar.accordion("option", "autoHeight", true);
-            store.sidebar.accordion("resize");
             store.statusmsgbox.html(json.statusmsg);
+            $.filtertable.recalc_accordion(store);
           });
       }
     };
