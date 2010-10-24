@@ -345,12 +345,12 @@ ul {
 	margin-bottom: 2px;
 }
 
-#content a, #messages a {
+a {
 	color: #0B5A9D;
 	text-decoration: none;
 }
 
-#content a:hover, #messages a:hover {
+a:hover {
 	text-decoration: underline;
 }
 
@@ -358,11 +358,11 @@ ul {
 	clear: both;
 }
 
-#content dt {
+dt {
 	margin-top: 3px;
 	font-style: italic;
 }
-#content dd {
+dd {
 	margin-left: 20px;
 }
 
@@ -529,113 +529,6 @@ a.quickdashmenu-focus{
 	margin-bottom: 10px;
 	font-size: 0.8em;
 	color: #456;
-}
-
-
-/*******************************
- * Autocomplete
- *******************************/
-ul.autocomplete-list-result {
-	margin: 0; padding: 0;
-}
-ul.autocomplete-list-result li {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-#content ul.autocomplete-list-result li a {
-	display: block;
-	margin: 1px;
-	padding: 2px 5px;
-	border: 1px solid transparent;
-	text-decoration: none;
-	color: #444;
-}
-#content ul.autocomplete-list-result li a:hover {
-	border: 1px solid #D4D2CE;
-	background-color: #f8f8f8;
-	text-decoration: none;
-	color: #111;
-}
-input.autocomplete-list {
-	width: 98%;
-}
-
-div.autocompletetable-actionscontainer {
-	margin: 0 0 10px 0;
-}
-button.autocompletetable-showhide-actions {
-}
-span.autocompletetable-selectaction {
-	width: 80%;
-	max-width: 300px;
-	height: 20px;
-	display: inline-block;
-	border: 1px solid #aaa;
-	color: #444;
-	padding: 1px 3px;
-}
-#content div.autocompletetable-actions {
-}
-#content a.autocompletetable-action {
-	display: block;
-	width: 80%;
-	max-width: 300px;
-	height: 20px;
-	border-bottom: 1px solid #ccc;
-	border-left: 1px solid #aaa;
-	border-right: 1px solid #aaa;
-	color: #444 !important;
-	padding: 3px;
-	background-color: #fff;
-}
-
-#content a.autocompletetable-action:hover {
-	background-color: #0B5A9D;
-	text-decoration: none;
-	color: #fff !important;
-}
-#content .autocompletetable-actions a.delete:hover {
-	background-color: #aa0000;
-	text-decoration: none;
-	color: #fff !important;
-}
-div.autocompletetable-searchfieldcontainer {
-	margin-bottom: 5px;
-}
-input.autocompletetable-searchfield {
-	width: 40%;
-	max-width: 250px;
-}
-
-.autocompletetable-filterbar {
-	float: right;
-	width: 170px;
-	margin: 0 0 0 20px;
-	padding: 0 0 10px 0;
-	background-color: #fff;
-	border: 1px solid #D4D2CE;
-}
-.autocompletetable-filter-title {
-	background-color: #ECEBE9;
-	padding: 4px 8px;
-	font-style: italic;
-	border-bottom: 3px solid #D4D2CE;
-}
-.autocompletetable-filter-subtitle {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	background-color: #ECEBE9;
-	padding: 2px 8px;
-}
-.autocompletetable-filterbar ul {
-	list-style: none;
-	margin: 0 8px;
-	padding: 0;
-}
-
-table.autocompletetable-result {
-	margin-top: 0;
 }
 
 

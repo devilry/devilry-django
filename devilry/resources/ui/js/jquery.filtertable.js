@@ -4,7 +4,7 @@
 
 (function($){
     $.filtertable = {
-      refresh_actions: function(store, actions, targetbox) {
+      refresh_actions: function(store, actions, targetbox, requires_selection) {
         targetbox.empty();
         $.each(actions, function(i, action) {
             var box = $("<li></li>").appendTo(targetbox);
@@ -16,10 +16,13 @@
                 button.addClass(cssclass);
               });
             button.click(function() {
-                $.log(i);
+                var c = $("#" + store.id + " input:checkbox:checked");
+                if(c.length == 0 && requires_selection) {
+                  store.noselection_dialog.dialog("open");
+                  return false;
+                }
                 store.form.attr("action", action.url);
                 store.form.submit();
-                return false;
               });
           });
       },
@@ -79,7 +82,6 @@
       create_body: function(data, has_selactions, id) {
         var name = id + "-checkbox";
         var tbody = $("<tbody></tbody>")
-          .addClass("ui-widget-content");
         $.each(data, function(i, row) {
             var tr = $("<tr></tr>")
               .addClass(i%2?"even":"odd")
@@ -143,10 +145,14 @@
                 if (label.selected) {
                   button.attr("checked", "checked");
                 };
-                var label = $("<label></label>")
+                var label = $("<a></a>")
+                  .attr("href", "#")
                   .html(label.label)
-                  .attr("for", id)
                   .appendTo(li);
+                label.click(function() {
+                    button.click();
+                    return false;
+                  });
                 button.click(function() {
                     var opt = {};
                     opt["filter_selected_"+filterindex] = i;
@@ -165,7 +171,7 @@
         }
         var pagelabel = $("<div></div>")
           .addClass("filtertable-pagelabel")
-          .html("Showing page " + (currentpage+1) + " of " + pages);
+          .html("Page " + (currentpage+1) + " of " + pages);
         var slider = $("<div></div>");
         pagelabel.appendTo(store.pagechangerbox);
         slider.appendTo(store.pagechangerbox);
@@ -173,7 +179,7 @@
             max: pages - 1,
             value: currentpage,
             slide: function(e, ui) {
-              pagelabel.html("Showing page " + (ui.value+1) + " of " + pages);
+              pagelabel.html("Page " + (ui.value+1) + " of " + pages);
             },
             change: function(e, ui) {
               $.filtertable.refresh(store, {gotopage:ui.value});
@@ -185,7 +191,8 @@
         $.getJSON(store.jsonurl, options, function(json) {
             $.filtertable.refresh_filters(store, json.filterview);
             $.filtertable.refresh_actions(store,
-              json.selectionactions, store.selectionactionsbox);
+              json.selectionactions, store.selectionactionsbox,
+              true);
             $.filtertable.refresh_actions(store,
               json.relatedactions, store.relatedactionsbox);
             $.filtertable.refresh_table(store, json);
@@ -194,6 +201,7 @@
             store.searchfield.val(json.search);
             //store.sidebar.accordion("option", "autoHeight", true);
             store.sidebar.accordion("resize");
+            store.statusmsgbox.html(json.statusmsg);
           });
       }
     };
@@ -212,7 +220,20 @@
           store.result_table = $("#" + id + " .filtertable-table").first();
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
           store.searchfield = $("#" + id + " .filtertable-searchbox input").first();
-          $.filtertable.refresh(store);
+          store.statusmsgbox = $("#" + id + " .filtertable-statusmsg").first();
+
+          // Show this dialog when selecting a action when no rows are
+          // selected.
+          store.noselection_dialog = $("#" + id + " .filtertable-noselection-dialog").first();
+          store.noselection_dialog.dialog({
+              modal: true,
+              autoOpen: false,
+              buttons: {
+                "Ok": function() {
+                  $( this ).dialog( "close" );
+                }
+              },
+            });
 
           store.sidebar = $("#" + id + "-filtertable-sidebar");
           store.sidebar.accordion({
@@ -220,6 +241,9 @@
             autoHeight: false,
             event: "mouseover"
           });
+
+
+          $.filtertable.refresh(store);
 
           store.searchfield.keydown(function(e) {
               if (e.keyCode==13) {

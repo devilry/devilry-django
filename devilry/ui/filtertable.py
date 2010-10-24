@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils.simplejson import JSONEncoder
@@ -216,7 +217,8 @@ class FilterTable(object):
         self.session_from_indata()
         totalsize, dataset = self.create_dataset()
         filterview = self.create_filterview(dataset)
-        dataset = self.search(dataset, self.session.search)
+        if self.session.search:
+            dataset = self.search(dataset, self.session.search)
         dataset = self.filter(dataset)
         if self.session.order_by != None:
             dataset = self.order_by(dataset, self.session.order_by,
@@ -231,6 +233,19 @@ class FilterTable(object):
 
         dataset = self.limit_dataset(dataset, start, end)
         rowlist = self.dataset_to_rowlist(dataset)
+
+        if self.session.search:
+            statusmsg = _("Current filters, including the search for "\
+                    "<strong>%(search)s</strong>, match %(filteredsize)d of "\
+                    "%(totalsize)d available items.")
+        else:
+            statusmsg = _("Current filters match %(filteredsize)d of "\
+                    "%(totalsize)d available items.")
+        statusmsg = statusmsg % dict(
+                search = self.session.search,
+                filteredsize = filteredsize,
+                totalsize = totalsize)
+
         out = dict(
             totalsize = totalsize,
             filteredsize = filteredsize,
@@ -244,7 +259,8 @@ class FilterTable(object):
             relatedactions = self.get_relatedactions_as_dicts(),
             order_by = self.session.order_by,
             order_asc = self.session.order_asc,
-            data = rowlist
+            data = rowlist,
+            statusmsg = statusmsg
         )
         print "Session:"
         print self.session

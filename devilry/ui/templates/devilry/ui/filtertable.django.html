@@ -53,14 +53,23 @@
 .filtertable-table th.ui-state-active {
   
 }
-
+.devilry-ui-icon-in-dialog {
+  float:left; margin:0 7px 20px 0;
+}
+.devilry-ui-infobox {
+  padding: 0 .7em;
+}
 
 table.zebra {
 }
 
+table.zebra tr.odd td {
+  background-color: #fff;
+}
 table.zebra tr.even td {
   background-color: #fafafa;
 }
+
 </style>
 
 <div class='filtertable' id='{{ id }}'>
@@ -97,8 +106,22 @@ table.zebra tr.even td {
       <div class="filtertable-pagechanger">
         {% comment %}This is filled using javascript{% endcomment %}
       </div>
+      <div class="ui-widget" style="margin-top:15px;">
+        <div class="devilry-ui-infobox ui-state-highlight ui-corner-all">
+          <p>
+            <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+            <span class="filtertable-statusmsg"></span>
+          </p>
+        </div>
+      </div>
     </div>
   </form>
+
+  <div class="filtertable-noselection-dialog" title="No row selected">
+    <p><span class="ui-icon ui-icon-alert devilry-ui-icon-in-dialog"></span>
+    You have to select at least one row.</p>
+  </div>
+  
 </div>
 
 
