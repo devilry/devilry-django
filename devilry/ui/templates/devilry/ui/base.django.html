@@ -3,19 +3,23 @@
 {% load i18n %}
 <html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
-		<title>{% block title %}{% endblock %}</title>
-    {% block jquery %}
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-1.4.2.min.js"></script>          
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui-1.8.5.custom.min.js"></script>          
-      <script type="text/javascript">
-        var DEVILRY_RESOURCES_URL = "{{ DEVILRY_RESOURCES_URL }}";
-        var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
-        $(function() {
-          $(".button").button();
-        });
-      </script>          
-      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui-1.8.5.custom.css" />
-    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+
+    {% with "1.8.5" as JQUERY_UI_VERSION %}
+      {% block jquery %}
+        <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.min.js"></script>
+        <script type="text/javascript">
+          var DEVILRY_RESOURCES_URL = "{{ DEVILRY_RESOURCES_URL }}";
+          var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
+          $(function() {
+            $(".button").button();
+          });
+        </script>          
+        <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.css" />
+      {% endblock %}
+    {% endwith %}
+
     {% block basecss %}
       <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
     {% endblock %}
