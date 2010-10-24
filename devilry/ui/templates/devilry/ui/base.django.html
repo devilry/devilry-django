@@ -5,8 +5,8 @@
 	<head>
 		<title>{% block title %}{% endblock %}</title>
     {% block jquery %}
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery.js"></script>          
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui.js"></script>          
+      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-1.4.2.min.js"></script>          
+      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui-1.8.5.custom.min.js"></script>          
       <script type="text/javascript">
         var DEVILRY_RESOURCES_URL = "{{ DEVILRY_RESOURCES_URL }}";
         var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
@@ -14,7 +14,7 @@
           $(".button").button();
         });
       </script>          
-      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui.css" />
+      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui-1.8.5.custom.css" />
     {% endblock %}
     {% block basecss %}
       <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
