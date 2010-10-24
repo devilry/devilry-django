@@ -136,7 +136,9 @@ DEVILRY_MAIN_PAGE = ''
 BASE_TEMPLATE = 'devilry/base.django.html'
 
 MEDIA_ICONS_URL = 'media/icons/'
-JQUERY_UI_THEME = 'devilry'
+#JQUERY_UI_THEME = 'devilry'
+#JQUERY_UI_THEME = 'dot-luv'
+JQUERY_UI_THEME = 'ui-darkness'
 
 
 SEND_EMAIL_TO_USERS = True

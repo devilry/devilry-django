@@ -59,10 +59,9 @@
                 icon.addClass(order_asc?"ui-icon-triangle-1-n":"ui-icon-triangle-1-s")
                 th.addClass("ui-state-active");
               } else {
-                icon.addClass("ui-icon-carat-2-n-s")
+                icon.addClass("ui-icon-carat-2-n-s");
               }
               th.click(function() {
-                  icon.removeClass()
                   $.filtertable.refresh(store, {order_by:i});
                   return false;
                 });
