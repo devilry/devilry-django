@@ -245,6 +245,7 @@
               json.currentpage, json.perpage);
             store.searchfield.val(json.search);
             store.statusmsgbox.html(json.statusmsg);
+            store.perpagefield.val(json.perpage);
             $.filtertable.recalc_accordion(store);
           });
       }
@@ -288,10 +289,7 @@
             event: "mouseover"
           });
 
-          // Set initial data
-          $.filtertable.refresh(store);
-
-          // Events
+          // Search
           store.searchfield.keydown(function(e) {
               if (e.keyCode==13) {
                 $.filtertable.refresh(store, {search:store.searchfield.val()});
@@ -308,11 +306,35 @@
               return false;
             });
 
+
+          // Reset filters
           var resetfiltersbtn = $("#" + id + " .filtertable-resetfilters-button").first();
           resetfiltersbtn.click(function(e) {
               $.filtertable.refresh(store, {reset_filters:"yes"});
               return false;
             });
+
+          // Settings
+          store.perpagefield = $("#" + id + " .filtertable-perpagefield").first();
+          store.perpagefield.keydown(function(e) {
+              if (e.keyCode==13) {
+                $.filtertable.refresh(store, {perpage:store.perpagefield.val()});
+                return false;
+              }
+            });
+          var perpagebtn = $("#" + id + " .filtertable-perpagebtn").first();
+          perpagebtn.button({
+            text: false,
+            icons: {primary: "ui-icon-arrowrefresh-1-w"}
+          });
+          perpagebtn.click(function(e) {
+              $.filtertable.refresh(store, {perpage:store.perpagefield.val()});
+              return false;
+            });
+
+
+          // Set initial data
+          $.filtertable.refresh(store);
         });
 
     };

@@ -198,10 +198,16 @@ class FilterTable(object):
             return
         self.session = self.request.session.get(self.id, default_session)
 
+        def toint(s, default):
+            try:
+                return int(s)
+            except:
+                return default
         if "gotopage" in indata:
-            self.session.currentpage = int(indata["gotopage"])
+            self.session.currentpage = toint(indata["gotopage"], 0)
         if "perpage" in indata:
-            self.session.perpage = int(indata["perpage"])
+            self.session.perpage = toint(indata["perpage"],
+                    self.default_perpage)
         if "search" in indata:
             self.session.search = indata["search"]
 
