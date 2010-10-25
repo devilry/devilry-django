@@ -8,6 +8,11 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
+  <li><a href="{{ parent_url }}"
+      class="tooltip-hover"
+      title="{% trans "Administrative overview of nodes" %}">
+    {{ parent_url_label }}</a></li>
+  <li>::</li>
   <li>{{ title }}</li>
 {% endblock %}
 

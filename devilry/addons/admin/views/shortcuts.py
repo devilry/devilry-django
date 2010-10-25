@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
 from devilry.ui.messages import UiMessages
+from devilry.ui.filtertable import FilterTable, Action, Filter
 
 
 admins_help_text = _('Comma-separated list of administrators. Just start '\
@@ -23,6 +24,56 @@ def iter_filtertable_selected(postdata, clsname):
             yield key, value
 
 
+class FilterHasAdmins(Filter):
+    def __init__(self):
+        super(FilterHasAdmins, self).__init__(_("Has administrators?"))
+
+    def get_labels(self, properties):
+        return [_("All"), _("Yes"), _("No")]
+
+    def filter(self, properties, dataset, selected):
+        choice = selected[0]
+        if choice == 1:
+            dataset = dataset.filter(admins__isnull=False)
+        elif choice == 2:
+            dataset = dataset.filter(admins__isnull=True)
+        return dataset
+
+
+class NodeAction(Action):
+    def get_url(self, properties):
+        return reverse(self.url)
+
+class BaseNodeFilterTable(FilterTable):
+    nodecls = None
+    search_help = _('Search for any part of the "short name", "long name" '\
+            'or the username of administrators.')
+
+    @classmethod
+    def get_selected_nodes(cls, request):
+        nodes = []
+        for node_id in cls.get_selected_ids(request):
+            node = get_object_or_404(cls.nodecls, id=node_id)
+            if node.can_save(request.user):
+                nodes.append(node)
+        return nodes
+
+    def __init__(self, request):
+        super(BaseNodeFilterTable, self).__init__(request)
+        self.set_properties(nodecls=self.nodecls)
+
+    def create_dataset(self):
+        dataset = self.nodecls.where_is_admin_or_superadmin(self.request.user)
+        total = dataset.count()
+        return total, dataset
+
+    def search(self, dataset, qry):
+        return dataset.filter(
+                short_name__contains=qry,
+                long_name__contains=qry,
+                admins__username__contains=qry)
+
+
 def deletemany_generic(request, nodecls, filtertblcls, successurl=None):
     successurl = successurl or reverse('devilry-main')
     clsname = nodecls.__name__.lower()
@@ -30,13 +81,6 @@ def deletemany_generic(request, nodecls, filtertblcls, successurl=None):
     if request.method == 'POST':
         nodes = []
         nodes = filtertblcls.get_selected_nodes(request)
-        #for key, value in iter_filtertable_selected(request.POST, clsname):
-            #node = nodecls.objects.get(id=value)
-            #if node.can_save(request.user):
-                #nodes.append(node)
-            #else:
-                #return HttpResponseForbidden(
-                        #"No permission to delete %(node)s" % node)
         nodestr = []
         for node in nodes:
             nodestr.append(str(node))
@@ -77,10 +121,14 @@ class EditBase(object):
                     args = [str(self.obj.pk)])
 
     def create_form(self):
-        raise NotImplementedError, "create_form must be implemented"
+        raise NotImplementedError()
+
+    def get_parent_url(self):
+        raise NotImplementedError()
     
-    def get_reverse_url(self, *args):
-        return reverse('devilry.addons.admin.views.edit_' + self.VIEW_NAME, args=args)
+    #def get_reverse_url(self, *args):
+        #return reverse('devilry.addons.admin.views.edit_' + self.VIEW_NAME,
+                #args=args)
 
     def create_view(self):
         if self.forbidden:
@@ -110,10 +158,14 @@ class EditBase(object):
         else:
             self.title = _('Edit %(model_name)s' % self.model_name_dict)
 
+        parent_url_label = self.MODEL_CLASS._meta.verbose_name_plural
+        parent_url = self.get_parent_url()
         return render_to_response('devilry/admin/edit_node.django.html', {
             'title': self.title,
             'model_plural_name': self.MODEL_CLASS._meta.verbose_name_plural,
             'nodeform': objform,
             'messages': self.messages,
             'post_url': self.post_url,
+            'parent_url_label': parent_url_label,
+            'parent_url': parent_url,
             }, context_instance=RequestContext(self.request))

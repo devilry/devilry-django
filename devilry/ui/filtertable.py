@@ -274,7 +274,7 @@ class FilterTable(object):
                 self.session.order_asc = not self.session.order_asc
             else:
                 self.session.order_asc = True
-                self.session.order_by = i
+                self.session.order_by = self.columns.get_by_index(i).id
 
         checkall_in_filter = int(indata.get("checkall_in_filter", -1))
         for i, f in enumerate(self.filters):

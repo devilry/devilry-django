@@ -1,13 +1,13 @@
-from django.utils.translation import ugettext as _
-from django.conf import settings
+#from django.utils.translation import ugettext as _
+#from django.conf import settings
 
-from devilry.addons.quickdash.dashboardplugin_registry import registry, \
-        DashboardItem, admingroup
+#from devilry.addons.quickdash.dashboardplugin_registry import registry, \
+        #DashboardItem, admingroup
 
-import dashboardviews
+#import dashboardviews
 
 
-admingroup.additems(
+#admingroup.additems(
     #DashboardItem(
         #id = 'assignments',
         #title = _('Assignments'),
@@ -26,10 +26,10 @@ admingroup.additems(
         #view = dashboardviews.list_subjects,
         #js = [settings.DEVILRY_RESOURCES_URL +
             #'/ui/js/jquery.autocompletetable.js']),
-    DashboardItem(
-        id = 'nodes',
-        title = _('Nodes'),
-        view = dashboardviews.list_nodes,
-        js = [settings.DEVILRY_RESOURCES_URL +
-            '/ui/js/jquery.autocompletetable.js'])
-)
+    #DashboardItem(
+        #id = 'nodes',
+        #title = _('Nodes'),
+        #view = dashboardviews.list_nodes,
+        #js = [settings.DEVILRY_RESOURCES_URL +
+            #'/ui/js/jquery.autocompletetable.js'])
+#)
