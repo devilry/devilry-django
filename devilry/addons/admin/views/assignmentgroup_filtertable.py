@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Max
 
 from devilry.core.models import AssignmentGroup
-from devilry.ui.filtertable import Filter, Action, FilterTable, Col, Row
+from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
+        Col, Row)
 
 
 class FilterStatus(Filter):
@@ -64,16 +65,18 @@ class AssignmentGroupsFilterTable(FilterTable):
         FilterStatus('Status'),
         FilterExaminer('Examiners')
     ]
-    columns = [
-            Col("Candidates"),
-            Col("Examiners"),
-            Col("Name", can_order=True),
-            Col("Deadlines", optional=True),
-            Col("Active deadline", optional=True),
-            Col("Latest delivery", optional=True),
-            Col("Deliveries", optional=True, active_default=True),
-            Col("Status", can_order=True),
-    ]
+    columns = Columns(
+            Col('candidates', "Candidates"),
+            Col('examiners', "Examiners", optional=True, active_default=True),
+            Col('name', "Name", can_order=True, optional=True,
+                active_default=True),
+            Col('deadlines', "Deadlines", optional=True),
+            Col('active deadline', "Active deadline", optional=True),
+            Col('latest delivery', "Latest delivery", optional=True),
+            Col('deliveries', "Deliveries", optional=True),
+            Col('status', "Status", can_order=True, optional=True,
+                active_default=True),
+    )
     selectionactions = [
             AssignmentGroupsAction(_("Create/replace deadline"),
                 'devilry-admin-create_deadline'),
@@ -106,25 +109,31 @@ class AssignmentGroupsFilterTable(FilterTable):
         self.assignment = assignment
 
     def create_row(self, group, active_optional_cols):
-        cells = [group.get_candidates(), group.get_examiners(), group.name]
-        if 3 in active_optional_cols:
+        row = Row(group.id)
+        row.add_cell(group.get_candidates())
+
+        if 'examiners' in active_optional_cols:
+            row.add_cell(group.get_examiners())
+        if 'name' in active_optional_cols:
+            row.add_cell(group.name)
+        if 'deadlines' in active_optional_cols:
             deadlines = "<br/>".join([unicode(deadline) for deadline in
                 group.deadlines.all()])
-            cells.append(deadlines)
-        if 4 in active_optional_cols:
+            row.add_cell(deadlines)
+        if 'active deadline' in active_optional_cols:
             deadline = group.get_active_deadline()
-            cells.append(unicode(deadline))
-        if 5 in active_optional_cols:
+            row.add_cell(unicode(deadline))
+        if 'latest delivery' in active_optional_cols:
             latest_delivery = group.deliveries.aggregate(
                     latest=Max("time_of_delivery")).get("latest")
-            cells.append(unicode(latest_delivery or ""))
-        if 6 in active_optional_cols:
+            row.add_cell(unicode(latest_delivery or ""))
+        if 'deliveries' in active_optional_cols:
             deliveries = group.deliveries.count()
-            cells.append(unicode(deliveries))
-        cells.append(group.get_localized_status())
-        
-        row = Row(group.id, cells)
-        row[-1].cssclass = group.get_status_cssclass()
+            row.add_cell(unicode(deliveries))
+        if 'status' in active_optional_cols:
+            row.add_cell(group.get_localized_status(),
+                    cssclass=group.get_status_cssclass())
+
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_assignmentgroup',
                         args=[self.assignment.id, str(group.id)]))

@@ -11,20 +11,22 @@
             var box = $("<li></li>").appendTo(targetbox);
             var button = $("<a></a>")
               .html(action.label)
-              .attr("href", "#")
+              .attr("href", requires_selection?"#":action.url)
               .appendTo(box);
             $.each(action.cssclasses, function(ci, cssclass) {
                 button.addClass(cssclass);
               });
-            button.click(function() {
-                var c = $("#" + store.id + " input:checkbox:checked");
-                if(c.length == 0 && requires_selection) {
-                  store.noselection_dialog.dialog("open");
-                  return false;
-                }
-                store.form.attr("action", action.url);
-                store.form.submit();
-              });
+            if(requires_selection) {
+              button.click(function() {
+                  var c = store.result_table.find("input:checkbox:checked");
+                  if(c.length == 0) {
+                    store.noselection_dialog.dialog("open");
+                    return false;
+                  }
+                  store.form.attr("action", action.url);
+                  store.form.submit();
+                });
+            }
           });
       },
 
@@ -111,9 +113,9 @@
             .attr("type", "checkbox")
             .appendTo(th);
           checkall.click(function() {
-              var qry ="#" + store.id + " .filtertable-table input:checkbox";
+              var qry = store.result_table.find("input:checkbox");
               var checked = checkall.is(":checked");
-              $(qry).attr("checked", checked);
+              qry.attr("checked", checked);
             });
         }
         $.each(columns, function(i, col) {
@@ -227,7 +229,7 @@
       },
 
 
-      refresh_optional_cols: function(store, all_columns, active_optional_columns) {
+      refresh_optional_cols: function(store, all_columns) {
         store.colsettingsbox.empty();
         $("<h4>Optional columns</h4>").appendTo(store.colsettingsbox);
         $.each(all_columns, function(index, colinfo) {
@@ -278,8 +280,7 @@
             $.filtertable.refresh_table(store, json);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
-            $.filtertable.refresh_optional_cols(store, json.all_columns,
-              json.active_optional_columns);
+            $.filtertable.refresh_optional_cols(store, json.all_columns);
 
             store.searchfield.val(json.search);
             store.statusmsgbox.html(json.statusmsg);
@@ -328,21 +329,21 @@
           var store = {};
           store.id = id;
           store.jsonurl = jsonurl;
-          store.form = $("#" + id + " form").first();
-          store.searchbox = $("#" + id + " .filtertable-searchbox").first();
-          store.selectionactionsbox = $("#" + id + " .filtertable-selectionactions").first();
-          store.relatedactionsbox = $("#" + id + " .filtertable-relatedactions").first();
-          store.filterbox = $("#" + id + " .filtertable-filters").first();
-          store.result_table = $("#" + id + " .filtertable-table").first();
-          store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
-          store.searchfield = $("#" + id + " .filtertable-searchfield").first();
-          store.statusmsgbox = $("#" + id + " .filtertable-statusmsg").first();
-          store.colsettingsbox = $("#" + id + " .filtertable-settings-cols").first();
+          store.form = $(this).find("form").first();
+          store.searchbox = $(this).find(".filtertable-searchbox").first();
+          store.selectionactionsbox = $(this).find(".filtertable-selectionactions").first();
+          store.relatedactionsbox = $(this).find(".filtertable-relatedactions").first();
+          store.filterbox = $(this).find(".filtertable-filters").first();
+          store.result_table = $(this).find(".filtertable-table").first();
+          store.pagechangerbox = $(this).find(".filtertable-pagechanger").first();
+          store.searchfield = $(this).find(".filtertable-searchfield").first();
+          store.statusmsgbox = $(this).find(".filtertable-statusmsg").first();
+          store.colsettingsbox = $(this).find(".filtertable-settings-cols").first();
           store.resultcount_supported = resultcount_supported;
 
           // Show this dialog when selecting a action when no rows are
           // selected.
-          store.noselection_dialog = $("#" + id + " .filtertable-noselection-dialog").first();
+          store.noselection_dialog = $(this).find(".filtertable-noselection-dialog").first();
           store.noselection_dialog.dialog({
               modal: true,
               autoOpen: false,
@@ -368,7 +369,7 @@
                 return false;
               }
             });
-          var searchbtn = $("#" + id + " .filtertable-searchbtn").first();
+          var searchbtn = $(this).find(".filtertable-searchbtn").first();
           searchbtn.button({
             text: false,
             icons: {primary: "ui-icon-search"}
@@ -380,21 +381,21 @@
 
 
           // Reset filters
-          var resetfiltersbtn = $("#" + id + " .filtertable-resetfilters-button").first();
+          var resetfiltersbtn = $(this).find(".filtertable-resetfilters-button").first();
           resetfiltersbtn.click(function(e) {
               $.filtertable.refresh(store, {reset_filters:"yes"});
               return false;
             });
 
           // Settings
-          store.perpagefield = $("#" + id + " .filtertable-perpagefield").first();
+          store.perpagefield = $(this).find(".filtertable-perpagefield").first();
           store.perpagefield.keydown(function(e) {
               if (e.keyCode==13) {
                 $.filtertable.refresh(store, {perpage:store.perpagefield.val()});
                 return false;
               }
             });
-          var perpagebtn = $("#" + id + " .filtertable-perpagebtn").first();
+          var perpagebtn = $(this).find(".filtertable-perpagebtn").first();
           perpagebtn.button({
             text: false,
             icons: {primary: "ui-icon-arrowrefresh-1-w"}

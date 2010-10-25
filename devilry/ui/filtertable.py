@@ -15,11 +15,14 @@ class Cell(object):
 
 
 class Row(object):
-    def __init__(self, id, cells, cssclass=[]):
+    def __init__(self, id, cssclass=""):
         self.id = id
-        self.cells = [Cell(c) for c in cells]
+        self.cells = []
         self.cssclass = cssclass
         self.actions = []
+
+    def add_cell(self, value, cssclass=""):
+        self.cells.append(Cell(value, cssclass))
 
     def add_action(self, label, url):
         self.actions.append({"label": label, "url":url})
@@ -36,9 +39,22 @@ class Row(object):
         return self.cells[index]
 
 
+class Columns(dict):
+    def __init__(self, *cols):
+        self.lst = cols
+        for col in cols:
+            self[col.id] = col
+
+    def get_by_index(self, index):
+        return self.lst[index]
+
+    def iter_ordered(self):
+        return self.lst.__iter__()
+
 class Col(object):
-    def __init__(self, title, can_order=False, optional=False,
+    def __init__(self, id, title, can_order=False, optional=False,
             active_default=False):
+        self.id = id
         self.title = title
         self.can_order = can_order
         self.optional = optional
@@ -159,7 +175,7 @@ class FilterTable(object):
     default_order_asc = False
     use_rowactions = False
     filters = []
-    columns = []
+    columns = Columns()
     selectionactions = []
     relatedactions = []
     resultcount_supported = True
@@ -195,8 +211,8 @@ class FilterTable(object):
             self.default_currentpage, self.default_perpage,
             self.default_order_by, self.default_order_asc,
             default_filters,
-            [i for i, c in enumerate(self.columns)
-                if c.optional and c.active_default])
+            set([c.id for c in self.columns.itervalues()
+                if c.optional and c.active_default]))
         return default_session
 
     def session_from_indata(self):
@@ -223,11 +239,12 @@ class FilterTable(object):
             if indata['active_cols'] == "none":
                 cols = []
             else:
-                not_optional = [i for i, c in enumerate(self.columns)
-                        if not c.optional]
-                cols = [int(colnum)
-                        for colnum in indata.getlist("active_cols")
-                        if not int(colnum) in not_optional]
+                cols = set()
+                for i in indata.getlist("active_cols"):
+                    colnum = int(i)
+                    col = self.columns.get_by_index(colnum)
+                    if col.optional:
+                        cols.add(col.id)
             self.session.active_optional_columns = cols
 
         if "order_by" in indata:
@@ -311,9 +328,9 @@ class FilterTable(object):
         return dataset, filteredsize
 
     def get_active_columns(self):
-        return [col.as_dict() for i, col in enumerate(self.columns)
+        return [col.as_dict() for col in self.columns.iter_ordered()
                 if not col.optional
-                    or i in self.session.active_optional_columns]
+                    or col.id in self.session.active_optional_columns]
 
     def dataset_to_rowlist(self, dataset):
         return [self.create_row(d,
@@ -365,8 +382,8 @@ class FilterTable(object):
             data = rowlist,
             all_columns = [{
                     'col':c.as_dict(),
-                    'is_active': i in self.session.active_optional_columns}
-                for i, c in enumerate(self.columns)],
+                    'is_active': c.id in self.session.active_optional_columns}
+                for c in self.columns.iter_ordered()],
             statusmsg = statusmsg
         )
         #print "Session:"
