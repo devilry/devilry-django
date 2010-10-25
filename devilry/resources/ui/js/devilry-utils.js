@@ -1,3 +1,6 @@
+// vim: set ts=2 sts=2 et sw=2:
+
+
 (function($){
     $.fn.boxWithLabel = function(args) {
       args.type = args.type || "checkbox";
@@ -36,5 +39,6 @@
         alert(message);
       }
     };
+	}
 
   })(jQuery);

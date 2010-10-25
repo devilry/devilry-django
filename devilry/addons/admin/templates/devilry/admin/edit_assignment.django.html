@@ -52,19 +52,8 @@
 
 
 {% if not isnew %}
-  <h2>Assignment groups</h2>
+  <h2>Groups</h2>
 
   {{ assignmentgroupstbl }}
-
-  {% comment %}
-  <div id='autocomplete-assignmentgroup'></div>
-  <script type="text/javascript" src="/resources/ui/js/jquery.autocompletetable.js"></script> 
-  <script type="text/javascript">
-    $(function() {
-      $("#autocomplete-assignmentgroup").autocompletetable(
-        "{% url admin-assignmentgroups-json assignment.id %}")
-    });
-  </script>
-  {% endcomment %}
 {% endif %}
 {% endblock %}
