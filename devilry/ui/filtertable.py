@@ -178,7 +178,6 @@ class FilterTable(object):
     default_order_asc = False
     use_rowactions = False
     filters = []
-    columns = Columns()
     selectionactions = []
     relatedactions = []
     resultcount_supported = True
@@ -205,6 +204,7 @@ class FilterTable(object):
         self.properties = {}
         self.request = request
         self.indata = request.GET
+        self.columns = self.get_columns()
         self.session_from_indata()
         #del self.request.session[self.id]
         
@@ -295,6 +295,9 @@ class FilterTable(object):
 
     def search(self, dataset, qry):
         raise NotImplementedError()
+
+    def get_columns(self):
+        return Columns()
 
     def get_selectionactions_as_dicts(self):
         return [a.as_dict(self.properties) for a in self.selectionactions]

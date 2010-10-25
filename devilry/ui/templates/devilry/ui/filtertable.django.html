@@ -97,7 +97,7 @@ table.zebra tr.even td {
       <div>
         <div class='filtertable-searchbox'>
           <h4>Search:</h4>
-          <input type="text" class="filtertable-searchfield with-tooltip" title="{{ search_help }}" />
+          <input type="text" class="filtertable-searchfield tooltip-focus" title="{{ search_help }}" />
           <button class="filtertable-searchbtn">Search</button>
         </div>
         <div class="filtertable-filters">
@@ -109,9 +109,11 @@ table.zebra tr.even td {
       <div>
         <div>
           <h4>Rows per page:</h4>
-          <input type="text" class="filtertable-perpagefield" style="width:60px" />
-          <button class="filtertable-perpage-allbtn">All</button>
+          <input type="text" class="filtertable-perpagefield tooltip-focus"
+            style="width:60px" title="Number of rows to display on each page."/>
           <button class="filtertable-perpage-updatebtn">Refresh</button>
+          <button class="filtertable-perpage-allbtn tooltip-hover"
+            title="Show all available rows on a single page">All</button>
         </div>
         <div class="filtertable-settings-cols">
           {% comment %}This is filled using javascript{% endcomment %}

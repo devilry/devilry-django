@@ -68,18 +68,6 @@ class AssignmentGroupsFilterTable(FilterTable):
         FilterStatus('Status'),
         FilterExaminer('Examiners')
     ]
-    columns = Columns(
-            Col('candidates', "Candidates"),
-            Col('examiners', "Examiners", optional=True, active_default=True),
-            Col('name', "Name", can_order=True, optional=True,
-                active_default=True),
-            Col('deadlines', "Deadlines", optional=True),
-            Col('active deadline', "Active deadline", optional=True),
-            Col('latest delivery', "Latest delivery", optional=True),
-            Col('deliveries', "Deliveries", optional=True),
-            Col('status', "Status", can_order=True, optional=True,
-                active_default=True),
-    )
     selectionactions = [
             AssignmentGroupsAction(_("Delete"),
                 'devilry-admin-delete_manyassignmentgroups',
@@ -111,6 +99,18 @@ class AssignmentGroupsFilterTable(FilterTable):
     search_help = "Search the names of candidates on this group."
     #resultcount_supported = False
 
+    def get_columns(self):
+        return Columns(
+            Col('candidates', "Candidates"),
+            Col('examiners', "Examiners", optional=True, active_default=True),
+            Col('name', "Name", can_order=True, optional=True,
+                active_default=True),
+            Col('deadlines', "Deadlines", optional=True),
+            Col('active deadline', "Active deadline", optional=True),
+            Col('latest delivery', "Latest delivery", optional=True),
+            Col('deliveries', "Deliveries", optional=True),
+            Col('status', "Status", can_order=True, optional=True,
+                active_default=True))
 
     @classmethod
     def get_selected_groups(cls, request):
