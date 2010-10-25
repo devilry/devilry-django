@@ -287,15 +287,6 @@ class GroupCountError(Exception):
             args=[assignment_id]))
 
 
-def _groups_from_filtertable(request):
-    groups = []
-    for key, group_id in iter_filtertable_selected(request.POST,
-            'assignmentgroup'):
-        group = get_object_or_404(AssignmentGroup, id=group_id)
-        groups.append((key, group))
-    if len(groups) == 0:
-        raise GroupCountError(request)
-
 
 @login_required
 def set_examiners(request, assignment_id):
@@ -377,20 +368,17 @@ def random_dist_examiners(request, assignment_id):
         users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
                 required=True)
     if request.method == 'POST':
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
 
         if 'onsite' in request.POST:
             form = ExaminerForm(request.POST)
             if form.is_valid():
                 examiner_ids = MultiSelectCharField.from_string(
                         form.cleaned_data['users'])
-                groupobjs = [group for key, group in groups]
                 examinerobjs = [User.objects.get(id=id)
                         for id in examiner_ids]
-                result = random_distribute_examiners(assignment, groupobjs,
+                result = random_distribute_examiners(assignment,
+                        [g for g in groups],
                         examinerobjs)
                 m = ['<p>', _('Examiners successfully random distributed.'), '</p>']
                 for examiner, assignmentgroups in result.iteritems():
@@ -410,6 +398,7 @@ def random_dist_examiners(request, assignment_id):
         return render_to_response('devilry/admin/random-dist-examiners.django.html', {
                 'form': form,
                 'assignment': assignment,
+                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name(),
                 'groups': groups
                 }, context_instance=RequestContext(request))
     else:
@@ -494,7 +483,7 @@ def create_deadline(request, assignment_id):
                     label = _("Deadline"))
 
         if 'onsite' in request.POST:
-            deadline = Deadline(assignment_group=groups[0][1])
+            deadline = Deadline(assignment_group=groups[0])
             deadlineform = DeadlineForm(request.POST, instance=deadline)
             selectform = DeadlineSelectForm(request.POST)
             if selectform.is_valid() and deadlineform.is_valid():
@@ -506,7 +495,7 @@ def create_deadline(request, assignment_id):
                             datetimefullformat)
                     for d in selected_deadlines.filter(deadline=deadline_to_copy):
                         d.delete()
-                for key, group in groups:
+                for group in groups:
                     group.deadlines.create(deadline=deadline, text=text)
                 messages = UiMessages()
                 messages.add_success(_('Deadlines created successfully.'))
@@ -536,11 +525,8 @@ def clear_deadlines(request, assignment_id):
         return HttpResponseForbidden("Forbidden")
     
     if request.method == 'POST':
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
-        ids = [g.id for key, g in groups]
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+        ids = [g.id for g in groups]
         selected_deadlines = Deadline.objects.filter(
                 assignment_group__in=ids)
         for d in selected_deadlines:
@@ -548,7 +534,7 @@ def clear_deadlines(request, assignment_id):
         messages = UiMessages()
         messages.add_success(
                 _('Deadlines successfully cleared from: %(groups)s.' %
-                {'groups': ', '.join([str(g) for k, g in groups])}))
+                {'groups': ', '.join([str(g) for g in groups])}))
         messages.save(request)
         return HttpResponseRedirect(reverse(
             'devilry-admin-edit_assignment',

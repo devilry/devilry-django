@@ -29,7 +29,7 @@ class FilterExaminer(Filter):
     def _get_examiners(self, properties):
         assignment = properties['assignment']
         examiners = User.objects.filter(examiners__parentnode=assignment).distinct()
-        examiners.order_by('username')
+        examiners = examiners.order_by('username')
         return examiners
 
     def get_labels(self, properties):
@@ -78,10 +78,16 @@ class AssignmentGroupsFilterTable(FilterTable):
                 active_default=True),
     )
     selectionactions = [
+            AssignmentGroupsAction(_("Delete"),
+                'devilry-admin-delete_manyassignmentgroups'),
             AssignmentGroupsAction(_("Create/replace deadline"),
                 'devilry-admin-create_deadline'),
+            AssignmentGroupsAction(_("Clear deadlines"),
+                'devilry-admin-clear_deadlines'),
             AssignmentGroupsAction(_("Set examiners"),
-                'devilry-admin-set_examiners')
+                'devilry-admin-set_examiners'),
+            AssignmentGroupsAction(_("Random distribute examiners"),
+                'devilry-admin-random_dist_examiners'),
             ]
     relatedactions = [
             AssignmentGroupsAction(_("Create new"),
