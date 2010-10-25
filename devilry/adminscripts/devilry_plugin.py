@@ -1,13 +1,13 @@
-from django.utils.translation import ugettext as _
+#from django.utils.translation import ugettext as _
 
-from devilry.addons.quickdash.dashboardplugin_registry import (
-        DashboardItem, admingroup)
+#from devilry.addons.quickdash.dashboardplugin_registry import (
+        #DashboardItem, admingroup)
 
-import dashboardviews
+#import dashboardviews
 
 
-admingroup.additems(
-        DashboardItem(
-            id = 'utilities',
-            title = _('Utilities'),
-            view = dashboardviews.overview))
+#admingroup.additems(
+        #DashboardItem(
+            #id = 'utilities',
+            #title = _('Utilities'),
+            #view = dashboardviews.overview))

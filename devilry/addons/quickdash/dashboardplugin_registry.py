@@ -6,8 +6,7 @@
 from django.utils.translation import ugettext as _
 
 class DashboardGroup(object):
-    def __init__(self, id, title):
-        self.id = id
+    def __init__(self, title):
         self.title = title
         self.items = []
         self.group = None
@@ -17,33 +16,25 @@ class DashboardGroup(object):
             item.group = self
             self.items.append(item)
 
-    def parseitems(self, request, js_set):
-        items = []
-        for item in self.items:
-            view = item.getview(request)
-            if view != None:
-                js = []
-                if item.js:
-                    for src in item.js:
-                        if not src in js_set:
-                            js.append(src)
-                            js_set.add(src)
-                items.append((item, js, view))
-        return items
+    def get_items(self, request):
+        return [i for i in self.items if i.is_authorized(request)]
 
 
 class DashboardItem(object):
-    def __init__(self, id, title, view=None, js=[]):
+    def __init__(self, title, url,
+            check = lambda request: True):
         self.title = title
-        self.id = id
+        self.url = url
+        self.check = check
+
+    def is_authorized(self, request):
+        return self.check(request)
+
+
+class DashboardView(object):
+    def __init__(self, view, js=[]):
         self.view = view
         self.js = js
-
-    def getview(self, request, *args, **kw):
-        return self.view(request, *args, **kw)
-
-    def getid(self):
-        return "%s-%s" % (self.group.id, self.id)
 
 
 class DashboardRegistry(object):
@@ -53,23 +44,36 @@ class DashboardRegistry(object):
     """
     def __init__(self):
         self._groups = []
+        self._views = []
 
     def create_group(self, *args, **kwargs):
         group = DashboardGroup(*args, **kwargs)
         self._groups.append(group)
         return group
 
-    def parsegroups(self, request):
-        js_set = set()
+    def add_view(self, view):
+        self._views.append(view)
+
+    def get_groups(self, request):
         groups = []
         for group in self._groups:
-            items = group.parseitems(request, js_set)
+            items = group.get_items(request)
             if items:
                 groups.append((group, items))
         return groups
 
+    def get_views(self, request):
+        items = []
+        js_set = set()
+        for item in self._views:
+            for src in item.js:
+                js_set.add(src)
+            view = item.view
+            items.append(view(request))
+        return js_set, items
+
 
 
 registry = DashboardRegistry()
-personalgroup = registry.create_group('Personal', _('Personal'))
-admingroup = registry.create_group('admin', _('Administration'))
+personalgroup = registry.create_group(_('Personal'))
+admingroup = registry.create_group(_('Administration'))

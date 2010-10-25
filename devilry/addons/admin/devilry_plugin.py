@@ -1,35 +1,33 @@
-#from django.utils.translation import ugettext as _
-#from django.conf import settings
+from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
 
-#from devilry.addons.quickdash.dashboardplugin_registry import registry, \
-        #DashboardItem, admingroup
+from devilry.addons.quickdash.dashboardplugin_registry import registry, \
+        DashboardItem, admingroup, DashboardView
+from devilry.core.models import Node, Subject, Period, Assignment
 
-#import dashboardviews
+import dashboardviews
 
 
-#admingroup.additems(
-    #DashboardItem(
-        #id = 'assignments',
-        #title = _('Assignments'),
-        #view = dashboardviews.list_assignments,
-        #js = [settings.DEVILRY_RESOURCES_URL +
-            #'/ui/js/jquery.autocompletetable.js']),
-    #DashboardItem(
-        #id = 'periods',
-        #title = _('Periods'),
-        #view = dashboardviews.list_periods,
-        #js = [settings.DEVILRY_RESOURCES_URL +
-            #'/ui/js/jquery.autocompletetable.js']),
-    #DashboardItem(
-        #id = 'subjects',
-        #title = _('Subjects'),
-        #view = dashboardviews.list_subjects,
-        #js = [settings.DEVILRY_RESOURCES_URL +
-            #'/ui/js/jquery.autocompletetable.js']),
-    #DashboardItem(
-        #id = 'nodes',
-        #title = _('Nodes'),
-        #view = dashboardviews.list_nodes,
-        #js = [settings.DEVILRY_RESOURCES_URL +
-            #'/ui/js/jquery.autocompletetable.js'])
-#)
+def permcheck(nodecls, request):
+    if request.user.is_superuser:
+        return True
+    else:
+        return nodecls.where_is_admin_or_superadmin(request.user).count() > 0
+
+
+admingroup.additems(
+    DashboardItem(
+        title = _('Nodes'),
+        url = reverse('devilry-admin-list_nodes'),
+        check = lambda r: permcheck(Node, r)),
+    DashboardItem(
+        title = _('Subjects'),
+        url = reverse('devilry-admin-list_subjects'),
+        check = lambda r: permcheck(Subject, r)),
+    DashboardItem(
+        title = _('Periods'),
+        url = reverse('devilry-admin-list_periods'),
+        check = lambda r: permcheck(Period, r)),
+)
+
+registry.add_view(DashboardView(dashboardviews.main))
