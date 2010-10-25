@@ -182,12 +182,14 @@ class FilterTable(object):
     selectionactions = []
     relatedactions = []
     resultcount_supported = True
+    search_help = ""
 
     @classmethod
     def initial_html(cls, request, jsonurl):
         return render_to_string('devilry/ui/filtertable.django.html', {
             'id': cls.id,
             'jsonurl': jsonurl,
+            'search_help': cls.search_help,
             'resultcount_supported': str(cls.resultcount_supported).lower()
             }, context_instance=RequestContext(request))
 

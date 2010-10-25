@@ -108,6 +108,7 @@ class AssignmentGroupsFilterTable(FilterTable):
                 "devilry-admin-copy_groups")
             ]
     use_rowactions = True
+    search_help = "Search the names of candidates on this group."
     #resultcount_supported = False
 
 

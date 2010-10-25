@@ -16,7 +16,20 @@
             $(".button").button();
           });
         </script>          
-        <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.css" />
+        <link rel="stylesheet" type="text/css"
+          href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.css" />
+
+        {% block tipTip %}
+          <script type="text/javascript"
+            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/tipTipv13/jquery.tipTip.minified.js"></script>
+          <link rel="stylesheet" type="text/css"
+            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/tipTipv13/tipTip.css" />
+          <script type="text/javascript">
+            $(function(){
+                $(".with-tooltip").tipTip();
+              });
+          </script>
+        {% endblock %}
       {% endblock %}
     {% endwith %}
 
