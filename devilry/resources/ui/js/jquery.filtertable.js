@@ -34,7 +34,7 @@
                     $.each(checked, function(index, checkbox) {
                       //var tr = checkbox.parent();
                       $("<li></li>")
-                        .html($(checkbox).attr("title"))
+                        .html($(checkbox).data("title"))
                         .appendTo(ul);
                     });
                     store.confirm_dialog.dialog({
@@ -201,7 +201,7 @@
                 .attr("type", "checkbox")
                 .attr("name", name)
                 .attr("value", row.id)
-                .attr("title", row.title)
+                .data("title", row.title)
                 .appendTo(td);
             }
             $.each(row.cells, function(index, cell) {
