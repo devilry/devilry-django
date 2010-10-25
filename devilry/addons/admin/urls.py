@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 
 # Node, Subject, Period and Assignment has exactly the same url-format
 generic_urls = []
-for clsname in ['node', 'subject', 'period']:#, 'assignment']:
+for clsname in ['node', 'subject', 'period', 'assignment']:
     generic_urls += [
         url(r'^%(clsname)ss/(?P<%(clsname)s_id>\d+)/edit$' % vars(),
             'views.%(clsname)s.edit_%(clsname)s' % vars(),

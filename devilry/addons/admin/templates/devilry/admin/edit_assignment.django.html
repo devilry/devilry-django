@@ -12,6 +12,9 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
+  <li><a href="{% url devilry-admin-list_assignments %}">
+    {% trans "Assignments" %}</a></li>
+  <li>::</li>
   <li>
     {% if isnew %}
       {% trans "Create assignment" %}

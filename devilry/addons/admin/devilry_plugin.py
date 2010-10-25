@@ -28,6 +28,10 @@ admingroup.additems(
         title = _('Periods'),
         url = reverse('devilry-admin-list_periods'),
         check = lambda r: permcheck(Period, r)),
+    DashboardItem(
+        title = _('Assignments'),
+        url = reverse('devilry-admin-list_assignments'),
+        check = lambda r: permcheck(Assignment, r)),
 )
 
 registry.add_view(DashboardView(dashboardviews.main))

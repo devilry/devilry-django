@@ -15,12 +15,6 @@ from assignment import edit_assignment
 
 
 
-
-
-@login_required
-def delete_manyassignments(request):
-    return deletemany_generic(request, Assignment)
-
 @login_required
 def delete_manyassignmentgroups(request, assignment_id):
     return deletemany_generic(request, AssignmentGroup,
