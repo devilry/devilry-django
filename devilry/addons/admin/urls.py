@@ -66,5 +66,10 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignment.assignmentgroups_json',
         name='devilry-admin-assignmentgroups-json'),
 
+    url(r'^list-nodes-json$' % vars(),
+        'dashboardviews.list_nodes_json' % vars(),
+        name='devilry-admin-list_nodes_json' % vars()),
+
+
     *generic_urls
 )

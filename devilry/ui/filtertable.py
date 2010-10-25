@@ -189,7 +189,11 @@ class FilterTable(object):
             'id': cls.id,
             'jsonurl': jsonurl,
             'search_help': cls.search_help,
-            'resultcount_supported': str(cls.resultcount_supported).lower()
+            'has_selection_actions': len(cls.selectionactions) > 0,
+            'has_related_actions':  len(cls.relatedactions) > 0,
+            'has_search': hasattr(cls, "search"),
+            'has_filters': len(cls.filters) > 0,
+            'resultcount_supported': cls.resultcount_supported
             }, context_instance=RequestContext(request))
 
     @classmethod
@@ -290,14 +294,17 @@ class FilterTable(object):
     def create_dataset(self):
         raise NotImplementedError()
 
-    def limit_dataset(self, dataset, start, end):
-        raise NotImplementedError()
-
-    def search(self, dataset, qry):
-        raise NotImplementedError()
+    #def search(self, dataset, qry):
+        #raise NotImplementedError()
 
     def get_columns(self):
         return Columns()
+
+    def get_dataset_size(self, dataset):
+        return dataset.count()
+
+    def limit_dataset(self, dataset, start, end):
+        return dataset[start:end]
 
     def get_selectionactions_as_dicts(self):
         return [a.as_dict(self.properties) for a in self.selectionactions]

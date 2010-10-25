@@ -2,8 +2,35 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 from devilry.core.models import Node, Subject, Period, Assignment
+from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
+        Col, Row)
+
+
+class BaseNodeFilterTable(FilterTable):
+    id = 'node-admin-filtertable'
+    nodecls = Node
+
+    def __init__(self, request):
+        super(BaseNodeFilterTable, self).__init__(request)
+        self.set_properties(nodecls=self.nodecls)
+
+    def get_columns(self):
+        return Columns(
+            Col('nodes', "Nodes"))
+
+    def create_row(self, node, active_optional_cols):
+        row = Row(node.id)
+        row.add_cell(node.short_name)
+        return row
+
+    def create_dataset(self):
+        dataset = self.nodecls.objects.all()
+        total = dataset.count()
+        return total, dataset
 
 
 def list_nodes_generic(request, nodecls, headings, deletemessage,
@@ -23,18 +50,30 @@ def list_nodes_generic(request, nodecls, headings, deletemessage,
             'help': help_text
         }, context_instance=RequestContext(request))
 
+@login_required
+def list_nodes_json(request):
+    if Node.where_is_admin_or_superadmin(request.user).count() == 0:
+        return HttpResponseForbidden("Forbidden")
+    tbl = BaseNodeFilterTable(request)
+    return tbl.json_response()
+
 def list_nodes(request, *args, **kwargs):
-    return list_nodes_generic(request, Node,
-            headings = ["Node", "Administrators"],
-            deletemessage = \
-                _('This will delete all selected nodes and all subjects, periods, '\
-                'assignments, assignment groups, deliveries and feedbacks within '\
-                'them.'),
-            help_text = \
-                _('A node at the top of the navigation tree. It is a '\
-                'generic element used to organize administrators. A '\
-                'Node can be organized below another Node, and it can '\
-                'only have one parent.'))
+    tbl = BaseNodeFilterTable.initial_html(request,
+            reverse('devilry-admin-list_nodes_json'))
+    return tbl
+
+#def list_nodes(request, *args, **kwargs):
+    #return list_nodes_generic(request, Node,
+            #headings = ["Node", "Administrators"],
+            #deletemessage = \
+                #_('This will delete all selected nodes and all subjects, periods, '\
+                #'assignments, assignment groups, deliveries and feedbacks within '\
+                #'them.'),
+            #help_text = \
+                #_('A node at the top of the navigation tree. It is a '\
+                #'generic element used to organize administrators. A '\
+                #'Node can be organized below another Node, and it can '\
+                #'only have one parent.'))
 
 def list_subjects(request, *args, **kwargs):
     return list_nodes_generic(request, Subject,

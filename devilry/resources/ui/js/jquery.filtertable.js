@@ -246,6 +246,9 @@
         if(pages == 0) {
           pages = 1;
         }
+        if(pages < 2) {
+          return;
+        };
         var pagelabel = $("<div></div>")
           .addClass("filtertable-pagelabel")
           .html("Page " + (currentpage+1) + " of " + pages);
@@ -267,6 +270,16 @@
 
       refresh_optional_cols: function(store, all_columns) {
         store.colsettingsbox.empty();
+        var has_optional = false;
+        $.each(all_columns, function(index, colinfo) {
+            if(colinfo.col.optional) {
+              has_optional = true;
+            }
+        });
+        if(!has_optional) {
+          return;
+        }
+
         $("<h4>Optional columns</h4>").appendTo(store.colsettingsbox);
         $.each(all_columns, function(index, colinfo) {
             if(colinfo.col.optional) {
@@ -307,18 +320,26 @@
 
       refresh: function(store, options) {
         $.getJSON(store.jsonurl, options, function(json) {
-            $.filtertable.refresh_filters(store, json.filterview, json.filteredsize);
-            $.filtertable.refresh_actions(store,
-              json.selectionactions, store.selectionactionsbox,
-              true);
-            $.filtertable.refresh_actions(store,
-              json.relatedactions, store.relatedactionsbox);
+            if(store.has_filters) {
+              $.filtertable.refresh_filters(store, json.filterview, json.filteredsize);
+            }
+            if(store.has_selection_actions) {
+              $.filtertable.refresh_actions(store,
+                json.selectionactions, store.selectionactionsbox,
+                true);
+            }
+            if(store.has_related_actions) {
+              $.filtertable.refresh_actions(store,
+                json.relatedactions, store.relatedactionsbox);
+            }
             $.filtertable.refresh_table(store, json);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
             $.filtertable.refresh_optional_cols(store, json.all_columns);
 
-            store.searchfield.val(json.search);
+            if(store.has_search) {
+              store.searchfield.val(json.search);
+            }
             store.statusmsgbox.html(json.statusmsg);
             store.perpagefield.val(json.perpage);
             $.filtertable.recalc_accordion(store);
@@ -327,23 +348,23 @@
     };
 
 
-    $.fn.filtertable = function(jsonurl, resultcount_supported) {
+    $.fn.filtertable = function(jsonurl, options) {
       return this.each(function() {
           var id = $(this).attr("id");
-          var store = {};
+          var store = options;
           store.id = id;
           store.jsonurl = jsonurl;
           store.form = $(this).find("form").first();
-          store.searchbox = $(this).find(".filtertable-searchbox").first();
+          store.result_table = $(this).find(".filtertable-table").first();
+          store.pagechangerbox = $(this).find(".filtertable-pagechanger").first();
+          store.statusmsgbox = $(this).find(".filtertable-statusmsg").first();
+          store.colsettingsbox = $(this).find(".filtertable-settings-cols").first();
+
+          // These might not exists, depending on how the table is configured
+          store.searchfield = $(this).find(".filtertable-searchfield").first();
           store.selectionactionsbox = $(this).find(".filtertable-selectionactions").first();
           store.relatedactionsbox = $(this).find(".filtertable-relatedactions").first();
           store.filterbox = $(this).find(".filtertable-filters").first();
-          store.result_table = $(this).find(".filtertable-table").first();
-          store.pagechangerbox = $(this).find(".filtertable-pagechanger").first();
-          store.searchfield = $(this).find(".filtertable-searchfield").first();
-          store.statusmsgbox = $(this).find(".filtertable-statusmsg").first();
-          store.colsettingsbox = $(this).find(".filtertable-settings-cols").first();
-          store.resultcount_supported = resultcount_supported;
 
           // Show this dialog when selecting a action when no rows are
           // selected.
@@ -365,7 +386,7 @@
           store.confirm_dialog_selectionbox = store.confirm_dialog.children("div").first();
 
           // Setup the accordion sidebar
-          store.sidebar = $("#" + id + "-filtertable-sidebar");
+          store.sidebar = $(this).find(".filtertable-sidebar").first();
           store.sidebar.accordion({
             header: "h3",
             autoHeight: false,
@@ -373,21 +394,23 @@
           });
 
           // Search
-          store.searchfield.keydown(function(e) {
-              if (e.keyCode==13) {
+          if(store.has_search) {
+            store.searchfield.keydown(function(e) {
+                if (e.keyCode==13) {
+                  $.filtertable.refresh(store, {search:store.searchfield.val()});
+                  return false;
+                }
+              });
+            var searchbtn = $(this).find(".filtertable-searchbtn").first();
+            searchbtn.button({
+              text: false,
+              icons: {primary: "ui-icon-search"}
+            });
+            searchbtn.click(function(e) {
                 $.filtertable.refresh(store, {search:store.searchfield.val()});
                 return false;
-              }
-            });
-          var searchbtn = $(this).find(".filtertable-searchbtn").first();
-          searchbtn.button({
-            text: false,
-            icons: {primary: "ui-icon-search"}
-          });
-          searchbtn.click(function(e) {
-              $.filtertable.refresh(store, {search:store.searchfield.val()});
-              return false;
-            });
+              });
+          }
 
 
           // Reset filters

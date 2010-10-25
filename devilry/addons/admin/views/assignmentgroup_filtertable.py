@@ -64,6 +64,7 @@ class AssignmentGroupsAction(Action):
 
 
 class AssignmentGroupsFilterTable(FilterTable):
+    id = 'assignmentgroups-admin-filtertable'
     filters = [
         FilterStatus('Status'),
         FilterExaminer('Examiners')
