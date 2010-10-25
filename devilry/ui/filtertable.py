@@ -140,6 +140,14 @@ class Action(object):
     cssclasses = []
     confirm_title = None
     confirm_message = None
+    url = None
+
+    def __init__(self, label, url, confirm_title=None,
+            confirm_message=None):
+        self.label = label
+        self.url = url
+        self.confirm_title = confirm_title
+        self.confirm_message = confirm_message
 
     def as_dict(self, properties):
         d = dict(label=self.label, url=self.get_url(properties),
@@ -149,7 +157,7 @@ class Action(object):
         return d
 
     def get_url(self, properties):
-        raise NotImplementedError()
+        return self.url
 
 
 class SessionInfo(object):

@@ -6,31 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
 from devilry.core.models import Node, Subject, Period, Assignment
-from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
-        Col, Row)
 
-
-class BaseNodeFilterTable(FilterTable):
-    id = 'node-admin-filtertable'
-    nodecls = Node
-
-    def __init__(self, request):
-        super(BaseNodeFilterTable, self).__init__(request)
-        self.set_properties(nodecls=self.nodecls)
-
-    def get_columns(self):
-        return Columns(
-            Col('nodes', "Nodes"))
-
-    def create_row(self, node, active_optional_cols):
-        row = Row(node.id)
-        row.add_cell(node.short_name)
-        return row
-
-    def create_dataset(self):
-        dataset = self.nodecls.objects.all()
-        total = dataset.count()
-        return total, dataset
+from views import NodeFilterTable
 
 
 def list_nodes_generic(request, nodecls, headings, deletemessage,
@@ -52,13 +29,14 @@ def list_nodes_generic(request, nodecls, headings, deletemessage,
 
 @login_required
 def list_nodes_json(request):
-    if Node.where_is_admin_or_superadmin(request.user).count() == 0:
-        return HttpResponseForbidden("Forbidden")
-    tbl = BaseNodeFilterTable(request)
+    tbl = NodeFilterTable(request)
     return tbl.json_response()
 
 def list_nodes(request, *args, **kwargs):
-    tbl = BaseNodeFilterTable.initial_html(request,
+    if not request.user.is_superuser \
+            and Node.where_is_admin_or_superadmin(request.user).count() == 0:
+        return None # only show if the user is admin on at least one
+    tbl = NodeFilterTable.initial_html(request,
             reverse('devilry-admin-list_nodes_json'))
     return tbl
 

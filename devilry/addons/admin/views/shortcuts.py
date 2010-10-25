@@ -23,22 +23,24 @@ def iter_filtertable_selected(postdata, clsname):
             yield key, value
 
 
-def deletemany_generic(request, nodecls, successurl=None):
-    successurl = successurl or reverse('main')
+def deletemany_generic(request, nodecls, filtertblcls, successurl=None):
+    successurl = successurl or reverse('devilry-main')
     clsname = nodecls.__name__.lower()
     prefix = 'autocomplete-%s-cb' % clsname
     if request.method == 'POST':
         nodes = []
-        for key, value in iter_filtertable_selected(request.POST, clsname):
-            node = nodecls.objects.get(id=value)
-            if node.can_save(request.user):
-                nodes.append(node)
-            else:
-                return HttpResponseForbidden(
-                        "No permission to delete %(node)s" % node)
+        nodes = filtertblcls.get_selected_nodes(request)
+        #for key, value in iter_filtertable_selected(request.POST, clsname):
+            #node = nodecls.objects.get(id=value)
+            #if node.can_save(request.user):
+                #nodes.append(node)
+            #else:
+                #return HttpResponseForbidden(
+                        #"No permission to delete %(node)s" % node)
         nodestr = []
         for node in nodes:
             nodestr.append(str(node))
+        for node in nodes:
             node.delete()
         messages = UiMessages()
         messages.add_success(_("Successfully deleted: %(nodes)s" % dict(

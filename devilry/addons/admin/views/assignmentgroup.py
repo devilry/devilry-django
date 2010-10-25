@@ -22,8 +22,6 @@ from devilry.ui.messages import UiMessages
 from devilry.addons.quickdash import defaults
 from assignmentgroup_filtertable import AssignmentGroupsFilterTable
 
-from shortcuts import iter_filtertable_selected
-
 
 
 class DeadlineFormForInline(forms.ModelForm):
