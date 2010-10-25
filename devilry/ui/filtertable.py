@@ -37,12 +37,16 @@ class Row(object):
 
 
 class Col(object):
-    def __init__(self, title, can_order=False):
+    def __init__(self, title, can_order=False, optional=False,
+            active_default=False):
         self.title = title
         self.can_order = can_order
+        self.optional = optional
+        self.active_default = active_default
 
     def as_dict(self):
-        return dict(can_order=self.can_order, title=self.title)
+        return dict(can_order=self.can_order, title=self.title,
+                optional=self.optional, active_default=self.active_default)
 
 
 class Filter(object):
@@ -131,13 +135,16 @@ class Action(object):
 
 class SessionInfo(object):
     def __init__(self, default_currentpage, default_perpage,
-            default_order_by, default_order_asc, filters):
+            default_order_by, default_order_asc, default_filters,
+            default_active_optional_columns):
         self.search = ""
         self.order_by = default_order_by
         self.order_asc = default_order_asc
-        self.filters = filters
+        self.filters = default_filters
         self.currentpage = default_currentpage
         self.perpage = default_perpage
+        self.active_optional_columns = default_active_optional_columns
+        print self.active_optional_columns
 
     def __str__(self):
         return "\n".join(["   %s:%s" % (k, v)
@@ -179,6 +186,7 @@ class FilterTable(object):
         self.request = request
         self.indata = request.GET
         self.session_from_indata()
+        #del self.request.session[self.id]
         
     def get_default_session(self):
         default_filters = {}
@@ -187,7 +195,9 @@ class FilterTable(object):
         default_session = SessionInfo(
             self.default_currentpage, self.default_perpage,
             self.default_order_by, self.default_order_asc,
-            default_filters)
+            default_filters,
+            [i for i, c in enumerate(self.columns)
+                if c.optional and c.active_default])
         return default_session
 
     def session_from_indata(self):
@@ -210,6 +220,17 @@ class FilterTable(object):
                     self.default_perpage)
         if "search" in indata:
             self.session.search = indata["search"]
+        if "active_cols" in indata:
+            if indata['active_cols'] == "none":
+                cols = []
+            else:
+                not_optional = [i for i, c in enumerate(self.columns)
+                        if not c.optional]
+                cols = [int(colnum)
+                        for colnum in indata.getlist("active_cols")
+                        if not int(colnum) in not_optional]
+            self.session.active_optional_columns = cols
+        print self.session.active_optional_columns
 
         if "order_by" in indata:
             i = int(indata["order_by"])
@@ -291,8 +312,14 @@ class FilterTable(object):
         filteredsize = self.get_dataset_size(dataset)
         return dataset, filteredsize
 
+    def get_active_columns(self):
+        return [col.as_dict() for i, col in enumerate(self.columns)
+                if not col.optional
+                    or i in self.session.active_optional_columns]
+
     def dataset_to_rowlist(self, dataset):
-        return [self.create_row(d).as_dict() for d in dataset]
+        return [self.create_row(d,
+            self.session.active_optional_columns).as_dict() for d in dataset]
 
     def create_jsondata(self):
         totalsize, dataset = self.create_dataset()
@@ -331,13 +358,17 @@ class FilterTable(object):
             perpage = self.session.perpage,
             search = self.session.search,
             filterview = filterview,
-            columns = [c.as_dict() for c in self.columns],
+            columns = self.get_active_columns(),
             use_rowactions = self.use_rowactions,
             selectionactions = self.get_selectionactions_as_dicts(),
             relatedactions = self.get_relatedactions_as_dicts(),
             order_by = self.session.order_by,
             order_asc = self.session.order_asc,
             data = rowlist,
+            all_columns = [{
+                    'col':c.as_dict(),
+                    'is_active': i in self.session.active_optional_columns}
+                for i, c in enumerate(self.columns)],
             statusmsg = statusmsg
         )
         #print "Session:"

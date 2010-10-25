@@ -227,6 +227,41 @@
       },
 
 
+      refresh_optional_cols: function(store, all_columns, active_optional_columns) {
+        store.colsettingsbox.empty();
+        $("<h4>Optional columns</h4>").appendTo(store.colsettingsbox);
+        $.each(all_columns, function(index, colinfo) {
+            if(colinfo.col.optional) {
+              $("<div></div>").boxWithLabel({
+                  label: colinfo.col.title,
+                  value: index,
+                  checked: colinfo.is_active
+                }).appendTo(store.colsettingsbox);
+            }
+          });
+        var button = $("<button></button>")
+          .html("Refresh")
+          .button({
+              text: true,
+              icons: {primary: "ui-icon-arrowrefresh-1-w"}
+            })
+          .appendTo(store.colsettingsbox);
+        button.click(function() {
+            var ch = store.colsettingsbox.find("input:checkbox:checked");
+            if(ch.length == 0) {
+              opt = {active_cols:"none"};
+            } else {
+              var opt = [];
+              $.each(ch, function(index, checkbox) {
+                  opt.push({name:"active_cols", value:checkbox.value});
+                });
+            }
+            $.filtertable.refresh(store, opt);
+            return false;
+            //return false;
+          });
+      },
+
       recalc_accordion: function(store) {
         store.sidebar.accordion("option", "autoHeight", true);
         store.sidebar.accordion("resize");
@@ -243,6 +278,9 @@
             $.filtertable.refresh_table(store, json);
             $.filtertable.refresh_pagechanger(store, json.filteredsize,
               json.currentpage, json.perpage);
+            $.filtertable.refresh_optional_cols(store, json.all_columns,
+              json.active_optional_columns);
+
             store.searchfield.val(json.search);
             store.statusmsgbox.html(json.statusmsg);
             store.perpagefield.val(json.perpage);
@@ -250,6 +288,39 @@
           });
       }
     };
+
+
+
+    $.fn.boxWithLabel = function(args) {
+      args.type = args.type || "checkbox";
+
+      var box = $(this);
+      var button = $("<input></input>")
+        .attr("type", args.type)
+        .appendTo(box);
+      if(typeof(args.value) != undefined) {
+        button.val(args.value);
+      }
+      if(args.checked) {
+        button.attr("checked", "checked");
+      }
+      var lbl = $("<a></a>")
+        .attr("href", "#")
+        .html(args.label)
+        .appendTo(box);
+
+      // Events
+      lbl.click(function() {
+          button.click();
+          return false;
+        });
+      if(args.click) {
+        button.click(args.click);
+      }
+
+      return box;
+    };
+
 
     $.fn.filtertable = function(jsonurl, resultcount_supported) {
       return this.each(function() {
@@ -266,6 +337,7 @@
           store.pagechangerbox = $("#" + id + " .filtertable-pagechanger").first();
           store.searchfield = $("#" + id + " .filtertable-searchfield").first();
           store.statusmsgbox = $("#" + id + " .filtertable-statusmsg").first();
+          store.colsettingsbox = $("#" + id + " .filtertable-settings-cols").first();
           store.resultcount_supported = resultcount_supported;
 
           // Show this dialog when selecting a action when no rows are
@@ -338,6 +410,10 @@
         });
 
     };
+
+
+
+
 
     $.log = function(message) {
       if(window.console) {
