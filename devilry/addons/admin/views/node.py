@@ -19,10 +19,8 @@ from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
 class NodeFilterTable(BaseNodeFilterTable):
     id = 'node-admin-filtertable'
     nodecls = Node
-
-    filters = [
-           FilterHasAdmins() 
-            ]
+    use_rowactions = True
+    filters = [FilterHasAdmins()]
 
     selectionactions = [
         NodeAction(_("Delete"),
@@ -53,6 +51,8 @@ class NodeFilterTable(BaseNodeFilterTable):
         row.add_cell(unicode(node.parentnode or ""))
         if "admins" in active_optional_cols:
             row.add_cell(node.get_admins())
+        row.add_action(_("edit"), 
+                reverse('devilry-admin-edit_node', args=[str(node.id)]))
         return row
     
     def order_by(self, dataset, colnum, order_asc):
