@@ -13,7 +13,7 @@ from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
 from devilry.ui.fields import MultiSelectCharField
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
-        deletemany_generic, admins_help_text)
+        deletemany_generic, admins_help_text, FilterHasAdmins)
 
 
 class SubjectFilterTable(BaseNodeFilterTable):
@@ -34,20 +34,22 @@ class SubjectFilterTable(BaseNodeFilterTable):
 
     def get_columns(self):
         return Columns(
-            Col('name', "Short name", can_order=True),
-            Col('parent', "Parent"))
+            Col('short_name', "Short name", can_order=True),
+            Col('long_name', "Long name", can_order=True, optional=True),
+            Col('parent', "Parent"),
+            Col('admins', "Administrators", optional=True))
 
-    def create_row(self, node, active_optional_cols):
-        row = Row(node.id, title=unicode(node))
-        row.add_cell(node.short_name)
-        row.add_cell(unicode(node.parentnode or ""))
+    def create_row(self, subject, active_optional_cols):
+        row = Row(subject.id, title=unicode(subject))
+        row.add_cell(subject.short_name)
+        if "long_name" in active_optional_cols:
+            row.add_cell(subject.long_name)
+        row.add_cell(subject.parentnode or "")
+        if "admins" in active_optional_cols:
+            row.add_cell(subject.get_admins())
+        row.add_action(_("edit"), 
+                reverse('devilry-admin-edit_subject', args=[str(subject.id)]))
         return row
-    
-    def order_by(self, dataset, colnum, order_asc):
-        prefix = '-'
-        if order_asc:
-            prefix = ''
-        return dataset.order_by(prefix + "short_name")
 
 
 class EditSubject(EditBase):

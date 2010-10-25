@@ -164,15 +164,15 @@
                 .addClass("devilry-th-ui-icon")
                 .appendTo(th);
 
-              th.addClass("devilry-th-clickable")
-              if(order_by == i) {
-                icon.addClass(order_asc?"ui-icon-triangle-1-n":"ui-icon-triangle-1-s")
+              th.addClass("devilry-th-clickable");
+              if(order_by == col.id) {
+                icon.addClass(order_asc?"ui-icon-triangle-1-s":"ui-icon-triangle-1-n")
                 th.addClass("ui-state-active");
               } else {
                 icon.addClass("ui-icon-carat-2-n-s");
               }
               th.click(function() {
-                  $.filtertable.refresh(store, {order_by:i});
+                  $.filtertable.refresh(store, {order_by:col.id});
                   return false;
                 });
             }

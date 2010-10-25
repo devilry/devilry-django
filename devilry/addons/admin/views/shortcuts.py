@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
+from django.db.models import Q
 
 from devilry.ui.messages import UiMessages
 from devilry.ui.filtertable import FilterTable, Action, Filter
@@ -48,6 +49,10 @@ class BaseNodeFilterTable(FilterTable):
     nodecls = None
     search_help = _('Search for any part of the "short name", "long name" '\
             'or the username of administrators.')
+    default_order_by = "short_name"
+    default_order_asc = True
+    use_rowactions = True
+    filters = [FilterHasAdmins()]
 
     @classmethod
     def get_selected_nodes(cls, request):
@@ -69,9 +74,9 @@ class BaseNodeFilterTable(FilterTable):
 
     def search(self, dataset, qry):
         return dataset.filter(
-                short_name__contains=qry,
-                long_name__contains=qry,
-                admins__username__contains=qry)
+                Q(short_name__contains=qry) |
+                Q(long_name__contains=qry) |
+                Q(admins__username__contains=qry))
 
 
 def deletemany_generic(request, nodecls, filtertblcls, successurl=None):

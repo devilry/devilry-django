@@ -34,20 +34,36 @@ class PeriodFilterTable(BaseNodeFilterTable):
 
     def get_columns(self):
         return Columns(
-            Col('name', "Short name", can_order=True),
-            Col('parent', "Parent"))
+            Col('short_name', "Short name", can_order=True),
+            Col('long_name', "Long name", optional=True, can_order=True),
+            Col('parentnode', "Parent", can_order=True,
+                optional=True, active_default=True),
+            Col('start_time', "Start time", can_order=True,
+                optional=True, active_default=True),
+            Col('end_time', "End time", can_order=True,
+                optional=True),
+            Col('minimum_points', "Minimum points", can_order=True,
+                optional=True),
+            Col('admins', "Administrators", optional=True))
 
-    def create_row(self, node, active_optional_cols):
-        row = Row(node.id, title=unicode(node))
-        row.add_cell(node.short_name)
-        row.add_cell(unicode(node.parentnode or ""))
+    def create_row(self, period, active_optional_cols):
+        row = Row(period.id, title=unicode(period))
+        row.add_cell(period.short_name)
+        if "long_name" in active_optional_cols:
+            row.add_cell(period.long_name)
+        if "parentnode" in active_optional_cols:
+            row.add_cell(period.parentnode or "")
+        if "start_time" in active_optional_cols:
+            row.add_cell(period.start_time)
+        if "end_time" in active_optional_cols:
+            row.add_cell(period.end_time)
+        if "minimum_points" in active_optional_cols:
+            row.add_cell(period.minimum_points)
+        if "admins" in active_optional_cols:
+            row.add_cell(period.get_admins())
+        row.add_action(_("edit"), 
+                reverse('devilry-admin-edit_period', args=[str(period.id)]))
         return row
-    
-    def order_by(self, dataset, colnum, order_asc):
-        prefix = '-'
-        if order_asc:
-            prefix = ''
-        return dataset.order_by(prefix + "short_name")
 
 
 class EditPeriod(EditBase):

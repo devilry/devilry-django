@@ -19,8 +19,6 @@ from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
 class NodeFilterTable(BaseNodeFilterTable):
     id = 'node-admin-filtertable'
     nodecls = Node
-    use_rowactions = True
-    filters = [FilterHasAdmins()]
 
     selectionactions = [
         NodeAction(_("Delete"),
@@ -36,30 +34,22 @@ class NodeFilterTable(BaseNodeFilterTable):
 
     def get_columns(self):
         return Columns(
-            Col('shortname', "Short name", can_order=True),
-            Col('longname', "Long name", optional=True,
-                can_order=True),
+            Col('short_name', "Short name", can_order=True),
+            Col('long_name', "Long name", optional=True, can_order=True),
             Col('parent', "Parent"),
-            Col('admins', "Administrators", optional=True),
-            )
+            Col('admins', "Administrators", optional=True))
 
     def create_row(self, node, active_optional_cols):
         row = Row(node.id, title=unicode(node))
         row.add_cell(node.short_name)
-        if "longname" in active_optional_cols:
+        if "long_name" in active_optional_cols:
             row.add_cell(node.long_name)
-        row.add_cell(unicode(node.parentnode or ""))
+        row.add_cell(node.parentnode or "")
         if "admins" in active_optional_cols:
             row.add_cell(node.get_admins())
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_node', args=[str(node.id)]))
         return row
-    
-    def order_by(self, dataset, colnum, order_asc):
-        prefix = '-'
-        if order_asc:
-            prefix = ''
-        return dataset.order_by(prefix + "short_name")
 
 
 class EditNode(EditBase):

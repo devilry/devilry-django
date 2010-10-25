@@ -23,7 +23,7 @@ class Row(object):
         self.actions = []
 
     def add_cell(self, value, cssclass=""):
-        self.cells.append(Cell(value, cssclass))
+        self.cells.append(Cell(unicode(value), cssclass))
 
     def add_action(self, label, url):
         self.actions.append({"label": label, "url":url})
@@ -63,7 +63,7 @@ class Col(object):
         self.active_default = active_default
 
     def as_dict(self):
-        return dict(can_order=self.can_order, title=self.title,
+        return dict(id=self.id, can_order=self.can_order, title=self.title,
                 optional=self.optional, active_default=self.active_default)
 
 
@@ -269,12 +269,13 @@ class FilterTable(object):
             self.session.active_optional_columns = cols
 
         if "order_by" in indata:
-            i = int(indata["order_by"])
-            if i == self.session.order_by:
-                self.session.order_asc = not self.session.order_asc
-            else:
-                self.session.order_asc = True
-                self.session.order_by = self.columns.get_by_index(i).id
+            colid = indata["order_by"]
+            if colid in self.columns:
+                if colid == self.session.order_by:
+                    self.session.order_asc = not self.session.order_asc
+                else:
+                    self.session.order_asc = True
+                    self.session.order_by = colid
 
         checkall_in_filter = int(indata.get("checkall_in_filter", -1))
         for i, f in enumerate(self.filters):
@@ -319,8 +320,8 @@ class FilterTable(object):
     def get_relatedactions_as_dicts(self):
         return [a.as_dict(self.properties) for a in self.relatedactions]
 
-    def order_by(self, dataset, colnum):
-        return dataset
+    def order_by(self, dataset, colid, order_asc, qryprefix):
+        return dataset.order_by(qryprefix + colid)
 
     def set_properties(self, **properties):
         self.properties.update(properties)
@@ -369,8 +370,11 @@ class FilterTable(object):
         dataset, filteredsize = self.search_and_filter(dataset)
 
         if self.session.order_by != None:
+            prefix = '-'
+            if self.session.order_asc:
+                prefix = ''
             dataset = self.order_by(dataset, self.session.order_by,
-                    self.session.order_asc)
+                    self.session.order_asc, prefix)
 
         if self.session.perpage == "all":
             start = 0
