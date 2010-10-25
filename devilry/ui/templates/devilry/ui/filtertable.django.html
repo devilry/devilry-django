@@ -43,9 +43,6 @@
   text-align: center;
 }
 
-.filtertable-resetfilters {
-  margin-top: 20px;
-}
 
 .filtertable-filtercount {
     font-size: 0.8em;
@@ -106,20 +103,22 @@ table.zebra tr.even td {
         <div class="filtertable-filters">
           {% comment %}This is filled using javascript{% endcomment %}
         </div>
-        <div class='filtertable-resetfilters'>
-          <button class='filtertable-resetfilters-button button'>Reset filters</button>
-        </div>
       </div>
 
       <h3><a href="#" class='filtertable-accordion-head'>Settings</a></h3>
       <div>
         <div>
           <h4>Rows per page:</h4>
-          <input type="text" class="filtertable-perpagefield" />
-          <button class="filtertable-perpagebtn">Refresh</button>
+          <input type="text" class="filtertable-perpagefield" style="width:60px" />
+          <button class="filtertable-perpage-allbtn">All</button>
+          <button class="filtertable-perpage-updatebtn">Refresh</button>
         </div>
         <div class="filtertable-settings-cols">
           {% comment %}This is filled using javascript{% endcomment %}
+        </div>
+        <div>
+          <h4>Reset</h4>
+          <button class='filtertable-reset-button button'>Reset filters and settings</button>
         </div>
       </div>
     </div>

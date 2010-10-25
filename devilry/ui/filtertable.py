@@ -221,7 +221,7 @@ class FilterTable(object):
     def session_from_indata(self):
         indata = self.indata
         default_session = self.get_default_session()
-        if "reset_filters" in indata:
+        if "reset" in indata:
             self.session = default_session
             return
         self.session = self.request.session.get(self.id, default_session)
@@ -234,8 +234,12 @@ class FilterTable(object):
         if "gotopage" in indata:
             self.session.currentpage = toint(indata["gotopage"], 0)
         if "perpage" in indata:
-            self.session.perpage = toint(indata["perpage"],
-                    self.default_perpage)
+            perpage = indata["perpage"]
+            if perpage == "all":
+                self.session.perpage = "all"
+            else:
+                self.session.perpage = toint(indata["perpage"],
+                        self.default_perpage)
         if "search" in indata:
             self.session.search = indata["search"]
         if "active_cols" in indata:
@@ -284,7 +288,7 @@ class FilterTable(object):
     def create_dataset(self):
         raise NotImplementedError()
 
-    def limit_dataset(self, dataset, currentpage, perpage):
+    def limit_dataset(self, dataset, start, end):
         raise NotImplementedError()
 
     def search(self, dataset, qry):
@@ -348,11 +352,15 @@ class FilterTable(object):
             dataset = self.order_by(dataset, self.session.order_by,
                     self.session.order_asc)
 
-        start = self.session.currentpage*self.session.perpage
-        end = start + self.session.perpage
-        if start > filteredsize:
+        if self.session.perpage == "all":
             start = 0
-            self.session.currentpage = 0
+            end = totalsize
+        else:
+            start = self.session.currentpage*self.session.perpage
+            end = start + self.session.perpage
+            if start > filteredsize:
+                start = 0
+                self.session.currentpage = 0
 
         dataset = self.limit_dataset(dataset, start, end)
         rowlist = self.dataset_to_rowlist(dataset)
@@ -369,11 +377,15 @@ class FilterTable(object):
                 filteredsize = filteredsize,
                 totalsize = totalsize)
 
+        if self.session.perpage == "all":
+            perpage_js = totalsize
+        else:
+            perpage_js = self.session.perpage
         out = dict(
             totalsize = totalsize,
             filteredsize = filteredsize,
             currentpage = self.session.currentpage,
-            perpage = self.session.perpage,
+            perpage = perpage_js,
             search = self.session.search,
             filterview = filterview,
             columns = self.get_active_columns(),

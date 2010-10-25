@@ -391,9 +391,9 @@
 
 
           // Reset filters
-          var resetfiltersbtn = $(this).find(".filtertable-resetfilters-button").first();
-          resetfiltersbtn.click(function(e) {
-              $.filtertable.refresh(store, {reset_filters:"yes"});
+          var resetbtn = $(this).find(".filtertable-reset-button").first();
+          resetbtn.click(function(e) {
+              $.filtertable.refresh(store, {reset:"yes"});
               return false;
             });
 
@@ -405,13 +405,21 @@
                 return false;
               }
             });
-          var perpagebtn = $(this).find(".filtertable-perpagebtn").first();
-          perpagebtn.button({
+          var perpage_updatebtn = $(this).find(".filtertable-perpage-updatebtn").first();
+          perpage_updatebtn.button({
             text: false,
             icons: {primary: "ui-icon-arrowrefresh-1-w"}
           });
-          perpagebtn.click(function(e) {
+          perpage_updatebtn.click(function(e) {
               $.filtertable.refresh(store, {perpage:store.perpagefield.val()});
+              return false;
+            });
+          var perpage_allbtn = $(this).find(".filtertable-perpage-allbtn").first();
+          perpage_allbtn.button({
+            text: true,
+          });
+          perpage_allbtn.click(function(e) {
+              $.filtertable.refresh(store, {perpage:"all"});
               return false;
             });
 
