@@ -144,7 +144,6 @@ class SessionInfo(object):
         self.currentpage = default_currentpage
         self.perpage = default_perpage
         self.active_optional_columns = default_active_optional_columns
-        print self.active_optional_columns
 
     def __str__(self):
         return "\n".join(["   %s:%s" % (k, v)
@@ -230,7 +229,6 @@ class FilterTable(object):
                         for colnum in indata.getlist("active_cols")
                         if not int(colnum) in not_optional]
             self.session.active_optional_columns = cols
-        print self.session.active_optional_columns
 
         if "order_by" in indata:
             i = int(indata["order_by"])

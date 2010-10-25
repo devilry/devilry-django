@@ -89,7 +89,7 @@ class AssignmentGroupsFilterTable(FilterTable):
                 "devilry-admin-copy_groups")
             ]
     use_rowactions = True
-    resultcount_supported = False
+    #resultcount_supported = False
 
 
     @classmethod
