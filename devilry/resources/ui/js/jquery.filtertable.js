@@ -18,13 +18,48 @@
               });
             if(requires_selection) {
               button.click(function() {
-                  var c = store.result_table.find("input:checkbox:checked");
-                  if(c.length == 0) {
+                  var checked = store.result_table.find("tbody input:checkbox:checked");
+                  if(checked.length == 0) {
                     store.noselection_dialog.dialog("open");
                     return false;
                   }
-                  store.form.attr("action", action.url);
-                  store.form.submit();
+
+                  if(action.confirm_title && action.confirm_message) {
+                    store.confirm_dialog_messagebox.empty();
+                    $("<span></span>").html(action.confirm_message)
+                      .appendTo(store.confirm_dialog_messagebox);
+                    store.confirm_dialog_selectionbox.empty();
+                    var ul = $("<ul></ul>")
+                      .appendTo(store.confirm_dialog_selectionbox);
+                    $.each(checked, function(index, checkbox) {
+                      //var tr = checkbox.parent();
+                      $("<li></li>")
+                        .html($(checkbox).attr("title"))
+                        .appendTo(ul);
+                    });
+                    store.confirm_dialog.dialog({
+                        modal: true,
+                        title: action.confirm_title,
+                        width: 500,
+                        height: 300,
+                        buttons: {
+                          "Ok": function() {
+                            $(this).dialog("close");
+                            $(this).dialog("destroy");
+                            store.form.attr("action", action.url);
+                            store.form.submit();
+                          },
+                          Cancel: function() {
+                            $(this).dialog("close");
+                            $(this).dialog("destroy");
+                          }
+                        },
+                      });
+                    return false;
+                  } else {
+                    store.form.attr("action", action.url);
+                    store.form.submit();
+                  }
                 });
             }
           });
@@ -166,6 +201,7 @@
                 .attr("type", "checkbox")
                 .attr("name", name)
                 .attr("value", row.id)
+                .attr("title", row.title)
                 .appendTo(td);
             }
             $.each(row.cells, function(index, cell) {
@@ -291,38 +327,6 @@
     };
 
 
-
-    $.fn.boxWithLabel = function(args) {
-      args.type = args.type || "checkbox";
-
-      var box = $(this);
-      var button = $("<input></input>")
-        .attr("type", args.type)
-        .appendTo(box);
-      if(typeof(args.value) != undefined) {
-        button.val(args.value);
-      }
-      if(args.checked) {
-        button.attr("checked", "checked");
-      }
-      var lbl = $("<a></a>")
-        .attr("href", "#")
-        .html(args.label)
-        .appendTo(box);
-
-      // Events
-      lbl.click(function() {
-          button.click();
-          return false;
-        });
-      if(args.click) {
-        button.click(args.click);
-      }
-
-      return box;
-    };
-
-
     $.fn.filtertable = function(jsonurl, resultcount_supported) {
       return this.each(function() {
           var id = $(this).attr("id");
@@ -353,6 +357,12 @@
                 }
               },
             });
+
+          // Show this dialog when selecting a action that requires
+          // confirmation
+          store.confirm_dialog = $(this).find(".filtertable-confirm-selection-dialog").first();
+          store.confirm_dialog_messagebox = store.confirm_dialog.children("p").children().last();
+          store.confirm_dialog_selectionbox = store.confirm_dialog.children("div").first();
 
           // Setup the accordion sidebar
           store.sidebar = $("#" + id + "-filtertable-sidebar");
@@ -412,6 +422,39 @@
 
     };
 
+
+
+
+    /* This is independent of the filtertable, and could be moved elsewhere. */
+    $.fn.boxWithLabel = function(args) {
+      args.type = args.type || "checkbox";
+
+      var box = $(this);
+      var button = $("<input></input>")
+        .attr("type", args.type)
+        .appendTo(box);
+      if(typeof(args.value) != undefined) {
+        button.val(args.value);
+      }
+      if(args.checked) {
+        button.attr("checked", "checked");
+      }
+      var lbl = $("<a></a>")
+        .attr("href", "#")
+        .html(args.label)
+        .appendTo(box);
+
+      // Events
+      lbl.click(function() {
+          button.click();
+          return false;
+        });
+      if(args.click) {
+        button.click(args.click);
+      }
+
+      return box;
+    };
 
 
 

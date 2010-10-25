@@ -15,8 +15,9 @@ class Cell(object):
 
 
 class Row(object):
-    def __init__(self, id, cssclass=""):
+    def __init__(self, id, cssclass="", title=""):
         self.id = id
+        self.title = title
         self.cells = []
         self.cssclass = cssclass
         self.actions = []
@@ -30,6 +31,7 @@ class Row(object):
     def as_dict(self):
         return dict(
             id = self.id,
+            title = self.title,
             cells = [c.as_dict() for c in self.cells],
             cssclass = self.cssclass,
             actions = self.actions
@@ -136,14 +138,15 @@ class Confirm(object):
 class Action(object):
     label = None
     cssclasses = []
+    confirm_title = None
+    confirm_message = None
 
     def as_dict(self, properties):
         d = dict(label=self.label, url=self.get_url(properties),
-                cssclasses=self.cssclasses)
+                cssclasses=self.cssclasses,
+                confirm_title=self.confirm_title,
+                confirm_message=self.confirm_message)
         return d
-
-    def get_confirm_message(self, properties):
-        return None
 
     def get_url(self, properties):
         raise NotImplementedError()

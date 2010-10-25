@@ -51,9 +51,12 @@ class FilterExaminer(Filter):
 
 
 class AssignmentGroupsAction(Action):
-    def __init__(self, label, urlname):
+    def __init__(self, label, urlname, confirm_title=None,
+            confirm_message=None):
         self.label = label
         self.urlname = urlname
+        self.confirm_title = confirm_title
+        self.confirm_message = confirm_message
 
     def get_url(self, properties):
         assignment = properties['assignment']
@@ -79,11 +82,18 @@ class AssignmentGroupsFilterTable(FilterTable):
     )
     selectionactions = [
             AssignmentGroupsAction(_("Delete"),
-                'devilry-admin-delete_manyassignmentgroups'),
+                'devilry-admin-delete_manyassignmentgroups',
+                confirm_title=_("Confirm delete"),
+                confirm_message=_("Are you sure you want to delete "\
+                    "the selected groups including their deliveries "\
+                    "and feedback?")),
             AssignmentGroupsAction(_("Create/replace deadline"),
                 'devilry-admin-create_deadline'),
             AssignmentGroupsAction(_("Clear deadlines"),
-                'devilry-admin-clear_deadlines'),
+                'devilry-admin-clear_deadlines',
+                confirm_title=_("Confirm clear deadlines"),
+                confirm_message=_("Are you sure you want to clear "\
+                    "deadlines on the following groups?")),
             AssignmentGroupsAction(_("Set examiners"),
                 'devilry-admin-set_examiners'),
             AssignmentGroupsAction(_("Random distribute examiners"),
@@ -115,8 +125,9 @@ class AssignmentGroupsFilterTable(FilterTable):
         self.assignment = assignment
 
     def create_row(self, group, active_optional_cols):
-        row = Row(group.id)
-        row.add_cell(group.get_candidates())
+        candidates = group.get_candidates()
+        row = Row(group.id, title=candidates)
+        row.add_cell(candidates)
 
         if 'examiners' in active_optional_cols:
             row.add_cell(group.get_examiners())
