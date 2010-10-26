@@ -16,7 +16,9 @@ $.widget("ui.combobox", {
 
       // Add the button which triggers a dropdown
       $("<a></a>")
-        .attr("tabIndex", -1).attr("title", "Select a time")
+        .attr("tabIndex", -1)
+        .attr("title", "Select a time")
+        .tipTip()
         .html("Select")
         .appendTo(button_container)
         .button({
@@ -40,7 +42,9 @@ $.widget("ui.combobox", {
 
       // Add the now button
       $("<a></a>")
-        .attr("tabIndex", -1).attr("title", "Set time to current time")
+        .attr("tabIndex", -1)
+        .attr("title", "Set time to current time")
+        .tipTip()
         .html("Now")
         .appendTo(button_container)
         .button()
