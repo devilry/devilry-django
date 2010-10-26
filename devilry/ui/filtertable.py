@@ -428,12 +428,16 @@ class FilterTable(object):
         if self.session.order_by:
             colids = [c['id'] for c in active_columns]
             #print colids, self.session.order_by
-            order_colnum = colids.index(self.session.order_by)
-            prefix = '-'
-            if self.session.order_asc:
-                prefix = ''
-            dataset = self.order_by(dataset, self.session.order_by,
-                    self.session.order_asc, prefix)
+            try:
+                order_colnum = colids.index(self.session.order_by)
+            except ValueError:
+                pass # the order column is not visible.
+            else:
+                prefix = '-'
+                if self.session.order_asc:
+                    prefix = ''
+                dataset = self.order_by(dataset, self.session.order_by,
+                        self.session.order_asc, prefix)
 
         if self.session.perpage == "all":
             start = 0
