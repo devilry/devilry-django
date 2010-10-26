@@ -11,6 +11,7 @@ from devilry.core.models import Subject, Period
 from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
         DevilryLongNameWidget, DevilryDateTimeWidget)
 from devilry.ui.fields import MultiSelectCharField
+from devilry.ui.messages import UiMessages
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
         deletemany_generic, admins_help_text)
@@ -109,8 +110,11 @@ def list_periods(request, *args, **kwargs):
         return HttpResponseForbidden("Forbidden")
     tbl = PeriodFilterTable.initial_html(request,
             reverse('devilry-admin-list_periods_json'))
+    messages = UiMessages()
+    messages.load(request)
     return render_to_response('devilry/admin/list-nodes-generic.django.html', {
         'title': _("Periods"),
+        'messages': messages,
         'filtertbl': tbl
         }, context_instance=RequestContext(request))
 

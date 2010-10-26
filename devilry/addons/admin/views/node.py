@@ -11,9 +11,10 @@ from devilry.core.models import Node
 from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
         DevilryLongNameWidget)
 from devilry.ui.fields import MultiSelectCharField
+from devilry.ui.messages import UiMessages
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
-        deletemany_generic, admins_help_text, FilterHasAdmins)
+        deletemany_generic, admins_help_text)
 
 
 class NodeFilterTable(BaseNodeFilterTable):
@@ -86,11 +87,14 @@ def list_nodes(request, *args, **kwargs):
     if not request.user.is_superuser \
             and Node.where_is_admin_or_superadmin(request.user).count() == 0:
         return HttpResponseForbidden("Forbidden")
+    messages = UiMessages()
+    messages.load(request)
     tbl = NodeFilterTable.initial_html(request,
             reverse('devilry-admin-list_nodes_json'))
     return render_to_response('devilry/admin/list-nodes-generic.django.html', {
         'title': _("Nodes"),
-        'filtertbl': tbl
+        'filtertbl': tbl,
+        'messages': messages
         }, context_instance=RequestContext(request))
 
 

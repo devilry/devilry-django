@@ -11,6 +11,7 @@ from devilry.core.models import Node, Subject
 from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
         DevilryLongNameWidget)
 from devilry.ui.fields import MultiSelectCharField
+from devilry.ui.messages import UiMessages
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
         deletemany_generic, admins_help_text, FilterHasAdmins)
@@ -86,8 +87,11 @@ def list_subjects(request, *args, **kwargs):
         return HttpResponseForbidden("Forbidden")
     tbl = SubjectFilterTable.initial_html(request,
             reverse('devilry-admin-list_subjects_json'))
+    messages = UiMessages()
+    messages.load(request)
     return render_to_response('devilry/admin/list-nodes-generic.django.html', {
         'title': _("Subjects"),
+        'messages': messages,
         'filtertbl': tbl
         }, context_instance=RequestContext(request))
 

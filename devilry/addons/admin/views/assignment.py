@@ -156,8 +156,11 @@ def list_assignments(request, *args, **kwargs):
         return HttpResponseForbidden("Forbidden")
     tbl = AssignmentFilterTable.initial_html(request,
             reverse('devilry-admin-list_assignments_json'))
+    messages = UiMessages()
+    messages.load(request)
     return render_to_response('devilry/admin/list-nodes-generic.django.html', {
         'title': _("Assignments"),
+        'messages': messages,
         'filtertbl': tbl
         }, context_instance=RequestContext(request))
 

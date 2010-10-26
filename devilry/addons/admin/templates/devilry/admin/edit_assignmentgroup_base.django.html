@@ -1,0 +1,15 @@
+{% extends "devilry/admin/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block admin-breadcrumbs %}
+  {{ block.super }}
+  <li><a href="{% url devilry-admin-list_assignments %}">
+    {% trans "Assignments" %}</a></li>
+  <li>::</li>
+  <li>
+    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
+      {{ assignment.get_path }}</a>
+  </li>
+  <li>::</li>
+{% endblock %}

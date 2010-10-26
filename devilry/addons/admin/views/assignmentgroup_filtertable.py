@@ -35,7 +35,7 @@ class FilterExaminer(Filter):
     def get_labels(self, properties):
         examiners = self._get_examiners(properties)
         l = [FilterLabel(_("All")), FilterLabel(_("No examiners"))]
-        l.extend([e.username for e in examiners])
+        l.extend([FilterLabel(e.username) for e in examiners])
         return l
 
     def filter(self, properties, dataset, selected):
