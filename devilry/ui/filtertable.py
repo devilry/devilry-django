@@ -43,9 +43,9 @@ class Row(object):
 
 class Columns(dict):
     def __init__(self, *cols):
-        self.lst = cols
+        self.lst = []
         for col in cols:
-            self[col.id] = col
+            self.add(col)
 
     def get_by_index(self, index):
         return self.lst[index]
@@ -53,10 +53,17 @@ class Columns(dict):
     def iter_ordered(self):
         return self.lst.__iter__()
 
+    def add(self, col):
+        if col.id in self:
+            raise KeyError("Columns do not support duplicate id's.")
+        else:
+            self[col.id] = col
+            self.lst.append(col)
+
 class Col(object):
     def __init__(self, id, title, can_order=False, optional=False,
             active_default=False):
-        self.id = id
+        self.id = str(id)
         self.title = title
         self.can_order = can_order
         self.optional = optional

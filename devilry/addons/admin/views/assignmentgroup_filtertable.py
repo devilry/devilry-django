@@ -166,12 +166,6 @@ class AssignmentGroupsFilterTable(FilterTable):
         total = self.assignment.assignmentgroups.all().count()
         return total, dataset
 
-    def get_dataset_size(self, dataset):
-        return dataset.count()
-
-    def limit_dataset(self, dataset, start, end):
-        return dataset[start:end]
-
     def order_by(self, dataset, colnum, order_asc):
         prefix = '-'
         if order_asc:
