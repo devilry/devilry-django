@@ -25,8 +25,10 @@ def view(request, delivery_obj):
     feedback_obj = feedback_form.instance
     if feedback_obj.grade:
         grade_obj = feedback_obj.get_grade()
+        first_save = False
     else:
         grade_obj = RstSchemaGrade()
+        first_save = True
 
     assignment = feedback_obj.get_assignment()
     schemadef = RstSchemaDefinition.objects.get(assignment=assignment)
@@ -38,7 +40,10 @@ def view(request, delivery_obj):
             schema = text.examiner_format(schemadef.schemadef)
             schema = text.insert_values(schema, gradeform_values)
             grade_obj.schema = schema
-            grade_obj.save()
+            if first_save:
+                grade_obj.first_save(schemadef)
+            else:
+                grade_obj.save()
             feedback_form.instance.grade = grade_obj
             feedback_form.save()
             grade_obj.update_gradeplugin_cached_fields()

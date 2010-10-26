@@ -53,16 +53,15 @@ class RstSchemaGrade(GradeModel):
     def get_maxpoints(cls, assignment):
         return assignment.rstschemadefinition.maxpoints
 
-    def _iter_points(self, feedback_obj):
-        schemadef_document = get_schemadef_document(feedback_obj)
+    def _iter_points(self, schemadef_document):
         fields = field.extract_fields(schemadef_document)
         values = text.extract_values(self.schema)
         for f, v in zip(fields, values):
             yield f.spec.get_points(v)
 
-    def _parse_points(self):
+    def _parse_points(self, schemadef_document):
         points = 0
-        for p in self._iter_points(self.get_feedback_obj()):
+        for p in self._iter_points(schemadef_document):
             points += p
         return points
 
@@ -91,9 +90,14 @@ class RstSchemaGrade(GradeModel):
     #def supports_long_string(self):
         #return True
 
+    def first_save(self, schemadef):
+        self.points = self._parse_points(
+                rstdoc_from_string(schemadef.schemadef))
+        super(RstSchemaGrade, self).save()
+
     def save(self, *args, **kwargs):
-        feedback_obj = self.get_feedback_obj()
-        self.points = self._parse_points()
+        schemadef_document = get_schemadef_document(self.get_feedback_obj())
+        self.points = self._parse_points(schemadef_document)
         super(RstSchemaGrade, self).save(*args, **kwargs)
 
     def get_points(self):
