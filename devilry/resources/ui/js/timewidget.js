@@ -15,8 +15,9 @@ $.widget("ui.combobox", {
       var button_container = $("<span></span>").insertAfter(input);
 
       // Add the button which triggers a dropdown
-      $("<button>&nbsp;</button>")
+      $("<a></a>")
         .attr("tabIndex", -1).attr("title", "Select a time")
+        .html("Select")
         .appendTo(button_container)
         .button({
             icons: {
@@ -38,8 +39,9 @@ $.widget("ui.combobox", {
           });
 
       // Add the now button
-      $("<button>Now</button>")
+      $("<a></a>")
         .attr("tabIndex", -1).attr("title", "Set time to current time")
+        .html("Now")
         .appendTo(button_container)
         .button()
         .click(function() {
