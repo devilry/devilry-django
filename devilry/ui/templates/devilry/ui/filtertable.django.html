@@ -1,4 +1,5 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
 
 <style type='text/css'>
 .filtertable-table {
@@ -145,19 +146,24 @@ table.zebra tr.even td.highlight-column {
     </div>
 
     <div class="filtertable-main ui-state-widget">
-      <table class="filtertable-table zebra">
-        {% comment %}This is filled using javascript{% endcomment %}
-      </table>
-      <div class="filtertable-pagechanger">
-        {% comment %}This is filled using javascript{% endcomment %}
-      </div>
-      <div class="ui-widget" style="margin-top:15px;">
-        <div class="devilry-ui-infobox ui-state-highlight ui-corner-all">
-          <p>
-            <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-            <span class="filtertable-statusmsg"></span>
-          </p>
+      <div class='filtertable-data'>
+        <table class="filtertable-table zebra">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </table>
+        <div class="filtertable-pagechanger">
+          {% comment %}This is filled using javascript{% endcomment %}
         </div>
+        <div class="ui-widget" style="margin-top:15px;">
+          <div class="devilry-ui-infobox ui-state-highlight ui-corner-all">
+            <p>
+              <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+              <span class="filtertable-statusmsg"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class='filtertable-loading' style='display:none'>
+        {% trans "Loading..." %}
       </div>
     </div>
   </form>

@@ -327,7 +327,12 @@
       },
 
       refresh: function(store, options) {
+        store.result_table.empty();
+        store.databox.hide();
+        store.loadingbox.show();
         $.getJSON(store.jsonurl, options, function(json) {
+            store.loadingbox.hide();
+            store.databox.show();
             if(store.has_filters) {
               $.filtertable.refresh_filters(store, json.filterview, json.filteredsize);
             }
@@ -363,9 +368,11 @@
           store.id = id;
           store.jsonurl = jsonurl;
           store.form = $(this).find("form").first();
+          store.databox = $(this).find(".filtertable-data").first();
           store.result_table = $(this).find(".filtertable-table").first();
           store.pagechangerbox = $(this).find(".filtertable-pagechanger").first();
           store.statusmsgbox = $(this).find(".filtertable-statusmsg").first();
+          store.loadingbox = $(this).find(".filtertable-loading").first();
           store.colsettingsbox = $(this).find(".filtertable-settings-cols").first();
 
           // These might not exists, depending on how the table is configured

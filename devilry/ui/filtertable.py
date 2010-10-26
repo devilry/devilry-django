@@ -68,15 +68,14 @@ class Columns(dict):
         return self.lst.index(key)
 
     def iter_ordered(self):
-        for key in self.lst:
-            yield self[key]
+        return self.lst.__iter__()
 
     def add(self, col):
         if col.id in self:
             raise KeyError("Columns do not support duplicate id's.")
         else:
             self[col.id] = col
-            self.lst.append(col.id)
+            self.lst.append(col)
 
 class Col(object):
     def __init__(self, id, title, can_order=False, optional=False,
@@ -323,6 +322,11 @@ class FilterTable(object):
                 else:
                     self.session.order_asc = True
                     self.session.order_by = colid
+        elif self.session.order_by \
+                and not self.session.order_by in self.columns:
+            self.session.order_asc = self.default_order_asc
+            self.session.order_by = self.default_order_by
+
 
         checkall_in_filter = int(indata.get("checkall_in_filter", -1))
         for i, f in enumerate(self.filters):
@@ -418,11 +422,13 @@ class FilterTable(object):
         totalsize, dataset = self.create_dataset()
         filterview = self.create_filterview(dataset)
         dataset, filteredsize = self.search_and_filter(dataset)
+        active_columns = self.get_active_columns()
 
         order_colnum = -1 # used by js to hilight the sorted column
         if self.session.order_by:
-            print self.session.order_by
-            order_colnum = self.columns.get_index(self.session.order_by)
+            colids = [c['id'] for c in active_columns]
+            #print colids, self.session.order_by
+            order_colnum = colids.index(self.session.order_by)
             prefix = '-'
             if self.session.order_asc:
                 prefix = ''
@@ -465,7 +471,7 @@ class FilterTable(object):
             perpage = perpage_js,
             search = self.session.search,
             filterview = filterview,
-            columns = self.get_active_columns(),
+            columns = active_columns,
             use_rowactions = self.use_rowactions,
             selectionactions = self.get_selectionactions_as_dicts(),
             relatedactions = self.get_relatedactions_as_dicts(),
