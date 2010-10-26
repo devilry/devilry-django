@@ -472,6 +472,7 @@
             "long_name": "Learning greed through case studies", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -489,6 +490,7 @@
             "long_name": "Money making basics", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -506,6 +508,7 @@
             "long_name": "Intro to avoid work", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 11, 
             "pointscale": 20
         }
     }, 
@@ -523,6 +526,7 @@
             "long_name": "Sleeping 1", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 30
         }
     }, 
@@ -540,6 +544,7 @@
             "long_name": "Advanced sleeping", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -557,6 +562,7 @@
             "long_name": "Oblig 1", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -574,6 +580,7 @@
             "long_name": "Home Exam 1", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -591,6 +598,7 @@
             "long_name": "Home Exam 2", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -608,6 +616,7 @@
             "long_name": "Assignment 0", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -625,6 +634,7 @@
             "long_name": "Assignment 1", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -642,6 +652,7 @@
             "long_name": "Assignment 2", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -659,6 +670,7 @@
             "long_name": "Obligatory Assignment 1", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -676,6 +688,7 @@
             "long_name": "Obligatory Assignment 2", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -693,6 +706,7 @@
             "long_name": "Obligatory Assignment 3", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -710,6 +724,7 @@
             "long_name": "Obligatory Assignment 4", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 1, 
             "pointscale": 1
         }
     }, 
@@ -727,6 +742,7 @@
             "long_name": "Introduction to lazyness", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -744,6 +760,7 @@
             "long_name": "Improving your current lazyness", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -761,6 +778,7 @@
             "long_name": "Advanced lazyness", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -778,6 +796,7 @@
             "long_name": "How to be as lazy as possible", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 0, 
             "pointscale": 0
         }
     }, 
@@ -795,6 +814,7 @@
             "long_name": "Week 1", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 2, 
             "pointscale": 2
         }
     }, 
@@ -812,6 +832,7 @@
             "long_name": "Week 2", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 3, 
             "pointscale": 3
         }
     }, 
@@ -829,6 +850,7 @@
             "long_name": "Cheating 201", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 10, 
             "pointscale": 10
         }
     }, 
@@ -846,6 +868,7 @@
             "long_name": "Really avoiding work", 
             "admins": [], 
             "anonymous": false, 
+            "maxpoints": 8, 
             "pointscale": 8
         }
     }, 
@@ -1907,8 +1930,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
+            "is_passing_grade": true, 
             "name": "The boys", 
             "parentnode": 2, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": false, 
             "examiners": [
@@ -1921,8 +1946,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 1, 
+            "is_passing_grade": true, 
             "name": "The girls", 
             "parentnode": 2, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -1935,8 +1962,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -1949,8 +1978,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -1963,8 +1994,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -1977,8 +2010,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -1991,8 +2026,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 12.727272727272727, 
             "points": 7, 
             "is_open": true, 
             "examiners": [
@@ -2006,8 +2043,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 5.4545454545454541, 
             "points": 3, 
             "is_open": true, 
             "examiners": [
@@ -2020,8 +2059,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 2, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 1, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2034,8 +2075,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 6, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2046,8 +2089,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 6, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2058,8 +2103,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2070,8 +2117,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2082,8 +2131,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2094,8 +2145,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2106,8 +2159,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2118,8 +2173,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2130,8 +2187,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2142,8 +2201,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2154,8 +2215,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2166,8 +2229,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2178,8 +2243,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2190,8 +2257,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2202,8 +2271,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2214,8 +2285,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2226,8 +2299,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2238,8 +2313,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2250,8 +2327,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2262,8 +2341,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2274,8 +2355,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2286,8 +2369,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2298,8 +2383,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2310,8 +2397,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2322,8 +2411,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2334,8 +2425,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2346,8 +2439,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2358,8 +2453,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2370,8 +2467,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2382,8 +2481,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2394,8 +2495,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2406,8 +2509,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2418,8 +2523,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2430,8 +2537,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2442,8 +2551,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2454,8 +2565,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2466,8 +2579,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2478,8 +2593,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2490,8 +2607,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2502,8 +2621,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2514,8 +2635,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2526,8 +2649,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2538,8 +2663,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2550,8 +2677,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2562,8 +2691,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2574,8 +2705,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2586,8 +2719,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2598,8 +2733,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2610,8 +2747,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2622,8 +2761,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2634,8 +2775,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2646,8 +2789,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2658,8 +2803,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2670,8 +2817,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2682,8 +2831,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2694,8 +2845,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": []
@@ -2706,8 +2859,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 25, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2720,8 +2875,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 25, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2734,8 +2891,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 25, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2748,8 +2907,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 25, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2762,8 +2923,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 25, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2777,8 +2940,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 25, 
+            "scaled_points": 4.0, 
             "points": 4, 
             "is_open": true, 
             "examiners": [
@@ -2791,8 +2956,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 4, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2805,8 +2972,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 4, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2819,8 +2988,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 4, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2833,8 +3004,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 4, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2847,8 +3020,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 4, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2862,8 +3037,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 4, 
+            "scaled_points": 30.0, 
             "points": 1, 
             "is_open": true, 
             "examiners": [
@@ -2876,8 +3053,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 5, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2890,8 +3069,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 5, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2904,8 +3085,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 5, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2918,8 +3101,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 5, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2932,8 +3117,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 5, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2947,8 +3134,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 5, 
+            "scaled_points": 1.0, 
             "points": 1, 
             "is_open": true, 
             "examiners": [
@@ -2961,8 +3150,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 26, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2975,8 +3166,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 26, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -2989,8 +3182,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 26, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -3003,8 +3198,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 26, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -3017,8 +3214,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 26, 
+            "scaled_points": 0.0, 
             "points": 0, 
             "is_open": true, 
             "examiners": [
@@ -3032,8 +3231,10 @@
         "model": "core.assignmentgroup", 
         "fields": {
             "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 26, 
+            "scaled_points": 3.0, 
             "points": 3, 
             "is_open": true, 
             "examiners": [
@@ -3459,9 +3660,9 @@
         "fields": {
             "format": "rst", 
             "text": "Ok i will pass you, but you have to do better on the next assignment.", 
-            "last_modified_by": 13, 
+            "last_modified_by": 1, 
             "delivery": 16, 
-            "last_modified": "2010-08-10 15:25:19", 
+            "last_modified": "2010-10-26 21:22:22", 
             "object_id": 8, 
             "content_type": 11, 
             "published": true
