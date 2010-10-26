@@ -23,6 +23,8 @@ from shortcuts import (BaseNodeFilterTable, NodeAction,
 class AssignmentFilterTable(BaseNodeFilterTable):
     id = 'assignment-admin-filtertable'
     nodecls = Assignment
+    default_order_by = "publishing_time"
+    default_order_asc = False
 
     selectionactions = [
         NodeAction(_("Delete"),
@@ -43,7 +45,7 @@ class AssignmentFilterTable(BaseNodeFilterTable):
             Col('parentnode', "Parent", can_order=True,
                 optional=True, active_default=True),
             Col('publishing_time', "Publishing time", can_order=True,
-                optional=True, active_default=False),
+                optional=True, active_default=True),
             Col('admins', "Administrators", optional=True))
 
     def create_row(self, assignment, active_optional_cols):
