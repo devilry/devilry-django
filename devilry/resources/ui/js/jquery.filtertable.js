@@ -90,13 +90,17 @@
                 var li = $("<li></li>").appendTo(ul);
                 var button = $("<input></input>")
                   .attr("type", filter.multiselect?"checkbox":"radio")
+                  .attr("title", label.labelobj.title)
+                  .tipTip({delay:0})
                   .appendTo(li);
                 if (label.selected) {
                   button.attr("checked", "checked");
                 };
                 var lbl = $("<a></a>")
                   .attr("href", "#")
-                  .html(label.label)
+                  .html(label.labelobj.label)
+                  .attr("title", label.labelobj.title)
+                  .tipTip({delay:0})
                   .appendTo(li);
                 var count = $("<span></span>")
                   .addClass("filtertable-filtercount")

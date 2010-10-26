@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
@@ -5,10 +6,12 @@ from django.http import HttpResponseForbidden
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
+from django.db.models.query import QuerySet
 
 from devilry.core.models import AssignmentGroup, Period
 from devilry.core import pluginloader
-from devilry.ui.filtertable import FilterTable, Columns, Col, Row, RowAction
+from devilry.ui.filtertable import (FilterTable, Columns, Col, Row,
+        RowAction, Filter, FilterLabel)
 
 pluginloader.autodiscover()
 
@@ -49,15 +52,46 @@ def admin_userstats(request, period_id, username):
 
 
 
+
+
+class FilterPeriodPassed(Filter):
+    def get_labels(self, properties):
+        return [FilterLabel(_("All")),
+                FilterLabel(_("Yes"),
+                    _("This takes a long time to calculate on big datasets.")),
+                FilterLabel(_("No"),
+                    _("This takes a long time to calculate on big datasets."))]
+
+    def filter(self, properties, dataset, selected):
+        choice = selected[0]
+        if choice == 0:
+            return dataset
+
+        period = properties['period']
+        if choice == 1:
+            return [user for user in dataset if
+                    period.student_passes_period(user)]
+        elif choice == 2:
+            return [user for user in dataset if
+                    not period.student_passes_period(user)]
+
+
+
 class PeriodStatsFilterTable(FilterTable):
     id = 'gradestats-period-filtertable'
     use_rowactions = True
+    search_help = _('Search for any part of the username')
+    resultcount_supported = False
+    default_order_by = "username"
+
+    filters = [FilterPeriodPassed(_("Passing grade?"))]
 
     def __init__(self, request, period):
         self.period = period
         self.assignments_in_period = period.assignments.all()
         self.maxpoints = sum([a.pointscale for a in self.assignments_in_period])
         super(PeriodStatsFilterTable, self).__init__(request)
+        self.set_properties(period=period)
 
     def get_columns(self):
         cols = Columns()
@@ -67,6 +101,9 @@ class PeriodStatsFilterTable(FilterTable):
             cols.add(Col(assignment.id, assignment.short_name,
                 can_order=True))
         return cols
+
+    def search(self, dataset, qry):
+        return dataset.filter(username__contains=qry)
 
     def create_row(self, user, active_optional_cols):
         row = Row(user.username, title=user.username)
@@ -102,7 +139,15 @@ class PeriodStatsFilterTable(FilterTable):
 
     def order_by(self, dataset, colid, order_asc, qryprefix):
         if colid == 'username' or colid == 'sumpoints':
-            return dataset.order_by(qryprefix + colid)
+            if isinstance(dataset, QuerySet):
+                return dataset.order_by(qryprefix + colid)
+            else:
+                # If a filter (FilterPeriodPassed) returns a list...
+                f = lambda a,b: cmp(getattr(a, colid), getattr(b,colid))
+                dataset.sort(cmp=f)
+                if order_asc:
+                    dataset.reverse()
+                return dataset
 
         # A bit of a hack to sort assignment by scaled points..
         # 1. Get all users on the assignment ordered by their scaled points.
@@ -140,7 +185,7 @@ def periodstats(request, period_id):
     tbl = PeriodStatsFilterTable.initial_html(request,
             reverse('devilry-gradestats-periodstats_json',
                 args=[str(period_id)]))
-    return render_to_response('devilry/admin/list-nodes-generic.django.html', {
-        'title': "Period stats",
-        'filtertbl': tbl
+    return render_to_response('devilry/gradestats/periodstats.django.html', {
+        'filtertbl': tbl,
+        'period': period
         }, context_instance=RequestContext(request))

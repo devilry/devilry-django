@@ -1,7 +1,7 @@
 from devilry.ui.filtertable import RowAction
 
 
-class RegistryRowAction(object):
+class RegistryAction(object):
     def __init__(self, label, urlcallback):
         self.label = label
         self.urlcallback = urlcallback
@@ -9,14 +9,15 @@ class RegistryRowAction(object):
     def to_rowaction(self, rowdata):
         return RowAction(self.label, self.urlcallback(rowdata))
 
-class RowActionRegistry(object):
+class ActionRegistry(object):
     def __init__(self):
         self.actions = []
 
     def add_action(self, label, urlcallback):
-        self.actions.append(RegistryRowAction(label, urlcallback))
+        self.actions.append(RegistryAction(label, urlcallback))
 
-    def as_list(self, rowdata):
-        return [a.to_rowaction(rowdata) for a in self.actions]
+    def as_list(self, item):
+        return [a.to_rowaction(item) for a in self.actions]
 
-period_rowactions = RowActionRegistry()
+
+periodactions = ActionRegistry()

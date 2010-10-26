@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils.simplejson import JSONEncoder
 from django.http import HttpResponse
+from django.db.models.query import QuerySet
 
 
 class Cell(object):
@@ -85,6 +86,27 @@ class Col(object):
                 optional=self.optional, active_default=self.active_default)
 
 
+
+class FilterLabel(object):
+    """ A label in a filter.
+    
+    .. attribute:: label
+
+        The label of the filter (the text after the radio/checkbox).
+
+    .. attribute:: title
+
+        The title shown when users hover the label. Defaults to a empty
+        string.
+    """
+    def __init__(self, label, title=""):
+        self.label = label
+        self.title = title
+
+    def as_dict(self):
+        return dict(label=self.label, title=self.title)
+
+
 class Filter(object):
     """
     .. attribute:: multiselect
@@ -98,7 +120,8 @@ class Filter(object):
         self.title = title
 
     def get_labels(self, properties):
-        return ["All"]
+        """ Return a list of :class:`FilterLabel` objects. """
+        raise NotImplementedError()
 
     def filter(self, properties, dataset, selected):
         return dataset
@@ -106,7 +129,7 @@ class Filter(object):
     def as_dict(self, properties, dataset, selected):
         labels = [{
             'selected': i in selected,
-            'label': label}
+            'labelobj': label.as_dict()}
             for i, label in enumerate(self.get_labels(properties))]
         return dict(
                 title = self.title,
@@ -201,12 +224,12 @@ class FilterTable(object):
     default_currentpage = 0
     default_perpage = 10
     default_order_by = None
-    default_order_asc = False
+    default_order_asc = True
     use_rowactions = False
     filters = []
     selectionactions = []
     relatedactions = []
-    resultcount_supported = True
+    resultcount_supported = False
     search_help = ""
 
     @classmethod
@@ -328,7 +351,10 @@ class FilterTable(object):
         return Columns()
 
     def get_dataset_size(self, dataset):
-        return dataset.count()
+        if isinstance(dataset, QuerySet):
+            return dataset.count()
+        else:
+            return len(dataset)
 
     def limit_dataset(self, dataset, start, end):
         return dataset[start:end]
