@@ -4,13 +4,18 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django import forms
+from django.db.models import Max, Count
 
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
-
-from django import forms
 from devilry.ui.widgets import DevilryDateTimeWidget
 from devilry.ui.messages import UiMessages
+from devilry.ui.filtertable import (Filter, Action, Columns,
+        Col, Row, FilterLabel)
+from devilry.addons.admin.views.assignmentgroup_filtertable import (
+        AssignmentGroupsFilterTableBase, FilterStatus, FilterIsPassingGrade,
+        FilterNumberOfCandidates)
 
 class DeadlineForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=DevilryDateTimeWidget,
@@ -29,6 +34,67 @@ class DeadlineForm(forms.ModelForm):
     def clean(self):
         return self.cleaned_data
 
+
+
+class ExaminerFilterStatus(FilterStatus):
+    
+    def get_default_selected(self, properties):
+        return [1, 2]
+
+
+
+class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
+    id = 'assignmentgroups-examiner-filtertable'
+    has_related_actions = False
+    has_selection_actions = False
+    default_order_by = 'status'
+
+    def __init__(self, request, assignment, assignmentgroups):
+        self.assignmentgroups = assignmentgroups
+        super(AssignmentGroupsExaminerFilterTable, self).__init__(request,
+                assignment)
+
+    def get_filters(self):
+        filters = [
+            ExaminerFilterStatus(),
+            FilterIsPassingGrade(),
+        ]
+        numcan = FilterNumberOfCandidates(self.assignment)
+        if not (numcan.maximum == 1 and numcan.minimum == 1):
+            filters.append(numcan)
+        return filters
+
+    def get_columns(self):
+        return Columns(
+            Col('id', "Id", optional=True),
+            Col('candidates', "Candidates"),
+            Col('examiners', "Examiners", optional=True),
+            Col('name', "Name", can_order=True, optional=True,
+                active_default=True),
+            Col('deadlines', "Deadlines", optional=True),
+            Col('active_deadline', "Active deadline", optional=True),
+            Col('latest_delivery', "Latest delivery", optional=True,
+                can_order=True),
+            Col('deliveries_count', "Deliveries", optional=True,
+                can_order=True),
+            Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('grade', "Grade", optional=True),
+            Col('status', "Status", can_order=True, optional=True,
+                active_default=True))
+
+    def create_row(self, group, active_optional_cols):
+        row = super(AssignmentGroupsExaminerFilterTable, self).create_row(
+                group, active_optional_cols)
+        row.add_action(_("Show"), 
+                reverse('devilry-examiner-show_assignmentgroup',
+                        args=[str(group.id)]))
+        return row
+
+    def get_assignmentgroups(self):
+        return self.assignment.assignmentgroups.all()
+
+
+
 @login_required
 def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
@@ -36,11 +102,27 @@ def list_assignmentgroups(request, assignment_id):
             request.user)
     if assignment_groups.count() == 0:
         return HttpResponseForbidden("Forbidden")
+    tbl = AssignmentGroupsExaminerFilterTable.initial_html(request,
+            reverse('devilry-examiner-list_assignmentgroups_json',
+                args=[str(assignment_id)]))
     return render_to_response(
             'devilry/examiner/list_assignmentgroups.django.html', {
-                'assignment_groups': assignment_groups,
+                'filtertbl': tbl,
                 'assignment': assignment,
+                'is_admin': assignment.can_save(request.user)
             }, context_instance=RequestContext(request))
+
+
+@login_required
+def list_assignmentgroups_json(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    assignment_groups = assignment.assignment_groups_where_can_examine(
+            request.user)
+    if assignment_groups.count() == 0:
+        return HttpResponseForbidden("Forbidden")
+    a = AssignmentGroupsExaminerFilterTable(request, assignment,
+            assignment_groups)
+    return a.json_response()
 
 
 @login_required

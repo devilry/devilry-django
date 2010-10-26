@@ -88,24 +88,6 @@ table.zebra tr.even td.highlight-column {
 <div class='filtertable' id='{{ id }}'>
   <form action="#" method="post">
     <div class="filtertable-sidebar">
-      {% if has_selection_actions or has_related_actions %}
-        <h3><a href="#" class='filtertable-accordion-head'>Actions</a></h3>
-        <div class="filtertable-actions">
-          {% if has_selection_actions %}
-            <h4>On selected rows</h4>
-            <ul class="filtertable-selectionactions">
-              {% comment %}This is filled using javascript{% endcomment %}
-            </ul>
-          {% endif %}
-          {% if has_related_actions %}
-            <h4>Related</h4>
-            <ul class="filtertable-relatedactions">
-              {% comment %}This is filled using javascript{% endcomment %}
-            </ul>
-          {% endif %}
-        </div>
-      {% endif %}
-
       {% if has_search or has_filters %}
         <h3><a href="#" class='filtertable-accordion-head'>Search / Filter</a></h3>
         <div>
@@ -120,6 +102,24 @@ table.zebra tr.even td.highlight-column {
             <div class="filtertable-filters">
               {% comment %}This is filled using javascript{% endcomment %}
             </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if has_selection_actions or has_related_actions %}
+        <h3><a href="#" class='filtertable-accordion-head'>Actions</a></h3>
+        <div class="filtertable-actions">
+          {% if has_selection_actions %}
+            <h4>On selected rows</h4>
+            <ul class="filtertable-selectionactions">
+              {% comment %}This is filled using javascript{% endcomment %}
+            </ul>
+          {% endif %}
+          {% if has_related_actions %}
+            <h4>Related</h4>
+            <ul class="filtertable-relatedactions">
+              {% comment %}This is filled using javascript{% endcomment %}
+            </ul>
           {% endif %}
         </div>
       {% endif %}

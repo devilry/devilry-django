@@ -39,6 +39,35 @@ class FilterIsPassingGrade(Filter):
         else:
             return dataset.filter(is_passing_grade=(i==1))
 
+class FilterNumberOfCandidates(Filter):
+    title = _("Number of candidates")
+
+    def __init__(self, assignment):
+        qry = assignment.assignmentgroups.annotate(
+                num_candidates=Count("candidates")).aggregate(
+                        minimum=Min("num_candidates"),
+                        maximum=Max("num_candidates"))
+        self.minimum = qry['minimum'] or 0
+        self.maximum = qry['maximum'] or 0
+
+    def get_labels(self, properties):
+        l = [FilterLabel(_("All")), FilterLabel(_("More than 0"))]
+        l.extend([FilterLabel(n) for n in xrange(self.maximum+1)])
+        return l
+
+    def filter(self, properties, dataset, selected):
+        i = selected[0] - 2
+        if i == -2:
+            return dataset
+        if i == -1:
+            return dataset.annotate(
+                    num_candidates=Count("candidates")).filter(
+                            num_candidates__gt=0)
+        else:
+            return dataset.annotate(
+                    num_candidates=Count("candidates")).filter(
+                            num_candidates=i)
+
 class FilterMissingCandidateId(Filter):
     title = _("Missing candidate id's?")
 
@@ -96,34 +125,7 @@ class FilterExaminer(Filter):
             selected = examiners[i]
             return dataset.filter(examiners=selected)
 
-class FilterNumberOfCandidates(Filter):
-    title = _("Number of candidates")
 
-    def __init__(self, assignment):
-        qry = assignment.assignmentgroups.annotate(
-                num_candidates=Count("candidates")).aggregate(
-                        minimum=Min("num_candidates"),
-                        maximum=Max("num_candidates"))
-        self.minimum = qry['minimum'] or 0
-        self.maximum = qry['maximum'] or 0
-
-    def get_labels(self, properties):
-        l = [FilterLabel(_("All")), FilterLabel(_("More than 0"))]
-        l.extend([FilterLabel(n) for n in xrange(self.maximum+1)])
-        return l
-
-    def filter(self, properties, dataset, selected):
-        i = selected[0] - 2
-        if i == -2:
-            return dataset
-        if i == -1:
-            return dataset.annotate(
-                    num_candidates=Count("candidates")).filter(
-                            num_candidates__gt=0)
-        else:
-            return dataset.annotate(
-                    num_candidates=Count("candidates")).filter(
-                            num_candidates=i)
 
 class AssignmentGroupsAction(Action):
     def __init__(self, label, urlname, confirm_title=None,
@@ -141,7 +143,7 @@ class AssignmentGroupsAction(Action):
 class AssignmentGroupsFilterTableBase(FilterTable):
     resultcount_supported = True
     use_rowactions = True
-    search_help = "Search the names of candidates on this group."
+    search_help = _("Search the names of candidates on this group.")
 
     @classmethod
     def get_selected_groups(cls, request):
@@ -154,6 +156,11 @@ class AssignmentGroupsFilterTableBase(FilterTable):
     @classmethod
     def get_selected_nodes(cls, request): # Just to make this work with deletemany_generic
         return cls.get_selected_groups(request)
+
+    def __init__(self, request, assignment):
+        self.assignment = assignment
+        super(AssignmentGroupsFilterTableBase, self).__init__(request,
+                assignment=assignment)
 
     def create_row(self, group, active_optional_cols):
         candidates = group.get_candidates()
@@ -169,16 +176,13 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             deadlines = "<br/>".join([unicode(deadline) for deadline in
                 group.deadlines.all()])
             row.add_cell(deadlines)
-        if 'active deadline' in active_optional_cols:
+        if 'active_deadline' in active_optional_cols:
             deadline = group.get_active_deadline()
             row.add_cell(deadline)
-        if 'latest delivery' in active_optional_cols:
-            latest_delivery = group.deliveries.aggregate(
-                    latest=Max("time_of_delivery")).get("latest")
-            row.add_cell(latest_delivery or "")
-        if 'deliveries' in active_optional_cols:
-            deliveries = group.deliveries.count()
-            row.add_cell(deliveries)
+        if 'latest_delivery' in active_optional_cols:
+            row.add_cell(group.latest_delivery or "")
+        if 'deliveries_count' in active_optional_cols:
+            row.add_cell(group.deliveries_count)
         if 'scaled_points' in active_optional_cols:
             row.add_cell("%.2f/%d" % (group.scaled_points,
                 self.assignment.pointscale))
@@ -188,6 +192,28 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             row.add_cell(group.get_localized_status(),
                     cssclass=group.get_status_cssclass())
         return row
+
+    def search(self, dataset, qry):
+        if self.assignment.anonymous:
+            dataset = dataset.filter(
+                candidates__candidate_id=qry)
+        else:
+            dataset = dataset.filter(
+                candidates__student__username__contains=qry)
+        return dataset
+
+
+    def get_assignmentgroups(self):
+        raise NotImplementedError()
+
+    def create_dataset(self):
+        dataset = self.get_assignmentgroups()
+        dataset = dataset.distinct().annotate(
+                latest_delivery=Max("deliveries__time_of_delivery"),
+                deliveries_count=Count("deliveries"))
+        total = self.assignment.assignmentgroups.all().count()
+        return total, dataset
+
 
 
 class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
@@ -217,7 +243,9 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             AssignmentGroupsAction(_("Create many (advanced)"),
                 "devilry-admin-create_assignmentgroups"),
             AssignmentGroupsAction(_("Create by copy"),
-                "devilry-admin-copy_groups")
+                "devilry-admin-copy_groups"),
+            AssignmentGroupsAction(_("Examiner mode"),
+                "devilry-examiner-list_assignmentgroups")
             ]
 
     def get_filters(self):
@@ -241,18 +269,15 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             Col('name', "Name", can_order=True, optional=True,
                 active_default=True),
             Col('deadlines', "Deadlines", optional=True),
-            Col('active deadline', "Active deadline", optional=True),
-            Col('latest delivery', "Latest delivery", optional=True),
-            Col('deliveries', "Deliveries", optional=True),
+            Col('active_deadline', "Active deadline", optional=True),
+            Col('latest_delivery', "Latest delivery", optional=True,
+                can_order=True),
+            Col('deliveries_count', "Deliveries", optional=True,
+                can_order=True),
             Col('scaled_points', "Points", optional=True, can_order=True),
             Col('grade', "Grade", optional=True),
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
-
-    def __init__(self, request, assignment):
-        self.assignment = assignment
-        super(AssignmentGroupsFilterTable, self).__init__(request,
-                assignment=assignment)
 
     def create_row(self, group, active_optional_cols):
         row = super(AssignmentGroupsFilterTable, self).create_row(group,
@@ -260,21 +285,10 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_assignmentgroup',
                         args=[self.assignment.id, str(group.id)]))
-        row.add_action(_("examine"), 
-                reverse('devilry-examiner-show_assignmentgroup',
-                        args=[str(group.id)]))
+        #row.add_action(_("examine"), 
+                #reverse('devilry-examiner-show_assignmentgroup',
+                        #args=[str(group.id)]))
         return row
 
-    def create_dataset(self):
-        dataset = self.assignment.assignmentgroups.all()
-        total = self.assignment.assignmentgroups.all().count()
-        return total, dataset
-
-    def search(self, dataset, qry):
-        if self.assignment.anonymous:
-            dataset = dataset.filter(
-                candidates__candidate_id=qry)
-        else:
-            dataset = dataset.filter(
-                candidates__student__username__contains=qry)
-        return dataset
+    def get_assignmentgroups(self):
+        return self.assignment.assignmentgroups.all()
