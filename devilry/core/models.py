@@ -828,9 +828,13 @@ class Candidate(models.Model):
         method should always be used when retrieving the candidate identifier.
         """
         if self.assignment_group.parentnode.anonymous:
-            return unicode(self.candidate_id)
+            if self.candidate_id == None or self.candidate_id.strip() == "":
+                return _("candidate-id missing")
+            else:
+                return unicode(self.candidate_id)
         else:
             return unicode(self.student.username)
+
     
     def __unicode__(self):
         return self.get_identifier()

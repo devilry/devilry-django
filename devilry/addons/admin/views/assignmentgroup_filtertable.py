@@ -2,9 +2,9 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
-from django.db.models import Max
+from django.db.models import Max, Count, Q
 
-from devilry.core.models import AssignmentGroup
+from devilry.core.models import AssignmentGroup, Candidate
 from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
         Col, Row, FilterLabel)
 
@@ -22,6 +22,37 @@ class FilterStatus(Filter):
 
     def get_default_selected(self, properties):
         return [0, 1, 2, 3]
+
+
+class FilterMissingCandidateId(Filter):
+    title = _("Missing candidate id's?")
+
+    def get_labels(self, properties):
+        return [FilterLabel(_("All")),
+                FilterLabel(_("Yes"),
+                    _("Matches any group where at least one member is "\
+                        "without a candidate number.")),
+                FilterLabel(_("No"),
+                    _("Matches any group where no member is "\
+                        "without a candidate number.")),
+                ]
+
+    def filter(self, properties, dataset, selected):
+        s = selected[0]
+        if s == 0:
+            return dataset
+        assignment = properties['assignment']
+        missing_id = Candidate.objects.filter(
+                Q(assignment_group__parentnode = assignment) &
+                (Q(candidate_id="")|Q(candidate_id__isnull=True)))
+        print missing_id
+        if s == 1:
+            return dataset.filter(
+                    candidates__id__in=missing_id)
+        if s == 2:
+            return dataset.exclude(
+                    candidates__id__in=missing_id)
+        return dataset
 
 
 class FilterExaminer(Filter):
@@ -49,6 +80,34 @@ class FilterExaminer(Filter):
             selected = examiners[i]
             return dataset.filter(examiners=selected)
 
+class FilterNumberOfCandidates(Filter):
+    title = _("Number of candidates")
+
+    def _get_max(self, properties):
+        assignment = properties['assignment']
+        qry = assignment.assignmentgroups.annotate(
+                num_candidates=Count("candidates")).aggregate(
+                        maximum=Max("num_candidates"))
+        return qry['maximum']
+
+    def get_labels(self, properties):
+        maxium = self._get_max(properties)
+        l = [FilterLabel(_("All")), FilterLabel(_("More than 0"))]
+        l.extend([FilterLabel(n) for n in xrange(maxium+1)])
+        return l
+
+    def filter(self, properties, dataset, selected):
+        i = selected[0] - 2
+        if i == -2:
+            return dataset
+        if i == -1:
+            return dataset.annotate(
+                    num_candidates=Count("candidates")).filter(
+                            num_candidates__gt=0)
+        else:
+            return dataset.annotate(
+                    num_candidates=Count("candidates")).filter(
+                            num_candidates=i)
 
 class AssignmentGroupsAction(Action):
     def __init__(self, label, urlname, confirm_title=None,
@@ -63,11 +122,56 @@ class AssignmentGroupsAction(Action):
         return reverse(self.urlname, args=[str(assignment.id)])
 
 
-class AssignmentGroupsFilterTable(FilterTable):
+class AssignmentGroupsFilterTableBase(FilterTable):
+    resultcount_supported = True
+    use_rowactions = True
+    search_help = "Search the names of candidates on this group."
+
+    @classmethod
+    def get_selected_groups(cls, request):
+        groups = []
+        for group_id in cls.get_selected_ids(request):
+            group = get_object_or_404(AssignmentGroup, id=group_id)
+            groups.append(group)
+        return groups
+
+    def create_row(self, group, active_optional_cols):
+        candidates = group.get_candidates()
+        row = Row(group.id, title=candidates)
+        if 'id' in active_optional_cols:
+            row.add_cell(group.pk)
+        row.add_cell(candidates)
+        if 'examiners' in active_optional_cols:
+            row.add_cell(group.get_examiners())
+        if 'name' in active_optional_cols:
+            row.add_cell(group.name)
+        if 'deadlines' in active_optional_cols:
+            deadlines = "<br/>".join([unicode(deadline) for deadline in
+                group.deadlines.all()])
+            row.add_cell(deadlines)
+        if 'active deadline' in active_optional_cols:
+            deadline = group.get_active_deadline()
+            row.add_cell(unicode(deadline))
+        if 'latest delivery' in active_optional_cols:
+            latest_delivery = group.deliveries.aggregate(
+                    latest=Max("time_of_delivery")).get("latest")
+            row.add_cell(unicode(latest_delivery or ""))
+        if 'deliveries' in active_optional_cols:
+            deliveries = group.deliveries.count()
+            row.add_cell(unicode(deliveries))
+        if 'status' in active_optional_cols:
+            row.add_cell(group.get_localized_status(),
+                    cssclass=group.get_status_cssclass())
+        return row
+
+
+class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-admin-filtertable'
     filters = [
         FilterStatus('Status'),
-        FilterExaminer('Examiners')
+        FilterExaminer('Examiners'),
+        FilterNumberOfCandidates(),
+        FilterMissingCandidateId()
     ]
     selectionactions = [
             AssignmentGroupsAction(_("Delete"),
@@ -96,12 +200,10 @@ class AssignmentGroupsFilterTable(FilterTable):
             AssignmentGroupsAction(_("Create by copy"),
                 "devilry-admin-copy_groups")
             ]
-    use_rowactions = True
-    search_help = "Search the names of candidates on this group."
-    #resultcount_supported = False
 
     def get_columns(self):
         return Columns(
+            Col('id', "Id", optional=True),
             Col('candidates', "Candidates"),
             Col('examiners', "Examiners", optional=True, active_default=True),
             Col('name', "Name", can_order=True, optional=True,
@@ -113,46 +215,14 @@ class AssignmentGroupsFilterTable(FilterTable):
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
 
-    @classmethod
-    def get_selected_groups(cls, request):
-        groups = []
-        for group_id in cls.get_selected_ids(request):
-            group = get_object_or_404(AssignmentGroup, id=group_id)
-            groups.append(group)
-        return groups
-
     def __init__(self, request, assignment):
         super(AssignmentGroupsFilterTable, self).__init__(request)
         self.set_properties(assignment=assignment)
         self.assignment = assignment
 
     def create_row(self, group, active_optional_cols):
-        candidates = group.get_candidates()
-        row = Row(group.id, title=candidates)
-        row.add_cell(candidates)
-
-        if 'examiners' in active_optional_cols:
-            row.add_cell(group.get_examiners())
-        if 'name' in active_optional_cols:
-            row.add_cell(group.name)
-        if 'deadlines' in active_optional_cols:
-            deadlines = "<br/>".join([unicode(deadline) for deadline in
-                group.deadlines.all()])
-            row.add_cell(deadlines)
-        if 'active deadline' in active_optional_cols:
-            deadline = group.get_active_deadline()
-            row.add_cell(unicode(deadline))
-        if 'latest delivery' in active_optional_cols:
-            latest_delivery = group.deliveries.aggregate(
-                    latest=Max("time_of_delivery")).get("latest")
-            row.add_cell(unicode(latest_delivery or ""))
-        if 'deliveries' in active_optional_cols:
-            deliveries = group.deliveries.count()
-            row.add_cell(unicode(deliveries))
-        if 'status' in active_optional_cols:
-            row.add_cell(group.get_localized_status(),
-                    cssclass=group.get_status_cssclass())
-
+        row = super(AssignmentGroupsFilterTable, self).create_row(group,
+                active_optional_cols)
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_assignmentgroup',
                         args=[self.assignment.id, str(group.id)]))
@@ -166,16 +236,11 @@ class AssignmentGroupsFilterTable(FilterTable):
         total = self.assignment.assignmentgroups.all().count()
         return total, dataset
 
-    def order_by(self, dataset, colnum, order_asc):
-        prefix = '-'
-        if order_asc:
-            prefix = ''
-        if colnum == 2:
-            key = 'name'
-        else:
-            key = 'status'
-        return dataset.order_by(prefix + key)
-
     def search(self, dataset, qry):
-        return dataset.filter(
+        if self.assignment.anonymous:
+            dataset = dataset.filter(
+                candidates__candidate_id=qry)
+        else:
+            dataset = dataset.filter(
                 candidates__student__username__contains=qry)
+        return dataset

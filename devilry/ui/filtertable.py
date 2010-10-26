@@ -120,22 +120,32 @@ class Filter(object):
         choose more than one label at one time.
     """
     multiselect = False
+    title = None
 
-    def __init__(self, title):
-        self.title = title
+    def __init__(self, title=None):
+        if title:
+            self.title = title
+        if not self.title:
+            raise ValueError("Filters must have a title")
 
     def get_labels(self, properties):
-        """ Return a list of :class:`FilterLabel` objects. """
+        """ This is run on each refresh to update the filter view.
+
+        :return: a list of :class:`FilterLabel` objects.
+        """
         raise NotImplementedError()
 
     def filter(self, properties, dataset, selected):
         return dataset
 
     def as_dict(self, properties, dataset, selected):
+        lbls = self.get_labels(properties)
+        if not lbls:
+            return None
         labels = [{
             'selected': i in selected,
             'labelobj': label.as_dict()}
-            for i, label in enumerate(self.get_labels(properties))]
+            for i, label in enumerate(lbls)]
         return dict(
                 title = self.title,
                 multiselect = self.multiselect,
@@ -387,8 +397,12 @@ class FilterTable(object):
         :param dataset:
             The **unfiltered** dataset returned by :meth:`create_dataset`.
         """
-        return [f.as_dict(self.properties, dataset, self.session.filters[i])
-                for i, f in enumerate(self.filters)]
+        r = []
+        for i, f in enumerate(self.filters):
+            dct = f.as_dict(self.properties, dataset, self.session.filters[i])
+            if dct:
+                r.append(dct)
+        return r
 
     def filter(self, dataset):
         for i, selected in self.session.filters.iteritems():
