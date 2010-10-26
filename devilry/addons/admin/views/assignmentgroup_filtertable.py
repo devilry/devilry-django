@@ -10,6 +10,7 @@ from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
 
 
 class FilterStatus(Filter):
+    title = _("Status")
     multiselect = True
 
     def get_labels(self, properties):
@@ -23,6 +24,20 @@ class FilterStatus(Filter):
     def get_default_selected(self, properties):
         return [0, 1, 2, 3]
 
+
+class FilterIsPassingGrade(Filter):
+    title = _("Is passing grade?")
+
+    def get_labels(self, properties):
+        return [FilterLabel(_("All")), FilterLabel(_("Yes")),
+                FilterLabel(_("No"))]
+
+    def filter(self, properties, dataset, selected):
+        i = selected[0]
+        if i == 0:
+            return dataset
+        else:
+            return dataset.filter(is_passing_grade=(i==1))
 
 class FilterMissingCandidateId(Filter):
     title = _("Missing candidate id's?")
@@ -56,6 +71,7 @@ class FilterMissingCandidateId(Filter):
 
 
 class FilterExaminer(Filter):
+    title = _("Examiners")
 
     def _get_examiners(self, properties):
         assignment = properties['assignment']
@@ -155,14 +171,19 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             row.add_cell(deadlines)
         if 'active deadline' in active_optional_cols:
             deadline = group.get_active_deadline()
-            row.add_cell(unicode(deadline))
+            row.add_cell(deadline)
         if 'latest delivery' in active_optional_cols:
             latest_delivery = group.deliveries.aggregate(
                     latest=Max("time_of_delivery")).get("latest")
-            row.add_cell(unicode(latest_delivery or ""))
+            row.add_cell(latest_delivery or "")
         if 'deliveries' in active_optional_cols:
             deliveries = group.deliveries.count()
-            row.add_cell(unicode(deliveries))
+            row.add_cell(deliveries)
+        if 'scaled_points' in active_optional_cols:
+            row.add_cell("%.2f/%d" % (group.scaled_points,
+                self.assignment.pointscale))
+        if 'grade' in active_optional_cols:
+            row.add_cell(group.get_grade_as_short_string() or "")
         if 'status' in active_optional_cols:
             row.add_cell(group.get_localized_status(),
                     cssclass=group.get_status_cssclass())
@@ -201,8 +222,9 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
 
     def get_filters(self):
         filters = [
-            FilterStatus('Status'),
-            FilterExaminer('Examiners'),
+            FilterStatus(),
+            FilterIsPassingGrade(),
+            FilterExaminer(),
         ]
         numcan = FilterNumberOfCandidates(self.assignment)
         if not (numcan.maximum == 1 and numcan.minimum == 1):
@@ -222,6 +244,8 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             Col('active deadline', "Active deadline", optional=True),
             Col('latest delivery', "Latest delivery", optional=True),
             Col('deliveries', "Deliveries", optional=True),
+            Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('grade', "Grade", optional=True),
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
 
