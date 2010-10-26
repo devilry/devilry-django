@@ -6,7 +6,7 @@ from django.db.models import Max
 
 from devilry.core.models import AssignmentGroup
 from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
-        Col, Row)
+        Col, Row, FilterLabel)
 
 
 class FilterStatus(Filter):
@@ -14,7 +14,7 @@ class FilterStatus(Filter):
 
     def get_labels(self, properties):
         l = []
-        l.extend(AssignmentGroup.status_mapping)
+        l.extend([FilterLabel(s) for s in AssignmentGroup.status_mapping])
         return l
 
     def filter(self, properties, dataset, selected):
@@ -34,7 +34,7 @@ class FilterExaminer(Filter):
 
     def get_labels(self, properties):
         examiners = self._get_examiners(properties)
-        l = ["All", "No examiners"]
+        l = [FilterLabel(_("All")), FilterLabel(_("No examiners"))]
         l.extend([e.username for e in examiners])
         return l
 

@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django.db.models import Q
 
 from devilry.ui.messages import UiMessages
-from devilry.ui.filtertable import FilterTable, Action, Filter
+from devilry.ui.filtertable import FilterTable, Action, Filter, FilterLabel
 
 
 admins_help_text = _('Comma-separated list of administrators. Just start '\
@@ -30,7 +30,8 @@ class FilterHasAdmins(Filter):
         super(FilterHasAdmins, self).__init__(_("Has administrators?"))
 
     def get_labels(self, properties):
-        return [_("All"), _("Yes"), _("No")]
+        return [FilterLabel(_("All")), FilterLabel(_("Yes")),
+                FilterLabel(_("No"))]
 
     def filter(self, properties, dataset, selected):
         choice = selected[0]
@@ -52,6 +53,7 @@ class BaseNodeFilterTable(FilterTable):
     default_order_by = "short_name"
     default_order_asc = True
     use_rowactions = True
+    resultcount_supported = True
     filters = [FilterHasAdmins()]
 
     @classmethod
