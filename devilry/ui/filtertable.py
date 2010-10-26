@@ -60,17 +60,23 @@ class Columns(dict):
             self.add(col)
 
     def get_by_index(self, index):
+        """ Get a item by index. """
         return self.lst[index]
 
+    def get_index(self, key):
+        """ Return the index of the given ``key``. """
+        return self.lst.index(key)
+
     def iter_ordered(self):
-        return self.lst.__iter__()
+        for key in self.lst:
+            yield self[key]
 
     def add(self, col):
         if col.id in self:
             raise KeyError("Columns do not support duplicate id's.")
         else:
             self[col.id] = col
-            self.lst.append(col)
+            self.lst.append(col.id)
 
 class Col(object):
     def __init__(self, id, title, can_order=False, optional=False,
@@ -413,7 +419,10 @@ class FilterTable(object):
         filterview = self.create_filterview(dataset)
         dataset, filteredsize = self.search_and_filter(dataset)
 
-        if self.session.order_by != None:
+        order_colnum = -1 # used by js to hilight the sorted column
+        if self.session.order_by:
+            print self.session.order_by
+            order_colnum = self.columns.get_index(self.session.order_by)
             prefix = '-'
             if self.session.order_asc:
                 prefix = ''
@@ -462,6 +471,7 @@ class FilterTable(object):
             relatedactions = self.get_relatedactions_as_dicts(),
             order_by = self.session.order_by,
             order_asc = self.session.order_asc,
+            order_colnum = order_colnum,
             data = rowlist,
             all_columns = [{
                     'col':c.as_dict(),

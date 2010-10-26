@@ -190,7 +190,7 @@
         return thead;
       },
 
-      create_body: function(data, has_selactions, id) {
+      create_body: function(data, has_selactions, id, order_colnum) {
         var name = id + "-checkbox";
         var tbody = $("<tbody></tbody>")
         $.each(data, function(i, row) {
@@ -212,6 +212,9 @@
                 var td = $("<td></td>")
                   .html(cell.value)
                   .appendTo(tr);
+                if(index == order_colnum) {
+                  td.addClass("highlight-column");
+                }
                 if (cell.cssclass) {
                   td.addClass(cell.cssclass);
                 };
@@ -236,7 +239,8 @@
         var thead = $.filtertable.create_header(store, has_selactions,
           json.columns, json.use_rowactions, json.order_by, json.order_asc);
         thead.appendTo(store.result_table);
-        var tbody = $.filtertable.create_body(json.data, has_selactions, store.id);
+        var tbody = $.filtertable.create_body(json.data, has_selactions, store.id,
+          json.order_colnum);
         tbody.appendTo(store.result_table);
       },
 
