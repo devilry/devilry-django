@@ -21,6 +21,7 @@ from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
 from devilry.addons.quickdash import defaults
 from assignmentgroup_filtertable import AssignmentGroupsFilterTable
+from shortcuts import deletemany_generic
 
 
 
@@ -539,3 +540,11 @@ def clear_deadlines(request, assignment_id):
             args=[assignment_id]))
     else:
         return HttpResponseBadRequest()
+
+
+@login_required
+def delete_manyassignmentgroups(request, assignment_id):
+    return deletemany_generic(request, AssignmentGroup,
+            AssignmentGroupsFilterTable,
+            successurl=reverse('devilry-admin-edit_assignment',
+                args=[assignment_id]))

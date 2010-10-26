@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
-from django.db.models import Max, Count, Q
+from django.db.models import Max, Min, Count, Q
 
 from devilry.core.models import AssignmentGroup, Candidate
 from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
@@ -83,17 +83,17 @@ class FilterExaminer(Filter):
 class FilterNumberOfCandidates(Filter):
     title = _("Number of candidates")
 
-    def _get_max(self, properties):
-        assignment = properties['assignment']
+    def __init__(self, assignment):
         qry = assignment.assignmentgroups.annotate(
                 num_candidates=Count("candidates")).aggregate(
+                        minimum=Min("num_candidates"),
                         maximum=Max("num_candidates"))
-        return qry['maximum']
+        self.minimum = qry['minimum'] or 0
+        self.maximum = qry['maximum'] or 0
 
     def get_labels(self, properties):
-        maxium = self._get_max(properties)
         l = [FilterLabel(_("All")), FilterLabel(_("More than 0"))]
-        l.extend([FilterLabel(n) for n in xrange(maxium+1)])
+        l.extend([FilterLabel(n) for n in xrange(self.maximum+1)])
         return l
 
     def filter(self, properties, dataset, selected):
@@ -135,6 +135,10 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             groups.append(group)
         return groups
 
+    @classmethod
+    def get_selected_nodes(cls, request): # Just to make this work with deletemany_generic
+        return cls.get_selected_groups(request)
+
     def create_row(self, group, active_optional_cols):
         candidates = group.get_candidates()
         row = Row(group.id, title=candidates)
@@ -167,12 +171,6 @@ class AssignmentGroupsFilterTableBase(FilterTable):
 
 class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-admin-filtertable'
-    filters = [
-        FilterStatus('Status'),
-        FilterExaminer('Examiners'),
-        FilterNumberOfCandidates(),
-        FilterMissingCandidateId()
-    ]
     selectionactions = [
             AssignmentGroupsAction(_("Delete"),
                 'devilry-admin-delete_manyassignmentgroups',
@@ -201,6 +199,18 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
                 "devilry-admin-copy_groups")
             ]
 
+    def get_filters(self):
+        filters = [
+            FilterStatus('Status'),
+            FilterExaminer('Examiners'),
+        ]
+        numcan = FilterNumberOfCandidates(self.assignment)
+        if not (numcan.maximum == 1 and numcan.minimum == 1):
+            filters.append(numcan)
+        if self.assignment.anonymous:
+            filters.append(FilterMissingCandidateId())
+        return filters
+
     def get_columns(self):
         return Columns(
             Col('id', "Id", optional=True),
@@ -216,9 +226,9 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
                 active_default=True))
 
     def __init__(self, request, assignment):
-        super(AssignmentGroupsFilterTable, self).__init__(request)
-        self.set_properties(assignment=assignment)
         self.assignment = assignment
+        super(AssignmentGroupsFilterTable, self).__init__(request,
+                assignment=assignment)
 
     def create_row(self, group, active_optional_cols):
         row = super(AssignmentGroupsFilterTable, self).create_row(group,

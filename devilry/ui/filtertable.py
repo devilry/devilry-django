@@ -241,11 +241,11 @@ class FilterTable(object):
     default_order_by = None
     default_order_asc = True
     use_rowactions = False
-    filters = []
-    selectionactions = []
-    relatedactions = []
     resultcount_supported = False
     search_help = ""
+    has_filters = True
+    has_related_actions = True
+    has_selection_actions = True
 
     @classmethod
     def initial_html(cls, request, jsonurl):
@@ -253,10 +253,10 @@ class FilterTable(object):
             'id': cls.id,
             'jsonurl': jsonurl,
             'search_help': cls.search_help,
-            'has_selection_actions': len(cls.selectionactions) > 0,
-            'has_related_actions':  len(cls.relatedactions) > 0,
+            'has_selection_actions': cls.has_selection_actions,
+            'has_related_actions':  cls.has_related_actions,
             'has_search': hasattr(cls, "search"),
-            'has_filters': len(cls.filters) > 0,
+            'has_filters': cls.has_filters,
             'resultcount_supported': cls.resultcount_supported
             }, context_instance=RequestContext(request))
 
@@ -268,22 +268,47 @@ class FilterTable(object):
     def get_selected_ids(cls, request):
         return request.POST.getlist(cls.get_checkbox_name())
 
-    def __init__(self, request):
-        self.properties = {}
+    def __init__(self, request, **properties):
+        self.properties = properties
         self.request = request
         self.indata = request.GET
-        self.columns = self.get_columns()
+
+        def getvar(name):
+            if hasattr(self, name):
+                return getattr(self, name)
+            else:
+                return getattr(self, "get_" + name)()
+        self.columns = getvar("columns")
+        self.filters = getvar("filters")
+        self.selectionactions = getvar("selectionactions")
+        self.relatedactions = getvar("relatedactions")
+
         self.session_from_indata()
         #del self.request.session[self.id]
+
+
+    def get_filters(self):
+        return []
+    def get_columns(self):
+        raise NotImplementedError(
+                "columns or get_columns() is required for any FilterTable.")
+    def get_selectionactions(self):
+        return []
+    def get_relatedactions(self):
+        return []
         
-    def get_default_session(self):
+
+    def _get_default_filters(self):
         default_filters = {}
         for i, f in enumerate(self.filters):
             default_filters[i] = f.get_default_selected(self.properties)
+        return default_filters
+
+    def get_default_session(self):
         default_session = SessionInfo(
             self.default_currentpage, self.default_perpage,
             self.default_order_by, self.default_order_asc,
-            default_filters,
+            self._get_default_filters(),
             set([c.id for c in self.columns.itervalues()
                 if c.optional and c.active_default]))
         return default_session
@@ -339,6 +364,9 @@ class FilterTable(object):
 
 
         checkall_in_filter = int(indata.get("checkall_in_filter", -1))
+        default_filters = self._get_default_filters()
+        if len(self.session.filters) != len(default_filters):
+            self.session.filters = default_filters
         for i, f in enumerate(self.filters):
             current = self.session.filters[i]
             if i == checkall_in_filter:
@@ -366,9 +394,6 @@ class FilterTable(object):
 
     #def search(self, dataset, qry):
         #raise NotImplementedError()
-
-    def get_columns(self):
-        return Columns()
 
     def get_dataset_size(self, dataset):
         if isinstance(dataset, QuerySet):
