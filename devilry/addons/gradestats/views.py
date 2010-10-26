@@ -8,7 +8,7 @@ from django.db.models import Sum
 
 from devilry.core.models import AssignmentGroup, Period
 from devilry.core import pluginloader
-from devilry.ui.filtertable import FilterTable, Columns, Col, Row
+from devilry.ui.filtertable import FilterTable, Columns, Col, Row, RowAction
 
 pluginloader.autodiscover()
 
@@ -51,6 +51,7 @@ def admin_userstats(request, period_id, username):
 
 class PeriodStatsFilterTable(FilterTable):
     id = 'gradestats-period-filtertable'
+    use_rowactions = True
 
     def __init__(self, request, period):
         self.period = period
@@ -69,6 +70,11 @@ class PeriodStatsFilterTable(FilterTable):
 
     def create_row(self, user, active_optional_cols):
         row = Row(user.username, title=user.username)
+        row.add_actions(
+            RowAction("details",
+                reverse('devilry-gradestats-admin_userstats',
+                    args=[str(self.period.id), str(user.username)]))
+        )
 
         assignments = AssignmentGroup.where_is_candidate(user).filter(
                 parentnode__parentnode=self.period).values_list(

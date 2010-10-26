@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden
 
-from devilry.ui.filtertable import Columns, Col, Row
+from devilry.ui.filtertable import Columns, Col, Row, RowAction
 from devilry.core.models import Subject, Period
 from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
         DevilryLongNameWidget, DevilryDateTimeWidget)
@@ -14,6 +14,7 @@ from devilry.ui.fields import MultiSelectCharField
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
         deletemany_generic, admins_help_text)
+from devilry.addons.admin.actionregistry import period_rowactions
 
 
 class PeriodFilterTable(BaseNodeFilterTable):
@@ -62,7 +63,9 @@ class PeriodFilterTable(BaseNodeFilterTable):
         if "admins" in active_optional_cols:
             row.add_cell(period.get_admins())
         row.add_action(_("edit"), 
-                reverse('devilry-admin-edit_period', args=[str(period.id)]))
+                reverse('devilry-admin-edit_period',
+                    args=[str(period.id)]))
+        row.add_actions(*period_rowactions.as_list(period))
         return row
 
 

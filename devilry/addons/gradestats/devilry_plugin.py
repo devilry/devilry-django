@@ -1,15 +1,10 @@
-#from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
 
-#from devilry.addons.quickdash.dashboardplugin_registry import (
-        #DashboardItem, registry)
-
-#import dashboardviews
+from devilry.addons.admin.actionregistry import period_rowactions
 
 
-#statisticsgroup = registry.create_group('statistics', _('Statistics'))
-
-#statisticsgroup.additems(
-        #DashboardItem(
-            #id = 'grades',
-            #title = _('Grades'),
-            #view = dashboardviews.overview))
+period_rowactions.add_action(
+    label = "stats",
+    urlcallback = lambda p:
+        reverse('devilry-gradestats-periodstats', args=[str(p.id)])
+)

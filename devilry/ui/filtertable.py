@@ -14,6 +14,14 @@ class Cell(object):
         return dict(value=self.value, cssclass=self.cssclass)
 
 
+class RowAction(object):
+    def __init__(self, label, url):
+        self.label = label
+        self.url = url
+
+    def as_dict(self):
+        return dict(label=self.label, url=self.url)
+
 class Row(object):
     def __init__(self, id, cssclass="", title=""):
         self.id = id
@@ -25,8 +33,11 @@ class Row(object):
     def add_cell(self, value, cssclass=""):
         self.cells.append(Cell(unicode(value), cssclass))
 
-    def add_action(self, label, url):
-        self.actions.append({"label": label, "url":url})
+    def add_action(self, *args, **kwargs):
+        self.actions.append(RowAction(*args, **kwargs))
+
+    def add_actions(self, *rowactions):
+        self.actions.extend(rowactions)
 
     def as_dict(self):
         return dict(
@@ -34,7 +45,7 @@ class Row(object):
             title = self.title,
             cells = [c.as_dict() for c in self.cells],
             cssclass = self.cssclass,
-            actions = self.actions
+            actions = [a.as_dict() for a in self.actions]
         )
 
     def __getitem__(self, index):
