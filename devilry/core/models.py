@@ -1294,23 +1294,16 @@ class AssignmentGroup(models.Model, CommonInterface):
 
 
     def get_active_deadline(self):
-        """ Get the active deadline. Checked id the following order:
+        """ Get the active deadline.
             
-            1. None if no deadline is set.
-            2. First deadline after current date/time.
-            3. Previous deadline before current date/time.
+        :return:
+            Latest deadline, or None if no deadline is set.
         """
-        if self.deadlines.all().count() == 0:
+        deadlines = self.deadlines.order_by('-deadline')
+        if len(deadlines) == 0:
             return None
-        now = datetime.now()
-        d = self.deadlines.filter(
-                deadline__gt=now).order_by('deadline')
-        if d.count() == 0:
-            d = self.deadlines.filter(
-                    deadline__lt=now).order_by('-deadline')
-            return d[0]
         else:
-            return d[0]
+            return deadlines[0]
 
 
 class Deadline(models.Model):
