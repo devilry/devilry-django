@@ -3,7 +3,7 @@
 {% load i18n %}
 <html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{% firstof page_title page_heading %}{% endblock %}</title>
 
     {% with "1.8.5" as JQUERY_UI_VERSION %}
       {% block jquery %}
@@ -95,9 +95,9 @@
       {% block sidebar %}{% endblock %}
 
       <div id='heading'>
-        <h1>{% block heading %}{% endblock %}</h1>
+        <h1>{% block heading %}{{ page_heading }}{% endblock %}</h1>
         <div id='belowheading'>
-          {% block belowheading %}{% endblock %}
+          {% block belowheading %}{{ page_belowheading }}{% endblock %}
         </div>
       </div>
 
@@ -122,11 +122,11 @@
       </div>
 
       <div id='content'>
-        {% block content %}{% endblock %}
+        {% block content %}{{ page_content }}{% endblock %}
       </div>
 
       <div id='page-footer'>
-        <!-- pagefooter is only hear to prevent overflows -->
+        <!-- pagefooter is only here to prevent overflows -->
       </div>
     {% endblock page %}
     </div>
