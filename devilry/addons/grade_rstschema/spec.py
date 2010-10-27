@@ -118,7 +118,7 @@ class SequenceSpec(AbstractSpec):
     def create_radio_fields(cls, field, field_id, htmltranslator, value,
             valid_values):
         if value and not value in valid_values:
-            value == None
+            value = None
         for i, validvalue in enumerate(valid_values):
             checked = ""
             radioid = '%s_%d' % (field_id, i)

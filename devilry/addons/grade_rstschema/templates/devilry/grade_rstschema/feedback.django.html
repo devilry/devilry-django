@@ -6,10 +6,12 @@
 	<div class='rst-preview'>
 		{{ grade_form|safe }}
 	</div>
+  {% comment %}
 	<script type="text/javascript">
     $(function() {
       $(".rstschema_field-radio").buttonset();
     });
 	</script>
   <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/grade_rstschema/jsstyle-form.js"></script>
+  {% endcomment %}
 {% endblock %}

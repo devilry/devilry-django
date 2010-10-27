@@ -133,5 +133,19 @@ table.tabular-inline tr.oddrow {
 
 
 div.rstschema_field-radio {
-	display: inline;
+	display: inline-block;
+	width:60px;
+	margin-left: 10px;
+	margin-bottom: 8px;
+	text-align: center;
+}
+div.rstschema_field-radio label {
+	display: block;
+	padding: 6px 10px 6px 10px;
+	/*background-color: #aaa;*/
+	text-align: center;
+}
+div.rstschema_field-radio label:hover {
+	cursor: pointer;
+	font-weight: bold;
 }
