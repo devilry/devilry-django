@@ -35,6 +35,17 @@
               });
           </script>
         {% endblock %}
+        {% block xbreadcrumbs %}
+          <script type="text/javascript"
+            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
+          <link rel="stylesheet" type="text/css"
+            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
+          <script type="text/javascript">
+            $(function(){
+                $("#breadcrumbs-list").xBreadcrumbs();
+              });
+          </script>
+        {% endblock %}
       {% endblock %}
     {% endwith %}
 
@@ -81,10 +92,11 @@
       </div>
 
       <div id='breadcrumbs'>
-        <ul>
+        <ul id='breadcrumbs-list' class="xbreadcrumbs">
           {% block breadcrumbs %}
-              <li><a href='{% url devilry-main %}'>{% trans "Dashboard" %}</a></li>
-              <li>::</li>
+              <li class="{% block dashboard_breadcrumb_class %}{% endblock %}">
+                <a href='{% url devilry-main %}' class='home'>{% trans "Dashboard" %}</a>
+              </li>
           {% endblock %}
         </ul>
       </div>

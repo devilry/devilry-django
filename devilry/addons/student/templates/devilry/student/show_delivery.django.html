@@ -7,11 +7,12 @@
 {% block heading %}{{ delivery.assignment_group.parentnode }}{% endblock %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li><a href='{% url devilry-student-show-assignmentgroup delivery.assignment_group.id %}'>
-  {{ delivery.assignment_group }}</a></li>
-<li>::</li>
-<li>{{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</li>
+  {{ block.super }}
+  <li><a href='{% url devilry-student-show-assignmentgroup delivery.assignment_group.id %}'>
+    {{ delivery.assignment_group }}</a></li>
+  <li class="current"><a href="#">
+    {{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}
+  </a></li>
 {% endblock %}
 
 {% block content %}

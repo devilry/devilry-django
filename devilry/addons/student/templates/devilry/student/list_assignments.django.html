@@ -5,8 +5,10 @@
 {% block belowheading %}{% trans "Your active and old assignments" %}{% endblock %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li>{% trans "Assignments" %}</li>
+  {{ block.super }}
+  <li class="current"><a href="#">
+    {% trans "Assignments" %}
+  </a></li>
 {% endblock %}
 
 {% block content %}

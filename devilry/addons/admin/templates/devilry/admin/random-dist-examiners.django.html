@@ -3,16 +3,18 @@
 {% load i18n %}
 
 {% block title %}
-	{% trans "Set examiners" %}
+	{% trans "Random distribute examiners" %}
 {% endblock %}
 {% block heading %}
-	{% trans "Set examiners" %}
+	{% trans "Random distribute examiners" %}
 {% endblock %}
 
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>{% trans "Set examiners" %}</li>
+  <li class="current"><a href="#">
+    {% trans "Random distribute examiners" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}

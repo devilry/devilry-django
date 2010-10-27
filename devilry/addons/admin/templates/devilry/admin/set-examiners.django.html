@@ -12,7 +12,9 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>{% trans "Set examiners" %}</li>
+  <li class="current"><a href="#">
+    {% trans "Set examiners" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}

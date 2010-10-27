@@ -6,14 +6,13 @@
 {% block breadcrumbs %}
   {{ block.super }}
   {% if is_admin %}
-    {% if is_admin %}
-      <li>
-        <a href="{% url devilry-admin-edit_assignment assignment.id %}">
-          {{ assignment }}</a>
-      </li>
-      <li>::</li>
-    {% endif %}
+    <li>
+      <a href="{% url devilry-admin-list_assignments %}">
+        {% trans "Assignments" %}</a>
+    </li>
   {% endif %}
+
+
 {% endblock %}
 
 

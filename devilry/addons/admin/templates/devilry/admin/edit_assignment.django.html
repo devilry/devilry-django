@@ -12,14 +12,20 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href="{% url devilry-admin-list_assignments %}">
-    {% trans "Assignments" %}</a></li>
-  <li>::</li>
   <li>
+    <a href="{% url devilry-admin-list_assignments %}">
+      {% trans "Assignments" %}</a>
+  </li>
+  <li class="current">
     {% if isnew %}
-      {% trans "Create assignment" %}
+      <a href="#">{% trans "Create assignment" %}</a>
     {% else %}
-      {{ assignment.get_path }}
+      <a href="#">{{ assignment.get_path }}</a>
+      <ul>
+        <li><a href="{% url devilry-examiner-list_assignmentgroups assignment.id %}">
+          {% trans "Examiner mode" %}
+        </a></li>
+      </ul>
     {% endif %}
   </li>
 {% endblock %}

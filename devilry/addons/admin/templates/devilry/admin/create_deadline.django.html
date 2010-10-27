@@ -12,10 +12,9 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>
-  <li>
-		{% trans "Create deadline" %}
-  </li>
+  <li class="current"><a href="#">
+    {% trans "Create deadline" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}

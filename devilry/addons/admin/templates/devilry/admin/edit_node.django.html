@@ -10,8 +10,9 @@
   {{ block.super }}
   <li><a href="{{ parent_url }}">
     {{ parent_url_label }}</a></li>
-  <li>::</li>
-  <li>{{ title }}</li>
+  <li class="current"><a href="#">
+    {{ title }}
+  </a></li>
 {% endblock %}
 
 {% block main %}

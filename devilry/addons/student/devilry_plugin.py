@@ -12,7 +12,7 @@ def is_student(request):
 
 personalgroup.additems(
     DashboardItem(
-        title = _('My assignments'),
+        title = _('Assignments'),
         url = reverse('devilry-student-list_assignments'),
         check = is_student),
 )

@@ -4,12 +4,12 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li><a href="{% url devilry-admin-list_assignments %}">
-    {% trans "Assignments" %}</a></li>
-  <li>::</li>
+  <li>
+    <a href='{% url devilry-admin-list_assignments %}'>
+      {% trans "Assignments" %}</a>
+  </li>
   <li>
     <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
       {{ assignment.get_path }}</a>
   </li>
-  <li>::</li>
 {% endblock %}

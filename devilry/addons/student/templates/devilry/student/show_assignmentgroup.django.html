@@ -6,8 +6,10 @@
 {% block heading %} {{ assignment_group.parentnode.long_name }} {% endblock %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li>{{ assignment_group }}</li>
+  {{ block.super }}
+  <li class="current"><a href="#">
+    {{ assignment_group }}
+  </a></li>
 {% endblock %}
 
 {% block content %}

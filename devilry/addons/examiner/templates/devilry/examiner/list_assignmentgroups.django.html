@@ -5,29 +5,23 @@
 {% block title %}{{ assignment }}{% endblock %}
 {% block heading %}{{ assignment }}{% endblock %}
 
-{% block customcss %}
-  <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/tablesorter.css" />
-{% endblock %}
-{% block customjs %}
-  <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/thirdparty/jquery.tablesorter.min.js"></script>          
-  <script type="text/javascript">
-    $(function() {
-      $(".tablesorter").tablesorter();
-    });
-  </script>          
-{% endblock %}
-
 {% block breadcrumbs %}
-{{ block.super }}
-<li>{{ assignment }}</li>
+  {{ block.super }}
+  <li class="current">
+    <a href="#">{{ assignment }}</a>
+    {% if is_admin %}
+      <ul>
+        <li>
+          <a href="{% url devilry-admin-edit_assignment assignment.id %}">
+            {% trans "Administer" %}</a>
+        </li>
+      </ul>
+    {% endif %}
+  </li>
 {% endblock %}
 
 
 {% block content %}
-
-
-<div class="admintools-box">
-</div>
 
 <div class='help-box'>
 <p>{% blocktrans %}Within an assignment, students are organized into groups.

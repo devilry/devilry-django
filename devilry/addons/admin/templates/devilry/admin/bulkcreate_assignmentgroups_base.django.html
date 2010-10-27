@@ -7,5 +7,7 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>{% trans "Create many groups" %}</li>
+  <li class="current"><a href="#">
+    {% trans "Create many groups" %}
+  </a></li>
 {% endblock %}

@@ -12,10 +12,11 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li><a href='{% url devilry-student-show-assignmentgroup assignment_group.id %}'>
-  {{ assignment_group }}</a></li>
-<li>::</li>
-<li>{% trans "Add delivery" %}</li>
+  <li><a href='{% url devilry-student-show-assignmentgroup assignment_group.id %}'>
+    {{ assignment_group }}</a></li>
+  <li class="current"><a href="#">
+    {% trans "Add delivery" %}
+  </a></li>
 {% endblock %}
 
 
