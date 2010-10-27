@@ -19,7 +19,7 @@ def group_nodes(nodes, tree_height):
         else:
             dict[list.get_name()].merge(list)
 
-    return dict.itervalues()
+    return dict.values() # we usually need to know the length, so values() instead of itervalues()
 
 
 def make_node_list(child_node, list_count):

@@ -5,6 +5,8 @@ from devilry.core.models import Assignment
 from devilry.core.utils.GroupNodes import group_assignments
 
 
+# AssignmentGroup.where_is_examiner(user).annotate(md=Max("deliveries__time_of_delivery")).filter(status=1).order_by("-md")[:10]
+
 def list_assignments(request, *args, **kwargs):
     assignments = Assignment.active_where_is_examiner(request.user)
     if assignments.count() == 0:

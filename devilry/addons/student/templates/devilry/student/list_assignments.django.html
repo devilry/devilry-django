@@ -1,0 +1,10 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block belowheading %}{% trans "Your active and old assignments" %}{% endblock %}
+
+
+{% block content %}
+	{% include "devilry/student/include/list_assignments.django.html" %}
+{% endblock %}

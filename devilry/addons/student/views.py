@@ -145,3 +145,24 @@ def show_delivery(request, delivery_id):
     return render_to_response('devilry/student/show_delivery.django.html', {
         'delivery': delivery,
         }, context_instance=RequestContext(request))
+
+
+@login_required
+def list_assignments(request):
+    assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
+    old_assignment_groups = AssignmentGroup.old_where_is_candidate(request.user)
+
+    if assignment_groups.count() == 0 \
+            and old_assignment_groups.count() == 0:
+        return HttpResponseForbidden("You are not a student")
+
+    subjects = group_assignmentgroups(assignment_groups)
+    old_subjects = group_assignmentgroups(old_assignment_groups)
+    heading = _("Assignments")
+    return render_to_response('devilry/student/list_assignments.django.html', {
+            'subjects': subjects,
+            'old_subjects': old_subjects,
+            'has_subjects': len(subjects) > 0,
+            'has_old_subjects': len(old_subjects) > 0,
+            'page_heading': heading,
+            }, context_instance=RequestContext(request))
