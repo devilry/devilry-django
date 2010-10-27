@@ -83,6 +83,8 @@ class PeriodStatsFilterTable(FilterTable):
     search_help = _('Search for any part of the username')
     resultcount_supported = False
     default_order_by = "username"
+    has_related_actions = False
+    has_selection_actions = False
 
     filters = [FilterPeriodPassed(_("Passing grade?"))]
 
