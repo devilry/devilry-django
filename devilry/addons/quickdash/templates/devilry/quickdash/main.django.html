@@ -20,7 +20,7 @@
 {% block content %}
 
 
-{% if not groups or not views %}
+{% if not groups and not views %}
   <p class='warning-box'>
   {% blocktrans %}You do not have access to anything. You should contanct the
   system administrators at <a href="mailto:{{ DEVILRY_SYSTEM_ADMIN_EMAIL }}">
@@ -32,7 +32,9 @@
 <div id='quickdash-views'>
   {% for view in views %}
     <div class='quickdash-item'>
-      {{ view }}
+      {% if view %}
+        {{ view }}
+      {% endif %}
     </div>
   {% endfor %}
 </div>

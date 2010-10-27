@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
@@ -63,6 +64,14 @@ class AssignmentFilterTable(BaseNodeFilterTable):
                 reverse('devilry-admin-edit_assignment', args=[str(assignment.id)]))
         return row
 
+    
+    def search(self, dataset, qry):
+        return dataset.filter(
+                Q(parentnode__parentnode__short_name__contains=qry) |
+                Q(parentnode__short_name__contains=qry) |
+                Q(short_name__contains=qry) |
+                Q(long_name__contains=qry) |
+                Q(admins__username__contains=qry))
 
 
 

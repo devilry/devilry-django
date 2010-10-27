@@ -171,7 +171,7 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         if 'examiners' in active_optional_cols:
             row.add_cell(group.get_examiners())
         if 'name' in active_optional_cols:
-            row.add_cell(group.name)
+            row.add_cell(group.name or "")
         if 'deadlines' in active_optional_cols:
             deadlines = "<br/>".join([unicode(deadline) for deadline in
                 group.deadlines.all()])

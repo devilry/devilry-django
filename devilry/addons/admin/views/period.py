@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django import forms
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -38,7 +39,7 @@ class PeriodFilterTable(BaseNodeFilterTable):
         return Columns(
             Col('short_name', "Short name", can_order=True),
             Col('long_name', "Long name", optional=True, can_order=True),
-            Col('parentnode', "Parent", can_order=True,
+            Col('parentnode__short_name', "Parent", can_order=True,
                 optional=True, active_default=True),
             Col('start_time', "Start time", can_order=True,
                 optional=True, active_default=True),
@@ -53,7 +54,7 @@ class PeriodFilterTable(BaseNodeFilterTable):
         row.add_cell(period.short_name)
         if "long_name" in active_optional_cols:
             row.add_cell(period.long_name)
-        if "parentnode" in active_optional_cols:
+        if "parentnode__short_name" in active_optional_cols:
             row.add_cell(period.parentnode or "")
         if "start_time" in active_optional_cols:
             row.add_cell(period.start_time)
@@ -68,6 +69,13 @@ class PeriodFilterTable(BaseNodeFilterTable):
                     args=[str(period.id)]))
         row.add_actions(*periodactions.as_list(period))
         return row
+    
+    def search(self, dataset, qry):
+        return dataset.filter(
+                Q(parentnode__short_name__contains=qry) |
+                Q(short_name__contains=qry) |
+                Q(long_name__contains=qry) |
+                Q(admins__username__contains=qry))
 
 
 class EditPeriod(EditBase):
