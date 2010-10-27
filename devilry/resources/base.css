@@ -501,30 +501,8 @@ table.xmlrpc-function-constraints li {
  * Quickdash
  ********************************/
 
-.quickdashitem {
-	background-color: #fff;
-	border: 1px solid #D4D2CE;
+#quickdash-views {
 	margin-right: 250px;
-	padding: 15px;
-}
-.quickdashitem h2 {
-	margin-top: 0;
-}
-.quickdashitem-hidden {
-	display: none;
-}
-.quickdashitem-focus {
-	display: block;
-}
-
-a.quickdashmenu-focus{
-	font-weight: bold;
-}
-
-.dashboard-help-box {
-	margin-bottom: 10px;
-	font-size: 0.8em;
-	color: #456;
 }
 
 

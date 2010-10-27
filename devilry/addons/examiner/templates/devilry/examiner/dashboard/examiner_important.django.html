@@ -1,0 +1,36 @@
+{% extends "devilry/quickdash/viewbase.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block heading %}{% trans "Not corrected" %}{% endblock %}
+
+{% block body %}
+<p class="help-box">{{ groups.count }} of the {{ not_corrected_count }} groups
+where you are examiner with status <span class="status_not_corrected">Not
+corrected</span>. They are ordered with the earliest delivery first, and groups
+where the deadline has not yet expired is excluded.</p>
+
+<dl>
+{% for group in groups %}
+	<dt>
+		{{ group.get_candidates }}
+		{% if group.name %}
+			({{ group.name }})
+		{% endif %}
+		::
+		{{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}
+	</dt>
+	<dd>
+		<div>
+			{{ group.parentnode.parentnode.parentnode.long_name }}
+			({{ group.parentnode.parentnode.long_name }})
+		</div>
+		<p>
+			<a href="{% url devilry-examiner-correct_delivery group.get_latest_delivery.id %}">
+				Show delivery/Create feedback</a>
+		</p>
+	</dd>
+{% endfor %}
+</dl>
+
+{% endblock %}

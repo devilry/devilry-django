@@ -2,6 +2,18 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
+
+{% block customjs %}
+<script type="text/javascript">
+  $(function() {
+    $("#quickdash-views-accordion").accordion({
+      autoHeight: false,
+      header: 'h2'
+    });
+  });
+</script>
+{% endblock %}
+
 {% block title %}
   {% trans "Dashboard" %}
 {% endblock %}
@@ -29,13 +41,13 @@
 {% endif %}
 
 <div id='quickdash-views'>
-  {% for view in views %}
-    <div class='quickdash-item'>
+  <div id='quickdash-views-accordion'>
+    {% for view in views %}
       {% if view %}
         {{ view }}
       {% endif %}
-    </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
 </div>
 
 {% for src in js_set %}

@@ -30,7 +30,7 @@ def student_important(request, *args, **kwargs):
     max_visible = 3
     now_with_slack = datetime.now() - timedelta(days=1)
     groups = AssignmentGroup.active_where_is_candidate(request.user).filter(
-            #is_open=True,
+            is_open=True,
             status__lt=2)
     groups = groups.annotate(
             deliverycount=Count("deadlines"),
@@ -38,6 +38,8 @@ def student_important(request, *args, **kwargs):
     groups = groups.filter(
                     active_deadline__gt=now_with_slack).order_by(
                             '-active_deadline')[:max_visible]
+    if groups.count() == 0:
+        return None
     groups = sorted(groups, key=lambda g: g.active_deadline)
     return render_to_string('devilry/student/dashboard/student_important.django.html', {
             'groups': groups,

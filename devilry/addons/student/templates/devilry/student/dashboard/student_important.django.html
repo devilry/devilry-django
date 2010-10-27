@@ -1,12 +1,15 @@
+{% extends "devilry/quickdash/viewbase_wfooter.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-<h2>{% trans "Upcoming deadlines" %}</h2>
+{% block heading %}{% trans "Upcoming deadlines" %}{% endblock %}
+{% block body %}
+<dl>
 {% for group in groups %}
-  <div>
-    <h3>
-      {{ group.active_deadline|date:"DATETIME_FORMAT" }}
-    </h3>
+  <dt>
+    {{ group.active_deadline|date:"DATETIME_FORMAT" }}
+  </dt>
+  <dd>
     <div>
       {{ group.parentnode.parentnode.parentnode.long_name }} ({{ group.parentnode.parentnode.long_name }})
     </div>
@@ -31,11 +34,13 @@
     <p>
       <a class="button" href="{% url devilry-student-add-delivery group.id %}">Add delivery</a>
     </p>
-  </div>
+  </dd>
 {% endfor %}
+</dl>
+{% endblock %}
 
-<p>
+{% block footer %}
   <a href="{% url devilry-student-list_assignments %}">
     {% trans "All assignments" %}
   </a>
-</p>
+{% endblock %}

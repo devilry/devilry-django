@@ -19,4 +19,4 @@ examinergroup.additems(
 )
 
 
-registry.add_view(DashboardView(dashboardviews.list_assignments))
+registry.add_view(DashboardView(dashboardviews.examiner_important))
