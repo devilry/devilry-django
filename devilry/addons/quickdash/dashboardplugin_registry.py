@@ -77,3 +77,4 @@ class DashboardRegistry(object):
 registry = DashboardRegistry()
 personalgroup = registry.create_group(_('Personal'))
 admingroup = registry.create_group(_('Administration'))
+examinergroup = registry.create_group(_('Examiner'))

@@ -7,11 +7,13 @@
 {% block heading %}{{ assignment_group.parentnode }}{% endblock %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li><a href='{% url devilry-examiner-list_assignmentgroups assignment_group.parentnode.id %}'>
-{{ assignment_group.parentnode }}</a></li>
-<li>::</li>
-<li>{{ assignment_group.get_students }}</li>
+  {{ block.super }}
+  <li><a href='{% url devilry-examiner-list_assignmentgroups assignment_group.parentnode.id %}'>
+    {{ assignment_group.parentnode }}
+  </a></li>
+  <li class='current'><a href='#'>
+    {{ assignment_group.get_students }}
+  </a></li>
 {% endblock %}
 
 

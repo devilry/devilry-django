@@ -5,16 +5,17 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
-  {% if is_admin %}
-    <li>
-      <a href="{% url devilry-admin-list_assignments %}">
-        {% trans "Assignments" %}</a>
-    </li>
-  {% endif %}
-
-
+  <li>
+    <a href="
+        {% if is_admin %}
+          {% url devilry-admin-list_assignments %}
+        {% else %}
+          {% url devilry-examiner-list_assignments %}
+        {% endif %}">
+      {% trans "Assignments" %}
+    </a>
+  </li>
 {% endblock %}
-
 
 
 {% block content %}

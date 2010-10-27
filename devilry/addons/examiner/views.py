@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.db.models import Max, Count
 
+from devilry.core.utils.GroupNodes import group_assignments
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
 from devilry.ui.widgets import DevilryDateTimeWidget
@@ -91,8 +92,20 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
         return row
 
     def get_assignmentgroups(self):
-        return self.assignment.assignmentgroups.all()
+        return self.assignmentgroups.all()
 
+
+@login_required
+def list_assignments(request):
+    assignments = Assignment.active_where_is_examiner(request.user)
+    if assignments.count() == 0:
+        return HttpResponseForbidden("Forbidden")
+    subjects = group_assignments(assignments)
+    return render_to_response(
+            'devilry/examiner/list_assignments.django.html', {
+            'page_heading': _("Assignments"),
+            'subjects': subjects,
+            }, context_instance=RequestContext(request))
 
 
 @login_required

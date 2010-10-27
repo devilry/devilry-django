@@ -6,13 +6,15 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li><a href='{% url devilry-examiner-list_assignmentgroups delivery.assignment_group.parentnode.id %}'>
-{{ delivery.assignment_group.parentnode }}</a></li>
-<li>::</li>
-<li><a href='{% url devilry-examiner-show_assignmentgroup delivery.assignment_group.id %}'>
-{{ delivery.assignment_group.get_students }}</a></li>
-<li>::</li>
-<li>{% trans "Delivery" %}</li>
+  <li><a href='{% url devilry-examiner-list_assignmentgroups delivery.assignment_group.parentnode.id %}'>
+    {{ delivery.assignment_group.parentnode }}
+  </a></li>
+  <li><a href='{% url devilry-examiner-show_assignmentgroup delivery.assignment_group.id %}'>
+    {{ delivery.assignment_group.get_students }}
+  </a></li>
+  <li class='current'><a href='#'>
+    {% trans "Delivery" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}

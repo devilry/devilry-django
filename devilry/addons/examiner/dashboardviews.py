@@ -13,6 +13,6 @@ def list_assignments(request, *args, **kwargs):
         return None
     subjects = group_assignments(assignments)
     return render_to_string(
-        'devilry/examiner/dashboard/show_assignments.django.html', {
+        'devilry/examiner/include/list_assignments.django.html', {
             'subjects': subjects,
             }, context_instance=RequestContext(request))
