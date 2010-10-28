@@ -135,21 +135,6 @@ pre.blockpre {
 	-webkit-border-top-right-radius: 10px;
 }
 
-.xbreadcrumbs LI {
-	border-right: none;
-	background: url(jquery/plugins/xbreadcrumbs/separator.gif) no-repeat right center;
-	padding-right: 15px;
-	padding-left: 10px;
-}
-.xbreadcrumbs LI.current { background: none; }
-.xbreadcrumbs LI UL LI { background: none; }
-
-.xbreadcrumbs LI A.home {
-	background: url(jquery/plugins/xbreadcrumbs/home.gif) no-repeat left center;
-	padding-left: 20px;
-}
-
-
 
 
 /***********************************************************
@@ -404,11 +389,6 @@ table.horizontal_ordered_table tfoot td {
 /*******************************
  * jquery UI extra
  *******************************/
-
-.ui-widget {
-	font-family: "Tahoma", "Geneva", sans-serif;
-	/*font-size: 0.8em;*/
-}
 
 a.autocomplete_item span {
 	display: block;

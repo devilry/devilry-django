@@ -5,15 +5,15 @@
 
 {% block breadcrumbs %}
 	{{ block.super }}
+  <li><a href="{% url devilry-admin-list_periods %}">Periods</a></li>
 	<li>
 		<a href="{% url devilry-gradestats-periodstats period.id %}">
 			{{ period }}
 		</a>
 	</li>
-	<li>::</li>
-	<li>
-		{{ user }}
-	</li>
+  <li class="current"><a href="#">
+		{{ userobj }}
+	</a></li>
 {% endblock %}
 
 {% block groupurl %}

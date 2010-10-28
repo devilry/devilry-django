@@ -7,3 +7,18 @@
 .devilry-ui-icon-in-message {
   float:left; margin:0 7px 20px 0;
 }
+
+
+.xbreadcrumbs LI {
+	border-right: none;
+	background: url(../../plugins/xbreadcrumbs/separator.gif) no-repeat right center;
+	padding-right: 15px;
+	padding-left: 10px;
+}
+.xbreadcrumbs LI.current { background: none; }
+.xbreadcrumbs LI UL LI { background: none; }
+
+.xbreadcrumbs LI A.home {
+	background: url(../../plugins/xbreadcrumbs/home.gif) no-repeat left center;
+	padding-left: 20px;
+}

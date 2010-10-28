@@ -196,12 +196,15 @@ table.zebra tr.even td.highlight-column {
         has_selection_actions: {{ has_selection_actions|yesno:"true,false" }},
         has_search: {{ has_search|yesno:"true,false" }},
         has_filters: {{ has_filters|yesno:"true,false" }},
-        resultcount_supported: {{ resultcount_supported|yesno:"true,false" }}
+        resultcount_supported: {{ resultcount_supported|yesno:"true,false" }},
+        accordion_event: "click"
       });
 
-    // Stop clicking from sending the user to the top of the page
+    {% comment %}
+    // Stop clicking from sending the user to the top of the page. Use with accordion_event:"mouseover".
     $('.filtertable-accordion-head').click(function() {
       return false;
     });
+    {% endcomment %}
   });
 </script>

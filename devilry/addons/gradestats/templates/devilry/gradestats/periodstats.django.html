@@ -5,8 +5,9 @@
 {% block breadcrumbs %}
   {{ block.super }}
   <li><a href="{% url devilry-admin-list_periods %}">Periods</a></li>
-  <li>::</li>
-  <li>Statistics for {{ period }}</li>
+  <li class="current"><a href="#">
+    Statistics for {{ period }}
+  </a></li>
 {% endblock %}
 
 {% block heading %}{{ period.parentnode.short_name }} - {{ period.long_name }}{% endblock %}

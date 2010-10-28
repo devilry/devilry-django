@@ -405,7 +405,7 @@
           store.sidebar.accordion({
             header: "h3",
             autoHeight: false,
-            event: "mouseover"
+            event: store.accordion_event
           });
 
           // Search

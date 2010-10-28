@@ -5,17 +5,7 @@
 	<head>
     <title>{% block title %}{% firstof page_title page_heading %}{% endblock %}</title>
 
-    {% block xbreadcrumbs %}
-      <script type="text/javascript"
-        src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
-      <link rel="stylesheet" type="text/css"
-        href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
-      <script type="text/javascript">
-        $(function(){
-            $("#breadcrumbs-list").xBreadcrumbs();
-          });
-      </script>
-    {% endblock %}
+
     {% block basecss %}
       <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
     {% endblock %}
@@ -36,8 +26,6 @@
             $(".success-message").messageBox();
           });
         </script>          
-        <link rel="stylesheet" type="text/css"
-          href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/devilry.css" />
 
         {% block tipTip %}
           <script type="text/javascript"
@@ -54,8 +42,26 @@
               });
           </script>
         {% endblock %}
+
+        {% block xbreadcrumbs %}
+          <script type="text/javascript"
+            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
+          <link rel="stylesheet" type="text/css"
+            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
+          <script type="text/javascript">
+            $(function(){
+                $("#breadcrumbs-list").xBreadcrumbs();
+              });
+          </script>
+        {% endblock %}
       {% endblock %}
     {% endwith %}
+
+
+    {% block theme %}
+      <link rel="stylesheet" type="text/css"
+        href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/devilry.css" />
+    {% endblock %}
 
 		{% block customjs %}{% endblock %}
 		{% block customcss %}{% endblock %}
