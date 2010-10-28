@@ -87,6 +87,7 @@ DEVILRY_LOGOUT_URL = '/ui/logout'
 
 
 INSTALLED_APPS = (
+    'django.contrib.webdesign', 
     'django.contrib.markup', 
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -138,7 +139,8 @@ BASE_TEMPLATE = 'devilry/base.django.html'
 MEDIA_ICONS_URL = 'media/icons/'
 #JQUERY_UI_THEME = 'devilry'
 #JQUERY_UI_THEME = 'dot-luv'
-JQUERY_UI_THEME = 'ui-darkness'
+#JQUERY_UI_THEME = 'ui-darkness'
+JQUERY_UI_THEME = 'devilry-blue'
 
 
 SEND_EMAIL_TO_USERS = True

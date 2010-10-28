@@ -106,3 +106,10 @@ def preview_rst(request):
                 'rst': rst,
             }, context_instance=RequestContext(request))
     return http.HttpResponseBadRequest('Could not find "rst" in POST-data.')
+
+
+
+@login_required
+def skintest(request):
+    return render_to_response("devilry/ui/skintest.django.html",
+            context_instance=RequestContext(request))
