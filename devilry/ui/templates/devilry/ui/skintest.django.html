@@ -21,6 +21,7 @@
 
 
 {% block breadcrumbs %}
+{{ block.super }}
 <li><a href="#">Test 1</a></li>
 <li><a href="#">Deep test 1</a>
 	<ul>
@@ -40,24 +41,22 @@
 {% endblock %}
 
 {% block messages %}
-	<ul>
-		<li class='error_message'>
-			A error message.
-			{% include "devilry/ui/skintest-typicalpara.django.html" %}
-		</li>
-		<li class='warning_message'>
-			A warning message.
-			{% include "devilry/ui/skintest-typicalpara.django.html" %}
-		</li>
-		<li class='info_message'>
-			A info message.
-			{% include "devilry/ui/skintest-typicalpara.django.html" %}
-		</li>
-		<li class='success_message'>
-			A success message.
-			{% include "devilry/ui/skintest-typicalpara.django.html" %}
-		</li>
-	</ul>
+	<div class='error_message'>
+		A error message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+	<div class='warning_message'>
+		A warning message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+	<div class='info_message'>
+		A info message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+	<div class='success_message'>
+		A success message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
 {% endblock %}
 
 {% block content %}
@@ -140,14 +139,9 @@ lnsum.dat</textarea>
 				<p class="form-help">Each student must get a passing grade on this assignment to get a passing grade on the period.</p>
 			</li>
 		</ol>
-		<script type="text/javascript" src="/resources/ui/js/datewidget.js"></script>
-		<script type="text/javascript" src="/resources/ui/js/timewidget.js"></script>
-		<script type="text/javascript" src="/resources/ui/js/multiSelect_char_user_field.js"></script>
   </fieldset>
-  <div class="button-row">
-    <input type="submit" name="save" value="Save" class="button"/>
-    <input type="submit" name="delete" value="Delete button" class="button delete"/>
-  </div>
+	<input type="submit" name="save" value="Save" class="button"/>
+	<input type="submit" name="delete" value="Delete button" class="button delete"/>
 </form>
 
 

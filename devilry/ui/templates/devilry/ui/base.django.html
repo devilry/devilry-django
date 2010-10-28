@@ -5,6 +5,21 @@
 	<head>
     <title>{% block title %}{% firstof page_title page_heading %}{% endblock %}</title>
 
+    {% block xbreadcrumbs %}
+      <script type="text/javascript"
+        src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
+      <link rel="stylesheet" type="text/css"
+        href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
+      <script type="text/javascript">
+        $(function(){
+            $("#breadcrumbs-list").xBreadcrumbs();
+          });
+      </script>
+    {% endblock %}
+    {% block basecss %}
+      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
+    {% endblock %}
+
     {% with "1.8.5" as JQUERY_UI_VERSION %}
       {% block jquery %}
         <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-1.4.2.min.js"></script>
@@ -15,10 +30,14 @@
           var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
           $(function() {
             $(".button").button();
+            $(".error-message").messageBox({state:"error"});
+            $(".warning-message").messageBox({state:"error"});
+            $(".info-message").messageBox();
+            $(".success-message").messageBox();
           });
         </script>          
         <link rel="stylesheet" type="text/css"
-          href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.css" />
+          href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/devilry.css" />
 
         {% block tipTip %}
           <script type="text/javascript"
@@ -35,23 +54,9 @@
               });
           </script>
         {% endblock %}
-        {% block xbreadcrumbs %}
-          <script type="text/javascript"
-            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
-          <link rel="stylesheet" type="text/css"
-            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
-          <script type="text/javascript">
-            $(function(){
-                $("#breadcrumbs-list").xBreadcrumbs();
-              });
-          </script>
-        {% endblock %}
       {% endblock %}
     {% endwith %}
 
-    {% block basecss %}
-      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
-    {% endblock %}
 		{% block customjs %}{% endblock %}
 		{% block customcss %}{% endblock %}
 		{% block headextra %}{% endblock %}
@@ -116,19 +121,17 @@
       <div id='messages'>
         {% block messages %}
           {% if messages %}
-            <ul>
             {% for message_class, raw_html, message in messages %}
               {% block message %}
-                <li class='{{ message_class }}'>
+                <div class='{{ message_class }}'>
                   {% if raw_html %}
                     {{ message|safe }}
                   {% else %}
                     {{ message }}
                   {% endif %}
-                </li>
+                </div>
               {% endblock %}
             {% endfor %}
-            </ul>
           {% endif %}
         {% endblock %}
       </div>

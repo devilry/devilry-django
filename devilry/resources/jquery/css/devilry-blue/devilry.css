@@ -1,0 +1,9 @@
+@import "jquery-ui-1.8.5.custom.css";
+
+.devilry-ui-message {
+
+}
+
+.devilry-ui-icon-in-message {
+  float:left; margin:0 7px 20px 0;
+}

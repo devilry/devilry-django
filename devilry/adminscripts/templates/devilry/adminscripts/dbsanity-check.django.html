@@ -29,7 +29,7 @@
           <div class="success-box">{% trans "OK" %}</div>
         {% else %}
           {% if check.autofixable_errors %}
-            <div class="warning-box">
+            <div class="warning-message">
               <i>{% trans "Errors that can be automatically fixed:" %}</i>
               <ul>
               {% for error in check.autofixable_errors %}

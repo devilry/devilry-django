@@ -2,6 +2,27 @@
 
 
 (function($){
+    $.fn.messageBox = function(args) {
+      var opt = jQuery.extend({
+          state: "highlight"
+        }, args);
+      
+      return this.each(function() {
+          var t = $(this)
+            .addClass("ui-state-" + opt.state)
+            .addClass("ui-corner-all");
+          var wrapper = $("<div></div>")
+            .addClass("ui-widget devilry-ui-message");
+          t.replaceWith(wrapper);
+          $("<span></span>")
+            .addClass("ui-icon")
+            .addClass("ui-icon-alert")
+            .addClass("devilry-ui-icon-in-message")
+            .prependTo(t);
+          t.appendTo(wrapper);
+        });
+    };
+
     $.fn.boxWithLabel = function(args) {
       args.type = args.type || "checkbox";
 

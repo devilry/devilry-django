@@ -201,57 +201,15 @@ pre.blockpre {
 /***********************************************************
  * Page messages
  **********************************************************/
-#messages ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-#messages ul ul {
-	list-style: disc outside none;
-	margin-left: 40px;
-	padding: 0;
-}
-#messages ul ul li {
-	padding: 2px;
-	margin: 0;
-}
-
-#messages li {
-	padding: 10px;
-	font-size: 0.8em;
-	margin: 10px 0 10px 0;
-}
-#messages li.success_message,
-.success-box{
-	border: 1px solid #315C00;
-	background-color: #BFFF75;
-}
-#messages li.info_message,
-.info-box {
-	border: 1px solid #808000;
-	background-color: #FFFFCC;
-}
-#messages li.warning_message,
-.warning-box {
-	border: 1px solid #B34700;
-	background-color: #FFB380;
-}
-#messages li.error_message,
-.error-box {
-	border: 1px solid #700;
-	background-color: #a00;
-	color: #fff;
-	font-weight: bold;
+.error-message,
+.warning-message,
+.info-message,
+.success-message {
+	padding: 15px;
+	margin: 10px 0;
 }
 
 
-.error-box,
-.warning-box,
-.info-box,
-.success-box {
-	padding: 10px;
-}
 
 
 /***********************************************************
