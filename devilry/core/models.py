@@ -455,7 +455,6 @@ class Period(models.Model, BaseNode):
                 is_passing_grade=False,
                 parentnode__must_pass=True)
         if groups.count() > 0:
-            #print [g for g in groups if g.parentnode.must_pass]
             return False
         totalpoints = self.student_sum_scaled_points(user)
         return totalpoints >= self.minimum_points
