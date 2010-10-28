@@ -451,8 +451,11 @@ class Period(models.Model, BaseNode):
 
     def student_passes_period(self, user):
         groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                parentnode__parentnode=self, is_passing_grade=False)
+                parentnode__parentnode=self,
+                is_passing_grade=False,
+                parentnode__must_pass=True)
         if groups.count() > 0:
+            #print [g for g in groups if g.parentnode.must_pass]
             return False
         totalpoints = self.student_sum_scaled_points(user)
         return totalpoints >= self.minimum_points

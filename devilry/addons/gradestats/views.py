@@ -69,6 +69,7 @@ class FilterPeriodPassed(Filter):
 
         period = properties['period']
         if choice == 1:
+            #print [period for user in dataset]
             return [user for user in dataset if
                     period.student_passes_period(user)]
         elif choice == 2:
