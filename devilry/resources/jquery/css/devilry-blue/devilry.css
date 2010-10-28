@@ -1,12 +1,18 @@
 @import "jquery-ui-1.8.5.custom.css";
 
-.devilry-ui-message {
+.ui-widget a {
+	color: #0B5A9D;
+	text-decoration: none;
+}
 
+.ui-widget a:hover {
+	text-decoration: underline;
 }
 
 .devilry-ui-icon-in-message {
   float:left; margin:0 7px 20px 0;
 }
+
 
 
 .xbreadcrumbs LI {
