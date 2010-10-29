@@ -8,7 +8,7 @@
   $(function() {
     $("#quickdash-views-accordion").accordion({
       autoHeight: false,
-      header: 'h2'
+      header: 'h3'
     });
   });
 </script>
@@ -19,14 +19,10 @@
 {% endblock %}
 
 {% block heading %}
-  {% trans "Select a action" %}
+  {% trans "Dashboard" %}
 {% endblock %}
 
 {% block dashboard_breadcrumb_class %}current{% endblock %}
-
-{% block belowheading %}
-{% trans "Dashboard is under construction:)" %}
-{% endblock %}
 
 {% block content %}
 
