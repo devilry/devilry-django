@@ -1,4 +1,4 @@
-{% extends "devilry/ui/base.django.html" %}
+{% extends "devilry/ui/base-wsidebar.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -57,7 +57,6 @@
 {% endblock %}
 
 {% block sidebar %}
-<div id='sidebar'>
   {% for group, items in groups %}
     <div class='section'>
       <h2>{{ group.title }}</h2>
@@ -70,6 +69,5 @@
       </ul>
     </div>
   {% endfor %}
-</div>
 {% endblock %}
 

@@ -117,7 +117,6 @@
 
     <div id='page'>
     {% block page %}
-      {% block sidebar %}{% endblock %}
 
       <div id='heading'>
         <h1>{% block heading %}{{ page_heading }}{% endblock %}</h1>
@@ -144,9 +143,11 @@
         {% endblock %}
       </div>
 
-      <div id='content'>
-        {% block content %}{{ page_content }}{% endblock %}
-      </div>
+      {% block middlearea %}
+        <div id='content'>
+          {% block content %}{{ page_content }}{% endblock %}
+        </div>
+      {% endblock %}
 
       <div id='page-footer'>
         <!-- pagefooter is only here to prevent overflows -->

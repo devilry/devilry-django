@@ -66,8 +66,10 @@
   {% endblock formfields %}
   
   <div class='button-row'>
-    <input type='submit' name='save' class='button'
+    <input type='submit' name='save' class='button default ui-priority-secondary'
       value='{% if delivery.feedback %}{% trans "Update" %}{% else %}{% trans "Create" %}{% endif %}'/>
+    <input type='submit' name='save_and_dash' class='button ui-priority-primary'
+      value='{% if delivery.feedback %}{% trans "Update and return to dashboard" %}{% else %}{% trans "Create and return to dashboard" %}{% endif %}'/>
   </div>
 </form>
 

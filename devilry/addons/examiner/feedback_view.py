@@ -36,6 +36,7 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
         return FeedbackForm(instance=feedback_obj, prefix=prefix)
 
 def redirect_after_successful_save(request, delivery_obj):
+    messages = UiMessages()
     if delivery_obj.feedback.published:
         assignment = delivery_obj.assignment_group.parentnode
         period = assignment.parentnode
@@ -69,13 +70,23 @@ def redirect_after_successful_save(request, delivery_obj):
                 'users: %s.' % email_list))
             messages.save(request)
     else:
-        messages = UiMessages()
         messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
+
+    if "save_and_dash" in request.POST:
+        delivery_url = "<a href='%s'>%s</a>" % (
+                reverse("devilry-examiner-correct_delivery",
+                    args=[str(delivery_obj.id)]),
+                delivery_obj)
+        messages.add_info(
+            _("Saved feedback on %(delivery)s.") %
+                dict(delivery=delivery_url), raw_html=True)
         messages.save(request)
-    
-    return HttpResponseRedirect(
-            reverse('devilry-examiner-show_assignmentgroup',
-                args=(delivery_obj.assignment_group.id,)))
+        return HttpResponseRedirect(reverse('devilry-main'))
+    else:
+        messages.save(request)
+        return HttpResponseRedirect(
+                reverse('devilry-examiner-show_assignmentgroup',
+                    args=(delivery_obj.assignment_group.id,)))
 
 def render_response(request, delivery_obj, feedback_form, grade_form,
         template_path='devilry/examiner/correct_delivery.django.html'):

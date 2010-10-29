@@ -1,0 +1,14 @@
+{% extends "devilry/ui/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+
+
+{% block middlearea %}
+	<div id='sidebar'>
+		{% block sidebar %}{% endblock %}
+	</div>
+	<div id="content-wsidebar">
+		<div id='content'>
+			{% block content %}{{ page_content }}{% endblock %}
+		</div>
+	</div>
+{% endblock %}

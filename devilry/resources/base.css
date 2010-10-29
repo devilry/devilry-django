@@ -167,7 +167,8 @@ pre.blockpre {
  * Page heading
  **********************************************************/
 #heading {
-	min-height: 65px;
+	/*min-height: 65px;*/
+	margin-bottom: 20px;
 }
 #heading h1 {
 	color: #000;
@@ -200,11 +201,14 @@ pre.blockpre {
 /***********************************************************
  * Page sidebar
  **********************************************************/
+
+#content-wsidebar {
+}
 #sidebar {
 	width: 230px;
 	font-size: 0.8em;
 	float: right;
-	margin: 65px 0 0 10px;
+	margin: 0 0 0 10px;
 }
 #sidebar a {
 	color: #0B5A9D;
@@ -217,19 +221,14 @@ pre.blockpre {
 	text-decoration: underline;
 }
 #sidebar .section {
+	color: #666;
 	margin-bottom: 20px;
 	padding: 15px;
-	background-color: #303030;
 	border: 1px solid #D4D2CE;
-	background-color: #fff;
-	color: #444;
 }
-/*#sidebar .section:first-child {*/
-	/*background-color: #44513c;*/
-	/*color: #c3d0bb;*/
-	/*background-color: #2b4358;*/
-	/*color: #dfe8ef;*/
-/*}*/
+#sidebar .section:first-child {
+	background-color: #fff;
+}
 #sidebar .section h2 {
 	font-size: 1.6em;
 	font-family: "Arial Black", sans-serif;
