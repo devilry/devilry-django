@@ -21,8 +21,8 @@ def list_assignments(request, *args, **kwargs):
 
 def examiner_important(request, *args, **kwargs):
     now = datetime.now()
-    #groups = AssignmentGroup.active_where_is_examiner(request.user)
-    groups = AssignmentGroup.where_is_admin_or_superadmin(request.user)
+    groups = AssignmentGroup.active_where_is_examiner(request.user)
+    #groups = AssignmentGroup.where_is_admin_or_superadmin(request.user)
     print groups.all()
 
     not_corrected = groups.filter(
@@ -41,6 +41,7 @@ def examiner_important(request, *args, **kwargs):
             status=2)
     not_published = not_published.annotate(
             active_deadline=Max('deadlines__deadline'),
+            time_of_last_delivery=Max('deliveries__time_of_delivery'),
             time_of_last_feedback=Max('deliveries__feedback__last_modified'))
     not_published = not_published.order_by('-time_of_last_feedback')
     not_published_count = not_published.count()

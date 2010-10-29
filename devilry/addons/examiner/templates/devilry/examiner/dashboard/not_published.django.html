@@ -26,8 +26,21 @@ published</span>. They are ordered with the latest changed feedback first.</p>
 		</div>
 		<div>
 		</div>
-		<div>{% trans "Last updated" %}:
-		<em>{{ group.time_of_last_feedback|date:"DATETIME_FORMAT" }}</em></div>
+		<div>
+			{% trans "Feeback last updated" %}:
+			<em>{{ group.time_of_last_feedback|date:"DATETIME_FORMAT" }}</em>
+		</div>
+		<div>
+			Last delivery:
+			<em>
+				{{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}
+			</em>
+		</div>
+		{% if group.time_of_last_delivery > group.active_deadline %}
+			<div>
+				<em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
+			</div>
+		{% endif %}
 		<p>
 			<a href="{% url devilry-examiner-correct_delivery group.get_latest_delivery.id %}">
 				Edit feedback</a>

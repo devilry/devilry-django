@@ -35,6 +35,10 @@ pre.blockpre {
 	color: #456;
 }
 
+.bad {
+	color: #d00;
+}
+
 .inline-infobox {
 	display: inline-block;
 	padding: 2px 5px;
