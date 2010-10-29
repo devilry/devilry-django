@@ -5,7 +5,9 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
-  <li>{{ period }}</li>
+  <li class="current"><a href="#">
+    {{ period }}
+  </a></li>
 {% endblock %}
 
 {% block groupurl %}
