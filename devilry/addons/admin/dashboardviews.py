@@ -16,4 +16,4 @@ def main(request):
     if not is_admin:
         return None # only show if the user is admin on at least one
 
-    return "Placeholder for something relevant for administrators."
+    return None # will be something else here soon:)

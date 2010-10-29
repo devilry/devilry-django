@@ -7,7 +7,6 @@ from devilry.core.models import AssignmentGroup, Assignment
 from devilry.core.utils.GroupNodes import group_assignments
 
 
-# AssignmentGroup.where_is_examiner(user).annotate(md=Max("deliveries__time_of_delivery")).filter(status=1).order_by("-md")[:10]
 
 def list_assignments(request, *args, **kwargs):
     assignments = Assignment.active_where_is_examiner(request.user)
@@ -22,23 +21,38 @@ def list_assignments(request, *args, **kwargs):
 
 def examiner_important(request, *args, **kwargs):
     now = datetime.now()
-    groups = AssignmentGroup.active_where_is_examiner(request.user)
-    #groups = AssignmentGroup.objects.all()
-    groups = groups.filter(
+    #groups = AssignmentGroup.active_where_is_examiner(request.user)
+    groups = AssignmentGroup.where_is_admin_or_superadmin(request.user)
+    print groups.all()
+
+    not_corrected = groups.filter(
             is_open=True,
             status=1)
-    groups = groups.annotate(
+    not_corrected = not_corrected.annotate(
             active_deadline=Max('deadlines__deadline'),
             time_of_last_delivery=Max('deliveries__time_of_delivery'))
-    groups = groups.filter(
+    not_corrected = not_corrected.filter(
             active_deadline__lt=now).order_by('time_of_last_delivery')
-    not_corrected_count = groups.count()
-    groups = groups[:3]
-    if groups.count() == 0:
+    not_corrected_count = not_corrected.count()
+    not_corrected = not_corrected[:3]
+
+    not_published = groups.filter(
+            is_open=True,
+            status=2)
+    not_published = not_published.annotate(
+            active_deadline=Max('deadlines__deadline'),
+            time_of_last_feedback=Max('deliveries__feedback__last_modified'))
+    not_published = not_published.order_by('-time_of_last_feedback')
+    not_published_count = not_published.count()
+    not_published = not_published[:3]
+
+    if not_corrected_count == 0 and not_published_count == 0:
         return None
 
     return render_to_string(
         'devilry/examiner/dashboard/examiner_important.django.html', {
             'not_corrected_count': not_corrected_count,
-            'groups': groups,
+            'not_corrected': not_corrected,
+            'not_published_count': not_published_count,
+            'not_published': not_published,
             }, context_instance=RequestContext(request))
