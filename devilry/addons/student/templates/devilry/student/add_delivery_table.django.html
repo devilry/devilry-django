@@ -17,7 +17,7 @@
     <td>
       {{ assignment_group.get_active_deadline }}
       {% if assignment_group.get_active_deadline.is_old %}
-        <span class='old-deadline'>({% trans "Deadline is in the past" %})</span>
+        <span class='old-deadline'>({% trans "Deadline expired" %})</span>
       {% endif %}
     </td>
    {% if delivery.feedback %}

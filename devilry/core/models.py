@@ -1357,7 +1357,7 @@ class Deadline(models.Model):
         return unicode(self.deadline)
 
     def is_old(self):
-        """ Return True if :attr:`deadline` is in the past. """
+        """ Return True if :attr:`deadline` expired. """
         return self.deadline < datetime.now()
 
 
