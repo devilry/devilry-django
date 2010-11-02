@@ -30,3 +30,5 @@ cookies.txt
 devilry_xmlrpc_client.egg-info/
 dist/
 
+cscope.out
+Session.vim
