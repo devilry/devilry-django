@@ -1,6 +1,5 @@
 # Django settings for devilry project.
 from os.path import abspath, dirname, join
-from django.utils.translation import ugettext as _
 
 this_dir = dirname(abspath(__file__))
 

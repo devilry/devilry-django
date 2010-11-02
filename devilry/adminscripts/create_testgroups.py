@@ -18,7 +18,10 @@ setup_logging(opt)
 set_django_settings_module(opt)
 load_devilry_plugins()
 from devilry.core.models import Assignment, AssignmentGroup
+from django.conf import settings
 from django.contrib.auth.models import User
+
+print settings.DATABASE_NAME
 
 def exit_help():
     p.print_help()
@@ -29,9 +32,12 @@ setup_logging(opt)
 
 
 assignment_id = int(args[0])
-students = ['stud%d' % d for d in xrange(30)]
+students = ['stud%d' % d for d in xrange(1,30)]
 assignment = Assignment.objects.get(id=assignment_id)
+print assignment
 for username in students:
     student = User.objects.get(username=username)
     g = assignment.assignmentgroups.create()
-    g.
+    g.candidates.create(student=student)
+    print g
+    g.save()
