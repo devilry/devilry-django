@@ -1559,6 +1559,14 @@ class Feedback(models.Model):
        publishing it. Is useful for exams and other assignments when
        feedback and grading is published simultaneously for all Deliveries.
 
+    .. attribute:: last_modified_by
+
+       The django.contrib.auth.models.User_ that last modified the feedback.
+
+    .. attribute:: last_modified
+
+       Date/time of last modification.
+
     .. attribute:: delivery
 
        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
