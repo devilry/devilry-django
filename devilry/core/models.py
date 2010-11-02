@@ -264,6 +264,13 @@ class Node(models.Model, BaseNode):
         if self.parentnode == self:
             raise ValidationError(_('A node can not be it\'s own parent.'))
 
+        if self.short_name and self.parentnode == None:
+            if self.id == None:
+                if Node.objects.filter(short_name=self.short_name).count() > 0:
+                    raise ValidationError(_('A node can not have the same '\
+                        'short name as another within the same parent.'))
+
+
         for node in self.iter_childnodes():
             if node == self.parentnode:
                 raise ValidationError(_('A node can not be the child of one of it\'s own children.'))

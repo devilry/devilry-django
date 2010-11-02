@@ -84,6 +84,13 @@ class TestNode(TestCase):
         n.parentnode = self.uio
         self.assertRaises(IntegrityError, n.save)
 
+    def test_unique_noneparent(self):
+        n = Node(parentnode=None, short_name='stuff', long_name='Ifi')
+        n.clean()
+        n.save()
+        n2 = Node(parentnode=None, short_name='stuff', long_name='Ifi')
+        self.assertRaises(ValidationError, n2.clean)
+
     def test_can_save(self):
         self.assertFalse(Node().can_save(self.ifiadmin))
 
