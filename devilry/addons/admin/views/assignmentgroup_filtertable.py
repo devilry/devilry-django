@@ -89,7 +89,6 @@ class FilterMissingCandidateId(Filter):
         missing_id = Candidate.objects.filter(
                 Q(assignment_group__parentnode = assignment) &
                 (Q(candidate_id="")|Q(candidate_id__isnull=True)))
-        print missing_id
         if s == 1:
             return dataset.filter(
                     candidates__id__in=missing_id)
