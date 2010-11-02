@@ -284,9 +284,9 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_assignmentgroup',
                         args=[self.assignment.id, str(group.id)]))
-        #row.add_action(_("examine"), 
-                #reverse('devilry-examiner-show_assignmentgroup',
-                        #args=[str(group.id)]))
+        row.add_action(_("examine"), 
+                reverse('devilry-examiner-show_assignmentgroup',
+                        args=[str(group.id)]))
         return row
 
     def get_assignmentgroups(self):
