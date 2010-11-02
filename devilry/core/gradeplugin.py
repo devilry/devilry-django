@@ -69,6 +69,29 @@ class GradeModel(models.Model):
         the given assignment. """
         raise NotImplementedError()
 
+    @classmethod
+    def init_example(cls, assignment, points):
+        """ Initialize the grade plugin with the assignment for use as a
+        example. Only needed if the grade plugin has to be configured for
+        each assignment.
+        
+        This is used to autogenerate examples and test data. You do not have
+        to respect the points argument, but doing so enables generation of
+        better example data.
+        """
+        pass
+
+    @classmethod
+    def get_example_xmlrpcstring(cls, assignment, points):
+        """ Create a example xmlrpcstring for the given assignment with the
+        given number of points.
+        
+        This is used to autogenerate examples and test data. You do not have
+        to respect the points argument, but doing so enables generation of
+        better example data.
+        """
+        raise NotImplementedError()
+
     def get_feedback_obj(self):
         """
         Reverse the feedback object which has a generic foreign key to this

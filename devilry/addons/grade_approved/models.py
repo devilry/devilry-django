@@ -11,6 +11,13 @@ class ApprovedGrade(GradeModel):
     def get_maxpoints(cls, assignment):
         return 1
 
+    @classmethod
+    def get_example_xmlrpcstring(cls, assignment, points):
+        if points == 0:
+            return "approved"
+        else:
+            return "notapproved"
+
     def get_grade_as_short_string(self, feedback_obj):
         if self.approved:
             return _('Approved')

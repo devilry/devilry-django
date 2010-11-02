@@ -53,6 +53,21 @@ class RstSchemaGrade(GradeModel):
     def get_maxpoints(cls, assignment):
         return assignment.rstschemadefinition.maxpoints
 
+    @classmethod
+    def init_example(cls, assignment, points):
+        sd = RstSchemaDefinition()
+        sd.assignment = assignment
+        sd.let_students_see_schema = True
+        sd.schemadef = "What?\n\n.. field:: 0-%d\n" % points
+        sd.save()
+
+    @classmethod
+    def get_example_xmlrpcstring(cls, assignment, points):
+        """ This does not respect ``points``, and will only return a values
+        that validates if the schemadef has defaults for everything. """
+        schemadef = assignment.rstschemadefinition.schemadef
+        return text.examiner_format(schemadef)
+
     def _iter_points(self, schemadef_document):
         fields = field.extract_fields(schemadef_document)
         values = text.extract_values(self.schema)

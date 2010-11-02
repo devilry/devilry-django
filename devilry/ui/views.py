@@ -120,6 +120,6 @@ def sysinfo(request):
     if not request.user.is_superuser:
         return http.HttpResponseForbidden("Forbidden")
     from django.conf import settings
-    if settings.DEBUG:
+    if not settings.DEBUG:
         return http.HttpResponseForbidden("Only available in debug mode")
     raise Exception()
