@@ -65,6 +65,8 @@ class XmlrpcGradeConf(object):
 class GradeModel(models.Model):
     @classmethod
     def get_maxpoints(cls, assignment):
+        """ Get maximum number of points possible with this gradeplugin on
+        the given assignment. """
         raise NotImplementedError()
 
     def get_feedback_obj(self):
@@ -108,9 +110,6 @@ class GradeModel(models.Model):
         """
         return None
 
-    def get_grade_details_as_readonly_rst(self, feedback_obj):
-        return None
-
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         """
         Get the grade from a string compatible with
@@ -148,6 +147,7 @@ class GradeModel(models.Model):
         raise NotImplementedError()
 
     def is_passing_grade(self):
+        """ Return True if this is a passing grade, False otherwise. """
         return True
 
     def update_gradeplugin_cached_fields(self):
