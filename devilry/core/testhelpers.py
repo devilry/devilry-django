@@ -80,7 +80,7 @@ def create_from_path(path, grade_plugin_key=None, example_grade_points=0):
         assignment.clean()
         try:
             assignment.save()
-        except Assignment.DoesNotExist, e:
+        except:
             assignment = Assignment.objects.get(parentnode=period,
                     short_name=assignmentname)
         last = assignment

@@ -60,13 +60,19 @@ class RstSchemaGrade(GradeModel):
         sd.let_students_see_schema = True
         sd.schemadef = "What?\n\n.. field:: 0-%d\n" % points
         sd.save()
+        assignment.save() # update pointscale if autoscale
 
+    #@classmethod
+    #def get_example_xmlrpcstring(cls, assignment, points):
+        #""" This does not respect ``points``, and will only return a values
+        #that validates if the schemadef has defaults for everything. """
+        #schemadef = assignment.rstschemadefinition.schemadef
+        #return text.examiner_format(schemadef)
     @classmethod
     def get_example_xmlrpcstring(cls, assignment, points):
-        """ This does not respect ``points``, and will only return a values
-        that validates if the schemadef has defaults for everything. """
         schemadef = assignment.rstschemadefinition.schemadef
-        return text.examiner_format(schemadef)
+        f = text.examiner_format(schemadef)
+        return text.insert_values(f, [points])
 
     def _iter_points(self, schemadef_document):
         fields = field.extract_fields(schemadef_document)
@@ -105,15 +111,10 @@ class RstSchemaGrade(GradeModel):
     #def supports_long_string(self):
         #return True
 
-    def first_save(self, schemadef):
-        self.points = self._parse_points(
-                rstdoc_from_string(schemadef.schemadef))
-        super(RstSchemaGrade, self).save()
-
-    def save(self, *args, **kwargs):
-        schemadef_document = get_schemadef_document(self.get_feedback_obj())
+    def save(self, feedback_obj, *args, **kwargs):
+        schemadef_document = get_schemadef_document(feedback_obj)
         self.points = self._parse_points(schemadef_document)
-        super(RstSchemaGrade, self).save(*args, **kwargs)
+        super(RstSchemaGrade, self).save(feedback_obj, *args, **kwargs)
 
     def get_points(self):
         return self.points

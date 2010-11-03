@@ -45,10 +45,10 @@ reset-exampledb:
 	rm -f db.sqlite3
 	python manage.py syncdb --noinput
 	python manage.py loaddata -v0 core/fixtures/example/users.json
-	python manage.py loaddata -v0 core/fixtures/example/data.json
-	python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
-	python manage.py loaddata -v0 core/fixtures/example/grade_default.json
-	python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
+	#python manage.py loaddata -v0 core/fixtures/example/data.json
+	#python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
+	#python manage.py loaddata -v0 core/fixtures/example/grade_default.json
+	#python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
 	git checkout deliverystore.dbm.dat
 	git checkout deliverystore.dbm.dir
 	chmod a+rw db.sqlite3

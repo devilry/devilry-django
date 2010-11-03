@@ -629,10 +629,13 @@ class Assignment(models.Model, BaseNode):
     def save(self, *args, **kwargs):
         """ Save and recalculate the value of :attr:`maxpoints` and
         :attr:`pointscale`. """
-        self.maxpoints = self._get_maxpoints()
-        if self.autoscale:
-            self.pointscale = self.maxpoints
-        self._update_scalepoints()
+        if self.id != None:
+            self.maxpoints = self._get_maxpoints()
+            if self.autoscale:
+                self.pointscale = self.maxpoints
+            self._update_scalepoints()
+        # TODO: "else" initialize grade plugin with defaults to avoid ugly
+        # error pages when users forget to configure grade plugins
         super(Assignment, self).save()
 
     def get_gradeplugin_registryitem(self):
@@ -1531,7 +1534,6 @@ class Delivery(models.Model):
 
 
 
-# TODO: Refactor feedback_* to just *.
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
@@ -1612,6 +1614,10 @@ class Feedback(models.Model):
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
 
+    def save(self, *args, **kwargs):
+        super(Feedback, self).save(*args, **kwargs)
+        self.delivery.assignment_group.update_gradeplugin_cached_fields()
+
     def __unicode__(self):
         return "Feedback on %s" % self.delivery
 
@@ -1685,11 +1691,11 @@ class Feedback(models.Model):
         model_cls = gradeplugin.registry.getitem(key).model_cls
         if self.grade:
             ok_message = self.grade.set_grade_from_xmlrpcstring(grade, self)
-            self.grade.save()
+            self.grade.save(self)
         else:
             gradeobj = model_cls()
             ok_message = gradeobj.set_grade_from_xmlrpcstring(grade, self)
-            gradeobj.save()
+            gradeobj.save(self)
             self.grade = gradeobj
         return ok_message
 

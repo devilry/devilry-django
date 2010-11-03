@@ -147,6 +147,7 @@ SEND_EMAIL_TO_USERS = True
 ## The default grade-plugin
 DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
 #DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:approvedgrade'
+#DEVILRY_DEFAULT_GRADEPLUGIN='grade_rstschema:rstschemagrade'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = this_dir + '/email_log/'
