@@ -9,9 +9,7 @@
     <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
       {{ assignment.get_path }}</a>
   </li>
-  <li>::</li>
-
-	<li>{% trans "Grade plugin" %}</li>
+	<li class="current"><a href="#">{% trans "Grade plugin" %}</a></li>
 {% endblock %}
 
 {% block title %}{% trans "Grade plugin" %}{% endblock %}
