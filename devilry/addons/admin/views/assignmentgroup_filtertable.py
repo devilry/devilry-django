@@ -206,11 +206,11 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         raise NotImplementedError()
 
     def create_dataset(self):
-        dataset = self.get_assignmentgroups()
-        dataset = dataset.distinct().annotate(
+        dataset = self.get_assignmentgroups().distinct()
+        total = dataset.count()
+        dataset = dataset.annotate(
                 latest_delivery=Max("deliveries__time_of_delivery"),
                 deliveries_count=Count("deliveries"))
-        total = self.assignment.assignmentgroups.all().count()
         return total, dataset
 
 
