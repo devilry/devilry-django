@@ -80,7 +80,9 @@ if __name__ == "__main__":
                 User.objects.get(username=username)
                 logging.debug("User %s already exists." % username)
             except User.DoesNotExist, e:
-                User(username=username).save()
+                u = User(username=username)
+                u.set_password("test")
+                u.save()
                 logging.info("Created user %s." % username)
 
     def autocreate_delivery(group):
