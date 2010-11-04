@@ -14,7 +14,7 @@ from devilry.ui.widgets import DevilryDateTimeWidget
 from devilry.ui.messages import UiMessages
 from devilry.ui.filtertable import (Filter, Action, Columns,
         Col, Row, FilterLabel)
-from devilry.addons.admin.views.assignmentgroup_filtertable import (
+from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, FilterStatus, FilterIsPassingGrade,
         FilterNumberOfCandidates)
 

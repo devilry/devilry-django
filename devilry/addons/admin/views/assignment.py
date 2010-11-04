@@ -16,7 +16,7 @@ from devilry.ui.fields import MultiSelectCharField
 from devilry.core import gradeplugin
 from devilry.ui.filtertable import Columns, Col, Row
 
-from assignmentgroup_filtertable import AssignmentGroupsFilterTable
+from assignmentgroup import AssignmentGroupsFilterTable
 from shortcuts import (BaseNodeFilterTable, NodeAction,
         deletemany_generic)
 
