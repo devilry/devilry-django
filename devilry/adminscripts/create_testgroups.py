@@ -123,7 +123,7 @@ if __name__ == "__main__":
             # set to "now" in finish()
             others = delivery.assignment_group.deliveries.all().order_by(
                     "-time_of_delivery")
-            if others.count() == 0:
+            if others.count() == 1:
                 if randint(0, 100) <= 5:
                     # 5% chance to get the first delivery after the deadline
                     offset = timedelta(minutes=-randint(1, 20))
