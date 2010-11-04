@@ -221,5 +221,3 @@ class AssignmentGroupsFilterTableBase(FilterTable):
                 deliveries_count=Count("deliveries"))
         return total, dataset
 
-
-

@@ -5,18 +5,18 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django import forms
-from django.db.models import Max, Count
 
 from devilry.core.utils.GroupNodes import group_assignments
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
 from devilry.ui.widgets import DevilryDateTimeWidget
 from devilry.ui.messages import UiMessages
-from devilry.ui.filtertable import (Filter, Action, Columns,
-        Col, Row, FilterLabel)
-from devilry.addons.admin.assignmentgroup_filtertable import (
-        AssignmentGroupsFilterTableBase, FilterStatus, FilterIsPassingGrade,
-        FilterNumberOfCandidates)
+from devilry.ui.filtertable import Columns, Col
+from devilry.addons.admin.views.assignmentgroup_filtertable import (
+        AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
+        FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates)
+
+
 
 class DeadlineForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=DevilryDateTimeWidget,
@@ -47,8 +47,14 @@ class ExaminerFilterStatus(FilterStatus):
 class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-examiner-filtertable'
     has_related_actions = False
-    has_selection_actions = False
+    has_selection_actions = True
     default_order_by = 'status'
+
+    selectionactions = [
+        AssignmentGroupsAction(_("Download deliveries"),
+                               'devilry-examiner-download_file_collection'),
+    ]
+    
 
     def __init__(self, request, assignment, assignmentgroups):
         self.assignmentgroups = assignmentgroups
@@ -273,3 +279,72 @@ def correct_delivery(request, delivery_id):
 
 
 
+def get_assignmentgroup_name(assigmentgroup):
+     cands = assigmentgroup.get_candidates()
+     cands = cands.replace(", ", "-")
+     return cands
+
+def get_dictionary_with_name_matches(assignmentgroups):
+    matches = {}
+    for assigmentgroup in assignmentgroups:
+        name = get_assignmentgroup_name(assigmentgroup)
+        if matches.has_key(name):
+            matches[name] =  matches[name] + 1
+        else:
+            matches[name] = 1
+    return matches
+
+@login_required
+def download_file_collection(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+
+    #from assignmentgroup_filtertable import AssignmentGroupsFilterTable
+    #from devilry.addons.admin.views.assignmentgroup_filtertable import AssignmentGroupsExaminerFilterTable
+    from StringIO import StringIO  
+    from zipfile import ZipFile  
+    from django.http import HttpResponse  
+
+    # AssignmentGroupsExaminerFilterTable
+    #groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    ids = [g.id for g in groups]
+    selected_assignmentgroups = AssignmentGroup.objects.filter(id__in=ids)
+
+    name_matches = get_dictionary_with_name_matches(selected_assignmentgroups)
+
+    in_memory = StringIO()  
+    zip = ZipFile(in_memory, "a")  
+
+    for ass_group in selected_assignmentgroups:
+        ass_group_name = get_assignmentgroup_name(ass_group)
+        # If multiple groups with the same members exists,
+        # postfix the name with asssignmengroup ID.
+        if name_matches[ass_group_name] > 1:
+            ass_group_name = "%s+%d" % (ass_group_name, ass_group.id)
+        
+        deliveries = ass_group.deliveries.all()
+        for delivery in deliveries:
+            if not delivery.assignment_group.can_examine(request.user):
+                continue                
+            metas = delivery.filemetas.all()
+            for f in metas:
+                bytes = f.read_open().read(f.size)
+                zip.writestr("%s/%s/%d_(%s)/%s" % (assignment.get_path(), ass_group_name, delivery.number,
+                                                   delivery.time_of_delivery, f.filename), bytes)
+            
+    # fix for Linux zip files read in Windows  
+    for file in zip.filelist:  
+        file.create_system = 0      
+             
+    zip.close()  
+
+    print "zipinfo:", zip.infolist()
+    
+    response = HttpResponse(mimetype="application/zip")  
+    response["Content-Disposition"] = "attachment; filename=%s.zip" % assignment.get_path()  
+         
+    in_memory.seek(0)      
+    response.write(in_memory.read())  
+    return response  
