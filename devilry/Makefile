@@ -1,6 +1,8 @@
 PRODTEST=devilry.cfg.test2
 PROD=devilry.cfg.prod1
 EXAMPLEDATA_BACKUP=exampledata-backup
+NUM_STUDENTS=30
+NUM_EXAMINERS=2
 
 USER=../adminscripts/bin/devilry-user.py
 
@@ -42,77 +44,97 @@ create-exampledata:
 	python manage.py dumpdata grade_default --indent=4 > core/fixtures/example/grade_default.json
 	python manage.py dumpdata grade_approved --indent=4 > core/fixtures/example/grade_approved.json
 	
-
-
 reset-exampledb:
 	rm -f db.sqlite3
 	python manage.py syncdb --noinput
 
 	python manage.py loaddata -v0 core/fixtures/example/users.json
-	#python manage.py loaddata -v0 core/fixtures/example/data.json
-	#python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
-	#python manage.py loaddata -v0 core/fixtures/example/grade_default.json
-	#python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
+	python manage.py loaddata -v0 core/fixtures/example/data.json
+	python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
+	python manage.py loaddata -v0 core/fixtures/example/grade_default.json
+	python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
 
-	#git checkout deliverystore.dbm.dat
-	#git checkout deliverystore.dbm.dir
+	git checkout deliverystore.dbm.dat
+	git checkout deliverystore.dbm.dir
 	chmod a+rw db.sqlite3
 
-create_duck1100_data:
+create-duck1100-data:
 	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week1 \
+		duckburgh.univ:duck1100.h01.week1 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
-		--deadline-profile "-70" --grade-maxpoints 10
-	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week2 \
-		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
-		--deadline-profile "-60" --grade-maxpoints 12
-	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week3 \
-		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
-		--deadline-profile "-50" --grade-maxpoints 8
-	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week4 \
-		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
-		--deadline-profile "-40" --grade-maxpoints 7
-	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week5 \
-		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "-30" --grade-maxpoints 14
 	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week6 \
+		duckburgh.univ:duck1100.h01.week2 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "-20" --grade-maxpoints 10
 	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week7 \
+		duckburgh.univ:duck1100.h01.week3 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "old" --grade-maxpoints 9
 	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week9 \
+		duckburgh.univ:duck1100.h01.week4 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "recent" --grade-maxpoints 12
 	python adminscripts/create_testgroups.py \
-		duckburgh.univ:duck1100.hxx.week10 \
+		duckburgh.univ:duck1100.h01.week5 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
-		--num-students 300 \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "soon" --grade-maxpoints 6
 
-backup-exampledata:
+create-duck1080-data:
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week1 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-30" --grade-maxpoints 11 \
+		--pointscale 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week2 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-20" --grade-maxpoints 9 \
+		--pointscale 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week3 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "recent" --grade-maxpoints 8 \
+		--pointscale 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week4 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "soon" --grade-maxpoints 14 \
+		--pointscale 10
+
+
+create-exampledb: create-duck1100-data
+
+
+init-exampledb: cleardb
+	python manage.py loaddata -v0 core/fixtures/example/users.json
+
+backup-exampledb:
 	rm -rf $(EXAMPLEDATA_BACKUP)
+	rm -f $(EXAMPLEDATA_BACKUP).tar.bz2
 	mkdir $(EXAMPLEDATA_BACKUP)
-	echo ".dump" | sqlite3 db.sqlite3 > $(EXAMPLEDATA_BACKUP)/dbdump.sql
+	sqlite3 db.sqlite3 .dump > $(EXAMPLEDATA_BACKUP)/dbdump.sql
 	cp deliverystore.dbm.dat $(EXAMPLEDATA_BACKUP)/
 	cp deliverystore.dbm.dir $(EXAMPLEDATA_BACKUP)/
-	tar -cvf $(EXAMPLEDATA_BACKUP).tar $(EXAMPLEDATA_BACKUP)
-	lzma $(EXAMPLEDATA_BACKUP).tar
+	tar -cvjf $(EXAMPLEDATA_BACKUP).tar.bz2 $(EXAMPLEDATA_BACKUP)
+	rm -rf $(EXAMPLEDATA_BACKUP)
+
+restore-exampledb:
+	rm -f db.sqlite3
+	tar -xvjf $(EXAMPLEDATA_BACKUP).tar.bz2
+	cp $(EXAMPLEDATA_BACKUP)/deliverystore.dbm.dat ./
+	cp $(EXAMPLEDATA_BACKUP)/deliverystore.dbm.dir ./
+	sqlite3 db.sqlite3 < $(EXAMPLEDATA_BACKUP)/dbdump.sql
+	rm -rf $(EXAMPLEDATA_BACKUP)
 
 create-minimal-exampledata:
 	python manage.py dumpdata core --indent=4 > core/fixtures/example/minimaldata.json

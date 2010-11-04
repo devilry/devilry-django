@@ -10,7 +10,7 @@ from common import (setup_logging, load_devilry_plugins,
     add_settings_option, set_django_settings_module, add_quiet_opt,
     add_debug_opt)
 
-def group(lst, n):
+def grouplist(lst, n):
     l = len(lst)/n
     if len(lst)%n:
         l += 1
@@ -53,6 +53,10 @@ if __name__ == "__main__":
             help="Maximum number of points possible on the assignment. "\
                 "Groups will get a random score between 0 and this number. "
                 "Defaults to 1.")
+    p.add_option("--pointscale", dest="pointscale",
+            default=None, type='int',
+            help="The pointscale of the assignment. Default is "\
+                    "no pointscale.")
     p.add_option("--grade-plugin", dest="gradeplugin",
             default=None, help="Grade plugin key.")
     p.add_option("-p", "--deadline-profile", dest="deadline_profile",
@@ -117,8 +121,22 @@ if __name__ == "__main__":
         if active_deadline < datetime.now():
             # Only change time of delivery on "old" assignments. New will be
             # set to "now" in finish()
-            delivery.time_of_delivery = active_deadline - \
-                    timedelta(hours=randint(0, 5), minutes=randint(0, 59))
+            others = delivery.assignment_group.deliveries.all().order_by(
+                    "-time_of_delivery")
+            if others.count() == 0:
+                if randint(0, 100) <= 5:
+                    # 5% chance to get the first delivery after the deadline
+                    offset = timedelta(minutes=-randint(1, 20))
+                else:
+                    offset = timedelta(hours=randint(0, 15),
+                            minutes=randint(0, 59))
+                delivery.time_of_delivery = deadline - offset
+            else:
+                # Make sure deliveries are sequential
+                last_delivery = others[0].time_of_delivery
+                delivery.time_of_delivery = last_delivery + \
+                        timedelta(hours=randint(0, 2), minutes=randint(0,
+                            59))
             delivery.save()
         return delivery
 
@@ -185,9 +203,10 @@ if __name__ == "__main__":
             if randint(0, 100) <= 5:
                 return
 
-        numdeliveries = randint(1, 3)
-        if numdeliveries == 3: # Those with 3 deliveries has a chance of delivering even more
-            numdeliveries = randint(3, 8)
+        numdeliveries = 1
+        if randint(0, 100) <= 20:
+            # 20% chance of delivering more than one time
+            numdeliveries = randint(2, 5)
         deliveries = autocreate_deliveries(group, numdeliveries)
         delivery = deliveries[-1]
 
@@ -301,19 +320,21 @@ if __name__ == "__main__":
             grade_plugin_key=gradeplugin,
             gradeplugin_maxpoints=grade_maxpoints)
     assignment.publishing_time = deadline - timedelta(days=opt.pubtime_diff)
+    if opt.pointscale:
+        assignment.pointscale = opt.pointscale
     assignment.save()
     logging.info(
             "Creating groups on %s with deadline %s and grade_plugin %s" % (
                 assignment, deadline, gradeplugin))
 
-    examinersiter = itertools.cycle(group(examiners, examiners_per_group))
+    examinersiter = itertools.cycle(grouplist(examiners, examiners_per_group))
     quality_percents = (
             93, # A > 93
             80, # B > 80
             65, # C > 65
             45, # D > 45
             30) # E > 30 
-    for studnum, students in enumerate(group(all_students, students_per_group)):
+    for studnum, students in enumerate(grouplist(all_students, students_per_group)):
         examiners = examinersiter.next()
         groupname = None
         if groupname_prefix:
