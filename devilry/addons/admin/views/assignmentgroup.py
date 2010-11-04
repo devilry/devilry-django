@@ -548,3 +548,67 @@ def delete_manyassignmentgroups(request, assignment_id):
             AssignmentGroupsFilterTable,
             successurl=reverse('devilry-admin-edit_assignment',
                 args=[assignment_id]))
+
+
+"""
+def get_assignmentgroup_name(assigmentgroup):
+     cands = assigmentgroup.get_candidates()
+     cands = cands.replace(", ", "-")
+     return cands
+
+def get_dictionary_with_name_matches(assignmentgroups):
+    matches = {}
+    for assigmentgroup in assignmentgroups:
+        name = get_assignmentgroup_name(assigmentgroup)
+        if matches.has_key(name):
+            matches[name] =  matches[name] + 1
+        else:
+            matches[name] = 1
+    return matches
+
+@login_required
+def download_file_collection(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+
+    from StringIO import StringIO  
+    from zipfile import ZipFile  
+    from django.http import HttpResponse  
+    
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    ids = [g.id for g in groups]
+    selected_assignmentgroups = AssignmentGroup.objects.filter(id__in=ids)
+    name_matches = get_dictionary_with_name_matches(selected_assignmentgroups)
+
+    in_memory = StringIO()  
+    zip = ZipFile(in_memory, "a")  
+
+    for ass_group in selected_assignmentgroups:
+        ass_group_name = get_assignmentgroup_name(ass_group)
+        # If multiple groups with the same members exists,
+        # postfix the name with asssignmengroup ID.
+        if name_matches[ass_group_name] > 1:
+            ass_group_name = "%s+%d" % (ass_group_name, ass_group.id)
+        
+        deliveries = ass_group.deliveries.all()
+        for deliv in deliveries:
+            metas = deliv.filemetas.all()
+            for f in metas:
+                bytes = f.read_open().read(f.size)
+                zip.writestr("%s/%s/%d_(%s)/%s" % (assignment.get_path(), ass_group_name, deliv.number,
+                                                   deliv.time_of_delivery, f.filename), bytes)
+            
+    # fix for Linux zip files read in Windows  
+    for file in zip.filelist:  
+        file.create_system = 0      
+             
+    zip.close()  
+    
+    response = HttpResponse(mimetype="application/zip")  
+    response["Content-Disposition"] = "attachment; filename=%s.zip" % assignment.get_path()  
+         
+    in_memory.seek(0)      
+    response.write(in_memory.read())  
+    return response  
+"""
