@@ -234,7 +234,9 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             AssignmentGroupsAction(_("Set examiners"),
                 'devilry-admin-set_examiners'),
             AssignmentGroupsAction(_("Random distribute examiners"),
-                'devilry-admin-random_dist_examiners'),
+                                   'devilry-admin-random_dist_examiners'),
+            #ssignmentGroupsAction(_("Download deliveries"),
+            #                      'devilry-examiner-download_file_collection'),
             ]
     relatedactions = [
             AssignmentGroupsAction(_("Create new"),
@@ -284,9 +286,9 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
         row.add_action(_("edit"), 
                 reverse('devilry-admin-edit_assignmentgroup',
                         args=[self.assignment.id, str(group.id)]))
-        #row.add_action(_("examine"), 
-                #reverse('devilry-examiner-show_assignmentgroup',
-                        #args=[str(group.id)]))
+        row.add_action(_("examine"), 
+                    reverse('devilry-examiner-show_assignmentgroup',
+                    args=[str(group.id)]))
         return row
 
     def get_assignmentgroups(self):
