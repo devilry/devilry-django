@@ -12,9 +12,15 @@ from deliverystore import FileNotFoundError
 
 
 
-def create_from_path(path):
+def create_from_path(path, grade_plugin_key=None, example_grade_points=0):
     """ Create a Node, Subject, Period, Assignment or AssignmentGroup from
     ``path``.
+
+    :param grade_plugin_key: Key of the grade plugin to use on assignments.
+        This defaults to the default grade plugin.
+    :param example_grade_points: The ``points`` parameter sent to
+        :meth:`gradeplugin.GradeModel.init_example` if creating a
+        assignment.
     
     Examples::
 
@@ -28,6 +34,7 @@ def create_from_path(path):
     for nodename in nodes:
         node = Node(short_name=nodename, long_name=nodename)
         try:
+            node.clean()
             node.save()
         except:
             node = Node.objects.get(short_name=nodename)
@@ -42,6 +49,7 @@ def create_from_path(path):
     subject = Subject(parentnode=node, short_name=subjectname,
             long_name=subjectname)
     try:
+        subject.clean()
         subject.save()
     except:
         subject = Subject.objects.get(short_name=subjectname)
@@ -54,6 +62,7 @@ def create_from_path(path):
                 long_name=periodname, start_time=datetime.now(),
                 end_time=datetime.now() + timedelta(10))
         try:
+            period.clean()
             period.save()
         except:
             period = Period.objects.get(parentnode=subject,
@@ -65,9 +74,10 @@ def create_from_path(path):
         assignmentname = pathsplit[2]
         assignment = Assignment(parentnode=period, short_name=assignmentname,
                 long_name=assignmentname, publishing_time=datetime.now())
-        gp = gradeplugin.registry.getdefaultkey()
+        gp = grade_plugin_key or gradeplugin.registry.getdefaultkey()
         assignment.grade_plugin = gp
         
+        assignment.clean()
         try:
             assignment.save()
         except:
@@ -87,6 +97,7 @@ def create_from_path(path):
                 user = User.objects.get(username=u)
             users.append(user)
         assignment_group = AssignmentGroup(parentnode=assignment)
+        assignment_group.clean()
         assignment_group.save()
         for user in users:
             assignment_group.candidates.add(Candidate(student=user))
@@ -173,3 +184,6 @@ class SeleniumTestBase(unittest.TestCase):
             self.assertTrue("FORBIDDEN" in str(e))
         else:
             self.fail("403 not raised for %s, %s, %s" % (f, args, kw))
+
+
+

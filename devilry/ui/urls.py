@@ -7,5 +7,6 @@ urlpatterns = patterns('devilry.ui',
     url(r'^user_json$', 'views.user_json', name='devilry-ui-user_json'),
     url(r'^preview_rst$', 'views.preview_rst', name='devilry-ui-rst_to_html'),
     url(r'^skintest$', 'views.skintest', name='devilry-ui-skintest'),
+    url(r'^sysinfo$', 'views.sysinfo', name='devilry-ui-sysinfo'),
 )
 

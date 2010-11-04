@@ -8,6 +8,10 @@ class CharFieldGrade(GradeModel):
     def get_maxpoints(cls, assignment):
         return 0
 
+    @classmethod
+    def get_example_xmlrpcstring(cls, assignment, points):
+        return "C"
+
     def get_points(self):
         return 0
 
@@ -19,3 +23,4 @@ class CharFieldGrade(GradeModel):
 
     def get_grade_as_xmlrpcstring(self, feedback_obj):
         return self.grade
+

@@ -40,13 +40,9 @@ def view(request, delivery_obj):
             schema = text.examiner_format(schemadef.schemadef)
             schema = text.insert_values(schema, gradeform_values)
             grade_obj.schema = schema
-            if first_save:
-                grade_obj.first_save(schemadef)
-            else:
-                grade_obj.save()
+            grade_obj.save(feedback_form.instance)
             feedback_form.instance.grade = grade_obj
             feedback_form.save()
-            grade_obj.update_gradeplugin_cached_fields()
             return redirect_after_successful_save(request, delivery_obj)
     else:
         if grade_obj.schema:

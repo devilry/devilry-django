@@ -264,6 +264,13 @@ class Node(models.Model, BaseNode):
         if self.parentnode == self:
             raise ValidationError(_('A node can not be it\'s own parent.'))
 
+        if self.short_name and self.parentnode == None:
+            if self.id == None:
+                if Node.objects.filter(short_name=self.short_name).count() > 0:
+                    raise ValidationError(_('A node can not have the same '\
+                        'short name as another within the same parent.'))
+
+
         for node in self.iter_childnodes():
             if node == self.parentnode:
                 raise ValidationError(_('A node can not be the child of one of it\'s own children.'))
@@ -622,10 +629,13 @@ class Assignment(models.Model, BaseNode):
     def save(self, *args, **kwargs):
         """ Save and recalculate the value of :attr:`maxpoints` and
         :attr:`pointscale`. """
-        self.maxpoints = self._get_maxpoints()
-        if self.autoscale:
-            self.pointscale = self.maxpoints
-        self._update_scalepoints()
+        if self.id != None:
+            self.maxpoints = self._get_maxpoints()
+            if self.autoscale:
+                self.pointscale = self.maxpoints
+            self._update_scalepoints()
+        # TODO: "else" initialize grade plugin with defaults to avoid ugly
+        # error pages when users forget to configure grade plugins
         super(Assignment, self).save()
 
     def get_gradeplugin_registryitem(self):
@@ -1524,7 +1534,6 @@ class Delivery(models.Model):
 
 
 
-# TODO: Refactor feedback_* to just *.
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
@@ -1551,6 +1560,14 @@ class Feedback(models.Model):
        published or not. This allows editing and saving the feedback before
        publishing it. Is useful for exams and other assignments when
        feedback and grading is published simultaneously for all Deliveries.
+
+    .. attribute:: last_modified_by
+
+       The django.contrib.auth.models.User_ that last modified the feedback.
+
+    .. attribute:: last_modified
+
+       Date/time of last modification.
 
     .. attribute:: delivery
 
@@ -1596,6 +1613,10 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+
+    def save(self, *args, **kwargs):
+        super(Feedback, self).save(*args, **kwargs)
+        self.delivery.assignment_group.update_gradeplugin_cached_fields()
 
     def __unicode__(self):
         return "Feedback on %s" % self.delivery
@@ -1670,11 +1691,11 @@ class Feedback(models.Model):
         model_cls = gradeplugin.registry.getitem(key).model_cls
         if self.grade:
             ok_message = self.grade.set_grade_from_xmlrpcstring(grade, self)
-            self.grade.save()
+            self.grade.save(self)
         else:
             gradeobj = model_cls()
             ok_message = gradeobj.set_grade_from_xmlrpcstring(grade, self)
-            gradeobj.save()
+            gradeobj.save(self)
             self.grade = gradeobj
         return ok_message
 

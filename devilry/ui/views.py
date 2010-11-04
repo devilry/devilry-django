@@ -113,3 +113,13 @@ def preview_rst(request):
 def skintest(request):
     return render_to_response("devilry/ui/skintest.django.html",
             context_instance=RequestContext(request))
+
+
+@login_required
+def sysinfo(request):
+    if not request.user.is_superuser:
+        return http.HttpResponseForbidden("Forbidden")
+    from django.conf import settings
+    if not settings.DEBUG:
+        return http.HttpResponseForbidden("Only available in debug mode")
+    raise Exception()
