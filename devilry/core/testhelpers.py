@@ -12,13 +12,13 @@ from deliverystore import FileNotFoundError
 
 
 
-def create_from_path(path, grade_plugin_key=None, example_grade_points=0):
+def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     """ Create a Node, Subject, Period, Assignment or AssignmentGroup from
     ``path``.
 
     :param grade_plugin_key: Key of the grade plugin to use on assignments.
         This defaults to the default grade plugin.
-    :param example_grade_points: The ``points`` parameter sent to
+    :param gradeplugin_maxpoints: The ``points`` parameter sent to
         :meth:`gradeplugin.GradeModel.init_example` if creating a
         assignment.
     
@@ -83,6 +83,8 @@ def create_from_path(path, grade_plugin_key=None, example_grade_points=0):
         except:
             assignment = Assignment.objects.get(parentnode=period,
                     short_name=assignmentname)
+        assignment.get_gradeplugin_registryitem().model_cls.init_example(
+                assignment, gradeplugin_maxpoints)
         last = assignment
 
     # Candidates
