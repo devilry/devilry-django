@@ -1,3 +1,34 @@
+# Developer help
+################
+# 
+# Typical workflow:
+#    1. Create initial example data with: (this take a while)
+#         ---> ~$ make create-exampledb
+#         or
+#         ---> ~$ make create-exampledb NUM_STUDENTS=100 NUM_EXAMINERS=5
+#         or
+#         ---> ~$ make init-exampledb create-duck1080-data NUM_STUDENTS=40
+#         or
+#         ---> ~$ make init-exampledb
+#              ~$ adminscripts/create_testgroups.py somenode:duck20xx.hxx.someassignment [more arguments]
+#         or
+#         ---> other cobinations suiting the current development.
+#    2. Backup the data (since it takes a while to recreate).
+#         ~$ make backup-exampledata
+#    3. Restore the db from backup when needed with:
+#         ~$ make restore-exampledata
+#
+# Why not just a static dataset?
+#    - Because we need to test stuff relative to current time.
+#    - Because adminscripts/create_testgroups can make relevant
+#      testdata when needed.
+#
+# Note:
+#    - All users created by create_testgroups.py and all users in
+#      users.json uses "test" as password.
+#
+##
+
 PRODTEST=devilry.cfg.test2
 PROD=devilry.cfg.prod1
 EXAMPLEDATA_BACKUP=exampledata-backup
@@ -11,22 +42,9 @@ help:
 	@echo "Targets:"
 	@echo "  test:                 Run tests with coverage."
 	@echo "  html-testreport       Create a test coverage report. Depends on 'test'."
-	@echo "  create-exampledata    Create example fixtures from db.sqlite3."
-	@echo "  reset-exampledb       Reset db.sqlite3 from the example fixtures."
-	@echo "  create-core-testdata  Create test fixtures for core from db.sqlite3."
-	@echo "  cleardb               Clear the database."
-	@echo ""
-	@echo "EXAMPLE DATA AND TEST DATA"
-	@echo "Test data is for the testcases, and must not be changed without careful "
-	@echo "consideration. 'Example' data is used when working with UI-design or"
-	@echo "just to show of Devilry, and it can be changed and extended without"
-	@echo "affecting anything."
+	@echo
+	@echo "More targets for developers. See the top of Makefile."
 
-test:
-	coverage -x manage.py test
-
-html-testreport: test
-	coverage html
 
 cleardb:
 	rm -f db.sqlite3
@@ -37,26 +55,10 @@ cleardb:
 	@echo
 	@echo "   ~# python manage.py loaddata core/fixtures/tests/core/*.json"
 
-create-exampledata:
-	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/users.json
-	python manage.py dumpdata core --indent=4 > core/fixtures/example/data.json
-	python manage.py dumpdata grade_rstschema --indent=4 > core/fixtures/example/grade_rstschema.json
-	python manage.py dumpdata grade_default --indent=4 > core/fixtures/example/grade_default.json
-	python manage.py dumpdata grade_approved --indent=4 > core/fixtures/example/grade_approved.json
-	
-reset-exampledb:
-	rm -f db.sqlite3
-	python manage.py syncdb --noinput
 
-	python manage.py loaddata -v0 core/fixtures/example/users.json
-	python manage.py loaddata -v0 core/fixtures/example/data.json
-	python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
-	python manage.py loaddata -v0 core/fixtures/example/grade_default.json
-	python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
-
-	git checkout deliverystore.dbm.dat
-	git checkout deliverystore.dbm.dir
-	chmod a+rw db.sqlite3
+#######################################################
+# Example db
+#######################################################
 
 create-duck1100-data:
 	python adminscripts/create_testgroups.py \
@@ -112,11 +114,10 @@ create-duck1080-data:
 		--pointscale 10
 
 
-create-exampledb: create-duck1100-data
-
-
 init-exampledb: cleardb
 	python manage.py loaddata -v0 core/fixtures/example/users.json
+
+create-exampledb: init-exampledb create-duck1100-data create-duck1080-data
 
 backup-exampledb:
 	rm -rf $(EXAMPLEDATA_BACKUP)
@@ -136,20 +137,11 @@ restore-exampledb:
 	sqlite3 db.sqlite3 < $(EXAMPLEDATA_BACKUP)/dbdump.sql
 	rm -rf $(EXAMPLEDATA_BACKUP)
 
-create-minimal-exampledata:
-	python manage.py dumpdata core --indent=4 > core/fixtures/example/minimaldata.json
-	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/minimalusers.json
-
-reset-minimal-exampledb:
-	rm -f db.sqlite3
-	python manage.py syncdb --noinput
-	python manage.py loaddata -v0 core/fixtures/example/minimalusers.json
-	python manage.py loaddata -v0 core/fixtures/example/minimaldata.json
-	git checkout deliverystore.dbm.dat
-	git checkout deliverystore.dbm.dir
-	chmod a+rw db.sqlite3
 
 
+######################################################
+# Selenium testing
+######################################################
 
 selenium-clear-db: cleardb
 	git checkout deliverystore.dbm.dat
@@ -175,3 +167,14 @@ selenium-tests: selenium-student-test selenium-examiner-test selenium-admin-test
 
 clean:
 	coverage erase
+
+
+###########################################################
+# Test coverage
+###########################################################
+
+test:
+	coverage -x manage.py test
+
+html-testreport: test
+	coverage html

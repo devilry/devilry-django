@@ -130,7 +130,7 @@ if __name__ == "__main__":
                 else:
                     offset = timedelta(hours=randint(0, 15),
                             minutes=randint(0, 59))
-                delivery.time_of_delivery = deadline - offset
+                delivery.time_of_delivery = active_deadline - offset
             else:
                 # Make sure deliveries are sequential
                 last_delivery = others[0].time_of_delivery
