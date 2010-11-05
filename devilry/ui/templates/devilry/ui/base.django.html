@@ -5,11 +5,6 @@
 	<head>
     <title>{% block title %}{% firstof page_title page_heading %}{% endblock %}</title>
 
-
-    {% block basecss %}
-      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
-    {% endblock %}
-
     {% with "1.8.5" as JQUERY_UI_VERSION %}
       {% block jquery %}
         <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-1.4.2.min.js"></script>
@@ -59,6 +54,9 @@
       {% endblock %}
     {% endwith %}
 
+    {% block basecss %}
+      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
+    {% endblock %}
 
     {% block theme %}
       <link rel="stylesheet" type="text/css"

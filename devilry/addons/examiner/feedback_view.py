@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
@@ -6,10 +7,11 @@ from django import forms
 
 from devilry.core.models import Feedback
 from devilry.ui.widgets import RstEditWidget
-
 from devilry.ui.messages import UiMessages
-from django.utils.translation import ugettext as _
 from devilry.core.devilry_email import send_email
+
+from utils import get_next_notcorrected_in_assignment, \
+        get_prev_notcorrected_in_assignment
 
 
 
@@ -71,7 +73,12 @@ def redirect_after_successful_save(request, delivery_obj):
     else:
         messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
 
-    if "save_and_dash" in request.POST:
+    if "save" in request.POST:
+        messages.save(request)
+        return HttpResponseRedirect(
+                reverse('devilry-examiner-edit-feedback',
+                    args=(delivery_obj.id,)))
+    else:
         delivery_url = "<a href='%s'>%s</a>" % (
                 reverse("devilry-examiner-edit-feedback",
                     args=[str(delivery_obj.id)]),
@@ -80,15 +87,26 @@ def redirect_after_successful_save(request, delivery_obj):
             _("Saved feedback on %(delivery)s.") %
                 dict(delivery=delivery_url), raw_html=True)
         messages.save(request)
-        return HttpResponseRedirect(reverse('devilry-main'))
-    else:
-        messages.save(request)
-        return HttpResponseRedirect(
-                reverse('devilry-examiner-show_assignmentgroup',
-                    args=(delivery_obj.assignment_group.id,)))
+
+        fallback_to_dash = False
+        if "save_and_next" in request.POST:
+            next_notcorrected = get_next_notcorrected_in_assignment(
+                    request.user, delivery_obj)
+            if next_notcorrected:
+                id = next_notcorrected.id
+                return HttpResponseRedirect(
+                        reverse('devilry-examiner-edit-feedback', args=[str(id)]))
+            else:
+                fallback_to_dash = True
+
+        if fallback_to_dash or "save_and_dash" in request.POST:
+            messages.save(request)
+            return HttpResponseRedirect(reverse('devilry-main'))
+
 
 def render_response(request, delivery_obj, feedback_form, grade_form,
-        template_path='devilry/examiner/edit_feedback.django.html'):
+        template_path='devilry/examiner/edit_feedback.django.html',
+        uimessages=None):
     """ Calls django.shortcuts.render_to_response with the given
     ``template_path`` and  ``delivery_obj``, ``feedback_form`` and
     ``grade_form`` as template variables. It also adds some template
@@ -96,9 +114,18 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
         
         after_deadline
             Boolean telling if the delivery is after the active deadline.
-    
-        
+        diff_days
+            Days between active deadline and delivery.
+        diff_hours
+            Hours between active deadline and delivery.
+        diff_minutes
+            Minutes between active deadline and delivery.
     """
+    next_notcorrected = get_next_notcorrected_in_assignment(request.user,
+            delivery_obj)
+    prev_notcorrected = get_prev_notcorrected_in_assignment(request.user,
+            delivery_obj)
+
     active_deadline = delivery_obj.assignment_group.get_active_deadline().deadline
     after_deadline = active_deadline < delivery_obj.time_of_delivery
     if after_deadline:
@@ -106,9 +133,13 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
     else:
         diff = active_deadline - delivery_obj.time_of_delivery
     days = diff.days
-    minutes = diff.seconds/60
-    hours = minutes/60
-    minutes = minutes%60
+    m = diff.seconds/60
+    hours = m/60
+    minutes = m%60
+
+    if not uimessages:
+        uimessages = UiMessages()
+        uimessages.load(request)
 
     return render_to_response(template_path, {
             'delivery': delivery_obj,
@@ -117,7 +148,10 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
             'after_deadline': after_deadline,
             'diff_days': days,
             'diff_hours': hours,
-            'diff_minutes': minutes
+            'diff_minutes': minutes,
+            'messages': uimessages,
+            'next_notcorrected': next_notcorrected,
+            'prev_notcorrected': prev_notcorrected
         }, context_instance=RequestContext(request))
 
 def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):

@@ -22,8 +22,6 @@ def list_assignments(request, *args, **kwargs):
 def examiner_important(request, *args, **kwargs):
     now = datetime.now()
     groups = AssignmentGroup.active_where_is_examiner(request.user)
-    #groups = AssignmentGroup.where_is_admin_or_superadmin(request.user)
-    #print groups.all()
 
     not_corrected = groups.filter(
             is_open=True,

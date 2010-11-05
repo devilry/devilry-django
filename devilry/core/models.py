@@ -16,6 +16,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.utils.formats import date_format
 
 from deliverystore import load_deliverystore_backend, FileNotFoundError
 import gradeplugin
@@ -1530,7 +1531,8 @@ class Delivery(models.Model):
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s %s' % (self.assignment_group, self.time_of_delivery)
+        return u'%s - %s (%s)' % (self.assignment_group, self.number,
+                date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
 

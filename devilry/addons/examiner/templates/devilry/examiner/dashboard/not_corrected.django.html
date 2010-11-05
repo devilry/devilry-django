@@ -7,9 +7,9 @@
 {% block body %}
 <p class="help-box">{{ not_corrected.count }} of the {{ not_corrected_count }}
 groups where you are examiner with status <span
-class="status_not_corrected">Not corrected</span>. They are ordered by the the
-feedback was last changed, and groups where the deadline has not yet expired is
-excluded.</p>
+class="status_not_corrected">Not corrected</span>. They are ordered by the time
+of the last delivery (those who delivered first are at the top), and groups
+where the deadline has not yet expired is excluded.</p>
 
 <dl>
 {% for group in not_corrected %}

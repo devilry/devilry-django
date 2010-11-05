@@ -1,8 +1,17 @@
 {% extends "devilry/examiner/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
+{% load inlinestyles %}
 {% block title %}{% trans "Feedback" %}{% endblock %}
-{% block heading %}{% trans "Feedback" %}{% endblock %}
+{% block heading %}
+  {% with delivery.assignment_group.get_candidates|emphasize as candidates %}
+    {% with delivery.assignment_group.parentnode.long_name|emphasize as assignment %}
+      {% blocktrans %}
+        Feedback for {{ candidates }} on {{ assignment }}
+      {% endblocktrans %}
+    {% endwith %}
+  {% endwith %}
+{% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
@@ -30,10 +39,12 @@
 <table class='vertical_infotable'
     style='float: right; margin: 0 0 20px 20px; width: 300px;'>
   {% include "devilry/ui/include/show_delivery_default.django.html" %}
-  <tr>
-    <th>{% trans "Feedback last modified by" %}</th>
-    <td> {{ delivery.feedback.last_modified_by }} </td>
-  </tr>
+  {% if delivery.feedback %}
+    <tr>
+      <th>{% trans "Feedback last modified by" %}</th>
+      <td> {{ delivery.feedback.last_modified_by }} </td>
+    </tr>
+  {% endif %}
 </table>
 
 <div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
@@ -41,13 +52,13 @@
 
   {% if after_deadline %}
     {% blocktrans %}
-      This delivery was delivered <em>{{ diff_days }} days, {{ diff_minutes }} hours
-      and {{ diff_minutes }} minutes</em> after the deadline.
+      This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
+      and {{ diff_minutes }} minutes after the deadline.
     {% endblocktrans %}
   {% else %}
     {% blocktrans %}
-      This delivery was delivered <em>{{ diff_days }} days, {{ diff_minutes }} hours
-      and {{ diff_minutes }} minutes</em> before the deadline.
+      This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
+      and {{ diff_minutes }} minutes before the deadline.
     {% endblocktrans %}
   {% endif %}
   {% if delivery.assignment_group.deliveries.count > 1 %}
@@ -110,11 +121,38 @@
     {% endwith %}
   {% endblock formfields %}
   
+
+  {% if next_notcorrected or prev_notcorrected %}
+    <div style="float:right;">
+      {% if prev_notcorrected %}
+        <a class="tooltip-hover unimportant"
+            href="{% url devilry-examiner-edit-feedback prev_notcorrected.id %}"
+            title="{% trans "Go to previous 'not corrected' group on this assignment without saving" %}">
+          {% trans "Previous" %}</a>
+      {% endif %}
+      {% if next_notcorrected and prev_notcorrected %}
+        <span class="unimportant">|</span>
+      {% endif %}
+      {% if next_notcorrected %}
+        <a class="tooltip-hover unimportant"
+            href="{% url devilry-examiner-edit-feedback next_notcorrected.id %}"
+            title="{% trans "Go to next 'not corrected' group on this assignment without saving" %}">
+          {% trans "Next" %}</a>
+      {% endif %}
+    </div>
+  {% endif %}
   <div class='button-row'>
     <input type='submit' name='save' class='button default ui-priority-secondary'
-      value='{% if delivery.feedback %}{% trans "Update" %}{% else %}{% trans "Create" %}{% endif %}'/>
-    <input type='submit' name='save_and_dash' class='button ui-priority-primary'
-      value='{% if delivery.feedback %}{% trans "Update and return to dashboard" %}{% else %}{% trans "Create and return to dashboard" %}{% endif %}'/>
+      value='{% trans "Save" %}'/>
+    <input type='submit' name='save_and_dash'
+      class='button ui-priority-{% if next_notcorrected %}secondary{% else %}primary{% endif%}'
+      value='{% trans "Save and return to dashboard" %}'/>
+    {% if next_notcorrected %}
+      <input type='submit' name='save_and_next'
+        class='button ui-priority-primary tooltip-hover'
+        title="Go to next 'not corrected' group on this assignment after saving"
+        value='{% trans "Save and go to next" %}'/>
+    {% endif %}
   </div>
 </form>
 
