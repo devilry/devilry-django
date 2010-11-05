@@ -19,13 +19,16 @@
 
 {% block main %}
 
+{% comment %}
 {% if delivery.assignment_group.parentnode.grade_plugin == "grade_rstschema:rstschemagrade" %}
   <p class='warning-message'>There are issues with <em>Internet Explorer<em> and
   <em>Opera</em> and the grade plugin used on this assignment. We reccommend
   you use Firefox, Safari or Chrome.</p>
 {% endif %}
+{% endcomment %}
 
-<table class='vertical_infotable'>
+<table class='vertical_infotable'
+    style='float: right; margin: 0 0 20px 20px; width: 300px;'>
   {% include "devilry/ui/include/show_delivery_default.django.html" %}
   <tr>
     <th>{% trans "Feedback last modified by" %}</th>
@@ -33,7 +36,49 @@
   </tr>
 </table>
 
-<form method='post' action='{% url devilry-examiner-edit-feedback delivery.id %}'>
+<div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
+    style="margin-right: 330px;">
+
+  {% if after_deadline %}
+    {% blocktrans %}
+      This delivery was delivered <em>{{ diff_days }} days, {{ diff_minutes }} hours
+      and {{ diff_minutes }} minutes</em> after the deadline.
+    {% endblocktrans %}
+  {% else %}
+    {% blocktrans %}
+      This delivery was delivered <em>{{ diff_days }} days, {{ diff_minutes }} hours
+      and {{ diff_minutes }} minutes</em> before the deadline.
+    {% endblocktrans %}
+  {% endif %}
+  {% if delivery.assignment_group.deliveries.count > 1 %}
+     <p>
+       {% with delivery.number as delivery_number %}{% blocktrans %}
+         This group has multiple deliveries. You are viewing delivery number
+         <big>{{ delivery_number }}</big>. All deliveries:
+       {% endblocktrans %}{% endwith %}
+     </p>
+     <ul style="list-style:none;">
+       {% for d in delivery.assignment_group.deliveries.all %}
+         <li>
+           {{ d.number }}.
+           {% if d.id == delivery.id %}
+             <strong>{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</strong>
+           {% else %}
+             <a href='{% url devilry-examiner-edit-feedback d.id %}'>
+                 {{ d.time_of_delivery|date:"DATETIME_FORMAT" }}
+             </a>
+           {% endif %}
+           {% if not d.feedback %}
+             <span class="unimportant">({% trans "no feedback" %})</span>
+           {% endif %}
+         </li>
+       {% endfor %}
+     </ul>
+  {% endif %}
+</div>
+
+<form method='post' action='{% url devilry-examiner-edit-feedback delivery.id %}'
+    style="clear:both;">
   {% block formfields %}
     {% block gradeformfieldset %}
       <fieldset class='stdfieldset'>

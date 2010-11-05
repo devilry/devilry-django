@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.utils.simplejson import JSONEncoder
 from django.http import HttpResponse
 from django.db.models.query import QuerySet
+from django.db.models.sql.datastructures import EmptyResultSet
 
 
 class Cell(object):
@@ -110,6 +111,8 @@ class FilterLabel(object):
 
     def as_dict(self):
         return dict(label=self.label, title=self.title)
+
+FilterLabel.DEFAULT = FilterLabel(_("Don't use this filter"))
 
 
 class Filter(object):
@@ -397,7 +400,10 @@ class FilterTable(object):
 
     def get_dataset_size(self, dataset):
         if isinstance(dataset, QuerySet):
-            return dataset.count()
+            try:
+                return dataset.count()
+            except EmptyResultSet, e:
+                return 0
         else:
             return len(dataset)
 

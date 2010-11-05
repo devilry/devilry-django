@@ -199,7 +199,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
     </a>
   </div>
   <h3>
-    {% with deadline as deadline.deadline|date:DEVILRY_DATETIME_FORMAT %}
+    {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
     {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
     {% endwith %}
   </h3>

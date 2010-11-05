@@ -35,8 +35,18 @@ pre.blockpre {
 	color: #456;
 }
 
+.good {
+	color: #00aa00;
+}
+.warning {
+	color: #A85400;
+}
 .bad {
-	color: #d00;
+	color: #aa0000;
+}
+.unimportant{
+	color: #666;
+	font-size: 0.8em;
 }
 
 .inline-infobox {
@@ -199,6 +209,9 @@ pre.blockpre {
 	margin: 10px 0;
 }
 
+.devilry-ui-icon-in-message {
+  float:left; margin:0 7px 7px 0;
+}
 
 
 
@@ -331,10 +344,6 @@ table.vertical_infotable ul.files-list {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-}
-table.vertical_infotable span.filesize {
-	color: #666;
-	font-size: 0.8em;
 }
 
 
@@ -481,26 +490,6 @@ table.xmlrpc-function-constraints li {
 	border: 1px solid #aa0000;
 	background-color: #6960EC;
 	padding: 5px;
-}
-
-/*.deadline-box-after {*/
-	/*border: 1px solid #aa0000;*/
-	/*background-color: #dd0000;*/
-/*}*/
-.after_last_deadline_msg {
-	color: #aa0000;
-	font-weight: normal;
-}
-.delivery_published_msg {
-	color: #00aa00;
-	font-style: italic;
-	font-weight: normal;
-}
-
-.delivery_unpublished_msg {
-	color: #aa0000;
-	font-style: italic;
-	font-weight: normal;
 }
 
 

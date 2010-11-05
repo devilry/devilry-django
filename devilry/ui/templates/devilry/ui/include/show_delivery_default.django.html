@@ -4,7 +4,11 @@
 
 <tr>
   <th>{% trans "Time of delivery" %}</th>
-  <td>{{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
+  <td>{{ delivery.time_of_delivery|date:"DATETIME_FORMAT"}}</td>
+</tr>
+<tr>
+  <th>{% trans "Active deadline" %}</th>
+  <td>{{ delivery.assignment_group.get_active_deadline.deadline|date:"DATETIME_FORMAT"}}</td>
 </tr>
 <tr>
   <th>{% trans "Delivered by" %}</th>
@@ -22,18 +26,6 @@
   </tr>
 {% endif %}
 
-{% if delivery.feedback.published %}
-  <tr>
-    <th>{% trans "Grade" %}</th>
-    <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
-  </tr>
-  <tr>
-    <th>{% trans "Feedback last modified" %}</th>
-    <td> {{ delivery.feedback.last_modified|date:DEVILRY_DATETIME_FORMAT }} </td>
-  </tr>
-{% endif %}
-
-
 <tr>
   <th>{% trans "Files" %}</th>
   <td>
@@ -41,9 +33,20 @@
     {% for filemeta in delivery.filemetas.all %}
       <li>
         <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>  
-        <span class='filesize'>({{ filemeta.size }} bytes)</span>
+        <span class='unimportant'>({{ filemeta.size }} bytes)</span>
       </li>
     {% endfor %}
     </ul>
   </td>
 </tr>
+
+{% if delivery.feedback.published %}
+  <tr>
+    <th>{% trans "Grade" %}</th>
+    <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
+  </tr>
+  <tr>
+    <th>{% trans "Feedback last modified" %}</th>
+    <td> {{ delivery.feedback.last_modified|date:"DATETIME_FORMAT"}} </td>
+  </tr>
+{% endif %}

@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django import forms
 
 from devilry.addons.examiner.feedback_view import \
-    parse_feedback_form, redirect_after_successful_save
+    parse_feedback_form, redirect_after_successful_save, render_response
 
 from models import RstSchemaGrade, RstSchemaDefinition
 import html
@@ -52,8 +52,5 @@ def view(request, delivery_obj):
         gradeform_errors, gradeform_values, grade_form = html.input_form(
                 schemadef.schemadef, input_data)
 
-    return render_to_response('devilry/grade_rstschema/feedback.django.html', {
-            'delivery': delivery_obj,
-            'feedback_form': feedback_form,
-            'grade_form': grade_form,
-        }, context_instance=RequestContext(request))
+    return render_response(request, delivery_obj, feedback_form, grade_form,
+            'devilry/grade_rstschema/feedback.django.html')

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
-from django.db.models import Max, Min, Count, Q
+from django.db.models import Max, Min, Count, Q, F
 from django.utils.formats import date_format
 
 from devilry.core.models import AssignmentGroup, Candidate
@@ -34,7 +34,8 @@ class FilterIsPassingGrade(Filter):
     title = _("Is passing grade?")
 
     def get_labels(self, properties):
-        return [FilterLabel(_("All")), FilterLabel(_("Yes")),
+        return [FilterLabel.DEFAULT,
+                FilterLabel(_("Yes")),
                 FilterLabel(_("No"))]
 
     def filter(self, properties, dataset, selected):
@@ -56,7 +57,8 @@ class FilterNumberOfCandidates(Filter):
         self.maximum = qry['maximum'] or 0
 
     def get_labels(self, properties):
-        l = [FilterLabel(_("All")), FilterLabel(_("More than 0"))]
+        l = [FilterLabel.DEFAULT,
+            FilterLabel(_("More than 0"))]
         l.extend([FilterLabel(n) for n in xrange(self.maximum+1)])
         return l
 
@@ -77,7 +79,7 @@ class FilterMissingCandidateId(Filter):
     title = _("Missing candidate id's?")
 
     def get_labels(self, properties):
-        return [FilterLabel(_("All")),
+        return [FilterLabel.DEFAULT,
                 FilterLabel(_("Yes"),
                     _("Matches any group where at least one member is "\
                         "without a candidate number.")),
@@ -114,7 +116,7 @@ class FilterExaminer(Filter):
 
     def get_labels(self, properties):
         examiners = self._get_examiners(properties)
-        l = [FilterLabel(_("All")), FilterLabel(_("No examiners"))]
+        l = [FilterLabel.DEFAULT, FilterLabel(_("No examiners"))]
         l.extend([FilterLabel(e.username) for e in examiners])
         return l
 
@@ -129,6 +131,27 @@ class FilterExaminer(Filter):
             selected = examiners[i]
             return dataset.filter(examiners=selected)
 
+
+class FilterAfterDeadline(Filter):
+    title = _("After deadline")
+
+    def get_labels(self, properties):
+        return [FilterLabel.DEFAULT,
+                FilterLabel(_("Latest delivery"),
+                    _("Show groups where latest delivery is after the deadline.")),
+                FilterLabel(_("None after deadline"),
+                    _("Show groups with no deliveries after the deadline."))]
+
+    def filter(self, properties, dataset, selected):
+        i = selected[0]
+        if i == 1:
+            return dataset.filter(
+                    latest_delivery__gt=F("active_deadline"))
+        elif i == 2:
+            return dataset.filter(
+                    latest_delivery__lte=F("active_deadline"))
+        else:
+            return dataset
 
 
 class AssignmentGroupsAction(Action):
@@ -191,11 +214,20 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             deadlines = "<br/>".join([unicode(deadline) for deadline in
                 group.deadlines.all()])
             row.add_cell(deadlines)
-        if 'active_deadline' in active_optional_cols:
-            deadline = group.get_active_deadline()
-            row.add_cell(_datetime_or_empty(deadline.deadline))
-        if 'latest_delivery' in active_optional_cols:
-            row.add_cell(_datetime_or_empty(group.latest_delivery))
+
+        if 'latest_delivery' in active_optional_cols \
+                or 'active_deadline' in active_optional_cols:
+            # Avoid calculating active_deadline twice
+            active_deadline = group.get_active_deadline().deadline
+            if 'active_deadline' in active_optional_cols:
+                row.add_cell(_datetime_or_empty(active_deadline))
+            if 'latest_delivery' in active_optional_cols:
+                cssclass = ""
+                if group.latest_delivery and active_deadline < group.latest_delivery:
+                    cssclass = "bad"
+                row.add_cell(_datetime_or_empty(group.latest_delivery),
+                        cssclass=cssclass)
+
         if 'deliveries_count' in active_optional_cols:
             row.add_cell(group.deliveries_count)
         if 'scaled_points' in active_optional_cols:
@@ -225,6 +257,7 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         dataset = self.get_assignmentgroups().distinct()
         total = dataset.count()
         dataset = dataset.annotate(
+                active_deadline=Max('deadlines__deadline'),
                 latest_delivery=Max("deliveries__time_of_delivery"),
                 deliveries_count=Count("deliveries"))
         return total, dataset

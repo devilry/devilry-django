@@ -10,9 +10,8 @@ from devilry.ui.widgets import RstEditWidget
 from devilry.ui.messages import UiMessages
 from django.utils.translation import ugettext as _
 from devilry.core.devilry_email import send_email
-from devilry.settings import WEB_PAGE_PREFIX
-from devilry.settings import DEVILRY_MAIN_PAGE
-from urlparse import urljoin
+
+
 
 class FeedbackForm(forms.ModelForm):
     """ A ModelForm for the :class:`devilry.core.models.Feedback`-class. """
@@ -90,10 +89,35 @@ def redirect_after_successful_save(request, delivery_obj):
 
 def render_response(request, delivery_obj, feedback_form, grade_form,
         template_path='devilry/examiner/edit_feedback.django.html'):
+    """ Calls django.shortcuts.render_to_response with the given
+    ``template_path`` and  ``delivery_obj``, ``feedback_form`` and
+    ``grade_form`` as template variables. It also adds some template
+    variables:
+        
+        after_deadline
+            Boolean telling if the delivery is after the active deadline.
+    
+        
+    """
+    active_deadline = delivery_obj.assignment_group.get_active_deadline().deadline
+    after_deadline = active_deadline < delivery_obj.time_of_delivery
+    if after_deadline:
+        diff = delivery_obj.time_of_delivery - active_deadline
+    else:
+        diff = active_deadline - delivery_obj.time_of_delivery
+    days = diff.days
+    minutes = diff.seconds/60
+    hours = minutes/60
+    minutes = minutes%60
+
     return render_to_response(template_path, {
             'delivery': delivery_obj,
             'feedback_form': feedback_form,
             'grade_form': grade_form,
+            'after_deadline': after_deadline,
+            'diff_days': days,
+            'diff_hours': hours,
+            'diff_minutes': minutes
         }, context_instance=RequestContext(request))
 
 def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):

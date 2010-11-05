@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <h4><a href="#">
-	{{ delivery.number }} - {{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}
+	{{ delivery.number }} - {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
 	{% spaceless %}
 		(
 		{% if delivery.feedback %}
@@ -14,10 +14,10 @@
 		  <span class='delivery_published_msg'>({% trans "Published" %})</span>
 		{% endif %}
 		{% if delivery.feedback and not delivery.feedback.published %}
-		  <span class='delivery_unpublished_msg'>({% trans "Feedback is not published, and not viewable by the student(s)" %})</span>
+		  <span class='status_corrected_not_published'>({% trans "Feedback is not published, and not viewable by the student(s)" %})</span>
 		{% endif %}
 		{% if after_last_deadline_msg %}
-		  <span class='after_last_deadline_msg'>({% trans "After last deadline" %})</span>
+		  <span class='bad'>({% trans "After last deadline" %})</span>
 		{% endif %}
 	{% endspaceless %}
 </a></h4>

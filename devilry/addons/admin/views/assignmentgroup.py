@@ -23,7 +23,7 @@ from devilry.addons.quickdash import defaults
 from devilry.addons.admin.assignmentgroup_filtertable import (
     AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
     FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
-    FilterMissingCandidateId)
+    FilterMissingCandidateId, FilterAfterDeadline)
 from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
@@ -69,6 +69,7 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             FilterStatus(),
             FilterIsPassingGrade(),
             FilterExaminer(),
+            FilterAfterDeadline(),
         ]
         numcan = FilterNumberOfCandidates(self.assignment)
         if not (numcan.maximum == 1 and numcan.minimum == 1):

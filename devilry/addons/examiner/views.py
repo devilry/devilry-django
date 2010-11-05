@@ -12,7 +12,7 @@ from devilry.core import gradeplugin
 from devilry.ui.widgets import DevilryDateTimeWidget
 from devilry.ui.messages import UiMessages
 from devilry.ui.filtertable import Columns, Col
-from devilry.addons.admin.views.assignmentgroup_filtertable import (
+from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates)
 
