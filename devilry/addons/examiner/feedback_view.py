@@ -74,7 +74,7 @@ def redirect_after_successful_save(request, delivery_obj):
 
     if "save_and_dash" in request.POST:
         delivery_url = "<a href='%s'>%s</a>" % (
-                reverse("devilry-examiner-correct_delivery",
+                reverse("devilry-examiner-edit-feedback",
                     args=[str(delivery_obj.id)]),
                 delivery_obj)
         messages.add_info(
@@ -89,7 +89,7 @@ def redirect_after_successful_save(request, delivery_obj):
                     args=(delivery_obj.assignment_group.id,)))
 
 def render_response(request, delivery_obj, feedback_form, grade_form,
-        template_path='devilry/examiner/correct_delivery.django.html'):
+        template_path='devilry/examiner/edit_feedback.django.html'):
     return render_to_response(template_path, {
             'delivery': delivery_obj,
             'feedback_form': feedback_form,

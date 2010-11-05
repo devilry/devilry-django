@@ -269,7 +269,7 @@ def show_assignmentgroup(request, assignmentgroup_id):
             }, context_instance=RequestContext(request))
 
 @login_required
-def correct_delivery(request, delivery_id):
+def edit_feedback(request, delivery_id):
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
     if not delivery_obj.assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
