@@ -21,10 +21,12 @@ where the deadline has not yet expired is excluded.</p>
 	</dt>
 	<dd>
 		<div>
-			<big>
 			{{ group.parentnode.parentnode.parentnode.short_name }}
-			</big>
 			- {{ group.parentnode.parentnode.short_name }}
+			-
+      <a href="{% url devilry-examiner-list_assignmentgroups group.parentnode.id %}">
+        {{ group.parentnode.short_name }}
+      </a>
 		</div>
 		<div>
 			Last delivery: <em>{{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}</em>
@@ -34,10 +36,13 @@ where the deadline has not yet expired is excluded.</p>
 				<em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
 			</div>
 		{% endif %}
-		<p>
+		<div>
 			<a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
-				Show delivery/Create feedback</a>
-		</p>
+        <strong>
+          {% trans "Show delivery/Create feedback" %}
+        </strong>
+      </a>
+		</div>
 	</dd>
 {% endfor %}
 </dl>

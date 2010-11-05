@@ -19,10 +19,12 @@ published</span>. They are ordered with the latest changed feedback first.</p>
 	</dt>
 	<dd>
 		<div>
-			<big>
 			{{ group.parentnode.parentnode.parentnode.short_name }}
-			</big>
 			- {{ group.parentnode.parentnode.short_name }}
+			-
+      <a href="{% url devilry-examiner-list_assignmentgroups group.parentnode.id %}">
+        {{ group.parentnode.short_name }}
+      </a>
 		</div>
 		<div>
 		</div>
@@ -41,10 +43,13 @@ published</span>. They are ordered with the latest changed feedback first.</p>
 				<em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
 			</div>
 		{% endif %}
-		<p>
+		<div>
 			<a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
-				Edit feedback</a>
-		</p>
+        <strong>
+          {% trans "Edit feedback" %}
+        </strong>
+      </a>
+		</div>
 	</dd>
 {% endfor %}
 </dl>

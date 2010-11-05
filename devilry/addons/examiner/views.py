@@ -38,13 +38,6 @@ class DeadlineForm(forms.ModelForm):
 
 
 
-class ExaminerFilterStatus(FilterStatus):
-    
-    def get_default_selected(self, properties):
-        return [1, 2]
-
-
-
 class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-examiner-filtertable'
     has_related_actions = False
@@ -64,7 +57,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
 
     def get_filters(self):
         filters = [
-            ExaminerFilterStatus(),
+            FilterStatus(),
             FilterIsPassingGrade(),
         ]
         numcan = FilterNumberOfCandidates(self.assignment)
