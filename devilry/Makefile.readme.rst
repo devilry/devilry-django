@@ -1,10 +1,13 @@
 Targets
 #######
 
-  test
+test
     Run tests with coverage.
-  html-testreport
+html-testreport
     Create a test coverage report. Depends on 'test'.
+create-duck1100-data
+    Create data for the duck1100 subject using adminscripts/create_testgroups.py.
+create-duck1080-data
 
 
 Developer help
@@ -27,14 +30,14 @@ Typical workflow:
 
    2. Backup the data (since it takes a while to recreate)::
 
-        ~$ make backup-exampledata
+        ~$ make backup-exampledb
 
    3. Login as "grandma" to do admin stuff, "examiner0" to test as examiner and
       student0, student1, .... studentN to test as student (see Nodes).
 
    4. Restore the db from backup when needed with::
 
-        ~$ make restore-exampledata
+        ~$ make restore-exampledb
 
 Why not just a static dataset?
 
