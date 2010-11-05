@@ -84,7 +84,9 @@ class GradeModel(models.Model):
     @classmethod
     def get_example_xmlrpcstring(cls, assignment, points):
         """ Create a example xmlrpcstring for the given assignment with the
-        given number of points.
+        given number of points. This method should work with the
+        initialization made in init_example, and might not work in any other
+        cases (grade_rstschema is a example of this).
         
         This is used to autogenerate examples and test data. You do not have
         to respect the points argument, but doing so enables generation of

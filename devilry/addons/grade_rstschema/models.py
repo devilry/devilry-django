@@ -58,21 +58,39 @@ class RstSchemaGrade(GradeModel):
         sd = RstSchemaDefinition()
         sd.assignment = assignment
         sd.let_students_see_schema = True
-        sd.schemadef = "What?\n\n.. field:: 0-%d\n" % points
+        sd.schemadef = """This is a schema. The schema author can write more
+or less anything they want. They can make headings and organize questions if
+needed.
+
+A heading
+#########
+
+Is the assignment usable?
+
+.. field:: no/yes
+"""
+        if points > 1:
+            sd.schemadef += """
+A subheading
+============
+
+Rate the overall quality:
+
+.. field:: 0-%d
+""" % (points - 1)
         sd.save()
         assignment.save() # update pointscale if autoscale
 
-    #@classmethod
-    #def get_example_xmlrpcstring(cls, assignment, points):
-        #""" This does not respect ``points``, and will only return a values
-        #that validates if the schemadef has defaults for everything. """
-        #schemadef = assignment.rstschemadefinition.schemadef
-        #return text.examiner_format(schemadef)
     @classmethod
     def get_example_xmlrpcstring(cls, assignment, points):
+        """ This only works with schemas created by :meth:`init_example`. """
         schemadef = assignment.rstschemadefinition.schemadef
         f = text.examiner_format(schemadef)
-        return text.insert_values(f, [points])
+        p = ["no", 0]
+        if points > 1:
+            p[0] = "yes"
+            p[1] = points - 1
+        return text.insert_values(f, p)
 
     def _iter_points(self, schemadef_document):
         fields = field.extract_fields(schemadef_document)
