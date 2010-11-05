@@ -1,6 +1,7 @@
 PRODTEST=devilry.cfg.test2
 PROD=devilry.cfg.prod1
 EXAMPLEDATA_BACKUP=exampledata-backup
+HTMLHELP=Makefile.readme.rst.html
 NUM_STUDENTS=30
 NUM_EXAMINERS=2
 
@@ -9,6 +10,11 @@ USER=../adminscripts/bin/devilry-user.py
 
 help:
 	@cat Makefile.readme.rst
+
+htmlhelp:
+	rst2html.py Makefile.readme.rst > $(HTMLHELP)
+	@echo
+	@echo "Created $(HTMLHELP)"
 
 
 cleardb:

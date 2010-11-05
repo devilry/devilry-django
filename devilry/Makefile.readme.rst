@@ -5,9 +5,30 @@ test
     Run tests with coverage.
 html-testreport
     Create a test coverage report. Depends on 'test'.
+cleardb:
+    Remove the test database, and recreate it containing only the required
+    django and devilry tables and data.
+init-exampledb
+    Runs "cleardb", and adds test users from core/fixtures/example/users.json.
+    The most important of these users is the superadmin "grandma" which has
+    permission to do anything. The other users have reccommended uses for
+    testing:
+
+        students:
+            huey, dewey, louie, may, june, july
+        examiners:
+            daisy, clarabelle, della, mathilda
+        admins:
+            donald, gladstone, fethry, gus, scrooge
+    
+    **Note:** All users has "test" as password.
 create-duck1100-data
     Create data for the duck1100 subject using adminscripts/create_testgroups.py.
 create-duck1080-data
+    Create data for the duck1080 subject using adminscripts/create_testgroups.py.
+create-exampledb
+    Runs "init-exampledb" followed by "create-duck1100-data" and
+    "create-duck1080-data".
 
 
 Developer help
