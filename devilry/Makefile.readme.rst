@@ -1,10 +1,34 @@
 Targets
 #######
 
-  test
+test
     Run tests with coverage.
-  html-testreport
+html-testreport
     Create a test coverage report. Depends on 'test'.
+cleardb:
+    Remove the test database, and recreate it containing only the required
+    django and devilry tables and data.
+init-exampledb
+    Runs "cleardb", and adds test users from core/fixtures/example/users.json.
+    The most important of these users is the superadmin "grandma" which has
+    permission to do anything. The other users have reccommended uses for
+    testing:
+
+        students:
+            huey, dewey, louie, may, june, july
+        examiners:
+            daisy, clarabelle, della, mathilda
+        admins:
+            donald, gladstone, fethry, gus, scrooge
+    
+    **Note:** All users has "test" as password.
+create-duck1100-data
+    Create data for the duck1100 subject using adminscripts/create_testgroups.py.
+create-duck1080-data
+    Create data for the duck1080 subject using adminscripts/create_testgroups.py.
+create-exampledb
+    Runs "init-exampledb" followed by "create-duck1100-data" and
+    "create-duck1080-data".
 
 
 Developer help
@@ -27,14 +51,14 @@ Typical workflow:
 
    2. Backup the data (since it takes a while to recreate)::
 
-        ~$ make backup-exampledata
+        ~$ make backup-exampledb
 
    3. Login as "grandma" to do admin stuff, "examiner0" to test as examiner and
       student0, student1, .... studentN to test as student (see Nodes).
 
    4. Restore the db from backup when needed with::
 
-        ~$ make restore-exampledata
+        ~$ make restore-exampledb
 
 Why not just a static dataset?
 
