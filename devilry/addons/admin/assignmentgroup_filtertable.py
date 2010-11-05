@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from django.db.models import Max, Min, Count, Q
+from django.utils.formats import date_format
 
 from devilry.core.models import AssignmentGroup, Candidate
 from devilry.ui.filtertable import (Filter, Action, FilterTable,
@@ -143,6 +144,13 @@ class AssignmentGroupsAction(Action):
         return reverse(self.urlname, args=[str(assignment.id)])
 
 
+def _datetime_or_empty(datetimeobj):
+    if datetimeobj:
+        return date_format(datetimeobj, "DATETIME_FORMAT")
+    else:
+        return ""
+
+
 class AssignmentGroupsFilterTableBase(FilterTable):
     resultcount_supported = True
     use_rowactions = True
@@ -185,9 +193,9 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             row.add_cell(deadlines)
         if 'active_deadline' in active_optional_cols:
             deadline = group.get_active_deadline()
-            row.add_cell(deadline)
+            row.add_cell(_datetime_or_empty(deadline.deadline))
         if 'latest_delivery' in active_optional_cols:
-            row.add_cell(group.latest_delivery or "")
+            row.add_cell(_datetime_or_empty(group.latest_delivery))
         if 'deliveries_count' in active_optional_cols:
             row.add_cell(group.deliveries_count)
         if 'scaled_points' in active_optional_cols:
