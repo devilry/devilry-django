@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
         active_deadline = group.get_active_deadline().deadline
         others = delivery.assignment_group.deliveries.all().order_by(
-                "number")
+                "-number")
         if others.count() == 1:
             if active_deadline < datetime.now():
                 if randint(0, 100) <= 5:
@@ -141,19 +141,10 @@ if __name__ == "__main__":
                 delivery.time_of_delivery = datetime.now() - offset
         else:
             # Make sure deliveries are sequential
-            last_delivery = others[0].time_of_delivery
+            last_delivery = others[1].time_of_delivery
             delivery.time_of_delivery = last_delivery + \
                     timedelta(hours=randint(0, 2), minutes=randint(0,
                         59))
-            if others.count() == 2:
-                td = delivery.time_of_delivery - last_delivery
-                td = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-                td = td / 60.0 / 60.0
-                print
-                print "Active deadline:", active_deadline
-                print "Last delivery:", last_delivery
-                print "Time of delivery:", delivery.time_of_delivery
-                print "Diff:", td
         delivery.save()
         return delivery
 
@@ -340,6 +331,15 @@ if __name__ == "__main__":
     if opt.pointscale:
         assignment.pointscale = opt.pointscale
     assignment.save()
+
+    # Make sure assignment fits in parentnode
+    if assignment.parentnode.start_time > assignment.publishing_time:
+        assignment.parentnode.start_time = assignment.publishing_time - \
+                timedelta(days=5)
+        assignment.parentnode.save()
+    if assignment.parentnode.end_time < deadline:
+        assignment.parentnode.end_time = deadline + timedelta(days=20)
+        assignment.parentnode.save()
     logging.info(
             "Creating groups on %s with deadline %s and grade_plugin %s" % (
                 assignment, deadline, gradeplugin))
