@@ -1,3 +1,7 @@
+"""
+Base functionality for a :class:`devilry.ui.filtertable.FilterTable` for
+AssignmentGroups.
+"""
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
@@ -5,8 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Max, Min, Count, Q
 
 from devilry.core.models import AssignmentGroup, Candidate
-from devilry.ui.filtertable import (Filter, Action, FilterTable, Columns,
-        Col, Row, FilterLabel)
+from devilry.ui.filtertable import (Filter, Action, FilterTable,
+        Row, FilterLabel)
 
 
 class FilterStatus(Filter):
@@ -146,6 +150,8 @@ class AssignmentGroupsFilterTableBase(FilterTable):
 
     @classmethod
     def get_selected_groups(cls, request):
+        """ Get a list of selected
+        :class:`devilry.core.models.AssignmentGroup`. """
         groups = []
         for group_id in cls.get_selected_ids(request):
             group = get_object_or_404(AssignmentGroup, id=group_id)
@@ -153,7 +159,9 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         return groups
 
     @classmethod
-    def get_selected_nodes(cls, request): # Just to make this work with deletemany_generic
+    def get_selected_nodes(cls, request):
+        """ Alias for get_selected_groups to make this work with
+        deletemany_generic. """
         return cls.get_selected_groups(request)
 
     def __init__(self, request, assignment):
@@ -213,83 +221,3 @@ class AssignmentGroupsFilterTableBase(FilterTable):
                 deliveries_count=Count("deliveries"))
         return total, dataset
 
-
-
-class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
-    id = 'assignmentgroups-admin-filtertable'
-    selectionactions = [
-            AssignmentGroupsAction(_("Delete"),
-                'devilry-admin-delete_manyassignmentgroups',
-                confirm_title=_("Confirm delete"),
-                confirm_message=_("Are you sure you want to delete "\
-                    "the selected groups including their deliveries "\
-                    "and feedback?")),
-            AssignmentGroupsAction(_("Create/replace deadline"),
-                'devilry-admin-create_deadline'),
-            AssignmentGroupsAction(_("Clear deadlines"),
-                'devilry-admin-clear_deadlines',
-                confirm_title=_("Confirm clear deadlines"),
-                confirm_message=_("Are you sure you want to clear "\
-                    "deadlines on the following groups?")),
-            AssignmentGroupsAction(_("Set examiners"),
-                'devilry-admin-set_examiners'),
-            AssignmentGroupsAction(_("Random distribute examiners"),
-                                   'devilry-admin-random_dist_examiners'),
-            #ssignmentGroupsAction(_("Download deliveries"),
-            #                      'devilry-examiner-download_file_collection'),
-            ]
-    relatedactions = [
-            AssignmentGroupsAction(_("Create new"),
-                "devilry-admin-create_assignmentgroup"),
-            AssignmentGroupsAction(_("Create many (advanced)"),
-                "devilry-admin-create_assignmentgroups"),
-            AssignmentGroupsAction(_("Create by copy"),
-                "devilry-admin-copy_groups"),
-            AssignmentGroupsAction(_("Examiner mode"),
-                "devilry-examiner-list_assignmentgroups")
-            ]
-
-    def get_filters(self):
-        filters = [
-            FilterStatus(),
-            FilterIsPassingGrade(),
-            FilterExaminer(),
-        ]
-        numcan = FilterNumberOfCandidates(self.assignment)
-        if not (numcan.maximum == 1 and numcan.minimum == 1):
-            filters.append(numcan)
-        if self.assignment.anonymous:
-            filters.append(FilterMissingCandidateId())
-        return filters
-
-    def get_columns(self):
-        return Columns(
-            Col('id', "Id", optional=True),
-            Col('candidates', "Candidates"),
-            Col('examiners', "Examiners", optional=True, active_default=True),
-            Col('name', "Name", can_order=True, optional=True,
-                active_default=True),
-            Col('deadlines', "Deadlines", optional=True),
-            Col('active_deadline', "Active deadline", optional=True),
-            Col('latest_delivery', "Latest delivery", optional=True,
-                can_order=True),
-            Col('deliveries_count', "Deliveries", optional=True,
-                can_order=True),
-            Col('scaled_points', "Points", optional=True, can_order=True),
-            Col('grade', "Grade", optional=True),
-            Col('status', "Status", can_order=True, optional=True,
-                active_default=True))
-
-    def create_row(self, group, active_optional_cols):
-        row = super(AssignmentGroupsFilterTable, self).create_row(group,
-                active_optional_cols)
-        row.add_action(_("edit"), 
-                reverse('devilry-admin-edit_assignmentgroup',
-                        args=[self.assignment.id, str(group.id)]))
-        row.add_action(_("examine"), 
-                       reverse('devilry-examiner-show_assignmentgroup',
-                args=[str(group.id)]))
-        return row
-
-    def get_assignmentgroups(self):
-        return self.assignment.assignmentgroups.all()

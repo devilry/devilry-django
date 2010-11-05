@@ -29,6 +29,7 @@ cookies.txt
 *.bak
 devilry_xmlrpc_client.egg-info/
 dist/
-
 cscope.out
 Session.vim
+deliverystore.dbm.dat
+deliverystore.dbm.dir

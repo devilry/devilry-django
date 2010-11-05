@@ -5,18 +5,18 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django import forms
-from django.db.models import Max, Count
 
 from devilry.core.utils.GroupNodes import group_assignments
 from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
 from devilry.core import gradeplugin
 from devilry.ui.widgets import DevilryDateTimeWidget
 from devilry.ui.messages import UiMessages
-from devilry.ui.filtertable import (Filter, Action, Columns,
-        Col, Row, FilterLabel)
+from devilry.ui.filtertable import Columns, Col
 from devilry.addons.admin.views.assignmentgroup_filtertable import (
-        AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus, FilterIsPassingGrade,
-        FilterNumberOfCandidates)
+        AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
+        FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates)
+
+
 
 class DeadlineForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=DevilryDateTimeWidget,

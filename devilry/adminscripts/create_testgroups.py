@@ -1,13 +1,16 @@
+#!/usr/bin/env python
+
 from optparse import OptionParser
 import logging
 import itertools
 from random import randint
+from datetime import datetime, timedelta
 
 from common import (setup_logging, load_devilry_plugins,
     add_settings_option, set_django_settings_module, add_quiet_opt,
     add_debug_opt)
 
-def group(lst, n):
+def grouplist(lst, n):
     l = len(lst)/n
     if len(lst)%n:
         l += 1
@@ -21,7 +24,7 @@ if __name__ == "__main__":
             usage = "%prog [options] <assignment-path>")
     add_settings_option(p)
     p.add_option("-s", "--num-students", dest="num_students",
-            default=10, type='int',
+            default=50, type='int',
             help="Number of students. Defaults to 10.")
     p.add_option("-e", "--num-examiners", dest="num_examiners",
             default=3, type='int',
@@ -45,15 +48,36 @@ if __name__ == "__main__":
     p.add_option("--examiners-per-group", dest="examiners_per_group",
             default=1, type='int',
             help="Number of examiners per group. Defaults to 1.")
-    p.add_option("--grade-maxpoints", dest="grade_maxpoints",
+    p.add_option("-g", "--grade-maxpoints", dest="grade_maxpoints",
             default=1, type='int',
             help="Maximum number of points possible on the assignment. "\
                 "Groups will get a random score between 0 and this number. "
                 "Defaults to 1.")
+    p.add_option("--pointscale", dest="pointscale",
+            default=None, type='int',
+            help="The pointscale of the assignment. Default is "\
+                    "no pointscale.")
     p.add_option("--grade-plugin", dest="gradeplugin",
+            default=None, help="Grade plugin key.")
+    p.add_option("-p", "--deadline-profile", dest="deadline_profile",
+            default='recent',
+            help="Deadline profile. Defaults to 'recent' "
+                "Values: soon (no feedback, but 50% deliveries), "\
+                "very-recent (some feedback), recent (about " \
+                "50% feedback), old (about 90% feedback), very-old (all have " \
+                "feedback). In addition, there is always some bad students " \
+                "who forget to deliver, and some bad examiners who forget to " \
+                "publish and correct.")
+    p.add_option("--deadline", dest="deadline",
             default=None,
-            help="Grade plugin. Defaults to the one specified in "\
-                    "settings.py.")
+            help="Deadline. If this is specified, --deadline-profile is "\
+                "ignored. Format: YYYY-MM-DD. Time will always be 00:00.")
+    p.add_option("--pubtime-diff", dest="pubtime_diff",
+            default=14, type='int',
+            help="Number of days between publishing time and deadline. "\
+                "Defaults to 14.")
+
+
     add_quiet_opt(p)
     add_debug_opt(p)
     (opt, args) = p.parse_args()
@@ -93,23 +117,158 @@ if __name__ == "__main__":
         delivery.add_file('helloworld.java', [
             '// Too much code for a sane "hello world"'])
         delivery.finish()
+        active_deadline = group.get_active_deadline().deadline
+        if active_deadline < datetime.now():
+            # Only change time of delivery on "old" assignments. New will be
+            # set to "now" in finish()
+            others = delivery.assignment_group.deliveries.all().order_by(
+                    "-time_of_delivery")
+            if others.count() == 1:
+                if randint(0, 100) <= 5:
+                    # 5% chance to get the first delivery after the deadline
+                    offset = timedelta(minutes=-randint(1, 20))
+                else:
+                    offset = timedelta(hours=randint(0, 15),
+                            minutes=randint(0, 59))
+                delivery.time_of_delivery = active_deadline - offset
+            else:
+                # Make sure deliveries are sequential
+                last_delivery = others[0].time_of_delivery
+                delivery.time_of_delivery = last_delivery + \
+                        timedelta(hours=randint(0, 2), minutes=randint(0,
+                            59))
+            delivery.save()
         return delivery
 
-    def autocreate_feedback(delivery, maxpoints, published):
+    def autocreate_deliveries(group, numdeliveries):
+        d = []
+        for x in xrange(numdeliveries):
+            d.append(autocreate_delivery(group))
+        return d
+
+    def autocreate_feedback(delivery, points, published):
         assignment = delivery.assignment_group.parentnode
         feedback = delivery.get_feedback()
-        feedback.text = "Very good:)"
+        feedback.text = "Some text here:)"
         feedback.published = published
         examiner = delivery.assignment_group.examiners.all()[0]
         feedback.last_modified_by = examiner
         gradeplugin = assignment.get_gradeplugin_registryitem().model_cls
         examplegrade = gradeplugin.get_example_xmlrpcstring(assignment,
-                randint(0, maxpoints))
+                points)
         feedback.set_grade_from_xmlrpcstring(examplegrade)
         feedback.save()
+        return feedback
 
 
-    assignment = args[0]
+    def create_example_assignmentgroup(assignment, students, examiners,
+            groupname=None):
+        """ Create a assignmentgroup with the given students and examiners.
+
+        :param assignment: The :class:`devilry.core.models.Assignment` where
+            you wish to create the group.
+        :param students: List of usernames.
+        :param examiners: List of usernames.
+        :return: The created :class:`devilry.core.models.AssignmentGroup`.
+        """
+        group = assignment.assignmentgroups.create()
+        for student in students:
+            group.candidates.create(
+                    student=User.objects.get(username=student))
+        for examiner in examiners:
+            group.examiners.add(User.objects.get(username=examiner))
+        group.deadlines.create(deadline=deadline)
+        logging.info("Created %s" % group)
+        return group
+
+    def create_example_deliveries_and_feedback(group, quality_percents,
+            group_quality_percent, grade_maxpoints):
+        deadline = group.get_active_deadline().deadline
+        now = datetime.now()
+        two_weeks_ago = now - timedelta(days=14)
+        two_days_ago = now - timedelta(days=2)
+        five_days_ago = now - timedelta(days=5)
+
+        # Deadline in the future - about half has not yet delivered - no
+        # feedback
+        if deadline > now:
+            if randint(0, 100) <= 50:
+                logging.debug("Deadline in the future - not made "\
+                        "any deliveries yet")
+                return
+
+        # Every C student and worst has a 5% chance of forgetting to
+        # deliver
+        elif group_quality_percent < quality_percents[1]:
+            if randint(0, 100) <= 5:
+                return
+
+        numdeliveries = 1
+        if randint(0, 100) <= 20:
+            # 20% chance of delivering more than one time
+            numdeliveries = randint(2, 5)
+        deliveries = autocreate_deliveries(group, numdeliveries)
+        delivery = deliveries[-1]
+
+        # Determine grade. Everyone get a random grade within their "usual"
+        # grade.
+        max_percent = 100
+        for p in quality_percents:
+            if group_quality_percent > p:
+                break
+            max_percent = p
+        grade_percent = randint(group_quality_percent, max_percent)
+        gradepoints = int(round(grade_maxpoints*grade_percent / 100.0))
+
+        # More than two weeks since deadline - should have feedback on about all
+        if deadline < two_weeks_ago:
+            logging.debug("Very old deadline (14 days +)")
+            if randint(0, 100) <= 3: # Always a 3% chance to forget giving feedback.
+                return
+            autocreate_feedback(delivery, gradepoints,
+                    # 5% chance to forget publishing
+                    published=randint(0,100)>=5)
+
+        # Less than two weeks but more that 5 days since deadline
+        elif deadline < five_days_ago:
+            logging.debug("Old deadline (5-14 days)")
+            if randint(0, 100) <= 10:
+                # 10% of them has no feedback yet
+                return
+            autocreate_feedback(delivery, gradepoints,
+                    # 5% chance to forget publishing
+                    published=randint(0,100)>=5)
+
+        # Recent deadline (2-5 days since deadline)
+        # in the middle of giving feedback
+        elif deadline < two_days_ago:
+            logging.debug("Recent deadline (2-5 days)")
+            if randint(0, 100) <= 50:
+                # Half of them has no feedback yet
+                return
+            autocreate_feedback(delivery, gradepoints,
+                    # 50% is not yet published
+                    published=randint(0,100)>=50)
+
+        # Very recent deadline (0-2 days since deadline)
+        elif deadline < now:
+            logging.debug("Very recent deadline (0-3 days)")
+            if randint(0, 100) <= 90:
+                # 90% of them has no feedback yet
+                return
+            autocreate_feedback(delivery, gradepoints,
+                    # 80% is not yet published
+                    published=randint(0,100)>=80)
+
+        # Deadline is in the future
+        else:
+            logging.debug("Deadline is in the future. Made deliveries, but "\
+                    "no feedback")
+            pass # No feedback
+            
+
+
+    assignmentpath = args[0]
     groupname_prefix = opt.groupname_prefix
     student_prefix = opt.studentname_prefix
     students_per_group = opt.students_per_group
@@ -118,29 +277,73 @@ if __name__ == "__main__":
     num_examiners = opt.num_examiners
     examiners_per_group = opt.examiners_per_group
     grade_maxpoints = opt.grade_maxpoints
-    gradeplugin = opt.gradeplugin or registry.getdefaultkey()
+
+    if not opt.gradeplugin:
+        raise SystemExit("--grade-plugin is required. Possible values: %s" %
+                ', '.join(['"%s"' % key for key, i in registry.iteritems()]))
+    gradeplugin = opt.gradeplugin
+    
+    if opt.deadline:
+        deadline = datetime.strptime(opt.deadline, "%Y-%m-%d")
+    else:
+        now = datetime.now()
+        p = opt.deadline_profile
+        if p == 'soon':
+            deadline = now + timedelta(days=1)
+        elif p == 'very-recent':
+            deadline = now - timedelta(days=1)
+        elif p == 'recent':
+            deadline = now - timedelta(days=3)
+        elif p == 'old':
+            deadline = now - timedelta(days=9)
+        elif p == 'very-old':
+            deadline = now - timedelta(days=60)
+        elif p.startswith("-") or p.startswith("+"):
+            if not p[1:].isdigit():
+                raise SystemExit("Numeric deadline profile must be + or - "\
+                        "suffixed with a number")
+            days = int(p[1:])
+            if p.startswith("-"):
+                deadline = now - timedelta(days=int(days))
+            else:
+                deadline = now + timedelta(days=int(days))
+        else:
+            raise SystemExit("Invalid --deadline-profile")
+
 
     examiners = ['%s%d' % (examiner_prefix, d)
             for d in xrange(0,num_examiners)]
-    students = ['%s%d' % (student_prefix, d) for d in xrange(0, num_students)]
-    create_missing_users(itertools.chain(students, examiners))
+    all_students = ['%s%d' % (student_prefix, d) for d in xrange(0, num_students)]
+    create_missing_users(itertools.chain(all_students, examiners))
 
-    examinersiter = itertools.cycle(group(examiners, examiners_per_group))
-    for i, usernames in enumerate(group(students, students_per_group)):
-        path = "%s.%s" % (assignment, ",".join(usernames))
-        logging.info("Creating %s" % path)
-        group = create_from_path(path,
-                grade_plugin_key=gradeplugin)
+    assignment = create_from_path(assignmentpath,
+            grade_plugin_key=gradeplugin,
+            gradeplugin_maxpoints=grade_maxpoints)
+    assignment.publishing_time = deadline - timedelta(days=opt.pubtime_diff)
+    if opt.pointscale:
+        assignment.pointscale = opt.pointscale
+    assignment.save()
+    logging.info(
+            "Creating groups on %s with deadline %s and grade_plugin %s" % (
+                assignment, deadline, gradeplugin))
+
+    examinersiter = itertools.cycle(grouplist(examiners, examiners_per_group))
+    quality_percents = (
+            93, # A > 93
+            80, # B > 80
+            65, # C > 65
+            45, # D > 45
+            30) # E > 30 
+    for studnum, students in enumerate(grouplist(all_students, students_per_group)):
+        examiners = examinersiter.next()
+        groupname = None
         if groupname_prefix:
-            group.name = "%s %d" % (groupname_prefix, i)
-        group.save()
-        group.parentnode.get_gradeplugin_registryitem().model_cls.init_example(
-                group.parentnode, grade_maxpoints)
-        for examiner in examinersiter.next():
-            group.examiners.add(User.objects.get(username=examiner))
-        num = randint(0, 10)
-        if num > 2:
-            delivery = autocreate_delivery(group)
-            if num > 4:
-                autocreate_feedback(delivery, grade_maxpoints,
-                        num > 6)
+            groupname = "%s %d" % (groupname_prefix, studnum)
+        group = create_example_assignmentgroup(assignment, students,
+                examiners, groupname)
+
+        group_quality_percent = 100 - (float(studnum)/num_students * 100)
+        group_quality_percent = round(group_quality_percent)
+        logging.debug("Group quality percent: %s" % group_quality_percent)
+        create_example_deliveries_and_feedback(group, quality_percents,
+                group_quality_percent, grade_maxpoints)

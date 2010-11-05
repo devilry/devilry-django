@@ -1,5 +1,42 @@
+# Developer help
+################
+# 
+# Typical workflow:
+#    1. Create initial example data with: (this take a while)
+#         ---> ~$ make create-exampledb
+#         or
+#         ---> ~$ make create-exampledb NUM_STUDENTS=100 NUM_EXAMINERS=5
+#         or
+#         ---> ~$ make init-exampledb create-duck1080-data NUM_STUDENTS=40
+#         or
+#         ---> ~$ make init-exampledb
+#              ~$ adminscripts/create_testgroups.py somenode:duck20xx.hxx.someassignment [more arguments]
+#         or
+#         ---> other cobinations suiting the current development.
+#    2. Backup the data (since it takes a while to recreate).
+#         ~$ make backup-exampledata
+#    3. Login as "grandma" to do admin stuff, "examiner0" to test as examiner and
+#       student0, student1, .... studentN to test as student (see Nodes).
+#    4. Restore the db from backup when needed with:
+#         ~$ make restore-exampledata
+#
+# Why not just a static dataset?
+#    - Because we need to test stuff relative to current time.
+#    - Because adminscripts/create_testgroups can make relevant
+#      testdata when needed.
+#
+# Notes:
+#    - All users created by create_testgroups.py and all users in
+#      users.json uses "test" as password.
+#    - student1 will always be a good student, and the higher number a student
+#      has, the worst it is.
+##
+
 PRODTEST=devilry.cfg.test2
 PROD=devilry.cfg.prod1
+EXAMPLEDATA_BACKUP=exampledata-backup
+NUM_STUDENTS=30
+NUM_EXAMINERS=2
 
 USER=../adminscripts/bin/devilry-user.py
 
@@ -8,22 +45,9 @@ help:
 	@echo "Targets:"
 	@echo "  test:                 Run tests with coverage."
 	@echo "  html-testreport       Create a test coverage report. Depends on 'test'."
-	@echo "  create-exampledata    Create example fixtures from db.sqlite3."
-	@echo "  reset-exampledb       Reset db.sqlite3 from the example fixtures."
-	@echo "  create-core-testdata  Create test fixtures for core from db.sqlite3."
-	@echo "  cleardb               Clear the database."
-	@echo ""
-	@echo "EXAMPLE DATA AND TEST DATA"
-	@echo "Test data is for the testcases, and must not be changed without careful "
-	@echo "consideration. 'Example' data is used when working with UI-design or"
-	@echo "just to show of Devilry, and it can be changed and extended without"
-	@echo "affecting anything."
+	@echo
+	@echo "More targets for developers. See the top of Makefile."
 
-test:
-	coverage -x manage.py test
-
-html-testreport: test
-	coverage html
 
 cleardb:
 	rm -f db.sqlite3
@@ -34,94 +58,93 @@ cleardb:
 	@echo
 	@echo "   ~# python manage.py loaddata core/fixtures/tests/core/*.json"
 
-create-exampledata:
-	python manage.py dumpdata core --indent=4 > core/fixtures/example/data.json
-	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/users.json
-	python manage.py dumpdata grade_rstschema --indent=4 > core/fixtures/example/grade_rstschema.json
-	python manage.py dumpdata grade_default --indent=4 > core/fixtures/example/grade_default.json
-	python manage.py dumpdata grade_approved --indent=4 > core/fixtures/example/grade_approved.json
 
-reset-exampledb:
-	rm -f db.sqlite3
-	python manage.py syncdb --noinput
+#######################################################
+# Example db
+#######################################################
+
+create-duck1100-data:
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.week1 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-30" --grade-maxpoints 14
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.week2 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-20" --grade-maxpoints 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.week3 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "old" --grade-maxpoints 9
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.week4 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "recent" --grade-maxpoints 12
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.week5 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "soon" --grade-maxpoints 6
+
+create-duck1080-data:
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week1 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-30" --grade-maxpoints 11 \
+		--pointscale 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week2 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-20" --grade-maxpoints 9 \
+		--pointscale 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week3 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "recent" --grade-maxpoints 8 \
+		--pointscale 10
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1080.h01.week4 \
+		--grade-plugin "grade_rstschema:rstschemagrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "soon" --grade-maxpoints 14 \
+		--pointscale 10
+
+
+init-exampledb: cleardb
 	python manage.py loaddata -v0 core/fixtures/example/users.json
-	#python manage.py loaddata -v0 core/fixtures/example/data.json
-	#python manage.py loaddata -v0 core/fixtures/example/grade_rstschema.json
-	#python manage.py loaddata -v0 core/fixtures/example/grade_default.json
-	#python manage.py loaddata -v0 core/fixtures/example/grade_approved.json
-	git checkout deliverystore.dbm.dat
-	git checkout deliverystore.dbm.dir
-	chmod a+rw db.sqlite3
 
-create-minimal-exampledata:
-	python manage.py dumpdata core --indent=4 > core/fixtures/example/minimaldata.json
-	python manage.py dumpdata auth.user --indent=4 > core/fixtures/example/minimalusers.json
+create-exampledb: init-exampledb create-duck1100-data create-duck1080-data
 
-reset-minimal-exampledb:
+backup-exampledb:
+	rm -rf $(EXAMPLEDATA_BACKUP)
+	rm -f $(EXAMPLEDATA_BACKUP).tar.bz2
+	mkdir $(EXAMPLEDATA_BACKUP)
+	sqlite3 db.sqlite3 .dump > $(EXAMPLEDATA_BACKUP)/dbdump.sql
+	cp deliverystore.dbm.dat $(EXAMPLEDATA_BACKUP)/
+	cp deliverystore.dbm.dir $(EXAMPLEDATA_BACKUP)/
+	tar -cvjf $(EXAMPLEDATA_BACKUP).tar.bz2 $(EXAMPLEDATA_BACKUP)
+	rm -rf $(EXAMPLEDATA_BACKUP)
+
+restore-exampledb:
 	rm -f db.sqlite3
-	python manage.py syncdb --noinput
-	python manage.py loaddata -v0 core/fixtures/example/minimalusers.json
-	python manage.py loaddata -v0 core/fixtures/example/minimaldata.json
-	git checkout deliverystore.dbm.dat
-	git checkout deliverystore.dbm.dir
-	chmod a+rw db.sqlite3
-
-reset-proddb:
-	rm -f prod.db.sqlite3
-	python manage.py syncdb --settings=${PROD} --noinput
-	#DJANGO_SETTINGS_MODULE=${PROD} ${USER} add espeak --superuser yes --first-name "Espen" --last-name "Kristiansen"
-	#DJANGO_SETTINGS_MODULE=${PROD} ${USER} add bendiko --superuser yes --first-name "Bendik" --last-name "Opstad"
-	#DJANGO_SETTINGS_MODULE=${PROD} ${USER} add fredva --first-name "Fredrik" --last-name "Valdemais"
-	chmod a+rw prod.db.sqlite3
+	tar -xvjf $(EXAMPLEDATA_BACKUP).tar.bz2
+	cp $(EXAMPLEDATA_BACKUP)/deliverystore.dbm.dat ./
+	cp $(EXAMPLEDATA_BACKUP)/deliverystore.dbm.dir ./
+	sqlite3 db.sqlite3 < $(EXAMPLEDATA_BACKUP)/dbdump.sql
+	rm -rf $(EXAMPLEDATA_BACKUP)
 
 
-clear-prodtestdb:
-	-psql -d devilry_test -c "DROP TABLE auth_permission CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE auth_group_permissions CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE auth_group CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE auth_user_user_permissions CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE auth_user_groups CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE auth_user CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE auth_message CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE django_content_type CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE django_session CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE django_site CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE django_admin_log CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_grademodel CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_node_admins CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_node CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_subject_admins CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_subject CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_period_admins CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_period CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_assignment_admins CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_assignment CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_candidate CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_assignmentgroup_examiners CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_assignmentgroup CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_deadline CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_delivery CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_feedback CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE core_filemeta CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_approved_approvedgrade CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_default_charfieldgrade CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_schema_schemagrade CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_schema_entry CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_schema_schemagraderesults CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_schema_result CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_rstschema_rstschemadefinition CASCADE;";
-	-psql -d devilry_test -c "DROP TABLE grade_rstschema_rstschemagrade CASCADE;";
 
-init-prodtestdb:
-	python manage.py syncdb --settings=${PRODTEST} --noinput
-	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/users.json
-	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/data.json
-	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/grade_rstschema.json
-	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/grade_default.json
-	python manage.py loaddata --settings=${PRODTEST} -v0 core/fixtures/example/grade_approved.json
-
-reset-prodtest: clear-prodtestdb init-prodtestdb
-
+######################################################
+# Selenium testing
+######################################################
 
 selenium-clear-db: cleardb
 	git checkout deliverystore.dbm.dat
@@ -147,3 +170,14 @@ selenium-tests: selenium-student-test selenium-examiner-test selenium-admin-test
 
 clean:
 	coverage erase
+
+
+###########################################################
+# Test coverage
+###########################################################
+
+test:
+	coverage -x manage.py test
+
+html-testreport: test
+	coverage html

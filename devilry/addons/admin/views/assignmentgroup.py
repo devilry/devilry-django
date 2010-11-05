@@ -20,8 +20,93 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
 from devilry.addons.quickdash import defaults
-from assignmentgroup_filtertable import AssignmentGroupsFilterTable
+from devilry.addons.admin.assignmentgroup_filtertable import (
+    AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
+    FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
+    FilterMissingCandidateId)
+from devilry.ui.filtertable import Columns, Col
+
 from shortcuts import deletemany_generic
+
+
+class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
+    id = 'assignmentgroups-admin-filtertable'
+    selectionactions = [
+            AssignmentGroupsAction(_("Delete"),
+                'devilry-admin-delete_manyassignmentgroups',
+                confirm_title=_("Confirm delete"),
+                confirm_message=_("Are you sure you want to delete "\
+                    "the selected groups including their deliveries "\
+                    "and feedback?")),
+            AssignmentGroupsAction(_("Create/replace deadline"),
+                'devilry-admin-create_deadline'),
+            AssignmentGroupsAction(_("Clear deadlines"),
+                'devilry-admin-clear_deadlines',
+                confirm_title=_("Confirm clear deadlines"),
+                confirm_message=_("Are you sure you want to clear "\
+                    "deadlines on the following groups?")),
+            AssignmentGroupsAction(_("Set examiners"),
+                'devilry-admin-set_examiners'),
+            AssignmentGroupsAction(_("Random distribute examiners"),
+                                   'devilry-admin-random_dist_examiners'),
+            #ssignmentGroupsAction(_("Download deliveries"),
+            #                      'devilry-examiner-download_file_collection'),
+            ]
+    relatedactions = [
+            AssignmentGroupsAction(_("Create new"),
+                "devilry-admin-create_assignmentgroup"),
+            AssignmentGroupsAction(_("Create many (advanced)"),
+                "devilry-admin-create_assignmentgroups"),
+            AssignmentGroupsAction(_("Create by copy"),
+                "devilry-admin-copy_groups"),
+            AssignmentGroupsAction(_("Examiner mode"),
+                "devilry-examiner-list_assignmentgroups")
+            ]
+
+    def get_filters(self):
+        filters = [
+            FilterStatus(),
+            FilterIsPassingGrade(),
+            FilterExaminer(),
+        ]
+        numcan = FilterNumberOfCandidates(self.assignment)
+        if not (numcan.maximum == 1 and numcan.minimum == 1):
+            filters.append(numcan)
+        if self.assignment.anonymous:
+            filters.append(FilterMissingCandidateId())
+        return filters
+
+    def get_columns(self):
+        return Columns(
+            Col('id', "Id", optional=True),
+            Col('candidates', "Candidates"),
+            Col('examiners', "Examiners", optional=True, active_default=True),
+            Col('name', "Name", can_order=True, optional=True,
+                active_default=True),
+            Col('deadlines', "Deadlines", optional=True),
+            Col('active_deadline', "Active deadline", optional=True),
+            Col('latest_delivery', "Latest delivery", optional=True,
+                can_order=True),
+            Col('deliveries_count', "Deliveries", optional=True,
+                can_order=True),
+            Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('grade', "Grade", optional=True),
+            Col('status', "Status", can_order=True, optional=True,
+                active_default=True))
+
+    def create_row(self, group, active_optional_cols):
+        row = super(AssignmentGroupsFilterTable, self).create_row(group,
+                active_optional_cols)
+        row.add_action(_("edit"), 
+                reverse('devilry-admin-edit_assignmentgroup',
+                        args=[self.assignment.id, str(group.id)]))
+        row.add_action(_("examine"), 
+                       reverse('devilry-examiner-show_assignmentgroup',
+                args=[str(group.id)]))
+        return row
+
+    def get_assignmentgroups(self):
+        return self.assignment.assignmentgroups.all()
 
 
 
