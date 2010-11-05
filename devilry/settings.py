@@ -161,3 +161,6 @@ EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system
                   "Please do not respond to this email."
 
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
+
+
+DATETIME_FORMAT = "N j, Y, H:i"
