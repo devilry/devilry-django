@@ -297,9 +297,20 @@ def get_dictionary_with_name_matches(assignmentgroups):
 @login_required
 def download_file_collection(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    if not assignment.can_save(request.user):
-        return HttpResponseForbidden("Forbidden")
+    is_examiner = False
 
+    #is admin
+    if assignment.can_save(request.user):
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    else:
+        groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)        
+        is_examiner = True
+
+    return create_zip_from_groups(request, groups, is_examiner)
+
+
+@login_required
+def create_zip_from_groups(request, groups, check_examiner_permission):
     #from assignmentgroup_filtertable import AssignmentGroupsFilterTable
     #from devilry.addons.admin.views.assignmentgroup_filtertable import AssignmentGroupsExaminerFilterTable
     from StringIO import StringIO  
@@ -308,7 +319,7 @@ def download_file_collection(request, assignment_id):
 
     # AssignmentGroupsExaminerFilterTable
     #groups = AssignmentGroupsFilterTable.get_selected_groups(request)
-    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    #groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
     ids = [g.id for g in groups]
     selected_assignmentgroups = AssignmentGroup.objects.filter(id__in=ids)
 
@@ -318,6 +329,14 @@ def download_file_collection(request, assignment_id):
     zip = ZipFile(in_memory, "a")  
 
     for ass_group in selected_assignmentgroups:
+        if not is_admin:
+            print "Not admin"
+            if not ass_group.is_examiner():
+                print "not examiner"
+                continue
+            else:
+                print "is examiner"
+        
         ass_group_name = get_assignmentgroup_name(ass_group)
         # If multiple groups with the same members exists,
         # postfix the name with asssignmengroup ID.
