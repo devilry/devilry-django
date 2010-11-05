@@ -117,13 +117,12 @@ if __name__ == "__main__":
         delivery.add_file('helloworld.java', [
             '// Too much code for a sane "hello world"'])
         delivery.finish()
+
         active_deadline = group.get_active_deadline().deadline
-        if active_deadline < datetime.now():
-            # Only change time of delivery on "old" assignments. New will be
-            # set to "now" in finish()
-            others = delivery.assignment_group.deliveries.all().order_by(
-                    "-time_of_delivery")
-            if others.count() == 1:
+        others = delivery.assignment_group.deliveries.all().order_by(
+                "number")
+        if others.count() == 1:
+            if active_deadline < datetime.now():
                 if randint(0, 100) <= 5:
                     # 5% chance to get the first delivery after the deadline
                     offset = timedelta(minutes=-randint(1, 20))
@@ -132,12 +131,30 @@ if __name__ == "__main__":
                             minutes=randint(0, 59))
                 delivery.time_of_delivery = active_deadline - offset
             else:
-                # Make sure deliveries are sequential
-                last_delivery = others[0].time_of_delivery
-                delivery.time_of_delivery = last_delivery + \
-                        timedelta(hours=randint(0, 2), minutes=randint(0,
-                            59))
-            delivery.save()
+                # Deadline is in the future. Deliver a random time before
+                # "now". They can not deliver more than 5 deliveries (see
+                # create_example_deliveries_and_feedback), so if
+                # we say 5*3 hours in the past as a minimum for the first
+                # delivery, we will never get deliveries in the future
+                offset = timedelta(hours=randint(15, 25),
+                        minutes=randint(0, 59))
+                delivery.time_of_delivery = datetime.now() - offset
+        else:
+            # Make sure deliveries are sequential
+            last_delivery = others[0].time_of_delivery
+            delivery.time_of_delivery = last_delivery + \
+                    timedelta(hours=randint(0, 2), minutes=randint(0,
+                        59))
+            if others.count() == 2:
+                td = delivery.time_of_delivery - last_delivery
+                td = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+                td = td / 60.0 / 60.0
+                print
+                print "Active deadline:", active_deadline
+                print "Last delivery:", last_delivery
+                print "Time of delivery:", delivery.time_of_delivery
+                print "Diff:", td
+        delivery.save()
         return delivery
 
     def autocreate_deliveries(group, numdeliveries):
