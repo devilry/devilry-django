@@ -22,7 +22,7 @@ def get_dictionary_with_name_matches(assignmentgroups):
 def create_zip_from_assignmentgroups(request, assignment, assignmentgroups):
     name_matches = get_dictionary_with_name_matches(assignmentgroups)
 
-    #from ui.defaults import DATETIME_FORMAT
+    from ui.defaults import DATETIME_FORMAT
 
     in_memory = StringIO()  
     zip = ZipFile(in_memory, "a")
@@ -54,16 +54,13 @@ def create_zip_from_assignmentgroups(request, assignment, assignmentgroups):
                                                f.filename), bytes)
             multiple_deliveries_content += "  %3d            %3d          %5d        %s\r\n" % \
                                            (delivery.number, len(metas), delivery_size,
-                                            #date_format(delivery.time_of_delivery,
-                                            #            "DATETIME_FORMAT"))
-                                            delivery.time_of_delivery.strftime(DATETIME_FORMAT))
+                                            date_format(delivery.time_of_delivery, "DATETIME_FORMAT"))
         # Adding file explaining multiple deliveries
         if include_delivery_explanation:
             zip.writestr("%s/%s/%s" %
                          (assignment.get_path(), ass_group_name,
                           "Student has multiple deliveries.txt"),
-                         multiple_deliveries_content)
-        
+                         multiple_deliveries_content.encode("ascii"))
     # fix for Linux zip files read in Windows  
     for file in zip.filelist:  
         file.create_system = 0      
