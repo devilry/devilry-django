@@ -28,6 +28,7 @@ from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
 
+from devilry.core.utils.delivery_collection import create_zip_from_assignmentgroups
 
 class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-admin-filtertable'
@@ -49,8 +50,8 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
                 'devilry-admin-set_examiners'),
             AssignmentGroupsAction(_("Random distribute examiners"),
                                    'devilry-admin-random_dist_examiners'),
-            #ssignmentGroupsAction(_("Download deliveries"),
-            #                      'devilry-examiner-download_file_collection'),
+            AssignmentGroupsAction(_("Download deliveries"),
+                                  'devilry-admin-download_file_collection'),
             ]
     relatedactions = [
             AssignmentGroupsAction(_("Create new"),
@@ -633,3 +634,15 @@ def delete_manyassignmentgroups(request, assignment_id):
             AssignmentGroupsFilterTable,
             successurl=reverse('devilry-admin-edit_assignment',
                 args=[assignment_id]))
+
+@login_required
+def download_file_collection(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    #Check admin rights
+    if assignment.can_save(request.user):
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    else:
+        return HttpResponseForbidden("Forbidden: You tried to download"\
+                                     "deliveries from an assignment you"\
+                                     "do not have access to.")
+    return create_zip_from_assignmentgroups(request, assignment, groups)
