@@ -4,6 +4,7 @@ from django.db.models import Max
 from devilry.core.models import AssignmentGroup
 
 
+
 def filter_not_corrected(examiner):
     """ Get all groups with status 'not corrected' and is_open=True where
     the given user is examiner.

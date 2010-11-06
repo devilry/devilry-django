@@ -10,4 +10,5 @@ def template_variables(request):
         'DEVILRY_SYSTEM_ADMIN_EMAIL': settings.DEVILRY_SYSTEM_ADMIN_EMAIL,
         'BASE_TEMPLATE': settings.BASE_TEMPLATE,
         'DEVILRY_DATETIME_FORMAT': "Y-m-d H:i",
+        'session': request.session
     }

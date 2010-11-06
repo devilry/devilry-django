@@ -1,4 +1,4 @@
-{% extends "devilry/quickdash/viewbase.django.html" %}
+{% extends "devilry/quickdash/viewbase_wfooter.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -47,4 +47,24 @@ where the deadline has not yet expired is excluded.</p>
 {% endfor %}
 </dl>
 
+{% endblock %}
+
+{% block footer %}
+  {% if session.dashboard_examiner_not_corrected_showall %}
+    <a href="?dashboard_examiner_not_corrected_showall=no" class="button">
+      {% trans "Show only 3" %}</a>
+  {% else %}
+    <a href="?dashboard_examiner_not_corrected_showall=yes" class="button">
+      {% trans "Show all" %}</a>
+  {% endif %}
+
+  {% if session.dashboard_examiner_not_corrected_orderdesc %}
+    <a href="?dashboard_examiner_not_corrected_orderdesc=no" class="button">
+      {% trans "Order with oldest delivery first" %}
+    </a>
+  {% else %}
+    <a href="?dashboard_examiner_not_corrected_orderdesc=yes" class="button">
+      {% trans "Order with latest delivery first" %}
+    </a>
+  {% endif %}
 {% endblock %}
