@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.db.models import Max, Count
+from django.db.models import Max
 
 from devilry.core.models import AssignmentGroup, Assignment
 from devilry.core.utils.GroupNodes import group_assignments
