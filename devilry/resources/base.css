@@ -69,6 +69,17 @@ pre.blockpre {
 	border: 1px solid #888;
 }
 
+/***********************************************************
+ * Dimmed (should give the impression of having less light
+ **********************************************************/
+
+span.dimmed {
+	color: #666;
+}
+h2.dimmed {
+	color: #666;
+}
+
 
 /***********************************************************
  * Tooltips

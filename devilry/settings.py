@@ -142,7 +142,7 @@ MEDIA_ICONS_URL = 'media/icons/'
 JQUERY_UI_THEME = 'devilry-blue'
 
 
-SEND_EMAIL_TO_USERS = True
+SEND_EMAIL_TO_USERS = False
 
 ## The default grade-plugin
 DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'

@@ -11,7 +11,7 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from devilry.ui.messages import UiMessages
-from devilry.core.utils.GroupNodes import group_assignmentgroups, print_tree
+from devilry.core.utils.GroupNodes import group_assignmentgroups
 from devilry.core.models import Delivery, AssignmentGroup
 from devilry.ui.defaults import DATETIME_FORMAT
 from devilry.core.utils.verify_unique_entries import verify_unique_entries

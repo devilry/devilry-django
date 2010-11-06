@@ -9,6 +9,13 @@
 {% block heading %}
 {% trans "Add delivery" %}
 {% endblock %}
+{% block belowheading %}
+  {% if filenames_to_deliver %}
+    {% trans "You should add files with exactly the same name as the spesified name." %}
+  {% else %}
+    {% trans "Add as many files as you want" %}
+  {% endif %}
+{% endblock %}
 
 {% block breadcrumbs %}
 {{ block.super }}
@@ -20,30 +27,66 @@
 {% endblock %}
 
 
+{% block customjs %}
+<script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/ui/js/jquery.devilrymultifile.js"></script>
+<script type="text/javascript">
+  $(function() {
+    {% if not filenames_to_deliver %}
+      $("#fileupload").devilryMultiFile();
+    {% endif %}
+  });
+</script>
+{% endblock %}
+
+{% block customcss %}
+<style type="text/css">
+  .fileupload-item-without-file {
+    margin-bottom: 15px;
+    color: red;
+  }
+  .fileupload-item-with-file {
+    margin-bottom: 7px 0;
+  }
+  .fileupload-with-filelist {
+    margin-bottom: 20px;
+  }
+  .fileupload-with-filelist h2 {
+    margin-top: 10px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 
-{% include "devilry/student/add_delivery_table.django.html" %}
-
-{% if filenames_to_deliver %}
-<div class="info-box">
-{% trans "You should deliver the following files: " %} 
-
-<ul>
-{% for file in filenames_to_deliver %}
-<li>{{ file }} </li>
-{% endfor %}
-</ul>
+<div style="float:right;">
+  {% include "devilry/student/add_delivery_table.django.html" %}
 </div>
-{% endif %}
 
 <form enctype="multipart/form-data"
     action="{% url devilry-student-add-delivery assignment_group.id %}"
     method="post" id='add_delivery-form'>
-<p>
-  {% include "devilry/ui/include/tabular-inline-noheader.django.html" %}
-</p>
-  <div class='mainsubmit'>
-    <input class="button" type="submit" name="deliver" value="{% trans "Deliver" %}" />
+  <table id="fileupload" class="zebra" style="margin-bottom: 15px;">
+    {% if filenames_to_deliver %}
+      {{ formset.management_form }}
+      {% for form in formset.forms %}
+        {% for field in form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+      {% endfor %}
+      {% for filename in filenames_to_deliver %}
+        <tr>
+          <th><label for="id_form-{{ forloop.counter0 }}-file">{{ filename }}:</label></th>
+          <td><input type="file" name="form-{{ forloop.counter0 }}-file" id="id_form-{{ forloop.counter0 }}-file" /></td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      {{ formset }}
+    {% endif %}
+  </table>
+  <div class='button-row'>
+    <input type="submit" name="deliver" id="id_submit"
+      {% if filenames_to_deliver %}class="button"{% endif %}
+      value="{% trans "Deliver" %}" />
   </div>
 </form>
 
