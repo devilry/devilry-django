@@ -34,10 +34,10 @@
   }
   #metainfo {
     float: left;
-    width: 300px;
+    width: 280px;
   }
   #mainframe {
-    margin-left: 320px;
+    margin-left: 315px;
   }
   .mainframe-fillwidth {
     margin-left: 0 !important;
@@ -54,16 +54,10 @@
     margin-left: 0;
   }
   .deliveries_by_deadline dt {
-    margin-top: 14px;
-    margin-bottom: 5px;
-    font-size: 1.2em;
-    font-weight: bold;
-    font-style: normal;
-    border-bottom-width: 1px;
-    border-bottom-style: dotted;
   }
   .deliveries_by_deadline dd {
-    padding: 0; margin: 0;
+    padding: 0;
+    margin: 0 0 0 20px;
   }
   .deliveries_by_deadline ul {
     list-style:none;
@@ -71,12 +65,12 @@
   }
 
   .selected-date {
-    color: #000;
+    /*color: #000;*/
+    /*font-style: italic;*/
     font-weight: bold;
   }
   .deliveries_by_deadline a {
   }
-
 
   .text label {
     display: none !important;
@@ -121,7 +115,7 @@
             }
           });
 
-        $('#filebox').messageBox({icon:"ui-icon-folder-open"});
+        //$('#filebox').messageBox({icon:"ui-icon-folder-open"});
       });
   </script>
 {% endblock %}
@@ -150,20 +144,21 @@
         and {{ diff_minutes }} minutes before the deadline.
       {% endblocktrans %}
     {% endif %}
+  </div>
+
+  <div id="deadlinesbox" class="booring-message">
     {% if delivery.assignment_group.deliveries.count > 1 %}
-       <p>
-         {% with delivery.number as delivery_number %}{% blocktrans %}
-           This group has multiple deliveries. You are viewing delivery number
-           <big>{{ delivery_number }}</big>. All deliveries:
-         {% endblocktrans %}{% endwith %}
-       </p>
-       {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
+      {% with delivery.number|big as delivery_number %}{% blocktrans %}
+        This group has multiple deliveries. You are viewing delivery number
+        {{ delivery_number }}.
+      {% endblocktrans %}{% endwith %}
+      {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
     {% else %}
-      <p>{% trans "This group has no more deliveries on this assignment." %}</p>
+      {% trans "This group has only one delivery on this assignment." %}
     {% endif %}
   </div>
 
-  <div id="filebox" class="base-message">
+  <div id="filebox" class="booring-message">
     {% trans "Files in the current delivery:" %}
       <ul class='files-list'>
       {% for filemeta in delivery.filemetas.all %}
