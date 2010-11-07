@@ -617,6 +617,16 @@ class Assignment(models.Model, BaseNode):
             help_text=_('If this field is set, the pointscale will '\
                 'automatically be set to the maximum number of points '\
                 'possible with the selected grade plugin.'))
+    attempts = models.PositiveIntegerField(default=None,
+            null=True, blank=True,
+            help_text=_('The number of attempts a student get on this '
+                'assignment. This is not a hard limit, but it makes the '
+                'work of the examiners easier because the system will ' 
+                'close groups (leaving students unable to deliver more '
+                'attempts) when they have this many published feedbacks. '
+                'Examiners can open closed groups, and they are notified '
+                'when a group is automatically closed. Leave this '
+                'empty if you do not want to use this feature.'))
 
 
     def _get_maxpoints(self):
@@ -920,9 +930,7 @@ class AssignmentGroup(models.Model, CommonInterface):
             1. Not corrected
             2. Corrected, not published
             3. Corrected and published
-
-        A assignment group gets the status ``"Corrected and published"`` if
-        it has any published feedbacks.
+                The group has at least one published feedback.
 
     .. attribute:: status_mapping
 

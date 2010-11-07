@@ -45,6 +45,11 @@
   .hidden {
     display: none !important;
   }
+
+  #metainfo .vertical_infotable {
+    width: 99.9%;
+  }
+
   dl.deliveries_by_deadline {
     margin-left: 0;
   }
@@ -65,21 +70,35 @@
 {% block customjs %}
   <script type="text/javascript">
     function toggleSidebar() {
-        $("#metainfo").toggleClass("hidden");
-        $("#mainframe").toggleClass("mainframe-fillwidth");
-        $("#show-metainfo").toggleClass("hidden");
-        $("#hide-metainfo").toggleClass("hidden");
-        return false;
-      }
+      $("#metainfo").toggleClass("hidden");
+      $("#mainframe").toggleClass("mainframe-fillwidth");
+      $("#show-metainfo").toggleClass("hidden");
+      $("#hide-metainfo").toggleClass("hidden");
+      return false;
+    }
     $(function(){
-        var showbtn = $("#show-metainfo").button({
-          icons: {primary: "ui-icon-triangle-1-e"}
-        });
-        var hidebtn = $("#hide-metainfo").button({
-          icons: {primary: "ui-icon-triangle-1-w"}
-        });
-        showbtn.click(toggleSidebar);
-        hidebtn.click(toggleSidebar);
+        $("#show-metainfo")
+          .addClass("ui-priority-secondary")
+          .click(toggleSidebar)
+          .button({
+            icons: {primary: "ui-icon-triangle-1-e"}
+          });
+        $("#hide-metainfo")
+          .addClass("ui-priority-secondary")
+          .click(toggleSidebar)
+          .button({
+            icons: {primary: "ui-icon-triangle-1-w"}
+          });
+
+        $("#theform").data("initialValues", $("#theform").serialize());
+        $('.checkformchanges').click(function(e) {
+            if($("#theform").data("initialValues") != $("#theform").serialize()) {
+              var ok = confirm("{% trans "You have unsaved changes. Are you sure you want to continue?" %}");
+              if(!ok) {
+                e.preventDefault();
+              }
+            }
+          });
       });
   </script>
 {% endblock %}
@@ -149,19 +168,57 @@
             {{ assignment_group|status }}
           </td>
         </tr>
+        <tr>
+          <th>{% trans "Closed" %}</th>
+          <td>
+            {% if assignment_group.is_open %}
+                {% trans "No" %}
+                <a href="{% url devilry-examiner-close_assignmentgroup assignment_group.id %}"
+                  class='button ui-priority-secondary tooltip-hover'
+                  title="{% trans "This group is open for deliveries. Closing the group will leave the students unable to add new deliveries." %}">
+                  {% trans "Click to close group" %}
+                </a>
+            {% else %}
+              {% trans "Yes" %}
+              <a href="{% url devilry-examiner-open_assignmentgroup assignment_group.id %}"
+                  class='button ui-priority-secondary tooltip-hover'
+                  title="{% trans "This group is closed for deliveries. Opening the group will allow the students to add new deliveries." %}">
+                {% trans "Click to open group" %}
+              </a>
+            {% endif %}
+          </td>
       {% endwith %}
     </tbody>
   </table>
 </div>
 
 <div id="mainframe">
-  <a href="#" id="show-metainfo" class="hidden">
-    {% trans "Show sidebar" %}
-  </a>
-  <a href="#" id="hide-metainfo">
-    {% trans "Hide sidebar" %}
-  </a>
-  <form method='post'
+  <div>
+    <a href="#" id="show-metainfo" class="hidden">
+      {% trans "Show sidebar" %}
+    </a>
+    <a href="#" id="hide-metainfo">
+      {% trans "Hide sidebar" %}
+    </a>
+    {% if next_notcorrected or prev_notcorrected %}
+      <div style="float:right;">
+        {% if prev_notcorrected %}
+          <a class="tooltip-hover button ui-priority-secondary checkformchanges"
+              href="{% url devilry-examiner-edit-feedback prev_notcorrected.id %}"
+              title="{% trans "Go to previous 'not corrected' group on this assignment without saving" %}">
+            {% trans "Previous" %}</a>
+        {% endif %}
+        {% if next_notcorrected %}
+          <a class="tooltip-hover button ui-priority-secondary checkformchanges"
+              href="{% url devilry-examiner-edit-feedback next_notcorrected.id %}"
+              title="{% trans "Go to next 'not corrected' group on this assignment without saving" %}">
+            {% trans "Next" %}</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <form method='post' id="theform"
       action='{% url devilry-examiner-edit-feedback delivery.id %}'>
     {% block formfields %}
       {% block gradeformfieldset %}
@@ -194,48 +251,11 @@
       {% endwith %}
     {% endblock formfields %}
     
-
-    {% if next_notcorrected or prev_notcorrected %}
-      <div style="float:right;">
-        {% if prev_notcorrected %}
-          <a class="tooltip-hover unimportant"
-              href="{% url devilry-examiner-edit-feedback prev_notcorrected.id %}"
-              title="{% trans "Go to previous 'not corrected' group on this assignment without saving" %}">
-            {% trans "Previous" %}</a>
-        {% endif %}
-        {% if next_notcorrected and prev_notcorrected %}
-          <span class="unimportant">|</span>
-        {% endif %}
-        {% if next_notcorrected %}
-          <a class="tooltip-hover unimportant"
-              href="{% url devilry-examiner-edit-feedback next_notcorrected.id %}"
-              title="{% trans "Go to next 'not corrected' group on this assignment without saving" %}">
-            {% trans "Next" %}</a>
-        {% endif %}
-      </div>
-    {% endif %}
-
     <div class='button-row'>
       <input type='submit' name='save'
-        class='button default ui-priority-secondary tooltip-hover'
+        class='button default ui-priority-primary tooltip-hover'
         title="{% trans "Save and reload this page. Use this to save when making long feedbacks." %}"
         value='{% trans "Save" %}'/>
-      <input type='submit' name='save_and_dash'
-        class='button ui-priority-{% if next_notcorrected or prev_notcorrected %}secondary{% else %}primary{% endif%}'
-        value='{% trans "Save and return to dashboard" %}'/>
-
-      {% if prev_notcorrected %}
-        <input type='submit' name='save_and_prev'
-          class='button ui-priority-primary tooltip-hover'
-          title="{% trans "Go to previous 'not corrected' group on this assignment after saving. This should be used if you correct the latest delivery first and work your way back to the first delivery." %}"
-          value='{% trans "Save and go to previous" %}'/>
-      {% endif %}
-      {% if next_notcorrected %}
-        <input type='submit' name='save_and_next'
-          class='button ui-priority-primary tooltip-hover'
-          title="{% trans "Go to next 'not corrected' group on this assignment after saving. This should be used if you correct the first delivery first and work your way forward to the latest delivery." %}"
-          value='{% trans "Save and go to next" %}'/>
-      {% endif %}
     </div>
   </form>
 </div>

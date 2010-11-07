@@ -22,7 +22,6 @@ class FeedbackForm(forms.ModelForm):
         model = Feedback
         fields = ('text', 'format', 'published')
         widgets = {
-                #'text': forms.Textarea(attrs={'cols': 90, 'rows': 25})
                 'text': RstEditWidget
         }
 
@@ -74,44 +73,10 @@ def redirect_after_successful_save(request, delivery_obj):
     else:
         messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
 
-    if "save" in request.POST:
-        messages.save(request)
-        return HttpResponseRedirect(
-                reverse('devilry-examiner-edit-feedback',
-                    args=(delivery_obj.id,)))
-    else:
-        delivery_url = "<a href='%s'>%s</a>" % (
-                reverse("devilry-examiner-edit-feedback",
-                    args=[str(delivery_obj.id)]),
-                delivery_obj)
-        messages.add_info(
-            _("Saved feedback on %(delivery)s.") %
-                dict(delivery=delivery_url), raw_html=True)
-        messages.save(request)
-
-        fallback_to_dash = False
-        if "save_and_next" in request.POST:
-            next_notcorrected = get_next_notcorrected_in_assignment(
-                    request.user, delivery_obj)
-            if next_notcorrected:
-                id = next_notcorrected.id
-                return HttpResponseRedirect(
-                        reverse('devilry-examiner-edit-feedback', args=[str(id)]))
-            else:
-                fallback_to_dash = True
-        if "save_and_prev" in request.POST:
-            prev_notcorrected = get_prev_notcorrected_in_assignment(
-                    request.user, delivery_obj)
-            if prev_notcorrected:
-                id = prev_notcorrected.id
-                return HttpResponseRedirect(
-                        reverse('devilry-examiner-edit-feedback', args=[str(id)]))
-            else:
-                fallback_to_dash = True
-
-        if fallback_to_dash or "save_and_dash" in request.POST:
-            messages.save(request)
-            return HttpResponseRedirect(reverse('devilry-main'))
+    messages.save(request)
+    return HttpResponseRedirect(
+            reverse('devilry-examiner-edit-feedback',
+                args=(delivery_obj.id,)))
 
 
 def render_response(request, delivery_obj, feedback_form, grade_form,
