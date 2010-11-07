@@ -4,7 +4,8 @@
 (function($){
     $.fn.messageBox = function(args) {
       var opt = jQuery.extend({
-          state: "highlight"
+          state: "highlight",
+          icon: "ui-icon-alert",
         }, args);
       
       return this.each(function() {
@@ -17,7 +18,7 @@
           t.replaceWith(wrapper);
           $("<span></span>")
             .addClass("ui-icon")
-            .addClass("ui-icon-alert")
+            .addClass(opt.icon)
             .addClass("devilry-ui-icon-in-message")
             .prependTo(t);
           t.appendTo(wrapper);

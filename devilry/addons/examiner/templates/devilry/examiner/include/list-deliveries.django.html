@@ -5,14 +5,14 @@
   {% for d in deliveries %}
     <li>
       {% if d.id == delivery.id %}
-        <big>
+        <span class="selected-number">
       {% endif %}
       {{ d.number }}.
       {% if d.id == delivery.id %}
-        </big>
+        </span>
       {% endif %}
       {% if d.id == delivery.id %}
-        <strong>{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</strong>
+        <span class="selected-date">{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</span>
       {% else %}
         <a href='{% url devilry-examiner-edit-feedback d.id %}'>
             {{ d.time_of_delivery|date:"DATETIME_FORMAT" }}

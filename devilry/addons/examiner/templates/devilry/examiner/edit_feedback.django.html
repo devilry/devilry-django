@@ -34,10 +34,10 @@
   }
   #metainfo {
     float: left;
-    width: 25%;
+    width: 300px;
   }
   #mainframe {
-    margin-left: 27%;
+    margin-left: 320px;
   }
   .mainframe-fillwidth {
     margin-left: 0 !important;
@@ -54,7 +54,13 @@
     margin-left: 0;
   }
   .deliveries_by_deadline dt {
-    margin-top: 10px;
+    margin-top: 14px;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    font-style: normal;
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
   }
   .deliveries_by_deadline dd {
     padding: 0; margin: 0;
@@ -62,6 +68,21 @@
   .deliveries_by_deadline ul {
     list-style:none;
     padding: 0; margin: 0;
+  }
+
+  .selected-date {
+    color: #000;
+    font-weight: bold;
+  }
+  .deliveries_by_deadline a {
+  }
+
+
+  .text label {
+    display: none !important;
+  }
+  .text .form-field {
+    margin-left: 0 !important;
   }
 </style>
 {% endblock %}
@@ -99,6 +120,8 @@
               }
             }
           });
+
+        $('#filebox').messageBox({icon:"ui-icon-folder-open"});
       });
   </script>
 {% endblock %}
@@ -139,15 +162,43 @@
       <p>{% trans "This group has no more deliveries on this assignment." %}</p>
     {% endif %}
   </div>
-  <table class='vertical_infotable' id="deliveryinfo">
+
+  <div id="filebox" class="base-message">
+    {% trans "Files in the current delivery:" %}
+      <ul class='files-list'>
+      {% for filemeta in delivery.filemetas.all %}
+        <li>
+          <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>  
+          <span class='unimportant'>({{ filemeta.size }} bytes)</span>
+        </li>
+      {% endfor %}
+      </ul>
+  </div>
+
+  <table class='vertical_infotable unimportant' id="deliveryinfo">
     <thead>
       <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
     </thead>
     <tbody>
-      {% with delivery.assignment_group as assignment_group %}
-        {% include "devilry/student/include/deliveryinfo.django.html" %}
-      {% endwith %}
+      <tr>
+        <th>{% trans "Time of delivery" %}</th>
+        <td>{{ delivery.time_of_delivery|date:"DATETIME_FORMAT"}}</td>
+      </tr>
+      {% if not delivery.assignment_group.parentnode.anonymous %}
+        <tr>
+          <th>{% trans "Delivered by" %}</th>
+          <td>{{ delivery.delivered_by.username }}</td>
+        </tr>
+      {% endif %}
       {% if delivery.feedback %}
+        <tr>
+          <th>{% trans "Grade" %}</th>
+          <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
+        </tr>
+        <tr>
+          <th>{% trans "Feedback last modified" %}</th>
+          <td> {{ delivery.feedback.last_modified|date:"DATETIME_FORMAT"}} </td>
+        </tr>
         <tr>
           <th>{% trans "Feedback last modified by" %}</th>
           <td> {{ delivery.feedback.last_modified_by }} </td>

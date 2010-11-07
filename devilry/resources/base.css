@@ -234,6 +234,7 @@ h2.dimmed {
 /***********************************************************
  * Page messages
  **********************************************************/
+.base-message,
 .error-message,
 .warning-message,
 .info-message,
