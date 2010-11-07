@@ -32,7 +32,7 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     split = path.split(':', 1)
     nodes = split[0].split('.')
     for nodename in nodes:
-        node = Node(short_name=nodename, long_name=nodename)
+        node = Node(short_name=nodename, long_name=nodename.capitalize())
         try:
             node.clean()
             node.save()
@@ -47,7 +47,7 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     # Subject
     subjectname = pathsplit[0]
     subject = Subject(parentnode=node, short_name=subjectname,
-            long_name=subjectname)
+            long_name=subjectname.capitalize())
     try:
         subject.clean()
         subject.save()
@@ -59,7 +59,7 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     if len(pathsplit) > 1:
         periodname = pathsplit[1]
         period = Period(parentnode=subject, short_name=periodname,
-                long_name=periodname, start_time=datetime.now(),
+                long_name=periodname.capitalize(), start_time=datetime.now(),
                 end_time=datetime.now() + timedelta(10))
         try:
             period.clean()
@@ -73,7 +73,7 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     if len(pathsplit) > 2:
         assignmentname = pathsplit[2]
         assignment = Assignment(parentnode=period, short_name=assignmentname,
-                long_name=assignmentname, publishing_time=datetime.now())
+                long_name=assignmentname.capitalize(), publishing_time=datetime.now())
         gp = grade_plugin_key or gradeplugin.registry.getdefaultkey()
         assignment.grade_plugin = gp
         

@@ -1,25 +1,22 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
-{% load markup %}
+
+{% comment %}
+Show information about a delivery. Does not show any info overlapping with
+groupinfo.django.html. Creates a table without <table></table>. This
+is to make it easy to add more to the table.
+{% endcomment %}
 
 <tr>
   <th>{% trans "Time of delivery" %}</th>
   <td>{{ delivery.time_of_delivery|date:"DATETIME_FORMAT"}}</td>
 </tr>
 <tr>
-  <th>{% trans "Active deadline" %}</th>
-  <td>{{ delivery.assignment_group.get_active_deadline.deadline|date:"DATETIME_FORMAT"}}</td>
-</tr>
-<tr>
-  <th>{% trans "Group members" %}</th>
-  <td>{{ delivery.assignment_group.get_candidates }} </td>
-</tr>
-<tr>
   <th>{% trans "Delivered by" %}</th>
   <td>
-	{% if not delivery.assignment_group.parentnode.anonymous %}
-	{{ delivery.delivered_by.username }}
-	{% endif %}
+  {% if not delivery.assignment_group.parentnode.anonymous %}
+  {{ delivery.delivered_by.username }}
+  {% endif %}
   </td>
 </tr>
 <tr>

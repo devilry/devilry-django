@@ -345,6 +345,12 @@ table.vertical_infotable {
 	border: 1px solid #D4D2CE;
 	margin: 15px 0 15px 0;
 }
+table.vertical_infotable thead th {
+	text-align: left;
+	font-weight: bold;
+	font-style: normal;
+	/*background-color: #ECEBE9;*/
+}
 table.vertical_infotable th {
 	text-align: right;
 	font-weight: normal;

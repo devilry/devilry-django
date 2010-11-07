@@ -6,9 +6,6 @@
 {% trans "Add delivery" %}
 {% endblock %}
 
-{% block heading %}
-{% trans "Add delivery" %}
-{% endblock %}
 {% block belowheading %}
   {% if filenames_to_deliver %}
     {% trans "You should add files with exactly the same name as the spesified name." %}
@@ -56,11 +53,7 @@
 </style>
 {% endblock %}
 
-{% block content %}
-
-<div style="float:right;">
-  {% include "devilry/student/add_delivery_table.django.html" %}
-</div>
+{% block main %}
 
 <form enctype="multipart/form-data"
     action="{% url devilry-student-add-delivery assignment_group.id %}"

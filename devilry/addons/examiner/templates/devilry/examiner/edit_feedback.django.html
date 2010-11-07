@@ -26,6 +26,25 @@
   </a></li>
 {% endblock %}
 
+{% block customcss %}
+<style type="text/css">
+  #groupinfo, #deliveryinfo {
+    margin: 0 0 10px 0;
+  }
+  #infobox {
+    margin: 0 33% 10px 25%;
+  }
+  #groupinfo {
+    width: 24%;
+    float:left;
+  }
+  #deliveryinfo {
+    width: 32%;
+    float: right;
+  }
+</style>
+{% endblock %}
+
 {% block main %}
 
 {% comment %}
@@ -36,20 +55,36 @@
 {% endif %}
 {% endcomment %}
 
-<table class='vertical_infotable'
-    style='float: right; margin: 0 0 20px 20px; width: 300px;'>
-  {% include "devilry/ui/include/show_delivery_default.django.html" %}
-  {% if delivery.feedback %}
-    <tr>
-      <th>{% trans "Feedback last modified by" %}</th>
-      <td> {{ delivery.feedback.last_modified_by }} </td>
-    </tr>
-  {% endif %}
+<table class='vertical_infotable' id="groupinfo">
+  <thead>
+    <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
+  </thead>
+  <tbody>
+    {% with delivery.assignment_group as assignment_group %}
+      {% include "devilry/student/include/groupinfo.django.html" %}
+    {% endwith %}
+  </tbody>
+</table>
+
+<table class='vertical_infotable' id="deliveryinfo">
+  <thead>
+    <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
+  </thead>
+  <tbody>
+    {% with delivery.assignment_group as assignment_group %}
+      {% include "devilry/student/include/deliveryinfo.django.html" %}
+    {% endwith %}
+    {% if delivery.feedback %}
+      <tr>
+        <th>{% trans "Feedback last modified by" %}</th>
+        <td> {{ delivery.feedback.last_modified_by }} </td>
+      </tr>
+    {% endif %}
+  </tbody>
 </table>
 
 <div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
-    style="margin-right: 330px;">
-
+    id="infobox">
   {% if after_deadline %}
     {% blocktrans %}
       This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
@@ -90,8 +125,9 @@
   {% endif %}
 </div>
 
-<form method='post' action='{% url devilry-examiner-edit-feedback delivery.id %}'
-    style="clear:both;">
+<div style="clear:both;"></div>
+
+<form method='post' action='{% url devilry-examiner-edit-feedback delivery.id %}'>
   {% block formfields %}
     {% block gradeformfieldset %}
       <fieldset class='stdfieldset'>

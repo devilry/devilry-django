@@ -144,6 +144,7 @@ def show_delivery(request, delivery_id):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_delivery.django.html', {
         'delivery': delivery,
+        'assignment_group': delivery.assignment_group,
         }, context_instance=RequestContext(request))
 
 

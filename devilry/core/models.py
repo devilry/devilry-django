@@ -978,7 +978,7 @@ class AssignmentGroup(models.Model, CommonInterface):
         status_mapping_cssclass[0],
         status_mapping_cssclass[1],
         status_mapping_cssclass[1], # "not published" means not "not corrected" is displayed to student
-        status_mapping_cssclass[2],
+        status_mapping_cssclass[3],
     )
     NO_DELIVERIES = 0
     NOT_CORRECTED = 1
@@ -1507,16 +1507,39 @@ class Delivery(models.Model):
         except Feedback.DoesNotExist:
             return Feedback(delivery=self)
 
-    def get_status(self):
-        """ Get the status for this delivery; 'Corrected' or
-        'Not Corrected'.
+    def get_status_number(self):
+        """ Get the numeric status for this delivery.
+
+        :return: :attr:`AssignmentGroup.NOT_CORRECTED` or
+            :attr:`AssignmentGroup.CORRECTED_AND_PUBLISHED`.
         """
         try:
             if self.feedback.published:
-                return _("Corrected")
+                return AssignmentGroup.CORRECTED_AND_PUBLISHED
         except Feedback.DoesNotExist:
             pass
-        return _("Not Corrected")
+        return AssignmentGroup.NOT_CORRECTED
+
+    def get_status(self):
+        """ Get the localized status for this delivery; 'Corrected' or
+        'Not Corrected'.
+        """
+        status = self.get_status_number()
+        if status == AssignmentGroup.CORRECTED_AND_PUBLISHED:
+            return _("Corrected")
+        else:
+            return _("Not Corrected")
+
+    def get_status_cssclass(self):
+        """ Returns the current status string from
+        :attr:`AssignmentGroup.status_mapping_cssclass`. """
+        return AssignmentGroup.status_mapping_cssclass[self.get_status_number()]
+
+    def get_status_student_cssclass(self):
+        """ Returns the current status string from
+        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
+        return AssignmentGroup.status_mapping_student_cssclass[
+                self.get_status_number()]
             
     def save(self, *args, **kwargs):
         """

@@ -24,11 +24,11 @@
       </p>
     {% else %}
       <p>
-        {% with group.deliverycount as deliverycount %}
-          {% blocktrans %}
-            You have {{ deliverycount }} deliveries on this assignment.
-          {% endblocktrans %}
-        {% endwith %}
+        {% blocktrans count group.deliverycount as deliverycount %}
+          You have one delivery on this assignment.
+          {% plural %}
+          You have {{ deliverycount }} deliveries on this assignment.
+        {% endblocktrans %}
       </p>
     {% endif %}
     <p>
