@@ -29,12 +29,13 @@
 
 {% block customcss %}
 <style type="text/css">
-  #infobox {
-    margin-top: 0;
-  }
   #metainfo {
     float: left;
     width: 280px;
+  }
+  .metainfo-item {
+    margin-top: 0;
+    margin-bottom: 10px;
   }
   #mainframe {
     margin-left: 315px;
@@ -131,34 +132,26 @@
 {% endcomment %}
 
 <div id="metainfo">
-  <div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
-      id="infobox">
-    {% if after_deadline %}
+  {% if after_deadline %}
+    <div class="warning-message metainfo-item">
       {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
         This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
         and {{ diff_minutes }} minutes after the deadline.
       {% endblocktrans %}
-    {% else %}
-      {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
-        This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
-        and {{ diff_minutes }} minutes before the deadline.
-      {% endblocktrans %}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 
-  <div id="deadlinesbox" class="booring-message">
-    {% if delivery.assignment_group.deliveries.count > 1 %}
-      {% with delivery.number|big as delivery_number %}{% blocktrans %}
+  {% if delivery.assignment_group.deliveries.count > 1 %}
+    <div id="deadlinesbox" class="info-message metainfo-item">
+      {% blocktrans with delivery.number|big as delivery_number %}
         This group has multiple deliveries. You are viewing delivery number
         {{ delivery_number }}.
-      {% endblocktrans %}{% endwith %}
+      {% endblocktrans %}
       {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
-    {% else %}
-      {% trans "This group has only one delivery on this assignment." %}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 
-  <div id="filebox" class="booring-message">
+  <div id="filebox" class="booring-message metainfo-item">
     {% trans "Files in the current delivery:" %}
       <ul class='files-list'>
       {% for filemeta in delivery.filemetas.all %}
@@ -170,7 +163,7 @@
       </ul>
   </div>
 
-  <table class='vertical_infotable unimportant' id="deliveryinfo">
+  <table class='vertical_infotable unimportant metainfo-item' id="deliveryinfo">
     <thead>
       <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
     </thead>
@@ -201,7 +194,8 @@
       {% endif %}
     </tbody>
   </table>
-  <table class='vertical_infotable unimportant' id="groupinfo">
+
+  <table class='vertical_infotable unimportant metainfo-item' id="groupinfo">
     <thead>
       <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
     </thead>
