@@ -15,16 +15,25 @@ admin_periodactions.add_action(
 )
 
 student_periodactions.add_action(
-    label = _("Statistics"),
+    labelcallback = lambda p:
+        _("Statistics for %(period)s")  % dict(
+            period=p.get_path()),
     tooltipcallback = lambda p:
-        _("Statistics for %(period)s" % dict(period=p.get_path())),
+        _("Statistics for %(subject)s - %(period)s" % dict(
+            subject=p.parentnode.long_name,
+            period=p.long_name)),
     urlcallback = lambda p:
         reverse('devilry-gradestats-userstats', args=[str(p.id)])
 )
 student_groupactions.add_action(
-    label = _("Statistics"),
+    labelcallback = lambda g:
+        _("Statistics for %(period)s")  % dict(
+            period=g.parentnode.parentnode.get_path()),
     tooltipcallback = lambda g:
-        _("Statistics for %(period)s" % dict(period=g.parentnode.parentnode.get_path())),
+        _("Statistics for %(subject)s - %(period)s" % dict(
+            subject=g.parentnode.parentnode.parentnode.long_name,
+            period=g.parentnode.parentnode.long_name)),
     urlcallback = lambda g:
-        reverse('devilry-gradestats-userstats', args=[str(g.parentnode.parentnode.id)])
+        reverse('devilry-gradestats-userstats',
+            args=[str(g.parentnode.parentnode.id)])
 )

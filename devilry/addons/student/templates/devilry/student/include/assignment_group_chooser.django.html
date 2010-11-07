@@ -5,18 +5,7 @@
 {% for subject in subjects %}
   {% for period in subject %}
     <h3>{{ subject }} - {{ period }}</h3>
-    <ul class="horizontal-list">
-      {% for a in periodactions|iter_actionregistry:period.node %}
-        <li>
-          <a href="{{ a.url }}"
-              {% if a.tooltip %}
-                class="tooltip-hover" title="{{ a.tooltip }}"{% endif %}>
-            {{ a.label }}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-    <ul>
+    <ul class="assignmentlist">
 	  {% for assignment in period %}
       {% for assignment_group in assignment %}
       <li>
@@ -26,6 +15,17 @@
       </li>
       {% endfor %}
     {% endfor %}
+    </ul>
+    <ul class="horizontal-list unimportant">
+      {% for a in periodactions|iter_actionregistry:period.node %}
+        <li>
+          <a href="{{ a.url }}"
+              {% if a.tooltip %}
+                class="tooltip-hover" title="{{ a.tooltip }}"{% endif %}>
+            {{ a.label }}
+          </a>
+        </li>
+      {% endfor %}
     </ul>
   {% endfor %}
 {% endfor %}
