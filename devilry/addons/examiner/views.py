@@ -14,9 +14,10 @@ from devilry.ui.messages import UiMessages
 from devilry.ui.filtertable import Columns, Col
 from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
-        FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates)
-
+        FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
+        FilterAfterDeadline)
 from devilry.core.utils.delivery_collection import create_zip_from_assignmentgroups
+from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
 
 
 class DeadlineForm(forms.ModelForm):
@@ -59,6 +60,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
         filters = [
             FilterStatus(),
             FilterIsPassingGrade(),
+            FilterAfterDeadline(),
         ]
         numcan = FilterNumberOfCandidates(self.assignment)
         if not (numcan.maximum == 1 and numcan.minimum == 1):
@@ -179,6 +181,7 @@ def open_assignmentgroup(request, assignmentgroup_id):
         _('Assignment group successfully opened.'))
 
 
+
 @login_required
 def show_assignmentgroup(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
@@ -201,61 +204,20 @@ def show_assignmentgroup(request, assignmentgroup_id):
     else:
         deadline_form = DeadlineForm()
         
-    after_deadline = []
-    within_a_deadline = []
-    ungrouped_deliveries = []
-    tmp_deliveries = []
-    deadlines = assignment_group.deadlines.all().order_by('deadline')
-    show_deadline_hint = False
-    if deadlines.count() > 0:
-        last_deadline = deadlines[deadlines.count()-1]
-        after_deadline = assignment_group.deliveries.filter(
-                time_of_delivery__gte = last_deadline)
 
-        deliveries = []
-        deadlineindex = 0
-        deadline = deadlines[deadlineindex]
-        deliveries_all = assignment_group.deliveries.filter(
-                time_of_delivery__lt = last_deadline).order_by('time_of_delivery')
-        for delivery in deliveries_all:
-            if delivery.time_of_delivery > deadline.deadline:
-                within_a_deadline.append((deadline, deliveries))
-                deliveries = []
-                deadlineindex += 1
-                deadline = deadlines[deadlineindex]
-            deliveries.insert(0, delivery)
-        within_a_deadline.append((deadline, deliveries))
-
-        # Adding deadlines that are left
-        for i in xrange(deadlineindex+1, len(deadlines)):
-            within_a_deadline.append((deadlines[i], list()))
-
-        within_a_deadline.reverse()
-    
-        if len(within_a_deadline) > 0:
-            tmp_deliveries.extend(list(within_a_deadline[0][1]))
-    else:
-        ungrouped_deliveries = assignment_group.deliveries.order_by('time_of_delivery')
-
-    # Testing if any published deliveries on last deadline
-    tmp_deliveries.extend(list(after_deadline))
-    tmp_deliveries.extend(list(ungrouped_deliveries))
-    for d in tmp_deliveries:
-        if d.get_feedback().published:
-            show_deadline_hint = True
-            break
-    if not assignment_group.is_open:
-        show_deadline_hint = False
+    show_deadline_hint = assignment_group.is_open and \
+        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
 
     messages = UiMessages()
     messages.load(request)
     
+    dg = GroupDeliveriesByDeadline(assignment_group)
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
-                'after_deadline': after_deadline,
-                'within_a_deadline': within_a_deadline,
-                'ungrouped_deliveries': ungrouped_deliveries,
+                'after_deadline': dg.after_last_deadline,
+                'within_a_deadline': dg.within_a_deadline,
+                'ungrouped_deliveries': dg.ungrouped_deliveries,
                 'deadline_form': deadline_form,
                 'show_deadline_hint': show_deadline_hint,
                 'messages': messages,

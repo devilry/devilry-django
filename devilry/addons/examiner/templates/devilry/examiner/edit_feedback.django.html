@@ -45,6 +45,19 @@
   .hidden {
     display: none !important;
   }
+  dl.deliveries_by_deadline {
+    margin-left: 0;
+  }
+  .deliveries_by_deadline dt {
+    margin-top: 10px;
+  }
+  .deliveries_by_deadline dd {
+    padding: 0; margin: 0;
+  }
+  .deliveries_by_deadline ul {
+    list-style:none;
+    padding: 0; margin: 0;
+  }
 </style>
 {% endblock %}
 
@@ -85,12 +98,12 @@
   <div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
       id="infobox">
     {% if after_deadline %}
-      {% blocktrans %}
+      {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
         This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
         and {{ diff_minutes }} minutes after the deadline.
       {% endblocktrans %}
     {% else %}
-      {% blocktrans %}
+      {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
         This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
         and {{ diff_minutes }} minutes before the deadline.
       {% endblocktrans %}
@@ -102,23 +115,7 @@
            <big>{{ delivery_number }}</big>. All deliveries:
          {% endblocktrans %}{% endwith %}
        </p>
-       <ul style="list-style:none; padding-left: 20px;">
-         {% for d in delivery.assignment_group.deliveries.all %}
-           <li>
-             {{ d.number }}.
-             {% if d.id == delivery.id %}
-               <strong>{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</strong>
-             {% else %}
-               <a href='{% url devilry-examiner-edit-feedback d.id %}'>
-                   {{ d.time_of_delivery|date:"DATETIME_FORMAT" }}
-               </a>
-             {% endif %}
-             {% if not d.feedback %}
-               <span class="unimportant">({% trans "no feedback" %})</span>
-             {% endif %}
-           </li>
-         {% endfor %}
-       </ul>
+       {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
     {% else %}
       <p>{% trans "This group has no more deliveries on this assignment." %}</p>
     {% endif %}

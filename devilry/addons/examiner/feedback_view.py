@@ -9,6 +9,7 @@ from devilry.core.models import Feedback
 from devilry.ui.widgets import RstEditWidget
 from devilry.ui.messages import UiMessages
 from devilry.core.devilry_email import send_email
+from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
 
 from utils import get_next_notcorrected_in_assignment, \
         get_prev_notcorrected_in_assignment
@@ -146,11 +147,15 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
     hours = m/60
     minutes = m%60
 
+    deliveries_by_deadline = GroupDeliveriesByDeadline(
+            delivery_obj.assignment_group)
+
     if not uimessages:
         uimessages = UiMessages()
         uimessages.load(request)
 
     return render_to_response(template_path, {
+            'deliveries_by_deadline': deliveries_by_deadline,
             'delivery': delivery_obj,
             'feedback_form': feedback_form,
             'grade_form': grade_form,

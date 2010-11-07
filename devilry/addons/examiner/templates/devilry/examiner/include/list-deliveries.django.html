@@ -1,0 +1,29 @@
+{% load i18n %}
+
+{% if deliveries %}
+  <ul>
+  {% for d in deliveries %}
+    <li>
+      {% if d.id == delivery.id %}
+        <big>
+      {% endif %}
+      {{ d.number }}.
+      {% if d.id == delivery.id %}
+        </big>
+      {% endif %}
+      {% if d.id == delivery.id %}
+        <strong>{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</strong>
+      {% else %}
+        <a href='{% url devilry-examiner-edit-feedback d.id %}'>
+            {{ d.time_of_delivery|date:"DATETIME_FORMAT" }}
+        </a>
+      {% endif %}
+      {% if not d.feedback %}
+        <span class="unimportant">({% trans "no feedback" %})</span>
+      {% endif %}
+    </li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <div class="unimportant">{% trans "No deliveries" %}</div>
+{% endif %}
