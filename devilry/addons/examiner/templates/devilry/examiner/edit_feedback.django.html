@@ -29,21 +29,46 @@
 
 {% block customcss %}
 <style type="text/css">
-  #groupinfo, #deliveryinfo {
-    margin: 0 0 10px 0;
-  }
   #infobox {
-    margin: 0 25% 10px 33%;
+    margin-top: 0;
   }
-  #groupinfo {
-    width: 24%;
-    float: right;
-  }
-  #deliveryinfo {
-    width: 32%;
+  #metainfo {
     float: left;
+    width: 25%;
+  }
+  #mainframe {
+    margin-left: 27%;
+  }
+  .mainframe-fillwidth {
+    margin-left: 0 !important;
+  }
+  .hidden {
+    display: none !important;
   }
 </style>
+{% endblock %}
+
+
+{% block customjs %}
+  <script type="text/javascript">
+    function toggleSidebar() {
+        $("#metainfo").toggleClass("hidden");
+        $("#mainframe").toggleClass("mainframe-fillwidth");
+        $("#show-metainfo").toggleClass("hidden");
+        $("#hide-metainfo").toggleClass("hidden");
+        return false;
+      }
+    $(function(){
+        var showbtn = $("#show-metainfo").button({
+          icons: {primary: "ui-icon-triangle-1-e"}
+        });
+        var hidebtn = $("#hide-metainfo").button({
+          icons: {primary: "ui-icon-triangle-1-w"}
+        });
+        showbtn.click(toggleSidebar);
+        hidebtn.click(toggleSidebar);
+      });
+  </script>
 {% endblock %}
 
 {% block main %}
@@ -56,160 +81,166 @@
 {% endif %}
 {% endcomment %}
 
-<table class='vertical_infotable unimportant' id="groupinfo">
-  <thead>
-    <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
-  </thead>
-  <tbody>
-    {% with delivery.assignment_group as assignment_group %}
-      {% include "devilry/student/include/groupinfo.django.html" %}
-      <tr>
-        <th>{% trans "Status" %}:</th>
-        <td>
-          {{ assignment_group|status }}
-        </td>
-      </tr>
-    {% endwith %}
-  </tbody>
-</table>
-
-<table class='vertical_infotable' id="deliveryinfo">
-  <thead>
-    <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
-  </thead>
-  <tbody>
-    {% with delivery.assignment_group as assignment_group %}
-      {% include "devilry/student/include/deliveryinfo.django.html" %}
-    {% endwith %}
-    {% if delivery.feedback %}
-      <tr>
-        <th>{% trans "Feedback last modified by" %}</th>
-        <td> {{ delivery.feedback.last_modified_by }} </td>
-      </tr>
+<div id="metainfo">
+  <div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
+      id="infobox">
+    {% if after_deadline %}
+      {% blocktrans %}
+        This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
+        and {{ diff_minutes }} minutes after the deadline.
+      {% endblocktrans %}
+    {% else %}
+      {% blocktrans %}
+        This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
+        and {{ diff_minutes }} minutes before the deadline.
+      {% endblocktrans %}
     {% endif %}
-  </tbody>
-</table>
-
-<div class="{% if after_deadline %}warning-message{% else %}info-message{% endif %}"
-    id="infobox">
-  {% if after_deadline %}
-    {% blocktrans %}
-      This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
-      and {{ diff_minutes }} minutes after the deadline.
-    {% endblocktrans %}
-  {% else %}
-    {% blocktrans %}
-      This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
-      and {{ diff_minutes }} minutes before the deadline.
-    {% endblocktrans %}
-  {% endif %}
-  {% if delivery.assignment_group.deliveries.count > 1 %}
-     <p>
-       {% with delivery.number as delivery_number %}{% blocktrans %}
-         This group has multiple deliveries. You are viewing delivery number
-         <big>{{ delivery_number }}</big>. All deliveries:
-       {% endblocktrans %}{% endwith %}
-     </p>
-     <ul style="list-style:none;">
-       {% for d in delivery.assignment_group.deliveries.all %}
-         <li>
-           {{ d.number }}.
-           {% if d.id == delivery.id %}
-             <strong>{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</strong>
-           {% else %}
-             <a href='{% url devilry-examiner-edit-feedback d.id %}'>
-                 {{ d.time_of_delivery|date:"DATETIME_FORMAT" }}
-             </a>
-           {% endif %}
-           {% if not d.feedback %}
-             <span class="unimportant">({% trans "no feedback" %})</span>
-           {% endif %}
-         </li>
-       {% endfor %}
-     </ul>
-  {% else %}
-    <p>{% trans "This group has no more deliveries on this assignment." %}</p>
-  {% endif %}
-</div>
-
-<div style="clear:both;"></div>
-
-<form method='post' action='{% url devilry-examiner-edit-feedback delivery.id %}'>
-  {% block formfields %}
-    {% block gradeformfieldset %}
-      <fieldset class='stdfieldset'>
-        <h2 class='legend'>{% trans "Grade" %}</h2>
-        {% block gradeform %}
-          {% with grade_form as form %}
-            {% include "devilry/ui/include/form-list.django.html" %}
-          {% endwith %}
-        {% endblock %}
-      </fieldset>
-    {% endblock %}
-
-    {% with feedback_form as form %}
-      <fieldset class='stdfieldset'>
-        <h2 class='legend'>{% trans "Feedback" %}</h2>
-        <div class='help-box'>
-          {% with "http://docutils.sourceforge.net/docs/user/rst/quickref.html" as docurl %}
-            <p>{% blocktrans %}
-              Feedback text should be formatted using <em>ReStructured Text</em>
-              (a simple markup language). Use the buttons above the text
-              area for the most common markup, and read <a href="{{ docurl }}">the
-              documentation</a> if you need more advanced markup. The rightmost
-              button above the text-area provides you with a preview.
-            {% endblocktrans %}</p>
-          {% endwith %}
-        </div>
-        {% include "devilry/ui/include/form-list.django.html" %}
-      </fieldset>
-    {% endwith %}
-  {% endblock formfields %}
-  
-
-  {% if next_notcorrected or prev_notcorrected %}
-    <div style="float:right;">
-      {% if prev_notcorrected %}
-        <a class="tooltip-hover unimportant"
-            href="{% url devilry-examiner-edit-feedback prev_notcorrected.id %}"
-            title="{% trans "Go to previous 'not corrected' group on this assignment without saving" %}">
-          {% trans "Previous" %}</a>
-      {% endif %}
-      {% if next_notcorrected and prev_notcorrected %}
-        <span class="unimportant">|</span>
-      {% endif %}
-      {% if next_notcorrected %}
-        <a class="tooltip-hover unimportant"
-            href="{% url devilry-examiner-edit-feedback next_notcorrected.id %}"
-            title="{% trans "Go to next 'not corrected' group on this assignment without saving" %}">
-          {% trans "Next" %}</a>
-      {% endif %}
-    </div>
-  {% endif %}
-
-  <div class='button-row'>
-    <input type='submit' name='save'
-      class='button default ui-priority-secondary tooltip-hover'
-      title="{% trans "Save and reload this page. Use this to save when making long feedbacks." %}"
-      value='{% trans "Save" %}'/>
-    <input type='submit' name='save_and_dash'
-      class='button ui-priority-{% if next_notcorrected or prev_notcorrected %}secondary{% else %}primary{% endif%}'
-      value='{% trans "Save and return to dashboard" %}'/>
-
-    {% if prev_notcorrected %}
-      <input type='submit' name='save_and_prev'
-        class='button ui-priority-primary tooltip-hover'
-        title="{% trans "Go to previous 'not corrected' group on this assignment after saving. This should be used if you correct the latest delivery first and work your way back to the first delivery." %}"
-        value='{% trans "Save and go to previous" %}'/>
-    {% endif %}
-    {% if next_notcorrected %}
-      <input type='submit' name='save_and_next'
-        class='button ui-priority-primary tooltip-hover'
-        title="{% trans "Go to next 'not corrected' group on this assignment after saving. This should be used if you correct the first delivery first and work your way forward to the latest delivery." %}"
-        value='{% trans "Save and go to next" %}'/>
+    {% if delivery.assignment_group.deliveries.count > 1 %}
+       <p>
+         {% with delivery.number as delivery_number %}{% blocktrans %}
+           This group has multiple deliveries. You are viewing delivery number
+           <big>{{ delivery_number }}</big>. All deliveries:
+         {% endblocktrans %}{% endwith %}
+       </p>
+       <ul style="list-style:none; padding-left: 20px;">
+         {% for d in delivery.assignment_group.deliveries.all %}
+           <li>
+             {{ d.number }}.
+             {% if d.id == delivery.id %}
+               <strong>{{ d.time_of_delivery|date:"DATETIME_FORMAT" }}</strong>
+             {% else %}
+               <a href='{% url devilry-examiner-edit-feedback d.id %}'>
+                   {{ d.time_of_delivery|date:"DATETIME_FORMAT" }}
+               </a>
+             {% endif %}
+             {% if not d.feedback %}
+               <span class="unimportant">({% trans "no feedback" %})</span>
+             {% endif %}
+           </li>
+         {% endfor %}
+       </ul>
+    {% else %}
+      <p>{% trans "This group has no more deliveries on this assignment." %}</p>
     {% endif %}
   </div>
-</form>
+  <table class='vertical_infotable' id="deliveryinfo">
+    <thead>
+      <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
+    </thead>
+    <tbody>
+      {% with delivery.assignment_group as assignment_group %}
+        {% include "devilry/student/include/deliveryinfo.django.html" %}
+      {% endwith %}
+      {% if delivery.feedback %}
+        <tr>
+          <th>{% trans "Feedback last modified by" %}</th>
+          <td> {{ delivery.feedback.last_modified_by }} </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <table class='vertical_infotable unimportant' id="groupinfo">
+    <thead>
+      <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
+    </thead>
+    <tbody>
+      {% with delivery.assignment_group as assignment_group %}
+        {% include "devilry/student/include/groupinfo.django.html" %}
+        <tr>
+          <th>{% trans "Status" %}:</th>
+          <td>
+            {{ assignment_group|status }}
+          </td>
+        </tr>
+      {% endwith %}
+    </tbody>
+  </table>
+</div>
 
+<div id="mainframe">
+  <a href="#" id="show-metainfo" class="hidden">
+    {% trans "Show sidebar" %}
+  </a>
+  <a href="#" id="hide-metainfo">
+    {% trans "Hide sidebar" %}
+  </a>
+  <form method='post'
+      action='{% url devilry-examiner-edit-feedback delivery.id %}'>
+    {% block formfields %}
+      {% block gradeformfieldset %}
+        <fieldset class='stdfieldset'>
+          <h2 class='legend'>{% trans "Grade" %}</h2>
+          {% block gradeform %}
+            {% with grade_form as form %}
+              {% include "devilry/ui/include/form-list.django.html" %}
+            {% endwith %}
+          {% endblock %}
+        </fieldset>
+      {% endblock %}
+
+      {% with feedback_form as form %}
+        <fieldset class='stdfieldset'>
+          <h2 class='legend'>{% trans "Feedback" %}</h2>
+          <div class='help-box'>
+            {% with "http://docutils.sourceforge.net/docs/user/rst/quickref.html" as docurl %}
+              <p>{% blocktrans %}
+                Feedback text should be formatted using <em>ReStructured Text</em>
+                (a simple markup language). Use the buttons above the text
+                area for the most common markup, and read <a href="{{ docurl }}">the
+                documentation</a> if you need more advanced markup. The rightmost
+                button above the text-area provides you with a preview.
+              {% endblocktrans %}</p>
+            {% endwith %}
+          </div>
+          {% include "devilry/ui/include/form-list.django.html" %}
+        </fieldset>
+      {% endwith %}
+    {% endblock formfields %}
+    
+
+    {% if next_notcorrected or prev_notcorrected %}
+      <div style="float:right;">
+        {% if prev_notcorrected %}
+          <a class="tooltip-hover unimportant"
+              href="{% url devilry-examiner-edit-feedback prev_notcorrected.id %}"
+              title="{% trans "Go to previous 'not corrected' group on this assignment without saving" %}">
+            {% trans "Previous" %}</a>
+        {% endif %}
+        {% if next_notcorrected and prev_notcorrected %}
+          <span class="unimportant">|</span>
+        {% endif %}
+        {% if next_notcorrected %}
+          <a class="tooltip-hover unimportant"
+              href="{% url devilry-examiner-edit-feedback next_notcorrected.id %}"
+              title="{% trans "Go to next 'not corrected' group on this assignment without saving" %}">
+            {% trans "Next" %}</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class='button-row'>
+      <input type='submit' name='save'
+        class='button default ui-priority-secondary tooltip-hover'
+        title="{% trans "Save and reload this page. Use this to save when making long feedbacks." %}"
+        value='{% trans "Save" %}'/>
+      <input type='submit' name='save_and_dash'
+        class='button ui-priority-{% if next_notcorrected or prev_notcorrected %}secondary{% else %}primary{% endif%}'
+        value='{% trans "Save and return to dashboard" %}'/>
+
+      {% if prev_notcorrected %}
+        <input type='submit' name='save_and_prev'
+          class='button ui-priority-primary tooltip-hover'
+          title="{% trans "Go to previous 'not corrected' group on this assignment after saving. This should be used if you correct the latest delivery first and work your way back to the first delivery." %}"
+          value='{% trans "Save and go to previous" %}'/>
+      {% endif %}
+      {% if next_notcorrected %}
+        <input type='submit' name='save_and_next'
+          class='button ui-priority-primary tooltip-hover'
+          title="{% trans "Go to next 'not corrected' group on this assignment after saving. This should be used if you correct the first delivery first and work your way forward to the latest delivery." %}"
+          value='{% trans "Save and go to next" %}'/>
+      {% endif %}
+    </div>
+  </form>
+</div>
 
 {% endblock main %}

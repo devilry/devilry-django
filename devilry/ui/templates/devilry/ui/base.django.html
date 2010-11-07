@@ -64,7 +64,13 @@
     {% endblock %}
 
 		{% block customjs %}{% endblock %}
-		{% block customcss %}{% endblock %}
+		{% block customcss %}
+      {% comment %}
+        Here you can add css styles as you like.
+        This is before the devilry and jquery css to make it possible to
+        override these styles.
+      {% endcomment %}
+    {% endblock %}
 		{% block headextra %}{% endblock %}
 	</head>
 	<body>

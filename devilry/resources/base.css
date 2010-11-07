@@ -619,3 +619,14 @@ tr.even.status_corrected_not_published {
 	color: #a00;
 	font-style: italic;
 }
+
+
+/*******************************
+ * Student
+ *******************************/
+.markItUp  {
+	width:98% !important;
+}
+.markItUpEditor {
+	width: 99.8% !important;
+}
