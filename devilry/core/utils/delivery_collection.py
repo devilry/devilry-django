@@ -276,54 +276,15 @@ class DevilryTarfile(TarFile):
         self.offset += len(buf)
         self.members.append(tarinfo)
 
-        self.last_file_size = tarinfo.size
+        self.filestream_tarinfo = tarinfo
         self.filestream_active = True
-
-"""
-    def append_file_chunk1(self, fileobj, write_count, last_chunk):
-        """Add the TarInfo object `tarinfo' to the archive. If `fileobj' is
-        given, tarinfo.size bytes are read from it and added to the archive.
-        You can create TarInfo objects using gettarinfo().
-           On Windows platforms, `fileobj' should always be opened with mode
-           'rb' to avoid irritation about the file size.
-           """
-        self._check("aw")
-
-        if not self.filestream_active:
-            raise Exception("Cannot append file chunk without an active filestream."\
-                            " Start a filestream first.")
-        # If there's data to follow, append it.
-        if fileobj is not None:
-            tarfile.copyfileobj(fileobj, self.fileobj, write_count)
-            print "writing bytes to obj:", write_count
-            
-            if last_chunk:
-                print "WRITING LAST CHUNK"
-                
-                if self.last_file_size == -1:
-                    print "last_file_size was -1 and should not be!!"
-                
-                blocks, remainder = divmod(self.last_file_size, tarfile.BLOCKSIZE)
-                
-                if remainder > 0:
-                    self.fileobj.write(tarfile.NUL * (tarfile.BLOCKSIZE - remainder))
-                    blocks += 1
-                    print "Append 0s:", (tarfile.BLOCKSIZE - remainder)
-                self.offset += blocks * tarfile.BLOCKSIZE
-
-                print "Offset:", self.offset
-                print "increase offset with ", (blocks * tarfile.BLOCKSIZE)
-                self.last_file_size = -1
-                self.filestream_active = False
-"""
+        self.filestream_sum = 0
+        self.filestream_name = tarinfo
 
     def append_file_chunk(self, fileobj, chunk_size):
-        """Add the TarInfo object `tarinfo' to the archive. If `fileobj' is
-        given, tarinfo.size bytes are read from it and added to the archive.
-        You can create TarInfo objects using gettarinfo().
-           On Windows platforms, `fileobj' should always be opened with mode
-           'rb' to avoid irritation about the file size.
-           """
+        """
+        Appends a chunk to the current active filestream started with start_filestream
+        """
         self._check("aw")
 
         if not self.filestream_active:
@@ -332,10 +293,19 @@ class DevilryTarfile(TarFile):
         # If there's data to follow, append it.
         if fileobj is not None:
             tarfile.copyfileobj(fileobj, self.fileobj, chunk_size)
-            self.offset += write_coun
+            self.offset += chunk_size
+            self.filestream_sum += chunk_size
     
     def close_filestream(self):
-        blocks, remainder = divmod(self.last_file_size, tarfile.BLOCKSIZE)
+        """
+        Must be used to close a filestream session opened with start_filestream
+        """
+        if self.filestream_tarinfo.size != self.filestream_sum:
+            raise Exception("Expected size of filestream %s has not been met."\
+                            "Expected %d, but was %d."
+                            % (filestream_tarinfo.name, self.filestream_tarinfo.size,
+                               self.filestream_sum))
+        blocks, remainder = divmod(self.filestream_tarinfo.size, tarfile.BLOCKSIZE)
         # Fill last block with zeroes
         if remainder > 0:
             zeroes_count = (tarfile.BLOCKSIZE - remainder)
