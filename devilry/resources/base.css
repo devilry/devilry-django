@@ -69,6 +69,20 @@ pre.blockpre {
 	border: 1px solid #888;
 }
 
+
+ul.horizontal-list {
+	list-style: none;
+	margin: 5px 0;
+	padding: 0;
+}
+ul.horizontal-list li {
+	list-style: none;
+	display: inline-block;
+	margin: 0 10px 0 0;
+	padding: 0;
+}
+
+
 /***********************************************************
  * Dimmed (should give the impression of having less light
  **********************************************************/

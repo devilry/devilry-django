@@ -1,6 +1,21 @@
+{% load i18n %}
+{% load actionregistry %}
+
+
 {% for subject in subjects %}
   {% for period in subject %}
     <h3>{{ subject }} - {{ period }}</h3>
+    <ul class="horizontal-list">
+      {% for a in periodactions|iter_actionregistry:period.node %}
+        <li>
+          <a href="{{ a.url }}"
+              {% if a.tooltip %}
+                class="tooltip-hover" title="{{ a.tooltip }}"{% endif %}>
+            {{ a.label }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
     <ul>
 	  {% for assignment in period %}
       {% for assignment_group in assignment %}

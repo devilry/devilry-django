@@ -5,6 +5,7 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
+  <li><a href='{% url devilry-student-list_assignments %}'>{% trans "Assignments" %}</a></li>
   <li class="current"><a href="#">
     {{ period }}
   </a></li>

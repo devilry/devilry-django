@@ -1,6 +1,7 @@
 {% extends "devilry/student/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
+{% load inlinestyles %}
 
 
 {% block breadcrumbs %}
@@ -11,12 +12,41 @@
 {% endblock %}
 
 {% block belowheading %}
-  {% trans "Deliveries" %}
+  {% trans "Overview" %}
 {% endblock %}
 
 {% block main %}
-  <p>{% blocktrans %}Current deliveries, with the latest delivery first. You can
-  add as many deliveries as you like.{% endblocktrans %}</p>
+  <div class='info-message'>
+    {% if assignment_group.status == STATUS_CORRECTED_AND_PUBLISHED %}
+      {% blocktrans with assignment_group.get_grade_as_short_string|strong as grade and assignment_group|student_status|lower as status_published %}
+        This assignment has been {{ status_published }}, and your grade is {{ grade }}.
+      {% endblocktrans %}
+    {% else %}
+      {% with assignment_group|student_status|lower as status_not_corrected %}
+        {% if assignment_group.get_active_deadline.is_old %}
+          {% blocktrans %}
+            The deadline on this assignment has expired, but your examiner has
+            {{ status_not_corrected }} it yet.
+          {% endblocktrans %}
+        {% else %}
+          {% blocktrans %}
+            The deadline has not expired yet, so you can still add as many
+            deliveries as you like.
+          {% endblocktrans %}
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+  </div>
+  
+  <h2>{% trans "Deliveries" %}</h2>
+  <p class="unimportant">
+    {% blocktrans %}
+      Current deliveries, with the latest delivery first.
+    {% endblocktrans %}
+    {% if not assignment_group.can_add_deliveries %}
+      {% trans "You can not add any more deliveries on this assignment." %}
+    {% endif %}
+  </p>
   {% if assignment_group.deliveries.all.count == 0 %}
     <p class="no_deliveries">{% trans "No deliveries" %}</p>
   {% else %}
@@ -33,8 +63,8 @@
     <tr>
       <td> {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }} </td>
       <td> {{ delivery.delivered_by }} </td>
-      <td class="{{ delivery.get_status_student_cssclass }}">
-        {{ delivery.get_status }}
+      <td>
+        {{ delivery|student_status }}
       </td>
       <td> {% if delivery.feedback.published %}
       {{ delivery.feedback.get_grade_as_short_string }} {% endif %} 
@@ -53,10 +83,6 @@
       Add new delivery
     </a>
   </p>
-  {% else %}
-  <div class='info-message'>
-    {% trans "This assignment is closed for more deliveries." %}
-  </div>
   {% endif %}
 {% endblock %}
 

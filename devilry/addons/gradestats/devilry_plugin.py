@@ -1,25 +1,30 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
-from devilry.addons.admin.actionregistry import periodactions
-from devilry.addons.quickdash.dashboardplugin_registry import (
-        DashboardItem, personalgroup)
-from devilry.core.models import Candidate
+from devilry.addons.admin.actionregistry import \
+        periodactions as admin_periodactions
+from devilry.addons.student.actionregistry import \
+        periodactions as student_periodactions, \
+        groupactions as student_groupactions
 
 
-periodactions.add_action(
-    label = "stats",
+admin_periodactions.add_action(
+    label = _("Statistics"),
     urlcallback = lambda p:
         reverse('devilry-gradestats-periodstats', args=[str(p.id)])
 )
 
-
-#def is_student(user):
-    #return Candidate.objects.filter(student=user).count > 0
-
-#personalgroup.additems(
-    #DashboardItem(
-        #title = _('Grade statistics'),
-        #url = "http://example.com",
-        #check = lambda r: is_student(r.user)),
-#)
+student_periodactions.add_action(
+    label = _("Statistics"),
+    tooltipcallback = lambda p:
+        _("Statistics for %(period)s" % dict(period=p.get_path())),
+    urlcallback = lambda p:
+        reverse('devilry-gradestats-userstats', args=[str(p.id)])
+)
+student_groupactions.add_action(
+    label = _("Statistics"),
+    tooltipcallback = lambda g:
+        _("Statistics for %(period)s" % dict(period=g.parentnode.parentnode.get_path())),
+    urlcallback = lambda g:
+        reverse('devilry-gradestats-userstats', args=[str(g.parentnode.parentnode.id)])
+)

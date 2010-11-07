@@ -1,6 +1,7 @@
 {% extends "devilry/ui/base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
+{% load actionregistry %}
 
 {% block title %}
   {{ assignment_group.parentnode.short_name }}
@@ -17,24 +18,22 @@
 
 {% block content %}
 
-<table class='vertical_infotable' style="float:right; width: 250px; margin:0;">
-  {% include "devilry/student/include/groupinfo.django.html" %}
-  {% if assignment_group.get_grade_as_short_string %}
-  <tr>
-    <th>{% trans "Grade" %}:</th>
-    <td>
-      {{ assignment_group.get_grade_as_short_string }}
-      <div>
-      (<a href="{% url devilry-student-show-delivery assignment_group.get_latest_delivery_with_feedback.id %}"
-          class="tooltip-hover"
-          title="{% trans "Go to the delivery that earned you this grade." %}">
-        {% trans "Show feedback" %}
-      </a>)
-      </div>
-    </td>
-  </tr> 
-  {% endif %}
-</table>
+<div class='unimportant' style="float:right; width: 250px;">
+  <table class='vertical_infotable' style="margin:0;">
+    {% include "devilry/student/include/groupinfo.django.html" %}
+  </table>
+  <ul class="horizontal-list">
+    {% for a in groupactions|iter_actionregistry:assignment_group %}
+      <li>
+        <a href="{{ a.url }}"
+            {% if a.tooltip %}
+              class="tooltip-hover" title="{{ a.tooltip }}"{% endif %}>
+          {{ a.label }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
 
 <div style="margin-right: 280px;">
   {% block main %}{% endblock %}

@@ -31,9 +31,3 @@ is to make it easy to add more to the table.
     {% endif %}
   </td>
 </tr>
-<tr>
-  <th>{% trans "Status" %}:</th>
-  <td class="{{ assignment_group.get_status_student_cssclass }}">
-    {{ assignment_group.get_localized_student_status }}
-  </td>
-</tr>

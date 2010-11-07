@@ -20,3 +20,20 @@ def strong(s):
 @stringfilter
 def big(s):
     return mark_safe(u"<big>%s</big>" % s)
+
+@register.filter
+def student_status(group_or_delivery):
+    """ Returns the localized status for a student of a assignmentgroup or
+    delivery wrapped in a span with the appropriate css class. """
+    return mark_safe(u"<span class='%s'>%s</span>" % (
+        group_or_delivery.get_status_student_cssclass(),
+        group_or_delivery.get_localized_student_status()))
+
+@register.filter
+def status(group_or_delivery):
+    """ Returns the localized status for a examiner or admin of a
+    assignmentgroup or delivery wrapped in a span with the appropriate css
+    class. """
+    return mark_safe(u"<span class='%s'>%s</span>" % (
+        group_or_delivery.get_status_cssclass(),
+        group_or_delivery.get_localized_status()))

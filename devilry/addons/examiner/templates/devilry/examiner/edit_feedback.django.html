@@ -2,6 +2,7 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 {% load inlinestyles %}
+
 {% block title %}{% trans "Feedback" %}{% endblock %}
 {% block heading %}
   {% with delivery.assignment_group.get_candidates|emphasize as candidates %}
@@ -32,15 +33,15 @@
     margin: 0 0 10px 0;
   }
   #infobox {
-    margin: 0 33% 10px 25%;
+    margin: 0 25% 10px 33%;
   }
   #groupinfo {
     width: 24%;
-    float:left;
+    float: right;
   }
   #deliveryinfo {
     width: 32%;
-    float: right;
+    float: left;
   }
 </style>
 {% endblock %}
@@ -55,13 +56,19 @@
 {% endif %}
 {% endcomment %}
 
-<table class='vertical_infotable' id="groupinfo">
+<table class='vertical_infotable unimportant' id="groupinfo">
   <thead>
     <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
   </thead>
   <tbody>
     {% with delivery.assignment_group as assignment_group %}
       {% include "devilry/student/include/groupinfo.django.html" %}
+      <tr>
+        <th>{% trans "Status" %}:</th>
+        <td>
+          {{ assignment_group|status }}
+        </td>
+      </tr>
     {% endwith %}
   </tbody>
 </table>

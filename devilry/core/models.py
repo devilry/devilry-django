@@ -1510,33 +1510,42 @@ class Delivery(models.Model):
     def get_status_number(self):
         """ Get the numeric status for this delivery.
 
-        :return: :attr:`AssignmentGroup.NOT_CORRECTED` or
+        :return: :attr:`AssignmentGroup.NOT_CORRECTED`,
+            :attr:`AssignmentGroup.CORRECTED_NOT_PUBLISHED` or
             :attr:`AssignmentGroup.CORRECTED_AND_PUBLISHED`.
         """
         try:
             if self.feedback.published:
                 return AssignmentGroup.CORRECTED_AND_PUBLISHED
+            else:
+                return AssignmentGroup.CORRECTED_NOT_PUBLISHED
         except Feedback.DoesNotExist:
             pass
         return AssignmentGroup.NOT_CORRECTED
 
-    def get_status(self):
-        """ Get the localized status for this delivery; 'Corrected' or
-        'Not Corrected'.
+    def get_localized_status(self):
+        """
+        Returns the current status string from
+        :attr:`AssignmentGroup.status_mapping`.
         """
         status = self.get_status_number()
-        if status == AssignmentGroup.CORRECTED_AND_PUBLISHED:
-            return _("Corrected")
-        else:
-            return _("Not Corrected")
+        return AssignmentGroup.status_mapping[status]
+
+    def get_localized_student_status(self):
+        """
+        Returns the current status string from
+        :attr:`AssignmentGroup.status_mapping_student`.
+        """
+        status = self.get_status_number()
+        return AssignmentGroup.status_mapping_student[status]
 
     def get_status_cssclass(self):
-        """ Returns the current status string from
+        """ Returns the css class for the current status from
         :attr:`AssignmentGroup.status_mapping_cssclass`. """
         return AssignmentGroup.status_mapping_cssclass[self.get_status_number()]
 
     def get_status_student_cssclass(self):
-        """ Returns the current status string from
+        """ Returns the css class for the current status from
         :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
         return AssignmentGroup.status_mapping_student_cssclass[
                 self.get_status_number()]

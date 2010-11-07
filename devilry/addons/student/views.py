@@ -16,6 +16,7 @@ from devilry.core.models import Delivery, AssignmentGroup
 from devilry.ui.defaults import DATETIME_FORMAT
 from devilry.core.utils.verify_unique_entries import verify_unique_entries
 from devilry.core.devilry_email import send_email
+from actionregistry import periodactions, groupactions
 
 
 @login_required
@@ -82,6 +83,7 @@ def add_delivery(request, assignment_group_id, messages=None):
         formset = UploadFileFormSet()
 
     return render_to_response('devilry/student/add_delivery.django.html', {
+        'groupactions': groupactions,
         'assignment_group': assignment_group,
         'formset': formset,
         'messages': messages,
@@ -133,6 +135,7 @@ def show_assignmentgroup(request, assignmentgroup_id, messages=None):
     if not assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_assignmentgroup.django.html', {
+        'groupactions': groupactions,
         'assignment_group': assignment_group,
         'messages': messages,
         }, context_instance=RequestContext(request))
@@ -143,6 +146,7 @@ def show_delivery(request, delivery_id):
     if not delivery.assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_delivery.django.html', {
+        'groupactions': groupactions,
         'delivery': delivery,
         'assignment_group': delivery.assignment_group,
         }, context_instance=RequestContext(request))
@@ -161,6 +165,7 @@ def list_assignments(request):
     old_subjects = group_assignmentgroups(old_assignment_groups)
     heading = _("Assignments")
     return render_to_response('devilry/student/list_assignments.django.html', {
+            'periodactions': periodactions,
             'subjects': subjects,
             'old_subjects': old_subjects,
             'has_subjects': len(subjects) > 0,

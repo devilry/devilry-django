@@ -1,5 +1,7 @@
 from devilry.ui.filtertable import RowAction
 
+# TODO: Change this so it uses ui.actionregistry
+
 
 class RegistryAction(object):
     def __init__(self, label, urlcallback):
