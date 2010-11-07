@@ -1,57 +1,48 @@
-{% extends "devilry/quickdash/viewbase.django.html" %}
+{% extends "devilry/examiner/dashboard/viewbase.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block heading %}{% trans "Not published" %}{% endblock %}
 
-{% block body %}
-<p class="help-box">{{ not_published.count }} of the {{ not_published_count }} groups
-where you are examiner with status <span class="status_corrected_not_published">Corrected, not
-published</span>. They are ordered with the latest changed feedback first.</p>
+{% block help %}
+{{ groups.count }} of the {{ total }} groups where you are
+examiner with status "Corrected, not published". They are ordered with the
+latest changed feedback first.
+{% endblock %}
 
-<dl>
-{% for group in not_published %}
-	<dt>
-		{{ group.get_candidates }}
-		{% if group.name %}
-			({{ group.name }})
-		{% endif %}
-	</dt>
-	<dd>
-		<div>
-			{{ group.parentnode.parentnode.parentnode.short_name }}
-			- {{ group.parentnode.parentnode.short_name }}
-			-
-      <a href="{% url devilry-examiner-list_assignmentgroups group.parentnode.id %}">
-        {{ group.parentnode.short_name }}
-      </a>
-		</div>
-		<div>
-		</div>
-		<div>
-			{% trans "Feeback last updated" %}:
-			<em>{{ group.time_of_last_feedback|date:"DATETIME_FORMAT" }}</em>
-		</div>
-		<div>
-			Last delivery:
-			<em>
-				{{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}
-			</em>
-		</div>
-		{% if group.time_of_last_delivery > group.active_deadline %}
-			<div>
-				<em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
-			</div>
-		{% endif %}
-		<div>
-			<a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
-        <strong>
-          {% trans "Edit feedback" %}
-        </strong>
-      </a>
-		</div>
-	</dd>
-{% endfor %}
-</dl>
 
+{% block custom_groupinfo %}
+  <div>
+    {% trans "Feeback last updated" %}:
+    <em>{{ group.time_of_last_feedback|date:"DATETIME_FORMAT" }}</em>
+  </div>
+  <div>
+    Last delivery:
+    <em>
+      {{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}
+    </em>
+  </div>
+  {% if group.time_of_last_delivery > group.active_deadline %}
+    <div>
+      <em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
+    </div>
+  {% endif %}
+  <div>
+    <a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
+      <strong>
+        {% trans "Edit feedback" %}
+      </strong>
+    </a>
+  </div>
+{% endblock %}
+
+
+{% block footer %}
+  {% with "not_published" as ident %}
+    {% with session.dashboard_examiner_not_published_orderdesc as orderdesc %}
+      {% with session.dashboard_examiner_not_published_showall as showall %}
+        {% include "devilry/examiner/dashboard/footerbuttons.django.html" %}
+      {% endwith %}
+    {% endwith %}
+  {% endwith %}
 {% endblock %}

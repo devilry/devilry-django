@@ -98,6 +98,15 @@ def redirect_after_successful_save(request, delivery_obj):
                         reverse('devilry-examiner-edit-feedback', args=[str(id)]))
             else:
                 fallback_to_dash = True
+        if "save_and_prev" in request.POST:
+            prev_notcorrected = get_prev_notcorrected_in_assignment(
+                    request.user, delivery_obj)
+            if prev_notcorrected:
+                id = prev_notcorrected.id
+                return HttpResponseRedirect(
+                        reverse('devilry-examiner-edit-feedback', args=[str(id)]))
+            else:
+                fallback_to_dash = True
 
         if fallback_to_dash or "save_and_dash" in request.POST:
             messages.save(request)

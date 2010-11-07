@@ -8,7 +8,12 @@
   $(function() {
     $("#quickdash-views-accordion").accordion({
       autoHeight: false,
-      header: 'h3'
+      navigation: true,
+      header: '.accordionhead',
+      navigationFilter: function() {
+        $.log(this.href.toLowerCase());
+        return this.href.toLowerCase() == location.href.toLowerCase();
+      }
     });
   });
 </script>

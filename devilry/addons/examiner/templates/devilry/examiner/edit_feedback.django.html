@@ -85,6 +85,8 @@
          </li>
        {% endfor %}
      </ul>
+  {% else %}
+    <p>{% trans "This group has no more deliveries on this assignment." %}</p>
   {% endif %}
 </div>
 
@@ -141,16 +143,26 @@
       {% endif %}
     </div>
   {% endif %}
+
   <div class='button-row'>
-    <input type='submit' name='save' class='button default ui-priority-secondary'
+    <input type='submit' name='save'
+      class='button default ui-priority-secondary tooltip-hover'
+      title="{% trans "Save and reload this page. Use this to save when making long feedbacks." %}"
       value='{% trans "Save" %}'/>
     <input type='submit' name='save_and_dash'
-      class='button ui-priority-{% if next_notcorrected %}secondary{% else %}primary{% endif%}'
+      class='button ui-priority-{% if next_notcorrected or prev_notcorrected %}secondary{% else %}primary{% endif%}'
       value='{% trans "Save and return to dashboard" %}'/>
+
+    {% if prev_notcorrected %}
+      <input type='submit' name='save_and_prev'
+        class='button ui-priority-primary tooltip-hover'
+        title="{% trans "Go to previous 'not corrected' group on this assignment after saving. This should be used if you correct the latest delivery first and work your way back to the first delivery." %}"
+        value='{% trans "Save and go to previous" %}'/>
+    {% endif %}
     {% if next_notcorrected %}
       <input type='submit' name='save_and_next'
         class='button ui-priority-primary tooltip-hover'
-        title="Go to next 'not corrected' group on this assignment after saving"
+        title="{% trans "Go to next 'not corrected' group on this assignment after saving. This should be used if you correct the first delivery first and work your way forward to the latest delivery." %}"
         value='{% trans "Save and go to next" %}'/>
     {% endif %}
   </div>
