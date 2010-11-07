@@ -34,6 +34,18 @@ if __name__ == "__main__":
             help="Group name prefix. Group names will be this prefix plus "\
                     "a number. If you dont spesify this, group name will "\
                     "be blank.")
+    p.add_option("--subject-long-name", dest="subject_long_name",
+            default=None,
+            help="The long name of the subject. Defaults to short name"\
+                "capitalized")
+    p.add_option("--period-long-name", dest="period_long_name",
+            default=None,
+            help="The long name of the period. Defaults to short name"\
+                "capitalized")
+    p.add_option("--assignment-long-name", dest="assignment_long_name",
+            default=None,
+            help="The long name of the assignment. Defaults to short name"\
+                "capitalized")
     p.add_option("--student-name-prefix", dest="studentname_prefix",
             default="student",
             help="Student name prefix. Student names will be this prefix "\
@@ -324,12 +336,15 @@ if __name__ == "__main__":
     all_students = ['%s%d' % (student_prefix, d) for d in xrange(0, num_students)]
     create_missing_users(itertools.chain(all_students, examiners))
 
+    # Create the assignment
     assignment = create_from_path(assignmentpath,
             grade_plugin_key=gradeplugin,
             gradeplugin_maxpoints=grade_maxpoints)
     assignment.publishing_time = deadline - timedelta(days=opt.pubtime_diff)
     if opt.pointscale:
         assignment.pointscale = opt.pointscale
+    if opt.assignment_long_name:
+        assignment.long_name = opt.assignment_long_name
     assignment.save()
 
     # Make sure assignment fits in parentnode
@@ -343,6 +358,17 @@ if __name__ == "__main__":
     logging.info(
             "Creating groups on %s with deadline %s and grade_plugin %s" % (
                 assignment, deadline, gradeplugin))
+
+    # Subject and period
+    period = assignment.parentnode
+    subject = period.parentnode
+    if opt.period_long_name:
+        period.long_name = opt.period_long_name
+        period.save()
+    if opt.subject_long_name:
+        subject.long_name = opt.subject_long_name
+        subject.save()
+
 
     examinersiter = itertools.cycle(grouplist(examiners, examiners_per_group))
     quality_percents = (
