@@ -88,9 +88,11 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     def create_row(self, group, active_optional_cols):
         row = super(AssignmentGroupsExaminerFilterTable, self).create_row(
                 group, active_optional_cols)
-        row.add_action(_("Show"), 
-                reverse('devilry-examiner-show_assignmentgroup',
-                        args=[str(group.id)]))
+        if group.deliveries_count > 0:
+            pk = str(group.get_latest_delivery().id)
+            row.add_action(_("examine"), 
+                           reverse('devilry-examiner-edit-feedback-as-examiner',
+                                args=[pk]))
         return row
 
     def get_assignmentgroups(self):
@@ -103,9 +105,11 @@ def list_assignments(request):
     if assignments.count() == 0:
         return HttpResponseForbidden("Forbidden")
     subjects = group_assignments(assignments)
+    is_admin = Assignment.where_is_admin_or_superadmin(request.user).count() > 0
     return render_to_response(
             'devilry/examiner/list_assignments.django.html', {
             'page_heading': _("Assignments"),
+            'is_admin': is_admin,
             'subjects': subjects,
             }, context_instance=RequestContext(request))
 
@@ -113,7 +117,7 @@ def list_assignments(request):
 @login_required
 def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
-    assignment_groups = assignment.assignment_groups_where_can_examine(
+    assignment_groups = assignment.assignment_groups_where_is_examiner(
             request.user)
     if assignment_groups.count() == 0:
         return HttpResponseForbidden("Forbidden")
@@ -131,13 +135,14 @@ def list_assignmentgroups(request, assignment_id):
 @login_required
 def list_assignmentgroups_json(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    assignment_groups = assignment.assignment_groups_where_can_examine(
+    assignment_groups = assignment.assignment_groups_where_is_examiner(
             request.user)
     if assignment_groups.count() == 0:
         return HttpResponseForbidden("Forbidden")
     a = AssignmentGroupsExaminerFilterTable(request, assignment,
             assignment_groups)
     return a.json_response()
+
 
 
 @login_required
@@ -183,7 +188,7 @@ def open_assignmentgroup(request, assignmentgroup_id):
 
 
 @login_required
-def show_assignmentgroup(request, assignmentgroup_id):
+def edit_deadlines(request, assignmentgroup_id):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
@@ -197,16 +202,12 @@ def show_assignmentgroup(request, assignmentgroup_id):
         if deadline_form.is_valid():
             deadline.save()
             return HttpResponseRedirect(reverse(
-                    'devilry-examiner-show_assignmentgroup',
+                    'devilry-examiner-edit_deadlines',
                     args=[assignmentgroup_id]))
         else:
             valid_deadlineform = False
     else:
         deadline_form = DeadlineForm()
-        
-
-    show_deadline_hint = assignment_group.is_open and \
-        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
 
     messages = UiMessages()
     messages.load(request)
@@ -219,13 +220,20 @@ def show_assignmentgroup(request, assignmentgroup_id):
                 'within_a_deadline': dg.within_a_deadline,
                 'ungrouped_deliveries': dg.ungrouped_deliveries,
                 'deadline_form': deadline_form,
-                'show_deadline_hint': show_deadline_hint,
                 'messages': messages,
                 'valid_deadlineform': valid_deadlineform
             }, context_instance=RequestContext(request))
 
 @login_required
-def edit_feedback(request, delivery_id):
+def edit_feedback(request, delivery_id, is_admin=None):
+    sessionkey = "is_admin"
+    if is_admin == False:
+        if request.session.get("is_admin"):
+            del request.session['is_admin']
+    if is_admin == True:
+        request.session['is_admin'] = True
+        request.session.save()
+    print is_admin, request.session.get("is_admin")
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
     if not delivery_obj.assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")

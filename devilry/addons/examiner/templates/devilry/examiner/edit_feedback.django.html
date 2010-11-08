@@ -1,4 +1,4 @@
-{% extends "devilry/examiner/base.django.html" %}
+{% extends "devilry/examiner/group-base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 {% load inlinestyles %}
@@ -14,16 +14,9 @@
   {% endwith %}
 {% endblock %}
 
-{% block breadcrumbs %}
-{{ block.super }}
-  <li><a href='{% url devilry-examiner-list_assignmentgroups delivery.assignment_group.parentnode.id %}'>
-    {{ delivery.assignment_group.parentnode }}
-  </a></li>
-  <li><a href='{% url devilry-examiner-show_assignmentgroup delivery.assignment_group.id %}'>
-    {{ delivery.assignment_group.get_students }}
-  </a></li>
+{% block edit_feedback_breadcrumb %}
   <li class='current'><a href='#'>
-    {% trans "Delivery" %}
+    {{ delivery.assignment_group.get_candidates }}
   </a></li>
 {% endblock %}
 
@@ -121,7 +114,7 @@
   </script>
 {% endblock %}
 
-{% block main %}
+{% block content %}
 
 {% comment %}
 {% if delivery.assignment_group.parentnode.grade_plugin == "grade_rstschema:rstschemagrade" %}
@@ -300,4 +293,4 @@
   </form>
 </div>
 
-{% endblock main %}
+{% endblock content %}

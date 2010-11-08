@@ -9,14 +9,6 @@
   {{ block.super }}
   <li class="current">
     <a href="#">{{ assignment }}</a>
-    {% if is_admin %}
-      <ul>
-        <li>
-          <a href="{% url devilry-admin-edit_assignment assignment.id %}">
-            {% trans "Administer" %}</a>
-        </li>
-      </ul>
-    {% endif %}
   </li>
 {% endblock %}
 
@@ -38,42 +30,4 @@ on the groups below.</p>{% endblocktrans %}</p>
 
 {{ filtertbl }}
 
-
-{% comment %}
-<table class='horizontal_ordered_table tablesorter'>
-  <thead>
-    <tr>
-      <th>{% trans "Group id" %}</th>
-      <th>{% trans "Group members" %}</th>
-      <th>{% trans "Group name" %}</th>
-      <th>{% trans "Deliveries" %}</th>
-      <th>{% trans "Latest delivery" %}</th>
-      <th>{% trans "Status" %}</th>
-      <th>{% trans "Grade" %}</th>
-      <th>&nbsp;</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for assignment_group in assignment_groups %}
-      <tr>
-        <td>{{ assignment_group.id }}</td>
-        <td>{{ assignment_group.get_candidates }}</td>
-        <td>{{ assignment_group.name }}</td>
-        <td>{{ assignment_group.get_number_of_deliveries }}</td>
-        <td>{{ assignment_group.get_latest_delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}</td>
-        <td class="{{ assignment_group.get_status_cssclass }}">
-            {{ assignment_group.get_localized_status }}</td>
-        <td>
-          {% if assignment_group.get_grade_as_short_string %}
-            {{ assignment_group.get_grade_as_short_string }}
-          {% endif %}
-        </td>
-        <td><a href='{% url devilry-examiner-show_assignmentgroup assignment_group.id %}'>
-          {% trans "Show" %}
-        </a></td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endcomment %}
 {% endblock %}
