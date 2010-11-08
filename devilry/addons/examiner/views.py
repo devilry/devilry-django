@@ -88,11 +88,14 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     def create_row(self, group, active_optional_cols):
         row = super(AssignmentGroupsExaminerFilterTable, self).create_row(
                 group, active_optional_cols)
-        if group.deliveries_count > 0:
-            pk = str(group.get_latest_delivery().id)
-            row.add_action(_("examine"), 
-                           reverse('devilry-examiner-edit-feedback-as-examiner',
-                                args=[pk]))
+        row.add_action(_("show"), 
+                       reverse('devilry-examiner-show_assignmentgroup-as-examiner',
+                            args=[str(group.id)]))
+        #if group.deliveries_count > 0:
+            #pk = str(group.get_latest_delivery().id)
+            #row.add_action(_("latest delivery"), 
+                           #reverse('devilry-examiner-edit-feedback-as-examiner',
+                                #args=[pk]))
         return row
 
     def get_assignmentgroups(self):
@@ -186,9 +189,19 @@ def open_assignmentgroup(request, assignmentgroup_id):
         _('Assignment group successfully opened.'))
 
 
+def _handle_is_admin(request, is_admin):
+    sessionkey = "is_admin"
+    if is_admin == False:
+        if request.session.get("is_admin"):
+            del request.session['is_admin']
+    if is_admin == True:
+        request.session['is_admin'] = True
+        request.session.save()
+
 
 @login_required
-def edit_deadlines(request, assignmentgroup_id):
+def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
+    _handle_is_admin(request, is_admin)
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
@@ -202,12 +215,16 @@ def edit_deadlines(request, assignmentgroup_id):
         if deadline_form.is_valid():
             deadline.save()
             return HttpResponseRedirect(reverse(
-                    'devilry-examiner-edit_deadlines',
+                    'devilry-examiner-show_assignmentgroup',
                     args=[assignmentgroup_id]))
         else:
             valid_deadlineform = False
     else:
         deadline_form = DeadlineForm()
+        
+
+    show_deadline_hint = assignment_group.is_open and \
+        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
 
     messages = UiMessages()
     messages.load(request)
@@ -220,20 +237,15 @@ def edit_deadlines(request, assignmentgroup_id):
                 'within_a_deadline': dg.within_a_deadline,
                 'ungrouped_deliveries': dg.ungrouped_deliveries,
                 'deadline_form': deadline_form,
+                'show_deadline_hint': show_deadline_hint,
                 'messages': messages,
                 'valid_deadlineform': valid_deadlineform
             }, context_instance=RequestContext(request))
 
+
 @login_required
 def edit_feedback(request, delivery_id, is_admin=None):
-    sessionkey = "is_admin"
-    if is_admin == False:
-        if request.session.get("is_admin"):
-            del request.session['is_admin']
-    if is_admin == True:
-        request.session['is_admin'] = True
-        request.session.save()
-    print is_admin, request.session.get("is_admin")
+    _handle_is_admin(request, is_admin)
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
     if not delivery_obj.assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")

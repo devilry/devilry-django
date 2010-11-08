@@ -1,0 +1,24 @@
+{% extends "devilry/examiner/group-base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% comment %}
+  Base-template for views working with a single delivery.
+
+  :param delivery: The current Delivery object.
+{% endcomment %}
+
+{% block breadcrumbs %}
+  {% with delivery.assignment_group as assignment_group %}
+    {{ block.super }}
+  {% endwith %}
+  {% block edit_feedback_breadcrumb %}
+    {% comment %}
+      Should only need to override this in edit_feedback. All others should
+      use {{ block.super }}
+    {% endcomment %}
+    <li class='current'><a href='{% url devilry-examiner-edit-feedback delivery.id %}'>
+      {{ delivery.number }}: {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
+    </a></li>
+  {% endblock %}
+{% endblock %}

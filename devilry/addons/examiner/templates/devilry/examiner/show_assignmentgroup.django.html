@@ -1,4 +1,4 @@
-{% extends "devilry/examiner/base.django.html" %}
+{% extends "devilry/examiner/group-base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 {% load markup %}
@@ -6,11 +6,7 @@
 {% block title %}{{ assignment_group.parentnode.short_name }}{% endblock %}
 {% block heading %}{{ assignment_group.parentnode }}{% endblock %}
 
-{% block breadcrumbs %}
-  {{ block.super }}
-  <li><a href='{% url devilry-examiner-list_assignmentgroups assignment_group.parentnode.id %}'>
-    {{ assignment_group.parentnode }}
-  </a></li>
+{% block show_assignmentgroup_breadcrumb %}
   <li class='current'><a href='#'>
     {{ assignment_group.get_students }}
   </a></li>

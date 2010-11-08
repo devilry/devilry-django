@@ -1,4 +1,4 @@
-{% extends "devilry/examiner/group-base.django.html" %}
+{% extends "devilry/examiner/delivery-base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 {% load inlinestyles %}
@@ -16,7 +16,7 @@
 
 {% block edit_feedback_breadcrumb %}
   <li class='current'><a href='#'>
-    {{ delivery.assignment_group.get_candidates }}
+    {{ delivery.number }}: {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
   </a></li>
 {% endblock %}
 
@@ -189,39 +189,9 @@
   </table>
 
   <table class='vertical_infotable unimportant metainfo-item' id="groupinfo">
-    <thead>
-      <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
-    </thead>
-    <tbody>
-      {% with delivery.assignment_group as assignment_group %}
-        {% include "devilry/student/include/groupinfo.django.html" %}
-        <tr>
-          <th>{% trans "Status" %}:</th>
-          <td>
-            {{ assignment_group|status }}
-          </td>
-        </tr>
-        <tr>
-          <th>{% trans "Closed" %}</th>
-          <td>
-            {% if assignment_group.is_open %}
-                {% trans "No" %}
-                <a href="{% url devilry-examiner-close_assignmentgroup assignment_group.id %}"
-                  class='button ui-priority-secondary tooltip-hover'
-                  title="{% trans "This group is open for deliveries. Closing the group will leave the students unable to add new deliveries." %}">
-                  {% trans "Click to close group" %}
-                </a>
-            {% else %}
-              {% trans "Yes" %}
-              <a href="{% url devilry-examiner-open_assignmentgroup assignment_group.id %}"
-                  class='button ui-priority-secondary tooltip-hover'
-                  title="{% trans "This group is closed for deliveries. Opening the group will allow the students to add new deliveries." %}">
-                {% trans "Click to open group" %}
-              </a>
-            {% endif %}
-          </td>
-      {% endwith %}
-    </tbody>
+    {% with delivery.assignment_group as assignment_group %}
+      {% include "devilry/examiner/include/groupinfo-table.django.html" %}
+    {% endwith %}
   </table>
 </div>
 

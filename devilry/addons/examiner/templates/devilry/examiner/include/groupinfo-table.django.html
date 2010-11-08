@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load inlinestyles %}
+
+<thead>
+  <tr><th colspan="2" class="ui-state-default">{% trans "Group" %}</th></tr>
+</thead>
+<tbody>
+    {% include "devilry/student/include/groupinfo.django.html" %}
+    <tr>
+      <th>{% trans "Status" %}:</th>
+      <td>
+        {{ assignment_group|status }}
+      </td>
+    </tr>
+    <tr>
+      <th>{% trans "Closed" %}</th>
+      <td>
+        {% if assignment_group.is_open %}
+            {% trans "No" %}
+            <a href="{% url devilry-examiner-close_assignmentgroup assignment_group.id %}"
+              class='button ui-priority-secondary tooltip-hover'
+              title="{% trans "This group is open for deliveries. Closing the group will leave the students unable to add new deliveries." %}">
+              {% trans "Click to close group" %}
+            </a>
+        {% else %}
+          {% trans "Yes" %}
+          <a href="{% url devilry-examiner-open_assignmentgroup assignment_group.id %}"
+              class='button ui-priority-secondary tooltip-hover'
+              title="{% trans "This group is closed for deliveries. Opening the group will allow the students to add new deliveries." %}">
+            {% trans "Click to open group" %}
+          </a>
+        {% endif %}
+      </td>
+    </tr>
+</tbody>
