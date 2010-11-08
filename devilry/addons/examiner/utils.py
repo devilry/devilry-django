@@ -17,7 +17,7 @@ def filter_not_corrected(examiner):
     groups = AssignmentGroup.active_where_is_examiner(examiner)
     not_corrected = groups.filter(
             is_open=True,
-            status=1)
+            status=AssignmentGroup.NOT_CORRECTED)
     not_corrected = not_corrected.annotate(
             active_deadline=Max('deadlines__deadline'),
             time_of_last_delivery=Max('deliveries__time_of_delivery'))

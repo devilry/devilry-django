@@ -68,7 +68,7 @@ class NotPublished(ExaminerImportantItem):
         groups = AssignmentGroup.active_where_is_examiner(self.request.user)
         not_published = groups.filter(
                 is_open=True,
-                status=2)
+                status=AssignmentGroup.CORRECTED_NOT_PUBLISHED)
         not_published = not_published.annotate(
                 active_deadline=Max('deadlines__deadline'),
                 time_of_last_delivery=Max('deliveries__time_of_delivery'),
