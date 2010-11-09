@@ -124,10 +124,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 
 
-#DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
-#DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
-DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore.dbm')
+DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
+DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
+#DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
+#DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore.dbm')
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
 DEVILRY_MAIN_PAGE = ''
@@ -140,7 +140,6 @@ MEDIA_ICONS_URL = 'media/icons/'
 #JQUERY_UI_THEME = 'dot-luv'
 #JQUERY_UI_THEME = 'ui-darkness'
 JQUERY_UI_THEME = 'devilry-blue'
-
 
 SEND_EMAIL_TO_USERS = False
 
@@ -163,3 +162,6 @@ EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 
 DATETIME_FORMAT = "N j, Y, H:i"
+
+#Set max file size to 5MB. Files greater than this size are split into chunks of this size.
+MAX_ARCHIVE_CHUNK_SIZE = 5000000
