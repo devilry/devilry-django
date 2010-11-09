@@ -15,6 +15,28 @@
 
 {% block content %}
 
+<style type="text/css">
+  ul.deliverylist {
+    list-style:none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.deliverylist li {
+    clear:both;
+    margin: 0;
+    padding: 5px 10px;
+  }
+  .deliveryinfo {
+    margin-left: 35px;
+  }
+  .deliverynumber {
+    float: left;
+    color: #666;
+    font-size: 1.8em;
+  }
+
+</style>
+
 <script type="text/javascript">
   
   $(function() {
@@ -26,24 +48,30 @@
       header: 'h4'
     });
 
-    $(".delete-deadline-button").mousedown(function() {
-      var href = $(this).attr ('href');
-      $(this).attr ('href', '#');
-      var confirm_delete_dialog = $('<div>{% trans "Are you sure you want to delete the deadline? Note that this DOES NOT delete any deliveries or feedbacks within the deadline." %}</div>')
-          .dialog({
-              autoOpen: true,
-              title: "{% trans "Confirm delete deadline" %}",
-              modal: true,
-              buttons: {
-                "{% trans "Delete" %}": function () {
-                    document.location = href;
-                    return false;
-                  },
-                "{% trans "Cancel" %}": function() {
-                    $(this).dialog('close');
-                  }
-              }
-          });
+    $(".delete-deadline-button")
+      .button({
+          icons:{primary:"ui-icon-trash"}
+        })
+      .addClass("ui-priority-secondary")
+      .addClass("delete")
+      .mousedown(function() {
+        var href = $(this).attr ('href');
+        $(this).attr ('href', '#');
+        var confirm_delete_dialog = $('<div>{% trans "Are you sure you want to delete the deadline? Note that this DOES NOT delete any deliveries or feedbacks within the deadline." %}</div>')
+            .dialog({
+                autoOpen: true,
+                title: "{% trans "Confirm delete deadline" %}",
+                modal: true,
+                buttons: {
+                  "{% trans "Delete" %}": function () {
+                      document.location = href;
+                      return false;
+                    },
+                  "{% trans "Cancel" %}": function() {
+                      $(this).dialog('close');
+                    }
+                }
+            });
     });
   });
 </script>
@@ -149,11 +177,11 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 {% with "yes" as after_last_deadline_msg %}
 <div class='deadline-box deadline-box-after'>
   <h3>{% trans "After last deadline" %}</h3>
-  <div class="accordion">
+  <ul class="deliverylist">
     {% for delivery in after_deadline %}
-    {% include "devilry/examiner/include/deliverylisting.django.html" %}
+      {% include "devilry/examiner/include/deliverylisting.django.html" %}
     {% endfor %}
-  </div>
+  </ul>
 </div>
 {% endwith %}
 {% endif %}
@@ -161,14 +189,14 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 {% for deadline, deliveries in within_a_deadline %}
 <div class='deadline-box'>
   <div class='delete-deadline'>
-    <a class='button delete delete-deadline-button'
-       href='{% url devilry-examiner-delete_deadline assignment_group.id deadline.id %}'>
+    <a class='delete-deadline-button'
+        href='{% url devilry-examiner-delete_deadline assignment_group.id deadline.id %}'>
       {% trans "Delete deadline" %}
     </a>
   </div>
   <h3>
     {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
-    {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
+      {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
     {% endwith %}
   </h3>
   {% if deadline.text %}
@@ -177,15 +205,17 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
     <div class='deadline-text-text'>{{ deadline.text }}</div>
   </div>
   {% endif %}
-  <div class="accordion">
+  <div>
     {% if not  deliveries %}
-    <div class='no-deliveries'>
-      {% trans "No deliveries on this deadline" %}
-    </div>
+      <p class='unimportant'>
+        {% trans "No deliveries on this deadline" %}
+      </p>
     {% else %}
-    {% for delivery in deliveries %}
-    {% include "devilry/examiner/include/deliverylisting.django.html" %}
-    {% endfor %}
+      <ul class="deliverylist">
+      {% for delivery in deliveries %}
+        {% include "devilry/examiner/include/deliverylisting.django.html" %}
+      {% endfor %}
+      </ul>
     {% endif %}
   </div>
 </div>
