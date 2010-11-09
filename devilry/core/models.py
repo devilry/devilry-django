@@ -1320,7 +1320,8 @@ class AssignmentGroup(models.Model, CommonInterface):
         :return:
             Latest deadline, or None if no deadline is set.
         """
-        deadlines = self.deadlines.order_by('deadline')
+        deadlines = self.deadlines.order_by('-deadline')
+        print deadlines
         if len(deadlines) == 0:
             return None
         else:

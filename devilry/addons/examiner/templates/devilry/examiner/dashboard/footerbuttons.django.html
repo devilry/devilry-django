@@ -1,19 +1,19 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
-<a href="?dashboard_examiner_{{ ident }}_showall=no" class="button"
-    {% if not showall %} style="display:none"{% else %}class="button"{% endif %}>
+<a href="?dashboard_examiner_{{ ident }}_showall=no" class="button ui-priority-secondary"
+    {% if not showall %} style="display:none"{% else %}class="button ui-priority-secondary"{% endif %}>
   {% trans "Show only 3" %}</a>
-<a href="?dashboard_examiner_{{ ident }}_showall=yes" class="button"
-    {% if showall %} style="display:none"{% else %}class="button"{% endif %}>
+<a href="?dashboard_examiner_{{ ident }}_showall=yes" class="button ui-priority-secondary"
+    {% if showall %} style="display:none"{% else %}class="button ui-priority-secondary"{% endif %}>
   {% trans "Show all" %}</a>
 
 
 <a href="?dashboard_examiner_{{ ident }}_orderdesc=no"
-    {% if not orderdesc %} style="display:none"{% else %}class="button"{% endif %}>
+    {% if not orderdesc %} style="display:none"{% else %}class="button ui-priority-secondary"{% endif %}>
   {% trans "Order with oldest delivery first" %}
 </a>
 
 <a href="?dashboard_examiner_{{ ident }}_orderdesc=yes"
-    {% if orderdesc %} style="display:none"{% else %}class="button"{% endif %}>
+    {% if orderdesc %} style="display:none"{% else %}class="button ui-priority-secondary"{% endif %}>
   {% trans "Order with latest delivery first" %}
 </a>

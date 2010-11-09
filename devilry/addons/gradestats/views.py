@@ -118,18 +118,19 @@ class PeriodStatsFilterTable(FilterTable):
 
         assignments = AssignmentGroup.where_is_candidate(user).filter(
                 parentnode__parentnode=self.period).values_list(
-                        "scaled_points", "is_passing_grade")
+                        "scaled_points", "is_passing_grade", "status")
         if len(self.assignments_in_period) > len(assignments):
             # Handle user in multiple groups on the same assignment by
             # showing their points as 0. How to calculate points when a user
             # is in multiple groups has not been resolved yet, and might
             # never be supported.
-            assignments = [(0, False) for a in self.assignments_in_period]
+            assignments = [(0, False, 0) for a in self.assignments_in_period]
                 
         row.add_cell(user.username)
         row.add_cell(user.sumpoints)
-        for scaled_points, is_passing_grade in assignments:
-            row.add_cell(scaled_points)
+        for scaled_points, is_passing_grade, status in assignments:
+            row.add_cell(scaled_points,
+                    cssclass=AssignmentGroup.status_mapping_cssclass[status])
         return row
 
     def create_dataset(self):
