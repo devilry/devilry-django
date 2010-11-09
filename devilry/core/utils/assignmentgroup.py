@@ -3,7 +3,7 @@ class GroupDeliveriesByDeadline():
         self.after_last_deadline = []
         self.within_a_deadline = []
         self.ungrouped_deliveries = []
-        deadlines = group.deadlines.all().order_by('deadline')
+        deadlines = group.deadlines.all().order_by('-deadline')
         numdeadlines = len(deadlines)
         if numdeadlines > 0:
             deliveries = group.deliveries.filter(
@@ -21,7 +21,7 @@ class GroupDeliveriesByDeadline():
 
             # After last deadline
             self.after_last_deadline = group.deliveries.filter(
-                    time_of_delivery__gt=deadlines[numdeadlines-1].deadline)
+                    time_of_delivery__gt=deadlines[0].deadline)
         else:
             self.ungrouped_deliveries = group.deliveries.order_by(
                     'time_of_delivery')

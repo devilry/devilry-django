@@ -30,6 +30,13 @@ urlpatterns = patterns('devilry.addons.examiner',
         kwargs={'is_admin':True},
         name='devilry-examiner-show_assignmentgroup-as-admin'),
 
+    url(r'^assignments/(?P<assignmentgroup_id>\d+)/edit-deadline/(?P<deadline_id>\d+)$',
+        'views.edit_deadline',
+        name='devilry-examiner-edit_deadline'),
+    url(r'^assignments/(?P<assignmentgroup_id>\d+)/create-deadline$',
+        'views.edit_deadline',
+        name='devilry-examiner-create_deadline'),
+
     url(r'^open-group/(?P<assignmentgroup_id>\d+)$',
         'views.open_assignmentgroup',
         name='devilry-examiner-open_assignmentgroup'),

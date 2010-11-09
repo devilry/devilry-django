@@ -200,28 +200,39 @@ def _handle_is_admin(request, is_admin):
 
 
 @login_required
-def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
-    _handle_is_admin(request, is_admin)
+def edit_deadline(request, assignmentgroup_id, deadline_id=None):
     assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
 
-    valid_deadlineform = True
-    if 'create-deadline' in request.POST:
+    nexturl = request.POST.get('next',
+            reverse("devilry-examiner-show_assignmentgroup",
+                args=[assignmentgroup_id]))
+    if request.method == 'POST':
         deadline = Deadline()
         deadline.assignment_group = assignment_group
         deadline_form = DeadlineForm(request.POST, instance=deadline)
-
         if deadline_form.is_valid():
             deadline.save()
-            return HttpResponseRedirect(reverse(
-                    'devilry-examiner-show_assignmentgroup',
-                    args=[assignmentgroup_id]))
-        else:
-            valid_deadlineform = False
+            return HttpResponseRedirect(nexturl)
     else:
         deadline_form = DeadlineForm()
-        
+    return render_to_response(
+            'devilry/examiner/edit-deadline.django.html', {
+                'assignment_group': assignment_group,
+                'deadline_id': deadline_id,
+                'deadline_form': deadline_form
+            }, context_instance=RequestContext(request))
+
+    
+
+
+@login_required
+def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
+    assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
+    if not assignment_group.can_examine(request.user):
+        return HttpResponseForbidden("Forbidden")
+    _handle_is_admin(request, is_admin)
 
     show_deadline_hint = assignment_group.is_open and \
         assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
@@ -236,19 +247,17 @@ def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
                 'after_deadline': dg.after_last_deadline,
                 'within_a_deadline': dg.within_a_deadline,
                 'ungrouped_deliveries': dg.ungrouped_deliveries,
-                'deadline_form': deadline_form,
                 'show_deadline_hint': show_deadline_hint,
                 'messages': messages,
-                'valid_deadlineform': valid_deadlineform
             }, context_instance=RequestContext(request))
 
 
 @login_required
 def edit_feedback(request, delivery_id, is_admin=None):
-    _handle_is_admin(request, is_admin)
     delivery_obj = get_object_or_404(Delivery, pk=delivery_id)
     if not delivery_obj.assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
+    _handle_is_admin(request, is_admin)
     key = delivery_obj.assignment_group.parentnode.grade_plugin
     return gradeplugin.registry.getitem(key).view(request, delivery_obj)
 

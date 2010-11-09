@@ -17,19 +17,6 @@
 
 <script type="text/javascript">
   
-  var deadline_form_visible = {% if valid_deadlineform %}true{% else %}false{% endif %};
-  function handle_deadlineform_click() {
-    if(deadline_form_visible) {
-      $("#deadline-box").hide();
-      deadline_form_visible = false;
-      $(this).children("span").first().html('{% trans "Create deadline" %}');
-    } else {
-      $("#deadline-box").show('blind');
-      deadline_form_visible = true;
-      $(this).children("span").first().html('{% trans "Hide deadline form" %}');
-    }
-  };
-
   $(function() {
     $(".accordion").accordion({
       autoHeight: false,
@@ -38,9 +25,6 @@
       active: false,
       header: 'h4'
     });
-
-    $("#deadline-button").click(handle_deadlineform_click);
-    handle_deadlineform_click();
 
     $(".delete-deadline-button").mousedown(function() {
       var href = $(this).attr ('href');
@@ -118,7 +102,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 
 {% if assignment_group.is_open %}
   {% if show_deadline_hint %}
-    <p class='warning-message'>
+    <p class='info-message'>
       {% blocktrans %}You have published a feedback, but have not given the
       student(s) a new deadline. You should create a new deadline or close for
       more deliveries. Closing the group leave the students unable to add
@@ -126,9 +110,12 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
     </p>
   {% endif %}
   <p>
-    <a href="#" class='button' id='deadline-button'>{% trans "Create deadline" %}</a>
+    <a href="{% url devilry-examiner-create_deadline assignment_group.id %}"
+      class='button ui-priority-secondary' id='deadline-button'>
+      {% trans "Create deadline" %}
+    </a>
     <a href="{% url devilry-examiner-close_assignmentgroup assignment_group.id %}"
-        class='button' id='openclosebtn'>
+        class='button ui-priority-secondary' id='openclosebtn'>
       {% trans "Close group" %}
     </a>
   </p>
@@ -142,21 +129,6 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
   </p>
 {% endif %}
 
-
-<div id="deadline-box">
-  <fieldset class='stdfieldset'>
-    <h2 class='legend'>{% trans "Deadline" %}</h2>
-    <form action="" method="post">
-    {% with deadline_form as form %}
-      {% include "devilry/ui/include/form-list.django.html" %}
-    {% endwith %}
-    
-    <div class='button-row'>
-      <input type='submit' name='create-deadline' class='button' value='{% trans "Create deadline" %}'/>
-    </div>
-    </form>
-  </fieldset>
-</div>
 
 
 {% if assignment_group.get_number_of_deliveries > 0 %}
