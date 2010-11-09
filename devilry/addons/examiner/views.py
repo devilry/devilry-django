@@ -18,6 +18,7 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
         FilterAfterDeadline)
 from devilry.core.utils.delivery_collection import (create_zip_from_assignmentgroups,
                                                     create_tar_from_assignmentgroups,
+                                                    create_tar_from_delivery,
                                                     verify_not_exceeding_max_file_size)
 from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
 from django.conf import settings
@@ -296,3 +297,14 @@ def download_file_collection_as_tar(request, assignment_id):
                                          "deliveries from an assignment you"\
                                          "do not have access to.")
     return create_tar_from_assignmentgroups(request, assignment, groups)
+
+@login_required
+def download_delivery_as_tar(request, delivery_id):
+    delivery = get_object_or_404(Delivery, id=delivery_id)
+    #Check permission for examiner
+    if not delivery.assignment_group.can_examine(request.user):
+        return HttpResponseForbidden("Forbidden: You tried to download"\
+                                     "deliveries from an assignment you"\
+                                     "do not have access to.")
+    return create_tar_from_delivery(request, delivery)
+    
