@@ -154,6 +154,11 @@
         </li>
       {% endfor %}
       </ul>
+
+  {% if delivery.filemetas.count > 1 %}
+	  <a href='{% url devilry-examiner-download_delivery_as_tar delivery.id %}'>Download all</a>  
+  {% endif %}
+	  
   </div>
 
   <table class='vertical_infotable unimportant metainfo-item' id="deliveryinfo">
