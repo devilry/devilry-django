@@ -47,6 +47,11 @@ urlpatterns = patterns('devilry.addons.examiner',
     url(r'^assignments/(?P<assignment_id>\d+)/download_file_collection_as_tar$',
         'views.download_file_collection_as_tar',
         name='devilry-examiner-download_file_collection_as_tar'),
+                       
+    url(r'^edit-feedback/(?P<delivery_id>\d+)/download_delivery_as_tar$',
+        'views.download_delivery_as_tar',
+        name='devilry-examiner-download_delivery_as_tar'),
+                       
     url(r'^edit-feedback/(?P<delivery_id>\d+)$',
         'views.edit_feedback',
         name='devilry-examiner-edit-feedback'),
