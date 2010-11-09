@@ -28,7 +28,9 @@ from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
 
-from devilry.core.utils.delivery_collection import create_zip_from_assignmentgroups
+from devilry.core.utils.delivery_collection import (create_zip_from_assignmentgroups,
+                                                    create_tar_from_assignmentgroups,
+                                                    verify_not_exceeding_max_file_size)
 
 class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-admin-filtertable'
@@ -50,9 +52,12 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
                 'devilry-admin-set_examiners'),
             AssignmentGroupsAction(_("Random distribute examiners"),
                                    'devilry-admin-random_dist_examiners'),
-            AssignmentGroupsAction(_("Download deliveries"),
-                                  'devilry-admin-download_file_collection'),
-            ]
+
+            AssignmentGroupsAction(_("Download deliveries as ZIP"),
+                               'devilry-admin-download_file_collection_as_zip'),
+            AssignmentGroupsAction(_("Download deliveries as TAR"),
+                               'devilry-admin-download_file_collection_as_tar'),
+        ]
     relatedactions = [
             AssignmentGroupsAction(_("Create new"),
                 "devilry-admin-create_assignmentgroup"),
@@ -639,6 +644,14 @@ def delete_manyassignmentgroups(request, assignment_id):
 @login_required
 def download_file_collection(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
+    
+    return create_zip_from_assignmentgroups(request, assignment, groups)
+
+
+
+@login_required
+def download_file_collection_as_zip(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
     #Check admin rights
     if assignment.can_save(request.user):
         groups = AssignmentGroupsFilterTable.get_selected_groups(request)
@@ -646,4 +659,21 @@ def download_file_collection(request, assignment_id):
         return HttpResponseForbidden("Forbidden: You tried to download"\
                                      "deliveries from an assignment you"\
                                      "do not have access to.")
+    try:
+        verify_not_exceeding_max_file_size(groups)
+    except Exception, e:
+        return HttpResponseForbidden(_("One or more files exeeds the maximum file size for ZIP files."))
+    
     return create_zip_from_assignmentgroups(request, assignment, groups)
+
+@login_required
+def download_file_collection_as_tar(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    #Check admin rights
+    if assignment.can_save(request.user):
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    else:
+        return HttpResponseForbidden("Forbidden: You tried to download"\
+                                     "deliveries from an assignment you"\
+                                     "do not have access to.")
+    return create_tar_from_assignmentgroups(request, assignment, groups)
