@@ -1,4 +1,6 @@
-from StringIO import StringIO  
+from StringIO import StringIO
+#from stringio import StringIO  
+#from devilry.core.utils.stringio import StringIO as DevilryStringIO
 from zipfile import ZipFile  
 import tarfile
 from django.http import HttpResponse  
@@ -6,7 +8,9 @@ from devilry.core.models import AssignmentGroup, Assignment
 from django.utils.formats import date_format
 from ui.defaults import DATETIME_FORMAT
 from tarfile import TarFile
+from django.conf import settings
 import copy
+import gc
 
 def create_zip_from_assignmentgroups(request, assignment, assignmentgroups):
     it = iter_streamable_archive(StreamableZip(), assignment, assignmentgroups)
@@ -20,9 +24,27 @@ def create_tar_from_assignmentgroups(request, assignment, assignmentgroups):
     response["Content-Disposition"] = "attachment; filename=%s.tar" % assignment.get_path()  
     return response
 
+def verify_not_exceeding_max_file_size(groups):
+    max_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+    for g in groups:
+        for d in g.deliveries.all():
+            for f_meta in d.filemetas.all():
+                if f_meta.size > max_size:
+                    raise Exception(_("One or more files exceeds the maximum file size for ZIP files."))
+
+class DevilryStringIO(StringIO, object):
+
+    def read(self, n = -1):
+        bytes = super(DevilryStringIO, self).read(n)
+        # Clear the buffer to avoid having the buffer size increase 
+        self.buf = ''
+        self.len = 0
+        self.pos = 0
+        return bytes
+
 class StreamableTar():
     def __init__(self):
-        self.in_memory = StringIO()
+        self.in_memory = DevilryStringIO()
         self.tar = DevilryTarfile.open(name=None, mode='w', fileobj=self.in_memory)
     
     def add_file(self, filename, bytes):
@@ -35,19 +57,20 @@ class StreamableTar():
         tarinfo.size = filesize
         self.tar.start_filestream(tarinfo)
 
-    def append_file_chunk(self, bytes):
-        self.tar.append_file_chunk(StringIO(bytes), len(bytes))
+    def append_file_chunk(self, bytes, chunk_size):
+        self.tar.append_file_chunk(StringIO(bytes), chunk_size)
 
     def close_filestream(self):
         self.tar.close_filestream()
     
     def get_bytes(self):
-        return self.in_memory.read()
+        self.in_memory.seek(0)
+        bytes = self.in_memory.read()
+        return bytes
 
     def close(self):
         self.tar.close()
-        self.in_memory.seek(0)
-
+    
     def can_write_chunks(self):
         return True
 
@@ -108,9 +131,12 @@ def get_dictionary_with_name_matches(assignmentgroups):
             matches[name] = 1
     return matches
 
-max_archive_chunk_size = 1000000
 
 def iter_streamable_archive(archive, assignment, assignmentgroups):
+    """
+    Creates an archive, adds files delivered by the assignmentgroups
+    and yields the data.
+    """
     name_matches = get_dictionary_with_name_matches(assignmentgroups)
     iter_done = False
     
@@ -136,28 +162,32 @@ def iter_streamable_archive(archive, assignment, assignmentgroups):
             delivery_size = 0
             for f in metas:
                 delivery_size += f.size
-                bytes = f.read_open().read(f.size)
-
                 filename = "%s/%s/%s" % (assignment.get_path(), ass_group_name,
                                          f.filename)
                 if include_delivery_explanation:
                     filename = "%s/%s/%d/%s" % (assignment.get_path(), ass_group_name,
                                                 delivery.number, f.filename)
-
-                # File size i greater than max_archive_chunk_size bytes
-                # Add only chunks of data to the archive
-                if f.size > max_archive_chunk_size and archive.can_write_chunks():
-                    chunk_size = max_archive_chunk_size
-                    start_index = 0
+                # File size i greater than MAX_ARCHIVE_CHUNK_SIZE bytes
+                # Write only chunks of size MAX_ARCHIVE_CHUNK_SIZE to the archive
+                if f.size > settings.MAX_ARCHIVE_CHUNK_SIZE:
+                    if not archive.can_write_chunks():
+                        raise Exception("The size of file %s is greater than the maximum allowed size. "\
+                                        "Download stream aborted.")
+                    chunk_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+                    # Open file stream for reading
+                    file_to_stream = f.read_open()
+                    # Start a filestream in the archive
                     archive.start_filestream(filename, f.size)
                     for i in inclusive_range(chunk_size, f.size, chunk_size):
-                        archive.append_file_chunk(bytes[start_index:i])
-                        start_index += chunk_size
+                        bytes = file_to_stream.read(chunk_size)
+                        archive.append_file_chunk(bytes, len(bytes))
+                        #Read the chunk from the archive and yield the data
                         yield archive.get_bytes()
                     archive.close_filestream()
                 else:
+                    bytes = f.read_open().read(f.size)
                     archive.add_file(filename, bytes)
-
+                #Read the content from the streamable archive and yield the data
                 yield archive.get_bytes()
             if include_delivery_explanation:
                 multiple_deliveries_content += "  %3d            %3d          %5d        %s\r\n" % \
@@ -173,7 +203,13 @@ def iter_streamable_archive(archive, assignment, assignmentgroups):
     archive.close()
     yield archive.get_bytes()
 
+
 class DevilryTarfile(TarFile):
+    """
+    tarfile does not directly support streaming chunks to the file.
+    might be solved by letting the read method of the file-like class
+    just return chunks instead of the entire file.
+    """
     def __init__(self, name=None, mode="r", fileobj=None):
         TarFile.__init__(self, name, mode, fileobj)
         self.filestream_active = False
@@ -218,9 +254,9 @@ class DevilryTarfile(TarFile):
         Must be used to close a filestream session opened with start_filestream
         """
         if self.filestream_tarinfo.size != self.filestream_sum:
-            raise Exception("Expected size of filestream %s has not been met."\
+            raise Exception("Expected size of filestream %s has not been met. "\
                             "Expected %d, but was %d."
-                            % (filestream_tarinfo.name, self.filestream_tarinfo.size,
+                            % (self.filestream_tarinfo.name, self.filestream_tarinfo.size,
                                self.filestream_sum))
         blocks, remainder = divmod(self.filestream_tarinfo.size, tarfile.BLOCKSIZE)
         # Fill last block with zeroes
