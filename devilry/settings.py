@@ -131,7 +131,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 #DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
-#DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore.dbm')
+#DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore', 'deliverystore.dbm')
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
 DEVILRY_MAIN_PAGE = ''

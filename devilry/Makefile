@@ -98,7 +98,11 @@ create-duck1080-data:
 		--assignment-long-name "Week four"
 
 
-init-exampledb: cleardb
+clear-exampledb: cleardb
+	rm -rf deliverystore
+
+init-exampledb: clear-exampledb
+	mkdir deliverystore
 	python manage.py loaddata -v0 core/fixtures/example/users.json
 
 create-exampledb: init-exampledb create-duck1100-data create-duck1080-data
@@ -108,16 +112,14 @@ backup-exampledb:
 	rm -f $(EXAMPLEDATA_BACKUP).tar.bz2
 	mkdir $(EXAMPLEDATA_BACKUP)
 	sqlite3 db.sqlite3 .dump > $(EXAMPLEDATA_BACKUP)/dbdump.sql
-	cp deliverystore.dbm.dat $(EXAMPLEDATA_BACKUP)/
-	cp deliverystore.dbm.dir $(EXAMPLEDATA_BACKUP)/
+	cp -r deliverystore $(EXAMPLEDATA_BACKUP)
 	tar -cvjf $(EXAMPLEDATA_BACKUP).tar.bz2 $(EXAMPLEDATA_BACKUP)
 	rm -rf $(EXAMPLEDATA_BACKUP)
 
 restore-exampledb:
 	rm -f db.sqlite3
 	tar -xvjf $(EXAMPLEDATA_BACKUP).tar.bz2
-	cp $(EXAMPLEDATA_BACKUP)/deliverystore.dbm.dat ./
-	cp $(EXAMPLEDATA_BACKUP)/deliverystore.dbm.dir ./
+	cp $(EXAMPLEDATA_BACKUP)/deliverystore ./
 	sqlite3 db.sqlite3 < $(EXAMPLEDATA_BACKUP)/dbdump.sql
 	rm -rf $(EXAMPLEDATA_BACKUP)
 
