@@ -103,7 +103,6 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
 
     active_deadline = delivery_obj.assignment_group.get_active_deadline().deadline
     after_deadline = active_deadline < delivery_obj.time_of_delivery
-    print active_deadline, delivery_obj.time_of_delivery
     if after_deadline:
         diff = delivery_obj.time_of_delivery - active_deadline
     else:
