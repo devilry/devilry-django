@@ -13,16 +13,27 @@ import copy
 import gc
 
 def create_zip_from_assignmentgroups(request, assignment, assignmentgroups):
-    it = iter_streamable_archive(StreamableZip(), assignment, assignmentgroups)
+    it = iter_archive_assignmengroups(StreamableZip(), assignment, assignmentgroups)
     response = HttpResponse(it, mimetype="application/zip")
     response["Content-Disposition"] = "attachment; filename=%s.zip" % assignment.get_path()  
     return response
 
 def create_tar_from_assignmentgroups(request, assignment, assignmentgroups):
-    it = iter_streamable_archive(StreamableTar(), assignment, assignmentgroups)
+    it = iter_archive_assignmengroups(StreamableTar(), assignment, assignmentgroups)
     response = HttpResponse(it, mimetype="application/tar")  
     response["Content-Disposition"] = "attachment; filename=%s.tar" % assignment.get_path()  
     return response
+
+
+def create_tar_from_delivery(request, delivery):
+    group = delivery.assignment_group
+    assignment = group.parentnode
+    group_name = get_assignmentgroup_name(group)
+    it = iter_archive_deliveries(StreamableTar(), assignment, group_name, [delivery])
+    response = HttpResponse(it, mimetype="application/tar")  
+    response["Content-Disposition"] = "attachment; filename=%s.tar" % assignment.get_path()  
+    return response
+
 
 def verify_not_exceeding_max_file_size(groups):
     max_size = settings.MAX_ARCHIVE_CHUNK_SIZE
@@ -132,74 +143,73 @@ def get_dictionary_with_name_matches(assignmentgroups):
     return matches
 
 
-def iter_streamable_archive(archive, assignment, assignmentgroups):
+def iter_archive_deliveries(archive, assignment, group_name, deliveries):
+    include_delivery_explanation = False
+    
+    if len(deliveries) > 1:
+        include_delivery_explanation = True
+        multiple_deliveries_content = "Delivery-ID    File count    Total size     Delivery time  \r\n"
+        
+    for delivery in deliveries:
+        metas = delivery.filemetas.all()
+        delivery_size = 0
+        for f in metas:
+            delivery_size += f.size
+            filename = "%s/%s/%s" % (assignment.get_path(), group_name,
+                                 f.filename)
+            if include_delivery_explanation:
+                filename = "%s/%s/%d/%s" % (assignment.get_path(), group_name,
+                                                delivery.number, f.filename)
+            # File size i greater than MAX_ARCHIVE_CHUNK_SIZE bytes
+            # Write only chunks of size MAX_ARCHIVE_CHUNK_SIZE to the archive
+            if f.size > settings.MAX_ARCHIVE_CHUNK_SIZE:
+                if not archive.can_write_chunks():
+                    raise Exception("The size of file %s is greater than the maximum allowed size. "\
+                                    "Download stream aborted.")
+                chunk_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+                # Open file stream for reading
+                file_to_stream = f.read_open()
+                # Start a filestream in the archive
+                archive.start_filestream(filename, f.size)
+                for i in inclusive_range(chunk_size, f.size, chunk_size):
+                    bytes = file_to_stream.read(chunk_size)
+                    archive.append_file_chunk(bytes, len(bytes))
+                    #Read the chunk from the archive and yield the data
+                    yield archive.get_bytes()
+                archive.close_filestream()
+            else:
+                bytes = f.read_open().read(f.size)
+                archive.add_file(filename, bytes)
+                #Read the content from the streamable archive and yield the data
+                yield archive.get_bytes()
+            
+        if include_delivery_explanation:
+            multiple_deliveries_content += "  %3d            %3d          %5d        %s\r\n" % \
+                                           (delivery.number, len(metas), delivery_size,
+                                            date_format(delivery.time_of_delivery, "DATETIME_FORMAT"))
+    # Adding file explaining multiple deliveries
+    if include_delivery_explanation:
+        archive.add_file("%s/%s/%s" %
+                         (assignment.get_path(), group_name,
+                          "Deliveries.txt"),
+                         multiple_deliveries_content.encode("ascii"))
+
+
+def iter_archive_assignmengroups(archive, assignment, assignmentgroups):
     """
     Creates an archive, adds files delivered by the assignmentgroups
     and yields the data.
     """
     name_matches = get_dictionary_with_name_matches(assignmentgroups)
-    iter_done = False
-    
-    # Finished iterating all the files
-    if iter_done:
-        raise StopIteration()
-
-    for ass_group in assignmentgroups:
-        ass_group_name = get_assignmentgroup_name(ass_group)
+    for group in assignmentgroups:
+        group_name = get_assignmentgroup_name(group)
         # If multiple groups with the same members exists,
-        # postfix the name with asssignmengroup ID.
-        if name_matches[ass_group_name] > 1:
-            ass_group_name = "%s+%d" % (ass_group_name, ass_group.id)
-            
-        include_delivery_explanation = False
-        deliveries = ass_group.deliveries.all()
-        if len(deliveries) > 1:
-            include_delivery_explanation = True
-            multiple_deliveries_content = "Delivery-ID    File count    Total size     Delivery time  \r\n"
-            
-        for delivery in deliveries:
-            metas = delivery.filemetas.all()
-            delivery_size = 0
-            for f in metas:
-                delivery_size += f.size
-                filename = "%s/%s/%s" % (assignment.get_path(), ass_group_name,
-                                         f.filename)
-                if include_delivery_explanation:
-                    filename = "%s/%s/%d/%s" % (assignment.get_path(), ass_group_name,
-                                                delivery.number, f.filename)
-                # File size i greater than MAX_ARCHIVE_CHUNK_SIZE bytes
-                # Write only chunks of size MAX_ARCHIVE_CHUNK_SIZE to the archive
-                if f.size > settings.MAX_ARCHIVE_CHUNK_SIZE:
-                    if not archive.can_write_chunks():
-                        raise Exception("The size of file %s is greater than the maximum allowed size. "\
-                                        "Download stream aborted.")
-                    chunk_size = settings.MAX_ARCHIVE_CHUNK_SIZE
-                    # Open file stream for reading
-                    file_to_stream = f.read_open()
-                    # Start a filestream in the archive
-                    archive.start_filestream(filename, f.size)
-                    for i in inclusive_range(chunk_size, f.size, chunk_size):
-                        bytes = file_to_stream.read(chunk_size)
-                        archive.append_file_chunk(bytes, len(bytes))
-                        #Read the chunk from the archive and yield the data
-                        yield archive.get_bytes()
-                    archive.close_filestream()
-                else:
-                    bytes = f.read_open().read(f.size)
-                    archive.add_file(filename, bytes)
-                #Read the content from the streamable archive and yield the data
-                yield archive.get_bytes()
-            if include_delivery_explanation:
-                multiple_deliveries_content += "  %3d            %3d          %5d        %s\r\n" % \
-                                               (delivery.number, len(metas), delivery_size,
-                                                date_format(delivery.time_of_delivery, "DATETIME_FORMAT"))
-        # Adding file explaining multiple deliveries
-        if include_delivery_explanation:
-            archive.add_file("%s/%s/%s" %
-                                  (assignment.get_path(), ass_group_name,
-                                   "Student has multiple deliveries.txt"),
-                                  multiple_deliveries_content.encode("ascii"))
-    iter_done = True
+        # postfix the name with assignmengroup ID.
+        if name_matches[group_name] > 1:
+            group_name = "%s+%d" % (group_name, group.id)
+        deliveries = group.deliveries.all()
+        for bytes in iter_archive_deliveries(archive, assignment, group_name, deliveries):
+            yield bytes
     archive.close()
     yield archive.get_bytes()
 
