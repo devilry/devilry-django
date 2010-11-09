@@ -48,6 +48,7 @@ $.widget("ui.combobox", {
         .html("Now")
         .appendTo(button_container)
         .button()
+        .addClass("ui-priority-secondary")
         .click(function() {
           var now = new Date();
           var hours = now.getHours();

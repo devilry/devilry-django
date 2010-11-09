@@ -1,3 +1,6 @@
+from django.template.loader import render_to_string
+from django.template import RequestContext
+
 from devilry.core.models import Node, Subject, Period, Assignment
 
 
@@ -16,4 +19,8 @@ def main(request):
     if not is_admin:
         return None # only show if the user is admin on at least one
 
-    return None # will be something else here soon:)
+    stats = render_to_string('devilry/admin/dashboard/stats.django.html')
+    return render_to_string(
+        'devilry/admin/dashboard/admin_important.django.html', {
+            "items": [stats]
+        }, context_instance=RequestContext(request))
