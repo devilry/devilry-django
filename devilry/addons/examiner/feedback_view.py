@@ -71,7 +71,8 @@ def redirect_after_successful_save(request, delivery_obj):
                 'users: %s.' % email_list))
             messages.save(request)
     else:
-        messages.add_warning(_("The feedback you saved was not published and is therefore not visible to the student."))
+        messages.add_warning(_("The feedback was saved, but not published "
+                "and is therefore not visible to the student."))
 
     messages.save(request)
     return HttpResponseRedirect(
