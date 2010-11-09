@@ -13,11 +13,6 @@ urlpatterns = patterns('devilry.addons.examiner',
     url(r'^list-groups/json/(?P<assignment_id>\d+)$',
         'views.list_assignmentgroups_json',
         name='devilry-examiner-list_assignmentgroups_json'),
-
-    url(r'^assignments/(?P<assignment_id>\d+)/download_file_collection$',
-        'views.download_file_collection',
-        name='devilry-examiner-download_file_collection'),
-
     url(r'^assignments/(?P<assignmentgroup_id>\d+)$',
         'views.show_assignmentgroup',
         name='devilry-examiner-show_assignmentgroup'),
