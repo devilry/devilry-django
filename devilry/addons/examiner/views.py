@@ -16,9 +16,11 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
         FilterAfterDeadline)
-from devilry.core.utils.delivery_collection import create_zip_from_assignmentgroups
+from devilry.core.utils.delivery_collection import (create_zip_from_assignmentgroups,
+                                                    create_tar_from_assignmentgroups,
+                                                    verify_not_exceeding_max_file_size)
 from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
-
+from django.conf import settings
 
 class DeadlineForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=DevilryDateTimeWidget,
@@ -46,8 +48,10 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     default_order_by = 'status'
 
     selectionactions = [
-        AssignmentGroupsAction(_("Download deliveries"),
-                               'devilry-examiner-download_file_collection'),
+        AssignmentGroupsAction(_("Download deliveries as ZIP"),
+                               'devilry-examiner-download_file_collection_as_zip'),
+        AssignmentGroupsAction(_("Download deliveries as TAR"),
+                               'devilry-examiner-download_file_collection_as_tar'),
     ]
     
 
@@ -234,13 +238,32 @@ def edit_feedback(request, delivery_id):
 
 
 @login_required
-def download_file_collection(request, assignment_id):
+def download_file_collection_as_zip(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)        
-    #Check permission fro examiner
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    #Check permission for examiner
     for g in groups:
         if not g.can_examine(request.user):
             return HttpResponseForbidden("Forbidden: You tried to download"\
                                          "deliveries from an assignment you"\
                                          "do not have access to.")
-    return create_zip_from_assignmentgroups(request, assignment, groups)
+    try:
+        verify_not_exceeding_max_file_size(groups)
+    except Exception, e:
+        return HttpResponseForbidden(_("One or more files exeeds the maximum file size for ZIP files."))
+    try:
+        return create_zip_from_assignmentgroups(request, assignment, groups)
+    except Exception, e:
+        print "Exception:", e
+
+@login_required
+def download_file_collection_as_tar(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)        
+    #Check permission for examiner
+    for g in groups:
+        if not g.can_examine(request.user):
+            return HttpResponseForbidden("Forbidden: You tried to download"\
+                                         "deliveries from an assignment you"\
+                                         "do not have access to.")
+    return create_tar_from_assignmentgroups(request, assignment, groups)
