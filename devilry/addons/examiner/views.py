@@ -16,9 +16,8 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
         FilterAfterDeadline)
-from devilry.core.utils.delivery_collection import (create_zip_from_assignmentgroups,
-                                                    create_tar_from_assignmentgroups,
-                                                    create_tar_from_delivery,
+from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
+                                                    create_archive_from_delivery,
                                                     verify_not_exceeding_max_file_size)
 from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
 from django.conf import settings
@@ -268,7 +267,7 @@ def edit_feedback(request, delivery_id, is_admin=None):
 
 
 @login_required
-def download_file_collection_as_zip(request, assignment_id):
+def download_file_collection(request, assignment_id, archive_type=None):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
     #Check permission for examiner
@@ -277,34 +276,37 @@ def download_file_collection_as_zip(request, assignment_id):
             return HttpResponseForbidden("Forbidden: You tried to download"\
                                          "deliveries from an assignment you"\
                                          "do not have access to.")
-    try:
-        verify_not_exceeding_max_file_size(groups)
-    except Exception, e:
-        return HttpResponseForbidden(_("One or more files exeeds the maximum file size for ZIP files."))
-    try:
-        return create_zip_from_assignmentgroups(request, assignment, groups)
-    except Exception, e:
-        print "Exception:", e
+    if archive_type == "zip":
+        try:
+            verify_not_exceeding_max_file_size(groups)
+        except Exception, e:
+            return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
+    return create_archive_from_assignmentgroups(request, assignment, groups, archive_type)
+
 
 @login_required
-def download_file_collection_as_tar(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id)
-    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)        
-    #Check permission for examiner
-    for g in groups:
-        if not g.can_examine(request.user):
-            return HttpResponseForbidden("Forbidden: You tried to download"\
-                                         "deliveries from an assignment you"\
-                                         "do not have access to.")
-    return create_tar_from_assignmentgroups(request, assignment, groups)
-
-@login_required
-def download_delivery_as_tar(request, delivery_id):
+def download_delivery(request, delivery_id, archive_type=None):
     delivery = get_object_or_404(Delivery, id=delivery_id)
     #Check permission for examiner
     if not delivery.assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden: You tried to download"\
                                      "deliveries from an assignment you"\
                                      "do not have access to.")
-    return create_tar_from_delivery(request, delivery)
+    if archive_type == "zip":
+        try:
+            verify_not_exceeding_max_file_size(groups)
+        except Exception, e:
+            return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
+    return create_archive_from_delivery(request, delivery, archive_type)
+
+@login_required
+def download_group_deliveries(request, delivery_id, archive_type=None):
+    delivery = get_object_or_404(Delivery, id=delivery_id)
+    group = get_object_or_404(AssignmentGroup, id=delivery.assignment_group.id)
+    #Check permission for examiner
+    if not delivery.assignment_group.can_examine(request.user):
+        return HttpResponseForbidden("Forbidden: You tried to download"\
+                                     "deliveries from an assignment you"\
+                                     "do not have access to.")
+    return create_archive_from_assignmentgroups(request, group.parentnode, [group], archive_type)
     

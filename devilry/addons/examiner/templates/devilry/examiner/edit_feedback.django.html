@@ -141,7 +141,14 @@
         {{ delivery_number }}.
       {% endblocktrans %}
       {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
-    </div>
+    
+	  {% if delivery.filemetas.count > 1 %}
+	  <a class='button ui-priority-secondary tooltip-hover'
+		 href='{% url devilry-examiner-download_group_deliveries_as_tar delivery.id %}'>
+		{% trans "Download all deliveries" %}
+	  </a>
+	{% endif %}
+	</div>
   {% endif %}
 
   <div id="filebox" class="booring-message metainfo-item">
@@ -155,8 +162,12 @@
       {% endfor %}
       </ul>
 
-  {% if delivery.filemetas.count > 1 %}
-	  <a href='{% url devilry-examiner-download_delivery_as_tar delivery.id %}'>Download all</a>  
+	  {% if delivery.filemetas.count > 1 %}
+	  
+	  <a class='button ui-priority-secondary tooltip-hover'
+		 href='{% url devilry-examiner-download_delivery_as_tar delivery.id %}'>
+		{% trans "Download all files" %}
+	  </a>  
   {% endif %}
 	  
   </div>
