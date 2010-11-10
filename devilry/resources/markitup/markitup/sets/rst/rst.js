@@ -2,7 +2,7 @@ markitupRstSettings = {
 	previewParserPath: DEVILRY_MAIN_PAGE + '/ui/preview_rst',
 	previewParserVar: 'rst',
 	previewAutoRefresh: true,
-	previewInWindow: 'width=800, height=600, resizable=yes, scrollbars=yes',
+	//previewInWindow: 'width=800, height=600, resizable=yes, scrollbars=yes',
 	resizeHandle: true,
 	onShiftEnter: {keepDefault:false, openWith:'\n\n'},
 	onTab: {keepDefault:false, replaceWith:'    '},
