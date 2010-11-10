@@ -89,23 +89,49 @@ LOGIN_URL = '/ui/login'
 DEVILRY_LOGOUT_URL = '/ui/logout'
 
 
+#DEVILRY_APPS = [
+    #'devilry.core',
+    #'devilry.ui',
+    #'devilry.adminscripts',
+    #'devilry.addons.student',
+    #'devilry.addons.examiner',
+    #'devilry.addons.admin',
+    #'devilry.addons.aboutme',
+    #'devilry.addons.grade_approved',
+    #'devilry.addons.grade_default',
+    #'devilry.addons.grade_rstschema',
+    #'devilry.addons.gradestats',
+    #'devilry.addons.xmlrpc_examiner',
+    #'devilry.addons.quickdash',
+    #'devilry.xmlrpc',
+    #'devilry.xmlrpc_client'
+#]
+
+#INSTALLED_APPS = [
+    #'django.contrib.webdesign', 
+    #'django.contrib.markup', 
+    #'django.contrib.sessions',
+    #'django.contrib.sites',
+    #'django.contrib.admin',
+    #'django.contrib.auth',
+    #'django.contrib.contenttypes'
+#] + DEVILRY_APPS
+
+
 INSTALLED_APPS = (
-    'django.contrib.webdesign', 
     'django.contrib.markup', 
     'django.contrib.sessions',
     'django.contrib.sites',
-	'django.contrib.admin',
+    'django.contrib.admin',
     'devilry.addons.student',
     'devilry.addons.examiner',
     'devilry.addons.admin',
-    'devilry.addons.aboutme',
     'devilry.addons.grade_approved',
     'devilry.addons.grade_default',
     'devilry.addons.grade_schema',
     'devilry.addons.grade_rstschema',
-    'devilry.addons.gradestats',
-    'devilry.addons.xmlrpc_examiner',
     'devilry.addons.quickdash',
+    'devilry.addons.xmlrpc_examiner',
     'devilry.xmlrpc',
     'devilry.xmlrpc_client',
     'django.contrib.auth',
@@ -113,7 +139,10 @@ INSTALLED_APPS = (
     'devilry.core',
     'devilry.ui',
     'devilry.adminscripts',
-    )
+    'devilry.addons.gradestats'
+)
+
+
 
 
 DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
