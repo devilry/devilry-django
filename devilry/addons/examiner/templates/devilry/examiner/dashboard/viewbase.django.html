@@ -7,26 +7,38 @@
 {% block help %}{% endblock %}
 </p>
 
-<dl>
+<div class="dashboard-grouplist">
 {% for group in groups %}
-	<dt>
-		{{ group.get_candidates }}
-		{% if group.name %}
-			({{ group.name }})
-		{% endif %}
-	</dt>
-	<dd>
-		<div>
-			{{ group.parentnode.parentnode.parentnode.short_name }}
-			- {{ group.parentnode.parentnode.short_name }}
-			-
-      <a href="{% url devilry-examiner-list_assignmentgroups group.parentnode.id %}">
-        {{ group.parentnode.short_name }}
-      </a>
-		</div>
-    {% block custom_groupinfo %}{% endblock %}
-	</dd>
+  <div class="dashboard-grouplist-item">
+    <div class="dashboard-grouplist-header">
+      {% if group.name %}
+        <span class="{% if group.name|length > 15 %}dashboard-grouplist-header-small{% endif %}">
+          {{ group.name }}:
+        </span>
+      {% else %}
+        <span class="{% if group.get_candidates|length > 15 %}dashboard-grouplist-header-small{% endif %}">
+          {{ group.get_candidates }}:
+        </span>
+      {% endif %}
+    </div>
+    <div class="dashboard-grouplist-body">
+      {% if group.name %}
+        <div class="unimportant">
+          {% trans "Students" %}: <em>{{ group.get_candidates }}</em>
+        </div>
+      {% endif %}
+      <div class="unimportant">
+        {{ group.parentnode.parentnode.parentnode.short_name }}
+        - {{ group.parentnode.parentnode.short_name }}
+        -
+        <a href="{% url devilry-examiner-list_assignmentgroups group.parentnode.id %}">
+          {{ group.parentnode.short_name }}
+        </a>
+      </div>
+      {% block custom_groupinfo %}{% endblock %}
+    </div>
+  </div>
 {% endfor %}
-</dl>
+</div>
 
 {% endblock %}

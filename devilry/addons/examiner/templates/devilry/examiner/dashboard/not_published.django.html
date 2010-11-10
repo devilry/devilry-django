@@ -29,9 +29,7 @@ latest changed feedback first.
   {% endif %}
   <div>
     <a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
-      <strong>
-        {% trans "Edit feedback" %}
-      </strong>
+      {% trans "Edit feedback" %}
     </a>
   </div>
 {% endblock %}
