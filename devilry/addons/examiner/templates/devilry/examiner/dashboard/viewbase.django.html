@@ -22,12 +22,7 @@
       {% endif %}
     </div>
     <div class="dashboard-grouplist-body">
-      {% if group.name %}
-        <div class="unimportant">
-          {% trans "Students" %}: <em>{{ group.get_candidates }}</em>
-        </div>
-      {% endif %}
-      <div class="unimportant">
+      <div>
         {{ group.parentnode.parentnode.parentnode.short_name }}
         - {{ group.parentnode.parentnode.short_name }}
         -
@@ -35,6 +30,11 @@
           {{ group.parentnode.short_name }}
         </a>
       </div>
+      {% if group.name %}
+        <div class="unimportant">
+          {% trans "Students" %}: <em>{{ group.get_candidates }}</em>
+        </div>
+      {% endif %}
       {% block custom_groupinfo %}{% endblock %}
     </div>
   </div>
