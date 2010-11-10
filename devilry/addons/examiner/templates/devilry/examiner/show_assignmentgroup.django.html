@@ -166,11 +166,11 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 {% if ungrouped_deliveries %} 
 <div class='deadline-box'>
   <h3>{% trans "Deliveries" %}</h3>
-  <div class="accordion">
+  <ul class="deliverylist">
     {% for delivery in ungrouped_deliveries %}
     {% include "devilry/examiner/include/deliverylisting.django.html" %}
     {% endfor %}
-  </div>
+  </ul>
 </div>
 {% else %}
 {% if after_deadline %}
