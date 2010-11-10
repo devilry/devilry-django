@@ -160,7 +160,7 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
 
     if request.method == 'POST':
         if feedback_form.is_valid() and grade_form.is_valid():
-            grade_form.save()
+            grade_form.instance.save(feedback_form.instance)
             feedback_form.instance.grade = grade_form.instance
             feedback_form.save()
             return redirect_after_successful_save(request, delivery_obj)
