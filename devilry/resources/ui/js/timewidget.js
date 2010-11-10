@@ -64,7 +64,8 @@ $.widget("ui.combobox", {
           if(qry.length != 0) {
             var container = qry.first();
             var datefield = container.find(".devilry-date");
-            var month = now.getMonth()<10?"0"+now.getMonth():now.getMonth();
+            var monthint = now.getMonth() + 1;
+            var month = monthint<10?"0"+monthint:monthint;
             var day = now.getDate()<10?"0"+now.getDate():now.getDate();
             var d = now.getFullYear() + "-" + month + "-" + day;
             datefield.val(d);
