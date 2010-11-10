@@ -18,7 +18,8 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
         FilterAfterDeadline)
 from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
-                                                    verify_not_exceeding_max_file_size)
+                                                    verify_groups_not_exceeding_max_file_size,
+                                                    verify_deliveries_not_exceeding_max_file_size)
 from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
 from django.conf import settings
 
@@ -278,7 +279,7 @@ def download_file_collection(request, assignment_id, archive_type=None):
                                          "do not have access to.")
     if archive_type == "zip":
         try:
-            verify_not_exceeding_max_file_size(groups)
+            verify_groups_not_exceeding_max_file_size(groups)
         except Exception, e:
             return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
     return create_archive_from_assignmentgroups(request, assignment, groups, archive_type)
@@ -294,7 +295,7 @@ def download_delivery(request, delivery_id, archive_type=None):
                                      "do not have access to.")
     if archive_type == "zip":
         try:
-            verify_not_exceeding_max_file_size(groups)
+            verify_deliveries_not_exceeding_max_file_size([delivery])
         except Exception, e:
             return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
     return create_archive_from_delivery(request, delivery, archive_type)
