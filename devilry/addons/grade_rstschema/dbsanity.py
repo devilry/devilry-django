@@ -29,6 +29,6 @@ class RstGradeDbSanityCheck(DbSanityCheck):
     @classmethod
     def fix(cls):
         for rg in RstSchemaGrade.objects.all():
-            rg.save()
+            rg.save(rg.get_feedback_obj())
         for schemadef in RstSchemaDefinition.objects.all():
             schemadef.save()
