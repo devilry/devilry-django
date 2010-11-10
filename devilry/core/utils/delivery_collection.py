@@ -12,20 +12,22 @@ from django.conf import settings
 import copy
 import gc
 
-def create_zip_from_assignmentgroups(request, assignment, assignmentgroups):
-    it = iter_archive_assignmengroups(StreamableZip(), assignment, assignmentgroups)
-    response = HttpResponse(it, mimetype="application/zip")
-    response["Content-Disposition"] = "attachment; filename=%s.zip" % assignment.get_path()  
+def create_archive_from_assignmentgroups(request, assignment, assignmentgroups, archive_type):
+
+    if archive_type == 'zip':
+        it = iter_archive_assignmengroups(StreamableZip(), assignment, assignmentgroups)
+        response = HttpResponse(it, mimetype="application/zip")
+        response["Content-Disposition"] = "attachment; filename=%s.zip" % assignment.get_path()  
+    elif archive_type == 'tar':
+        it = iter_archive_assignmengroups(StreamableTar(), assignment, assignmentgroups)
+        response = HttpResponse(it, mimetype="application/tar")  
+        response["Content-Disposition"] = "attachment; filename=%s.tar" % assignment.get_path()  
+    else:
+        raise Exception("archive_type is invalid:%s" % archive_type)
     return response
 
-def create_tar_from_assignmentgroups(request, assignment, assignmentgroups):
-    it = iter_archive_assignmengroups(StreamableTar(), assignment, assignmentgroups)
-    response = HttpResponse(it, mimetype="application/tar")  
-    response["Content-Disposition"] = "attachment; filename=%s.tar" % assignment.get_path()  
-    return response
 
-
-def create_tar_from_delivery(request, delivery):
+def create_archive_from_delivery(request, delivery, archive_type):
     group = delivery.assignment_group
     assignment = group.parentnode
     group_name = get_assignmentgroup_name(group)
@@ -41,7 +43,7 @@ def verify_not_exceeding_max_file_size(groups):
         for d in g.deliveries.all():
             for f_meta in d.filemetas.all():
                 if f_meta.size > max_size:
-                    raise Exception(_("One or more files exceeds the maximum file size for ZIP files."))
+                    raise Exception()
 
 class DevilryStringIO(StringIO, object):
 
