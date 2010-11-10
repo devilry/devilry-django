@@ -11,16 +11,13 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from devilry.ui.messages import UiMessages
-from devilry.core.utils.GroupNodes import group_assignmentgroups, print_tree
+from devilry.core.utils.GroupNodes import group_assignmentgroups
 from devilry.core.models import Delivery, AssignmentGroup
 from devilry.ui.defaults import DATETIME_FORMAT
 from devilry.core.utils.verify_unique_entries import verify_unique_entries
 from devilry.core.devilry_email import send_email
+from actionregistry import periodactions, groupactions
 
-
-
-class UploadFileForm(forms.Form):
-        file = forms.FileField()
 
 @login_required
 @transaction.autocommit
@@ -38,10 +35,25 @@ def add_delivery(request, assignment_group_id, messages=None):
     filenames_to_deliver = None
 
     if assignment_group.parentnode.filenames:
-        valid_filenames = assignment_group.parentnode.get_filenames() 
+        filenames_to_deliver = assignment_group.parentnode.get_filenames()
+        valid_filenames = {}
+        for fname in filenames_to_deliver:
+            valid_filenames[fname] = fname
         upload_file_count = len(valid_filenames)
-        filenames_to_deliver = ''.join([f + ", " for f in valid_filenames])
-        filenames_to_deliver = filenames_to_deliver[:-2]
+
+    class UploadFileForm(forms.Form):
+        file = forms.FileField()
+    
+        def __init__(self, *args, **kwargs):
+            super(UploadFileForm, self).__init__(*args, **kwargs)
+
+        def clean(self):
+            f = super(UploadFileForm, self).clean()
+            #if 'file' in f:
+            #    filename = self.cleaned_data['file'].name
+            #    if not valid_filenames.has_key(filename):
+            #        raise forms.ValidationError("Incorrect filename %s" % filename)
+            return f
 
     UploadFileFormSet = formset_factory(UploadFileForm, extra=upload_file_count)
 
@@ -52,26 +64,11 @@ def add_delivery(request, assignment_group_id, messages=None):
                 messages.add_error(_("The filenames are not unique."))
             else:
                 filenames_valid = True
-                if assignment_group.parentnode.filenames:
-                    filenames = []
-                    for i in range(0, formset.total_form_count()):
-                        form = formset.forms[i]
-                        
-                        if 'file' in form.cleaned_data:
-                            filename = form.cleaned_data['file']
-                            if filename != '':
-                                filenames.append(filename)
-                    try:
-                        assignment_group.parentnode.validate_filenames(filenames)
-                                                
-                        if len(filenames) == 0:
-                            messages.add_error(_("You must choose at least one file to deliver."))
-                            filenames_valid = False
 
-                    except ValueError, e:
-                        filenames_valid = False
-                        messages.add_error(_("%s" % e))
-
+                if len(request.FILES.values()) == 0:
+                    messages.add_error(_("You must choose at least one file to deliver."))
+                    filenames_valid = False
+                    
                 if filenames_valid:
                     delivery = Delivery.begin(assignment_group, request.user)
                     for f in request.FILES.values():
@@ -81,17 +78,19 @@ def add_delivery(request, assignment_group_id, messages=None):
                     return HttpResponseRedirect(
                         reverse('devilry-student-successful_delivery',
                                 args=[assignment_group_id]))
-        else:
-            messages.add_error(_("An unknown error occured."))
+
     else:
         formset = UploadFileFormSet()
 
     return render_to_response('devilry/student/add_delivery.django.html', {
+        'groupactions': groupactions,
         'assignment_group': assignment_group,
         'formset': formset,
         'messages': messages,
+        'using_ie': request.META['HTTP_USER_AGENT'].find('MSIE') > 0,
         'filenames_to_deliver': filenames_to_deliver,
         }, context_instance=RequestContext(request))
+
 
 def successful_delivery(request, assignment_group_id):
     messages = UiMessages()
@@ -102,18 +101,31 @@ def successful_delivery(request, assignment_group_id):
     subject = period.parentnode
     latest = assignment_group.deliveries.all()[0]
     
-    email_message = "This is a receipt for your delivery."
+    email_message = _("This is a receipt for your delivery.")
     email_message += "\n\n"
-    email_message += "Subject: %s - %s\n" % (subject.long_name, period.long_name)
-    email_message += "Time of delivery: %s\n" % latest.time_of_delivery.strftime(DATETIME_FORMAT)
-    email_message += "Files:\n"
+    email_message += _("Time of delivery: %s\n") \
+                     % latest.time_of_delivery.strftime(DATETIME_FORMAT)
+    email_message += _("Subject: %s\n") % subject.long_name
+    email_message += _("Period: %s\n") % period.long_name
+    email_message += _("\nFiles:\n")
 
     for fm in latest.filemetas.all():
         email_message += " - %s (%d bytes)\n" % (fm.filename, fm.size)
-    
-    send_email(request.user, 
-                    "Receipt for your delivery on %s" % (subject.short_name), 
-                    email_message)
+        
+    cands = assignment_group.candidates.all()
+    user_list = []
+    for cand in cands:
+        user_list.append(cand.student)
+
+    try:
+        send_email(user_list, 
+                   _("Receipt for delivery on %s") \
+                   % (assignment_group.parentnode.get_path()), 
+                   email_message)
+    except Exception, e:
+        email_list = "".join(["%s (%s), " % (u.username, u.email) for u in user_list])[:-2]
+        messages.add_warning(_('An error occured when sending email to the following users: %s.' \
+                               % email_list))
     
     return show_assignmentgroup(request, assignment_group_id, messages)
 
@@ -124,6 +136,7 @@ def show_assignmentgroup(request, assignmentgroup_id, messages=None):
     if not assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_assignmentgroup.django.html', {
+        'groupactions': groupactions,
         'assignment_group': assignment_group,
         'messages': messages,
         }, context_instance=RequestContext(request))
@@ -134,5 +147,29 @@ def show_delivery(request, delivery_id):
     if not delivery.assignment_group.is_candidate(request.user):
         return HttpResponseForbidden("Forbidden")
     return render_to_response('devilry/student/show_delivery.django.html', {
+        'groupactions': groupactions,
         'delivery': delivery,
+        'assignment_group': delivery.assignment_group,
         }, context_instance=RequestContext(request))
+
+
+@login_required
+def list_assignments(request):
+    assignment_groups = AssignmentGroup.active_where_is_candidate(request.user)
+    old_assignment_groups = AssignmentGroup.old_where_is_candidate(request.user)
+
+    if assignment_groups.count() == 0 \
+            and old_assignment_groups.count() == 0:
+        return HttpResponseForbidden("You are not a student")
+
+    subjects = group_assignmentgroups(assignment_groups)
+    old_subjects = group_assignmentgroups(old_assignment_groups)
+    heading = _("Assignments")
+    return render_to_response('devilry/student/list_assignments.django.html', {
+            'periodactions': periodactions,
+            'subjects': subjects,
+            'old_subjects': old_subjects,
+            'has_subjects': len(subjects) > 0,
+            'has_old_subjects': len(old_subjects) > 0,
+            'page_heading': heading,
+            }, context_instance=RequestContext(request))

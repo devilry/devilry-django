@@ -1,23 +1,25 @@
-from django.utils.translation import ugettext as _
 from django.conf.urls.defaults import *
 
 
 # Node, Subject, Period and Assignment has exactly the same url-format
 generic_urls = []
-for clsname in ('node', 'subject', 'period', 'assignment'):
+for clsname in ['node', 'subject', 'period', 'assignment']:
     generic_urls += [
         url(r'^%(clsname)ss/(?P<%(clsname)s_id>\d+)/edit$' % vars(),
-            'views.edit_%(clsname)s' % vars(),
+            'views.%(clsname)s.edit_%(clsname)s' % vars(),
             name='devilry-admin-edit_%(clsname)s' % vars()),
         url(r'^%(clsname)ss/create$' % vars(),
-            'views.edit_%(clsname)s' % vars(),
+            'views.%(clsname)s.edit_%(clsname)s' % vars(),
             name='devilry-admin-create_%(clsname)s' % vars()),
         url(r'^%(clsname)ss/deletemany$' % vars(),
-            'views.delete_many%(clsname)ss' % vars(),
+            'views.%(clsname)s.delete_many%(clsname)ss' % vars(),
             name='devilry-admin-delete_many%(clsname)ss' % vars()),
-        url(r'^autocomplete-%(clsname)sname$' % vars(),
-            'views.json.%(clsname)s_json' % vars(),
-            name='admin-autocomplete-%(clsname)sname' % vars()),
+        url(r'^%(clsname)ss/$' % vars(),
+            'views.%(clsname)s.list_%(clsname)ss' % vars(),
+            name='devilry-admin-list_%(clsname)ss' % vars()),
+        url(r'^%(clsname)ss/json$' % vars(),
+            'views.%(clsname)s.list_%(clsname)ss_json' % vars(),
+            name='devilry-admin-list_%(clsname)ss_json' % vars()),
         ]
 
 urlpatterns = patterns('devilry.addons.admin',
@@ -32,7 +34,7 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-create_assignmentgroup'),
     url(r'^assignments/(?P<assignment_id>\d+)/group/deletemany$',
-        'views.delete_manyassignmentgroups',
+        'views.assignmentgroup.delete_manyassignmentgroups',
         name='devilry-admin-delete_manyassignmentgroups'),
 
     url(r'^assignments/(?P<assignment_id>\d+)/create-assignmentgroups$',
@@ -41,10 +43,6 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/save-assignmentgroups$',
         'views.assignmentgroup.save_assignmentgroups',
         name='devilry-admin-save_assignmentgroups'),
-
-    url(r'^autocomplete-assignmentgroupname/(?P<assignment_id>\d+)$',
-        'views.json.assignmentgroup_json',
-        name='admin-autocomplete-assignmentgroupname'),
 
     url(r'^assignments/(?P<assignment_id>\d+)/set-examiners$',
         'views.assignmentgroup.set_examiners',
@@ -61,6 +59,20 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/clear-deadlines$',
         'views.assignmentgroup.clear_deadlines',
         name='devilry-admin-clear_deadlines'),
+                       
+    url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection$',
+        'views.assignmentgroup.download_assignment_collection',
+        kwargs={"archive_type":"tar"},
+        name='devilry-admin-download_assignment_collection_as_tar'),
+    url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection$',
+        'views.assignmentgroup.download_assignment_collection',
+        kwargs={"archive_type":"zip"},
+        name='devilry-admin-download_assignment_collection_as_zip'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/assignmentgroups-json$',
+        'views.assignment.assignmentgroups_json',
+        name='devilry-admin-assignmentgroups-json'),
+
 
     *generic_urls
 )

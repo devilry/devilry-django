@@ -1,12 +1,20 @@
 from django.utils.translation import ugettext as _
-from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 
-from devilry.addons.dashboard.dashboardplugin_registry import registry, \
-        DashboardItem
+from devilry.addons.quickdash.dashboardplugin_registry import (registry, 
+        DashboardView, DashboardItem, personalgroup)
+from devilry.core.models import AssignmentGroup
+
 import dashboardviews
 
-registry.register_important(DashboardItem(
-         title = _('Assignments'),
-         candidate_access = True,
-         view = dashboardviews.list_assignments))
+def is_student(request):
+    return AssignmentGroup.where_is_candidate(request.user).count() > 0
+
+personalgroup.additems(
+    DashboardItem(
+        title = _('Assignments'),
+        url = reverse('devilry-student-list_assignments'),
+        check = is_student),
+)
+
+registry.add_view(DashboardView(dashboardviews.student_important))

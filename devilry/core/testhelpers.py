@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
+import unittest
+import os
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 import gradeplugin
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
@@ -9,9 +12,15 @@ from deliverystore import FileNotFoundError
 
 
 
-def create_from_path(path):
+def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     """ Create a Node, Subject, Period, Assignment or AssignmentGroup from
     ``path``.
+
+    :param grade_plugin_key: Key of the grade plugin to use on assignments.
+        This defaults to the default grade plugin.
+    :param gradeplugin_maxpoints: The ``points`` parameter sent to
+        :meth:`gradeplugin.GradeModel.init_example` if creating a
+        assignment.
     
     Examples::
 
@@ -23,8 +32,9 @@ def create_from_path(path):
     split = path.split(':', 1)
     nodes = split[0].split('.')
     for nodename in nodes:
-        node = Node(short_name=nodename, long_name=nodename)
+        node = Node(short_name=nodename, long_name=nodename.capitalize())
         try:
+            node.clean()
             node.save()
         except:
             node = Node.objects.get(short_name=nodename)
@@ -37,8 +47,9 @@ def create_from_path(path):
     # Subject
     subjectname = pathsplit[0]
     subject = Subject(parentnode=node, short_name=subjectname,
-            long_name=subjectname)
+            long_name=subjectname.capitalize())
     try:
+        subject.clean()
         subject.save()
     except:
         subject = Subject.objects.get(short_name=subjectname)
@@ -48,9 +59,10 @@ def create_from_path(path):
     if len(pathsplit) > 1:
         periodname = pathsplit[1]
         period = Period(parentnode=subject, short_name=periodname,
-                long_name=periodname, start_time=datetime.now(),
+                long_name=periodname.capitalize(), start_time=datetime.now(),
                 end_time=datetime.now() + timedelta(10))
         try:
+            period.clean()
             period.save()
         except:
             period = Period.objects.get(parentnode=subject,
@@ -61,15 +73,18 @@ def create_from_path(path):
     if len(pathsplit) > 2:
         assignmentname = pathsplit[2]
         assignment = Assignment(parentnode=period, short_name=assignmentname,
-                long_name=assignmentname, publishing_time=datetime.now())
-        gp = gradeplugin.registry.getdefaultkey()
+                long_name=assignmentname.capitalize(), publishing_time=datetime.now())
+        gp = grade_plugin_key or gradeplugin.registry.getdefaultkey()
         assignment.grade_plugin = gp
         
+        assignment.clean()
         try:
             assignment.save()
         except:
             assignment = Assignment.objects.get(parentnode=period,
                     short_name=assignmentname)
+        assignment.get_gradeplugin_registryitem().model_cls.init_example(
+                assignment, gradeplugin_maxpoints)
         last = assignment
 
     # Candidates
@@ -84,6 +99,7 @@ def create_from_path(path):
                 user = User.objects.get(username=u)
             users.append(user)
         assignment_group = AssignmentGroup(parentnode=assignment)
+        assignment_group.clean()
         assignment_group.save()
         for user in users:
             assignment_group.candidates.add(Candidate(student=user))
@@ -142,3 +158,34 @@ class TestDeliveryStoreMixin(object):
         store.remove(self.filemeta)
         self.assertFalse(store.exists(self.filemeta))
         self.assertRaises(FileNotFoundError, store.remove, self.filemeta)
+
+
+class SeleniumTestBase(unittest.TestCase):
+    fixtures = []
+
+    def clear_testdb(self):
+        os.system('git checkout deliverystore.dbm.dat')
+        os.system('git checkout deliverystore.dbm.dir')
+        if os.path.exists(settings.DATABASE_NAME):
+            os.remove(settings.DATABASE_NAME)
+        os.system('python manage.py syncdb --noinput')
+
+    def load_fixtures(self):
+        if not self.fixtures:
+            raise ValueError("No fixtures in testcase: %s." %
+                    self.__class__.__name__)
+        self.clear_testdb()
+        os.system('python manage.py loaddata -v0 %s' % \
+                ' '.join(self.fixtures))
+
+    def assert403(self, f, *args, **kw):
+        try:
+            f(*args, **kw)
+        except Exception, e:
+            self.assertTrue("403" in str(e))
+            self.assertTrue("FORBIDDEN" in str(e))
+        else:
+            self.fail("403 not raised for %s, %s, %s" % (f, args, kw))
+
+
+

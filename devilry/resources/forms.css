@@ -10,8 +10,7 @@ fieldset h2.legend {
 	padding: 3px 10px 3px 10px;
 	margin: 0;
 	border: none;
-	background-color: #ECEBE9;
-	color: #776B5F;
+	/*background-color: #ECEBE9;*/
 	font-family: "Century Gothic", sans-serif;
 	font-size: 1.0em;
 	font-weight: bold;
@@ -133,5 +132,19 @@ table.tabular-inline tr.oddrow {
 
 
 div.rstschema_field-radio {
-	display: inline;
+	display: inline-block;
+	width:60px;
+	margin-left: 10px;
+	margin-bottom: 8px;
+	text-align: center;
+}
+div.rstschema_field-radio label {
+	display: block;
+	padding: 6px 10px 6px 10px;
+	/*background-color: #aaa;*/
+	text-align: center;
+}
+div.rstschema_field-radio label:hover {
+	cursor: pointer;
+	font-weight: bold;
 }

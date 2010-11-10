@@ -1,0 +1,184 @@
+{% extends "devilry/ui/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load webdesign %}
+
+
+{% block customjs %}
+<script type="text/javascript">
+  $(function() {
+    $(".accordion").accordion({
+      autoHeight: false,
+      header: 'h3'
+    });
+  });
+</script>
+{% endblock %}
+
+
+{% block title %}Page title{% endblock %}
+{% block heading %}Page heading{% endblock %}
+{% block belowheading %}Below heading.{% endblock %}
+
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li><a href="#">Test 1</a></li>
+<li><a href="#">Deep test 1</a>
+	<ul>
+		<li><a href="#">Subitem 1</a></li>
+		<li><a href="#">Subitem 2</a></li>
+	</ul>
+</li>
+<li><a href="#">Deep test 2</a>
+	<ul>
+		<li><a href="#">Subitem 1</a></li>
+		<li><a href="#">Subitem 2</a></li>
+		<li><a href="#">Subitem 3</a></li>
+	</ul>
+</li>
+<li><a href="#">Test 2</a></li>
+<li class="current"><a href="#">Current page</a></li>
+{% endblock %}
+
+{% block messages %}
+	<div class='error-message'>
+		A error message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+	<div class='warning-message'>
+		A warning message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+	<div class='info-message'>
+		A info message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+	<div class='success-message'>
+		A success message.
+		{% include "devilry/ui/skintest-typicalpara.django.html" %}
+	</div>
+{% endblock %}
+
+{% block content %}
+
+{% lorem %}
+<p>{% include "devilry/ui/skintest-typicalpara.django.html" %}</p>
+{% lorem %}
+
+
+<h2>Heading 2</h2>
+{% lorem %}
+<h3>Heading 3</h3>
+{% lorem %}
+<h4>Heading 4</h4>
+{% lorem %}
+
+<div class='accordion'>
+	<h3><a href="#">Accordion page 1</a></h3>
+	<div>
+		{% lorem %}
+		<p>{% include "devilry/ui/skintest-typicalpara.django.html" %}</p>
+		{% lorem %}
+	</div>
+	<h3><a href="#">Accordion page 2</a></h3>
+	<div>
+		{% lorem 3 p %}
+	</div>
+	<h3><a href="#">Accordion page 3</a></h3>
+	<div>
+		{% lorem 2 p %}
+	</div>
+</div>
+
+
+<form method="post" action="#">
+  <fieldset class="stdfieldset">
+		<h2 class="legend">Form test</h2>
+    <ol class="form-list">
+			<li class="form-li form-li-required parentnode">
+				<label for="id_parentnode">Parentnode</label>
+				<div class="form-field">
+					<select name="parentnode" id="id_parentnode">
+						<option value="">---------</option>
+						<option value="3">tull1060.tullesemester</option>
+						<option value="4" selected="selected">inf1100.host2010</option>
+						<option value="5">inf1080.h10</option>
+						<option value="6">inf5063.h2010</option>
+					</select>
+				</div>
+			</li>
+
+			<li class="form-li form-li-required short_name">
+				<label for="id_short_name">Short name</label>
+				<div class="form-field">
+					<input id="id_short_name" type="text" name="short_name" value="uke7" maxlength="20">
+				</div>
+				<p class="form-help">Max 20 characters. Only numbers, lowercase characters, '_' and '-'. </p>
+			</li>
+
+			<li class="form-li filenames">
+				<label for="id_filenames">Filenames</label>
+				<div class="form-field">
+					<textarea id="id_filenames" rows="10" cols="40" name="filenames">cos_Taylor_series_diffeq.py
+position2velocity.py
+density_improved.py
+read_error.py
+pos.dat
+lnsum.dat</textarea>
+			
+				</div>
+				<p class="form-help">Filenames separated by newline or space. If filenames are used, students will not be able to deliver files where the filename is not among the given filenames.</p>
+			</li>
+
+			<li class="form-li must_pass">
+		
+			<label for="id_must_pass">Must pass</label>
+				<div class="form-field">
+					<input type="checkbox" name="must_pass" id="id_must_pass">
+				</div>
+				<p class="form-help">Each student must get a passing grade on this assignment to get a passing grade on the period.</p>
+			</li>
+		</ol>
+  </fieldset>
+	<input type="submit" name="save" value="Save" class="button"/>
+	<input type="submit" name="delete" value="Delete button" class="button delete"/>
+</form>
+
+
+
+<h2>A vertical_infotable</h2>
+<table class="vertical_infotable">
+	<tbody>
+		<tr>
+			<th>Time of delivery</th>
+			<td>2010-10-04 23:59</td>
+		</tr>
+		<tr>
+			<th>Delivered by</th>
+			<td>testuser</td>
+		</tr>
+		<tr>
+			<th>Files</th>
+			<td>
+				<ul class="files-list">
+					<li>
+						<a href="/ui/download-file/7174">fill_arrays_loop.py</a>  
+						<span class="filesize">(542 bytes)</span>
+					</li>
+					<li>
+						<a href="/ui/download-file/7175">fill_arrays_vectorized.py</a>  
+						<span class="filesize">(166 bytes)</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<th>Feedback last modified by</th>
+			<td>testexaminer</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+{% endblock %}

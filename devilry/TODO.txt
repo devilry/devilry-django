@@ -44,8 +44,6 @@
 - Deadline text visible to student
 
 
-clean method in BaseNode is not called when e.g. creating new subject
-
 If a user is admin and examiner, the views on the dashboard should indicate.
 
 Add button 'create and add new' for period/subject/assignments
@@ -53,7 +51,6 @@ Add button 'create and add new' for period/subject/assignments
 Improve setting (publishing) time when e.g. creating new assignment.
 
 Users who are not admins on any nodes, should not be able to view the create-pages.
-
 
 One user can now be added to the same group twice. Should not be possible. 
 

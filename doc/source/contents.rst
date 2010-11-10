@@ -7,5 +7,5 @@ Devilry documentation contents
 .. toctree::
 
     index
-    overview
+    user/contents
     developer/contents

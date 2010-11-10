@@ -1,3 +1,4 @@
+import codecs
 import xmlrpclib
 import os
 import logging
@@ -95,7 +96,8 @@ option with the feedback command.
         self.read_config()
         try:
             AssignmentSync(self.find_rootdir(), self.get_cookiepath(),
-                    self.get_serverproxy(), self.get_url())
+                    self.get_serverproxy(), self.get_url(),
+                    self.get_auth_cookiepath())
         except xmlrpclib.Fault, e:
             log_fault(e)
 
@@ -156,7 +158,15 @@ class Feedback(FeedbackCmdBase):
                     'Trying file feedback.rst.')
             if os.path.isfile(feedbackfile):
                 log.info('Found feedback in file feedback.rst.')
-                text = open(feedbackfile, 'rb').read()
+                try:
+                    text = codecs.open(feedbackfile, 'r', 'utf-8').read()
+                except ValueError, e:
+                    log.error('Could not read feedback.rst using as '\
+                            'utf-8 text. You should use utf-8 encoding '\
+                            'on feedback.rst.')
+                    raise SystemExit()
+                else:
+                    text = text.encode('utf-8')
             else:
                 log.debug('Feedback not found in commandline argument -t or ' \
                         'in file feedback.rst. Feedback text is empty.')

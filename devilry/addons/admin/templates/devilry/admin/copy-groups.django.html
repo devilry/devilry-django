@@ -1,4 +1,4 @@
-{% extends "devilry/admin/base.django.html" %}
+{% extends "devilry/admin/edit_assignmentgroup_base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -12,14 +12,9 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>
-    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
-      {{ assignment.get_path }}</a>
-  </li>
-  <li>::</li>
-  <li>
-		{% trans "Copy groups" %}
-  </li>
+  <li class="current"><a href="#">
+    {% trans "Copy groups" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}

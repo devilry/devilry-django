@@ -45,6 +45,26 @@
         "fields": {}
     }, 
     {
+        "pk": 10, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.grademodel", 
+        "fields": {}
+    }, 
+    {
         "pk": 1, 
         "model": "core.node", 
         "fields": {
@@ -252,7 +272,8 @@
             "parentnode": 1, 
             "long_name": "From 2010 to 2210", 
             "admins": [], 
-            "end_time": "2210-08-01 12:00:00"
+            "end_time": "2210-08-01 12:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -264,7 +285,8 @@
             "parentnode": 2, 
             "long_name": "From 2010 to 2210", 
             "admins": [], 
-            "end_time": "2210-08-10 12:00:00"
+            "end_time": "2210-08-10 12:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -276,7 +298,8 @@
             "parentnode": 1, 
             "long_name": "String 2008", 
             "admins": [], 
-            "end_time": "2010-06-15 00:00:00"
+            "end_time": "2010-06-15 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -288,7 +311,8 @@
             "parentnode": 2, 
             "long_name": "Spring 2008", 
             "admins": [], 
-            "end_time": "2010-06-15 00:00:00"
+            "end_time": "2010-06-15 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -300,7 +324,8 @@
             "parentnode": 1, 
             "long_name": "Fall 2007", 
             "admins": [], 
-            "end_time": "2007-11-29 00:00:00"
+            "end_time": "2007-11-29 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -312,7 +337,8 @@
             "parentnode": 1, 
             "long_name": "Spring 2007", 
             "admins": [], 
-            "end_time": "2007-06-16 16:00:00"
+            "end_time": "2007-06-16 16:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -324,7 +350,8 @@
             "parentnode": 1, 
             "long_name": "Fall 2008", 
             "admins": [], 
-            "end_time": "2008-11-19 16:00:00"
+            "end_time": "2008-11-19 16:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -336,7 +363,8 @@
             "parentnode": 1, 
             "long_name": "Spring 2009", 
             "admins": [], 
-            "end_time": "2009-06-20 16:00:00"
+            "end_time": "2009-06-20 16:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -348,7 +376,8 @@
             "parentnode": 1, 
             "long_name": "Fall 2009", 
             "admins": [], 
-            "end_time": "2009-12-14 12:00:00"
+            "end_time": "2009-12-14 12:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -360,7 +389,8 @@
             "parentnode": 10, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2010-12-15 00:00:00"
+            "end_time": "2010-12-15 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -372,7 +402,8 @@
             "parentnode": 11, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2010-12-31 00:00:00"
+            "end_time": "2010-12-31 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -384,7 +415,8 @@
             "parentnode": 12, 
             "long_name": "First Semester", 
             "admins": [], 
-            "end_time": "2015-12-28 00:00:00"
+            "end_time": "2015-12-28 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -396,7 +428,8 @@
             "parentnode": 13, 
             "long_name": "First semester", 
             "admins": [], 
-            "end_time": "2015-12-31 00:00:00"
+            "end_time": "2015-12-31 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -408,7 +441,8 @@
             "parentnode": 3, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2015-12-29 00:00:00"
+            "end_time": "2015-12-29 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
@@ -420,13 +454,16 @@
             "parentnode": 4, 
             "long_name": "Semester 1", 
             "admins": [], 
-            "end_time": "2015-12-31 00:00:00"
+            "end_time": "2015-12-31 00:00:00", 
+            "minimum_points": 0
         }
     }, 
     {
         "pk": 1, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "greed", 
             "publishing_time": "2010-08-05 10:00:00", 
@@ -434,13 +471,17 @@
             "filenames": null, 
             "long_name": "Learning greed through case studies", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 2, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "money", 
             "publishing_time": "2010-08-05 08:00:00", 
@@ -448,55 +489,71 @@
             "filenames": null, 
             "long_name": "Money making basics", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 3, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": false, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "avoiding-work", 
             "publishing_time": "2010-08-05 08:00:00", 
             "parentnode": 1, 
-            "filenames": null, 
-            "long_name": "Effective habits for lazy people", 
+            "filenames": "", 
+            "long_name": "Intro to avoid work", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 11, 
+            "pointscale": 20
         }
     }, 
     {
         "pk": 4, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": false, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "sleeping1", 
             "publishing_time": "2010-08-06 08:00:00", 
             "parentnode": 1, 
-            "filenames": null, 
-            "long_name": "Locating good sleeping areas", 
+            "filenames": "", 
+            "long_name": "Sleeping 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 30
         }
     }, 
     {
         "pk": 5, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "sleeping2", 
             "publishing_time": "2010-08-06 16:00:00", 
             "parentnode": 1, 
-            "filenames": null, 
-            "long_name": "Look like you are working while  sleeping", 
+            "filenames": "", 
+            "long_name": "Advanced sleeping", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 6, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig1", 
             "publishing_time": "2010-08-02 00:00:00", 
@@ -504,13 +561,17 @@
             "filenames": "", 
             "long_name": "Oblig 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 7, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "home_exam1", 
             "publishing_time": "2010-08-10 00:00:00", 
@@ -518,13 +579,17 @@
             "filenames": "", 
             "long_name": "Home Exam 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 8, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "home_exam2", 
             "publishing_time": "2010-10-20 08:00:00", 
@@ -532,13 +597,17 @@
             "filenames": "", 
             "long_name": "Home Exam 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 11, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "assignment0", 
             "publishing_time": "2010-09-15 12:00:00", 
@@ -546,13 +615,17 @@
             "filenames": "", 
             "long_name": "Assignment 0", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 12, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "assignment1", 
             "publishing_time": "2010-10-27 12:00:00", 
@@ -560,13 +633,17 @@
             "filenames": "", 
             "long_name": "Assignment 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 13, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "assignment2", 
             "publishing_time": "2010-11-24 12:00:00", 
@@ -574,13 +651,17 @@
             "filenames": "", 
             "long_name": "Assignment 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 15, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig1", 
             "publishing_time": "2010-09-07 12:00:00", 
@@ -588,13 +669,17 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 16, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig2", 
             "publishing_time": "2010-10-01 12:00:00", 
@@ -602,13 +687,17 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 17, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig3", 
             "publishing_time": "2010-10-22 12:00:00", 
@@ -616,13 +705,17 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 3", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 18, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_approved:approvedgrade", 
             "short_name": "oblig4", 
             "publishing_time": "2010-11-12 12:00:00", 
@@ -630,13 +723,17 @@
             "filenames": "", 
             "long_name": "Obligatory Assignment 4", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 1, 
+            "pointscale": 1
         }
     }, 
     {
         "pk": 19, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-intro", 
             "publishing_time": "2010-08-16 12:00:00", 
@@ -644,13 +741,17 @@
             "filenames": "", 
             "long_name": "Introduction to lazyness", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 20, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-improved", 
             "publishing_time": "2010-09-13 08:00:00", 
@@ -658,13 +759,17 @@
             "filenames": "", 
             "long_name": "Improving your current lazyness", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 21, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-advanced", 
             "publishing_time": "2010-08-17 10:00:00", 
@@ -672,13 +777,17 @@
             "filenames": "", 
             "long_name": "Advanced lazyness", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 22, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_default:charfieldgrade", 
             "short_name": "lazy-possible", 
             "publishing_time": "2010-09-22 14:00:00", 
@@ -686,13 +795,17 @@
             "filenames": "", 
             "long_name": "How to be as lazy as possible", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 0, 
+            "pointscale": 0
         }
     }, 
     {
         "pk": 23, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "week1", 
             "publishing_time": "2010-08-15 21:51:00", 
@@ -700,13 +813,17 @@
             "filenames": "kick.py\r\nGaussian_function1.py", 
             "long_name": "Week 1", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 2, 
+            "pointscale": 2
         }
     }, 
     {
         "pk": 24, 
         "model": "core.assignment", 
         "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
             "grade_plugin": "grade_rstschema:rstschemagrade", 
             "short_name": "week2", 
             "publishing_time": "2010-08-29 21:52:00", 
@@ -714,7 +831,45 @@
             "filenames": "ball_table2.py\r\nball_table3.py\r\ncompute_sum_while.py", 
             "long_name": "Week 2", 
             "admins": [], 
-            "anonymous": false
+            "anonymous": false, 
+            "maxpoints": 3, 
+            "pointscale": 3
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "core.assignment", 
+        "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "cheating201", 
+            "publishing_time": "2010-10-15 08:00:00", 
+            "parentnode": 1, 
+            "filenames": "", 
+            "long_name": "Cheating 201", 
+            "admins": [], 
+            "anonymous": false, 
+            "maxpoints": 10, 
+            "pointscale": 10
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "core.assignment", 
+        "fields": {
+            "must_pass": false, 
+            "autoscale": true, 
+            "grade_plugin": "grade_rstschema:rstschemagrade", 
+            "short_name": "avoiding-work2", 
+            "publishing_time": "2010-10-18 14:00:00", 
+            "parentnode": 1, 
+            "filenames": "", 
+            "long_name": "Really avoiding work", 
+            "admins": [], 
+            "anonymous": false, 
+            "maxpoints": 8, 
+            "pointscale": 8
         }
     }, 
     {
@@ -1555,12 +1710,232 @@
         }
     }, 
     {
+        "pk": 94, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 66
+        }
+    }, 
+    {
+        "pk": 95, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 67
+        }
+    }, 
+    {
+        "pk": 96, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 68
+        }
+    }, 
+    {
+        "pk": 97, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 69
+        }
+    }, 
+    {
+        "pk": 98, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 70
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 71
+        }
+    }, 
+    {
+        "pk": 100, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 72
+        }
+    }, 
+    {
+        "pk": 101, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 73
+        }
+    }, 
+    {
+        "pk": 102, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 74
+        }
+    }, 
+    {
+        "pk": 103, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 75
+        }
+    }, 
+    {
+        "pk": 104, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 76
+        }
+    }, 
+    {
+        "pk": 105, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 77
+        }
+    }, 
+    {
+        "pk": 106, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 78
+        }
+    }, 
+    {
+        "pk": 107, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 79
+        }
+    }, 
+    {
+        "pk": 108, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 80
+        }
+    }, 
+    {
+        "pk": 109, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 81
+        }
+    }, 
+    {
+        "pk": 110, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 82
+        }
+    }, 
+    {
+        "pk": 111, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 83
+        }
+    }, 
+    {
+        "pk": 112, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 2, 
+            "assignment_group": 84
+        }
+    }, 
+    {
+        "pk": 113, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 3, 
+            "assignment_group": 85
+        }
+    }, 
+    {
+        "pk": 114, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 4, 
+            "assignment_group": 86
+        }
+    }, 
+    {
+        "pk": 115, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 14, 
+            "assignment_group": 87
+        }
+    }, 
+    {
+        "pk": 116, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 15, 
+            "assignment_group": 88
+        }
+    }, 
+    {
+        "pk": 117, 
+        "model": "core.candidate", 
+        "fields": {
+            "candidate_id": null, 
+            "student": 16, 
+            "assignment_group": 89
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": false, 
+            "status": 2, 
+            "is_passing_grade": true, 
             "name": "The boys", 
             "parentnode": 2, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": false, 
             "examiners": [
                 13
             ]
@@ -1570,9 +1945,13 @@
         "pk": 2, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 1, 
+            "is_passing_grade": true, 
             "name": "The girls", 
             "parentnode": 2, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -1582,9 +1961,13 @@
         "pk": 3, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 2, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -1594,9 +1977,13 @@
         "pk": 4, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 6
             ]
@@ -1606,9 +1993,13 @@
         "pk": 5, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -1618,9 +2009,13 @@
         "pk": 6, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 2, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 12
             ]
@@ -1630,9 +2025,13 @@
         "pk": 7, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 12.727272727272727, 
+            "points": 7, 
+            "is_open": true, 
             "examiners": [
                 12, 
                 13
@@ -1643,9 +2042,13 @@
         "pk": 8, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 3, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 3, 
+            "scaled_points": 5.4545454545454541, 
+            "points": 3, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -1655,9 +2058,13 @@
         "pk": 9, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 2, 
+            "is_passing_grade": true, 
             "name": "", 
             "parentnode": 1, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": [
                 13
             ]
@@ -1667,9 +2074,13 @@
         "pk": 10, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 6, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1677,9 +2088,13 @@
         "pk": 11, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 6, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1687,9 +2102,13 @@
         "pk": 12, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1697,9 +2116,13 @@
         "pk": 13, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1707,9 +2130,13 @@
         "pk": 14, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1717,9 +2144,13 @@
         "pk": 15, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1727,9 +2158,13 @@
         "pk": 16, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1737,9 +2172,13 @@
         "pk": 17, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1747,9 +2186,13 @@
         "pk": 18, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1757,9 +2200,13 @@
         "pk": 19, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 11, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1767,9 +2214,13 @@
         "pk": 20, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1777,9 +2228,13 @@
         "pk": 21, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1787,9 +2242,13 @@
         "pk": 22, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1797,9 +2256,13 @@
         "pk": 23, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1807,9 +2270,13 @@
         "pk": 24, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1817,9 +2284,13 @@
         "pk": 25, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1827,9 +2298,13 @@
         "pk": 26, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1837,9 +2312,13 @@
         "pk": 27, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 12, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1847,9 +2326,13 @@
         "pk": 28, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1857,9 +2340,13 @@
         "pk": 29, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1867,9 +2354,13 @@
         "pk": 30, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1877,9 +2368,13 @@
         "pk": 31, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1887,9 +2382,13 @@
         "pk": 32, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1897,9 +2396,13 @@
         "pk": 33, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1907,9 +2410,13 @@
         "pk": 34, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1917,9 +2424,13 @@
         "pk": 35, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 13, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1927,9 +2438,13 @@
         "pk": 36, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1937,9 +2452,13 @@
         "pk": 37, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1947,9 +2466,13 @@
         "pk": 38, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1957,9 +2480,13 @@
         "pk": 39, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1967,9 +2494,13 @@
         "pk": 40, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1977,9 +2508,13 @@
         "pk": 41, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1987,9 +2522,13 @@
         "pk": 42, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -1997,9 +2536,13 @@
         "pk": 43, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2007,9 +2550,13 @@
         "pk": 44, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2017,9 +2564,13 @@
         "pk": 45, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2027,9 +2578,13 @@
         "pk": 46, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2037,9 +2592,13 @@
         "pk": 47, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2047,9 +2606,13 @@
         "pk": 48, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2057,9 +2620,13 @@
         "pk": 49, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2067,9 +2634,13 @@
         "pk": 50, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2077,9 +2648,13 @@
         "pk": 51, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2087,9 +2662,13 @@
         "pk": 52, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2097,9 +2676,13 @@
         "pk": 53, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2107,9 +2690,13 @@
         "pk": 54, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2117,9 +2704,13 @@
         "pk": 55, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2127,9 +2718,13 @@
         "pk": 56, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2137,9 +2732,13 @@
         "pk": 57, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2147,9 +2746,13 @@
         "pk": 58, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2157,9 +2760,13 @@
         "pk": 59, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2167,9 +2774,13 @@
         "pk": 60, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2177,9 +2788,13 @@
         "pk": 61, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2187,9 +2802,13 @@
         "pk": 62, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2197,9 +2816,13 @@
         "pk": 63, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2207,9 +2830,13 @@
         "pk": 64, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
         }
     }, 
@@ -2217,10 +2844,402 @@
         "pk": 65, 
         "model": "core.assignmentgroup", 
         "fields": {
-            "is_open": true, 
+            "status": 0, 
+            "is_passing_grade": true, 
             "name": null, 
             "parentnode": 15, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
             "examiners": []
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 25, 
+            "scaled_points": 4.0, 
+            "points": 4, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 4, 
+            "scaled_points": 30.0, 
+            "points": 1, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 5, 
+            "scaled_points": 1.0, 
+            "points": 1, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                6
+            ]
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12
+            ]
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 0, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "scaled_points": 0.0, 
+            "points": 0, 
+            "is_open": true, 
+            "examiners": [
+                12, 
+                13
+            ]
+        }
+    }, 
+    {
+        "pk": 89, 
+        "model": "core.assignmentgroup", 
+        "fields": {
+            "status": 3, 
+            "is_passing_grade": true, 
+            "name": "", 
+            "parentnode": 26, 
+            "scaled_points": 3.0, 
+            "points": 3, 
+            "is_open": true, 
+            "examiners": [
+                13
+            ]
         }
     }, 
     {
@@ -2329,6 +3348,50 @@
             "text": "", 
             "deadline": "2010-08-07 22:00:00", 
             "assignment_group": 7
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-19 02:15:33", 
+            "number": 1, 
+            "assignment_group": 89
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-19 02:12:44", 
+            "number": 1, 
+            "assignment_group": 83
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-19 02:12:31", 
+            "number": 1, 
+            "assignment_group": 77
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.delivery", 
+        "fields": {
+            "delivered_by": 16, 
+            "successful": true, 
+            "time_of_delivery": "2010-10-16 17:27:21", 
+            "number": 1, 
+            "assignment_group": 71
         }
     }, 
     {
@@ -2517,7 +3580,7 @@
             "delivery": 2, 
             "last_modified": "2010-08-25 22:28:37", 
             "object_id": 4, 
-            "content_type": 21, 
+            "content_type": 5, 
             "published": false
         }
     }, 
@@ -2531,7 +3594,7 @@
             "delivery": 4, 
             "last_modified": "2010-08-05 18:27:33", 
             "object_id": 2, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": false
         }
     }, 
@@ -2545,7 +3608,7 @@
             "delivery": 3, 
             "last_modified": "2010-08-05 18:28:13", 
             "object_id": 3, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": false
         }
     }, 
@@ -2559,7 +3622,7 @@
             "delivery": 6, 
             "last_modified": "2010-08-06 21:47:16", 
             "object_id": 5, 
-            "content_type": 20, 
+            "content_type": 4, 
             "published": false
         }
     }, 
@@ -2573,7 +3636,7 @@
             "delivery": 9, 
             "last_modified": "2010-08-10 15:37:06", 
             "object_id": 6, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": false
         }
     }, 
@@ -2587,7 +3650,7 @@
             "delivery": 14, 
             "last_modified": "2010-08-10 15:31:50", 
             "object_id": 7, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": true
         }
     }, 
@@ -2597,11 +3660,11 @@
         "fields": {
             "format": "rst", 
             "text": "Ok i will pass you, but you have to do better on the next assignment.", 
-            "last_modified_by": 13, 
+            "last_modified_by": 1, 
             "delivery": 16, 
-            "last_modified": "2010-08-10 15:25:19", 
+            "last_modified": "2010-10-26 21:22:22", 
             "object_id": 8, 
-            "content_type": 27, 
+            "content_type": 11, 
             "published": true
         }
     }, 
@@ -2611,11 +3674,67 @@
         "fields": {
             "format": "rst", 
             "text": "Hello world", 
-            "last_modified_by": 13, 
+            "last_modified_by": 1, 
             "delivery": 8, 
-            "last_modified": "2010-08-23 12:26:03", 
+            "last_modified": "2010-10-21 02:46:25", 
             "object_id": 9, 
-            "content_type": 27, 
+            "content_type": 11, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 17, 
+            "last_modified": "2010-10-16 17:50:03", 
+            "object_id": 10, 
+            "content_type": 11, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 18, 
+            "last_modified": "2010-10-21 04:01:34", 
+            "object_id": 11, 
+            "content_type": 4, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 19, 
+            "last_modified": "2010-10-21 02:18:55", 
+            "object_id": 12, 
+            "content_type": 4, 
+            "published": true
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.feedback", 
+        "fields": {
+            "format": "rst", 
+            "text": "", 
+            "last_modified_by": 1, 
+            "delivery": 20, 
+            "last_modified": "2010-10-19 02:17:02", 
+            "object_id": 13, 
+            "content_type": 11, 
             "published": true
         }
     }, 
@@ -2692,6 +3811,15 @@
         }
     }, 
     {
+        "pk": 21, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 17, 
+            "size": 12, 
+            "filename": "hello.txt"
+        }
+    }, 
+    {
         "pk": 8, 
         "model": "core.filemeta", 
         "fields": {
@@ -2752,6 +3880,33 @@
             "delivery": 16, 
             "size": 15, 
             "filename": "hello2.txt"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 18, 
+            "size": 15, 
+            "filename": "nothing.txt"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 19, 
+            "size": 15, 
+            "filename": "nothing.txt"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "core.filemeta", 
+        "fields": {
+            "delivery": 20, 
+            "size": 15, 
+            "filename": "nothing.txt"
         }
     }, 
     {

@@ -3,8 +3,20 @@ from django.utils.translation import ugettext as _
 from devilry.core.gradeplugin import GradeModel
 
 
+
 class ApprovedGrade(GradeModel):
     approved = models.BooleanField(blank=True, default=False)
+
+    @classmethod
+    def get_maxpoints(cls, assignment):
+        return 1
+
+    @classmethod
+    def get_example_xmlrpcstring(cls, assignment, points):
+        if points == 0:
+            return "approved"
+        else:
+            return "notapproved"
 
     def get_grade_as_short_string(self, feedback_obj):
         if self.approved:
@@ -28,3 +40,12 @@ class ApprovedGrade(GradeModel):
             return 'approved'
         else:
             return 'notapproved'
+
+    def get_points(self):
+        if self.approved:
+            return 1
+        else:
+            return 0
+
+    def is_passing_grade(self):
+        return self.approved

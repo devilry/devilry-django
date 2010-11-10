@@ -1,0 +1,44 @@
+{% extends "devilry/quickdash/viewbase_wfooter.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block body %}
+<p class="help-box">
+{% block help %}{% endblock %}
+</p>
+
+<div class="dashboard-grouplist">
+{% for assignment in assignments %}
+  <h3>
+    {{ assignment.node.parentnode.parentnode.short_name }}
+    - {{ assignment.node.parentnode.short_name }}
+    -
+    <a href="{% url devilry-examiner-list_assignmentgroups assignment.node.id %}">
+      {{ assignment.node.short_name }}
+    </a>
+  </h3>
+  <dl>
+    {% for groupnode in assignment.children %}
+      {% with groupnode.node as group %}
+        <dt>
+          {% if group.name %}
+            {{ group.name }}
+          {% else %}
+            {{ group.get_candidates }}
+          {% endif %}
+        </dt>
+        <dd>
+          {% if group.name %}
+            <div class="unimportant">
+              {% trans "Students" %}: <em>{{ group.get_candidates }}</em>
+            </div>
+          {% endif %}
+          {% block custom_groupinfo %}{% endblock %}
+        </dd>
+      {% endwith %}
+    {% endfor %}
+  </dl>
+{% endfor %}
+</div>
+
+{% endblock %}

@@ -3,24 +3,74 @@
 {% load i18n %}
 <html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
-		<title>{% block title %}{% endblock %}</title>
-    {% block jquery %}
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery.js"></script>          
-      <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui.js"></script>          
-      <script type="text/javascript">
-        var DEVILRY_RESOURCES_URL = "{{ DEVILRY_RESOURCES_URL }}";
-        var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
-        $(function() {
-          $(".button").button();
-        });
-      </script>          
-      <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/jquery-ui.css" />
-    {% endblock %}
+    <title>{% block title %}{% firstof page_title page_heading %}{% endblock %}</title>
+
+    {% with "1.8.5" as JQUERY_UI_VERSION %}
+      {% block jquery %}
+        <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/jquery/js/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.min.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_RESOURCES_URL }}/ui/js/devilry-utils.js"></script>
+        <script type="text/javascript">
+          var DEVILRY_RESOURCES_URL = "{{ DEVILRY_RESOURCES_URL }}";
+          var DEVILRY_MAIN_PAGE = "{{ DEVILRY_MAIN_PAGE }}";
+          $(function() {
+            $(".button").button();
+            $(".error-message").messageBox({state:"error"});
+            $(".warning-message").messageBox({state:"error"});
+            $(".info-message").messageBox({icon:"ui-icon-info"});
+            $(".success-message").messageBox({icon:"ui-icon-info"});
+            $("h2.legend")
+              .addClass("ui-state-default");
+          });
+        </script>          
+
+        {% block tipTip %}
+          <script type="text/javascript"
+            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/tipTipv13/jquery.tipTip.minified.js"></script>
+          <link rel="stylesheet" type="text/css"
+            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/tipTipv13/tipTip.css" />
+          <script type="text/javascript">
+            $(function(){
+                $(".tooltip-hover").tipTip();
+                $(".tooltip-focus").tipTip({
+                    activation: "focus",
+                    delay: 0
+                  });
+              });
+          </script>
+        {% endblock %}
+
+        {% block xbreadcrumbs %}
+          <script type="text/javascript"
+            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
+          <link rel="stylesheet" type="text/css"
+            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
+          <script type="text/javascript">
+            $(function(){
+                $("#breadcrumbs-list").xBreadcrumbs();
+              });
+          </script>
+        {% endblock %}
+      {% endblock %}
+    {% endwith %}
+
     {% block basecss %}
       <link rel="stylesheet" type="text/css" href="{{ DEVILRY_RESOURCES_URL }}/base.css" />
     {% endblock %}
+
+    {% block theme %}
+      <link rel="stylesheet" type="text/css"
+        href="{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/devilry.css" />
+    {% endblock %}
+
 		{% block customjs %}{% endblock %}
-		{% block customcss %}{% endblock %}
+		{% block customcss %}
+      {% comment %}
+        Here you can add css styles as you like.
+        This is before the devilry and jquery css to make it possible to
+        override these styles.
+      {% endcomment %}
+    {% endblock %}
 		{% block headextra %}{% endblock %}
 	</head>
 	<body>
@@ -32,7 +82,7 @@
               {% if user.is_authenticated %}
                 <li>
                   {% with user.username as username %}
-                    {% blocktrans %}Welcome, {{ username }}.{% endblocktrans %}
+                    {% blocktrans %}Welcome, {{ username }} {% endblocktrans %}
                   {% endwith %}
                 </li>
                 {% if DEVILRY_LOGOUT_URL %}
@@ -59,10 +109,11 @@
       </div>
 
       <div id='breadcrumbs'>
-        <ul>
+        <ul id='breadcrumbs-list' class="xbreadcrumbs">
           {% block breadcrumbs %}
-              <li><a href='{% url devilry.addons.dashboard.views.main %}'>{% trans "Dashboard" %}</a></li>
-              <li>::</li>
+              <li class="{% block dashboard_breadcrumb_class %}{% endblock %}">
+                <a href='{% url devilry-main %}' class='home'>{% trans "Dashboard" %}</a>
+              </li>
           {% endblock %}
         </ul>
       </div>
@@ -70,41 +121,40 @@
 
     <div id='page'>
     {% block page %}
-      {% block sidebar %}{% endblock %}
 
       <div id='heading'>
-        <h1>{% block heading %}{% endblock %}</h1>
+        <h1>{% block heading %}{{ page_heading }}{% endblock %}</h1>
         <div id='belowheading'>
-          {% block belowheading %}{% endblock %}
+          {% block belowheading %}{{ page_belowheading }}{% endblock %}
         </div>
       </div>
 
       <div id='messages'>
         {% block messages %}
           {% if messages %}
-            <ul>
             {% for message_class, raw_html, message in messages %}
               {% block message %}
-                <li class='{{ message_class }}'>
+                <div class='{{ message_class }}'>
                   {% if raw_html %}
                     {{ message|safe }}
                   {% else %}
                     {{ message }}
                   {% endif %}
-                </li>
+                </div>
               {% endblock %}
             {% endfor %}
-            </ul>
           {% endif %}
         {% endblock %}
       </div>
 
-      <div id='content'>
-        {% block content %}{% endblock %}
-      </div>
+      {% block middlearea %}
+        <div id='content'>
+          {% block content %}{{ page_content }}{% endblock %}
+        </div>
+      {% endblock %}
 
       <div id='page-footer'>
-        <!-- pagefooter is only hear to prevent overflows -->
+        <!-- pagefooter is only here to prevent overflows -->
       </div>
     {% endblock page %}
     </div>
@@ -112,7 +162,7 @@
     
     {% block footer %}
     <div id='footer'>
-      <p><a href='http://devilry.github.com'>Devilry</a> is a open source
+      <p><a href='http://devilry.github.com'>Devilry</a> is an open source
       general purpose delivery system.</p>
     </div>
     {% endblock %}

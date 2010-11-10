@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django import forms
 
 from devilry.addons.examiner.feedback_view import \
-    parse_feedback_form, redirect_after_successful_save
+    parse_feedback_form, redirect_after_successful_save, render_response
 
 from models import RstSchemaGrade, RstSchemaDefinition
 import html
@@ -24,9 +24,11 @@ def view(request, delivery_obj):
     feedback_form = parse_feedback_form(request, delivery_obj)
     feedback_obj = feedback_form.instance
     if feedback_obj.grade:
-        grade_obj = feedback_obj.grade
+        grade_obj = feedback_obj.get_grade()
+        first_save = False
     else:
         grade_obj = RstSchemaGrade()
+        first_save = True
 
     assignment = feedback_obj.get_assignment()
     schemadef = RstSchemaDefinition.objects.get(assignment=assignment)
@@ -38,7 +40,7 @@ def view(request, delivery_obj):
             schema = text.examiner_format(schemadef.schemadef)
             schema = text.insert_values(schema, gradeform_values)
             grade_obj.schema = schema
-            grade_obj.save()
+            grade_obj.save(feedback_form.instance)
             feedback_form.instance.grade = grade_obj
             feedback_form.save()
             return redirect_after_successful_save(request, delivery_obj)
@@ -50,8 +52,5 @@ def view(request, delivery_obj):
         gradeform_errors, gradeform_values, grade_form = html.input_form(
                 schemadef.schemadef, input_data)
 
-    return render_to_response('devilry/grade_rstschema/feedback.django.html', {
-            'delivery': delivery_obj,
-            'feedback_form': feedback_form,
-            'grade_form': grade_form,
-        }, context_instance=RequestContext(request))
+    return render_response(request, delivery_obj, feedback_form, grade_form,
+            'devilry/grade_rstschema/feedback.django.html')

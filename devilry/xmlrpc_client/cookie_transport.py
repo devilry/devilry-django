@@ -45,13 +45,14 @@ class CookieTransportMixin(object):
     user_agent = 'devilry-rpc-client (http://devilry.github.com)'
     urltype = 'http'
 
-    def __init__(self, cookiefile):
+    def __init__(self, cookiefile, authcookiefile=None):
         """
         :param cookierfile:
             Path to a file where cookies are stored. This file is chmodded
             so only the current user might access it on posix-systems.
         """
         self.cookiefile = cookiefile
+        self.authcookiefile = authcookiefile
         xmlrpclib.Transport.__init__(self)
 
     def request(self, host, handler, request_body, verbose=0):
@@ -70,8 +71,12 @@ class CookieTransportMixin(object):
         self.send_host(h, host)
 
         # Add cookie headers
-        cookie_request = _CookieRequest(h, 'http', host, handler)
+        cookie_request = _CookieRequest(h, self.urltype, host, handler)
         cj.add_cookie_header(cookie_request)
+
+        if self.authcookiefile and os.path.isfile(self.authcookiefile):
+            for line in open(self.authcookiefile, 'rb').readlines():
+                h.putheader("Cookie", line.strip())
 
         self.send_user_agent(h)
         self.send_content(h, request_body)
@@ -104,7 +109,7 @@ class CookieTransportMixin(object):
 
 class CookieTransport(CookieTransportMixin, xmlrpclib.Transport):
     """ Unprotected HTTP XMLRPC transport with cookie support. """
-    def __init__(self, cookiefile, use_datetime=True):
+    def __init__(self, cookiefile, authcookiefile=None, use_datetime=True):
         """
         :param cookiefile:
             Path to a file where cookies are stored. Cookies are stored
@@ -113,7 +118,7 @@ class CookieTransport(CookieTransportMixin, xmlrpclib.Transport):
             Convert date into ``datetime.datetime`` objects? Defaults to
             ``True``.
         """
-        CookieTransportMixin.__init__(self, cookiefile)
+        CookieTransportMixin.__init__(self, cookiefile, authcookiefile)
         xmlrpclib.Transport.__init__(self, use_datetime=use_datetime)
 
 
@@ -121,7 +126,7 @@ class SafeCookieTransport(CookieTransportMixin, xmlrpclib.SafeTransport):
     """ Unprotected HTTP XMLRPC transport with cookie support. """
     urltype = 'https'
 
-    def __init__(self, cookiefile, use_datetime=True):
+    def __init__(self, cookiefile, authcookiefile=None, use_datetime=True):
         """
         :param cookiefile:
             Path to a file where cookies are stored. Cookies are stored
@@ -130,5 +135,5 @@ class SafeCookieTransport(CookieTransportMixin, xmlrpclib.SafeTransport):
             Convert date into ``datetime.datetime`` objects? Defaults to
             ``True``.
         """
-        CookieTransportMixin.__init__(self, cookiefile)
+        CookieTransportMixin.__init__(self, cookiefile, authcookiefile)
         xmlrpclib.SafeTransport.__init__(self, use_datetime=use_datetime)

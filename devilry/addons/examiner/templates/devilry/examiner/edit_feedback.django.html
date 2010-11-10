@@ -1,0 +1,287 @@
+{% extends "devilry/examiner/delivery-base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+{% load inlinestyles %}
+
+{% block title %}{% trans "Feedback" %}{% endblock %}
+{% block heading %}
+  {% with delivery.assignment_group.get_candidates|emphasize as candidates %}
+    {% with delivery.assignment_group.parentnode.long_name|emphasize as assignment %}
+      {% blocktrans %}
+        Feedback for {{ candidates }} on {{ assignment }}
+      {% endblocktrans %}
+    {% endwith %}
+  {% endwith %}
+{% endblock %}
+
+{% block edit_feedback_breadcrumb %}
+  <li class='current'><a href='#'>
+    {{ delivery.number }}: {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
+  </a></li>
+{% endblock %}
+
+{% block customcss %}
+<style type="text/css">
+  #metainfo {
+    float: left;
+    width: 280px;
+  }
+  .metainfo-item {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  #mainframe {
+    margin-left: 315px;
+  }
+  .mainframe-fillwidth {
+    margin-left: 0 !important;
+  }
+  .hidden {
+    display: none !important;
+  }
+
+  #metainfo .vertical_infotable {
+    width: 99.9%;
+  }
+
+  dl.deliveries_by_deadline {
+    margin-left: 0;
+  }
+  .deliveries_by_deadline dt {
+  }
+  .deliveries_by_deadline dd {
+    padding: 0;
+    margin: 0 0 0 20px;
+  }
+  .deliveries_by_deadline ul {
+    list-style:none;
+    padding: 0; margin: 0;
+  }
+
+  .selected-date {
+    /*color: #000;*/
+    /*font-style: italic;*/
+    font-weight: bold;
+  }
+  .deliveries_by_deadline a {
+  }
+
+  .text label {
+    display: none !important;
+  }
+  .text .form-field {
+    margin-left: 0 !important;
+  }
+</style>
+{% endblock %}
+
+
+{% block customjs %}
+  <script type="text/javascript">
+    function toggleSidebar() {
+      $("#metainfo").toggleClass("hidden");
+      $("#mainframe").toggleClass("mainframe-fillwidth");
+      $("#show-metainfo").toggleClass("hidden");
+      $("#hide-metainfo").toggleClass("hidden");
+      return false;
+    }
+    $(function(){
+        $("#show-metainfo")
+          .addClass("ui-priority-secondary")
+          .click(toggleSidebar)
+          .button({
+            icons: {primary: "ui-icon-triangle-1-e"}
+          });
+        $("#hide-metainfo")
+          .addClass("ui-priority-secondary")
+          .click(toggleSidebar)
+          .button({
+            icons: {primary: "ui-icon-triangle-1-w"}
+          });
+
+        $("#theform").data("initialValues", $("#theform").serialize());
+        $('.checkformchanges').click(function(e) {
+            if($("#theform").data("initialValues") != $("#theform").serialize()) {
+              var ok = confirm("{% trans "You have unsaved changes. Are you sure you want to continue?" %}");
+              if(!ok) {
+                e.preventDefault();
+              }
+            }
+          });
+
+        //$('#filebox').messageBox({icon:"ui-icon-folder-open"});
+      });
+  </script>
+{% endblock %}
+
+{% block content %}
+
+{% comment %}
+{% if delivery.assignment_group.parentnode.grade_plugin == "grade_rstschema:rstschemagrade" %}
+  <p class='warning-message'>There are issues with <em>Internet Explorer<em> and
+  <em>Opera</em> and the grade plugin used on this assignment. We reccommend
+  you use Firefox, Safari or Chrome.</p>
+{% endif %}
+{% endcomment %}
+
+<div id="metainfo">
+  {% if after_deadline %}
+    <div class="warning-message metainfo-item">
+      {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
+        This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
+        and {{ diff_minutes }} minutes after the deadline.
+      {% endblocktrans %}
+    </div>
+  {% endif %}
+
+  {% if delivery.assignment_group.deliveries.count > 1 %}
+    <div id="deadlinesbox" class="booring-message metainfo-item">
+      {% blocktrans with delivery.number|big as delivery_number %}
+        This group has multiple deliveries. You are viewing delivery number
+        {{ delivery_number }}.
+      {% endblocktrans %}
+      {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
+    
+	  {% if delivery.filemetas.count > 1 %}
+	  {% trans "Download all deliveries:" %}
+	  <a href='{% url devilry-examiner-download_group_deliveries_as_tar delivery.id %}'>
+		TAR
+	  </a>
+	  |<a href='{% url devilry-examiner-download_group_deliveries_as_zip delivery.id %}'>
+		ZIP
+	  </a>
+	  {% endif %}
+	</div>
+  {% endif %}
+
+  <div id="filebox" class="booring-message metainfo-item">
+    {% trans "Files in the current delivery:" %}
+      <ul class='files-list'>
+      {% for filemeta in delivery.filemetas.all %}
+        <li>
+          <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>  
+          <span class='unimportant'>({{ filemeta.size }} bytes)</span>
+        </li>
+      {% endfor %}
+      </ul>
+
+	  {% if delivery.filemetas.count > 1 %}
+	  {% trans "Download all files:" %}
+	  <a href='{% url devilry-examiner-download_delivery_as_tar delivery.id %}'>
+		TAR
+	  </a>
+	  |<a href='{% url devilry-examiner-download_delivery_as_zip delivery.id %}'>
+		ZIP
+	  </a>
+  {% endif %}
+	  
+  </div>
+
+  <table class='vertical_infotable unimportant metainfo-item' id="deliveryinfo">
+    <thead>
+      <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>{% trans "Time of delivery" %}</th>
+        <td>{{ delivery.time_of_delivery|date:"DATETIME_FORMAT"}}</td>
+      </tr>
+      {% if not delivery.assignment_group.parentnode.anonymous %}
+        <tr>
+          <th>{% trans "Delivered by" %}</th>
+          <td>{{ delivery.delivered_by.username }}</td>
+        </tr>
+      {% endif %}
+      {% if delivery.feedback %}
+        <tr>
+          <th>{% trans "Grade" %}</th>
+          <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
+        </tr>
+        <tr>
+          <th>{% trans "Feedback last modified" %}</th>
+          <td> {{ delivery.feedback.last_modified|date:"DATETIME_FORMAT"}} </td>
+        </tr>
+        <tr>
+          <th>{% trans "Feedback last modified by" %}</th>
+          <td> {{ delivery.feedback.last_modified_by }} </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <table class='vertical_infotable unimportant metainfo-item' id="groupinfo">
+    {% with delivery.assignment_group as assignment_group %}
+      {% include "devilry/examiner/include/groupinfo-table.django.html" %}
+    {% endwith %}
+  </table>
+</div>
+
+<div id="mainframe">
+  <div>
+    <a href="#" id="show-metainfo" class="hidden">
+      {% trans "Show sidebar" %}
+    </a>
+    <a href="#" id="hide-metainfo">
+      {% trans "Hide sidebar" %}
+    </a>
+    {% if next_notcorrected or prev_notcorrected %}
+      <div style="float:right;">
+        {% if prev_notcorrected %}
+          <a class="tooltip-hover button ui-priority-secondary checkformchanges"
+              href="{% url devilry-examiner-edit-feedback prev_notcorrected.id %}"
+              title="{% trans "Go to previous 'not corrected' group on this assignment without saving" %}">
+            {% trans "Previous" %}</a>
+        {% endif %}
+        {% if next_notcorrected %}
+          <a class="tooltip-hover button ui-priority-secondary checkformchanges"
+              href="{% url devilry-examiner-edit-feedback next_notcorrected.id %}"
+              title="{% trans "Go to next 'not corrected' group on this assignment without saving" %}">
+            {% trans "Next" %}</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <form method='post' id="theform"
+      action='{% url devilry-examiner-edit-feedback delivery.id %}'>
+    {% block formfields %}
+      {% block gradeformfieldset %}
+        <fieldset class='stdfieldset'>
+          <h2 class='legend'>{% trans "Grade" %}</h2>
+          {% block gradeform %}
+            {% with grade_form as form %}
+              {% include "devilry/ui/include/form-list.django.html" %}
+            {% endwith %}
+          {% endblock %}
+        </fieldset>
+      {% endblock %}
+
+      {% with feedback_form as form %}
+        <fieldset class='stdfieldset'>
+          <h2 class='legend'>{% trans "Feedback" %}</h2>
+          <div class='help-box'>
+            {% with "http://docutils.sourceforge.net/docs/user/rst/quickref.html" as docurl %}
+              <p>{% blocktrans %}
+                Feedback text should be formatted using <em>ReStructured Text</em>
+                (a simple markup language). Use the buttons above the text
+                area for the most common markup, and read <a href="{{ docurl }}">the
+                documentation</a> if you need more advanced markup. The rightmost
+                button above the text-area provides you with a preview.
+              {% endblocktrans %}</p>
+            {% endwith %}
+          </div>
+          {% include "devilry/ui/include/form-list.django.html" %}
+        </fieldset>
+      {% endwith %}
+    {% endblock formfields %}
+    
+    <div class='button-row'>
+      <input type='submit' name='save'
+        class='button default ui-priority-primary tooltip-hover'
+        title="{% trans "Save and reload this page. Use this to save when making long feedbacks." %}"
+        value='{% trans "Save" %}'/>
+    </div>
+  </form>
+</div>
+
+{% endblock content %}

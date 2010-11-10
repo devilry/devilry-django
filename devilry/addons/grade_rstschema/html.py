@@ -16,7 +16,6 @@ class SchemaHTMLTranslator(html4css1.HTMLTranslator):
 
         # Validate field if enabled
         error = None
-        value = None
         value = self.input_values.get(field_id, '')
         if self.validate:
             try:

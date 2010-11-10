@@ -16,6 +16,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.utils.formats import date_format
 
 from deliverystore import load_deliverystore_backend, FileNotFoundError
 import gradeplugin
@@ -264,6 +265,13 @@ class Node(models.Model, BaseNode):
         if self.parentnode == self:
             raise ValidationError(_('A node can not be it\'s own parent.'))
 
+        if self.short_name and self.parentnode == None:
+            if self.id == None:
+                if Node.objects.filter(short_name=self.short_name).count() > 0:
+                    raise ValidationError(_('A node can not have the same '\
+                        'short name as another within the same parent.'))
+
+
         for node in self.iter_childnodes():
             if node == self.parentnode:
                 raise ValidationError(_('A node can not be the child of one of it\'s own children.'))
@@ -440,6 +448,27 @@ class Period(models.Model, BaseNode):
             help_text=_(
                 'Start time and end time defines when the period is active.'))
     admins = models.ManyToManyField(User, blank=True)
+    minimum_points = models.PositiveIntegerField(default=0,
+            help_text=_('Students must get at least this many points to '\
+                    'pass the period.'))
+
+    def student_sum_scaled_points(self, user):
+        groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                parentnode__parentnode=self)
+        return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
+
+    def student_passes_period(self, user):
+        groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                parentnode__parentnode=self,
+                is_passing_grade=False,
+                parentnode__must_pass=True)
+        if groups.count() > 0:
+            return False
+        totalpoints = self.student_sum_scaled_points(user)
+        return totalpoints >= self.minimum_points
+
+    def get_must_pass_assignments(self):
+        return self.assignments.filter(must_pass=True)
 
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -531,6 +560,11 @@ class Assignment(models.Model, BaseNode):
         A django.db.models.DateTimeField_ representing the deadline of the
         assignment.
 
+    .. attribute:: anonymous
+
+        A models.BooleanField specifying if the assignment should be
+        anonymously for correcters.
+
     .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
@@ -569,17 +603,74 @@ class Assignment(models.Model, BaseNode):
             help_text=_('Filenames separated by newline or space. If '
                 'filenames are used, students will not be able to deliver '
                 'files where the filename is not among the given filenames.'))
+    must_pass = models.BooleanField(default=False,
+            help_text=_('Each student must get a passing grade on this ' \
+                'assignment to get a passing grade on the period.'))
+    pointscale = models.PositiveIntegerField(default=1,
+            help_text=_(
+                'The points will be scaled down or up making the _this_ '\
+                'number the maximum number of points.'))
+    maxpoints = models.PositiveIntegerField(default=0,
+            help_text=_('The maximum number of points possible without '\
+                'scaling.'))
+    autoscale = models.BooleanField(default=True,
+            help_text=_('If this field is set, the pointscale will '\
+                'automatically be set to the maximum number of points '\
+                'possible with the selected grade plugin.'))
+    attempts = models.PositiveIntegerField(default=None,
+            null=True, blank=True,
+            help_text=_('The number of attempts a student get on this '
+                'assignment. This is not a hard limit, but it makes the '
+                'work of the examiners easier because the system will ' 
+                'close groups (leaving students unable to deliver more '
+                'attempts) when they have this many published feedbacks. '
+                'Examiners can open closed groups, and they are notified '
+                'when a group is automatically closed. Leave this '
+                'empty if you do not want to use this feature.'))
+
+
+    def _get_maxpoints(self):
+        return self.get_gradeplugin_registryitem().model_cls.get_maxpoints(self)
+
+    def _update_scalepoints(self):
+        for group in self.assignmentgroups.iterator():
+            group.scaled_points = group._get_scaled_points()
+            group.save()
+
+    def save(self, *args, **kwargs):
+        """ Save and recalculate the value of :attr:`maxpoints` and
+        :attr:`pointscale`. """
+        if self.id != None:
+            self.maxpoints = self._get_maxpoints()
+            if self.autoscale:
+                self.pointscale = self.maxpoints
+            self._update_scalepoints()
+        # TODO: "else" initialize grade plugin with defaults to avoid ugly
+        # error pages when users forget to configure grade plugins
+        super(Assignment, self).save()
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
         for the current :attr:`grade_plugin`. """
         return gradeplugin.registry.getitem(self.grade_plugin)
 
+    def validate_gradeplugin(self):
+        """ Check if grade plugin is valid (exists). 
+        Raise :exc:`devilry.core.gradeplugin.GradePluginDoesNotExistError`
+        on error. """
+        try:
+            ri = self.get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise gradeplugin.GradePluginDoesNotExistError(
+                'Invalid grade plugin "%s" on assignment: %s. This is '\
+                'usually because a grade plugin has been removed from '\
+                'the INSTALLED_APPS setting. There is no easy fix for '\
+                'this except to re-enable the missing grade plugin.' % (
+                    self.grade_plugin, self))
 
     def get_filenames(self):
         """ Get the filenames as a list of strings. """
         return self.filenames.split()
-
 
     def validate_filenames(self, filenames):
         """ Raise ValueError unless each filename in the iterable
@@ -692,19 +783,23 @@ class Assignment(models.Model, BaseNode):
         return self.assignmentgroups.filter(
             Q(examiners=user_obj))
     
-    def assignment_groups_where_is_examiner_or_admin(self, user_obj):
+    def assignment_groups_where_can_examine(self, user_obj):
         """ Get all assignment groups within this assignment where the given
-        ``user_obj`` is examiner or is admin.
+        ``user_obj`` is examiner or admin. If the user is superadmin, all
+        assignments are returned.
         
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return self.assignmentgroups.filter(
-            Q(examiners=user_obj) |
-            Q(parentnode__admins=user_obj) |
-            Q(parentnode__parentnode__admins=user_obj) |
-            Q(parentnode__parentnode__parentnode__admins=user_obj) |
-            Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
+        if user_obj.is_superuser:
+            return self.assignmentgroups.all()
+        else:
+            return self.assignmentgroups.filter(
+                Q(examiners=user_obj) |
+                Q(parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__admins=user_obj) |
+                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
             
     def clean(self, *args, **kwargs):
         """Validate the assignment.
@@ -756,9 +851,13 @@ class Candidate(models.Model):
         method should always be used when retrieving the candidate identifier.
         """
         if self.assignment_group.parentnode.anonymous:
-            return unicode(self.candidate_id)
+            if self.candidate_id == None or self.candidate_id.strip() == "":
+                return _("candidate-id missing")
+            else:
+                return unicode(self.candidate_id)
         else:
             return unicode(self.student.username)
+
     
     def __unicode__(self):
         return self.get_identifier()
@@ -820,7 +919,79 @@ class AssignmentGroup(models.Model, CommonInterface):
     .. attribute:: deadlines
 
         A set of deadlines for this assignmentgroup 
+
+    .. attribute:: status
+
+        Stores data that can be deduces from other data in the database, but
+        since this requires complex queries, we store it as a integer
+        instead, with the following values:
+
+            0. No deliveries
+            1. Not corrected
+            2. Corrected, not published
+            3. Corrected and published
+                The group has at least one published feedback.
+
+    .. attribute:: status_mapping
+
+        Maps :attr:`status` to a translated string for examiners and
+        admins. ``status_mapping[0]`` contains a localized version of ``"No
+        deliveries"``, and so on.
+
+    .. attribute:: status_mapping_student
+
+        Maps :attr:`status` to a translated string for students. The same as
+        :attr:`status_mapping` except that ``status_mapping_student[2]``
+        contains ``"Not corrected"``, and ``status_mapping_student[3]``
+        contains ``"Corrected"``. This is because the student should never
+        know about unpublished feedback.
+
+    .. attribute:: NO_DELIVERIES
+
+        The numberic value corresponding to :attr:`status` *no deliveries*.
+
+    .. attribute:: NOT_CORRECTED
+
+        The numberic value corresponding to :attr:`status` *not corrected*.
+
+    .. attribute:: CORRECTED_NOT_PUBLISHED
+
+        The numberic value corresponding to :attr:`status` *corrected, not
+        published*.
+
+    .. attribute:: CORRECTED_AND_PUBLISHED
+
+        The numberic value corresponding to :attr:`status` *corrected, and
+        published*.
     """
+    status_mapping = (
+        _("No deliveries"),
+        _("Not corrected"),
+        _("Corrected, not published"),
+        _("Corrected and published"),
+    )
+    status_mapping_student = (
+        status_mapping[0],
+        status_mapping[1],
+        status_mapping[1], # "not published" means not "not corrected" is displayed to student
+        _("Corrected"),
+    )
+    status_mapping_cssclass = (
+        _("status_no_deliveries"),
+        _("status_not_corrected"),
+        _("status_corrected_not_published"),
+        _("status_corrected_and_published"),
+    )
+    status_mapping_student_cssclass = (
+        status_mapping_cssclass[0],
+        status_mapping_cssclass[1],
+        status_mapping_cssclass[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping_cssclass[3],
+    )
+    NO_DELIVERIES = 0
+    NOT_CORRECTED = 1
+    CORRECTED_NOT_PUBLISHED = 2
+    CORRECTED_AND_PUBLISHED = 3
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
@@ -828,7 +999,28 @@ class AssignmentGroup(models.Model, CommonInterface):
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
-    
+    status = models.PositiveIntegerField(
+            default = 0,
+            choices = enumerate(status_mapping),
+            verbose_name = _('Status'))
+    points = models.PositiveIntegerField(default=0,
+            help_text=_('Final number of points for this group. This '\
+                'number is controlled by the grade plugin, and should not '\
+                'be changed manually.'))
+    scaled_points = models.FloatField(default=0.0)
+    is_passing_grade = models.BooleanField(default=False)
+
+
+    def _get_scaled_points(self):
+        scale = float(self.parentnode.pointscale)
+        maxpoints = self.parentnode.maxpoints
+        if maxpoints == 0:
+            return 0.0
+        return (scale/maxpoints) * self.points
+
+    def save(self, *args, **kwargs):
+        self.scaled_points = self._get_scaled_points()
+        super(AssignmentGroup, self).save(*args, **kwargs)
     
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -985,24 +1177,65 @@ class AssignmentGroup(models.Model, CommonInterface):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
-    def get_status(self):
-        """ Get status as a translated string.
+    def can_examine(self, user_obj):
+        """ Return True if the user has permission to examine (creeate
+        feedback and browse files) on this assignment group.
         
-        Returns one of:
-            
-            - "No deliveries"
-            - "Not corrected"
-            - "Corrected"
-        """
+        Examiners, admins and superusers has this permission. """
+        return user_obj.is_superuser or self.is_admin(user_obj) \
+                or self.is_examiner(user_obj)
+
+    def get_localized_status(self):
+        """ Returns the current status string from :attr:`status_mapping`. """
+        return self.status_mapping[self.status]
+
+    def get_localized_student_status(self):
+        """ Returns the current status string from
+        :attr:`status_mapping_student`. """
+        return self.status_mapping_student[self.status]
+
+    def get_status_cssclass(self):
+        """ Returns the current status string from
+        :attr:`status_mapping_cssclass`. """
+        return self.status_mapping_cssclass[self.status]
+
+    def get_status_student_cssclass(self):
+        """ Returns the current status string from
+        :attr:`status_mapping_student_cssclass`. """
+        return self.status_mapping_student_cssclass[self.status]
+
+    def _get_status_from_qry(self):
         if self.deliveries.all().count() == 0:
-            return _('No deliveries')
+            return self.NO_DELIVERIES
         else:
             qry = self.deliveries.filter(
-                    feedback__published=True)
+                    feedback__isnull=False)
             if qry.count() == 0:
-                return _('Not corrected')
+                return self.NOT_CORRECTED
             else:
-                return _('Corrected')
+                qry = qry.filter(feedback__published=True)
+                if qry.count() == 0:
+                    return self.CORRECTED_NOT_PUBLISHED
+                else:
+                    return self.CORRECTED_AND_PUBLISHED
+
+    def _update_status(self):
+        """ Query for the correct status, and set :attr:`status`. """
+        self.status = self._get_status_from_qry()
+
+    def get_number_of_deliveries(self):
+        """ Get the number of deliveries by this assignment group. """
+        return self.deliveries.all().count()
+
+    def get_latest_delivery(self):
+        """ Get the latest delivery by this assignment group,
+        or ``None`` if there is no deliveries. """
+        qry = self.deliveries.all()
+        if qry.count() == 0:
+            return None
+        else:
+            return qry.annotate(
+                    models.Max('time_of_delivery'))[0]
 
     def get_latest_delivery_with_feedback(self):
         """ Get the latest delivery by this assignment group with feedback,
@@ -1017,18 +1250,6 @@ class AssignmentGroup(models.Model, CommonInterface):
                 return qry.annotate(
                         models.Max('time_of_delivery'))[0]
 
-    def get_grade_as_short_string(self):
-        """ Get the grade  """
-        q = self.get_deliveries_with_published_feedback().order_by('-time_of_delivery')
-        if q.count() > 0:
-            return q[0].feedback.get_grade_as_short_string()
-        else:
-            return None
-
-    def get_number_of_deliveries(self):
-        """ Get the number of deliveries by this assignment group. """
-        return self.deliveries.all().count()
-
     def get_deliveries_with_published_feedback(self):
         """
         Get the the deliveries by this assignment group which have
@@ -1036,17 +1257,51 @@ class AssignmentGroup(models.Model, CommonInterface):
         """
         return self.deliveries.filter(feedback__published=True)
 
-    def _can_save_id_none(self, user_obj):
-        """ Used by all except Node, which overrides. """
-        return self.parentnode.is_admin(user_obj)
+    def get_latest_delivery_with_published_feedback(self):
+        """
+        Get the latest delivery with published feedback.
+        """
+        q = self.get_deliveries_with_published_feedback().order_by(
+                '-time_of_delivery')
+        if q.count() == 0:
+            return None
+        else:
+            return q[0]
+
+    def _get_gradeplugin_cached_fields(self):
+        d = self.get_latest_delivery_with_published_feedback()
+        points = 0
+        if self.parentnode.must_pass:
+            is_passing_grade = False
+            if d:
+                is_passing_grade = d.feedback.get_grade().is_passing_grade()
+        else:
+            is_passing_grade = True
+        if d:
+            points = d.feedback.grade.get_points()
+        return points, is_passing_grade
+
+    def update_gradeplugin_cached_fields(self):
+        self.points, self.is_passing_grade = self._get_gradeplugin_cached_fields()
+        self.save()
+
+    def get_grade_as_short_string(self):
+        """ Get the grade as a "short string". """
+        d = self.get_latest_delivery_with_published_feedback()
+        if not d:
+            return None
+        else:
+            return d.feedback.get_grade_as_short_string()
 
     def can_save(self, user_obj):
+        """ Check if the user has permission to save this AssignmentGroup.
+        This only runs :meth:`Assignment.is_admin`, so there is no need to
+        use this if you have already used can_save() on the
+        :attr:`parentnode`. """
         if user_obj.is_superuser:
             return True
-        if self.id == None:
-            return self._can_save_id_none(user_obj)
-        elif self.is_admin(user_obj):
-            return True
+        elif self.parentnode:
+            return self.parentnode.is_admin(user_obj)
         else:
             return False
     
@@ -1060,23 +1315,16 @@ class AssignmentGroup(models.Model, CommonInterface):
 
 
     def get_active_deadline(self):
-        """ Get the active deadline. Checked id the following order:
+        """ Get the active deadline.
             
-            1. None if no deadline is set.
-            2. First deadline after current date/time.
-            3. Previous deadline before current date/time.
+        :return:
+            Latest deadline, or None if no deadline is set.
         """
-        if self.deadlines.all().count() == 0:
+        deadlines = self.deadlines.order_by('-deadline')
+        if len(deadlines) == 0:
             return None
-        now = datetime.now()
-        d = self.deadlines.filter(
-                deadline__gt=now).order_by('deadline')
-        if d.count() == 0:
-            d = self.deadlines.filter(
-                    deadline__lt=now).order_by('-deadline')
-            return d[0]
         else:
-            return d[0]
+            return deadlines[0]
 
 
 class Deadline(models.Model):
@@ -1128,7 +1376,7 @@ class Deadline(models.Model):
         return unicode(self.deadline)
 
     def is_old(self):
-        """ Return True if :attr:`deadline` is in the past. """
+        """ Return True if :attr:`deadline` expired. """
         return self.deadline < datetime.now()
 
 
@@ -1267,16 +1515,48 @@ class Delivery(models.Model):
         except Feedback.DoesNotExist:
             return Feedback(delivery=self)
 
-    def get_status(self):
-        """ Get the status for this delivery; 'Corrected' or
-        'Not Corrected'.
+    def get_status_number(self):
+        """ Get the numeric status for this delivery.
+
+        :return: :attr:`AssignmentGroup.NOT_CORRECTED`,
+            :attr:`AssignmentGroup.CORRECTED_NOT_PUBLISHED` or
+            :attr:`AssignmentGroup.CORRECTED_AND_PUBLISHED`.
         """
         try:
             if self.feedback.published:
-                return _("Corrected")
+                return AssignmentGroup.CORRECTED_AND_PUBLISHED
+            else:
+                return AssignmentGroup.CORRECTED_NOT_PUBLISHED
         except Feedback.DoesNotExist:
             pass
-        return _("Not Corrected")
+        return AssignmentGroup.NOT_CORRECTED
+
+    def get_localized_status(self):
+        """
+        Returns the current status string from
+        :attr:`AssignmentGroup.status_mapping`.
+        """
+        status = self.get_status_number()
+        return AssignmentGroup.status_mapping[status]
+
+    def get_localized_student_status(self):
+        """
+        Returns the current status string from
+        :attr:`AssignmentGroup.status_mapping_student`.
+        """
+        status = self.get_status_number()
+        return AssignmentGroup.status_mapping_student[status]
+
+    def get_status_cssclass(self):
+        """ Returns the css class for the current status from
+        :attr:`AssignmentGroup.status_mapping_cssclass`. """
+        return AssignmentGroup.status_mapping_cssclass[self.get_status_number()]
+
+    def get_status_student_cssclass(self):
+        """ Returns the css class for the current status from
+        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
+        return AssignmentGroup.status_mapping_student_cssclass[
+                self.get_status_number()]
             
     def save(self, *args, **kwargs):
         """
@@ -1291,11 +1571,11 @@ class Delivery(models.Model):
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s %s' % (self.assignment_group, self.time_of_delivery)
+        return u'%s - %s (%s)' % (self.assignment_group, self.number,
+                date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
 
-# TODO: Refactor feedback_* to just *.
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
@@ -1322,6 +1602,14 @@ class Feedback(models.Model):
        published or not. This allows editing and saving the feedback before
        publishing it. Is useful for exams and other assignments when
        feedback and grading is published simultaneously for all Deliveries.
+
+    .. attribute:: last_modified_by
+
+       The django.contrib.auth.models.User_ that last modified the feedback.
+
+    .. attribute:: last_modified
+
+       Date/time of last modification.
 
     .. attribute:: delivery
 
@@ -1367,6 +1655,50 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+
+    def save(self, *args, **kwargs):
+        super(Feedback, self).save(*args, **kwargs)
+        self.delivery.assignment_group.update_gradeplugin_cached_fields()
+
+    def __unicode__(self):
+        return "Feedback on %s" % self.delivery
+
+    def get_grade_object_info(self):
+        """ Get information about the grade object as a string. """
+        return 'content_type: %s, object_id:%s, ' \
+                'grade: %s' % (self.content_type, self.object_id,
+                        self.grade)
+
+    def get_grade(self):
+        """ Get :attr:`grade`, but raise :exc:`ValueError` if the grade
+        object is not a subclass of
+        :class:`devilry.core.gradeplugin.GradeModel`. """
+        if self.grade:
+            self.validate_gradeobj()
+        return self.grade
+
+    def validate_gradeobj(self):
+        """ Validate the grade object integrity. When this fails, the
+        database integrity is corrupt. Raises one of the subclasses of
+        :exc:`devilry.core.gradeplugin.GradePluginError` on error. """
+        assignment = self.delivery.assignment_group.parentnode
+        try:
+            ri = self.get_assignment().get_gradeplugin_registryitem()
+        except KeyError, e:
+            raise gradeplugin.GradePluginDoesNotExistError('Feedback with '\
+                    'id %s (%s) belongs in a assignment (%s) with a '\
+                    'invalid gradeplugin. ' % (
+                        self.id, self, assignment))
+        if not isinstance(self.grade, ri.model_cls):
+            correct_ct = ri.get_content_type()
+            raise gradeplugin.WrongContentTypeError(
+                'Grade-plugin on feedback with id "%s" (%s) must be "%s", as on the ' \
+                'assignment: %s. It is: %s. The content type on the feedback '\
+                'should be "%s (pk:%s)", not "%s (pk:%s)".' % (self.id, self, ri.get_key(), assignment,
+                    self.get_grade_object_info(),
+                    correct_ct, correct_ct.pk, 
+                    self.content_type, self.content_type.pk))
+
     def get_grade_as_short_string(self):
         """
         Get the grade as a short string suitable for short one-line
@@ -1401,11 +1733,11 @@ class Feedback(models.Model):
         model_cls = gradeplugin.registry.getitem(key).model_cls
         if self.grade:
             ok_message = self.grade.set_grade_from_xmlrpcstring(grade, self)
-            self.grade.save()
+            self.grade.save(self)
         else:
             gradeobj = model_cls()
             ok_message = gradeobj.set_grade_from_xmlrpcstring(grade, self)
-            gradeobj.save()
+            gradeobj.save(self)
             self.grade = gradeobj
         return ok_message
 
@@ -1448,23 +1780,8 @@ class Feedback(models.Model):
               referred by :attr:`Assignment.grade_plugin`.
             - The node is the child of itself or one of its childnodes.
         """
-
-        #    raise ValidationError(_('A node can not be it\'s own parent.'))
-        assignment = self.delivery.assignment_group.parentnode
-        try:
-            ri = self.get_assignment().get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise ValidationError(_(
-                'The assignment, %s, has a invalid grade-plugin. Contact ' \
-                'the system administrators to get this fixed.' %
-                assignment))
-        else:
-            if self.grade:
-                if not isinstance(self.grade, ri.model_cls):
-                    raise ValidationError(_(
-                        'Grade-plugin on feedback must be "%s", as on the ' \
-                        'assignment, %s.' % (ri.label, assignment)))
-
+        if self.grade:
+            self.validate_gradeobj()
         super(Feedback, self).clean(*args, **kwargs)
 
 
@@ -1544,6 +1861,21 @@ def feedback_grade_delete_handler(sender, **kwargs):
     if feedback.grade != None:
         feedback.grade.delete()
 
-from django.db.models.signals import pre_delete
+
+def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
+    feedback = kwargs['instance']
+    feedback.delivery.assignment_group._update_status()
+    feedback.delivery.assignment_group.save()
+
+def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
+    delivery = kwargs['instance']
+    delivery.assignment_group._update_status()
+    delivery.assignment_group.save()
+
+from django.db.models.signals import pre_delete, post_save
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
 pre_delete.connect(feedback_grade_delete_handler, sender=Feedback)
+post_save.connect(feedback_update_assignmentgroup_status_handler,
+        sender=Feedback)
+post_save.connect(delivery_update_assignmentgroup_status_handler,
+        sender=Delivery)

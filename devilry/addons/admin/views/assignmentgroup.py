@@ -19,9 +19,106 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
-from devilry.addons.dashboard import defaults
+from devilry.addons.quickdash import defaults
+from devilry.addons.admin.assignmentgroup_filtertable import (
+    AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
+    FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
+    FilterMissingCandidateId, FilterAfterDeadline)
+from devilry.ui.filtertable import Columns, Col
 
-from shortcuts import iter_filtertable_selected
+from shortcuts import deletemany_generic
+
+from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
+                                                    verify_groups_not_exceeding_max_file_size,
+                                                    verify_deliveries_not_exceeding_max_file_size)
+
+class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
+    id = 'assignmentgroups-admin-filtertable'
+    selectionactions = [
+            AssignmentGroupsAction(_("Delete"),
+                'devilry-admin-delete_manyassignmentgroups',
+                confirm_title=_("Confirm delete"),
+                confirm_message=_("Are you sure you want to delete "\
+                    "the selected groups including their deliveries "\
+                    "and feedback?")),
+            AssignmentGroupsAction(_("Create/replace deadline"),
+                'devilry-admin-create_deadline'),
+            AssignmentGroupsAction(_("Clear deadlines"),
+                'devilry-admin-clear_deadlines',
+                confirm_title=_("Confirm clear deadlines"),
+                confirm_message=_("Are you sure you want to clear "\
+                    "deadlines on the following groups?")),
+            AssignmentGroupsAction(_("Set examiners"),
+                'devilry-admin-set_examiners'),
+            AssignmentGroupsAction(_("Random distribute examiners"),
+                                   'devilry-admin-random_dist_examiners'),
+
+            AssignmentGroupsAction(_("Download deliveries as ZIP"),
+                               'devilry-admin-download_assignment_collection_as_zip'),
+            AssignmentGroupsAction(_("Download deliveries as TAR"),
+                               'devilry-admin-download_assignment_collection_as_tar'),
+        ]
+    relatedactions = [
+            AssignmentGroupsAction(_("Create new"),
+                "devilry-admin-create_assignmentgroup"),
+            AssignmentGroupsAction(_("Create many (advanced)"),
+                "devilry-admin-create_assignmentgroups"),
+            AssignmentGroupsAction(_("Create by copy"),
+                "devilry-admin-copy_groups"),
+            AssignmentGroupsAction(_("Examiner mode"),
+                "devilry-examiner-list_assignmentgroups")
+            ]
+
+    def get_filters(self):
+        filters = [
+            FilterStatus(),
+            FilterIsPassingGrade(),
+            FilterExaminer(),
+            FilterAfterDeadline(),
+        ]
+        numcan = FilterNumberOfCandidates(self.assignment)
+        if not (numcan.maximum == 1 and numcan.minimum == 1):
+            filters.append(numcan)
+        if self.assignment.anonymous:
+            filters.append(FilterMissingCandidateId())
+        return filters
+
+    def get_columns(self):
+        return Columns(
+            Col('id', "Id", optional=True),
+            Col('candidates', "Candidates"),
+            Col('examiners', "Examiners", optional=True, active_default=True),
+            Col('name', "Name", can_order=True, optional=True,
+                active_default=True),
+            Col('deadlines', "Deadlines", optional=True),
+            Col('active_deadline', "Active deadline", optional=True),
+            Col('latest_delivery', "Latest delivery", optional=True,
+                can_order=True),
+            Col('deliveries_count', "Deliveries", optional=True,
+                can_order=True),
+            Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('grade', "Grade", optional=True),
+            Col('status', "Status", can_order=True, optional=True,
+                active_default=True))
+
+    def create_row(self, group, active_optional_cols):
+        row = super(AssignmentGroupsFilterTable, self).create_row(group,
+                active_optional_cols)
+        row.add_action(_("edit"), 
+                reverse('devilry-admin-edit_assignmentgroup',
+                        args=[self.assignment.id, str(group.id)]))
+        row.add_action(_("examine"), 
+                       reverse('devilry-examiner-show_assignmentgroup-as-admin',
+                            args=[str(group.id)]))
+        #if group.deliveries_count > 0:
+            #pk = str(group.get_latest_delivery().id)
+            #row.add_action(_("examine"), 
+                           #reverse('devilry-examiner-edit-feedback-as-admin',
+                                #args=[pk]))
+        return row
+
+    def get_assignmentgroups(self):
+        return self.assignment.assignmentgroups.all()
 
 
 
@@ -48,6 +145,8 @@ class DeadlineForm(forms.ModelForm):
 def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
         successful_save=False):
     assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
     isnew = assignmentgroup_id == None
     if isnew:
         assignmentgroup = AssignmentGroup(parentnode=assignment)
@@ -116,6 +215,8 @@ def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
 @login_required
 def save_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
     return CreateAssignmentgroups().save_assignmentgroups(request, assignment)
 
 
@@ -228,6 +329,8 @@ class CreateAssignmentgroups(object):
 @login_required
 def create_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
+    if not assignment.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
 
     class Form(forms.Form):
         assignment_groups = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows':30, 'cols':70}))
@@ -279,16 +382,6 @@ class GroupCountError(Exception):
             args=[assignment_id]))
 
 
-def _groups_from_filtertable(request):
-    groups = []
-    for key, group_id in iter_filtertable_selected(request.POST,
-            'assignmentgroup'):
-        group = get_object_or_404(AssignmentGroup, id=group_id)
-        groups.append((key, group))
-    if len(groups) == 0:
-        raise GroupCountError(request)
-    return groups
-
 
 @login_required
 def set_examiners(request, assignment_id):
@@ -297,24 +390,27 @@ def set_examiners(request, assignment_id):
         return HttpResponseForbidden("Forbidden")
 
     class ExaminerForm(forms.Form):
-        users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
-                required=True)
+         examiners = forms.CharField(widget=DevilryMultiSelectFewCandidates,
+                required=False,
+                help_text=_('Usernames separated by ",". Leave empty to '\
+                    'clear examiners'))
     if request.method == 'POST':
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
 
         if 'onsite' in request.POST:
             form = ExaminerForm(request.POST)
             if form.is_valid():
-                user_ids = MultiSelectCharField.from_string(form.cleaned_data['users'])
-                for key, group in groups:
+                examiners = form.cleaned_data['examiners']
+                user_ids = MultiSelectCharField.from_string(examiners)
+                for group in groups:
                     group.examiners.clear()
                     for id in user_ids:
                         group.examiners.add(User.objects.get(id=id))
                 messages = UiMessages()
-                messages.add_success(_('Examiners successfully changed'))
+                if user_ids:
+                    messages.add_success(_('Examiners successfully changed'))
+                else:
+                    messages.add_success(_('Examiners successfully cleared'))
                 messages.save(request)
                 return HttpResponseRedirect(reverse(
                     'devilry-admin-edit_assignment',
@@ -325,7 +421,8 @@ def set_examiners(request, assignment_id):
         return render_to_response('devilry/admin/set-examiners.django.html', {
                 'form': form,
                 'assignment': assignment,
-                'groups': groups
+                'groups': groups,
+                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name()
                 }, context_instance=RequestContext(request))
     else:
         return HttpResponseBadRequest()
@@ -366,20 +463,17 @@ def random_dist_examiners(request, assignment_id):
         users = forms.CharField(widget=DevilryMultiSelectFewCandidates,
                 required=True)
     if request.method == 'POST':
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
 
         if 'onsite' in request.POST:
             form = ExaminerForm(request.POST)
             if form.is_valid():
                 examiner_ids = MultiSelectCharField.from_string(
                         form.cleaned_data['users'])
-                groupobjs = [group for key, group in groups]
                 examinerobjs = [User.objects.get(id=id)
                         for id in examiner_ids]
-                result = random_distribute_examiners(assignment, groupobjs,
+                result = random_distribute_examiners(assignment,
+                        [g for g in groups],
                         examinerobjs)
                 m = ['<p>', _('Examiners successfully random distributed.'), '</p>']
                 for examiner, assignmentgroups in result.iteritems():
@@ -399,6 +493,7 @@ def random_dist_examiners(request, assignment_id):
         return render_to_response('devilry/admin/random-dist-examiners.django.html', {
                 'form': form,
                 'assignment': assignment,
+                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name(),
                 'groups': groups
                 }, context_instance=RequestContext(request))
     else:
@@ -461,11 +556,8 @@ def create_deadline(request, assignment_id):
     
     if request.method == 'POST':
         datetimefullformat = '%Y-%m-%d %H:%M:%S'
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
-        ids = [g.id for key, g in groups]
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+        ids = [g.id for g in groups]
         selected_deadlines = Deadline.objects.filter(
                 assignment_group__in=ids)
         distinct_deadlines = selected_deadlines.values('deadline').distinct()
@@ -486,7 +578,7 @@ def create_deadline(request, assignment_id):
                     label = _("Deadline"))
 
         if 'onsite' in request.POST:
-            deadline = Deadline(assignment_group=groups[0][1])
+            deadline = Deadline(assignment_group=groups[0])
             deadlineform = DeadlineForm(request.POST, instance=deadline)
             selectform = DeadlineSelectForm(request.POST)
             if selectform.is_valid() and deadlineform.is_valid():
@@ -498,7 +590,7 @@ def create_deadline(request, assignment_id):
                             datetimefullformat)
                     for d in selected_deadlines.filter(deadline=deadline_to_copy):
                         d.delete()
-                for key, group in groups:
+                for group in groups:
                     group.deadlines.create(deadline=deadline, text=text)
                 messages = UiMessages()
                 messages.add_success(_('Deadlines created successfully.'))
@@ -514,7 +606,8 @@ def create_deadline(request, assignment_id):
                 'deadlineform': deadlineform,
                 'selectform': selectform,
                 'has_shared_deadlines': has_shared_deadlines,
-                'groups': groups
+                'groups': groups,
+                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name()
                 }, context_instance=RequestContext(request))
     else:
         return HttpResponseBadRequest()
@@ -527,11 +620,8 @@ def clear_deadlines(request, assignment_id):
         return HttpResponseForbidden("Forbidden")
     
     if request.method == 'POST':
-        try:
-            groups = _groups_from_filtertable(request)
-        except GroupCountError, e:
-            return e.get_response(assignment_id)
-        ids = [g.id for key, g in groups]
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+        ids = [g.id for g in groups]
         selected_deadlines = Deadline.objects.filter(
                 assignment_group__in=ids)
         for d in selected_deadlines:
@@ -539,10 +629,34 @@ def clear_deadlines(request, assignment_id):
         messages = UiMessages()
         messages.add_success(
                 _('Deadlines successfully cleared from: %(groups)s.' %
-                {'groups': ', '.join([str(g) for k, g in groups])}))
+                {'groups': ', '.join([str(g) for g in groups])}))
         messages.save(request)
         return HttpResponseRedirect(reverse(
             'devilry-admin-edit_assignment',
             args=[assignment_id]))
     else:
         return HttpResponseBadRequest()
+
+
+@login_required
+def delete_manyassignmentgroups(request, assignment_id):
+    return deletemany_generic(request, AssignmentGroup,
+            AssignmentGroupsFilterTable,
+            successurl=reverse('devilry-admin-edit_assignment',
+                args=[assignment_id]))
+
+@login_required
+def download_assignment_collection(request, assignment_id, archive_type=None):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    #Check admin rights
+    if assignment.can_save(request.user):
+        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    else:
+        return HttpResponseForbidden("Forbidden: You tried to download deliveries "\
+                                     "from an assignment you do not have access to.")
+    if archive_type == "zip":
+        try:
+            verify_groups_not_exceeding_max_file_size(groups)
+        except Exception, e:
+            return HttpResponseForbidden(_("One or more files exeeds the maximum file size for ZIP files."))
+    return create_archive_from_assignmentgroups(request, assignment, groups, archive_type)

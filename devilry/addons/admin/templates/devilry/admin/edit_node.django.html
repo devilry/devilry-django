@@ -8,7 +8,11 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>{{ title }}</li>
+  <li><a href="{{ parent_url }}">
+    {{ parent_url_label }}</a></li>
+  <li class="current"><a href="#">
+    {{ title }}
+  </a></li>
 {% endblock %}
 
 {% block main %}

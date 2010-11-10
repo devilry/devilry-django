@@ -9,7 +9,8 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from devilry.ui.messages import UiMessages
-from devilry.core.models import Assignment
+from devilry.core.models import Assignment, Subject, Period, AssignmentGroup
+from devilry.core.utils.GroupNodes import group_assignmentgroups
 
 from html import input_form
 from models import RstSchemaDefinition
@@ -43,7 +44,7 @@ class RstSchemaDefWidget(forms.Textarea):
 class RstSchemaDefinitionForm(forms.ModelForm):
     class Meta:
         model = RstSchemaDefinition
-        fields = ('schemadef', 'let_students_see_schema')
+        fields = ('schemadef', 'let_students_see_schema', 'maxpoints')
         widgets = {
             'schemadef': RstSchemaDefWidget
         }
@@ -51,7 +52,7 @@ class RstSchemaDefinitionForm(forms.ModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
         try:
-            rstdoc_from_string(cleaned_data['schemadef'])
+            rstdoc_from_string(cleaned_data.get('schemadef', ""))
         except RstValidationError, e:
             msg = _('Line %(line)s: %(message)s') % e.__dict__
             self._errors['schemadef'] = self.error_class([msg])
@@ -79,6 +80,7 @@ def edit_schema(request, assignment_id, save_successful=False):
         form = RstSchemaDefinitionForm(request.POST, instance=schema)
         if form.is_valid():
             form.save()
+            assignment.save() # save the assignment to recalculate any cached fields
             return HttpResponseRedirect(
                     reverse('devilry-grade_rstschema-edit_schema-success',
                         args=[str(assignment_id)]))

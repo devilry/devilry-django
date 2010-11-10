@@ -1,0 +1,68 @@
+[
+    {
+        "pk": 3, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "Is the student hard to wake from sleep?\r\n\r\n.. field:: no/yes\r\n    :default: no\r\n\r\nHow would you rate the excuses provided by the student when asked to do some work?\r\n\r\n.. field:: 1-10"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "\r\nIs kick.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs Gaussian_function1.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "grade_rstschema.rstschemadefinition", 
+        "fields": {
+            "let_students_see_schema": false, 
+            "schemadef": "Is ball_table2.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs ball_table3.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n\r\nIs compute_sum_while.py approved?\r\n\r\n.. field:: no/yes\r\n    :default: yes\r\n"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 9 ]]]"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ no ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 1 ]]]"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 6 ]]]"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "grade_rstschema.rstschemagrade", 
+        "fields": {
+            "schema": "Is the student hard to wake from sleep? [no/yes]\n[[[ yes ]]]\n\nHow would you rate the excuses provided by the student when asked to do some work? [1-10]\n[[[ 2 ]]]"
+        }
+    }
+]

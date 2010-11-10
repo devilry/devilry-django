@@ -1,23 +1,22 @@
 from django.utils.translation import ugettext as _
-from django.conf import settings
+from django.core.urlresolvers import reverse
 
-from devilry.addons.dashboard.dashboardplugin_registry import registry, \
-        DashboardItem
+from devilry.core.models import AssignmentGroup
+from devilry.addons.quickdash.dashboardplugin_registry import (registry, 
+        DashboardView, DashboardItem, examinergroup)
+
 import dashboardviews
 
 
-#registry.register_important(DashboardItem(
-         #title = _('Assignment groups'),
-         #examiner_access = True,
-         #view = dashboardviews.list_assignmentgroups,
-         #js = [settings.DEVILRY_RESOURCES_URL +
-             #'/ui/js/jquery.autocompletetable.js']
-#))
+def is_examiner(request):
+    return AssignmentGroup.active_where_is_examiner(request.user).count() > 0
 
-registry.register_important(DashboardItem(
-         title = _('Assignments'),
-         examiner_access = True,
-         view = dashboardviews.list_assignments,
-         js = [settings.DEVILRY_RESOURCES_URL +
-             '/ui/js/jquery.autocompletetable.js']
-))
+examinergroup.additems(
+    DashboardItem(
+        title = _('Assignments'),
+        url = reverse('devilry-examiner-list_assignments'),
+        check = is_examiner),
+)
+
+
+registry.add_view(DashboardView(dashboardviews.examiner_important))

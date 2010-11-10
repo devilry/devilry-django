@@ -1,25 +1,20 @@
-{% extends "devilry/admin/base.django.html" %}
+{% extends "devilry/admin/edit_assignmentgroup_base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
 {% block title %}
-	{% trans "Set examiners" %}
+	{% trans "Random distribute examiners" %}
 {% endblock %}
 {% block heading %}
-	{% trans "Set examiners" %}
+	{% trans "Random distribute examiners" %}
 {% endblock %}
 
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>
-    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
-      {{ assignment.get_path }}</a>
-  </li>
-  <li>::</li>
-  <li>
-		{% trans "Set examiners" %}
-  </li>
+  <li class="current"><a href="#">
+    {% trans "Random distribute examiners" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}
@@ -31,8 +26,8 @@
 <form method='post' action='{% url devilry-admin-random_dist_examiners assignment.id %}'>
 	<input type='hidden' name='onsite' value='yes'/>
 
-	{% for key, group in groups %}
-	  <input type='hidden' name='{{ key }}' value='{{ group.id }}'/>
+	{% for group in groups %}
+	  <input type='hidden' name='{{ checkbox_name }}' value='{{ group.id }}'/>
 	{% endfor %}
 
 	<h2>Randomly distribute the following examiners:</h2>
@@ -42,7 +37,7 @@
 
 	<h2>... on the following groups:</h2>
 	<ul>
-	{% for key, group in groups %}
+	{% for group in groups %}
 	  <li>{{ group.get_students }}</li>
 	{% endfor %}
 	</ul>

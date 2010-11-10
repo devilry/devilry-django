@@ -10,6 +10,7 @@ from devilry.xmlrpc import XmlRpc
 doc = """The functions required to do the most common operations required by
 a examiner."""
 rpc = XmlRpc('examiner', 'devilry-xmlrpc-examiner', doc)
+DATETIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
 @rpc.rpcdec_login_required()
@@ -108,8 +109,9 @@ def list_assignmentgroups(request, assignment_path):
     assignment_groups = [{
             'id': g.id,
             'name': g.name,
-            'students': [u.get_identifier() for u in g.candidates.all()],
-            'deadlines': [u for u in g.deadlines.all()],
+            'students': [str(u.get_identifier()) for u in g.candidates.all()],
+            'deadlines': [d.deadline.strftime(DATETIME_FORMAT)
+                    for d in g.deadlines.all()],
             'number_of_deliveries': g.get_number_of_deliveries()}
         for g in assignment_groups]
     return assignment_groups

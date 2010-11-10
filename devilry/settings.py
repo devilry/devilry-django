@@ -7,18 +7,23 @@ this_dir = dirname(abspath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# If no admins are set, no emails are sent to admins
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+     ('Devilry admin', 'admin@example.com'),
 )
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = join(this_dir, 'db.sqlite3') # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASES = {
+    "default": {
+        'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': join(this_dir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+        'USER': '',             # Not used with sqlite3.
+        'PASSWORD': '',         # Not used with sqlite3.
+        'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -66,6 +71,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'devilry.core.utils.profile.ProfilerMiddleware'
 ]
 
 
@@ -83,11 +89,40 @@ LOGIN_URL = '/ui/login'
 DEVILRY_LOGOUT_URL = '/ui/logout'
 
 
+#DEVILRY_APPS = [
+    #'devilry.core',
+    #'devilry.ui',
+    #'devilry.adminscripts',
+    #'devilry.addons.student',
+    #'devilry.addons.examiner',
+    #'devilry.addons.admin',
+    #'devilry.addons.aboutme',
+    #'devilry.addons.grade_approved',
+    #'devilry.addons.grade_default',
+    #'devilry.addons.grade_rstschema',
+    #'devilry.addons.gradestats',
+    #'devilry.addons.xmlrpc_examiner',
+    #'devilry.addons.quickdash',
+    #'devilry.xmlrpc',
+    #'devilry.xmlrpc_client'
+#]
+
+#INSTALLED_APPS = [
+    #'django.contrib.webdesign', 
+    #'django.contrib.markup', 
+    #'django.contrib.sessions',
+    #'django.contrib.sites',
+    #'django.contrib.admin',
+    #'django.contrib.auth',
+    #'django.contrib.contenttypes'
+#] + DEVILRY_APPS
+
+
 INSTALLED_APPS = (
     'django.contrib.markup', 
     'django.contrib.sessions',
     'django.contrib.sites',
-	'django.contrib.admin',
+    'django.contrib.admin',
     'devilry.addons.student',
     'devilry.addons.examiner',
     'devilry.addons.admin',
@@ -95,15 +130,19 @@ INSTALLED_APPS = (
     'devilry.addons.grade_default',
     'devilry.addons.grade_schema',
     'devilry.addons.grade_rstschema',
-    'devilry.addons.dashboard',
+    'devilry.addons.quickdash',
     'devilry.addons.xmlrpc_examiner',
     'devilry.xmlrpc',
     'devilry.xmlrpc_client',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'devilry.core',
-    'devilry.ui'
-    )
+    'devilry.ui',
+    'devilry.adminscripts',
+    'devilry.addons.gradestats'
+)
+
+
 
 
 DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
@@ -118,10 +157,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 
 
-#DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
-#DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
-DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
-DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore.dbm')
+DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
+DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
+#DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.DbmDeliveryStore'
+#DELIVERY_STORE_DBM_FILENAME = join(this_dir, 'deliverystore', 'deliverystore.dbm')
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
 DEVILRY_MAIN_PAGE = ''
@@ -130,20 +169,32 @@ DEVILRY_MAIN_PAGE = ''
 BASE_TEMPLATE = 'devilry/base.django.html'
 
 MEDIA_ICONS_URL = 'media/icons/'
-JQUERY_UI_THEME = 'blitzer'
+#JQUERY_UI_THEME = 'devilry'
+#JQUERY_UI_THEME = 'dot-luv'
+#JQUERY_UI_THEME = 'ui-darkness'
+JQUERY_UI_THEME = 'devilry-blue'
 
+SEND_EMAIL_TO_USERS = False
 
 ## The default grade-plugin
 DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
 #DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:approvedgrade'
+#DEVILRY_DEFAULT_GRADEPLUGIN='grade_rstschema:rstschemagrade'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = this_dir + '/email_log/'
 
-#EMAIL_HOST = 'smtp.ifi.uio.no'
-#EMAIL_PORT = 25
+EMAIL_SUBJECT_PREFIX = '[devilry] '
+EMAIL_SUBJECT_PREFIX_ADMIN = '[devilry-admin] '
 
-#EMAIL_HOST_USER = 
-#EMAIL_HOST_PASSWORD = 
+WEB_PAGE_PREFIX = 'http://devilry.ifi.uio.no/django/main'
+EMAIL_DEFAULT_FROM = 'devilry-support@ifi.uio.no'
+EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
+                  "Please do not respond to this email."
 
-email_subject_prefix = '[devilry] '
+DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
+
+DATETIME_FORMAT = "N j, Y, H:i"
+
+#Set max file size to 5MB. Files greater than this size are split into chunks of this size.
+MAX_ARCHIVE_CHUNK_SIZE = 5000000

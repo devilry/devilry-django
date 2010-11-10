@@ -18,10 +18,10 @@ from django.core.exceptions import ValidationError
 from devilry.addons.grade_approved.models import ApprovedGrade
 from devilry.core import pluginloader
 
-from models import Node, Subject, Period, Assignment, AssignmentGroup, \
-        Delivery, Candidate
-from deliverystore import MemoryDeliveryStore, FsDeliveryStore, \
-    DbmDeliveryStore
+from models import (Node, Subject, Period, Assignment, AssignmentGroup,
+        Delivery, Candidate, Feedback)
+from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
+    DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
 
 pluginloader.autodiscover()
@@ -83,6 +83,13 @@ class TestNode(TestCase):
         n.save()
         n.parentnode = self.uio
         self.assertRaises(IntegrityError, n.save)
+
+    def test_unique_noneparent(self):
+        n = Node(parentnode=None, short_name='stuff', long_name='Ifi')
+        n.clean()
+        n.save()
+        n2 = Node(parentnode=None, short_name='stuff', long_name='Ifi')
+        self.assertRaises(ValidationError, n2.clean)
 
     def test_can_save(self):
         self.assertFalse(Node().can_save(self.ifiadmin))
@@ -331,14 +338,14 @@ class TestAssignment(TestCase):
 
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(1,
-                oblig1.assignment_groups_where_is_examiner_or_admin(examiner1)[0].id)
+                oblig1.assignment_groups_where_can_examine(examiner1)[0].id)
         self.assertEquals(2,
-                oblig1.assignment_groups_where_is_examiner_or_admin(examiner1).count())
+                oblig1.assignment_groups_where_can_examine(examiner1).count())
 
         self.assertEquals(1,
-                oblig1.assignment_groups_where_is_examiner_or_admin(ifiadmin)[0].id)
+                oblig1.assignment_groups_where_can_examine(ifiadmin)[0].id)
         self.assertEquals(4,
-                oblig1.assignment_groups_where_is_examiner_or_admin(ifiadmin).count())
+                oblig1.assignment_groups_where_can_examine(ifiadmin).count())
 
     def test_clean_publishing_time_before(self):
         oblig1 = Assignment.objects.get(id=1)
@@ -506,6 +513,55 @@ class TestAssignmentGroup(TestCase):
         oblig1.publishing_time = datetime(2012, 12, 24)
         deadline = assignment_group.deadlines.create(deadline=datetime(2011, 12, 24), text=None)
         self.assertRaises(ValidationError, deadline.clean)
+
+    def test_status(self):
+        teacher1 = User.objects.get(username='teacher1')
+        ag = AssignmentGroup(
+                parentnode = Assignment.objects.get(id=1))
+        ag.save()
+        self.assertEquals(ag.status,
+                AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(),
+                "No deliveries")
+        self.assertEquals(ag.get_localized_student_status(),
+                "No deliveries")
+
+        ag = AssignmentGroup.objects.get(id=1)
+        d = ag.deliveries.all()[0]
+        d.save()
+        self.assertEquals(ag.status,
+                AssignmentGroup.NOT_CORRECTED)
+        self.assertEquals(ag.get_localized_status(),
+                "Not corrected")
+        self.assertEquals(ag.get_localized_student_status(),
+                "Not corrected")
+
+        d.feedback = Feedback(
+                format = 'rst',
+                text = 'test',
+                last_modified_by = teacher1)
+        d.feedback.set_grade_from_xmlrpcstring("+")
+        d.feedback.save()
+        d.save()
+        ag = AssignmentGroup.objects.get(id=1)
+        self.assertEquals(ag.status,
+                AssignmentGroup.CORRECTED_NOT_PUBLISHED)
+        self.assertEquals(ag.get_localized_status(),
+                "Corrected, not published")
+        self.assertEquals(ag.get_localized_student_status(),
+                "Not corrected")
+
+        d.feedback.published = True
+        d.feedback.save()
+        ag = AssignmentGroup.objects.get(id=1)
+        self.assertEquals(ag.status,
+                AssignmentGroup.CORRECTED_AND_PUBLISHED)
+        self.assertEquals(ag.get_localized_status(),
+                "Corrected and published")
+        self.assertEquals(ag.get_localized_student_status(),
+                "Corrected")
+
+
         
 class TestCandidate(TestCase):
     fixtures = ['tests/core/users.json', 'tests/core/core.json']

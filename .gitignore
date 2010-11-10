@@ -27,3 +27,9 @@ coverage_html_report/
 cookies.txt
 .devilry/
 *.bak
+devilry_xmlrpc_client.egg-info/
+dist/
+cscope.out
+Session.vim
+deliverystore/
+exampledata-backup.tar.bz2

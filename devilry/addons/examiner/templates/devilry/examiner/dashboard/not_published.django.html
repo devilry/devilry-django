@@ -1,0 +1,46 @@
+{% extends "devilry/examiner/dashboard/viewbase.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block heading %}{% trans "Not published" %}{% endblock %}
+
+{% block help %}
+{{ groupcount }} of the {{ total }} groups where you are
+examiner with status "Corrected, not published". They are ordered with the
+latest changed feedback first.
+{% endblock %}
+
+
+{% block custom_groupinfo %}
+  <div class="unimportant">
+    {% trans "Feeback last updated" %}:
+    <em>{{ group.time_of_last_feedback|date:"DATETIME_FORMAT" }}</em>
+  </div>
+  <div class="unimportant">
+    Last delivery:
+    <em>
+      {{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}
+    </em>
+  </div>
+  {% if group.time_of_last_delivery > group.active_deadline %}
+    <div>
+      <em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
+    </div>
+  {% endif %}
+  <div>
+    <a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
+      {% trans "Edit feedback" %}
+    </a>
+  </div>
+{% endblock %}
+
+
+{% block footer %}
+  {% with "not_published" as ident %}
+    {% with session.dashboard_examiner_not_published_orderdesc as orderdesc %}
+      {% with session.dashboard_examiner_not_published_showall as showall %}
+        {% include "devilry/examiner/dashboard/footerbuttons.django.html" %}
+      {% endwith %}
+    {% endwith %}
+  {% endwith %}
+{% endblock %}

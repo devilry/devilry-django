@@ -2,16 +2,16 @@ class UiMessages(list):
     """ A container for zero or more messages. """
 
     def add_info(self, msg, raw_html=False):
-        self.append(('info_message', raw_html, msg))
+        self.append(('info-message', raw_html, msg))
 
     def add_success(self, msg, raw_html=False):
-        self.append(('success_message', raw_html, msg))
+        self.append(('success-message', raw_html, msg))
 
     def add_warning(self, msg, raw_html=False):
-        self.append(('warning_message', raw_html, msg))
+        self.append(('warning-message', raw_html, msg))
 
     def add_error(self, msg, raw_html=False):
-        self.append(('error_message', raw_html, msg))
+        self.append(('warning-message', raw_html, msg))
 
     def save(self, request):
         request.session['uimessages'] = self

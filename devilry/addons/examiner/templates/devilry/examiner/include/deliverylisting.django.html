@@ -1,37 +1,30 @@
 {% load i18n %}
 
-<h4><a href="#">
-	{{ delivery.number }} - {{ delivery.time_of_delivery|date:DEVILRY_DATETIME_FORMAT }}
-	{% spaceless %}
-		(
-		{% if delivery.feedback %}
-			{{ delivery.feedback.get_grade_as_short_string }}
-		{% else %}
-			{% trans "Not corrected" %}
-		{% endif %}
-		)
-		{% if delivery.feedback.published %}
-		  <span class='delivery_published_msg'>({% trans "Published" %})</span>
-		{% endif %}
-		{% if delivery.feedback and not delivery.feedback.published %}
-		  <span class='delivery_unpublished_msg'>({% trans "Feedback is not published, and not viewable by the student(s)" %})</span>
-		{% endif %}
-		{% if after_last_deadline_msg %}
-		  <span class='after_last_deadline_msg'>({% trans "After last deadline" %})</span>
-		{% endif %}
-	{% endspaceless %}
-</a></h4>
-<div>
-	<p>
-		<a href='{% url devilry-examiner-correct_delivery delivery.id %}'>
-			{% if delivery.feedback %}
-				{% trans "Edit feedback" %}
-			{% else %}
-				{% trans "Create feedback" %}
-			{% endif %}
-		</a>
-	</p>
-	{% if delivery.feedback %}
-		{% include "devilry/ui/include/show_feedback.django.html" %}
-	{% endif %}
-</div>
+<li>
+  <div class="deliverynumber">{{ delivery.number }}:</div>
+  <div class="deliveryinfo">
+    <a href='{% url devilry-examiner-edit-feedback delivery.id %}'>
+      {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
+    </a>
+    <div class="unimportant">
+      {% spaceless %}
+        (
+        {% if delivery.feedback %}
+          {{ delivery.feedback.get_grade_as_short_string }}
+        {% else %}
+          {% trans "Not corrected" %}
+        {% endif %}
+        )
+        {% if delivery.feedback.published %}
+          <span class='delivery_published_msg'>({% trans "Published" %})</span>
+        {% endif %}
+        {% if delivery.feedback and not delivery.feedback.published %}
+          <span class='status_corrected_not_published'>({% trans "Feedback is not published, and not viewable by the student(s)" %})</span>
+        {% endif %}
+        {% if after_last_deadline_msg %}
+          <span class='bad'>({% trans "After last deadline" %})</span>
+        {% endif %}
+      {% endspaceless %}
+    </div>
+  </div>
+</li>

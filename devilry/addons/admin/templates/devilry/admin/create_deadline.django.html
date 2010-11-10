@@ -1,4 +1,4 @@
-{% extends "devilry/admin/base.django.html" %}
+{% extends "devilry/admin/edit_assignmentgroup_base.django.html" %}
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
@@ -12,14 +12,9 @@
 
 {% block admin-breadcrumbs %}
   {{ block.super }}
-  <li>
-    <a href='{% url devilry-admin-edit_assignment assignment.id %}'>
-      {{ assignment.get_path }}</a>
-  </li>
-  <li>::</li>
-  <li>
-		{% trans "Create deadline" %}
-  </li>
+  <li class="current"><a href="#">
+    {% trans "Create deadline" %}
+  </a></li>
 {% endblock %}
 
 {% block main %}
@@ -31,8 +26,8 @@
 <form method='post' action='{% url devilry-admin-create_deadline assignment.id %}'>
 	<input type='hidden' name='onsite' value='yes'/>
 
-	{% for key, group in groups %}
-	  <input type='hidden' name='{{ key }}' value='{{ group.id }}'/>
+	{% for group in groups %}
+	  <input type='hidden' name='{{ checkbox_name }}' value='{{ group.id }}'/>
 	{% endfor %}
 
 	<h2>{% trans "Set the following deadline:" %}</h2>
@@ -68,7 +63,7 @@
 
 	<h2>{% trans "... on the following groups:" %}</h2>
 	<ul>
-	{% for key, group in groups %}
+	{% for group in groups %}
 	  <li>{{ group.get_students }}</li>
 	{% endfor %}
 	</ul>
