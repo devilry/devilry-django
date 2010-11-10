@@ -12,11 +12,11 @@ latest changed feedback first.
 
 
 {% block custom_groupinfo %}
-  <div>
+  <div class="unimportant">
     {% trans "Feeback last updated" %}:
     <em>{{ group.time_of_last_feedback|date:"DATETIME_FORMAT" }}</em>
   </div>
-  <div>
+  <div class="unimportant">
     Last delivery:
     <em>
       {{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}
