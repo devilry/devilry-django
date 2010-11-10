@@ -87,6 +87,7 @@ def add_delivery(request, assignment_group_id, messages=None):
         'assignment_group': assignment_group,
         'formset': formset,
         'messages': messages,
+        'using_ie': request.META['HTTP_USER_AGENT'].find('MSIE') > 0,
         'filenames_to_deliver': filenames_to_deliver,
         }, context_instance=RequestContext(request))
 
