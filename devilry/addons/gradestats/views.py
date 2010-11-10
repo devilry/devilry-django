@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.db.models.query import QuerySet
+from django.template.defaultfilters import floatformat
 
 from devilry.core.models import AssignmentGroup, Period
 from devilry.core import pluginloader
@@ -20,17 +21,19 @@ def _get_periodstats(period, user):
     groups = AssignmentGroup.published_where_is_candidate(user).filter(
             parentnode__parentnode=period)
     s = sum([g.scaled_points for g in groups])
-    return s, groups
+    maxpoints = sum([g.parentnode.pointscale for g in groups])
+    return s, maxpoints, groups
 
 @login_required
 def userstats(request, period_id):
     period = get_object_or_404(Period, pk=period_id)
-    total, groups = _get_periodstats(period, request.user)
+    total, maxpoints, groups = _get_periodstats(period, request.user)
     return render_to_response(
         'devilry/gradestats/user.django.html', {
             'period': period,
             'userobj': request.user,
             'total': total,
+            'maxpoints': maxpoints,
             'groups': groups,
         }, context_instance=RequestContext(request))
 
@@ -41,12 +44,13 @@ def admin_userstats(request, period_id, username):
     if not period.can_save(request.user):
         return HttpResponseForbidden("Forbidden")
     user = get_object_or_404(User, username=username)
-    total, groups = _get_periodstats(period, user)
+    total, maxpoints, groups = _get_periodstats(period, user)
     return render_to_response(
         'devilry/gradestats/admin-user.django.html', {
             'period': period,
             'userobj': user,
             'total': total,
+            'maxpoints': maxpoints,
             'groups': groups,
         }, context_instance=RequestContext(request))
 
@@ -101,7 +105,8 @@ class PeriodStatsFilterTable(FilterTable):
         cols.add(Col("username", "Username", can_order=True))
         cols.add(Col("sumpoints", "Sum", can_order=True))
         for assignment in self.assignments_in_period:
-            cols.add(Col(assignment.id, assignment.short_name,
+            cols.add(Col(assignment.id,
+                "%s (%s)" % (assignment.short_name, assignment.pointscale),
                 can_order=True))
         return cols
 
@@ -117,20 +122,31 @@ class PeriodStatsFilterTable(FilterTable):
         )
 
         assignments = AssignmentGroup.where_is_candidate(user).filter(
-                parentnode__parentnode=self.period).values_list(
-                        "scaled_points", "is_passing_grade", "status")
-        if len(self.assignments_in_period) > len(assignments):
-            # Handle user in multiple groups on the same assignment by
-            # showing their points as 0. How to calculate points when a user
-            # is in multiple groups has not been resolved yet, and might
-            # never be supported.
-            assignments = [(0, False, 0) for a in self.assignments_in_period]
+                parentnode__parentnode=self.period)
+        assignments = assignments.values_list(
+                        "parentnode__id", "scaled_points",
+                        "is_passing_grade", "status")
+        #if len(self.assignments_in_period) > len(assignments):
+            ## Handle user in multiple groups on the same assignment by
+            ## showing their points as 0. How to calculate points when a user
+            ## is in multiple groups has not been resolved yet, and might
+            ## never be supported.
+            #assignments = [(0, False, 0) for a in self.assignments_in_period]
                 
         row.add_cell(user.username)
-        row.add_cell(user.sumpoints)
-        for scaled_points, is_passing_grade, status in assignments:
-            row.add_cell(scaled_points,
-                    cssclass=AssignmentGroup.status_mapping_cssclass[status])
+        row.add_cell(floatformat(user.sumpoints))
+        it = assignments.__iter__()
+        id, scaled_points, is_passing_grade, status = it.next()
+        for assignment in self.assignments_in_period:
+            if id == assignment.id:
+                row.add_cell(floatformat(scaled_points),
+                        cssclass=AssignmentGroup.status_mapping_cssclass[status])
+                try:
+                    id, scaled_points, is_passing_grade, status = it.next()
+                except StopIteration:
+                    id = None
+            else:
+                row.add_cell("")
         return row
 
     def create_dataset(self):
