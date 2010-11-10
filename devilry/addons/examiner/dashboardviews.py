@@ -85,9 +85,14 @@ class NotPublished(ExaminerImportantItem):
 def examiner_important(request, *args, **kwargs):
     not_corrected = NotCorrected(request)
     not_published = NotPublished(request)
-    if len(not_corrected) == 0 or len(not_published) == 0:
+    if len(not_corrected) == 0 and len(not_published) == 0:
         return None
 
+    print
+    print "#################################"
+    print not_corrected.groups
+    print "#################################"
+    print
     return render_to_string(
         'devilry/examiner/dashboard/examiner_important.django.html', {
             "items": [
