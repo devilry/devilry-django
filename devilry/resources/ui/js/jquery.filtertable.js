@@ -150,11 +150,25 @@
             .appendTo(tr);
           var checkall = $("<input/>")
             .attr("type", "checkbox")
+            .tipTip({
+                content:
+                  "<p><strong>Click</strong>: mark all rows matching this filter</p>" +
+                  "<p><strong>Shift-click:</strong> mark all rows on this page</p>",
+                delay: 200,
+                defaultPosition: "right",
+              })
             .appendTo(th);
-          checkall.click(function() {
-              var qry = store.result_table.find("input:checkbox");
-              var checked = checkall.is(":checked");
-              qry.attr("checked", checked);
+          checkall.click(function(e) {
+              var markfunc = function() {
+                  var qry = store.result_table.find("input:checkbox");
+                  var checked = checkall.is(":checked");
+                  qry.attr("checked", checked);
+                };
+              if(e.shiftKey) {
+                markfunc();
+              } else {
+                $.filtertable.refresh(store, {perpage:"all"}, markfunc);
+              }
             });
         }
         $.each(columns, function(i, col) {
@@ -326,7 +340,7 @@
         store.sidebar.accordion("resize");
       },
 
-      refresh: function(store, options) {
+      refresh: function(store, options, oncomplete) {
         store.result_table.empty();
         store.databox.hide();
         store.loadingbox.show();
@@ -356,6 +370,10 @@
             store.statusmsgbox.html(json.statusmsg);
             store.perpagefield.val(json.perpage);
             $.filtertable.recalc_accordion(store);
+
+            if(oncomplete) {
+              oncomplete();
+            }
           });
       }
     };
