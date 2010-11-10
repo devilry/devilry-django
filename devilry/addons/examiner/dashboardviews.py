@@ -48,13 +48,15 @@ class ExaminerImportantItem(object):
 
     def render(self, request):
         from devilry.core.utils.GroupNodes import group_nodes
-        assignments = group_nodes(self.groups, 0)
-        return render_to_string(
-            "devilry/examiner/dashboard/%s.django.html" % self.sessionid, {
-                "assignments": assignments,
-                "total": self.total,
-                "groupcount": self.groups.count()
-            }, context_instance=RequestContext(request))
+        if self.total > 0:
+            assignments = group_nodes(self.groups, 0)
+            return render_to_string(
+                "devilry/examiner/dashboard/%s.django.html" % self.sessionid, {
+                    "assignments": assignments,
+                    "total": self.total,
+                    "groupcount": self.groups.count()
+                }, context_instance=RequestContext(request))
+        return ""
 
 
 class NotCorrected(ExaminerImportantItem):
@@ -87,12 +89,6 @@ def examiner_important(request, *args, **kwargs):
     not_published = NotPublished(request)
     if len(not_corrected) == 0 and len(not_published) == 0:
         return None
-
-    print
-    print "#################################"
-    print not_corrected.groups
-    print "#################################"
-    print
     return render_to_string(
         'devilry/examiner/dashboard/examiner_important.django.html', {
             "items": [
