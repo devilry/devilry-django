@@ -124,9 +124,10 @@
                   $.getJSON(store.jsonurl, opt, function(json) {
                       var v = json.filteredsize;
                       if(filter.multiselect) {
-                        v = json.filteredsize - filteredsize;
-                        if(v >= 0)
-                          v = "+" + v;
+                        diff = json.filteredsize - filteredsize;
+                        if(diff >= 0)
+                          diff = "+" + diff;
+                        v = v + " [" + diff + "]";
                       }
                       count.html(" (" + v + ")");
                       $.filtertable.recalc_accordion(store);
