@@ -15,7 +15,7 @@ init-exampledb
     testing:
 
         students:
-            huey, dewey, louie, may, june, july
+            huey, dewey, louie, april, may, june
         examiners:
             daisy, clarabelle, della, mathilda
         admins:
