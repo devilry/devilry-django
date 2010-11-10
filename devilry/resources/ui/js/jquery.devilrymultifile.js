@@ -22,9 +22,11 @@
             text:false,
             icons:{primary:"ui-icon-trash"}
           });
+
+      var labeltext = filebutton.val().replace("C:\\fakepath\\", "");
       var label = $("<span></span>")
         .addClass("dimmed")
-        .html("&nbsp;&nbsp;" + filebutton.val());
+        .html("&nbsp;&nbsp;" + labeltext);
       var listitem = $("<div></div>")
         .append(delbutton)
         .append(label)
