@@ -6,7 +6,7 @@ import tarfile
 from django.http import HttpResponse  
 from devilry.core.models import AssignmentGroup, Assignment
 from django.utils.formats import date_format
-from ui.defaults import DATETIME_FORMAT
+from devilry.ui.defaults import DATETIME_FORMAT
 from tarfile import TarFile
 from django.conf import settings
 import copy
