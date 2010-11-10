@@ -37,13 +37,16 @@ def create_archive_from_delivery(request, delivery, archive_type):
     return response
 
 
-def verify_not_exceeding_max_file_size(groups):
-    max_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+def verify_groups_not_exceeding_max_file_size(groups):
     for g in groups:
-        for d in g.deliveries.all():
-            for f_meta in d.filemetas.all():
-                if f_meta.size > max_size:
-                    raise Exception()
+        verify_deliveries_not_exceeding_max_file_size(g.deliveries.all())
+
+def verify_deliveries_not_exceeding_max_file_size(deliveries):
+    max_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+    for d in deliveries:
+        for f_meta in d.filemetas.all():
+            if f_meta.size > max_size:
+                raise Exception()
 
 class DevilryStringIO(StringIO, object):
 
