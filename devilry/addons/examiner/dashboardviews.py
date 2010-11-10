@@ -47,10 +47,13 @@ class ExaminerImportantItem(object):
         return self.total
 
     def render(self, request):
+        from devilry.core.utils.GroupNodes import group_nodes
+        assignments = group_nodes(self.groups, 0)
         return render_to_string(
             "devilry/examiner/dashboard/%s.django.html" % self.sessionid, {
-                "groups": self.groups,
-                "total": self.total
+                "assignments": assignments,
+                "total": self.total,
+                "groupcount": self.groups.count()
             }, context_instance=RequestContext(request))
 
 

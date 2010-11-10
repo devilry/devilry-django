@@ -516,6 +516,16 @@ table.xmlrpc-function-constraints li {
 	margin-right: 250px;
 }
 
+.dashboard-grouplist h3 {
+	margin: 20px 0 10px 0;
+}
+.dashboard-grouplist dl{
+	margin-left: 25px;
+}
+.dashboard-grouplist dd {
+	margin-bottom: 10px;
+}
+
 
 /*******************************
  * Examiner

@@ -7,32 +7,38 @@
 {% block help %}{% endblock %}
 </p>
 
-<dl class="dashboard-grouplist">
-{% for group in groups %}
-	<dt>
-    {% if group.name %}
-      {{ group.name }}
-    {% else %}
-      {{ group.get_candidates }}
-    {% endif %}
-	</dt>
-	<dd>
-		<div>
-			{{ group.parentnode.parentnode.parentnode.short_name }}
-			- {{ group.parentnode.parentnode.short_name }}
-			-
-      <a href="{% url devilry-examiner-list_assignmentgroups group.parentnode.id %}">
-        {{ group.parentnode.short_name }}
-      </a>
-		</div>
-    {% if group.name %}
-      <div class="unimportant">
-        {% trans "Students" %}: <em>{{ group.get_candidates }}</em>
-      </div>
-    {% endif %}
-    {% block custom_groupinfo %}{% endblock %}
-	</dd>
+<div class="dashboard-grouplist">
+{% for assignment in assignments %}
+  <h3>
+    {{ assignment.node.parentnode.parentnode.short_name }}
+    - {{ assignment.node.parentnode.short_name }}
+    -
+    <a href="{% url devilry-examiner-list_assignmentgroups assignment.node.id %}">
+      {{ assignment.node.short_name }}
+    </a>
+  </h3>
+  <dl>
+    {% for groupnode in assignment.children %}
+      {% with groupnode.node as group %}
+        <dt>
+          {% if group.name %}
+            {{ group.name }}
+          {% else %}
+            {{ group.get_candidates }}
+          {% endif %}
+        </dt>
+        <dd>
+          {% if group.name %}
+            <div class="unimportant">
+              {% trans "Students" %}: <em>{{ group.get_candidates }}</em>
+            </div>
+          {% endif %}
+          {% block custom_groupinfo %}{% endblock %}
+        </dd>
+      {% endwith %}
+    {% endfor %}
+  </dl>
 {% endfor %}
-</dl>
+</div>
 
 {% endblock %}
