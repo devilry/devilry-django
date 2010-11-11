@@ -118,8 +118,9 @@ backup-exampledb:
 
 restore-exampledb:
 	rm -f db.sqlite3
-	tar -xvjf $(EXAMPLEDATA_BACKUP).tar.bz2
-	cp $(EXAMPLEDATA_BACKUP)/deliverystore ./
+	rm -rf deliverystore
+	tar -xjf $(EXAMPLEDATA_BACKUP).tar.bz2
+	mv $(EXAMPLEDATA_BACKUP)/deliverystore ./
 	sqlite3 db.sqlite3 < $(EXAMPLEDATA_BACKUP)/dbdump.sql
 	rm -rf $(EXAMPLEDATA_BACKUP)
 
