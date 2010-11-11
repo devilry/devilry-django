@@ -79,8 +79,36 @@ class Columns(dict):
             self.lst.append(col)
 
 class Col(object):
+    """
+    .. attribute:: id
+
+        A unique (within a table) is for this column. This is the value put
+        in the ``active_optional_columns`` argument to
+        :meth:`FilterTable.create_row`.
+
+    .. attribute:: title
+
+        A title for the columns (the column header users see).
+
+    .. attribute:: can_order
+
+        Can the user order this column? Defaults to False.
+
+    .. attribute:: optional
+
+        Is this column optional (can the user disable it)? Defaults to False.
+
+    .. attribute:: active_default
+
+        If optional is ``True``, this configures if the columns is visible
+        by default. Default value is ``False``.
+    """
     def __init__(self, id, title, can_order=False, optional=False,
             active_default=False):
+        """
+        All parameters are the same as the class attributes, except for
+        ``id`` which is stored as ``str(id)`` to ensure it is a string.
+        """
         self.id = str(id)
         self.title = title
         self.can_order = can_order
@@ -389,10 +417,25 @@ class FilterTable(object):
             self.session.filters[i] = value
                 
 
-    def create_row(self, group):
+    def create_row(self, item, active_optional_columns):
+        """ Called to create a single row in the table.
+        
+        :param item:
+            A single item in the datataset (what the dataset yields
+            when iterated).
+        :param active_optional_columns:
+            A set of active optional columns (columns that the user has
+            chosen to see, or that you have set ``active_default``). The
+            items in the set are the :attr:`Col.id` of optional columns.
+        """
         raise NotImplementedError()
 
     def create_dataset(self):
+        """ Return a iterable dataset, where each item represents one row in
+        the table. The only restriction is that it has to be iterable, and
+        it has to work with :meth:`create_row`, :meth:`get_dataset_size`,
+        :meth:`limit_dataset` and any filters you associate with the table.
+        """
         raise NotImplementedError()
 
     #def search(self, dataset, qry):
@@ -459,9 +502,25 @@ class FilterTable(object):
                 if not col.optional
                     or col.id in self.session.active_optional_columns]
 
+    def format_active_optional_columns(self, active_optional_columns):
+        """ Change/format active optional columns.
+        
+        The return value from this method is what is sent to
+        :meth:`create_row`. By default this only returns
+        ``active_optional_columns``.
+        
+        A typical use case is to do a query on the the id of each optional
+        column, and make active_optional_columns be a list of objects
+        instead of strings. Since this is only called once (instead of on
+        each row) more expensive calculations are possible.
+        """
+        return active_optional_columns
+
     def dataset_to_rowlist(self, dataset):
+        active_optional_columns = self.format_active_optional_columns(
+                self.session.active_optional_columns)
         return [self.create_row(d,
-            self.session.active_optional_columns).as_dict() for d in dataset]
+            active_optional_columns).as_dict() for d in dataset]
 
     def create_jsondata(self):
         totalsize, dataset = self.create_dataset()

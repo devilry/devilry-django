@@ -103,62 +103,71 @@ class PeriodStatsFilterTable(FilterTable):
     def get_columns(self):
         cols = Columns()
         cols.add(Col("username", "Username", can_order=True))
-        cols.add(Col("sumpoints", "Sum", can_order=True))
+        cols.add(Col("sumperiod", "Sum period", can_order=True))
+        cols.add(Col("sumvisible", "Sum visible", can_order=False))
         for assignment in self.assignments_in_period:
             cols.add(Col(assignment.id,
                 "%s (%s)" % (assignment.short_name, assignment.pointscale),
-                can_order=True))
+                can_order=True, optional=True, active_default=True))
         return cols
 
     def search(self, dataset, qry):
         return dataset.filter(username__contains=qry)
 
-    def create_row(self, user, active_optional_cols):
+    def format_active_optional_columns(self, active_optional_columns):
+        cols = [int(x) for x in active_optional_columns]
+        visible_assignments_in_period = self.assignments_in_period.filter(
+                id__in=cols)
+        return (visible_assignments_in_period, cols)
+
+    def create_row(self, user, active_optional_columns):
         row = Row(user.username, title=user.username)
         row.add_actions(
             RowAction("details",
                 reverse('devilry-gradestats-admin_userstats',
                     args=[str(self.period.id), str(user.username)]))
         )
+        visible_assignments_in_period, cols = active_optional_columns
 
         assignments = AssignmentGroup.where_is_candidate(user).filter(
-                parentnode__parentnode=self.period)
+                parentnode__parentnode=self.period,
+                parentnode__id__in=cols)
         assignments = assignments.values_list(
                         "parentnode__id", "scaled_points",
                         "is_passing_grade", "status")
-        #if len(self.assignments_in_period) > len(assignments):
-            ## Handle user in multiple groups on the same assignment by
-            ## showing their points as 0. How to calculate points when a user
-            ## is in multiple groups has not been resolved yet, and might
-            ## never be supported.
-            #assignments = [(0, False, 0) for a in self.assignments_in_period]
-                
+
         row.add_cell(user.username)
-        row.add_cell(floatformat(user.sumpoints))
+        row.add_cell(floatformat(user.sumperiod))
+        row.add_cell("")
+        total = 0
+
         it = assignments.__iter__()
         id, scaled_points, is_passing_grade, status = it.next()
-        for assignment in self.assignments_in_period:
+        for assignment in visible_assignments_in_period:
             if id == assignment.id:
                 row.add_cell(floatformat(scaled_points),
                         cssclass=AssignmentGroup.status_mapping_cssclass[status])
+                total += scaled_points
                 try:
                     id, scaled_points, is_passing_grade, status = it.next()
                 except StopIteration:
                     id = None
             else:
                 row.add_cell("")
+
+        row[2].value = floatformat(total)
         return row
 
     def create_dataset(self):
         dataset = User.objects.filter(
             candidate__assignment_group__parentnode__parentnode=self.period).distinct()
         dataset = dataset.annotate(
-                sumpoints=Sum('candidate__assignment_group__scaled_points'))
+                sumperiod=Sum('candidate__assignment_group__scaled_points'))
         total = dataset.count()
         return total, dataset
 
     def order_by(self, dataset, colid, order_asc, qryprefix):
-        if colid == 'username' or colid == 'sumpoints':
+        if colid == 'username' or colid == 'sumperiod':
             if isinstance(dataset, QuerySet):
                 return dataset.order_by(qryprefix + colid)
             else:
