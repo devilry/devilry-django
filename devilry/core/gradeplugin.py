@@ -66,7 +66,9 @@ class GradeModel(models.Model):
     @classmethod
     def get_maxpoints(cls, assignment):
         """ Get maximum number of points possible with this gradeplugin on
-        the given assignment. """
+        the given assignment. When
+        :class:`devilry.core.models.AssignmentGroup.autoscale` is True, this
+        is used to update the pointscale. """
         raise NotImplementedError()
 
     @classmethod

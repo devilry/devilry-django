@@ -555,11 +555,6 @@ class Assignment(models.Model, BaseNode):
         A django.db.models.DateTimeField_ representing the publishing time of
         the assignment.
 
-    .. attribute:: deadline
-
-        A django.db.models.DateTimeField_ representing the deadline of the
-        assignment.
-
     .. attribute:: anonymous
 
         A models.BooleanField specifying if the assignment should be
@@ -583,6 +578,38 @@ class Assignment(models.Model, BaseNode):
     .. attribute:: filenames
     
         A optional string of filenames separated by whitespace.
+
+    .. attribute:: pointscale
+
+        The points will be scaled down or up making the _this_
+        number the maximum number of points. Defaults to 1.
+
+    .. attribute:: maxpoints
+
+        The maximum number of points possible without scaling. This is set
+        using :meth:`devilry.core.gradeplugin.GradeModel.get_maxpoints`.
+
+    .. attribute:: autoscale
+            
+        If this field is True, the pointscale will automatically be set
+        to the maximum number of points possible with the selected grade
+        plugin.
+
+    .. attribute:: attempts
+
+        The number of attempts a student get on this assignment. This is
+        not a hard limit, but it makes the work of the examiners easier
+        because the system will close groups (leaving students unable to
+        deliver more attempts) when they have this many published
+        feedbacks. Examiners can open closed groups, and they are
+        notified when a group is automatically closed.
+
+        If this is None, closing of groups has to be handled manually.
+
+    .. attribute:: must_pass
+        
+        Each student must get a passing grade on this assignment to get a
+        passing grade on the period. Defaults to False.
     """
 
     class Meta:
@@ -945,6 +972,19 @@ class AssignmentGroup(models.Model, CommonInterface):
         contains ``"Not corrected"``, and ``status_mapping_student[3]``
         contains ``"Corrected"``. This is because the student should never
         know about unpublished feedback.
+
+    .. attribute:: points
+
+        The number of points this group got on their latest published
+        delivery. This fields is only updated when a published feedback
+        is saved.
+
+    .. attribute:: scaled_points
+
+        The :attr:`points` of this group scaled according to
+        :attr:`Assignment.pointscale` and :attr:`Assignment.maxpoints`.
+
+        Calculated as: `float(pointscale)/maxpoints * points`.
 
     .. attribute:: NO_DELIVERIES
 
@@ -1518,7 +1558,8 @@ class Delivery(models.Model):
     def get_status_number(self):
         """ Get the numeric status for this delivery.
 
-        :return: :attr:`AssignmentGroup.NOT_CORRECTED`,
+        :return: The numeric status:
+            :attr:`AssignmentGroup.NOT_CORRECTED`,
             :attr:`AssignmentGroup.CORRECTED_NOT_PUBLISHED` or
             :attr:`AssignmentGroup.CORRECTED_AND_PUBLISHED`.
         """
@@ -1579,6 +1620,22 @@ class Delivery(models.Model):
 class Feedback(models.Model):
     """
     Represents the feedback for a given `Delivery`_.
+
+    Typical usage for manual manipulation of feedbacks (in tests and xmlrpc)::
+
+        test = Assignment(
+                parentnode = Period.objects.get(pk=1),
+                publishing_time = datetime.now(),
+                anonymous = False,
+                grade_plugin = "grade_approved:approvedgrade")
+        group = test.assignmentgroups.create(name="My group")
+        delivery = Delivery.begin(group, User.objects.get(username="student1"))
+        delivery.add_file("test.txt", ["test"])
+        delivery.finish()
+        feedback = delivery.get_feedback()
+        feedback.last_modified_by = User.objects.get(username="examiner1")
+        feedback.set_grade_from_xmlrpcstring("approved")
+        feedback.save()
 
     .. attribute:: text
 
