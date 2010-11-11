@@ -50,8 +50,11 @@ class RstSchemaGrade(GradeModel):
     points = models.PositiveIntegerField(null=True, blank=True)
 
     @classmethod
-    def get_maxpoints(cls, assignment):
-        return assignment.rstschemadefinition.maxpoints
+    def get_maxpoints(cls, assignment=None):
+        if assignment:
+            return assignment.rstschemadefinition.maxpoints
+        else:
+            return 0
 
     @classmethod
     def init_example(cls, assignment, points):

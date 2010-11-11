@@ -5,7 +5,7 @@ class CharFieldGrade(GradeModel):
     grade = models.CharField(max_length=15)
 
     @classmethod
-    def get_maxpoints(cls, assignment):
+    def get_maxpoints(cls, assignment=None):
         return 0
 
     @classmethod

@@ -19,12 +19,13 @@ from devilry.addons.grade_approved.models import ApprovedGrade
 from devilry.core import pluginloader
 
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
-        Delivery, Candidate, Feedback)
+        Delivery, Candidate, Feedback, FileMeta)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
     DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
 
 pluginloader.autodiscover()
+FileMeta.deliverystore = MemoryDeliveryStore()
 
 
 class TestBaseNode(TestCase):
@@ -381,6 +382,49 @@ class TestAssignment(TestCase):
         self.assertRaises(Assignment.DoesNotExist, Assignment.get_by_path,
                 'does.not.exist')
         self.assertRaises(ValueError, Assignment.get_by_path, 'does.not')
+
+
+    def test_pointscale(self):
+        student1 = User.objects.get(username='student1')
+        teacher1 = User.objects.get(username='teacher1')
+        test = Assignment(
+                parentnode = Period.objects.get(pk=1),
+                publishing_time = datetime.now(),
+                anonymous = False,
+                autoscale = True,
+                grade_plugin = "grade_approved:approvedgrade")
+        test.save()
+        self.assertEquals(test.pointscale, 1)
+        self.assertEquals(test.maxpoints, 1)
+
+        a = test.assignmentgroups.create(name="a")
+        b = test.assignmentgroups.create(name="b")
+        c = test.assignmentgroups.create(name="c")
+        for g, grade in ((a, "+"), (b, "+"), (c, "-")):
+            d = Delivery.begin(g, student1)
+            d.add_file("test.txt", ["test"])
+            d.finish()
+            f = d.get_feedback()
+            f.last_modified_by = teacher1
+            f.published = True
+            f.set_grade_from_xmlrpcstring(grade)
+            f.save()
+
+        # With autoscale
+        points = [g.points for g in test.assignmentgroups.all()]
+        self.assertEquals(points, [1, 1, 0])
+        scaled_points = [g.scaled_points for g in test.assignmentgroups.all()]
+        self.assertEquals(scaled_points, [1.0, 1.0, 0.0])
+
+        # With manual scale of 20
+        test.autoscale = False
+        test.pointscale = 20
+        test.save()
+        points = [g.points for g in test.assignmentgroups.all()]
+        self.assertEquals(points, [1, 1, 0])
+        scaled_points = [g.scaled_points for g in test.assignmentgroups.all()]
+        self.assertEquals(scaled_points, [20.0, 20.0, 0.0])
+        
 
 
 class TestAssignmentGroup(TestCase):

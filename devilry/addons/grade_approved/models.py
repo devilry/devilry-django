@@ -8,7 +8,7 @@ class ApprovedGrade(GradeModel):
     approved = models.BooleanField(blank=True, default=False)
 
     @classmethod
-    def get_maxpoints(cls, assignment):
+    def get_maxpoints(cls, assignment=None):
         return 1
 
     @classmethod

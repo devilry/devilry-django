@@ -584,16 +584,16 @@ class Assignment(models.Model, BaseNode):
         The points will be scaled down or up making the _this_
         number the maximum number of points. Defaults to 1.
 
-    .. attribute:: maxpoints
-
-        The maximum number of points possible without scaling. This is set
-        using :meth:`devilry.core.gradeplugin.GradeModel.get_maxpoints`.
-
     .. attribute:: autoscale
             
         If this field is True, the pointscale will automatically be set
         to the maximum number of points possible with the selected grade
         plugin.
+
+    .. attribute:: maxpoints
+
+        The maximum number of points possible without scaling. This is set
+        using :meth:`devilry.core.gradeplugin.GradeModel.get_maxpoints`.
 
     .. attribute:: attempts
 
@@ -657,7 +657,11 @@ class Assignment(models.Model, BaseNode):
 
 
     def _get_maxpoints(self):
-        return self.get_gradeplugin_registryitem().model_cls.get_maxpoints(self)
+        gradeplugincls = self.get_gradeplugin_registryitem().model_cls
+        if self.id == None:
+            return gradeplugincls.get_maxpoints()
+        else:
+            return gradeplugincls.get_maxpoints(self)
 
     def _update_scalepoints(self):
         for group in self.assignmentgroups.iterator():
@@ -667,14 +671,11 @@ class Assignment(models.Model, BaseNode):
     def save(self, *args, **kwargs):
         """ Save and recalculate the value of :attr:`maxpoints` and
         :attr:`pointscale`. """
-        if self.id != None:
-            self.maxpoints = self._get_maxpoints()
-            if self.autoscale:
-                self.pointscale = self.maxpoints
-            self._update_scalepoints()
-        # TODO: "else" initialize grade plugin with defaults to avoid ugly
-        # error pages when users forget to configure grade plugins
+        self.maxpoints = self._get_maxpoints()
+        if self.autoscale:
+            self.pointscale = self.maxpoints
         super(Assignment, self).save()
+        self._update_scalepoints()
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`

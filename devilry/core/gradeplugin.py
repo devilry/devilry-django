@@ -64,11 +64,15 @@ class XmlrpcGradeConf(object):
 
 class GradeModel(models.Model):
     @classmethod
-    def get_maxpoints(cls, assignment):
+    def get_maxpoints(cls, assignment=None):
         """ Get maximum number of points possible with this gradeplugin on
         the given assignment. When
         :class:`devilry.core.models.AssignmentGroup.autoscale` is True, this
-        is used to update the pointscale. """
+        is used to update the pointscale.
+        
+        This *must* work when assignment is None (it should return a sane
+        default value).
+        """
         raise NotImplementedError()
 
     @classmethod
