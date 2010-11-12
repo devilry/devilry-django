@@ -2,6 +2,8 @@ from django.template.defaultfilters import stringfilter
 from django import template
 from django.utils.safestring import mark_safe
 
+from devilry.ui.templatetags_helpers import truncate_filename
+
 
 register = template.Library()
 
@@ -20,6 +22,21 @@ def strong(s):
 @stringfilter
 def big(s):
     return mark_safe(u"<big>%s</big>" % s)
+
+def psplitext(s, maxlen):
+    """ splitext which unlike os.path.splitext, also supports stuff like
+    file.tar.gz. If the extension  """
+    s.rsplit(".", 2)
+    filename = s[0]
+    ext = ".".join(s[1:])
+    if ext >= maxlen:
+        return s
+    return filename, ext
+
+@register.filter
+@stringfilter
+def trunc_filename(s, length):
+    return truncate_filename(s, length)
 
 @register.filter
 def student_status(group_or_delivery):
