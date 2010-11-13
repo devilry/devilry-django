@@ -159,8 +159,13 @@
       <ul class='files-list'>
       {% for filemeta in delivery.filemetas.all %}
         <li>
-          <a href='{% url devilry-ui-download_file filemeta.id %}'>{{ filemeta.filename }}</a>  
-          <span class='unimportant'>({{ filemeta.size }} bytes)</span>
+          <a href='{% url devilry-ui-download_file filemeta.id %}'
+              {% if filemeta.filename|length > 25 %}
+                title="{{ filemeta.filename }}" class="tooltip-hover"
+              {% endif %}>
+            {{ filemeta.filename|trunc_filename:25 }}
+          </a>
+          <span class='unimportant'>({{ filemeta.size|filesizeformat }})</span>
         </li>
       {% endfor %}
       </ul>
