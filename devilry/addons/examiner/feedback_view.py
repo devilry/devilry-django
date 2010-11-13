@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 
-from devilry.core.models import Feedback
+from devilry.core.models import Feedback, AssignmentGroup
 from devilry.ui.widgets import RstEditWidget
 from devilry.ui.messages import UiMessages
 from devilry.core.devilry_email import send_email
@@ -116,6 +116,9 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
     deliveries_by_deadline = GroupDeliveriesByDeadline(
             delivery_obj.assignment_group)
 
+    show_deadline_hint = delivery_obj.assignment_group.is_open and \
+        delivery_obj.assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
+
     if not uimessages:
         uimessages = UiMessages()
         uimessages.load(request)
@@ -129,6 +132,7 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
             'diff_days': days,
             'diff_hours': hours,
             'diff_minutes': minutes,
+            'show_deadline_hint':show_deadline_hint,
             'messages': uimessages,
             'next_notcorrected': next_notcorrected,
             'prev_notcorrected': prev_notcorrected
