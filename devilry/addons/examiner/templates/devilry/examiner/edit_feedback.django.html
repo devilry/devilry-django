@@ -242,6 +242,48 @@
     {% endif %}
   </div>
 
+  {% if delivery.assignment_group.is_open %}
+      {% if show_deadline_hint %}
+          {% url devilry-examiner-create_deadline delivery.assignment_group.id as create_deadline_url %}
+          {% url devilry-examiner-close_assignmentgroup delivery.assignment_group.id as close_group_url %}
+          <p class='info-message'>
+            {% blocktrans %}
+			You have published a feedback, but have not given the group a new deadline. You should 
+			<a href="{{ create_deadline_url }}">create a new deadline</a> or 
+			<a href="{{ close_group_url }}">close for more deliveries</a> 
+			if the group doesn't need to submit a new delivery. 
+			Closing the group leave the students on this group unable to add
+            more deliveries.{% endblocktrans %}
+         </p>
+      {% endif %}
+      <p>
+        <a href="{% url devilry-examiner-create_deadline delivery.assignment_group.id %}"
+           class='button ui-priority-secondary' id='deadline-button'>
+           {% trans "Create deadline" %}
+           </a>
+          <a href="{% url devilry-examiner-close_assignmentgroup delivery.assignment_group.id %}"
+             class='button ui-priority-secondary' id='openclosebtn'>
+             {% trans "Close group" %}
+           </a>
+       </p>
+  {% else %}
+	  {% url devilry-examiner-open_assignmentgroup delivery.assignment_group.id as open_group_url %}
+       <p class='info-message'>
+		 {% blocktrans %}
+		 This group is closed for deliveries. <a href="{{ open_group_url }}">Open group</a> 
+		 to allow students to add new deliveries. 
+		 {% endblocktrans %}
+	   </p>
+        <p>
+            <a href="{% url devilry-examiner-open_assignmentgroup delivery.assignment_group.id %}"
+              id='openclosebtn' class='button'>
+               {% trans "Open group" %}
+              </a>
+         </p>
+  {% endif %}
+
+
+
   <form method='post' id="theform"
       action='{% url devilry-examiner-edit-feedback delivery.id %}'>
     {% block formfields %}
