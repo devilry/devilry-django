@@ -342,6 +342,7 @@ if __name__ == "__main__":
             gradeplugin_maxpoints=grade_maxpoints)
     assignment.publishing_time = deadline - timedelta(days=opt.pubtime_diff)
     if opt.pointscale:
+        assignment.autoscale = False
         assignment.pointscale = opt.pointscale
     if opt.assignment_long_name:
         assignment.long_name = opt.assignment_long_name
