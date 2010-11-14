@@ -1,3 +1,5 @@
+# vim: set ts=4 sts=4 noexpandtab sw=4:
+
 PRODTEST=devilry.cfg.test2
 PROD=devilry.cfg.prod1
 EXAMPLEDATA_BACKUP=exampledata-backup
@@ -64,6 +66,21 @@ create-duck1100-data:
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "soon" --grade-maxpoints 6 \
 		--assignment-long-name "The one and only week five"
+
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.proj1 \
+		--grade-plugin "grade_approved:approvedgrade" \
+		--num-students 10 --num-examiners=$(NUM_EXAMINERS) \
+		--student-name-prefix=projstud --pointscale=40\
+		--deadline-profile "recent" \
+		--assignment-long-name "Project one"
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck1100.h01.proj2 \
+		--grade-plugin "grade_approved:approvedgrade" \
+		--num-students 8 --num-examiners=$(NUM_EXAMINERS) \
+		--student-name-prefix=projstud \
+		--deadline-profile "soon" --pointscale=30 \
+		--assignment-long-name "Project two"
 
 create-duck1080-data:
 	python adminscripts/create_testgroups.py \
