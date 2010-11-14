@@ -241,6 +241,7 @@
                       .html(action.label)
                       .attr("href", action.url)
                       .button()
+                      .addClass("ui-priority-secondary")
                       .appendTo(td);
                   });
             };
@@ -319,6 +320,7 @@
               text: true,
               icons: {primary: "ui-icon-arrowrefresh-1-w"}
             })
+          .addClass("ui-priority-secondary")
           .appendTo(store.colsettingsbox);
         button.click(function() {
             var ch = store.colsettingsbox.find("input:checkbox:checked");
@@ -439,7 +441,7 @@
             searchbtn.button({
               text: false,
               icons: {primary: "ui-icon-search"}
-            });
+            }).addClass("ui-priority-secondary");
             searchbtn.click(function(e) {
                 $.filtertable.refresh(store, {search:store.searchfield.val()});
                 return false;
@@ -466,7 +468,7 @@
           perpage_updatebtn.button({
             text: false,
             icons: {primary: "ui-icon-arrowrefresh-1-w"}
-          });
+          }).addClass("ui-priority-secondary");
           perpage_updatebtn.click(function(e) {
               $.filtertable.refresh(store, {perpage:store.perpagefield.val()});
               return false;
@@ -474,7 +476,7 @@
           var perpage_allbtn = $(this).find(".filtertable-perpage-allbtn").first();
           perpage_allbtn.button({
             text: true,
-          });
+          }).addClass("ui-priority-secondary");
           perpage_allbtn.click(function(e) {
               $.filtertable.refresh(store, {perpage:"all"});
               return false;
