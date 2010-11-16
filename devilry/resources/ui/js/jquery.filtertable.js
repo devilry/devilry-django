@@ -156,7 +156,7 @@
                   "<p><strong>Click</strong>: mark all rows matching this filter</p>" +
                   "<p><strong>Shift-click:</strong> mark all rows on this page</p>",
                 delay: 200,
-                defaultPosition: "right",
+                defaultPosition: "left",
               })
             .appendTo(th);
           checkall.click(function(e) {
@@ -175,8 +175,15 @@
         $.each(columns, function(i, col) {
             var th = $("<th></th>")
               .addClass("ui-state-default")
-              .html(col.title)
+              .html(col.heading)
               .appendTo(tr);
+            if(col.title) {
+              th.tipTip({
+                  content: col.title,
+                  delay: 200,
+                  defaultPosition: "left",
+                });
+            }
             if(col.can_order) {
               var icon = $("<span></span>")
                 .addClass("ui-icon")
@@ -307,11 +314,18 @@
         $("<h4>Optional columns</h4>").appendTo(store.colsettingsbox);
         $.each(all_columns, function(index, colinfo) {
             if(colinfo.col.optional) {
-              $("<div></div>").boxWithLabel({
-                  label: colinfo.col.title,
+              var d = $("<div></div>").boxWithLabel({
+                  label: colinfo.col.heading,
                   value: index,
                   checked: colinfo.is_active
                 }).appendTo(store.colsettingsbox);
+              if(colinfo.col.title) {
+                d.tipTip({
+                    content: colinfo.col.title,
+                    delay: 200,
+                    defaultPosition: "right",
+                  });
+              }
             }
           });
         var button = $("<button></button>")

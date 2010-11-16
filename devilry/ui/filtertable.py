@@ -86,9 +86,14 @@ class Col(object):
         in the ``active_optional_columns`` argument to
         :meth:`FilterTable.create_row`.
 
+    .. attribute:: heading
+
+        The column heading.
+
     .. attribute:: title
 
-        A title for the columns (the column header users see).
+        What users see when hovering over the column header. The title must
+        be valid html.
 
     .. attribute:: can_order
 
@@ -103,20 +108,22 @@ class Col(object):
         If optional is ``True``, this configures if the columns is visible
         by default. Default value is ``False``.
     """
-    def __init__(self, id, title, can_order=False, optional=False,
-            active_default=False):
+    def __init__(self, id, heading, can_order=False, optional=False,
+            active_default=False, title=None):
         """
         All parameters are the same as the class attributes, except for
         ``id`` which is stored as ``str(id)`` to ensure it is a string.
         """
         self.id = str(id)
+        self.heading = heading
         self.title = title
         self.can_order = can_order
         self.optional = optional
         self.active_default = active_default
 
     def as_dict(self):
-        return dict(id=self.id, can_order=self.can_order, title=self.title,
+        return dict(id=self.id, can_order=self.can_order,
+                heading=self.heading, title=self.title,
                 optional=self.optional, active_default=self.active_default)
 
 
