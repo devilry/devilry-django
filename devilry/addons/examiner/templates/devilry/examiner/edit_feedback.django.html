@@ -279,15 +279,7 @@
 		 to allow students to add new deliveries. 
 		 {% endblocktrans %}
 	   </p>
-        <p>
-            <a href="{% url devilry-examiner-open_assignmentgroup delivery.assignment_group.id %}"
-              id='openclosebtn' class='button'>
-               {% trans "Open group" %}
-              </a>
-         </p>
-  {% endif %}
-
-
+ {% endif %}
 
   <form method='post' id="theform"
       action='{% url devilry-examiner-edit-feedback delivery.id %}'>

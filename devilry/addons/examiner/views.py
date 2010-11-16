@@ -179,9 +179,10 @@ def _close_open_assignmentgroup(request, assignmentgroup_id, is_open, msg):
     messages = UiMessages()
     messages.add_success(msg)
     messages.save(request)
-    return HttpResponseRedirect(reverse(
-            'devilry-examiner-show_assignmentgroup',
-            args=[assignmentgroup_id]))
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    #return HttpResponseRedirect(reverse(
+    #        'devilry-examiner-show_assignmentgroup',
+    #        args=[assignmentgroup_id]))
 
 @login_required
 def close_assignmentgroup(request, assignmentgroup_id):
@@ -228,8 +229,6 @@ def edit_deadline(request, assignmentgroup_id, deadline_id=None):
                 'deadline_id': deadline_id,
                 'deadline_form': deadline_form
             }, context_instance=RequestContext(request))
-
-    
 
 
 @login_required
