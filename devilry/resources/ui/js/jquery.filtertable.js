@@ -260,7 +260,7 @@
         store.result_table.empty();
         var has_selactions = json.selectionactions.length > 0;
         var thead = $.filtertable.create_header(store, has_selactions,
-          json.columns, json.use_rowactions, json.order_by, json.order_asc);
+          json.active_columns, json.use_rowactions, json.order_by, json.order_asc);
         thead.appendTo(store.result_table);
         var tbody = $.filtertable.create_body(json.data, has_selactions, store.id,
           json.order_colnum);

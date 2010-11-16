@@ -586,7 +586,7 @@ class FilterTable(object):
             perpage = perpage_js,
             search = self.session.search,
             filterview = filterview,
-            columns = active_columns,
+            active_columns = active_columns,
             use_rowactions = self.use_rowactions,
             selectionactions = self.get_selectionactions_as_dicts(),
             relatedactions = self.get_relatedactions_as_dicts(),

@@ -10,11 +10,12 @@ from django.db.models.query import QuerySet
 from django.template.defaultfilters import floatformat
 
 from devilry.core.models import AssignmentGroup, Period
-from devilry.core import pluginloader
+#from devilry.core import pluginloader
 from devilry.ui.filtertable import (FilterTable, Columns, Col, Row,
         RowAction, Filter, FilterLabel)
+from devilry.core.utils.coreutils import AssignmentUtils
 
-pluginloader.autodiscover()
+#pluginloader.autodiscover()
 
 
 def _get_periodstats(period, user):
@@ -90,12 +91,14 @@ class PeriodStatsFilterTable(FilterTable):
     default_order_by = "username"
     has_related_actions = False
     has_selection_actions = False
+    default_perpage = 10
 
     filters = [FilterPeriodPassed(_("Passing grade?"))]
 
     def __init__(self, request, period):
         self.period = period
-        self.assignments_in_period = period.assignments.all()
+        self.assignments_in_period = period.assignments.all().order_by(
+                "publishing_time")
         self.maxpoints = sum([a.pointscale for a in self.assignments_in_period])
         super(PeriodStatsFilterTable, self).__init__(request)
         self.set_properties(period=period)
@@ -103,12 +106,17 @@ class PeriodStatsFilterTable(FilterTable):
     def get_columns(self):
         cols = Columns()
         cols.add(Col("username", "Username", can_order=True))
-        cols.add(Col("sumperiod", "Sum period", can_order=True))
-        cols.add(Col("sumvisible", "Sum visible", can_order=False))
+        cols.add(Col("sumperiod", "Sum period", can_order=True,
+            title=_("The sum of points on all assignments in this period.")))
+        cols.add(Col("sumvisible", "Sum visible", can_order=False,
+            title=_("The sum of points on the visible assignments.")))
         for assignment in self.assignments_in_period:
-            cols.add(Col(assignment.id,
-                "%s (%s)" % (assignment.short_name, assignment.pointscale),
-                can_order=True, optional=True, active_default=True))
+            title = AssignmentUtils.tooltip_html(assignment)
+            cols.add(
+                Col(assignment.id,
+                    "%s (%s)" % (assignment.short_name, assignment.pointscale),
+                    can_order=True, optional=True, active_default=True,
+                    title=title))
         return cols
 
     def search(self, dataset, qry):
@@ -120,6 +128,46 @@ class PeriodStatsFilterTable(FilterTable):
                 id__in=cols)
         return (visible_assignments_in_period, cols)
 
+
+    @classmethod
+    def iter_selected_assignments(cls, period, user,
+            visible_assignments):
+        """
+        Iterate over the curretly visible assignments in a period.
+
+        :param period: The current :class:`devilry.core.models.Period`.
+        :param user: A django user object.
+        :param visible_assignments: A QuerySet matching the currently
+            visible assignments.
+        :return:
+            A iterator yielding the (scaled_points, is_passing_grade, status)
+            on all ``visible_assignments`` where the current user is in a
+            group, and (None, None, None) on assignments ``visible_assignments``
+            where the current user is not in a group.
+        """
+        groups = AssignmentGroup.where_is_candidate(user).filter(
+                parentnode__parentnode=period,
+                parentnode__in=visible_assignments)
+        groups = groups.values_list(
+                        "parentnode__id", "scaled_points",
+                        "is_passing_grade", "status")
+
+        it = groups.__iter__()
+        def itnext():
+            try:
+                return it.next()
+            except StopIteration:
+                return None, None, None, None
+
+        id, scaled_points, is_passing_grade, status = itnext()
+        for group in visible_assignments:
+            if id == group.id:
+                yield scaled_points, is_passing_grade, status
+                id, scaled_points, is_passing_grade, status = itnext()
+            else:
+                yield None, None, None
+
+
     def create_row(self, user, active_optional_columns):
         row = Row(user.username, title=user.username)
         row.add_actions(
@@ -127,36 +175,25 @@ class PeriodStatsFilterTable(FilterTable):
                 reverse('devilry-gradestats-admin_userstats',
                     args=[str(self.period.id), str(user.username)]))
         )
-        visible_assignments_in_period, cols = active_optional_columns
-
-        assignments = AssignmentGroup.where_is_candidate(user).filter(
-                parentnode__parentnode=self.period,
-                parentnode__id__in=cols)
-        assignments = assignments.values_list(
-                        "parentnode__id", "scaled_points",
-                        "is_passing_grade", "status")
+        visible_assignments, visible_assignmentids = active_optional_columns
 
         row.add_cell(user.username)
         row.add_cell(floatformat(user.sumperiod))
-        row.add_cell("")
-        total = 0
+        row.add_cell("") # total visible points (inserted below)
 
-        it = assignments.__iter__()
-        id, scaled_points, is_passing_grade, status = it.next()
-        for assignment in visible_assignments_in_period:
-            if id == assignment.id:
+        total = 0
+        for group in self.__class__.iter_selected_assignments(
+                self.period, user, visible_assignments):
+            scaled_points, is_passing_grade, status = group
+            if scaled_points == None:
+                row.add_cell("")
+            else:
                 row.add_cell(floatformat(scaled_points),
                         cssclass=AssignmentGroup.status_mapping_cssclass[status])
                 total += scaled_points
-                try:
-                    id, scaled_points, is_passing_grade, status = it.next()
-                except StopIteration:
-                    id = None
-            else:
-                row.add_cell("")
-
         row[2].value = floatformat(total)
         return row
+
 
     def create_dataset(self):
         dataset = User.objects.filter(
