@@ -620,31 +620,48 @@ class Assignment(models.Model, BaseNode):
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Period, related_name='assignments')
-    publishing_time = models.DateTimeField()
-    anonymous = models.BooleanField(default=False)
-    admins = models.ManyToManyField(User, blank=True)
+    publishing_time = models.DateTimeField(
+            verbose_name=_("Publishing time"))
+    anonymous = models.BooleanField(default=False,
+            verbose_name=_("Anonymous"))
+    admins = models.ManyToManyField(User, blank=True,
+            verbose_name=_("Administrators"))
     grade_plugin = models.CharField(max_length=100,
+            verbose_name=_("Grade plugin"),
             choices=gradeplugin.registry,
             default=gradeplugin.registry.getdefaultkey())
     filenames = models.TextField(blank=True, null=True,
+            verbose_name=_("Filenames"),
             help_text=_('Filenames separated by newline or space. If '
                 'filenames are used, students will not be able to deliver '
                 'files where the filename is not among the given filenames.'))
     must_pass = models.BooleanField(default=False,
+            verbose_name=_("Must pass"),
             help_text=_('Each student must get a passing grade on this ' \
                 'assignment to get a passing grade on the period.'))
     pointscale = models.PositiveIntegerField(default=1,
+            verbose_name = _("Scaled maximum points"),
             help_text=_(
-                'The points will be scaled down or up making the _this_ '\
-                'number the maximum number of points.'))
+                'The points will be scaled down or up making the _this_ '
+                'number the maximum number of points on this assignment. '
+                'You use this to adjust how much an assignment counts '
+                'towards the final grade (or towards passing the period). '
+                'A typical example is when you have one assignment where '
+                'it is possible to get 30 points, and one assignment '
+                'where it is possible to get 1 point (like '
+                'with the approved/notapproved plugin). If you want both '
+                'to count for maximum 40 points, you set this field to 40 '
+                'on both assignments.'))
     maxpoints = models.PositiveIntegerField(default=0,
             help_text=_('The maximum number of points possible without '\
                 'scaling.'))
     autoscale = models.BooleanField(default=True,
+            verbose_name=_("Autoscale"),
             help_text=_('If this field is set, the pointscale will '\
                 'automatically be set to the maximum number of points '\
                 'possible with the selected grade plugin.'))
     attempts = models.PositiveIntegerField(default=None,
+            verbose_name=_("Attempts"),
             null=True, blank=True,
             help_text=_('The number of attempts a student get on this '
                 'assignment. This is not a hard limit, but it makes the '
