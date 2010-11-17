@@ -283,7 +283,7 @@
             {% trans "Next" %}</a>
         {% endif %}
       {% else %}
-        &nbsp;
+        <div style="height: 30px;">&nbsp;</div>
       {% endif %}
     </div>
   </div>
@@ -307,7 +307,7 @@
     {% url devilry-examiner-open_assignmentgroup delivery.assignment_group.id as open_group_url %}
     <p class='info-message'>
     {% blocktrans %}
-        This group is closed for deliveries. <a href="{{ open_group_url }}">Open group</a> 
+        This group is closed for deliveries. <a href="{{ open_group_url }}">Open the group</a> 
         to allow students to add new deliveries. 
 		{% endblocktrans %}
   </p>

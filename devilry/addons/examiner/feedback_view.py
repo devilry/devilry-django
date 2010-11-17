@@ -70,6 +70,26 @@ def redirect_after_successful_save(request, delivery_obj):
                 'An error occured when sending email to the following '\
                 'users: %s.' % email_list))
             messages.save(request)
+
+
+        group = delivery_obj.assignment_group
+        attempts = group.deliveries.filter(feedback__published=True).count()
+        maxattempts = group.parentnode.attempts
+        if delivery_obj.feedback.get_grade().is_passing_grade():
+            messages.add_info(
+                    "The group was automatically closed for more "
+                    "deliveries because you saved a published feedback "
+                    "with a passing grade.")
+            group.is_open = False
+            group.save()
+        elif attempts >= maxattempts and group.is_open:
+            messages.add_info(
+                    "The group was automatically closed for more "
+                    "deliveries because the student has failed to get a "
+                    "passing grade %(maxattempts)s or more times." % dict(
+                        maxattempts=maxattempts))
+            group.is_open = False
+            group.save()
     else:
         messages.add_warning(_("The feedback was saved, but not published "
                 "and is therefore not visible to the student."))
