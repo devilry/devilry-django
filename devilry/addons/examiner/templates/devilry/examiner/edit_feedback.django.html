@@ -45,16 +45,22 @@
     font-size: 1.2em;
   }
 
+  ul.files-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   #metainfo {
     float: left;
-    width: 280px;
+    width: 250px;
   }
   .metainfo-item {
     margin-top: 0;
     margin-bottom: 10px;
   }
   #mainframe {
-    margin-left: 315px;
+    margin-left: 290px;
   }
   .mainframe-fillwidth {
     margin-left: 0 !important;
@@ -85,7 +91,7 @@
     font-weight: bold;
   }
   .selected-delivery .deliverynumber {
-    color: #333;
+    /*color: #333;*/
   }
   .selected-delivery .deliverydate {
     color: #333;
@@ -98,6 +104,18 @@
   }
   .text .form-field {
     margin-left: 0 !important;
+  }
+
+
+  .nocolor .booring-message,
+  .nocolor .status_not_corrected,
+  .nocolor .status_corrected_not_published,
+  .nocolor .status_corrected_and_published,
+  .nocolor .unimportant,
+  .nocolor a,
+  .nocolor .table
+  {
+    color: #888 !important;
   }
 </style>
 {% endblock %}
@@ -136,7 +154,15 @@
             }
           });
 
-        //$('#filebox').messageBox({icon:"ui-icon-folder-open"});
+        $('#metainfo').hover(
+          function(e) {
+            $(this).removeClass("nocolor");
+          },
+          function(e) {
+            $(this).addClass("nocolor");
+          }
+        );
+
       });
   </script>
 {% endblock %}
@@ -151,7 +177,7 @@
 {% endif %}
 {% endcomment %}
 
-<div id="metainfo">
+<div id="metainfo" class="nocolor">
   {% if after_deadline %}
     <div class="warning-message metainfo-item">
       {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
@@ -178,75 +204,62 @@
 	</div>
   {% endif %}
 
-  <div id="filebox" class="booring-message metainfo-item">
-    {% trans "Files in the current delivery:" %}
-      <ul class='files-list'>
-      {% for filemeta in delivery.filemetas.all %}
-        <li>
-          <a href='{% url devilry-ui-download_file filemeta.id %}'
-              {% if filemeta.filename|length > 25 %}
-                title="{{ filemeta.filename }}" class="tooltip-hover"
-              {% endif %}>
-            {{ filemeta.filename|trunc_filename:25 }}
-          </a>
-          <span class='unimportant'>({{ filemeta.size|filesizeformat }})</span>
-        </li>
-      {% endfor %}
-      </ul>
+  <div class="booring-message metainfo-item">
+    <h2 class="messageheader">{% trans "Delivery" %}</h2>
+    <dl>
+      <dt>{% trans "Files" %}</dt>
+      <dd>
+        <ul class='files-list'>
+          {% for filemeta in delivery.filemetas.all %}
+            <li>
+              <a href='{% url devilry-ui-download_file filemeta.id %}'
+                  {% if filemeta.filename|length > 25 %}
+                    title="{{ filemeta.filename }}" class="tooltip-hover"
+                  {% endif %}>
+                {{ filemeta.filename|trunc_filename:25 }}
+              </a>
+              <span class='unimportant'>({{ filemeta.size|filesizeformat }})</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </dd>
 
-	  {% if delivery.filemetas.count > 1 %}
-	  {% trans "Download all files:" %}
-	  <a href='{% url devilry-examiner-download_delivery_as_tar delivery.id %}'>
-		TAR
-	  </a>
-	  |<a href='{% url devilry-examiner-download_delivery_as_zip delivery.id %}'>
-		ZIP
-	  </a>
-  {% endif %}
-	  
+      <dt>{% trans "Download all files" %}</dt>
+      <dd>
+        {% if delivery.filemetas.count > 1 %}
+          <a href='{% url devilry-examiner-download_delivery_as_tar delivery.id %}'>
+          TAR
+          </a>
+          |<a href='{% url devilry-examiner-download_delivery_as_zip delivery.id %}'>
+          ZIP
+          </a>
+        {% endif %}
+      </dd>
+
+      <dt style="margin-top:15px">{% trans "Time of delivery" %}</dt>
+      <dd>{{ delivery.time_of_delivery|date:"DATETIME_FORMAT"}}</dd>
+      {% if not delivery.assignment_group.parentnode.anonymous %}
+        <dt>{% trans "Delivered by" %}</dt>
+        <dd>{{ delivery.delivered_by.username }}</dd>
+      {% endif %}
+    </dl>
   </div>
 
-  <table class='vertical_infotable unimportant metainfo-item' id="deliveryinfo">
-    <thead>
-      <tr><th colspan="2" class="ui-state-default">{% trans "Delivery" %}</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>{% trans "Time of delivery" %}</th>
-        <td>{{ delivery.time_of_delivery|date:"DATETIME_FORMAT"}}</td>
-      </tr>
-      {% if not delivery.assignment_group.parentnode.anonymous %}
-        <tr>
-          <th>{% trans "Delivered by" %}</th>
-          <td>{{ delivery.delivered_by.username }}</td>
-        </tr>
-      {% endif %}
+  <div class="booring-message metainfo-item">
+    <h2 class="messageheader">{% trans "Feedback" %}</h2>
+    <dl>
       {% if delivery.feedback %}
-        <tr>
-          <th>{% trans "Grade" %}</th>
-          <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
-        </tr>
-        <tr>
-          <th>{% trans "Feedback last modified" %}</th>
-          <td> {{ delivery.feedback.last_modified|date:"DATETIME_FORMAT"}} </td>
-        </tr>
-        <tr>
-          <th>{% trans "Feedback last modified by" %}</th>
-          <td> {{ delivery.feedback.last_modified_by }} </td>
-        </tr>
-	      {% endif %}
-		<tr>
-          <th>{% trans "Status" %}</th>
-          <td> {{ delivery|status }} </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <table class='vertical_infotable unimportant metainfo-item' id="groupinfo">
-    {% with delivery.assignment_group as assignment_group %}
-      {% include "devilry/examiner/include/groupinfo-table.django.html" %}
-    {% endwith %}
-  </table>
+        <dt>{% trans "Grade" %}</dt>
+        <dd> {{ delivery.feedback.get_grade_as_short_string }} </dd>
+        <dt>{% trans "Feedback last modified" %}</dt>
+        <dd> {{ delivery.feedback.last_modified|date:"DATETIME_FORMAT"}} </dd>
+        <dt>{% trans "Feedback last modified by" %}</dt>
+        <dd> {{ delivery.feedback.last_modified_by }} </dd>
+      {% endif %}
+      <dt>{% trans "Status" %}</dt>
+      <dd> {{ delivery|status }} </dd>
+    </dl>
+  </div>
 </div>
 
 <div id="mainframe">
