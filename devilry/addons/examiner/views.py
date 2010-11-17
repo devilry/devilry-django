@@ -180,9 +180,6 @@ def _close_open_assignmentgroup(request, assignmentgroup_id, is_open, msg):
     messages.add_success(msg)
     messages.save(request)
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
-    #return HttpResponseRedirect(reverse(
-    #        'devilry-examiner-show_assignmentgroup',
-    #        args=[assignmentgroup_id]))
 
 @login_required
 def close_assignmentgroup(request, assignmentgroup_id):
