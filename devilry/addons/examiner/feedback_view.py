@@ -78,8 +78,8 @@ def redirect_after_successful_save(request, delivery_obj):
         if delivery_obj.feedback.get_grade().is_passing_grade():
             messages.add_info(
                     "The group was automatically closed for more "
-                    "deliveries because you saved a published feedback "
-                    "with a passing grade.")
+                    "deliveries because you saved and published feedback "
+                    "with passing grade.")
             group.is_open = False
             group.save()
         elif attempts >= maxattempts and group.is_open:
