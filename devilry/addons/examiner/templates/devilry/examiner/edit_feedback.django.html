@@ -22,6 +22,29 @@
 
 {% block customcss %}
 <style type="text/css">
+  ul.deliverylist {
+    list-style:none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.deliverylist li {
+    clear:both;
+    margin: 0;
+    padding: 5px 10px;
+  }
+  .deliveryinfo {
+    margin-left: 35px;
+  }
+  .deliverynumber {
+    float: left;
+    color: #888;
+    font-size: 1.8em;
+  }
+  .deadlineheader {
+    margin-top: 25px;
+    font-size: 1.2em;
+  }
+
   #metainfo {
     float: left;
     width: 280px;
@@ -51,17 +74,21 @@
   }
   .deliveries_by_deadline dd {
     padding: 0;
-    margin: 0 0 0 20px;
+    margin: 0 0 0 0;
   }
   .deliveries_by_deadline ul {
     list-style:none;
     padding: 0; margin: 0;
   }
 
-  .selected-date {
-    /*color: #000;*/
-    /*font-style: italic;*/
+  .selected-delivery {
     font-weight: bold;
+  }
+  .selected-delivery .deliverynumber {
+    color: #333;
+  }
+  .selected-delivery .deliverydate {
+    color: #333;
   }
   .deliveries_by_deadline a {
   }
@@ -136,10 +163,7 @@
 
   {% if delivery.assignment_group.deliveries.count > 1 %}
     <div id="deadlinesbox" class="booring-message metainfo-item">
-      {% blocktrans with delivery.number|big as delivery_number %}
-        This group has multiple deliveries. You are viewing delivery number
-        {{ delivery_number }}.
-      {% endblocktrans %}
+      <h2 class="messageheader">{% trans "Deliveries" %}</h2>
       {% include "devilry/examiner/include/deliveries_by_deadline.django.html" %}
     
 	  {% if delivery.filemetas.count > 1 %}

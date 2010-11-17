@@ -7,7 +7,7 @@
     {% endwith %}
   {% else %}
     {% if deliveries_by_deadline.after_last_deadline%}
-      <dt class="messageheader">{% trans "After last deadline" %}</dt>
+      <dt class="deadlineheader">{% trans "After last deadline" %}</dt>
       <dd>
         {% with deliveries_by_deadline.after_last_deadline as deliveries %}
           {% include "devilry/examiner/include/list-deliveries.django.html" %}
@@ -15,7 +15,7 @@
       </dd>
     {% endif %}
     {% for deadline, deliveries in deliveries_by_deadline.within_a_deadline %}
-      <dt class="messageheader">
+      <dt class="deadlineheader">
         {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
           {% blocktrans %}Before {{ deadline }}{% endblocktrans %}
         {% endwith %}

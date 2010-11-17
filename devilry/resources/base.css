@@ -255,9 +255,9 @@ h2.dimmed {
 	color: #245076;
 }
 
-.messageheader {
+h2.messageheader {
 	font-family: "Century Gothic", sans-serif;
-    margin-top: 14px;
+    margin-top: 0;
     margin-bottom: 5px;
     font-size: 1.2em;
     font-style: normal;
