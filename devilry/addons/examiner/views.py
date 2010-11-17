@@ -184,12 +184,12 @@ def _close_open_assignmentgroup(request, assignmentgroup_id, is_open, msg):
 @login_required
 def close_assignmentgroup(request, assignmentgroup_id):
     return _close_open_assignmentgroup(request, assignmentgroup_id, False,
-        _('Assignment group successfully closed.'))
+        _('Group was successfully closed.'))
 
 @login_required
 def open_assignmentgroup(request, assignmentgroup_id):
     return _close_open_assignmentgroup(request, assignmentgroup_id, True,
-        _('Assignment group successfully opened.'))
+        _('Group was successfully opened.'))
 
 
 def _handle_is_admin(request, is_admin):

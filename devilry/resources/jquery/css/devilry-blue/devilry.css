@@ -23,3 +23,9 @@
 	background: url(../../plugins/xbreadcrumbs/home.gif) no-repeat left center;
 	padding-left: 20px;
 }
+
+
+#gritter-notice-wrapper {
+	top:150px;
+	right:20px;
+}

@@ -72,14 +72,16 @@ def redirect_after_successful_save(request, delivery_obj):
             messages.save(request)
 
 
-        group = delivery_obj.assignment_group
+        # Read the group from database, to avoid overwriting status and
+        # other cached fields updated by signal handlers
+        group = AssignmentGroup.objects.get(id=delivery_obj.assignment_group.id)
         attempts = group.deliveries.filter(feedback__published=True).count()
         maxattempts = group.parentnode.attempts
         if delivery_obj.feedback.get_grade().is_passing_grade():
             messages.add_info(
-                    "The group was automatically closed for more "
-                    "deliveries because you saved and published feedback "
-                    "with passing grade.")
+                    "Because you saved and published feedback "
+                    "with passing grade.",
+                    title="Group automatically closed")
             group.is_open = False
             group.save()
         elif attempts >= maxattempts and group.is_open:

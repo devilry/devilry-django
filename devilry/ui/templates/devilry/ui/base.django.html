@@ -51,6 +51,34 @@
               });
           </script>
         {% endblock %}
+
+        {% block gritter %}
+          <script type="text/javascript"
+            src="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/gritter/js/jquery.gritter.min.js"></script>
+          <link rel="stylesheet" type="text/css"
+            href="{{ DEVILRY_RESOURCES_URL }}/jquery/plugins/gritter/css/jquery.gritter.css" />
+                
+          {% if messages %}
+            <script type="text/javascript">
+              $(function(){
+                {% for message_class, raw_html, message, mtitle, sticky in messages %}
+                  $.gritter.add({
+                    title: "{{ mtitle|escapejs }}",
+                    text: "{{ message|escapejs }}",
+                    image: "{{ DEVILRY_RESOURCES_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/icons/{{ message_class }}.png",
+                    {% if sticky %}
+                      sticky: true,
+                    {% else %}
+                      sticky: false,
+                    {% endif %}
+                    time: 15000
+                  });
+                {% endfor %}
+              });
+            </script>
+          {% endif %}
+
+        {% endblock %}
       {% endblock %}
     {% endwith %}
 
@@ -129,6 +157,7 @@
         </div>
       </div>
 
+      {% comment %}
       <div id='messages'>
         {% block messages %}
           {% if messages %}
@@ -146,6 +175,7 @@
           {% endif %}
         {% endblock %}
       </div>
+      {% endcomment %}
 
       {% block middlearea %}
         <div id='content'>
