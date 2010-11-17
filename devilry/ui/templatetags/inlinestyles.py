@@ -23,20 +23,11 @@ def strong(s):
 def big(s):
     return mark_safe(u"<big>%s</big>" % s)
 
-def psplitext(s, maxlen):
-    """ splitext which unlike os.path.splitext, also supports stuff like
-    file.tar.gz. If the extension  """
-    s.rsplit(".", 2)
-    filename = s[0]
-    ext = ".".join(s[1:])
-    if ext >= maxlen:
-        return s
-    return filename, ext
-
 @register.filter
 @stringfilter
-def trunc_filename(s, length):
-    return truncate_filename(s, length)
+def trunc_filename(filename, length):
+    """ Trunkcate a ``filename`` to the given ``length``.  """
+    return truncate_filename(filename, length)
 
 @register.filter
 def student_status(group_or_delivery):
