@@ -210,7 +210,11 @@
           <th>{% trans "Feedback last modified by" %}</th>
           <td> {{ delivery.feedback.last_modified_by }} </td>
         </tr>
-      {% endif %}
+	      {% endif %}
+		<tr>
+          <th>{% trans "Status" %}</th>
+          <td> {{ delivery|status }} </td>
+        </tr>
     </tbody>
   </table>
 
@@ -258,20 +262,10 @@
 			<a href="{{ close_group_url }}">close for more deliveries</a> 
 			if the group doesn't need to submit a new delivery. 
 			Closing the group leave the students on this group unable to add
-            more deliveries.{% endblocktrans %}
+            more deliveries, and make the grade on the latest delivery the final grade{% endblocktrans %}
          </p>
       {% endif %}
-      <p>
-        <a href="{% url devilry-examiner-create_deadline delivery.assignment_group.id %}"
-           class='button ui-priority-secondary' id='deadline-button'>
-           {% trans "Create deadline" %}
-           </a>
-          <a href="{% url devilry-examiner-close_assignmentgroup delivery.assignment_group.id %}"
-             class='button ui-priority-secondary' id='openclosebtn'>
-             {% trans "Close group" %}
-           </a>
-       </p>
-  {% else %}
+   {% else %}
 	  {% url devilry-examiner-open_assignmentgroup delivery.assignment_group.id as open_group_url %}
        <p class='info-message'>
 		 {% blocktrans %}
