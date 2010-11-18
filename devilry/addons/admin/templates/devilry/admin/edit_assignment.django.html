@@ -32,8 +32,8 @@
 
 {% block main %}
 
-{% if message %}
-	<p>{{ message }}</p>
+{% if gradeplugin_msg %}
+	<div class="booring-message">{{ gradeplugin_msg|safe }}</div>
 {% endif %}
 
 <form method='post' action='
@@ -52,7 +52,7 @@
 </form>
 
 {% if isnew %}
-  <h2>Grade plugins</h2>
+  <h2>{% trans "Grade plugins" %}</h2>
   {% for key, gradeplugin in gradeplugins %}
     <h3>{{ gradeplugin.label }}</h3>
     <p>{{ gradeplugin.description|rst_to_html }}</p>
@@ -61,7 +61,7 @@
 
 
 {% if not isnew %}
-  <h2>Groups</h2>
+  <h2>{% trans "Groups" %}</h2>
 
   {{ assignmentgroupstbl }}
 {% endif %}

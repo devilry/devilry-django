@@ -104,6 +104,7 @@ def edit_assignment(request, assignment_id=None):
                 'long_name': DevilryLongNameWidget
                 }
 
+    gradeplugin_msg = None
     if not isnew:
         gp = gradeplugin.registry.getitem(assignment.grade_plugin)
         msg = _('This assignment uses the <em>%(gradeplugin_label)s</em> ' \
@@ -113,9 +114,9 @@ def edit_assignment(request, assignment_id=None):
             url = gp.admin_url_callback(assignment.id)
             msg2 = _('<a href="%(gradeplugin_admin_url)s">Click here</a> '\
                     'to administer the plugin.' % {'gradeplugin_admin_url': url})
-            messages.add_info('%s %s' % (msg, msg2), raw_html=True)
+            gradeplugin_msg = '%s %s' % (msg, msg2)
         else:
-            messages.add_info(msg, raw_html=True)
+            gradeplugin_msg = msg
     
     if request.method == 'POST':
         form = Form(request.POST, instance=assignment)
@@ -148,6 +149,7 @@ def edit_assignment(request, assignment_id=None):
         'form': form,
         'assignment': assignment,
         'messages': messages,
+        'gradeplugin_msg': gradeplugin_msg,
         'isnew': isnew,
         'gradeplugins': gradeplugin.registry.iteritems(),
         'examiners': examiners,
