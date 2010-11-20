@@ -110,6 +110,10 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
     ``grade_form`` as template variables. It also adds some template
     variables:
         
+        has_any_deadlines
+            Boolean telling if this group has any deadlines. If this is
+            ``False``, ``after_deadline``, ``diff_days``, ``diff_hours`` and
+            ``diff_minutes`` will be ``None``.
         after_deadline
             Boolean telling if the delivery is after the active deadline.
         diff_days
@@ -124,16 +128,25 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
     prev_notcorrected = get_prev_notcorrected_in_assignment(request.user,
             delivery_obj)
 
-    active_deadline = delivery_obj.assignment_group.get_active_deadline().deadline
-    after_deadline = active_deadline < delivery_obj.time_of_delivery
-    if after_deadline:
-        diff = delivery_obj.time_of_delivery - active_deadline
+    active_deadline = delivery_obj.assignment_group.get_active_deadline()
+    if active_deadline:
+        has_any_deadlines = True
+        active_deadline = active_deadline.deadline
+        after_deadline = active_deadline < delivery_obj.time_of_delivery
+        if after_deadline:
+            diff = delivery_obj.time_of_delivery - active_deadline
+        else:
+            diff = active_deadline - delivery_obj.time_of_delivery
+        days = diff.days
+        m = diff.seconds/60
+        hours = m/60
+        minutes = m%60
     else:
-        diff = active_deadline - delivery_obj.time_of_delivery
-    days = diff.days
-    m = diff.seconds/60
-    hours = m/60
-    minutes = m%60
+        has_any_deadlines = False
+        after_deadline = None
+        days = None
+        hours = None
+        minutes = None
 
     deliveries_by_deadline = GroupDeliveriesByDeadline(
             delivery_obj.assignment_group)

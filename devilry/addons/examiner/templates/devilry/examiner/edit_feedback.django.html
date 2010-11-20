@@ -174,7 +174,7 @@
 {% endcomment %}
 
 <div id="metainfo" class="nocolor">
-  {% if after_deadline %}
+  {% if has_any_deadlines and after_deadline %}
     <div class="warning-message metainfo-item">
       {% blocktrans with diff_days|big as diff_days and diff_hours|big as diff_hours and diff_minutes|big as diff_minutes %}
         This delivery was made {{ diff_days }} days, {{ diff_hours }} hours
