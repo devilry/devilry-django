@@ -218,12 +218,15 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         if 'latest_delivery' in active_optional_cols \
                 or 'active_deadline' in active_optional_cols:
             # Avoid calculating active_deadline twice
-            active_deadline = group.get_active_deadline().deadline
+            active_deadline = group.get_active_deadline()
             if 'active_deadline' in active_optional_cols:
-                row.add_cell(_datetime_or_empty(active_deadline))
+                if active_deadline:
+                    row.add_cell(_datetime_or_empty(active_deadline))
+                else:
+                    row.add_cell("")
             if 'latest_delivery' in active_optional_cols:
                 cssclass = ""
-                if group.latest_delivery and active_deadline < group.latest_delivery:
+                if group.latest_delivery and active_deadline and active_deadline.deadline < group.latest_delivery:
                     cssclass = "bad"
                 row.add_cell(_datetime_or_empty(group.latest_delivery),
                         cssclass=cssclass)
