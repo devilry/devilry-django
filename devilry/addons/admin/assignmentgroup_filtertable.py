@@ -221,7 +221,7 @@ class AssignmentGroupsFilterTableBase(FilterTable):
             active_deadline = group.get_active_deadline()
             if 'active_deadline' in active_optional_cols:
                 if active_deadline:
-                    row.add_cell(_datetime_or_empty(active_deadline))
+                    row.add_cell(_datetime_or_empty(active_deadline.deadline))
                 else:
                     row.add_cell("")
             if 'latest_delivery' in active_optional_cols:
