@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.db.models.query import QuerySet
 from django.template.defaultfilters import floatformat
+from django.http import HttpResponse
 
 from devilry.core.models import AssignmentGroup, Period
 #from devilry.core import pluginloader
@@ -54,9 +55,6 @@ def admin_userstats(request, period_id, username):
             'maxpoints': maxpoints,
             'groups': groups,
         }, context_instance=RequestContext(request))
-
-
-
 
 
 class FilterPeriodPassed(Filter):
@@ -258,3 +256,43 @@ def periodstats(request, period_id):
         'filtertbl': tbl,
         'period': period
         }, context_instance=RequestContext(request))
+
+
+
+
+def _qry_all_users_in_period(period, assignments):
+    dataset = User.objects.filter(
+        candidate__assignment_group__parentnode__parentnode=period).distinct()
+    dataset = dataset.annotate(
+            sumperiod=Sum('candidate__assignment_group__scaled_points'))
+    for user in dataset:
+        l = []
+        l.append(user.username)
+        l.append(floatformat(user.sumperiod))
+
+        for group in PeriodStatsFilterTable.iter_selected_assignments(
+                period, user, assignments):
+            scaled_points, is_passing_grade, status = group
+            if scaled_points == None:
+                l.append("")
+            else:
+                l.append(floatformat(scaled_points))
+        yield user, l
+
+
+
+@login_required
+def periodstats_csv(request, period_id):
+    period = get_object_or_404(Period, id=period_id)
+    if not period.can_save(request.user):
+        return HttpResponseForbidden("Forbidden")
+
+    assignments = period.assignments.all().order_by("publishing_time")
+    csv = "\n".join([",".join(userdata) \
+            for user, userdata in _qry_all_users_in_period(period,
+                assignments)])
+    csv = "username,sum,%s\n%s" % (",".join([a.short_name for a in assignments]), csv)
+    response = HttpResponse(csv, mimetype="text/plain")
+    filename = "%s.csv" % period.get_path()
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response

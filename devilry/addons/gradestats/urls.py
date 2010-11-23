@@ -14,4 +14,7 @@ urlpatterns = patterns('devilry.addons.gradestats',
     url(r'^periodstats-json/(?P<period_id>\d+)$',
         'views.periodstats_json',
         name='devilry-gradestats-periodstats_json'),
+    url(r'^periodstats-csv/(?P<period_id>\d+)$',
+        'views.periodstats_csv',
+        name='devilry-gradestats-periodstats_csv'),
 )
