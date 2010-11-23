@@ -230,7 +230,10 @@ class PeriodStatsFilterTable(FilterTable):
         users_by_points = users_by_points.order_by(
                 qryprefix + 'candidate__assignment_group__scaled_points')
         kv = dict([(u.username, u) for u in dataset])
-        result = [kv.get(u.username,0) for u in users_by_points]
+        result = [
+                kv[u.username] for u in users_by_points \
+                if u.username in kv]
+        print result
         return result
 
 
