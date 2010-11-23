@@ -275,7 +275,7 @@ class SessionInfo(object):
 class FilterTable(object):
     id = 'filtertable'
     default_currentpage = 0
-    default_perpage = 10
+    default_perpage = 30
     default_order_by = None
     default_order_asc = True
     use_rowactions = False
