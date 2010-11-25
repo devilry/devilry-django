@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+{% comment %} vim: set ts=2 sts=2 et sw=2 ft=htmldjango: {% endcomment %}
+{% load i18n %}
+<html>
+  <head>
+    <title>
+      {% block title %}{{ page_title }}{% endblock %}
+    </title>
+    <link rel="stylesheet" href="{{ DEVILRY_THEME_URL }}/reset.css"
+      type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/layout.css"
+      type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="{{ DEVILRY_THEME_URL }}/colors.css"
+      type="text/css" media="screen" charset="utf-8"/>
+    {% if debug %}
+      <script src="{{ DEVILRY_RESOURCES_URL }}/dojosdk/dojo/dojo.js"
+        type="text/javascript"
+        djConfig="parseOnLoad:true, isDebug:true"></script>
+      <script type="text/javascript">
+        dojo.registerModulePath("dojodevilry", "{{ DEVILRY_RESOURCES_URL }}/dojodevilry");
+      </script>
+      <link rel="stylesheet"
+        href="{{ DEVILRY_RESOURCES_URL }}/dojosdk/dijit/themes/tundra/tundra.css"/>
+    {% endif %}
+
+    {% block headextra %}{% endblock %}
+  </head>
+  <body class="tundra">
+    <header>
+      <h1>
+        {% trans "Devilry" %}
+      </h1>
+      <a href="http://devilry.github.com" id="projectlink">http://devilry.github.com</a>
+      <nav>
+        <ul>
+          <li><a href="#">Student</a></li>
+          <li><a href="#">Examiner</a></li>
+          <li><a href="#">Admin</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div id="main">
+      {% block main %}{{ page_main }}{% endblock %}
+    </div>
+
+    <footer>
+      <a href='http://devilry.github.com'>Devilry</a> is an open source
+      general purpose delivery system.
+    </footer>
+  </body>
+</html>

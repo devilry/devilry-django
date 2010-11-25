@@ -1,0 +1,40 @@
+{% extends "devilry/gui/base.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2 ft=htmldjango: {% endcomment %}
+{% load webdesign %}
+
+
+{% block title %}Devilry gui demo{% endblock %}
+
+{% block headextra %}
+  <script type="text/javascript">
+    {% include "devilry/guiexamples/main.js" %}
+  </script>
+{% endblock %}
+
+{% block main %}
+  <div dojoType="dijit.layout.BorderContainer" style="width: 100%; height: 400px;">
+    <div dojoType="dijit.layout.ContentPane" region="top">
+        Top pane
+    </div>
+    <div dojoType="dijit.layout.ContentPane" region="left" splitter="true"
+        style="width:20%;" href="{% url devilry-guiexamples-help %}">
+
+    </div>
+    <div dojoType="dijit.layout.ContentPane" region="center">
+        Center pane
+    </div>
+    <div dojoType="dijit.layout.ContentPane" region="bottom">
+        Bottom pane
+    </div>
+  </div>
+
+  <div dojoType="dojox.data.QueryReadStore"
+      url="{% url devilry-guiexamples-assignmentgroups_qry %}"
+      jsId="comboStore">
+  </div>
+  <div dojoType="dijit.form.ComboBox" store="comboStore"
+      searchAttr="username" pageSize="5">
+  </div>
+  
+
+{% endblock %}
