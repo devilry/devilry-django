@@ -7,8 +7,9 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.utils.simplejson import JSONEncoder
+from django.db.models import Avg
 
-from devilry.core.models import AssignmentGroup
+from devilry.core.models import AssignmentGroup, Assignment
 
 
 @login_required
@@ -27,20 +28,13 @@ def help(request):
 class QryWrapper(object):
     mapping = {}
     def __init__(self, inp, qry):
-        self.start = inp.get('start', 0)
-        self.count = inp.get('count', 10)
+        self.start = int(inp.get('start', 0))
+        self.count = int(inp.get('count', 10))
         self.numRows = qry.count()
         self.qry = qry[self.start:self.start+self.count]
 
-    def _convert(self, item):
-        dct = {}
-        for key, label in self.mapping.iteritems():
-            dct[label] = item[key]
-        return dct
-
     def json_encode(self):
-        items = [self._convert(x) for x in self.qry.values(
-                *self.mapping.keys())]
+        items = [x for x in self.qry]
         result = dict(
                 numRows = self.numRows,
                 items = items)
@@ -48,15 +42,30 @@ class QryWrapper(object):
         return json
 
 
-class AssignmentGroupQryMapper(QryWrapper):
-    mapping = {
-        "candidates__student__username": "username",
-        "status": "status",
-    }
-
 
 @login_required
 def assignmentgroups_qry(request):
     qry = AssignmentGroup.where_is_admin_or_superadmin(request.user)
-    json = AssignmentGroupQryMapper(request.GET, qry).json_encode()
+    qry = qry.values("candidates__student__username", "status",
+            "scaled_points")
+    print request.GET
+    json = QryWrapper(request.GET, qry).json_encode()
+    return HttpResponse(json, content_type="application/json")
+
+
+@login_required
+def assignment_avg_labels(request):
+    qry = Assignment.where_is_admin_or_superadmin(request.user).order_by("publishing_time")
+    labels = [dict(value=i+1, text=x[0]) \
+            for i, x in enumerate(qry.values_list("short_name"))]
+    json = JSONEncoder(ensure_ascii=False, indent=2).encode(labels)
+    return HttpResponse(json, content_type="application/json")
+
+@login_required
+def assignment_avg_data(request):
+    qry = Assignment.where_is_admin_or_superadmin(request.user).order_by("publishing_time")
+    qry = qry.annotate(
+            avg_scaled_points = Avg("assignmentgroups__scaled_points"))
+    qry = qry.values("avg_scaled_points")
+    json = QryWrapper(request.GET, qry).json_encode()
     return HttpResponse(json, content_type="application/json")

@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block main %}
+  <div id="datachart" style="width: 450px; height: 200px; margin-bottom: 20px;">
+  </div>
+
   <div dojoType="dijit.layout.BorderContainer" style="width: 100%; height: 400px;">
     <div dojoType="dijit.layout.ContentPane" region="top">
         Top pane
@@ -33,8 +36,10 @@
       jsId="comboStore">
   </div>
   <div dojoType="dijit.form.ComboBox" store="comboStore"
-      searchAttr="username" pageSize="5">
+      searchAttr="candidates__student__username" pageSize="5">
   </div>
-  
+
+  <div id="simplechart" style="width: 450px; height: 200px; margin-top: 20px;">
+  </div>
 
 {% endblock %}
