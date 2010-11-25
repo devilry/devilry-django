@@ -4,6 +4,7 @@ from os.path import abspath, dirname, join
 this_dir = dirname(abspath(__file__))
 
 
+INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -139,7 +140,10 @@ INSTALLED_APPS = (
     'devilry.core',
     'devilry.ui',
     'devilry.adminscripts',
-    'devilry.addons.gradestats'
+    'devilry.addons.gradestats',
+    'devilry.gui',
+    'devilry.addons.guiexamples',
+    'django.contrib.webdesign'
 )
 
 
@@ -147,11 +151,16 @@ INSTALLED_APPS = (
 
 DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
 DEVILRY_RESOURCES_URL = '/resources'
+DEVILRY_THEME_URL = '/resources/gui/themes/devilry'
+#DEVILRY_DOJO_URL = '/resources/dojo/dojo/dojo.js'
+DEVILRY_DOJO_URL = 'http://o.aolcdn.com/dojo/1.5/dojo/dojo.xd.js'
+DEVILRY_DIJIT_THEME_URL = 'http://o.aolcdn.com/dojo/1.5/dijit/themes/tundra/tundra.css'
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.auth", 
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
+    "django.core.context_processors.debug",
     'devilry.core.templatecontext.template_variables',
 )
 

@@ -16,5 +16,6 @@ def template_variables(request):
         'STATUS_NOT_CORRECTED': AssignmentGroup.NOT_CORRECTED,
         'STATUS_CORRECTED_NOT_PUBLISHED': AssignmentGroup.CORRECTED_NOT_PUBLISHED,
         'STATUS_CORRECTED_AND_PUBLISHED': AssignmentGroup.CORRECTED_AND_PUBLISHED,
-        'session': request.session
+        'session': request.session,
+        'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
     }

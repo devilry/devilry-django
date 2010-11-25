@@ -6,6 +6,11 @@ from django.contrib import admin
 admin.autodiscover()
 
 
+debugpatterns = []
+if settings.DEBUG:
+    debugpatterns = [
+        (r'^guiexamples/', include('devilry.addons.guiexamples.urls'))]
+
 urlpatterns = patterns('',
     # Example:
     # (r'^devilry/', include('devilry.foo.urls')),
@@ -30,6 +35,7 @@ urlpatterns = patterns('',
     (r'^', include('devilry.addons.quickdash.urls')),
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.DEVILRY_RESOURCES_ROOT}),
+    *debugpatterns
 )
 
 
