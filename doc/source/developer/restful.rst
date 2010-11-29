@@ -5,41 +5,55 @@
 RESTful web service API
 ==========================================
 
+http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services
 
-/examiner/
-#######################################################
-
-All urls in the /examiner/ path work on data where the authenticated user is
-examiner.
-
-
-Error status
-=====================================================================
+HTTP status codes
+#####################################################################
 
 200 OK
     The request was succesful. The requested data is returned.
 400 Bad Request
     A parameter is invalid. The data contains an error message.
 
+/examiner/
+#####################################################################
+
+All urls in the /examiner/ path work on data where the authenticated user is
+examiner.
+
 
 /examiner/assignments/
 =====================================================================
 
-.. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, qry="*")
+.. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, qry="*", longnamefields=0, pointhandlingfields=0)
 
-    Get all old and active assignments.
+    List all old and active assignments. Should provide the following
+    information (fields) for each listed assignment by default:
+
+        - id
+        - short_name
+        - period__short_name (parentnode.short_name)
+        - assignment__short_name (parentnode.parentnode.short_name)
+
+    For documentation on the fields, see :class:`devilry.core.models.Assignment`.
 
     :param count: Number of results.
     :param start: Offset where the result should start (If start is 10 and
-        count is 30, results 10 to 30 is returned).
-    :param old: Show assignments from old (not active) periods?
-    :param active: Show assignments from old (not active) periods?
+        count is 30, results 10 to 40 is returned, including both ends).
+    :param old: Include assignments from old (not active) periods?
+    :param active: Include assignments from old (not active) periods?
     :param orderby: Sort the result by this field. Must be one of:
         *id*, *short_name*, *long_name*, *id*, *publishing_time*, *pointscale*,
         *autoscale*, *maxpoints*, *attempts* or *must_pass*. See
         :class:`devilry.core.models.Assignment` for documentation on each of
         these fields.
     :param qry: A query to limit the results.
+    :param longnamefields: Include the *long_name* field of assignment, period and
+        subject for each assignment in the result?
+    :param pointhandlingfields: Include the *grade_plugin*, *pointscale*, *autoscale*,
+        *maxpoints*, *attempts*, and *must_pass* fields for each assignment in
+        the result? The *grade_plugin* field contains the (human readable and
+        translated) label instead of the grade plugin key.
 
     :return: The requested assignments if all is OK.
 
@@ -52,7 +66,7 @@ Error status
 
     :param count: Number of results.
     :param start: Offset where the result should start (If start is 10 and
-        count is 30, results 10 to 30 is returned).
+        count is 30, results 10 to 40 is returned, including both ends).
     :param orderby: Sort the result by this field. Must be one of:
         *id*, *is_open*, *status*, *points*, *scaled_points* or
         *active_deadline* (only if details is 1).
@@ -94,6 +108,14 @@ Error status
     Get all information about the delivery with the given delivery-id,
     including feedback. This view might choose between embedding and linking/referencing
     *files/*.
+
+.. function:: PUT()
+
+    Create or update feedback on the delivery.
+
+.. function:: DELETE()
+
+    Clear the feedback on the delivery.
 
 
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/
