@@ -1,4 +1,4 @@
-.. _restful:
+.. _developer-restful:
 
 
 ==========================================
@@ -25,7 +25,7 @@ Error status
 /examiner/assignments/
 =====================================================================
 
-.. function:: get(count=50, start=0, orderby="short_name", old=0, active=1, qry="*")
+.. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, qry="*")
 
     Get all old and active assignments.
 
@@ -46,7 +46,7 @@ Error status
 /examiner/assignments/{assignment-id}/
 =====================================================================
 
-.. function:: get(count=50, start=0, orderby="id", details=0, qry="*")
+.. function:: GET(count=50, start=0, orderby="id", details=0, qry="*")
 
     List all groups in the given assignment.
 
@@ -73,7 +73,7 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/
 =====================================================================
 
-.. function:: get()
+.. function:: GET()
 
     Get all available information about the given group (not about any deliveries).
 
@@ -81,7 +81,7 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/
 =========================================================================
 
-.. function:: get()
+.. function:: GET()
 
     List all deliveries by this group.
 
@@ -89,7 +89,7 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/
 ==========================================================================
 
-.. function:: get()
+.. function:: GET()
 
     Get all information about the delivery with the given delivery-id,
     including feedback. This view might choose between embedding and linking/referencing
@@ -99,7 +99,7 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/
 ================================================================================
 
-.. function:: get()
+.. function:: GET()
 
     List all files in a delivery.
 
@@ -107,7 +107,7 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/{filename}
 ===================================================================================================
 
-.. function:: get()
+.. function:: GET()
 
     Download the requested file.
 
@@ -115,7 +115,7 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/{filename}/view
 ===============================================================================================
 
-.. function:: get()
+.. function:: GET()
 
     View the requested file. This URL is not suited for all content-types, but
     in some, like HTML, this should give a preview of the file instead of
@@ -125,6 +125,6 @@ Error status
 /examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/{filename}/browse
 =================================================================================================
 
-.. function:: get()
+.. function:: GET()
 
     List the contents of the file, if it is a supported archive format.

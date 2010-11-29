@@ -29,6 +29,12 @@ Developing devilry
 * :ref:`developer-selenium-tests`
 
 
+RESTful API
+######################################################################
+
+* :ref:`developer-restful`
+
+
 More help
 ######################################################################
 
