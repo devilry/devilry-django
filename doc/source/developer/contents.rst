@@ -22,3 +22,5 @@ Developers
     documentation
     commandline
     selenium-tests
+
+    restful
