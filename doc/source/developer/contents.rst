@@ -23,4 +23,5 @@ Developers
     commandline
     selenium-tests
 
+    simplified
     restful
