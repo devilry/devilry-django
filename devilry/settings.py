@@ -143,7 +143,8 @@ INSTALLED_APPS = (
     'devilry.addons.gradestats',
     'devilry.gui',
     'devilry.addons.guiexamples',
-    'django.contrib.webdesign'
+    'devilry.simplified',
+    'django.contrib.webdesign',
 )
 
 

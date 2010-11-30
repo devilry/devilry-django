@@ -25,7 +25,7 @@ examiner.
 /examiner/assignments/
 =====================================================================
 
-.. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, qry="*", longnamefields=0, pointhandlingfields=0)
+.. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, search="", longnamefields=0, pointhandlingfields=0)
 
     List all old and active assignments. Should provide the following
     information (fields) for each listed assignment by default:
@@ -47,7 +47,7 @@ examiner.
         *autoscale*, *maxpoints*, *attempts* or *must_pass*. See
         :class:`devilry.core.models.Assignment` for documentation on each of
         these fields.
-    :param qry: A query to limit the results.
+    :param search: A query to limit the results.
     :param longnamefields: Include the *long_name* field of assignment, period and
         subject for each assignment in the result?
     :param pointhandlingfields: Include the *grade_plugin*, *pointscale*, *autoscale*,
@@ -57,10 +57,11 @@ examiner.
 
     :return: The requested assignments if all is OK.
 
+
 /examiner/assignments/{assignment-id}/
 =====================================================================
 
-.. function:: GET(count=50, start=0, orderby="id", details=0, qry="*")
+.. function:: GET(count=50, start=0, orderby="id", details=0, search="")
 
     List all groups in the given assignment.
 
@@ -79,7 +80,7 @@ examiner.
             A list of deadlines for this group.
         active_deadline
             The active deadline for this group.
-    :param qry: A query to limit the results.
+    :param search: A query to limit the results.
 
     :return: The requested groups if all is OK.
 
