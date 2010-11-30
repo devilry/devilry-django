@@ -730,6 +730,7 @@ class Assignment(models.Model, BaseNode):
                 Q(parentnode__parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
+
     @classmethod
     def where_is_examiner(cls, user_obj):
         """ Get all assignments where the given ``user_obj`` is examiner on one
@@ -742,50 +743,69 @@ class Assignment(models.Model, BaseNode):
             assignmentgroups__examiners=user_obj
             ).distinct()
 
-    @classmethod
-    def published_where_is_examiner(cls, user_obj):
-        """ Get all :ref:`published <assignment-classifications>`
-        assignments where the given ``user_obj`` is examiner on one of its
-        assignment groups.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        """
+        Return a django.models.Q object which matches assignments
+        where :attr:`publishing_time` is in the future.
+
+        :param old: Include assignments where :attr:`Period.end_time`
+            is in the past?
+        :param active: Include assignments where :attr:`Period.end_time`
+            is in the future?
+        """
+        now = datetime.now()
+        q = Q(publishing_time__lt = now)
+        if not active:
+            q &= ~Q(parentnode__end_time__gt = now)
+        if not old:
+            q &= ~Q(parentnode__end_time__lt = now)
+        return q
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        """
+        Return a django.models.Q object which matches assignments
+        where the given user is examiner.
+        """
+        return Q(assignmentgroups__examiners=user_obj)
+
+    @classmethod
+    def published_where_is_examiner(cls, user_obj, old=True, active=True):
+        """
+        Get all :ref:`published <assignment-classifications>`
+        assignments where the given ``user_obj`` is examiner on one of its
+        assignment groups. Combines :meth:`q_is_examiner` and
+        :meth:`q_published`.
+
+        :param user_obj: :meth:`q_is_examiner`.
+        :param old: :meth:`q_published`.
+        :param active: :meth:`q_published`.
+        :return: A django.db.models.query.QuerySet with duplicate
+            assignments eliminated.
         """
         return Assignment.objects.filter(
-            publishing_time__lt = datetime.now(),
-            assignmentgroups__examiners=user_obj
-            ).distinct()
+                cls.q_published(old=old, active=active) &
+                cls.q_is_examiner(user_obj)
+                ).distinct()
 
     @classmethod
     def active_where_is_examiner(cls, user_obj):
-        """ Get all :ref:`active <assignment-classifications>` assignments 
-        where the given ``user_obj`` is examiner on one of its assignment
-        groups.
-
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
         """
-        now = datetime.now()
-        return Assignment.objects.filter(
-            publishing_time__lt = now,
-            parentnode__end_time__gt = now,
-            assignmentgroups__examiners=user_obj
-            ).distinct()
+        Shortcut for :meth:`published_where_is_examiner` with
+        ``old=False``.
+        """
+        return cls.published_where_is_examiner(user_obj, old=False,
+                active=True)
 
     @classmethod
     def old_where_is_examiner(cls, user_obj):
-        """ Get all :ref:`old <assignment-classifications>` assignments
-        where the given ``user_obj`` is examiner on one of its assignment
-        groups.
-
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
         """
-        now = datetime.now()
-        return Assignment.objects.filter(
-            parentnode__end_time__lt = now,
-            assignmentgroups__examiners=user_obj
-            ).distinct()
+        Shortcut for :meth:`published_where_is_examiner` with
+        ``active=False``.
+        """
+        return cls.published_where_is_examiner(user_obj, active=False)
 
 
     @classmethod
@@ -1437,7 +1457,7 @@ class Delivery(models.Model, AbstractIsAdmin):
 
     .. attribute:: number
 
-        A django.db.models.PositiveIntegerField_ with the delivery-number
+        A django.db.models.PositiveIntegerField with the delivery-number
         within this assignment-group. This number is automatically
         incremented within each assignmentgroup, starting from 1. Must be
         unique within the assignment-group. Automatic incrementation is used
