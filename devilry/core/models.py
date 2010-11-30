@@ -24,18 +24,31 @@ import gradeplugin
 
 
 # TODO: indexes
-# TODO: Complete/extend and document CommonInterface.
 # TODO: short_name ignorecase match on save.
 
 pathsep = '.' # path separator for Node-paths
 
 
-class CommonInterface(object):
+class AbstractIsAdmin(object):
+    """ Abstract class implemented by all classes where it is natural to
+    need to check if a user has admin rights. """
+
+    @classmethod
+    def q_where_is_admin(cls, user_obj):
+        """
+        Get a django.db.models.Q object matching all objects of this
+        type where the given user is admin. The matched result is not
+        guaranteed to contain unique items, so you should use distinct() on
+        the queryset if this is required.
+
+        This must be implemented in all subclassed.
+        """
+        raise NotImplementedError()
 
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Get all objects of this type where the given user is admin. """
-        raise NotImplementedError()
+        return cls.objects.filter(cls.q_where_is_admin(user_obj)).distinct()
 
     @classmethod
     def where_is_admin_or_superadmin(cls, user_obj):
@@ -46,6 +59,9 @@ class CommonInterface(object):
         else:
             return cls.where_is_admin(user_obj)
 
+
+
+class SaveInterface(object):
     def can_save(self, user_obj):
         """ Check if the give user has permission to save (or create) this
         node.
@@ -127,7 +143,7 @@ class LongNameField(models.CharField):
         super(LongNameField, self).__init__(*args, **kw)
 
 
-class BaseNode(CommonInterface):
+class BaseNode(AbstractIsAdmin, SaveInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
     used by the other Node classes. This is an abstract datamodel, so it
@@ -292,14 +308,8 @@ class Node(models.Model, BaseNode):
         return l
 
     @classmethod
-    def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Nodes where the given user is
-        admin.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Node.objects.filter(pk__in=cls._get_nodepks_where_isadmin(user_obj))
+    def q_where_is_admin(cls, user_obj):
+        return Q(pk__in=cls._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def get_by_path_kw(cls, pathlist):
@@ -366,18 +376,11 @@ class Subject(models.Model, BaseNode):
     long_name = LongNameField()
     parentnode = models.ForeignKey(Node, related_name='subjects')
     admins = models.ManyToManyField(User, blank=True)
-    
+
     @classmethod
-    def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Subjects where the given user is
-        admin.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Subject.objects.filter(
-                Q(admins__pk=user_obj.pk)
-                | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))).distinct()
+    def q_where_is_admin(cls, user_obj):
+            return Q(admins__pk=user_obj.pk) \
+                | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def get_by_path(self, path):
@@ -471,18 +474,10 @@ class Period(models.Model, BaseNode):
         return self.assignments.filter(must_pass=True)
 
     @classmethod
-    def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Periods where the given user is
-        admin.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Period.objects.filter(
-                Q(admins=user_obj) |
-                Q(parentnode__admins=user_obj) |
+    def q_where_is_admin(cls, user_obj):
+        return Q(admins=user_obj) | \
+                Q(parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-        ).distinct()
 
     @classmethod
     def not_ended_where_is_admin(cls, user_obj):
@@ -729,18 +724,11 @@ class Assignment(models.Model, BaseNode):
                         dict(filename=filename)))
 
     @classmethod
-    def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Assignments where the given user is admin.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Assignment.objects.filter(
-                Q(admins=user_obj) |
-                Q(parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__admins=user_obj) |
+    def q_where_is_admin(cls, user_obj):
+        return Q(admins=user_obj) | \
+                Q(parentnode__admins=user_obj) | \
+                Q(parentnode__parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-        ).distinct()
 
     @classmethod
     def where_is_examiner(cls, user_obj):
@@ -928,7 +916,7 @@ class Candidate(models.Model):
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
-class AssignmentGroup(models.Model, CommonInterface):
+class AssignmentGroup(models.Model, AbstractIsAdmin):
     """
     Represents a student or a group of students. 
 
@@ -1079,21 +1067,14 @@ class AssignmentGroup(models.Model, CommonInterface):
     def save(self, *args, **kwargs):
         self.scaled_points = self._get_scaled_points()
         super(AssignmentGroup, self).save(*args, **kwargs)
-    
+
+
     @classmethod
-    def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all AssignmentGroups where the
-        given user is admin.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return AssignmentGroup.objects.filter(
-                Q(parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__admins=user_obj) |
+    def q_where_is_admin(cls, user_obj):
+        return Q(parentnode__admins=user_obj) | \
+                Q(parentnode__parentnode__admins=user_obj) | \
+                Q(parentnode__parentnode__parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-        ).distinct()
 
     @classmethod
     def where_is_candidate(cls, user_obj):
@@ -1440,7 +1421,7 @@ class Deadline(models.Model):
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
-class Delivery(models.Model):
+class Delivery(models.Model, AbstractIsAdmin):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
 
@@ -1495,19 +1476,11 @@ class Delivery(models.Model):
         unique_together = ('assignment_group', 'number')
 
     @classmethod
-    def where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Deliveries where the given user
-        is admin.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Delivery.objects.filter(
-                Q(assignment_group__parentnode__admins=user_obj) |
-                Q(assignment_group__parentnode__parentnode__admins=user_obj) |
-                Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-        ).distinct()
+    def q_where_is_admin(cls, user_obj):
+        return Q(assignment_group__parentnode__admins=user_obj) | \
+                Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
+                Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
 
     @classmethod
     def begin(cls, assignment_group, user_obj):
