@@ -8,6 +8,7 @@
 
 from datetime import datetime
 import re
+from warnings import warn
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -1097,6 +1098,35 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
                 Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
+    def q_is_candidate(cls, user_obj):
+        """
+        Returns a django.models.Q object matching AssignmentGroups where
+        the given student is candidate.
+        """
+        return Q(candidates__student=user_obj)
+
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        """
+        Return a django.models.Q object which matches assignmentgroups
+        where :attr:`Assignment.publishing_time` is in the future.
+
+        :param old: Include assignments where :attr:`Period.end_time`
+            is in the past?
+        :param active: Include assignments where :attr:`Period.end_time`
+            is in the future?
+        
+        .. seealso:: :meth:`Assignment.q_published`
+        """
+        now = datetime.now()
+        q = Q(parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(parentnode__parentnode__end_time__gt = now)
+        if not old:
+            q &= ~Q(parentnode__parentnode__end_time__lt = now)
+        return q
+
+    @classmethod
     def where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
@@ -1104,10 +1134,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return AssignmentGroup.objects.filter(candidates__student=user_obj)
+        return AssignmentGroup.objects.filter(cls.q_is_candidate(user_obj))
 
     @classmethod
-    def published_where_is_candidate(cls, user_obj):
+    def published_where_is_candidate(cls, user_obj, old=True, active=True):
         """ Returns a QuerySet matching all :ref:`published
         <assignment-classifications>` assignment groups where the given user
         is student.
@@ -1115,8 +1145,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return cls.where_is_candidate(user_obj).filter(
-                parentnode__publishing_time__lt = datetime.now())
+        return AssignmentGroup.objects.filter(
+                cls.q_is_candidate(user_obj) &
+                cls.q_published(old=old, active=active))
 
     @classmethod
     def active_where_is_candidate(cls, user_obj):
@@ -1127,10 +1158,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        now = datetime.now()
-        return cls.published_where_is_candidate(user_obj).filter(
-                parentnode__parentnode__start_time__lt = now,
-                parentnode__parentnode__end_time__gt = now)
+        return cls.published_where_is_candidate(user_obj, old=False)
 
     @classmethod
     def old_where_is_candidate(cls, user_obj):
@@ -1141,9 +1169,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        now = datetime.now()
-        return cls.where_is_candidate(user_obj).filter(
-                parentnode__parentnode__end_time__lt = now)
+        return cls.published_where_is_candidate(user_obj, active=False)
 
 
     @classmethod
