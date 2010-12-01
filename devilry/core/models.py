@@ -34,7 +34,7 @@ class AbstractIsAdmin(object):
     need to check if a user has admin rights. """
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
         """
         Get a django.db.models.Q object matching all objects of this
         type where the given user is admin. The matched result is not
@@ -48,7 +48,7 @@ class AbstractIsAdmin(object):
     @classmethod
     def where_is_admin(cls, user_obj):
         """ Get all objects of this type where the given user is admin. """
-        return cls.objects.filter(cls.q_where_is_admin(user_obj)).distinct()
+        return cls.objects.filter(cls.q_is_admin(user_obj)).distinct()
 
     @classmethod
     def where_is_admin_or_superadmin(cls, user_obj):
@@ -308,7 +308,7 @@ class Node(models.Model, BaseNode):
         return l
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
         return Q(pk__in=cls._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
@@ -378,7 +378,7 @@ class Subject(models.Model, BaseNode):
     admins = models.ManyToManyField(User, blank=True)
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
             return Q(admins__pk=user_obj.pk) \
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
@@ -474,7 +474,7 @@ class Period(models.Model, BaseNode):
         return self.assignments.filter(must_pass=True)
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
         return Q(admins=user_obj) | \
                 Q(parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
@@ -724,7 +724,7 @@ class Assignment(models.Model, BaseNode):
                         dict(filename=filename)))
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
         return Q(admins=user_obj) | \
                 Q(parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__admins=user_obj) | \
@@ -1090,7 +1090,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
 
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
         return Q(parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__parentnode__admins=user_obj) | \
@@ -1496,7 +1496,7 @@ class Delivery(models.Model, AbstractIsAdmin):
         unique_together = ('assignment_group', 'number')
 
     @classmethod
-    def q_where_is_admin(cls, user_obj):
+    def q_is_admin(cls, user_obj):
         return Q(assignment_group__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
