@@ -3,9 +3,13 @@ from devilry.core.models import Assignment
 import utils
 
 
-def assignments(user, count=50, start=0, orderby=["short_name"], old=True,
+
+
+def get_assignments(user, count=50, start=0, orderby=["short_name"], old=True,
         active=True, search="", longnamefields=False,
         pointhandlingfields=False):
+    """
+    """
     fields = ["short_name",
             "parentnode__short_name",
             "parentnode__parentnode__short_name"]
