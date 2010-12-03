@@ -62,6 +62,9 @@ class AbstractIsAdmin(object):
 
 
 class AbstractIsExaminer(object):
+    """ Abstract class implemented by all classes where it is natural to
+    need to check if a user is examiner. """
+
     @classmethod
     def q_published(cls, old=True, active=True):
         """
@@ -609,6 +612,8 @@ class Period(models.Model, BaseNode):
         """
         now = datetime.now()
         return self.start_time < now and self.end_time > now
+
+
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer):
     """

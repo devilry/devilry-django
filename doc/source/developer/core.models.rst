@@ -32,6 +32,19 @@ BaseNode
 .. autoclass:: devilry.core.models.BaseNode
     :no-members:
 
+
+AbstractIsAdmin
+#########################################################
+
+.. autoclass:: devilry.core.models.AbstractIsAdmin
+
+
+AbstractIsExaminer
+#########################################################
+
+.. autoclass:: devilry.core.models.AbstractIsExaminer
+
+
 Node
 #########################################################
 
