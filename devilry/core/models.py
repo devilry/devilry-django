@@ -8,7 +8,6 @@
 
 from datetime import datetime
 import re
-from warnings import warn
 
 from django.db import models
 from django.contrib.auth.models import User
