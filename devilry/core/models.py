@@ -61,6 +61,8 @@ class AbstractIsAdmin(object):
             return cls.where_is_admin(user_obj)
 
 
+class AbstractIsExaminer(object):
+
 
 class SaveInterface(object):
     def can_save(self, user_obj):
@@ -1173,6 +1175,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
 
 
     @classmethod
+    def q_is_examiner(cls, user_obj):
+        return Q(examiners=user_obj)
+
+    @classmethod
     def where_is_examiner(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is examiner.
@@ -1180,10 +1186,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return AssignmentGroup.objects.filter(examiners=user_obj)
+        return AssignmentGroup.objects.filter(cls.q_is_examiner(user_obj))
 
     @classmethod
-    def published_where_is_examiner(cls, user_obj):
+    def published_where_is_examiner(cls, user_obj, old=True, active=True):
         """ Returns a QuerySet matching all :ref:`published
         <assignment-classifications>` assignment groups where the given user
         is examiner.
@@ -1191,8 +1197,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
-        return cls.where_is_examiner(user_obj).filter(
-                parentnode__publishing_time__lt = datetime.now())
+        return AssignmentGroup.objects.filter(
+                cls.q_is_examiner(user_obj) &
+                cls.q_published(old=old, active=active))
 
     @classmethod
     def active_where_is_examiner(cls, user_obj):
