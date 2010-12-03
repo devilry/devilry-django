@@ -271,6 +271,11 @@ class TestAssignment(TestCase):
 
     def test_published_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
+
+        q = Assignment.published_where_is_examiner(examiner1, old=False,
+                active=False)
+        self.assertEquals(q.count(), 0)
+
         q = Assignment.published_where_is_examiner(examiner1)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oblig1')
@@ -480,6 +485,9 @@ class TestAssignmentGroup(TestCase):
                 AssignmentGroup.published_where_is_examiner(examiner2).count())
         self.assertEquals(2,
                 AssignmentGroup.published_where_is_examiner(examiner1).count())
+        self.assertEquals(0,
+                AssignmentGroup.published_where_is_examiner(examiner1,
+                    old=False, active=False).count())
 
     def test_active_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
