@@ -62,6 +62,76 @@ class AbstractIsAdmin(object):
 
 
 class AbstractIsExaminer(object):
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        """
+        Return a django.models.Q object which matches assignments
+        where :attr:`publishing_time` is in the future.
+
+        :param old: Include assignments where :attr:`Period.end_time`
+            is in the past?
+        :param active: Include assignments where :attr:`Period.end_time`
+            is in the future?
+        """
+        raise NotImplementedError()
+
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        """
+        Return a django.models.Q object which matches assignments
+        where the given user is examiner.
+        """
+        raise NotImplementedError()
+
+
+    @classmethod
+    def where_is_examiner(cls, user_obj):
+        """ Get all assignments where the given ``user_obj`` is examiner on one
+        of its assignment groups.
+
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return cls.objects.filter(
+                cls.q_is_examiner(user_obj)
+            ).distinct()
+
+    @classmethod
+    def published_where_is_examiner(cls, user_obj, old=True, active=True):
+        """
+        Get all :ref:`published <assignment-classifications>`
+        assignments where the given ``user_obj`` is examiner on one of its
+        assignment groups. Combines :meth:`q_is_examiner` and
+        :meth:`q_published`.
+
+        :param user_obj: :meth:`q_is_examiner`.
+        :param old: :meth:`q_published`.
+        :param active: :meth:`q_published`.
+        :return: A django.db.models.query.QuerySet with duplicate
+            assignments eliminated.
+        """
+        return cls.objects.filter(
+                cls.q_published(old=old, active=active) &
+                cls.q_is_examiner(user_obj)
+                ).distinct()
+
+    @classmethod
+    def active_where_is_examiner(cls, user_obj):
+        """
+        Shortcut for :meth:`published_where_is_examiner` with
+        ``old=False``.
+        """
+        return cls.published_where_is_examiner(user_obj, old=False,
+                active=True)
+
+    @classmethod
+    def old_where_is_examiner(cls, user_obj):
+        """
+        Shortcut for :meth:`published_where_is_examiner` with
+        ``active=False``.
+        """
+        return cls.published_where_is_examiner(user_obj, active=False)
 
 
 class SaveInterface(object):
@@ -540,7 +610,7 @@ class Period(models.Model, BaseNode):
         now = datetime.now()
         return self.start_time < now and self.end_time > now
 
-class Assignment(models.Model, BaseNode):
+class Assignment(models.Model, BaseNode, AbstractIsExaminer):
     """
 
     .. attribute:: parentnode
@@ -735,29 +805,7 @@ class Assignment(models.Model, BaseNode):
 
 
     @classmethod
-    def where_is_examiner(cls, user_obj):
-        """ Get all assignments where the given ``user_obj`` is examiner on one
-        of its assignment groups.
-
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Assignment.objects.filter(
-            assignmentgroups__examiners=user_obj
-            ).distinct()
-
-
-    @classmethod
     def q_published(cls, old=True, active=True):
-        """
-        Return a django.models.Q object which matches assignments
-        where :attr:`publishing_time` is in the future.
-
-        :param old: Include assignments where :attr:`Period.end_time`
-            is in the past?
-        :param active: Include assignments where :attr:`Period.end_time`
-            is in the future?
-        """
         now = datetime.now()
         q = Q(publishing_time__lt = now)
         if not active:
@@ -768,47 +816,7 @@ class Assignment(models.Model, BaseNode):
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        """
-        Return a django.models.Q object which matches assignments
-        where the given user is examiner.
-        """
         return Q(assignmentgroups__examiners=user_obj)
-
-    @classmethod
-    def published_where_is_examiner(cls, user_obj, old=True, active=True):
-        """
-        Get all :ref:`published <assignment-classifications>`
-        assignments where the given ``user_obj`` is examiner on one of its
-        assignment groups. Combines :meth:`q_is_examiner` and
-        :meth:`q_published`.
-
-        :param user_obj: :meth:`q_is_examiner`.
-        :param old: :meth:`q_published`.
-        :param active: :meth:`q_published`.
-        :return: A django.db.models.query.QuerySet with duplicate
-            assignments eliminated.
-        """
-        return Assignment.objects.filter(
-                cls.q_published(old=old, active=active) &
-                cls.q_is_examiner(user_obj)
-                ).distinct()
-
-    @classmethod
-    def active_where_is_examiner(cls, user_obj):
-        """
-        Shortcut for :meth:`published_where_is_examiner` with
-        ``old=False``.
-        """
-        return cls.published_where_is_examiner(user_obj, old=False,
-                active=True)
-
-    @classmethod
-    def old_where_is_examiner(cls, user_obj):
-        """
-        Shortcut for :meth:`published_where_is_examiner` with
-        ``active=False``.
-        """
-        return cls.published_where_is_examiner(user_obj, active=False)
 
 
     @classmethod
@@ -939,7 +947,7 @@ class Candidate(models.Model):
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
-class AssignmentGroup(models.Model, AbstractIsAdmin):
+class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     """
     Represents a student or a group of students. 
 
@@ -1108,27 +1116,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
         return Q(candidates__student=user_obj)
 
     @classmethod
-    def q_published(cls, old=True, active=True):
-        """
-        Return a django.models.Q object which matches assignmentgroups
-        where :attr:`Assignment.publishing_time` is in the future.
-
-        :param old: Include assignments where :attr:`Period.end_time`
-            is in the past?
-        :param active: Include assignments where :attr:`Period.end_time`
-            is in the future?
-        
-        .. seealso:: :meth:`Assignment.q_published`
-        """
-        now = datetime.now()
-        q = Q(parentnode__publishing_time__lt = now)
-        if not active:
-            q &= ~Q(parentnode__parentnode__end_time__gt = now)
-        if not old:
-            q &= ~Q(parentnode__parentnode__end_time__lt = now)
-        return q
-
-    @classmethod
     def where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
@@ -1175,57 +1162,29 @@ class AssignmentGroup(models.Model, AbstractIsAdmin):
 
 
     @classmethod
+    def q_published(cls, old=True, active=True):
+        """
+        Return a django.models.Q object which matches assignmentgroups
+        where :attr:`Assignment.publishing_time` is in the future.
+
+        :param old: Include assignments where :attr:`Period.end_time`
+            is in the past?
+        :param active: Include assignments where :attr:`Period.end_time`
+            is in the future?
+        
+        .. seealso:: :meth:`Assignment.q_published`
+        """
+        now = datetime.now()
+        q = Q(parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(parentnode__parentnode__end_time__gt = now)
+        if not old:
+            q &= ~Q(parentnode__parentnode__end_time__lt = now)
+        return q
+
+    @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(examiners=user_obj)
-
-    @classmethod
-    def where_is_examiner(cls, user_obj):
-        """ Returns a QuerySet matching all AssignmentGroups where the
-        given user is examiner.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return AssignmentGroup.objects.filter(cls.q_is_examiner(user_obj))
-
-    @classmethod
-    def published_where_is_examiner(cls, user_obj, old=True, active=True):
-        """ Returns a QuerySet matching all :ref:`published
-        <assignment-classifications>` assignment groups where the given user
-        is examiner.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return AssignmentGroup.objects.filter(
-                cls.q_is_examiner(user_obj) &
-                cls.q_published(old=old, active=active))
-
-    @classmethod
-    def active_where_is_examiner(cls, user_obj):
-        """ Returns a QuerySet matching all :ref:`active
-        <assignment-classifications>` assignment groups where the given user
-        is examiner.
-
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        now = datetime.now()
-        return cls.published_where_is_examiner(user_obj).filter(
-                parentnode__parentnode__end_time__gt = now)
-    
-    @classmethod
-    def old_where_is_examiner(cls, user_obj):
-        """ Returns a QuerySet matching all :ref:`old
-        <assignment-classifications>` assignment groups where the given user
-        is examiner.
-
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        now = datetime.now()
-        return cls.where_is_examiner(user_obj).filter(
-                parentnode__parentnode__end_time__lt = now)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
