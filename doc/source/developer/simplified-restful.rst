@@ -14,6 +14,13 @@ HTTP status codes
     The request was succesful. The requested data is returned.
 400 Bad Request
     A parameter is invalid. The data contains an error message.
+401 Unauthorized
+    Authorization required.
+403 Forbidden
+    Not authorized to access this page.
+404 Not found
+    Resource not found at the given url.
+
 
 /examiner/
 #####################################################################
