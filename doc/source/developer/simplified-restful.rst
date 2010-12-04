@@ -29,7 +29,7 @@ All urls in the /examiner/ path work on data where the authenticated user is
 examiner.
 
 
-/examiner/assignments/
+assignments/
 =====================================================================
 
 .. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, search="", longnamefields=0, pointhandlingfields=0)
@@ -71,7 +71,7 @@ examiner.
     :return: The requested assignments if all is OK.
 
 
-/examiner/assignments/{assignment-id}/
+groups/{assignment-id}/
 =====================================================================
 
 .. function:: GET(count=50, start=0, orderby="id", details=0, search="")
@@ -98,7 +98,7 @@ examiner.
     :return: The requested groups if all is OK.
 
 
-/examiner/assignments/{assignment-id}/{group-id}/
+group/{group-id}
 =====================================================================
 
 .. function:: GET()
@@ -106,7 +106,7 @@ examiner.
     Get all available information about the given group (not about any deliveries).
 
 
-/examiner/assignments/{assignment-id}/{group-id}/deliveries/
+deliveries/{group-id}/
 =========================================================================
 
 .. function:: GET()
@@ -114,7 +114,7 @@ examiner.
     List all deliveries by this group.
 
 
-/examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/
+delivery/{delivery-id}
 ==========================================================================
 
 .. function:: GET()
@@ -132,7 +132,7 @@ examiner.
     Clear the feedback on the delivery.
 
 
-/examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/
+files/{delivery-id}/
 ================================================================================
 
 .. function:: GET()
@@ -140,7 +140,7 @@ examiner.
     List all files in a delivery.
 
 
-/examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/{filename}
+download-file/{file-id}
 ===================================================================================================
 
 .. function:: GET()
@@ -148,19 +148,17 @@ examiner.
     Download the requested file.
 
 
-/examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/{filename}/view
-===============================================================================================
-
-.. function:: GET()
-
-    View the requested file. This URL is not suited for all content-types, but
-    in some, like HTML, this should give a preview of the file instead of
-    offering a download.
-
-
-/examiner/assignments/{assignment-id}/{group-id}/deliveries/{delivery-id}/files/{filename}/browse
+list-filearchive/{file-id}
 =================================================================================================
 
 .. function:: GET()
 
     List the contents of the file, if it is a supported archive format.
+
+
+download-filearchive-file/{file-id}/path
+=================================================================================================
+
+.. function:: GET()
+
+    Download a single file from within a supported archive format.
