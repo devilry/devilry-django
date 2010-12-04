@@ -67,8 +67,8 @@ class AbstractIsExaminer(object):
     @classmethod
     def q_published(cls, old=True, active=True):
         """
-        Return a django.models.Q object which matches assignments
-        where :attr:`publishing_time` is in the future.
+        Return a django.models.Q object which matches all items of this type
+        where :attr:`Assignment.publishing_time` is in the future.
 
         :param old: Include assignments where :attr:`Period.end_time`
             is in the past?
@@ -89,8 +89,8 @@ class AbstractIsExaminer(object):
 
     @classmethod
     def where_is_examiner(cls, user_obj):
-        """ Get all assignments where the given ``user_obj`` is examiner on one
-        of its assignment groups.
+        """ Get all items of this type where the given ``user_obj`` is
+        examiner on one of the assignment groups.
 
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
@@ -102,10 +102,9 @@ class AbstractIsExaminer(object):
     @classmethod
     def published_where_is_examiner(cls, user_obj, old=True, active=True):
         """
-        Get all :ref:`published <assignment-classifications>`
-        assignments where the given ``user_obj`` is examiner on one of its
-        assignment groups. Combines :meth:`q_is_examiner` and
-        :meth:`q_published`.
+        Get all published <assignment-classifications>` items of this type
+        where the given ``user_obj`` is examiner on one of the assignment
+        groups. Combines :meth:`q_is_examiner` and :meth:`q_published`.
 
         :param user_obj: :meth:`q_is_examiner`.
         :param old: :meth:`q_published`.
@@ -813,7 +812,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer):
         now = datetime.now()
         q = Q(publishing_time__lt = now)
         if not active:
-            q &= ~Q(parentnode__end_time__gt = now)
+            q &= ~Q(parentnode__end_time__gte = now)
         if not old:
             q &= ~Q(parentnode__end_time__lt = now)
         return q
@@ -1167,21 +1166,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        """
-        Return a django.models.Q object which matches assignmentgroups
-        where :attr:`Assignment.publishing_time` is in the future.
-
-        :param old: Include assignments where :attr:`Period.end_time`
-            is in the past?
-        :param active: Include assignments where :attr:`Period.end_time`
-            is in the future?
-        
-        .. seealso:: :meth:`Assignment.q_published`
-        """
         now = datetime.now()
         q = Q(parentnode__publishing_time__lt = now)
         if not active:
-            q &= ~Q(parentnode__parentnode__end_time__gt = now)
+            q &= ~Q(parentnode__parentnode__end_time__gte = now)
         if not old:
             q &= ~Q(parentnode__parentnode__end_time__lt = now)
         return q

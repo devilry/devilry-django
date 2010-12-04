@@ -37,12 +37,17 @@ examiner.
 
     For documentation on the fields, see :class:`devilry.core.models.Assignment`.
 
-    :param count: Number of results.
-    :param start: Offset where the result should start (If start is 10 and
+    :param count:
+        Number of results.
+    :param start:
+        Offset where the result should start (If start is 10 and
         count is 30, results 10 to 40 is returned, including both ends).
-    :param old: Include assignments from old (not active) periods?
-    :param active: Include assignments from old (not active) periods?
-    :param orderby: Sort the result by this field. Must be one of:
+    :param old:
+        Include assignments from old (not active) periods?
+    :param active:
+        Include assignments from old (not active) periods?
+    :param orderby:
+        Sort the result by this field. Must be one of:
         *id*, *short_name*, *long_name*, *id*, *publishing_time*, *pointscale*,
         *autoscale*, *maxpoints*, *attempts* or *must_pass*. See
         :class:`devilry.core.models.Assignment` for documentation on each of
@@ -50,7 +55,8 @@ examiner.
     :param search: A query to limit the results.
     :param longnamefields: Include the *long_name* field of assignment, period and
         subject for each assignment in the result?
-    :param pointhandlingfields: Include the *grade_plugin*, *pointscale*, *autoscale*,
+    :param pointhandlingfields:
+        Include the *grade_plugin*, *pointscale*, *autoscale*,
         *maxpoints*, *attempts*, and *must_pass* fields for each assignment in
         the result? The *grade_plugin* field contains the (human readable and
         translated) label instead of the grade plugin key.
