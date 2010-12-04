@@ -182,3 +182,12 @@ test:
 
 html-testreport: test
 	coverage html
+
+###########################################################
+# Doc
+###########################################################
+
+htmldoc:
+	make -C ../doc/ html
+cleanhtmldoc:
+	make -C ../doc/ clean
