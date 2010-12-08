@@ -5,7 +5,7 @@ from devilry.core.models import Assignment
 from devilry.simplified.examiner import Assignments, Groups
 
 
-class TestListAssignments(TestCase):
+class TestAssignments(TestCase):
     fixtures = ["tests/simplified/data.json"]
 
     def test_get(self):
@@ -37,7 +37,7 @@ class TestListAssignments(TestCase):
 
 
 
-class TestListGroups(TestCase):
+class TestGroups(TestCase):
     fixtures = ["tests/simplified/data.json"]
 
     def test_get(self):
