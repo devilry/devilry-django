@@ -9,6 +9,8 @@ from errors import InvalidRequestData
 import fields
 
 
+__all__ = ["Assignments", "Groups"]
+
 
 class Assignments(object):
     """

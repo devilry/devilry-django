@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from devilry.core.models import Assignment
-from devilry.simplified.examiner import *
+from devilry.simplified.examiner import Assignments, Groups
 
 
 class TestListAssignments(TestCase):
@@ -44,22 +44,22 @@ class TestListGroups(TestCase):
         examiner0 = User.objects.get(username="examiner0")
         assignment = Assignment.published_where_is_examiner(examiner0)[0]
 
-        qry = ListGroups.get(examiner0, assignment.id,
+        qry = Groups.get(examiner0, assignment.id,
                 orderby=["-id"], count=2)
         self.assertEquals(assignment.id, qry[0].parentnode.id)
         self.assertTrue(qry[0].id > qry[1].id)
         self.assertEquals(qry.count(), 2)
 
-        qry = ListGroups.get(examiner0, assignment.id,
+        qry = Groups.get(examiner0, assignment.id,
                 search="student0")
         self.assertEquals(qry.count(), 1)
-        qry = ListGroups.get(examiner0, assignment.id,
+        qry = Groups.get(examiner0, assignment.id,
                 search="thisisatest")
         self.assertEquals(qry.count(), 0)
 
-        g = ListGroups.get(examiner0, assignment.id)[0]
+        g = Groups.get(examiner0, assignment.id)[0]
         g.name = "thisisatest"
         g.save()
-        qry = ListGroups.get(examiner0, assignment.id,
+        qry = Groups.get(examiner0, assignment.id,
                 search="thisisatest")
         self.assertEquals(qry.count(), 1)
