@@ -26,7 +26,7 @@ class TestAssignments(TestCase):
     def test_getdata_to_kwargs(self):
         from ..errors import InvalidRequestData
         try:
-            kw = Assignments.getdata_to_kwargs({})
+            kw = Assignments._getdata_to_kwargs({})
         except InvalidRequestData, e:
             print e
         self.assertEquals(kw, dict(

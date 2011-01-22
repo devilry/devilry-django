@@ -88,7 +88,13 @@ class Assignments(object):
 
 
     @classmethod
-    def getdata_to_kwargs(cls, data):
+    def _getdata_to_kwargs(cls, data):
+        """
+        Converts the ``data`` to a validated :class:`GetForm`.
+
+        Throws :class:`errors.InvalidRequestData` if the form does not
+        validate.
+        """
         form = cls.GetForm(data)
         if form.is_valid():
             return form.cleaned_data
@@ -104,7 +110,7 @@ class Assignments(object):
         Throws :class:`errors.InvalidRequestData` if any parameters in the
         request data is ivalid.
         """
-        return cls.get(**cls.getdata_to_kwargs(request.GET))
+        return cls.get(**cls._getdata_to_kwargs(request.GET))
 
 
 class Groups(object):
