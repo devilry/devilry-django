@@ -9,7 +9,10 @@ class GroupDeliveriesByDeadline():
         print "numdeadlines:", numdeadlines
 
         for d in group.deliveries.all():
-            print "D:", d.deadline_tag
+            print "D1:", d.deadline_tag
+
+        for d in deadlines:
+            print "D2:", d
         
         if numdeadlines > 0:
             deliveries = group.deliveries.filter(
@@ -21,17 +24,22 @@ class GroupDeliveriesByDeadline():
 
             # Within a deadline
             #self.within_a_deadline.append((deadlines[0], deliveries))
-            previous = deadlines[0].deadline
+            #previous = deadlines[0].deadline
             for d in deadlines[:]:
                 deliveries = group.deliveries.filter(
                         deadline_tag = d).order_by(
                                 "-time_of_delivery")
                 self.within_a_deadline.insert(0, (d, deliveries))
-                previous = d.deadline
+                #previous = d.deadline
 
             # After last deadline
+            print "deadlines[numdeadlines - 1]:", deadlines[numdeadlines - 1]
+            
             self.after_last_deadline = group.deliveries.filter(
                     time_of_delivery__gt=deadlines[numdeadlines - 1].deadline)
+
+            print "self.after_last_deadline:", self.after_last_deadline
+            
         else:
             self.ungrouped_deliveries = group.deliveries.order_by(
                     'time_of_delivery')

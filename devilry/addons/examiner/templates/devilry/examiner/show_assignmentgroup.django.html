@@ -111,7 +111,7 @@ group in the table to the right.{% endblocktrans %}</p>
 <p>{% blocktrans %}In the <em>deliveries section</em> you will find all deliveries by the
 group. Each delivery has a number starting with <em>1</em> and counting up for
 each new delivery, making the highest number the latest delivery. Each delivery
-also have a time of delivery (YYYY-MM-DD hh:mm:ss). You may create feedback on
+also has a time of delivery (YYYY-MM-DD hh:mm:ss). You may create feedback on
 as many deliveries as you like. The grade is determined from the latest
 delivery with published feeback.{% endblocktrans %}</p>
 
@@ -157,22 +157,21 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
   </p>
 {% endif %}
 
-
-
 {% if assignment_group.get_number_of_deliveries > 0 %}
-<h2>{% trans "Deliveries" %}</h2>
+  <h2>{% trans "Deliveries" %}</h2>
 
-{% if after_deadline %}
-{% with "yes" as after_last_deadline_msg %}
-<div class='deadline-box deadline-box-after'>
-  <h3>{% trans "After last deadline" %}</h3>
-  <ul class="deliverylist">
-    {% for delivery in after_deadline %}
-      {% include "devilry/examiner/include/deliverylisting.django.html" %}
-    {% endfor %}
-  </ul>
-</div>
-{% endwith %}
+  {% if after_deadline %}
+    {% with "yes" as after_last_deadline_msg %}
+    <div class='deadline-box deadline-box-after'>
+      <h3>{% trans "After last deadline" %}</h3>
+      <ul class="deliverylist">
+        {% for delivery in after_deadline %}
+          {% include "devilry/examiner/include/deliverylisting.django.html" %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endwith %}
+  {% endif %}
 {% endif %}
 
 {% for deadline, deliveries in within_a_deadline %}
@@ -185,7 +184,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
   </div>
   <h3>
     {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
-      {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
+      {% blocktrans %} Deadline {{ deadline }}{% endblocktrans %}
     {% endwith %}
   </h3>
   {% if deadline.text %}
@@ -195,7 +194,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
   </div>
   {% endif %}
   <div>
-    {% if not  deliveries %}
+    {% if not deliveries %}
       <p class='unimportant'>
         {% trans "No deliveries on this deadline" %}
       </p>
@@ -210,7 +209,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 </div>
 {% endfor %}
 
-{% endif %}
+
 
 
 {% if ungrouped_deliveries %} 
