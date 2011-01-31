@@ -1492,7 +1492,7 @@ class Delivery(models.Model):
     
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
-    deadline_tag = models.ForeignKey(Deadline, blank=True, null=True)
+    deadline_tag = models.ForeignKey(Deadline, blank=True, null=True, on_delete=models.SET_NULL)
     after_deadline = models.BooleanField(default=False)
     number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
@@ -1540,12 +1540,12 @@ class Delivery(models.Model):
         
         # Find correct deadline and tag the delivery 
         last_deadline = None
-        for tmp in assignment_group.deadlines.all():
+        for tmp in assignment_group.deadlines.all().order_by('deadline'):
             last_deadline = tmp
             if d.time_of_delivery < tmp.deadline:
                 d.deadline_tag = tmp
                 break
-        # Delivered too late
+        # Delivered too late, so tag with 'after_deadline'
         if d.deadline_tag == None and not last_deadline == None:
             d.deadline_tag = last_deadline
             d.after_deadline = True
