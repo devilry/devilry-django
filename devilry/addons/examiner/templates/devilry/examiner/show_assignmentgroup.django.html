@@ -161,18 +161,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 
 {% if assignment_group.get_number_of_deliveries > 0 %}
 <h2>{% trans "Deliveries" %}</h2>
-{% endif %}
 
-{% if ungrouped_deliveries %} 
-<div class='deadline-box'>
-  <h3>{% trans "Deliveries" %}</h3>
-  <ul class="deliverylist">
-    {% for delivery in ungrouped_deliveries %}
-    {% include "devilry/examiner/include/deliverylisting.django.html" %}
-    {% endfor %}
-  </ul>
-</div>
-{% else %}
 {% if after_deadline %}
 {% with "yes" as after_last_deadline_msg %}
 <div class='deadline-box deadline-box-after'>
@@ -223,5 +212,16 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
 
 {% endif %}
 
+
+{% if ungrouped_deliveries %} 
+<div class='deadline-box'>
+  <h3>{% trans "Deliveries" %}</h3>
+  <ul class="deliverylist">
+    {% for delivery in ungrouped_deliveries %}
+    {% include "devilry/examiner/include/deliverylisting.django.html" %}
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 
 {% endblock %}

@@ -53,6 +53,7 @@
     <table class='horizontal_ordered_table'>
     <tr>
       <th>Time</th>
+	  <th>Deadline</th>
       <th>Delivered by</th>
       <th>Status</th>
       <th>Grade</th>
@@ -62,6 +63,7 @@
     {% for delivery in assignment_group.deliveries.all %}
     <tr>
       <td> {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }} </td>
+	  <td> {{ delivery.deadline_tag }} </td>
       <td> {{ delivery.delivered_by }} </td>
       <td>
         {{ delivery|student_status }}

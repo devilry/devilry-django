@@ -242,6 +242,10 @@ def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
     messages.load(request)
     
     dg = GroupDeliveriesByDeadline(assignment_group)
+    print "dg.after_last_deadline:", len(dg.after_last_deadline)
+    print "dg.within_a_deadline:", len(dg.within_a_deadline)
+    print "dg.ungrouped_deliveries:", len(dg.ungrouped_deliveries)
+    
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,

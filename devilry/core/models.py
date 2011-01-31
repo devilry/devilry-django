@@ -1031,7 +1031,7 @@ class AssignmentGroup(models.Model, CommonInterface):
     status_mapping_student = (
         status_mapping[0],
         status_mapping[1],
-        status_mapping[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping[1], # "not published" means not "not corrected" is displayed to the student
         _("Corrected"),
     )
     status_mapping_cssclass = (
@@ -1043,7 +1043,7 @@ class AssignmentGroup(models.Model, CommonInterface):
     status_mapping_student_cssclass = (
         status_mapping_cssclass[0],
         status_mapping_cssclass[1],
-        status_mapping_cssclass[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping_cssclass[1], # "not published" means "not corrected" is displayed to the student
         status_mapping_cssclass[3],
     )
     NO_DELIVERIES = 0
@@ -1454,6 +1454,14 @@ class Delivery(models.Model):
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
 
+    .. attribute:: deadline_tag
+
+       Adjango.db.models.ForeignKey_ pointing to the Deadline for this Delivery.
+
+    .. attribute:: after_deadline
+
+       A django.db.models.BooleanField_ denoting if the delivery was after the last deadline
+
     .. attribute:: number
 
         A django.db.models.PositiveIntegerField_ with the delivery-number
@@ -1484,6 +1492,8 @@ class Delivery(models.Model):
     
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
+    deadline_tag = models.ForeignKey(Deadline, blank=True, null=True)
+    after_deadline = models.BooleanField(default=False)
     number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
@@ -1527,6 +1537,19 @@ class Delivery(models.Model):
         d.time_of_delivery = datetime.now()
         d.delivered_by = user_obj
         d.successful = False
+        
+        # Find correct deadline and tag the delivery 
+        last_deadline = None
+        for tmp in assignment_group.deadlines.all():
+            last_deadline = tmp
+            if d.time_of_delivery < tmp.deadline:
+                d.deadline_tag = tmp
+                break
+        # Delivered too late
+        if d.deadline_tag == None and not last_deadline == None:
+            d.deadline_tag = last_deadline
+            d.after_deadline = True
+        
         d.save()
         return d
 
@@ -1628,7 +1651,7 @@ class Delivery(models.Model):
                             Max('number'))
             self.number = (m['number__max'] or 0) + 1
         super(Delivery, self).save(*args, **kwargs)
-
+       
     def __unicode__(self):
         return u'%s - %s (%s)' % (self.assignment_group, self.number,
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
