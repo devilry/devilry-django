@@ -16,6 +16,7 @@
 {% endblock %}
 
 {% block main %}
+{% if assignment_group.status != STATUS_NO_DELIVERIES %}
   <div class='info-message'>
     {% if assignment_group.status == STATUS_CORRECTED_AND_PUBLISHED %}
       {% blocktrans with assignment_group.get_grade_as_short_string|strong as grade and assignment_group|student_status|lower as status_published %}
@@ -25,8 +26,7 @@
       {% with assignment_group|student_status|lower as status_not_corrected %}
         {% if assignment_group.get_active_deadline.is_old %}
           {% blocktrans %}
-            The deadline on this assignment has expired, but your examiner has
-            {{ status_not_corrected }} it yet.
+            The deadline on this assignment has expired.
           {% endblocktrans %}
         {% else %}
           {% blocktrans %}
@@ -36,9 +36,10 @@
         {% endif %}
       {% endwith %}
     {% endif %}
-  </div>
-  
-  <h2>{% trans "Deliveries" %}</h2>
+   </div>
+ {% endif %}
+ 
+ <h2>{% trans "Deliveries" %}</h2>
   <p class="unimportant">
     {% blocktrans %}
       Current deliveries, with the latest delivery first.
