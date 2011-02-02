@@ -1,6 +1,7 @@
 {% load i18n %}
 
 <dl class="deliveries_by_deadline">
+{% comment %}
   {% if deliveries_by_deadline.after_last_deadline %}
   <dt class="deadlineheader">{% trans "After last deadline" %}</dt>
   <dd>
@@ -9,12 +10,13 @@
     {% endwith %}
   </dd>
   {% endif %}
-  
+{% endcomment %}  
+
   {% for deadline, deliveries in deliveries_by_deadline.within_a_deadline %}
   
-<dt class="deadlineheader">
+  <dt class="deadlineheader">
     {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
-    {% blocktrans %}Before {{ deadline }}{% endblocktrans %}
+    {% blocktrans %} Deadline {{ deadline }}{% endblocktrans %}
     {% endwith %}
   </dt>
   <dd>
@@ -22,12 +24,22 @@
   </dd>
   {% endfor %}
   
-  Test3
-
   {% if deliveries_by_deadline.ungrouped_deliveries %}
-    {% with deliveries_by_deadline.ungrouped_deliveries as deliveries %}
-      {% include "devilry/examiner/include/deliverylisting.django.html" %}
+<dt class="deadlineheader">
+    {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
+    {% blocktrans %} Deliveries {% endblocktrans %}
     {% endwith %}
+  </dt>
+  <dd>
+    {% with deliveries_by_deadline.ungrouped_deliveries as deliveries %}
+    {% for delivery in deliveries %}
+	
+	<ul class="deliverylist">
+	  {% include "devilry/examiner/include/deliverylisting.django.html" %}
+	</ul>
+	
+    {% endfor %}
+    {% endwith %}
+  </dd>
   {% endif %}
-  
 </dl>
