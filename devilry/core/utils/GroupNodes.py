@@ -27,7 +27,7 @@ def group_nodes(node_list, tree_height):
 
 def _make_node_list(child_node, list_count):
     """
-    Creates a list of GroupNodes. This is called by group_nodes before
+    Creates a list of GroupNodes. This is used by the method group_nodes before
     creating the tree of GroupNodes.
     """
     parent = GroupNode(child_node.node.parentnode) 
