@@ -1,0 +1,36 @@
+{% extends "devilry/examiner/dashboard/viewbase.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block heading %}{% trans "Not closed" %}{% endblock %}
+
+{% block help %}
+{{ groupcount }} of the {{ total }}
+groups where you are examiner with status "Corrected and published" and the 
+groups have not been closed. This implies that a new deadline has been given 
+(or should be given) and that the student should make a new delivery. 
+If the student shouldn't make any more deliveries, the group should be closed. 
+{% endblock %}
+
+
+{% block custom_groupinfo %}
+  <div class="unimportant">
+    Last delivery: <em>{{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}</em>
+  </div>
+  <div>
+    <a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
+      {% trans "Show delivery/Create feedback" %}
+    </a>
+  </div>
+{% endblock %}
+
+
+{% block footer %}
+  {% with "not_closed" as ident %}
+    {% with session.dashboard_examiner_not_closed_orderdesc as orderdesc %}
+      {% with session.dashboard_examiner_not_closed_showall as showall %}
+        {% include "devilry/examiner/dashboard/footerbuttons.django.html" %}
+      {% endwith %}
+    {% endwith %}
+  {% endwith %}
+{% endblock %}
