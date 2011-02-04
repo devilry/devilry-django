@@ -10,7 +10,7 @@ def group_assignments(assignment_list):
     """
     Groups a list of assignments.
     """
-    return group_nodes(assignments, 1)
+    return group_nodes(assignment_list, 1)
 
 def group_nodes(node_list, tree_height):
     """
