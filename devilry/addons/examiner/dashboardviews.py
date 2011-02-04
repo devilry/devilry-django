@@ -47,12 +47,12 @@ class ExaminerImportantItem(object):
         return self.total
 
     def render(self, request):
-        from devilry.core.utils.GroupNodes import group_nodes
+        from devilry.core.utils.GroupNodes import group_assignmentgroups
         if self.total > 0:
-            assignments = group_nodes(self.groups, 0)
+            subjects = group_assignmentgroups(self.groups)
             return render_to_string(
                 "devilry/examiner/dashboard/%s.django.html" % self.sessionid, {
-                    "assignments": assignments,
+                    "subjects": subjects,
                     "total": self.total,
                     "groupcount": self.groups.count()
                 }, context_instance=RequestContext(request))
@@ -83,15 +83,32 @@ class NotPublished(ExaminerImportantItem):
         not_published = self._handle_buttons(not_published)
         return not_published, not_published_count
 
+class CorrectedNotClosed(ExaminerImportantItem):
+    sessionid = "not_closed"
+    def filter(self):
+        groups = AssignmentGroup.active_where_is_examiner(self.request.user)
+        not_closed = groups.filter(
+                is_open=True,
+                status=AssignmentGroup.CORRECTED_AND_PUBLISHED)
+        not_closed = not_closed.annotate(
+                active_deadline=Max('deadlines__deadline'),
+                time_of_last_delivery=Max('deliveries__time_of_delivery'),
+                time_of_last_feedback=Max('deliveries__feedback__last_modified'))
+        not_closed = not_closed.order_by('-time_of_last_feedback')
+        not_closed_count = not_closed.count()
+        not_closed = self._handle_buttons(not_closed)
+        return not_closed, not_closed_count
 
 def examiner_important(request, *args, **kwargs):
     not_corrected = NotCorrected(request)
     not_published = NotPublished(request)
+    not_closed = CorrectedNotClosed(request)
     if len(not_corrected) == 0 and len(not_published) == 0:
         return None
     return render_to_string(
         'devilry/examiner/dashboard/examiner_important.django.html', {
             "items": [
                 not_corrected.render(request),
-                not_published.render(request)]
+                not_published.render(request),
+                not_closed.render(request)]
         }, context_instance=RequestContext(request))
