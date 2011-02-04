@@ -8,17 +8,20 @@
 </p>
 
 <div class="dashboard-grouplist">
-{% for assignment in assignments %}
-  <h3>
-    {{ assignment.node.parentnode.parentnode.short_name }}
-    - {{ assignment.node.parentnode.short_name }}
+{% for subject in subjects %}
+{% for period in subject %}
+{% for assignment in period %}
+<h3>
+    {{ subject.node.short_name }}
+    - {{ period.node.short_name }}
     -
     <a href="{% url devilry-examiner-list_assignmentgroups assignment.node.id %}">
       {{ assignment.node.short_name }}
     </a>
   </h3>
+
   <dl>
-    {% for groupnode in assignment.children %}
+    {% for groupnode in assignment %}
       {% with groupnode.node as group %}
         <dt>
           {% if group.name %}
@@ -38,7 +41,11 @@
       {% endwith %}
     {% endfor %}
   </dl>
+
 {% endfor %}
+{% endfor %}
+{% endfor %}
+
 </div>
 
 {% endblock %}
