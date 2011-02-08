@@ -1493,7 +1493,7 @@ class Delivery(models.Model):
     
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
-    deadline_tag = models.ForeignKey(Deadline, blank=True, null=True, on_delete=models.SET_NULL)
+    deadline_tag = models.ForeignKey(Deadline, blank=True, null=True, on_delete=models.SET_NULL, related_name='deliveries')
     after_deadline = models.BooleanField(default=False)
     number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
