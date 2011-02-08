@@ -235,21 +235,19 @@ def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
         return HttpResponseForbidden("Forbidden")
     _handle_is_admin(request, is_admin)
 
+    active_deadline = assignment_group.get_active_deadline()
+    
     show_deadline_hint = assignment_group.is_open and \
-        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
+        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED and \
+        active_deadline != None and len(active_deadline.deliveries.all()) == 0
 
     messages = UiMessages()
     messages.load(request)
-    
     dg = GroupDeliveriesByDeadline(assignment_group)
-    print "dg.after_last_deadline:", len(dg.after_last_deadline)
-    print "dg.within_a_deadline:", len(dg.within_a_deadline)
-    print "dg.ungrouped_deliveries:", len(dg.ungrouped_deliveries)
     
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
                 'assignment_group': assignment_group,
-                'after_deadline': dg.after_last_deadline,
                 'within_a_deadline': dg.within_a_deadline,
                 'ungrouped_deliveries': dg.ungrouped_deliveries,
                 'show_deadline_hint': show_deadline_hint,
