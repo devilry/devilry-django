@@ -1381,9 +1381,11 @@ class AssignmentGroup(models.Model, CommonInterface):
         now = datetime.now()
         deadlines = self.deadlines.filter(deadline__gt=now).order_by('deadline')
         if len(deadlines) == 0:
-            return None
-        else:
-            return deadlines[0]
+            # Return the latest deadline (this will be the closest one in the past since the qry above failed)
+            deadlines = self.deadlines.order_by('-deadline')
+            if len(deadlines) == 0:
+                return None
+        return deadlines[0]
 
 
 class Deadline(models.Model):
