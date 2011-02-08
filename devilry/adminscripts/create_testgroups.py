@@ -203,6 +203,11 @@ if __name__ == "__main__":
 
     def create_example_deliveries_and_feedback(group, quality_percents,
             group_quality_percent, grade_maxpoints):
+
+        if group.get_active_deadline() == None:
+            logging.debug("Deadline does not exist!")
+            return
+
         deadline = group.get_active_deadline().deadline
         now = datetime.now()
         two_weeks_ago = now - timedelta(days=14)
