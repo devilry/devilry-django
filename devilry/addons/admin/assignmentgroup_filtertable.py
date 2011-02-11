@@ -287,17 +287,23 @@ class DeadlineForm(forms.ModelForm):
                 }
 
 
-def create_deadline_base(request, assignment_id, groups, checkbox_name):
+
+def can_manage_deadlines(assignment, user, groups):
+    if not assignment.can_save(user):
+        for group in groups:
+            if not group.is_examiner(user):
+                return False
+    return True
+
+
+def create_deadlines_base(request, assignment_id, groups, checkbox_name,
+        redirect_to, actionurl, template):
     if request.method != 'POST':
         return HttpResponseBadRequest()
 
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    isAdmin = assignment.can_save(request.user)
-
-    if not isAdmin:
-        for group in groups:
-            if not group.is_examiner(request.user):
-                return HttpResponseForbidden("Forbidden")
+    if not can_manage_deadlines(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
 
     datetimefullformat = '%Y-%m-%d %H:%M:%S'
     ids = [g.id for g in groups]
@@ -339,24 +345,25 @@ def create_deadline_base(request, assignment_id, groups, checkbox_name):
             messages.add_success(_('Deadlines created successfully.'))
             messages.save(request)
             return HttpResponseRedirect(reverse(
-                'devilry-admin-edit_assignment',
+                redirect_to,
                 args=[assignment_id]))
     else:
         deadlineform = DeadlineForm()
         selectform = DeadlineSelectForm()
-    return render_to_response('devilry/admin/create_deadline.django.html', {
+    return render_to_response(template, {
             'assignment': assignment,
             'deadlineform': deadlineform,
             'selectform': selectform,
+            'actionurl': reverse(actionurl, args=[str(assignment_id)]),
             'has_shared_deadlines': has_shared_deadlines,
             'groups': groups,
             'checkbox_name': checkbox_name
             }, context_instance=RequestContext(request))
 
 
-def clear_deadlines_base(request, assignment_id, groups):
+def clear_deadlines_base(request, assignment_id, groups, redirect_to):
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    if not assignment.can_save(request.user):
+    if not can_manage_deadlines(assignment, request.user, groups):
         return HttpResponseForbidden("Forbidden")
 
     if request.method == 'POST':
@@ -371,7 +378,7 @@ def clear_deadlines_base(request, assignment_id, groups):
                 {'groups': ', '.join([str(g) for g in groups])}))
         messages.save(request)
         return HttpResponseRedirect(reverse(
-            'devilry-admin-edit_assignment',
+            redirect_to,
             args=[assignment_id]))
     else:
         return HttpResponseBadRequest()

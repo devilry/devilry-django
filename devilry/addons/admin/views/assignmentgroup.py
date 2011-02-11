@@ -23,7 +23,7 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
     AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
     FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
     FilterMissingCandidateId, FilterAfterDeadline,
-    create_deadline_base, clear_deadlines_base)
+    create_deadlines_base, clear_deadlines_base)
 from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
@@ -566,10 +566,14 @@ def download_assignment_collection(request, assignment_id, archive_type=None):
 @login_required
 def create_deadline(request, assignment_id):
     groups = AssignmentGroupsFilterTable.get_selected_groups(request)
-    return create_deadline_base(request, assignment_id, groups,
-            AssignmentGroupsFilterTable.get_checkbox_name())
+    return create_deadlines_base(request, assignment_id, groups,
+            AssignmentGroupsFilterTable.get_checkbox_name(),
+            'devilry-admin-edit_assignment',
+            'devilry-admin-create_deadline',
+            'devilry/admin/create_deadline.django.html')
 
 @login_required
 def clear_deadlines(request, assignment_id):
     groups = AssignmentGroupsFilterTable.get_selected_groups(request)
-    return clear_deadlines_base(request, assignment_id, groups)
+    return clear_deadlines_base(request, assignment_id, groups,
+            'devilry-admin-edit_assignment')

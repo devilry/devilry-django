@@ -15,7 +15,7 @@ from devilry.ui.filtertable import Columns, Col
 from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
-        FilterAfterDeadline)
+        FilterAfterDeadline, create_deadlines_base, clear_deadlines_base)
 from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
                                                     verify_groups_not_exceeding_max_file_size,
@@ -53,6 +53,13 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
                                'devilry-examiner-download_file_collection_as_zip'),
         AssignmentGroupsAction(_("Download deliveries as TAR"),
                                'devilry-examiner-download_file_collection_as_tar'),
+        AssignmentGroupsAction(_("Create/replace deadline"),
+            'devilry-examiner-create_deadlines'),
+        AssignmentGroupsAction(_("Clear deadlines"),
+            'devilry-examiner-clear_deadlines',
+            confirm_title=_("Confirm clear deadlines"),
+            confirm_message=_("Are you sure you want to clear "\
+                    "deadlines on the following groups?")),
     ]
     
 
@@ -306,4 +313,20 @@ def download_group_deliveries(request, delivery_id, archive_type=None):
                                      "deliveries from an assignment you"\
                                      "do not have access to.")
     return create_archive_from_assignmentgroups(request, group.parentnode, [group], archive_type)
-    
+
+
+
+@login_required
+def create_deadlines(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    return create_deadlines_base(request, assignment_id, groups,
+            AssignmentGroupsExaminerFilterTable.get_checkbox_name(),
+            'devilry-examiner-list_assignmentgroups',
+            'devilry-examiner-create_deadlines',
+            'devilry/examiner/create_deadlines.django.html')
+
+@login_required
+def clear_deadlines(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    return clear_deadlines_base(request, assignment_id, groups,
+            'devilry-examiner-list_assignmentgroups')

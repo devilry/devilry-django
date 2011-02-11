@@ -79,4 +79,11 @@ urlpatterns = patterns('devilry.addons.examiner',
         'views.edit_feedback',
         kwargs={"is_admin":True},
         name='devilry-examiner-edit-feedback-as-admin'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/create-deadlines$',
+        'views.create_deadlines',
+        name='devilry-examiner-create_deadlines'),
+    url(r'^assignments/(?P<assignment_id>\d+)/clear-deadlines$',
+        'views.clear_deadlines',
+        name='devilry-examiner-clear_deadlines'),
 )
