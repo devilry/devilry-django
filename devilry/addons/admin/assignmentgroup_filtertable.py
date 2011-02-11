@@ -40,6 +40,24 @@ class FilterStatus(Filter):
         return [0, 1, 2, 3]
 
 
+class FilterIsOpen(Filter):
+    title = _("Open?")
+
+    def get_labels(self, properties):
+        return [FilterLabel.DEFAULT,
+                FilterLabel(_("Yes")),
+                FilterLabel(_("No"))]
+
+    def filter(self, properties, dataset, selected):
+        i = selected[0]
+        if i == 1:
+            return dataset.filter(is_open=True)
+        elif i == 2:
+            return dataset.filter(is_open=False)
+        else:
+            return dataset
+
+
 class FilterIsPassingGrade(Filter):
     title = _("Is passing grade?")
 
@@ -246,6 +264,12 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         if 'scaled_points' in active_optional_cols:
             row.add_cell("%.2f/%d" % (group.scaled_points,
                 self.assignment.pointscale))
+        if 'isopen' in active_optional_cols:
+            if group.is_open:
+                is_open = _("yes")
+            else:
+                is_open = _("no")
+            row.add_cell(is_open)
         if 'grade' in active_optional_cols:
             row.add_cell(group.get_grade_as_short_string() or "")
         if 'status' in active_optional_cols:
@@ -288,7 +312,7 @@ class DeadlineForm(forms.ModelForm):
 
 
 
-def can_manage_deadlines(assignment, user, groups):
+def can_manage_groups(assignment, user, groups):
     if not assignment.can_save(user):
         for group in groups:
             if not group.is_examiner(user):
@@ -302,7 +326,7 @@ def create_deadlines_base(request, assignment_id, groups, checkbox_name,
         return HttpResponseBadRequest()
 
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    if not can_manage_deadlines(assignment, request.user, groups):
+    if not can_manage_groups(assignment, request.user, groups):
         return HttpResponseForbidden("Forbidden")
 
     datetimefullformat = '%Y-%m-%d %H:%M:%S'
@@ -363,7 +387,7 @@ def create_deadlines_base(request, assignment_id, groups, checkbox_name,
 
 def clear_deadlines_base(request, assignment_id, groups, redirect_to):
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    if not can_manage_deadlines(assignment, request.user, groups):
+    if not can_manage_groups(assignment, request.user, groups):
         return HttpResponseForbidden("Forbidden")
 
     if request.method == 'POST':
@@ -380,5 +404,26 @@ def clear_deadlines_base(request, assignment_id, groups, redirect_to):
         return HttpResponseRedirect(reverse(
             redirect_to,
             args=[assignment_id]))
+    else:
+        return HttpResponseBadRequest()
+
+
+
+def open_close_many_groups_base(request, assignment_id, groups, redirect_to,
+        is_open=False):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not can_manage_groups(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
+
+    if request.method == 'POST':
+        for g in groups:
+            g.is_open = is_open
+            g.save()
+        messages = UiMessages()
+        messages.add_success(
+                _('Groups successfully closed: %(groups)s.' %
+                {'groups': ', '.join([str(g) for g in groups])}))
+        messages.save(request)
+        return HttpResponseRedirect(redirect_to)
     else:
         return HttpResponseBadRequest()

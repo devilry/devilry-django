@@ -15,7 +15,8 @@ from devilry.ui.filtertable import Columns, Col
 from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
-        FilterAfterDeadline, create_deadlines_base, clear_deadlines_base)
+        FilterAfterDeadline, create_deadlines_base, clear_deadlines_base,
+        FilterIsOpen, open_close_many_groups_base)
 from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
                                                     verify_groups_not_exceeding_max_file_size,
@@ -60,8 +61,19 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
             confirm_title=_("Confirm clear deadlines"),
             confirm_message=_("Are you sure you want to clear "\
                     "deadlines on the following groups?")),
+
+        AssignmentGroupsAction(_("Close groups"),
+            'devilry-examiner-close_many_groups',
+            confirm_title=_("Confirm close groups"),
+            confirm_message=_("Are you sure you want to close "\
+                "the selected groups?")),
+        AssignmentGroupsAction(_("Open groups"),
+            'devilry-examiner-open_many_groups',
+            confirm_title=_("Confirm open groups"),
+            confirm_message=_("Are you sure you want to open "\
+                "the selected groups?")),
     ]
-    
+
 
     def __init__(self, request, assignment, assignmentgroups):
         self.assignmentgroups = assignmentgroups
@@ -71,6 +83,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     def get_filters(self):
         filters = [
             FilterStatus(),
+            FilterIsOpen(),
             FilterIsPassingGrade(),
             FilterAfterDeadline(),
         ]
@@ -93,6 +106,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
             Col('deliveries_count', "Deliveries", optional=True,
                 can_order=True),
             Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('isopen', "Open?", optional=True),
             Col('grade', "Grade", optional=True),
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
@@ -330,3 +344,20 @@ def clear_deadlines(request, assignment_id):
     groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
     return clear_deadlines_base(request, assignment_id, groups,
             'devilry-examiner-list_assignmentgroups')
+
+
+@login_required
+def close_many_groups(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-examiner-list_assignmentgroups',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=False)
+
+@login_required
+def open_many_groups(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-examiner-list_assignmentgroups',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=True)

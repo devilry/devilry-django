@@ -86,4 +86,11 @@ urlpatterns = patterns('devilry.addons.examiner',
     url(r'^assignments/(?P<assignment_id>\d+)/clear-deadlines$',
         'views.clear_deadlines',
         name='devilry-examiner-clear_deadlines'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/open-many-groups$',
+        'views.open_many_groups',
+        name='devilry-examiner-open_many_groups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/close_many_groups$',
+        'views.close_many_groups',
+        name='devilry-examiner-close_many_groups'),
 )

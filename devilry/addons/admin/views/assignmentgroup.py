@@ -23,7 +23,8 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
     AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
     FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
     FilterMissingCandidateId, FilterAfterDeadline,
-    create_deadlines_base, clear_deadlines_base)
+    create_deadlines_base, clear_deadlines_base,
+    FilterIsOpen, open_close_many_groups_base)
 from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
@@ -53,17 +54,28 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             AssignmentGroupsAction(_("Random distribute examiners"),
                                    'devilry-admin-random_dist_examiners'),
 
+            AssignmentGroupsAction(_("Close groups"),
+                'devilry-admin-close_many_groups',
+                confirm_title=_("Confirm close groups"),
+                confirm_message=_("Are you sure you want to close "\
+                    "the selected groups?")),
+            AssignmentGroupsAction(_("Open groups"),
+                'devilry-admin-open_many_groups',
+                confirm_title=_("Confirm open groups"),
+                confirm_message=_("Are you sure you want to open "\
+                    "the selected groups?")),
+
             AssignmentGroupsAction(_("Download deliveries as ZIP"),
                                'devilry-admin-download_assignment_collection_as_zip'),
             AssignmentGroupsAction(_("Download deliveries as TAR"),
                                'devilry-admin-download_assignment_collection_as_tar'),
         ]
     relatedactions = [
-            AssignmentGroupsAction(_("Create new"),
+            AssignmentGroupsAction(_("Create new group"),
                 "devilry-admin-create_assignmentgroup"),
-            AssignmentGroupsAction(_("Create many (advanced)"),
+            AssignmentGroupsAction(_("Create many groups (advanced)"),
                 "devilry-admin-create_assignmentgroups"),
-            AssignmentGroupsAction(_("Create by copy"),
+            AssignmentGroupsAction(_("Create groups by copy"),
                 "devilry-admin-copy_groups"),
             AssignmentGroupsAction(_("Examiner mode"),
                 "devilry-examiner-list_assignmentgroups")
@@ -72,6 +84,7 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     def get_filters(self):
         filters = [
             FilterStatus(),
+            FilterIsOpen(),
             FilterIsPassingGrade(),
             FilterExaminer(),
             FilterAfterDeadline(),
@@ -97,6 +110,7 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             Col('deliveries_count', "Deliveries", optional=True,
                 can_order=True),
             Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('isopen', "Open?", optional=True),
             Col('grade', "Grade", optional=True),
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
@@ -577,3 +591,20 @@ def clear_deadlines(request, assignment_id):
     groups = AssignmentGroupsFilterTable.get_selected_groups(request)
     return clear_deadlines_base(request, assignment_id, groups,
             'devilry-admin-edit_assignment')
+
+
+@login_required
+def close_many_groups(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-admin-edit_assignment',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=False)
+
+@login_required
+def open_many_groups(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-admin-edit_assignment',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=True)
