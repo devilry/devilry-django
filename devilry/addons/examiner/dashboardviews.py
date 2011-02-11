@@ -83,26 +83,9 @@ class NotPublished(ExaminerImportantItem):
         not_published = self._handle_buttons(not_published)
         return not_published, not_published_count
 
-class CorrectedNotClosed(ExaminerImportantItem):
-    sessionid = "not_closed"
-    def filter(self):
-        groups = AssignmentGroup.active_where_is_examiner(self.request.user)
-        not_closed = groups.filter(
-                is_open=True,
-                status=AssignmentGroup.CORRECTED_AND_PUBLISHED)
-        not_closed = not_closed.annotate(
-                active_deadline=Max('deadlines__deadline'),
-                time_of_last_delivery=Max('deliveries__time_of_delivery'),
-                time_of_last_feedback=Max('deliveries__feedback__last_modified'))
-        not_closed = not_closed.order_by('-time_of_last_feedback')
-        not_closed_count = not_closed.count()
-        not_closed = self._handle_buttons(not_closed)
-        return not_closed, not_closed_count
-
 def examiner_important(request, *args, **kwargs):
     not_corrected = NotCorrected(request)
     not_published = NotPublished(request)
-    not_closed = CorrectedNotClosed(request)
     if len(not_corrected) == 0 and len(not_published) == 0:
         return None
     return render_to_string(
@@ -110,5 +93,5 @@ def examiner_important(request, *args, **kwargs):
             "items": [
                 not_corrected.render(request),
                 not_published.render(request),
-                not_closed.render(request)]
+                ]
         }, context_instance=RequestContext(request))
