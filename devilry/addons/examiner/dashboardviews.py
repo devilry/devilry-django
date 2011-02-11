@@ -50,11 +50,15 @@ class ExaminerImportantItem(object):
         from devilry.core.utils.GroupNodes import group_assignmentgroups
         if self.total > 0:
             subjects = group_assignmentgroups(self.groups)
+            if isinstance(self.groups, list):
+                groupcount = len(self.groups)
+            else:
+                groupcount = self.groups.count()
             return render_to_string(
                 "devilry/examiner/dashboard/%s.django.html" % self.sessionid, {
                     "subjects": subjects,
                     "total": self.total,
-                    "groupcount": self.groups.count()
+                    "groupcount": groupcount
                 }, context_instance=RequestContext(request))
         return ""
 
@@ -97,7 +101,14 @@ class CorrectedNotClosed(ExaminerImportantItem):
         not_closed = not_closed.order_by('-time_of_last_feedback')
         not_closed_count = not_closed.count()
         not_closed = self._handle_buttons(not_closed)
-        return not_closed, not_closed_count
+
+        # TODO: Handle this with a query
+        groups = []
+        for group in not_closed.all():
+            if group.time_of_last_delivery > group.time_of_last_feedback:
+                groups.append(group)
+        #return not_closed, not_closed_count
+        return groups, len(groups)
 
 def examiner_important(request, *args, **kwargs):
     not_corrected = NotCorrected(request)
@@ -108,7 +119,7 @@ def examiner_important(request, *args, **kwargs):
     return render_to_string(
         'devilry/examiner/dashboard/examiner_important.django.html', {
             "items": [
+                not_closed.render(request),
                 not_corrected.render(request),
-                not_published.render(request),
-                not_closed.render(request)]
+                not_published.render(request)]
         }, context_instance=RequestContext(request))
