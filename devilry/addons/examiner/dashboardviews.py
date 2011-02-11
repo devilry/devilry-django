@@ -37,11 +37,15 @@ class ExaminerImportantItem(object):
             orderprefix = "-"
         groups = groups.order_by(
                 orderprefix + 'time_of_last_delivery')
+        return groups
+
+    def _handle_limit(self, groups):
         showall = self._querystring_to_sessionbool(
                 self.sessionprefix + "showall")
         if not showall:
             groups = groups[:3]
         return groups
+
 
     def __len__(self):
         return self.total
@@ -69,6 +73,7 @@ class NotCorrected(ExaminerImportantItem):
         not_corrected = filter_not_corrected(self.request.user)
         not_corrected_count = not_corrected.count()
         not_corrected = self._handle_buttons(not_corrected)
+        not_corrected = self._handle_limit(not_corrected)
         return not_corrected, not_corrected_count
 
 class NotPublished(ExaminerImportantItem):
@@ -85,6 +90,7 @@ class NotPublished(ExaminerImportantItem):
         not_published = not_published.order_by('-time_of_last_feedback')
         not_published_count = not_published.count()
         not_published = self._handle_buttons(not_published)
+        not_published = self._handle_limit(not_published)
         return not_published, not_published_count
 
 class CorrectedNotClosed(ExaminerImportantItem):
@@ -93,7 +99,7 @@ class CorrectedNotClosed(ExaminerImportantItem):
         groups = AssignmentGroup.active_where_is_examiner(self.request.user)
         not_closed = groups.filter(
                 is_open=True,
-                status=AssignmentGroup.CORRECTED_AND_PUBLISHED)
+                status__gt=AssignmentGroup.NO_DELIVERIES)
         not_closed = not_closed.annotate(
                 active_deadline=Max('deadlines__deadline'),
                 time_of_last_delivery=Max('deliveries__time_of_delivery'),
@@ -105,9 +111,10 @@ class CorrectedNotClosed(ExaminerImportantItem):
         # TODO: Handle this with a query
         groups = []
         for group in not_closed.all():
-            if group.time_of_last_delivery > group.time_of_last_feedback:
-                groups.append(group)
-        #return not_closed, not_closed_count
+            if group.time_of_last_feedback:
+                if group.time_of_last_delivery > group.time_of_last_feedback:
+                    groups.append(group)
+        not_closed = self._handle_limit(not_closed)
         return groups, len(groups)
 
 def examiner_important(request, *args, **kwargs):
