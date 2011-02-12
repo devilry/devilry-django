@@ -15,13 +15,13 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, \
 from django.shortcuts import render_to_response, get_object_or_404
 
 from devilry.ui.messages import UiMessages
-from devilry.ui.widgets import DevilryDateTimeWidget, \
-    DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
+from devilry.ui.widgets import DevilryDateTimeWidget
 from devilry.addons.quickdash import defaults
 from devilry.core.models import (AssignmentGroup, Candidate, Assignment,
         Deadline)
 from devilry.ui.filtertable import (Filter, Action, FilterTable,
         Row, FilterLabel)
+from devilry.ui.examiner import post_publish_feedback
 
 
 class FilterStatus(Filter):
@@ -423,6 +423,29 @@ def open_close_many_groups_base(request, assignment_id, groups, redirect_to,
         messages.add_success(
                 _('Groups successfully closed: %(groups)s.' %
                 {'groups': ', '.join([str(g) for g in groups])}))
+        messages.save(request)
+        return HttpResponseRedirect(redirect_to)
+    else:
+        return HttpResponseBadRequest()
+
+
+def publish_many_groups_base(request, assignment_id, groups, redirect_to):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not can_manage_groups(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
+
+    if request.method == 'POST':
+        messages = UiMessages()
+        anySelected = False
+        for g in groups:
+            delivery = g.get_latest_delivery_with_feedback()
+            if delivery and not delivery.feedback.published:
+                delivery.feedback.published = True
+                delivery.feedback.save()
+                post_publish_feedback(request, messages, delivery)
+                anySelected = True
+        if not anySelected:
+            messages.add_warning(_("No groups with unpublished feedback selected."))
         messages.save(request)
         return HttpResponseRedirect(redirect_to)
     else:

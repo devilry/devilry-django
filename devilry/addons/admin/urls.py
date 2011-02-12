@@ -67,6 +67,10 @@ urlpatterns = patterns('devilry.addons.admin',
         'views.assignmentgroup.close_many_groups',
         name='devilry-admin-close_many_groups'),
 
+    url(r'^assignments/(?P<assignment_id>\d+)/publish-many-groups$',
+        'views.assignmentgroup.publish_many_groups',
+        name='devilry-admin-publish_many_groups'),
+
     url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection$',
         'views.assignmentgroup.download_assignment_collection',
         kwargs={"archive_type":"tar"},

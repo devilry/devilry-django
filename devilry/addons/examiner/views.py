@@ -16,7 +16,8 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
         FilterAfterDeadline, create_deadlines_base, clear_deadlines_base,
-        FilterIsOpen, open_close_many_groups_base)
+        FilterIsOpen, open_close_many_groups_base,
+        publish_many_groups_base)
 from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
                                                     verify_groups_not_exceeding_max_file_size,
@@ -72,6 +73,13 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
             confirm_title=_("Confirm open groups"),
             confirm_message=_("Are you sure you want to open "\
                 "the selected groups?")),
+
+        AssignmentGroupsAction(_("Publish latest feedback"),
+            'devilry-examiner-publish_many_groups',
+            confirm_title=_("Confirm publish groups"),
+            confirm_message=_("Are you sure you want to publish "\
+                "the selected groups? This will send an email to each "
+                "member of every selected group.")),
     ]
 
 
@@ -148,6 +156,8 @@ def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignment_groups = assignment.assignment_groups_where_is_examiner(
             request.user)
+    messages = UiMessages()
+    messages.load(request)
     if assignment_groups.count() == 0:
         return HttpResponseForbidden("Forbidden")
     tbl = AssignmentGroupsExaminerFilterTable.initial_html(request,
@@ -155,6 +165,7 @@ def list_assignmentgroups(request, assignment_id):
                 args=[str(assignment_id)]))
     return render_to_response(
             'devilry/examiner/list_assignmentgroups.django.html', {
+                'messages': messages,
                 'filtertbl': tbl,
                 'assignment': assignment,
                 'is_admin': assignment.can_save(request.user)
@@ -361,3 +372,12 @@ def open_many_groups(request, assignment_id):
                 args=[str(assignment_id)])
     return open_close_many_groups_base(request, assignment_id, groups,
             redirect_to, is_open=True)
+
+
+
+@login_required
+def publish_many_groups(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-examiner-list_assignmentgroups',
+                args=[str(assignment_id)])
+    return publish_many_groups_base(request, assignment_id, groups, redirect_to)

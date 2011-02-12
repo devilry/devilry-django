@@ -24,14 +24,15 @@ from devilry.addons.admin.assignmentgroup_filtertable import (
     FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
     FilterMissingCandidateId, FilterAfterDeadline,
     create_deadlines_base, clear_deadlines_base,
-    FilterIsOpen, open_close_many_groups_base)
+    FilterIsOpen, open_close_many_groups_base,
+    publish_many_groups_base)
 from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
 
-from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
-                                                    verify_groups_not_exceeding_max_file_size,
-                                                    verify_deliveries_not_exceeding_max_file_size)
+from devilry.core.utils.delivery_collection import (
+        create_archive_from_assignmentgroups,
+        verify_groups_not_exceeding_max_file_size)
 
 class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-admin-filtertable'
@@ -64,6 +65,13 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
                 confirm_title=_("Confirm open groups"),
                 confirm_message=_("Are you sure you want to open "\
                     "the selected groups?")),
+
+            AssignmentGroupsAction(_("Publish latest feedback"),
+                'devilry-admin-publish_many_groups',
+                confirm_title=_("Confirm publish groups"),
+                confirm_message=_("Are you sure you want to publish "\
+                    "the selected groups? This will send an email to each "
+                    "member of every selected group.")),
 
             AssignmentGroupsAction(_("Download deliveries as ZIP"),
                                'devilry-admin-download_assignment_collection_as_zip'),
@@ -608,3 +616,13 @@ def open_many_groups(request, assignment_id):
                 args=[str(assignment_id)])
     return open_close_many_groups_base(request, assignment_id, groups,
             redirect_to, is_open=True)
+
+
+
+
+@login_required
+def publish_many_groups(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-admin-edit_assignment',
+                args=[str(assignment_id)])
+    return publish_many_groups_base(request, assignment_id, groups, redirect_to)

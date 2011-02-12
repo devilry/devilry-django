@@ -93,4 +93,8 @@ urlpatterns = patterns('devilry.addons.examiner',
     url(r'^assignments/(?P<assignment_id>\d+)/close_many_groups$',
         'views.close_many_groups',
         name='devilry-examiner-close_many_groups'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/publish_many_groups$',
+        'views.publish_many_groups',
+        name='devilry-examiner-publish_many_groups'),
 )
