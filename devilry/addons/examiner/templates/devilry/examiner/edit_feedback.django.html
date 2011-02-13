@@ -256,6 +256,31 @@
       <dd> {{ delivery|status }} </dd>
     </dl>
   </div>
+
+  {% if not assignment.anonymous %}
+    <div class="booring-message metainfo-item">
+      <h2 class="messageheader">{% trans "Emails" %}</h2>
+      <dl>
+        {% for cand in delivery.assignment_group.candidates.all %}
+          <dt>{{ cand.student }}</dt>
+          <dd>
+            {% if cand.student.email %}
+              <a href="mailto:{{ cand.student.email }}">{{ cand.student.email }}</a>
+            {% else %}
+              Has no email address.
+            {% endif %}
+          </dd>
+        {% endfor %}
+        {% if delivery.assignment_group.candidates.count > 1 %}
+          <p>
+            <a href="mailto:{% for cand in delivery.assignment_group.candidates.all %}{% if cand.student.email %}{{ cand.student.email }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}">
+              Send mail to all
+            </a>
+          </p>
+        {% endif %}
+      </dl>
+    </div>
+  {% endif %}
 </div>
 
 <div id="mainframe">
