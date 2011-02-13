@@ -55,6 +55,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
                                'devilry-examiner-download_file_collection_as_zip'),
         AssignmentGroupsAction(_("Download deliveries as TAR"),
                                'devilry-examiner-download_file_collection_as_tar'),
+
         AssignmentGroupsAction(_("Create/replace deadline"),
             'devilry-examiner-create_deadlines'),
         AssignmentGroupsAction(_("Clear deadlines"),
@@ -80,7 +81,10 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
             confirm_message=_("Are you sure you want to publish "\
                 "the selected groups? This will send an email to each "
                 "member of every selected group.")),
-    ]
+        
+        AssignmentGroupsAction(_("Show email addresses"),
+                               'devilry-examiner-show_emails'),
+        ]
 
 
     def __init__(self, request, assignment, assignmentgroups):
@@ -293,6 +297,30 @@ def edit_feedback(request, delivery_id, is_admin=None):
     _handle_is_admin(request, is_admin)
     key = delivery_obj.assignment_group.parentnode.grade_plugin
     return gradeplugin.registry.getitem(key).view(request, delivery_obj)
+
+
+@login_required
+def show_emails(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    emails = ''
+    #Check permission for examiner and add email adresses
+    for g in groups:
+        if not g.can_examine(request.user):
+            return HttpResponseForbidden("Forbidden: You tried to download"\
+                                         "deliveries from an assignment you"\
+                                         "do not have access to.")
+        else:
+            cands = g.candidates.all()
+            for c in cands:
+                emails += ", %s" % c.student.email
+    # Remove first comma
+    emails = emails[2:]
+    return render_to_response(
+            'devilry/examiner/show_emails.django.html', {
+            "emails" : emails,
+            "assignment" : assignment
+            }, context_instance=RequestContext(request))
 
 
 @login_required
