@@ -1,9 +1,8 @@
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django import forms
 
 from devilry.addons.examiner.feedback_view import \
-    parse_feedback_form, redirect_after_successful_save, render_response
+    parse_feedback_form, redirect_after_successful_save, render_response, \
+    save_feedback_form
 
 from models import RstSchemaGrade, RstSchemaDefinition
 import html
@@ -42,7 +41,7 @@ def view(request, delivery_obj):
             grade_obj.schema = schema
             grade_obj.save(feedback_form.instance)
             feedback_form.instance.grade = grade_obj
-            feedback_form.save()
+            save_feedback_form(request, feedback_form)
             return redirect_after_successful_save(request, delivery_obj)
     else:
         if grade_obj.schema:

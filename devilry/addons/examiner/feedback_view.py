@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 
-from devilry.core.models import Feedback, AssignmentGroup
+from devilry.core.models import Feedback, AssignmentGroup, Delivery
 from devilry.ui.widgets import RstEditWidget
 from devilry.ui.messages import UiMessages
 from devilry.ui.examiner import post_publish_feedback
@@ -30,7 +30,6 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
         feedback_obj = delivery_obj.feedback
     except Feedback.DoesNotExist, e:
         feedback_obj = Feedback(delivery=delivery_obj)
-    feedback_obj.last_modified_by = request.user
     if request.method == 'POST':
         return FeedbackForm(request.POST, instance=feedback_obj, prefix=prefix)
     else:
@@ -121,6 +120,13 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
             'prev_notcorrected': prev_notcorrected
         }, context_instance=RequestContext(request))
 
+
+def save_feedback_form(request, feedback_form):
+    feedback_form.instance.last_modified_by = request.user
+    feedback_form.save()
+
+
+
 def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
     """
     Creates a feedback-view.
@@ -149,7 +155,7 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
         if feedback_form.is_valid() and grade_form.is_valid():
             grade_form.instance.save(feedback_form.instance)
             feedback_form.instance.grade = grade_form.instance
-            feedback_form.save()
+            save_feedback_form(request, feedback_form)
             return redirect_after_successful_save(request, delivery_obj)
 
     return render_response(request, delivery_obj,
