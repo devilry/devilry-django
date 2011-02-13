@@ -49,7 +49,11 @@ urlpatterns = patterns('devilry.addons.examiner',
         'views.download_file_collection',
         kwargs={"archive_type":"tar"},
         name='devilry-examiner-download_file_collection_as_tar'),
-                       
+    
+    url(r'^assignments/(?P<assignment_id>\d+)/show_emails$',
+        'views.show_emails',
+        name='devilry-examiner-show_emails'),
+
     url(r'^edit-feedback/(?P<delivery_id>\d+)/download_delivery_as_tar$',
         'views.download_delivery',
         kwargs={"archive_type":"tar"},
