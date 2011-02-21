@@ -38,13 +38,6 @@ is to make it easy to add more to the table.
     <th>{% trans "Grade" %}</th>
     <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
   </tr>
-  
-  {% if not delivery.assignment_group.parentnode.anonymous %}
-    <tr>
-      <th>{% trans "Corrected by" %}</th>
-	  <td><a href="mailto:{{ delivery.feedback.last_modified_by.email }}">{{ delivery.feedback.last_modified_by.username}}</a></td>
-    </tr>
-  {% endif %}
   <tr>
     <th>{% trans "Feedback last modified" %}</th>
     <td> {{ delivery.feedback.last_modified|date:"DATETIME_FORMAT"}} </td>
