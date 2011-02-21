@@ -10,8 +10,7 @@ def student_important(request, *args, **kwargs):
     max_visible = 3
     now_with_slack = datetime.now() - timedelta(days=1)
     groups = AssignmentGroup.active_where_is_candidate(request.user).filter(
-            is_open=True,
-            status__lt=2)
+            is_open=True)
     groups = groups.annotate(
             deliverycount=Count("deliveries"),
             active_deadline=Max('deadlines__deadline'))

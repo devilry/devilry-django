@@ -5,10 +5,10 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 
-from devilry.core.models import Feedback, AssignmentGroup
+from devilry.core.models import Feedback, AssignmentGroup, Delivery
 from devilry.ui.widgets import RstEditWidget
 from devilry.ui.messages import UiMessages
-from devilry.core.devilry_email import send_email
+from devilry.ui.examiner import post_publish_feedback
 from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
 
 from utils import get_next_notcorrected_in_assignment, \
@@ -30,72 +30,19 @@ def parse_feedback_form(request, delivery_obj, prefix='feedback'):
         feedback_obj = delivery_obj.feedback
     except Feedback.DoesNotExist, e:
         feedback_obj = Feedback(delivery=delivery_obj)
-    feedback_obj.last_modified_by = request.user
     if request.method == 'POST':
         return FeedbackForm(request.POST, instance=feedback_obj, prefix=prefix)
     else:
         return FeedbackForm(instance=feedback_obj, prefix=prefix)
 
+
 def redirect_after_successful_save(request, delivery_obj):
     messages = UiMessages()
     if delivery_obj.feedback.published:
-        assignment = delivery_obj.assignment_group.parentnode
-        period = assignment.parentnode
-        subject = period.parentnode
-        
-        email_message = _("Your delivery has been corrected." \
-                          "\n\n" \
-                          "Subject: %s\n" \
-                          "Period: %s\n" \
-                          "Assignment: %s\n") % (subject.long_name,
-                                                 period.long_name,
-                                                 assignment.long_name)
-        
-        cands = delivery_obj.assignment_group.candidates.all()
-        user_list = []
-        for candidate in cands:
-            user_list.append(candidate.student)
-
-        rev = reverse('devilry-student-show-delivery', args=(delivery_obj.id,))
-        email_message += _("\nThe feedback can be viewed at:\n%s\n") % \
-                         (request.build_absolute_uri(rev))
-        try:
-            send_email(user_list, 
-                       _("New feedback - %s") % (assignment.get_path()), 
-                       email_message)
-        except Exception, e:
-            email_list = ", ".join(["%s (%s)" % (u.username, u.email) for u in user_list])[:-2]
-            messages = UiMessages()
-            messages.add_warning(_(
-                'An error occured when sending email to the following '\
-                'users: %s.' % email_list))
-            messages.save(request)
-
-
-        # Read the group from database, to avoid overwriting status and
-        # other cached fields updated by signal handlers
-        group = AssignmentGroup.objects.get(id=delivery_obj.assignment_group.id)
-        attempts = group.deliveries.filter(feedback__published=True).count()
-        maxattempts = group.parentnode.attempts
-        if delivery_obj.feedback.get_grade().is_passing_grade():
-            messages.add_info(
-                    "Because you saved and published feedback "
-                    "with passing grade.",
-                    title="Group automatically closed")
-            group.is_open = False
-            group.save()
-        elif attempts >= maxattempts and group.is_open:
-            messages.add_info(
-                    "The group was automatically closed for more "
-                    "deliveries because the student has failed to get a "
-                    "passing grade %(maxattempts)s or more times." % dict(
-                        maxattempts=maxattempts))
-            group.is_open = False
-            group.save()
+        post_publish_feedback(request, messages, delivery_obj)
     else:
         messages.add_warning(_("The feedback was saved, but not published "
                 "and is therefore not visible to the student."))
-
     messages.save(request)
     return HttpResponseRedirect(
             reverse('devilry-examiner-edit-feedback',
@@ -173,6 +120,13 @@ def render_response(request, delivery_obj, feedback_form, grade_form,
             'prev_notcorrected': prev_notcorrected
         }, context_instance=RequestContext(request))
 
+
+def save_feedback_form(request, feedback_form):
+    feedback_form.instance.last_modified_by = request.user
+    feedback_form.save()
+
+
+
 def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
     """
     Creates a feedback-view.
@@ -201,7 +155,7 @@ def view_shortcut(request, delivery_obj, grade_model_cls, grade_form_cls):
         if feedback_form.is_valid() and grade_form.is_valid():
             grade_form.instance.save(feedback_form.instance)
             feedback_form.instance.grade = grade_form.instance
-            feedback_form.save()
+            save_feedback_form(request, feedback_form)
             return redirect_after_successful_save(request, delivery_obj)
 
     return render_response(request, delivery_obj,

@@ -116,7 +116,7 @@ if __name__ == "__main__":
                 User.objects.get(username=username)
                 logging.debug("User %s already exists." % username)
             except User.DoesNotExist, e:
-                u = User(username=username)
+                u = User(username=username, email="%s@example.com" % username)
                 u.set_password("test")
                 u.save()
                 logging.info("Created user %s." % username)

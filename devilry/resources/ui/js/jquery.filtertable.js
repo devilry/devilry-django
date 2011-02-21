@@ -65,6 +65,16 @@
           });
       },
 
+      format_filteredsize: function(isMultiselect, filteredSizeAfterFilterApplied, currentFilteredSize) {
+        if(isMultiselect) {
+          var diff = filteredSizeAfterFilterApplied - currentFilteredSize;
+          if(diff >= 0)
+            diff = "+" + diff;
+          return diff;
+        } else {
+          return filteredSizeAfterFilterApplied;
+        }
+      },
 
       refresh_filters: function(store, filterview, filteredsize) {
         store.filterbox.empty();
@@ -122,22 +132,22 @@
                   var opt = {countonly:"yes"};
                   opt["filter_selected_"+filterindex] = i;
                   $.getJSON(store.jsonurl, opt, function(json) {
-                      var v = json.filteredsize;
-                      if(filter.multiselect) {
-                        diff = json.filteredsize - filteredsize;
-                        if(diff >= 0)
-                          diff = "+" + diff;
-                        v = v + " [" + diff + "]";
-                      }
-                      count.html(" (" + v + ")");
+                      //var label = json.filteredsize;
+                      //if(filter.multiselect) {
+                        //diff = json.filteredsize - filteredsize;
+                        //if(diff >= 0)
+                          //diff = "+" + diff;
+                        //label = label + " [" + diff + "]";
+                      //}
+                      var label = $.filtertable.format_filteredsize(
+                            filter.multiselect, json.filteredsize, filteredsize);
+                      count.html(" (" + label + ")");
                       $.filtertable.recalc_accordion(store);
                     });
                 }
               });
           });
       },
-
-
 
       create_header: function(store, has_selactions, columns, use_rowactions,
           order_by, order_asc) {

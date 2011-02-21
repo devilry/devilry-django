@@ -49,7 +49,11 @@ urlpatterns = patterns('devilry.addons.examiner',
         'views.download_file_collection',
         kwargs={"archive_type":"tar"},
         name='devilry-examiner-download_file_collection_as_tar'),
-                       
+    
+    url(r'^assignments/(?P<assignment_id>\d+)/show_emails$',
+        'views.show_emails',
+        name='devilry-examiner-show_emails'),
+
     url(r'^edit-feedback/(?P<delivery_id>\d+)/download_delivery_as_tar$',
         'views.download_delivery',
         kwargs={"archive_type":"tar"},
@@ -79,4 +83,22 @@ urlpatterns = patterns('devilry.addons.examiner',
         'views.edit_feedback',
         kwargs={"is_admin":True},
         name='devilry-examiner-edit-feedback-as-admin'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/create-deadlines$',
+        'views.create_deadlines',
+        name='devilry-examiner-create_deadlines'),
+    url(r'^assignments/(?P<assignment_id>\d+)/clear-deadlines$',
+        'views.clear_deadlines',
+        name='devilry-examiner-clear_deadlines'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/open-many-groups$',
+        'views.open_many_groups',
+        name='devilry-examiner-open_many_groups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/close_many_groups$',
+        'views.close_many_groups',
+        name='devilry-examiner-close_many_groups'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/publish_many_groups$',
+        'views.publish_many_groups',
+        name='devilry-examiner-publish_many_groups'),
 )

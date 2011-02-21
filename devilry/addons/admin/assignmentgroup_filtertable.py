@@ -2,16 +2,26 @@
 Base functionality for a :class:`devilry.ui.filtertable.FilterTable` for
 AssignmentGroups.
 """
+from datetime import datetime
+from django.template import RequestContext
+from django import forms
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from django.shortcuts import get_object_or_404
 from django.db.models import Max, Min, Count, Q, F
 from django.utils.formats import date_format
+from django.http import HttpResponseRedirect, HttpResponseForbidden, \
+        HttpResponseBadRequest
+from django.shortcuts import render_to_response, get_object_or_404
 
-from devilry.core.models import AssignmentGroup, Candidate
+from devilry.ui.messages import UiMessages
+from devilry.ui.widgets import DevilryDateTimeWidget
+from devilry.addons.quickdash import defaults
+from devilry.core.models import (AssignmentGroup, Candidate, Assignment,
+        Deadline)
 from devilry.ui.filtertable import (Filter, Action, FilterTable,
         Row, FilterLabel)
+from devilry.ui.examiner import post_publish_feedback
 
 
 class FilterStatus(Filter):
@@ -28,6 +38,24 @@ class FilterStatus(Filter):
 
     def get_default_selected(self, properties):
         return [0, 1, 2, 3]
+
+
+class FilterIsOpen(Filter):
+    title = _("Open?")
+
+    def get_labels(self, properties):
+        return [FilterLabel.DEFAULT,
+                FilterLabel(_("Yes")),
+                FilterLabel(_("No"))]
+
+    def filter(self, properties, dataset, selected):
+        i = selected[0]
+        if i == 1:
+            return dataset.filter(is_open=True)
+        elif i == 2:
+            return dataset.filter(is_open=False)
+        else:
+            return dataset
 
 
 class FilterIsPassingGrade(Filter):
@@ -236,6 +264,12 @@ class AssignmentGroupsFilterTableBase(FilterTable):
         if 'scaled_points' in active_optional_cols:
             row.add_cell("%.2f/%d" % (group.scaled_points,
                 self.assignment.pointscale))
+        if 'isopen' in active_optional_cols:
+            if group.is_open:
+                is_open = _("yes")
+            else:
+                is_open = _("no")
+            row.add_cell(is_open)
         if 'grade' in active_optional_cols:
             row.add_cell(group.get_grade_as_short_string() or "")
         if 'status' in active_optional_cols:
@@ -265,3 +299,154 @@ class AssignmentGroupsFilterTableBase(FilterTable):
                 deliveries_count=Count("deliveries"))
         return total, dataset
 
+
+class DeadlineForm(forms.ModelForm):
+    """ Deadline form used for standalone. """
+    class Meta:
+        model = Deadline
+        fields = ["deadline", "text"]
+        widgets = {
+                'deadline': DevilryDateTimeWidget,
+                'text': forms.Textarea(attrs=dict(rows=12, cols=70))
+                }
+
+
+
+def can_manage_groups(assignment, user, groups):
+    if not assignment.can_save(user):
+        for group in groups:
+            if not group.is_examiner(user):
+                return False
+    return True
+
+
+def create_deadlines_base(request, assignment_id, groups, checkbox_name,
+        redirect_to, actionurl, template):
+    if request.method != 'POST':
+        return HttpResponseBadRequest()
+
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not can_manage_groups(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
+
+    datetimefullformat = '%Y-%m-%d %H:%M:%S'
+    ids = [g.id for g in groups]
+    selected_deadlines = Deadline.objects.filter(
+            assignment_group__in=ids)
+    distinct_deadlines = selected_deadlines.values('deadline').distinct()
+    deadlines = [('', _("- Create a new deadline -"))]
+    for d in distinct_deadlines:
+        deadline = d['deadline']
+        with_same = selected_deadlines.filter(deadline=deadline).count()
+        if with_same == len(groups):
+            deadlines.append((
+                    deadline.strftime(datetimefullformat),
+                    deadline.strftime(defaults.DATETIME_FORMAT)))
+    has_shared_deadlines = len(deadlines) > 1
+
+
+    class DeadlineSelectForm(forms.Form):
+        deadline_to_copy = forms.ChoiceField(choices=deadlines,
+                required=False,
+                label = _("Deadline"))
+
+    if 'onsite' in request.POST:
+        deadline = Deadline(assignment_group=groups[0])
+        deadlineform = DeadlineForm(request.POST, instance=deadline)
+        selectform = DeadlineSelectForm(request.POST)
+        if selectform.is_valid() and deadlineform.is_valid():
+            deadline = deadlineform.cleaned_data['deadline']
+            text = deadlineform.cleaned_data['text']
+            deadline_to_copy = request.POST.get('deadline_to_copy', '')
+            if deadline_to_copy:
+                deadline_to_copy = datetime.strptime(deadline_to_copy,
+                        datetimefullformat)
+                for d in selected_deadlines.filter(deadline=deadline_to_copy):
+                    d.delete()
+            for group in groups:
+                group.deadlines.create(deadline=deadline, text=text)
+            messages = UiMessages()
+            messages.add_success(_('Deadlines created successfully.'))
+            messages.save(request)
+            return HttpResponseRedirect(reverse(
+                redirect_to,
+                args=[assignment_id]))
+    else:
+        deadlineform = DeadlineForm()
+        selectform = DeadlineSelectForm()
+    return render_to_response(template, {
+            'assignment': assignment,
+            'deadlineform': deadlineform,
+            'selectform': selectform,
+            'actionurl': reverse(actionurl, args=[str(assignment_id)]),
+            'has_shared_deadlines': has_shared_deadlines,
+            'groups': groups,
+            'checkbox_name': checkbox_name
+            }, context_instance=RequestContext(request))
+
+
+def clear_deadlines_base(request, assignment_id, groups, redirect_to):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not can_manage_groups(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
+
+    if request.method == 'POST':
+        ids = [g.id for g in groups]
+        selected_deadlines = Deadline.objects.filter(
+                assignment_group__in=ids)
+        for d in selected_deadlines:
+            d.delete()
+        messages = UiMessages()
+        messages.add_success(
+                _('Deadlines successfully cleared from: %(groups)s.' %
+                {'groups': ', '.join([str(g) for g in groups])}))
+        messages.save(request)
+        return HttpResponseRedirect(reverse(
+            redirect_to,
+            args=[assignment_id]))
+    else:
+        return HttpResponseBadRequest()
+
+
+
+def open_close_many_groups_base(request, assignment_id, groups, redirect_to,
+        is_open=False):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not can_manage_groups(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
+
+    if request.method == 'POST':
+        for g in groups:
+            g.is_open = is_open
+            g.save()
+        messages = UiMessages()
+        messages.add_success(
+                _('Groups successfully closed: %(groups)s.' %
+                {'groups': ', '.join([str(g) for g in groups])}))
+        messages.save(request)
+        return HttpResponseRedirect(redirect_to)
+    else:
+        return HttpResponseBadRequest()
+
+
+def publish_many_groups_base(request, assignment_id, groups, redirect_to):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if not can_manage_groups(assignment, request.user, groups):
+        return HttpResponseForbidden("Forbidden")
+
+    if request.method == 'POST':
+        messages = UiMessages()
+        anySelected = False
+        for g in groups:
+            delivery = g.get_latest_delivery_with_feedback()
+            if delivery and not delivery.feedback.published:
+                delivery.feedback.published = True
+                delivery.feedback.save()
+                post_publish_feedback(request, messages, delivery)
+                anySelected = True
+        if not anySelected:
+            messages.add_warning(_("No groups with unpublished feedback selected."))
+        messages.save(request)
+        return HttpResponseRedirect(redirect_to)
+    else:
+        return HttpResponseBadRequest()

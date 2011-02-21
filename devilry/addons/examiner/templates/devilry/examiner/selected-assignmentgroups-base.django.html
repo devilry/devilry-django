@@ -1,0 +1,11 @@
+{% extends "devilry/examiner/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+    <li>
+	  <a href="{% url devilry-examiner-list_assignmentgroups assignment.id %}">{{ assignment }}</a>
+	</li>
+{% endblock %}
+
