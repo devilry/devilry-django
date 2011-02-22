@@ -1,69 +1,10 @@
 class GroupDeliveriesByDeadline():
     def __init__(self, group):
-        self.after_last_deadline = []
-        self.within_a_deadline = []
-        self.ungrouped_deliveries = []
+        self.groups = []
         deadlines = group.deadlines.all().order_by('deadline')
-        numdeadlines = len(deadlines)
-
-        print "numdeadlines:", numdeadlines
-
-        for d in group.deliveries.all():
-            print "D1:", d.deadline_tag
-
-        for d in deadlines:
-            print "D2:", d
-        
-        if numdeadlines > 0:
-            deliveries = group.deliveries.filter(
-                    deadline_tag = None)
-
-            #print "Deliveries:", group.deliveries.all()
-
-            self.ungrouped_deliveries = deliveries
-
-            # Within a deadline
-            #self.within_a_deadline.append((deadlines[0], deliveries))
-            #previous = deadlines[0].deadline
-            for d in deadlines[:]:
-                deliveries = group.deliveries.filter(
-                        deadline_tag = d).order_by(
-                                "-time_of_delivery")
-                self.within_a_deadline.insert(0, (d, deliveries))
-                #previous = d.deadline
-
-            # After last deadline
-            print "deadlines[numdeadlines - 1]:", deadlines[numdeadlines - 1]
+        for dl in deadlines:
+            deliveries = dl.deliveries.order_by("-time_of_delivery")
+            if dl.is_head and len(deliveries) == 0:
+                continue
+            self.groups.insert(0, (dl, deliveries))
             
-            self.after_last_deadline = group.deliveries.filter(
-                    time_of_delivery__gt=deadlines[numdeadlines - 1].deadline)
-
-            print "self.after_last_deadline:", self.after_last_deadline
-            
-        else:
-            self.ungrouped_deliveries = group.deliveries.order_by(
-                    'time_of_delivery')
-
-        """
-        if numdeadlines > 0:
-            deliveries = group.deliveries.filter(
-                    time_of_delivery__lte = deadlines[0].deadline)
-
-            # Within a deadline
-            self.within_a_deadline.append((deadlines[0], deliveries))
-            previous = deadlines[0].deadline
-            for d in deadlines[1:]:
-                deliveries = group.deliveries.filter(
-                        time_of_delivery__lte = d.deadline,
-                        time_of_delivery__gt = previous).order_by(
-                                "-time_of_delivery")
-                self.within_a_deadline.insert(0, (d, deliveries))
-                previous = d.deadline
-
-            # After last deadline
-            self.after_last_deadline = group.deliveries.filter(
-                    time_of_delivery__gt=deadlines[numdeadlines - 1].deadline)
-        else:
-            self.ungrouped_deliveries = group.deliveries.order_by(
-                    'time_of_delivery')
-        """
