@@ -976,6 +976,7 @@ class AssignmentGroup(models.Model, CommonInterface):
             2. Corrected, not published
             3. Corrected and published
                 The group has at least one published feedback.
+            4. Awaiting new delivery
 
     .. attribute:: status_mapping
 
@@ -1021,18 +1022,24 @@ class AssignmentGroup(models.Model, CommonInterface):
 
         The numberic value corresponding to :attr:`status` *corrected, and
         published*.
+
+    .. attribute:: AWAITING_NEW_DELIVERY
+
+        The numberic value corresponding to :attr:`status` *Awaiting new delivery*.
     """
     status_mapping = (
         _("No deliveries"),
         _("Not corrected"),
         _("Corrected, not published"),
         _("Corrected and published"),
+        _("Awaiting new delivery"),
     )
     status_mapping_student = (
         status_mapping[0],
         status_mapping[1],
         status_mapping[1], # "not published" means not "not corrected" is displayed to the student
         _("Corrected"),
+        _("Awaiting new delivery"),
     )
     status_mapping_cssclass = (
         _("status_no_deliveries"),
@@ -1050,6 +1057,7 @@ class AssignmentGroup(models.Model, CommonInterface):
     NOT_CORRECTED = 1
     CORRECTED_NOT_PUBLISHED = 2
     CORRECTED_AND_PUBLISHED = 3
+    AWAITING_NEW_DELIVERY = 4
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
@@ -1079,6 +1087,12 @@ class AssignmentGroup(models.Model, CommonInterface):
     def save(self, *args, **kwargs):
         self.scaled_points = self._get_scaled_points()
         super(AssignmentGroup, self).save(*args, **kwargs)
+        # Create the head deadline for this assignmentgroup
+        head_deadline = Deadline()
+        head_deadline.deadline = datetime.now()
+        head_deadline.assignment_group = self
+        head_deadline.is_head = True
+        head_deadline.save()
     
     @classmethod
     def where_is_admin(cls, user_obj):
@@ -1406,6 +1420,7 @@ class Deadline(models.Model):
             related_name='deadlines') 
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
+    is_head = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Deadline')
@@ -1439,7 +1454,11 @@ class Deadline(models.Model):
     def is_old(self):
         """ Return True if :attr:`deadline` expired. """
         return self.deadline < datetime.now()
-
+    
+    def delete(self, *args, **kwargs):
+        """ Prevent deletion if this is the head deadline """
+        if not self.is_head:
+            super(Deadline, self).delete(*args, **kwargs)
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
@@ -1460,10 +1479,6 @@ class Delivery(models.Model):
     .. attribute:: deadline_tag
 
        Adjango.db.models.ForeignKey_ pointing to the Deadline for this Delivery.
-
-    .. attribute:: after_deadline
-
-       A django.db.models.BooleanField_ denoting if the delivery was after the last deadline
 
     .. attribute:: number
 
@@ -1496,10 +1511,15 @@ class Delivery(models.Model):
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
     deadline_tag = models.ForeignKey(Deadline, blank=True, null=True, on_delete=models.SET_NULL, related_name='deliveries')
-    after_deadline = models.BooleanField(default=False)
     number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
+
+    def delivered_too_late(self):
+        if self.deadline_tag.is_head:
+            return False
+        return (self.deadline_tag.deadline < self.time_of_delivery)
+    after_deadline = property(delivered_too_late)
 
     class Meta:
         verbose_name = _('Delivery')
@@ -1548,11 +1568,9 @@ class Delivery(models.Model):
             if d.time_of_delivery < tmp.deadline:
                 d.deadline_tag = tmp
                 break
-        # Delivered too late, so tag with 'after_deadline'
+        # Delivered too late, so use the last deadline
         if d.deadline_tag == None and not last_deadline == None:
             d.deadline_tag = last_deadline
-            d.after_deadline = True
-        
         d.save()
         return d
 
