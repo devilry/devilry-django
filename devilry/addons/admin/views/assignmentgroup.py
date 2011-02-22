@@ -166,31 +166,24 @@ def edit_assignmentgroup(request, assignment_id, assignmentgroup_id=None,
         assignmentgroup = get_object_or_404(AssignmentGroup,
                 id=assignmentgroup_id, parentnode=assignment)
     messages = UiMessages()
-
     if successful_save:
         messages.add_success(_("Assignment group successfully saved."))
     
     class AssignmentGroupForm(forms.ModelForm):
-        #parentnode = forms.ModelChoiceField(required=True,
-                #queryset = Assignment.where_is_admin(request.user))
         examiners = MultiSelectCharField(widget=DevilryMultiSelectFewUsersDb,
                                          required=False)
-                    
         class Meta:
             model = AssignmentGroup
             fields = ['name', 'examiners', 'is_open']
             widgets = {
                 'examiners': DevilryMultiSelectFewUsersDb,
                 }
-
     DeadlineFormSet = inlineformset_factory(AssignmentGroup, Deadline,
             extra=1, form=DeadlineFormForInline)
     CandidatesFormSet = inlineformset_factory(AssignmentGroup,
             Candidate, extra=1)
-
     model_name = AssignmentGroup._meta.verbose_name
     model_name_dict = {'model_name': model_name}
-
     if request.method == 'POST':
         assignmentgroupform = AssignmentGroupForm(request.POST,
                 instance=assignmentgroup)
@@ -269,23 +262,18 @@ class CreateAssignmentgroups(object):
                 formset = AssignmentGroupsFormSet(initial=initial_data)
             else:
                 formset = AssignmentGroupsFormSet(request.POST)
-
             messages = UiMessages()
-
             if not initial_data:
                 if not formset.is_valid():
                     messages.add_error(_("There is an error in the input data."))
                 else:                
                     success = True
-
                     for i in range(0, formset.total_form_count()):
                         form = formset.forms[i]
                         name = ''
                         candidates = ''
-                        
                         if 'name' in form.cleaned_data:
                             name = form.cleaned_data['name']
-                        
                         if 'candidates' in form.cleaned_data:
                             candidates = form.cleaned_data['candidates']
                             
@@ -332,9 +320,7 @@ class CreateAssignmentgroups(object):
                     ag.candidates.add(cand)
                     ag.save()
                 except Exception, e:
-                    #print "user %s doesnt exist" % (user_cand)
                     return False
-
         return True
        
 
@@ -360,7 +346,6 @@ def create_assignmentgroups(request, assignment_id):
                 m = re.match("(?:(?P<name>.+?)::)?\s*(?P<users>.+)?", l)
                 if not m:
                     continue
-                
                 group_data = {}
                 name = m.group('name')
                 users = m.group('users')
