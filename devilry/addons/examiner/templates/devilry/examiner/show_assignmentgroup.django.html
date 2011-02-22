@@ -151,7 +151,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
     </a>
   </p>
 {% else %}
-  <p class='info-box'>{% trans "This group is closed for deliveries. Click 'Open group' to allow students to add new deliveries." %}</p>
+  <p class='info-message'>{% trans "This group is closed for deliveries. Click 'Open group' to allow students to add new deliveries." %}</p>
   <p>
     <a href="{% url devilry-examiner-open_assignmentgroup assignment_group.id %}"
         id='openclosebtn' class='button'>
