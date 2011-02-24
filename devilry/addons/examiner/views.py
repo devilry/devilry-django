@@ -265,15 +265,15 @@ def edit_deadline(request, assignmentgroup_id, deadline_id=None):
 
 
 @login_required
-def show_assignmentgroup(request, assignment_group_id, is_admin=None):
-    assignment_group = get_object_or_404(AssignmentGroup, pk=assignment_group_id)
+def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
+    assignment_group = get_object_or_404(AssignmentGroup, pk=assignmentgroup_id)
     if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
     _handle_is_admin(request, is_admin)
     active_deadline = assignment_group.get_active_deadline()
     show_deadline_hint = assignment_group.is_open and \
         assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED and \
-        active_deadline != None and len(active_deadline.deliveries.all()) == 0
+        active_deadline != None and not len(active_deadline.deliveries.all()) == 0
     messages = UiMessages()
     messages.load(request)
     dg = GroupDeliveriesByDeadline(assignment_group)
