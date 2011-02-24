@@ -5,8 +5,7 @@ from django.conf import settings
 from devilry.core.models import AssignmentGroup, Assignment
 from devilry.ui.defaults import DATETIME_FORMAT
 
-from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
-import tarfile, copy
+from stream_archives import StreamableZip, StreamableTar
 
 def create_archive_from_assignmentgroups(request, assignment, assignmentgroups, archive_type):
 
@@ -95,58 +94,6 @@ class MemoryIO(object):
         return len(bytes)
 
 
-class StreamableTar(object):
-    def __init__(self):
-        self.in_memory = MemoryIO()
-        self.tar = DevilryTarfile.open(name=None, mode='w:gz', fileobj=self.in_memory)
-    
-    def add_file(self, filename, bytes):
-        tarinfo = tarfile.TarInfo(filename)
-        tarinfo.size = len(bytes)
-        self.tar.addfile(tarinfo, MemoryIO(bytes))
-
-    def start_filestream(self, filename, filesize):
-        tarinfo = tarfile.TarInfo(filename)
-        tarinfo.size = filesize
-        self.tar.start_filestream(tarinfo)
-
-    def append_file_chunk(self, bytes, chunk_size):
-        self.tar.append_file_chunk(MemoryIO(bytes), chunk_size)
-
-    def close_filestream(self):
-        self.tar.close_filestream()
-    
-    def read(self):
-        self.in_memory.seek(0)
-        bytes = self.in_memory.read()
-        return bytes
-
-    def close(self):
-        self.tar.close()
-    
-    def can_write_chunks(self):
-        return True
-
-
-class StreamableZip(object):
-    def __init__(self):
-        self.in_memory =  MemoryIO()
-        self.zip = ZipFile(self.in_memory, "w", compression=ZIP_DEFLATED)
-        
-    def add_file(self, filename, bytes):
-         self.zip.writestr(filename, bytes)
-
-    def read(self):
-        return self.in_memory.read()
-
-    def close(self):
-        self.zip.close()
-        self.in_memory.seek(0)
-    
-    def can_write_chunks(self):
-        return False
-
-
 def inclusive_range(start, stop, step=1):
     """
     A range() clone, but this includes the right limit
@@ -211,8 +158,8 @@ def iter_archive_deliveries(archive, assignment_path, group_name, deliveries):
                 chunk_size = settings.MAX_ARCHIVE_CHUNK_SIZE
                 # Open file stream for reading
                 file_to_stream = f.read_open()
-                # Start a filestream in the archive
-                archive.start_filestream(filename, f.size)
+                # Open a filestream in the archive
+                archive.open_filestream(filename, f.size)
                 for i in inclusive_range(chunk_size, f.size, chunk_size):
                     bytes = file_to_stream.read(chunk_size)
                     archive.append_file_chunk(bytes, len(bytes))
@@ -254,64 +201,3 @@ def iter_archive_assignmentgroups(archive, assignment, assignmentgroups):
     archive.close()
     yield archive.read()
 
-
-class DevilryTarfile(tarfile.TarFile):
-    """
-    tarfile does not directly support streaming chunks to the file.
-    might be solved by letting the read method of the file-like class
-    just return chunks instead of the entire file.
-    """
-    def __init__(self, name=None, mode="r", fileobj=None):
-        tarfile.TarFile.__init__(self, name, mode, fileobj)
-        self.filestream_active = False
-    
-    def start_filestream(self, tarinfo):
-        """Add the TarInfo object `tarinfo' to the archive and opens a filestream.
-        Data chunks are appended to the filestream with append_file_chunk, and
-        the filestream must be closed with close_filestream.
-        """
-        self._check("aw")
-        if self.filestream_active:
-            raise Exception("Cannot start a new filestream in the middle of a filestream."\
-                            "Close active stream first.")
-        tarinfo = copy.copy(tarinfo)
-        buf = tarinfo.tobuf(self.posix)
-        self.fileobj.write(buf)
-        self.offset += len(buf)
-        self.members.append(tarinfo)
-        self.filestream_tarinfo = tarinfo
-        self.filestream_active = True
-        self.filestream_sum = 0
-        self.filestream_name = tarinfo
-
-    def append_file_chunk(self, fileobj, chunk_size):
-        """
-        Appends a chunk to the current active filestream started with start_filestream
-        """
-        self._check("aw")
-        if not self.filestream_active:
-            raise Exception("Cannot append file chunk without an active filestream."\
-                            "Start a filestream first.")
-        if fileobj is None:
-            raise Exception("fileobj cannot be None.")
-
-        tarfile.copyfileobj(fileobj, self.fileobj, chunk_size)
-        self.offset += chunk_size
-        self.filestream_sum += chunk_size
-    
-    def close_filestream(self):
-        """
-        Must be used to close a filestream session opened with start_filestream
-        """
-        if self.filestream_tarinfo.size != self.filestream_sum:
-            raise Exception("Expected size of filestream %s has not been met. "\
-                            "Expected %d, but was %d."
-                            % (self.filestream_tarinfo.name, self.filestream_tarinfo.size,
-                               self.filestream_sum))
-        blocks, remainder = divmod(self.filestream_tarinfo.size, tarfile.BLOCKSIZE)
-        # Fill last block with zeroes
-        if remainder > 0:
-            zeroes_count = (tarfile.BLOCKSIZE - remainder)
-            self.fileobj.write(tarfile.NUL * zeroes_count)
-            self.offset += zeroes_count
-        self.filestream_active = False
