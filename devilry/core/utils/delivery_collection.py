@@ -1,28 +1,14 @@
-from devilry.core.utils.StringIO import StringIO
-#from StringIO import StringIO
-#from io import _BytesIO as BytesIO
-from io import _BytesIO
-
-
-#from devilry.core.utils.stringio import StringIO as DevilryStringIO
-from zipfile import ZipFile  
-import tarfile
-from django.http import HttpResponse  
-from devilry.core.models import AssignmentGroup, Assignment
 from django.utils.formats import date_format
-from devilry.ui.defaults import DATETIME_FORMAT
-from tarfile import TarFile
+from django.http import HttpResponse  
 from django.conf import settings
-import copy
-import gc
 
+from devilry.core.models import AssignmentGroup, Assignment
+from devilry.ui.defaults import DATETIME_FORMAT
+
+from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
+import tarfile, copy
 
 def create_archive_from_assignmentgroups(request, assignment, assignmentgroups, archive_type):
-
-    #print "assignment:%s (%s)" % (assignment, assignment.id) 
-
-    #for g in assignmentgroups:
-    #    print "g:%s (%s)" % (g, g.id)
 
     if archive_type == 'zip':
         it = iter_archive_assignmentgroups(StreamableZip(), assignment, assignmentgroups)
@@ -59,35 +45,7 @@ def verify_deliveries_not_exceeding_max_file_size(deliveries):
                 raise Exception()
 
 
-class DevilryIO2(StringIO, object):
-
-    def __init__(self, initial_bytes=None):
-        super(DevilryIO, self).__init__(initial_bytes)
-        
-        if not initial_bytes == None:
-            print "Initial:", len(initial_bytes)
-
-    def tell(self):
-        tell = super(DevilryIO, self).tell()
-        print "Tell:", tell
-        return tell
-
-    def read(self, n = -1):
-        super(DevilryIO, self).flush()
-        bytes = super(DevilryIO, self).read(n)
-        # Clear the buffer to avoid having the buffer size increase 
-        #self._buffer = bytearray()
-        #self._pos = 0
-        print "read(%d):%d" % (n, len(bytes))
-        #print "read:", bytes
-        return bytes
-
-    def write(self, bytes):
-        print "Write:  ", len(bytes)
-        return super(DevilryIO, self).write(bytes)
-
-
-class DevilryIO(object):
+class MemoryIO(object):
     """
     A simple in-memory implementation of IO with read/write/seek/tell
     implemented.
@@ -96,7 +54,6 @@ class DevilryIO(object):
         self.buffer = str()
         self.pos = 0
         if not initial_bytes == None:
-            print "Initial:", len(initial_bytes)
             self.buffer = str(initial_bytes)
             self.pos = len(initial_bytes)
             
@@ -105,7 +62,6 @@ class DevilryIO(object):
         return self.pos
 
     def seek(self, n):
-        #print "seek:", n
         self.pos = n
         return None
 
@@ -117,13 +73,10 @@ class DevilryIO(object):
         """
         Read n bytes from the buffer. If n is not used, the entire
         content is returned. The read content is deleted from memory.
+        The pos variable is deliberately not updated.
         """
         if len(self.buffer) == 0:
-            return 0
-
-        if self.pos == len(self.buffer):
-            return 0
-                
+            return str()
         buf = None
         if n == -1:
             buf = self.buffer
@@ -131,15 +84,12 @@ class DevilryIO(object):
         else:
             buf = self.buffer[:n]
             self.buffer = self.buffer[n:]
-        #print "read(%d):%d" % (n, len(buf))
-        self.pos += len(buf)
         return buf
 
     def write(self, bytes):
         """
         Append the bytes to the in-memory buffer.
         """
-        #print "Write:  ", len(bytes)
         self.buffer += str(bytes)
         self.pos += len(bytes)
         return len(bytes)
@@ -147,13 +97,13 @@ class DevilryIO(object):
 
 class StreamableTar(object):
     def __init__(self):
-        self.in_memory = DevilryIO()
-        self.tar = DevilryTarfile.open(name=None, mode='w', fileobj=self.in_memory)
+        self.in_memory = MemoryIO()
+        self.tar = DevilryTarfile.open(name=None, mode='w:gz', fileobj=self.in_memory)
     
     def add_file(self, filename, bytes):
         tarinfo = tarfile.TarInfo(filename)
         tarinfo.size = len(bytes)
-        self.tar.addfile(tarinfo, DevilryIO(bytes))
+        self.tar.addfile(tarinfo, MemoryIO(bytes))
 
     def start_filestream(self, filename, filesize):
         tarinfo = tarfile.TarInfo(filename)
@@ -161,7 +111,7 @@ class StreamableTar(object):
         self.tar.start_filestream(tarinfo)
 
     def append_file_chunk(self, bytes, chunk_size):
-        self.tar.append_file_chunk(DevilryIO(bytes), chunk_size)
+        self.tar.append_file_chunk(MemoryIO(bytes), chunk_size)
 
     def close_filestream(self):
         self.tar.close_filestream()
@@ -177,16 +127,16 @@ class StreamableTar(object):
     def can_write_chunks(self):
         return True
 
+
 class StreamableZip(object):
     def __init__(self):
-        self.in_memory =  DevilryIO() #StringIO()
-        self.zip = ZipFile(self.in_memory, "w")
+        self.in_memory =  MemoryIO()
+        self.zip = ZipFile(self.in_memory, "w", compression=ZIP_DEFLATED)
         
     def add_file(self, filename, bytes):
          self.zip.writestr(filename, bytes)
 
     def read(self):
-        #self.in_memory.seek(0)
         return self.in_memory.read()
 
     def close(self):
@@ -238,11 +188,10 @@ def get_dictionary_with_name_matches(assignmentgroups):
 
 def iter_archive_deliveries(archive, assignment_path, group_name, deliveries):
     include_delivery_explanation = False
-    
     if len(deliveries) > 1:
         include_delivery_explanation = True
         multiple_deliveries_content = "Delivery-ID    File count    Total size     Delivery time  \r\n"
-        
+
     for delivery in deliveries:
         metas = delivery.filemetas.all()
         delivery_size = 0
@@ -274,8 +223,7 @@ def iter_archive_deliveries(archive, assignment_path, group_name, deliveries):
                 bytes = f.read_open().read(f.size)
                 archive.add_file(filename, bytes)
                 #Read the content from the streamable archive and yield the data
-                yield archive.read()
-            
+                yield archive.read()            
         if include_delivery_explanation:
             multiple_deliveries_content += "  %3d            %3d          %5d        %s\r\n" % \
                                            (delivery.number, len(metas), delivery_size,
@@ -297,7 +245,7 @@ def iter_archive_assignmentgroups(archive, assignment, assignmentgroups):
     for group in assignmentgroups:
         group_name = get_assignmentgroup_name(group)
         # If multiple groups with the same members exists,
-        # postfix the name with assignmengroup ID.
+        # postfix the name with assignmentgroup ID.
         if name_matches[group_name] > 1:
             group_name = "%s+%d" % (group_name, group.id)
         deliveries = group.deliveries.all()
@@ -307,21 +255,21 @@ def iter_archive_assignmentgroups(archive, assignment, assignmentgroups):
     yield archive.read()
 
 
-class DevilryTarfile(TarFile):
+class DevilryTarfile(tarfile.TarFile):
     """
     tarfile does not directly support streaming chunks to the file.
     might be solved by letting the read method of the file-like class
     just return chunks instead of the entire file.
     """
     def __init__(self, name=None, mode="r", fileobj=None):
-        TarFile.__init__(self, name, mode, fileobj)
+        tarfile.TarFile.__init__(self, name, mode, fileobj)
         self.filestream_active = False
     
     def start_filestream(self, tarinfo):
         """Add the TarInfo object `tarinfo' to the archive and opens a filestream.
         Data chunks are appended to the filestream with append_file_chunk, and
         the filestream must be closed with close_filestream.
-           """
+        """
         self._check("aw")
         if self.filestream_active:
             raise Exception("Cannot start a new filestream in the middle of a filestream."\
@@ -331,7 +279,6 @@ class DevilryTarfile(TarFile):
         self.fileobj.write(buf)
         self.offset += len(buf)
         self.members.append(tarinfo)
-
         self.filestream_tarinfo = tarinfo
         self.filestream_active = True
         self.filestream_sum = 0
