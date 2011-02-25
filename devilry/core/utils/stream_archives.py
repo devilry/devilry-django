@@ -1,7 +1,7 @@
 from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
 import tarfile, copy
 
-class MemoryIO(object):
+class MemoryIO1(object):
     """
     An in-memory implementation of IO with
     read, write, seek and tell implemented.
@@ -47,6 +47,59 @@ class MemoryIO(object):
         Append the bytes to the in-memory buffer.
         """
         self.buffer += str(bytes)
+        self.pos += len(bytes)
+        return len(bytes)
+
+
+class MemoryIO(object):
+    """
+    An in-memory implementation of IO with
+    read, write, seek and tell implemented.
+    """
+    def __init__(self, initial_bytes=None):
+        self.list = []
+        #self.buffer = str()
+        self.pos = 0
+        if not initial_bytes == None:
+            #self.buffer = str(initial_bytes)
+            self.list.append(str(initial_bytes))
+            self.pos = len(initial_bytes)
+            
+    def tell(self):
+        """Returns the current position"""
+        return self.pos
+
+    def seek(self, n):
+        self.pos = n
+        return None
+
+    def flush(self):
+        """Does nothing"""
+        pass
+
+    def read(self, n = -1):
+        """
+        Read n bytes from the buffer. If n is not used, the entire
+        content is returned. The read content is deleted from memory.
+        The pos variable is deliberately not updated.
+        """
+        if len(self.list) == 0:
+            return str()
+        buf = None
+        if n == -1:
+            buf = str().join(self.list)
+            self.list = []
+        else:
+            buf = self.buffer[:n]
+            self.buffer = self.buffer[n:]
+        return buf
+
+    def write(self, bytes):
+        """
+        Append the bytes to the in-memory buffer.
+        """
+        #self.buffer += str(bytes)
+        self.list.append(str(bytes))
         self.pos += len(bytes)
         return len(bytes)
 

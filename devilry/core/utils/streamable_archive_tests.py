@@ -18,11 +18,9 @@ from devilry.addons.grade_approved.models import ApprovedGrade
 from devilry.core.models import (Node, Subject, Period, Assignment, AssignmentGroup,
         Delivery, Candidate, Feedback, FileMeta)
 
-#from devilry.core.utils.delivery_collection1 import create_archive_from_assignmentgroups, MemoryIO
-from devilry.core.utils.delivery_collection import create_archive_from_assignmentgroups, MemoryIO 
-
-from devilry.core.utils.StringIO import StringIO
-#from StringIO import StringIO
+from devilry.core.utils.delivery_collection import create_archive_from_assignmentgroups
+from devilry.core.utils.stream_archives import  MemoryIO 
+from StringIO import StringIO
 
 def stringIOTest(io):
     tmp = ''
@@ -82,10 +80,12 @@ if __name__ == '__main__':
         ass_groups_all = []
         assignments = Assignment.objects.all()
         for assignment in assignments:
-            for assignmentgroup in assignment.assignmentgroups:
-                assignmentgroups = assignment.assignmentgroups.all()
-                ass_groups_all.append(assignmentgroups)
-                        
+            for assignmentgroup in assignment.assignmentgroups.all():
+                #assignmentgroups = assignment.assignmentgroups.all()
+                ass_groups_all.append(assignmentgroup)
+
+
+        assignmentgroups = ass_groups_all
     else:
         assignment = Assignment.objects.get(id=48)
         assignmentgroups = []
@@ -93,9 +93,9 @@ if __name__ == '__main__':
         assignmentgroups.append(AssignmentGroup.objects.get(id=8095))
         assignmentgroups.append(AssignmentGroup.objects.get(id=8121))
         assignmentgroups.append(AssignmentGroup.objects.get(id=8145))
-        
+
         assignmentgroups = assignment.assignmentgroups.all()
-        
+    
     iterator = create_archive_from_assignmentgroups(None, assignment, assignmentgroups,
                                                         archive_type)
     f = open(filename, "w")
