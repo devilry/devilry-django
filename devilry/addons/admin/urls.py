@@ -73,7 +73,7 @@ urlpatterns = patterns('devilry.addons.admin',
 
     url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection_as_tar$',
         'views.assignmentgroup.download_assignment_collection',
-        kwargs={"archive_type":"tar"},
+        kwargs={"archive_type":"tar.gz"},
         name='devilry-admin-download_assignment_collection_as_tar'),
 
     url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection_as_zip$',
