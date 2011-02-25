@@ -73,7 +73,7 @@ if __name__ == '__main__':
         stringIOTest(MemoryIO())
         sys.exit()
 
-    archive_type = "zip" 
+    archive_type = "tar" 
     filename = "test." + archive_type
 
     if len(sys.argv) == 2 and sys.argv[1] == "all":
@@ -81,10 +81,7 @@ if __name__ == '__main__':
         assignments = Assignment.objects.all()
         for assignment in assignments:
             for assignmentgroup in assignment.assignmentgroups.all():
-                #assignmentgroups = assignment.assignmentgroups.all()
                 ass_groups_all.append(assignmentgroup)
-
-
         assignmentgroups = ass_groups_all
     else:
         assignment = Assignment.objects.get(id=48)
@@ -95,9 +92,11 @@ if __name__ == '__main__':
         assignmentgroups.append(AssignmentGroup.objects.get(id=8145))
 
         assignmentgroups = assignment.assignmentgroups.all()
-    
-    iterator = create_archive_from_assignmentgroups(None, assignment, assignmentgroups,
-                                                        archive_type)
+        
+    print "Building %s with %d assignmentgroups" % (archive_type, len(assignmentgroups))
+    iterator = create_archive_from_assignmentgroups(None, assignmentgroups,
+                                                    assignment.get_path(),
+                                                    archive_type)
     f = open(filename, "w")
     for bytes in iterator:
         f.write(bytes)

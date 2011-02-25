@@ -8,11 +8,11 @@ from devilry.ui.defaults import DATETIME_FORMAT
 from stream_archives import StreamableZip, StreamableTar
 
 
-def create_archive_from_assignmentgroups(request, assignment, assignmentgroups, archive_type):
+def create_archive_from_assignmentgroups(request, assignmentgroups, file_name, archive_type):
     archive = get_archive_from_archive_type(archive_type)
-    it = iter_archive_assignmentgroups(archive, assignment, assignmentgroups)
+    it = iter_archive_assignmentgroups(archive, assignmentgroups)
     response = HttpResponse(it, mimetype="application/%s" % archive_type)
-    response["Content-Disposition"] = "attachment; filename=%s.%s" % (assignment.get_path(), archive_type)  
+    response["Content-Disposition"] = "attachment; filename=%s.%s" % (file_name, archive_type)  
     return response
 
 
@@ -21,13 +21,13 @@ def create_archive_from_delivery(request, delivery, archive_type):
     group = delivery.assignment_group
     assignment = group.parentnode
     group_name = get_assignmentgroup_name(group)
-    it = iter_archive_deliveries(archive, assignment.get_path(), group_name, [delivery])
+    it = iter_archive_deliveries(archive, group_name, assignment.get_path(), [delivery])
     response = HttpResponse(it, mimetype="application/%s" % archive_type)  
     response["Content-Disposition"] = "attachment; filename=%s.%s" % (assignment.get_path(), archive_type)  
     return response
 
 
-def iter_archive_deliveries(archive, assignment_path, group_name, deliveries):
+def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
     include_delivery_explanation = False
     if len(deliveries) > 1:
         include_delivery_explanation = True
@@ -38,10 +38,10 @@ def iter_archive_deliveries(archive, assignment_path, group_name, deliveries):
         delivery_size = 0
         for f in metas:
             delivery_size += f.size
-            filename = "%s/%s/%s" % (assignment_path, group_name,
+            filename = "%s/%s/%s" % (directory_prefix, group_name,
                                  f.filename)
             if include_delivery_explanation:
-                filename = "%s/%s/%d/%s" % (assignment_path, group_name,
+                filename = "%s/%s/%d/%s" % (directory_prefix, group_name,
                                                 delivery.number, f.filename)
             # File size is greater than MAX_ARCHIVE_CHUNK_SIZE bytes
             # Write only chunks of size MAX_ARCHIVE_CHUNK_SIZE to the archive
@@ -72,17 +72,19 @@ def iter_archive_deliveries(archive, assignment_path, group_name, deliveries):
     # Adding file explaining multiple deliveries
     if include_delivery_explanation:
         archive.add_file("%s/%s/%s" %
-                         (assignment_path, group_name,
+                         (directory_prefix, group_name,
                           "Deliveries.txt"),
                          multiple_deliveries_content.encode("ascii"))
 
 
-def iter_archive_assignmentgroups(archive, assignment, assignmentgroups):
+def iter_archive_assignmentgroups(archive, assignmentgroups):
     """
     Creates an archive, adds files delivered by the assignmentgroups
     and yields the data.
     """
     name_matches = get_dictionary_with_name_matches(assignmentgroups)
+    assignment = assignmentgroups[0].parentnode
+    print assignment
     for group in assignmentgroups:
         group_name = get_assignmentgroup_name(group)
         # If multiple groups with the same members exists,
@@ -90,7 +92,12 @@ def iter_archive_assignmentgroups(archive, assignment, assignmentgroups):
         if name_matches[group_name] > 1:
             group_name = "%s+%d" % (group_name, group.id)
         deliveries = group.deliveries.all()
-        for bytes in iter_archive_deliveries(archive, assignment.get_path(), group_name, deliveries):
+
+        if group.parentnode != assignment:
+            assignment = group.parentnode
+            print assignment
+
+        for bytes in iter_archive_deliveries(archive, group_name, group.parentnode.get_path(), deliveries):
             yield bytes
     archive.close()
     yield archive.read()

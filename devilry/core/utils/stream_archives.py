@@ -1,7 +1,7 @@
 from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
 import tarfile, copy
 
-class MemoryIO1(object):
+class MemoryIO(object):
     """
     An in-memory implementation of IO with
     read, write, seek and tell implemented.
@@ -51,7 +51,7 @@ class MemoryIO1(object):
         return len(bytes)
 
 
-class MemoryIO(object):
+class MemoryIO2(object):
     """
     An in-memory implementation of IO with
     read, write, seek and tell implemented.
@@ -90,8 +90,12 @@ class MemoryIO(object):
             buf = str().join(self.list)
             self.list = []
         else:
-            buf = self.buffer[:n]
-            self.buffer = self.buffer[n:]
+            tmp = str().join(self.list)
+            n = min(n, len(tmp))
+            buf = tmp[:n]
+            self.list = []
+            self.list.append(tmp[n:])
+            #self.buffer = self.buffer[n:]
         return buf
 
     def write(self, bytes):
