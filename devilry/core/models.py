@@ -1033,6 +1033,8 @@ class AssignmentGroup(models.Model, CommonInterface):
         _("Corrected, not published"),
         _("Corrected and published"),
         _("Awaiting new delivery"),
+        _("Awaiting correction"),
+        _("Corrected and closed"),
     )
     status_mapping_student = (
         status_mapping[0],
@@ -1040,11 +1042,16 @@ class AssignmentGroup(models.Model, CommonInterface):
         status_mapping[1], # "not published" means not "not corrected" is displayed to the student
         _("Corrected"),
         _("Awaiting new delivery"),
+        status_mapping[1],
+        _("Corrected"),
     )
     status_mapping_cssclass = (
         _("status_no_deliveries"),
         _("status_not_corrected"),
         _("status_corrected_not_published"),
+        _("status_corrected_and_published"),
+        _("status_corrected_and_published"),
+        _("status_corrected_and_published"),
         _("status_corrected_and_published"),
     )
     status_mapping_student_cssclass = (
@@ -1052,13 +1059,18 @@ class AssignmentGroup(models.Model, CommonInterface):
         status_mapping_cssclass[1],
         status_mapping_cssclass[1], # "not published" means "not corrected" is displayed to the student
         status_mapping_cssclass[3],
+        status_mapping_cssclass[3],
+        status_mapping_cssclass[3],
+        status_mapping_cssclass[3],
     )
     NO_DELIVERIES = 0
     NOT_CORRECTED = 1
     CORRECTED_NOT_PUBLISHED = 2
     CORRECTED_AND_PUBLISHED = 3
     AWAITING_NEW_DELIVERY = 4
-
+    AWAITING_CORRECTION = 5
+    CORRECTED_AND_CLOSED = 6
+    
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
     examiners = models.ManyToManyField(User, blank=True,
@@ -1087,6 +1099,8 @@ class AssignmentGroup(models.Model, CommonInterface):
     def save(self, *args, **kwargs):
         self.scaled_points = self._get_scaled_points()
         super(AssignmentGroup, self).save(*args, **kwargs)
+
+    def create_default_deadline(self):
         # Create the head deadline for this assignmentgroup
         head_deadline = Deadline()
         head_deadline.deadline = datetime.now()
@@ -1394,9 +1408,15 @@ class AssignmentGroup(models.Model, CommonInterface):
         """
         now = datetime.now()
         deadlines = self.deadlines.filter(deadline__gt=now).order_by('deadline')
+
+        print "Students:", self.get_students()
         if len(deadlines) == 0:
             # Return the latest deadline (this will be the closest one in the past since the qry above failed)
+            print "len == 0"
             deadlines = self.deadlines.order_by('-deadline')
+            for d in deadlines:
+                print "Deadline (%s):%s" % (d.is_head, d)
+            
             if len(deadlines) == 0:
                 return None
         return deadlines[0]
