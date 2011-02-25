@@ -120,15 +120,11 @@ class StreamableTar(StreamableArchive):
 class StreamableZip(StreamableArchive):
     def __init__(self):
         super(StreamableZip, self).__init__()
-        self.archive = ZipFile(self.in_memory, "w")#, compression=ZIP_DEFLATED)
+        self.archive = ZipFile(self.in_memory, "w", compression=ZIP_DEFLATED)
         
     def add_file(self, filename, bytes):
          self.archive.writestr(filename, bytes)
-
-    def close(self):
-        super(StreamableZip, self).close()
-        #self.in_memory.seek(0)
-    
+        
 
 class FileStreamTar(tarfile.TarFile):
     """
