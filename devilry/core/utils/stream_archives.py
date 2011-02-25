@@ -86,9 +86,12 @@ class StreamableArchive(object):
 
 
 class StreamableTar(StreamableArchive):
-    def __init__(self):
+    def __init__(self, archive_type=None):
         super(StreamableTar, self).__init__()
-        self.archive = FileStreamTar.open(name=None, mode='w:gz', fileobj=self.in_memory)
+        mode = "w"
+        if archive_type == "tgz" or archive_type == "tar.gz":
+            mode += ":gz"
+        self.archive = FileStreamTar.open(name=None, mode=mode, fileobj=self.in_memory)
     
     def add_file(self, filename, bytes):
         tarinfo = tarfile.TarInfo(filename)
@@ -117,14 +120,14 @@ class StreamableTar(StreamableArchive):
 class StreamableZip(StreamableArchive):
     def __init__(self):
         super(StreamableZip, self).__init__()
-        self.archive = ZipFile(self.in_memory, "w", compression=ZIP_DEFLATED)
+        self.archive = ZipFile(self.in_memory, "w")#, compression=ZIP_DEFLATED)
         
     def add_file(self, filename, bytes):
          self.archive.writestr(filename, bytes)
 
     def close(self):
         super(StreamableZip, self).close()
-        self.in_memory.seek(0)
+        #self.in_memory.seek(0)
     
 
 class FileStreamTar(tarfile.TarFile):
