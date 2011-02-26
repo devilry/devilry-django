@@ -3,7 +3,7 @@ import tarfile, copy
 
 class MemoryIO(object):
     """
-    An in-memory implementation of IO with
+    An in-memory file like IO implementation with
     read, write, seek and tell implemented.
     """
     def __init__(self, initial_bytes=None):
@@ -53,7 +53,7 @@ class MemoryIO(object):
 
 class MemoryIO2(object):
     """
-    An in-memory implementation of IO with
+    An in-memory file like IO implementation with
     read, write, seek and tell implemented.
     """
     def __init__(self, initial_bytes=None):
