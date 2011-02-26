@@ -3,8 +3,9 @@ import tarfile, copy
 
 class MemoryIO(object):
     """
-    An in-memory file like IO implementation with
-    read, write, seek and tell implemented.
+    An in-memory file like IO implementation with read, write,
+    seek and tell implemented. Content read is deleted from
+    memory to keep the memory consumption a a minimum.
     """
     def __init__(self, initial_bytes=None):
         self.buffer = str()
@@ -28,7 +29,7 @@ class MemoryIO(object):
     def read(self, n = -1):
         """
         Read n bytes from the buffer. If n is not used, the entire
-        content is returned. The read content is deleted from memory.
+        content is returned.
         The pos variable is deliberately not updated.
         """
         if len(self.buffer) == 0:
@@ -50,89 +51,46 @@ class MemoryIO(object):
         self.pos += len(bytes)
         return len(bytes)
 
-
-class MemoryIO2(object):
-    """
-    An in-memory file like IO implementation with
-    read, write, seek and tell implemented.
-    """
-    def __init__(self, initial_bytes=None):
-        self.list = []
-        #self.buffer = str()
-        self.pos = 0
-        if not initial_bytes == None:
-            #self.buffer = str(initial_bytes)
-            self.list.append(str(initial_bytes))
-            self.pos = len(initial_bytes)
-            
-    def tell(self):
-        """Returns the current position"""
-        return self.pos
-
-    def seek(self, n):
-        self.pos = n
-        return None
-
-    def flush(self):
-        """Does nothing"""
-        pass
-
-    def read(self, n = -1):
-        """
-        Read n bytes from the buffer. If n is not used, the entire
-        content is returned. The read content is deleted from memory.
-        The pos variable is deliberately not updated.
-        """
-        if len(self.list) == 0:
-            return str()
-        buf = None
-        if n == -1:
-            buf = str().join(self.list)
-            self.list = []
-        else:
-            tmp = str().join(self.list)
-            n = min(n, len(tmp))
-            buf = tmp[:n]
-            self.list = []
-            self.list.append(tmp[n:])
-            #self.buffer = self.buffer[n:]
-        return buf
-
-    def write(self, bytes):
-        """
-        Append the bytes to the in-memory buffer.
-        """
-        #self.buffer += str(bytes)
-        self.list.append(str(bytes))
-        self.pos += len(bytes)
-        return len(bytes)
-
-
 class UnsupportedOperation(ValueError, IOError):
     pass
 
-
 class StreamableArchive(object):
+    """
+    Base class for streamable archives using the MemoryIO class.
+    """
     def __init__(self):
         self.in_memory = MemoryIO()
         self.archive = None
     
     def add_file(self, filename, bytes):
         raise UnsupportedOperation("%s.%s() not supported" %
-                                   (self.__class__.__name__, name))
+                                   (self.__class__.__name__, filename))
 
     def open_filestream(self, filename, filesize):
+        """
+        Start a file stream in the archive. An archive supporting this can add
+        a file to the archive in multiple chunks.
+        """
         raise UnsupportedOperation("%s.%s() not supported" %
-                                   (self.__class__.__name__, name))
+                                   (self.__class__.__name__, filename))
 
     def append_file_chunk(self, bytes, chunk_size):
+        """
+        Append a chunk of data to the currently open file stream.
+        """
         raise UnsupportedOperation("%s.%s() not supported" %
-                                   (self.__class__.__name__, name))
+                                   (self.__class__.__name__, filename))
 
     def close_filestream(self):
+        """
+        Close the currently open file stream.
+        """
         raise UnsupportedOperation("%s.%s() not supported" %
-                                   (self.__class__.__name__, name))
+                                   (self.__class__.__name__, filename))
     def can_write_chunks(self):
+        """
+        If the archive supports file streams written to the archive.
+        """
         return False
     
     def read(self):
@@ -142,7 +100,25 @@ class StreamableArchive(object):
         self.archive.close()
 
 
+class StreamableZip(StreamableArchive):
+    """
+    Stream archive in ZIP format. The zip supports compression.
+    """
+    def __init__(self):
+        super(StreamableZip, self).__init__()
+        self.archive = ZipFile(self.in_memory, "w", compression=ZIP_DEFLATED)
+        
+    def add_file(self, filename, bytes):
+         self.archive.writestr(filename, bytes)
+
+class FileStreamException(Exception):
+    pass
+
 class StreamableTar(StreamableArchive):
+    """
+    Stream archive in TAR format. The archive can be compressed with
+    gzip by setting archive_format to tgz or tar.gz
+    """
     def __init__(self, archive_type=None):
         super(StreamableTar, self).__init__()
         mode = "w"
@@ -151,6 +127,9 @@ class StreamableTar(StreamableArchive):
         self.archive = FileStreamTar.open(name=None, mode=mode, fileobj=self.in_memory)
     
     def add_file(self, filename, bytes):
+        if self.archive.filestream_active:
+            raise FileStreamException("Cannot add a new file with a file stream "\
+                                      "currently active.")
         tarinfo = tarfile.TarInfo(filename)
         tarinfo.size = len(bytes)
         self.archive.addfile(tarinfo, MemoryIO(bytes))
@@ -174,21 +153,11 @@ class StreamableTar(StreamableArchive):
         return True
 
 
-class StreamableZip(StreamableArchive):
-    def __init__(self):
-        super(StreamableZip, self).__init__()
-        self.archive = ZipFile(self.in_memory, "w", compression=ZIP_DEFLATED)
-        
-    def add_file(self, filename, bytes):
-         self.archive.writestr(filename, bytes)
-        
-
 class FileStreamTar(tarfile.TarFile):
     """
     tarfile does not directly support streaming chunks to the file.
-    might be solved by letting the read method of the file-like class
-    just return chunks instead of the entire file.
-    """
+    This class adds file streaming support to tarfile.
+    """    
     def __init__(self, name=None, mode="r", fileobj=None):
         tarfile.TarFile.__init__(self, name, mode, fileobj)
         self.filestream_active = False
@@ -200,8 +169,9 @@ class FileStreamTar(tarfile.TarFile):
         """
         self._check("aw")
         if self.filestream_active:
-            raise Exception("Cannot start a new filestream in the middle of a filestream."\
-                            "Close active stream first.")
+            raise FileStreamException("Cannot start a new filestream with "\
+                                      "another file stream currently active."\
+                                      "Close active stream before start a new.")
         tarinfo = copy.copy(tarinfo)
         buf = tarinfo.tobuf(self.posix)
         self.fileobj.write(buf)
@@ -214,14 +184,16 @@ class FileStreamTar(tarfile.TarFile):
 
     def append_file_chunk(self, fileobj, chunk_size):
         """
-        Appends a chunk to the current active filestream started with open_filestream
+        Appends a chunk to the current active filestream started
+        with open_filestream
         """
         self._check("aw")
         if not self.filestream_active:
-            raise Exception("Cannot append file chunk without an active filestream."\
-                            "Start a filestream first.")
+            raise FileStreamException("Cannot append file chunk without an "\
+                                      "active filestream. Start a filestream "\
+                                      "first.")
         if fileobj is None:
-            raise Exception("fileobj cannot be None.")
+            raise FileStreamException("fileobj cannot be None.")
 
         tarfile.copyfileobj(fileobj, self.fileobj, chunk_size)
         self.offset += chunk_size
@@ -231,8 +203,11 @@ class FileStreamTar(tarfile.TarFile):
         """
         Must be used to close a filestream session opened with open_filestream
         """
+        if not self.filestream_active:
+            raise FileStreamException("Cannot close a file stream when no "\
+                                      "file stream is active.")
         if self.filestream_tarinfo.size != self.filestream_sum:
-            raise Exception("Expected size of filestream %s has not been met. "\
+            raise FileStreamException("Expected size of filestream %s has not been met. "\
                             "Expected %d, but was %d."
                             % (self.filestream_tarinfo.name, self.filestream_tarinfo.size,
                                self.filestream_sum))
