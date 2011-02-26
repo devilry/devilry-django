@@ -83,8 +83,6 @@ def iter_archive_assignmentgroups(archive, assignmentgroups):
     and yields the data.
     """
     name_matches = get_dictionary_with_name_matches(assignmentgroups)
-    assignment = assignmentgroups[0].parentnode
-    print assignment
     for group in assignmentgroups:
         group_name = get_assignmentgroup_name(group)
         # If multiple groups with the same members exists,
@@ -92,12 +90,9 @@ def iter_archive_assignmentgroups(archive, assignmentgroups):
         if name_matches[group_name] > 1:
             group_name = "%s+%d" % (group_name, group.id)
         deliveries = group.deliveries.all()
-
-        if group.parentnode != assignment:
-            assignment = group.parentnode
-            print assignment
-
-        for bytes in iter_archive_deliveries(archive, group_name, group.parentnode.get_path(), deliveries):
+        for bytes in iter_archive_deliveries(archive, group_name,
+                                             group.parentnode.get_path(),
+                                             deliveries):
             yield bytes
     archive.close()
     yield archive.read()
