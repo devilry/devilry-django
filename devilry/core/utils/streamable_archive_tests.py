@@ -1,77 +1,15 @@
 #!/usr/bin/env python
 """
-This file demonstrates the streamable archives
+Creats an archive with deliveries.
 """
 
-from datetime import datetime, timedelta
-from tempfile import mkdtemp
-from shutil import rmtree
-from os.path import join
-
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.db import IntegrityError
-from django.core.exceptions import ValidationError
-
-from devilry.addons.grade_approved.models import ApprovedGrade
-
-from devilry.core.models import (Node, Subject, Period, Assignment, AssignmentGroup,
-        Delivery, Candidate, Feedback, FileMeta)
-
+from devilry.core.models import (Assignment, AssignmentGroup)
 from devilry.core.utils.delivery_collection import create_archive_from_assignmentgroups
 from devilry.core.utils.stream_archives import  MemoryIO 
-from StringIO import StringIO
-
-def stringIOTest(io):
-    tmp = ''
-    print "Initalized empty"
-    print "tell1:%d" % io.tell()
-    print "seek(0):", io.seek(0)
-
-    tmp = str("1Test1")
-    io.write(tmp)
-    print "write:", tmp
-    print "tell2:%d" % io.tell()
-
-    tmp = str("2Test2")
-    io.write(tmp)
-    print "write:", tmp
-    print "tell3:%d" % io.tell()
-
-    ret = io.read()
-    if (ret != 0):
-        print "read(%d):%s" % (len(ret), ret)
-    print "tell4:%d" % io.tell()
-
-    tmp = str("3Test3")
-    io.write(tmp)
-    print "write:", tmp
-    print "tell4:%d" % io.tell()
-
-    ret = io.read()
-    if (ret != 0):
-        print "read(%d):%s" % (len(ret), ret)
-    print "tell5:%d" % io.tell()
-
-    print "seek(0):", io.seek(0)
-
-    ret = io.read()
-
-    if (ret != 0):
-        print "read(%d):%s" % (len(ret), ret)
-    print "tell6:%d" % io.tell()
-
 
 import sys
 
 if __name__ == '__main__':
-
-    if len(sys.argv) == 2 and sys.argv[1] == "test":
-        print "StringIO TEST"
-        stringIOTest(StringIO())
-        print "\nDevilryIO TEST"
-        stringIOTest(MemoryIO())
-        sys.exit()
 
     archive_type = "tar" 
     filename = "test." + archive_type
