@@ -581,7 +581,7 @@ def download_assignment_collection(request, assignment_id, archive_type=None):
             verify_groups_not_exceeding_max_file_size(groups)
         except Exception, e:
             return HttpResponseForbidden(_("One or more files exeeds the maximum file size for ZIP files."))
-    return create_archive_from_assignmentgroups(request, assignment, groups, archive_type)
+    return create_archive_from_assignmentgroups(request, groups, assignment.get_path(), archive_type)
 
 
 
