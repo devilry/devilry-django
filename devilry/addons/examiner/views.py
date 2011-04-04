@@ -304,12 +304,15 @@ def show_emails(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
     emails = ''
+    if assignment.anonymous:
+        return HttpResponseForbidden(_("You do not have access to see the email"\
+                                       " addresses for this anonymous assignment."))
     #Check permission for examiner and add email adresses
     for g in groups:
         if not g.can_examine(request.user):
-            return HttpResponseForbidden("Forbidden: You tried to download"\
-                                         "deliveries from an assignment you"\
-                                         "do not have access to.")
+            return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                           " deliveries from an assignment you"\
+                                           " do not have access to."))
         else:
             cands = g.candidates.all()
             for c in cands:
@@ -330,14 +333,15 @@ def download_file_collection(request, assignment_id, archive_type=None):
     #Check permission for examiner
     for g in groups:
         if not g.can_examine(request.user):
-            return HttpResponseForbidden("Forbidden: You tried to download"\
-                                         "deliveries from an assignment you"\
-                                         "do not have access to.")
+            return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                           " deliveries from an assignment you"\
+                                           " do not have access to."))
     if archive_type == "zip":
         try:
             verify_groups_not_exceeding_max_file_size(groups)
         except Exception, e:
-            return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
+            return HttpResponseForbidden(_("One or more files exceeds the maximum"\
+                                           " file size for ZIP files."))
     return create_archive_from_assignmentgroups(request, groups, assignment.get_path(), archive_type)
 
 
@@ -346,14 +350,15 @@ def download_delivery(request, delivery_id, archive_type=None):
     delivery = get_object_or_404(Delivery, id=delivery_id)
     #Check permission for examiner
     if not delivery.assignment_group.can_examine(request.user):
-        return HttpResponseForbidden("Forbidden: You tried to download"\
-                                     "deliveries from an assignment you"\
-                                     "do not have access to.")
+        return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                       " deliveries from an assignment you"\
+                                       " do not have access to."))
     if archive_type == "zip":
         try:
             verify_deliveries_not_exceeding_max_file_size([delivery])
         except Exception, e:
-            return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
+            return HttpResponseForbidden(_("One or more files exceeds the maximum"\
+                                           " file size for ZIP files."))
     return create_archive_from_delivery(request, delivery, archive_type)
 
 @login_required
@@ -362,9 +367,9 @@ def download_group_deliveries(request, delivery_id, archive_type=None):
     group = get_object_or_404(AssignmentGroup, id=delivery.assignment_group.id)
     #Check permission for examiner
     if not delivery.assignment_group.can_examine(request.user):
-        return HttpResponseForbidden("Forbidden: You tried to download"\
-                                     "deliveries from an assignment you"\
-                                     "do not have access to.")
+        return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                       " deliveries from an assignment you"\
+                                       " do not have access to."))
     return create_archive_from_assignmentgroups(request, [group], group.parentnode.get_path(), archive_type)
 
 @login_required
@@ -382,7 +387,6 @@ def clear_deadlines(request, assignment_id):
     return clear_deadlines_base(request, assignment_id, groups,
             'devilry-examiner-list_assignmentgroups')
 
-
 @login_required
 def close_many_groups(request, assignment_id):
     groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
@@ -398,8 +402,6 @@ def open_many_groups(request, assignment_id):
                 args=[str(assignment_id)])
     return open_close_many_groups_base(request, assignment_id, groups,
             redirect_to, is_open=True)
-
-
 
 @login_required
 def publish_many_groups(request, assignment_id):
