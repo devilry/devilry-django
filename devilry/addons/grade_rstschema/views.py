@@ -44,7 +44,7 @@ class RstSchemaDefWidget(forms.Textarea):
 class RstSchemaDefinitionForm(forms.ModelForm):
     class Meta:
         model = RstSchemaDefinition
-        fields = ('schemadef', 'let_students_see_schema', 'maxpoints')
+        fields = ('schemadef', 'let_students_see_schema', 'maxpoints', 'grade_to_points_mapping')
         widgets = {
             'schemadef': RstSchemaDefWidget
         }

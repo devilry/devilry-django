@@ -12,6 +12,7 @@ import field
 class RstSchemaDefinition(models.Model):
     assignment = models.OneToOneField(Assignment, primary_key=True)
     schemadef = models.TextField()
+    grade_to_points_mapping = models.TextField(null=True, blank=True)
     let_students_see_schema = models.BooleanField(default=False,
             help_text=_('Selecting this will let users see the ' \
                     'entire schema, instead of just the resulting grade.'))
@@ -108,6 +109,9 @@ Rate the overall quality:
         return points
 
     def get_grade_as_short_string(self, feedback_obj):
+        grade = self.get_grade_from_points(feedback_obj)
+        if grade:
+            return grade
         return "%d/%d" % (self.points,
                 get_schemadef(feedback_obj).maxpoints)
 
@@ -139,6 +143,33 @@ Rate the overall quality:
 
     def get_points(self):
         return self.points
+
+    def get_grade_from_points(self, feedback_obj):
+        """
+        Get a grade that maps to the points value
+        """
+        schema_def = get_schemadef(feedback_obj)
+        l = self.parse_grade_from_points_mapping(schema_def)
+        if len(l) == 0:
+            return None
+        last = l[0][0]
+        for t in l:
+            if self.points < t[1]:
+                break
+            else:
+                last = t
+        return last[0]
+
+    def parse_grade_from_points_mapping(self, schema_def):
+        """
+        Parses the 'grade from points' mapping string
+        and return a list of tuples.
+        """
+        l = list()
+        for line in schema_def.grade_to_points_mapping.splitlines():
+            s = line.split(":")
+            l.append((s[0], int(s[1])))
+        return l
 
     def __unicode__(self):
         return "RstSchemaGrade(id:%s) for %s" % (self.id,
