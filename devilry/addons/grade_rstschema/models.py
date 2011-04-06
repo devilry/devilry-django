@@ -12,6 +12,7 @@ import field
 class RstSchemaDefinition(models.Model):
     assignment = models.OneToOneField(Assignment, primary_key=True)
     schemadef = models.TextField()
+    grade_to_points_mapping = models.TextField(null=True, blank=True)
     let_students_see_schema = models.BooleanField(default=False,
             help_text=_('Selecting this will let users see the ' \
                     'entire schema, instead of just the resulting grade.'))
@@ -108,8 +109,15 @@ Rate the overall quality:
         return points
 
     def get_grade_as_short_string(self, feedback_obj):
-        return "%d/%d" % (self.points,
-                get_schemadef(feedback_obj).maxpoints)
+        grade = self.get_grade_from_points(feedback_obj)
+        if grade:
+            return grade
+
+        if not feedback_obj.delivery.assignment_group.parentnode.students_can_see_points:
+            return "Not available"
+        else:
+            return "%d/%d" % (self.points,
+                              get_schemadef(feedback_obj).maxpoints)
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
@@ -140,6 +148,41 @@ Rate the overall quality:
     def get_points(self):
         return self.points
 
+    def get_grade_from_points(self, feedback_obj):
+        """
+        Get a grade that maps to the points value
+        """
+        schema_def = get_schemadef(feedback_obj)
+        mapping = self._parse_grade_from_points_mapping(schema_def.grade_to_points_mapping)
+        return self._get_matching_grade(self.points, mapping)
+
+    def _parse_grade_from_points_mapping(self, grade_to_points_mapping):
+        """
+        Parses the 'grade from points' mapping string
+        and return a list of tuples.
+        """
+        l = list()
+        for line in grade_to_points_mapping.splitlines():
+            s = line.split(":")
+            if len(s) != 2:
+                continue
+            l.append((s[0].strip(), int(s[1])))
+        return sorted(l, key=lambda t: t[1], reverse=False)
+ 
+    def _get_matching_grade(self, points, mapping):
+        """
+        Returns the matching grade for the points.
+        """
+        if len(mapping) == 0:
+            return None
+        last = mapping[0][0]
+        for t in mapping:
+            if points < t[1]:
+                break
+            else:
+                last = t
+        return last[0]
+    
     def __unicode__(self):
         return "RstSchemaGrade(id:%s) for %s" % (self.id,
                 self.get_feedback_obj())

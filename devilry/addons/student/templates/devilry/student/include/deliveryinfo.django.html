@@ -33,7 +33,7 @@ is to make it easy to add more to the table.
   </td>
 </tr>
 
-{% if delivery.feedback %}
+{% if delivery.feedback.published %}
   <tr>
     <th>{% trans "Grade" %}</th>
     <td> {{ delivery.feedback.get_grade_as_short_string }} </td>
