@@ -112,8 +112,12 @@ Rate the overall quality:
         grade = self.get_grade_from_points(feedback_obj)
         if grade:
             return grade
-        return "%d/%d" % (self.points,
-                get_schemadef(feedback_obj).maxpoints)
+
+        if not feedback_obj.delivery.assignment_group.parentnode.students_can_see_points:
+            return "Not available"
+        else:
+            return "%d/%d" % (self.points,
+                              get_schemadef(feedback_obj).maxpoints)
 
     def set_grade_from_xmlrpcstring(self, grade, feedback_obj):
         schemadef_document = get_schemadef_document(feedback_obj)
