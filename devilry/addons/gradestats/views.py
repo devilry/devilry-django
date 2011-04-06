@@ -30,7 +30,7 @@ def _get_periodstats(period, user):
 def userstats(request, period_id):
     period = get_object_or_404(Period, pk=period_id)
     total, maxpoints, groups = _get_periodstats(period, request.user)
-    show_sum = not any(not g.parentnode.student_can_see_grade for g in groups)
+    show_sum = not any(not g.parentnode.students_can_see_points for g in groups)
     return render_to_response(
         'devilry/gradestats/user.django.html', {
             'period': period,

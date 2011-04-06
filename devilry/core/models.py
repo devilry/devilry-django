@@ -624,8 +624,8 @@ class Assignment(models.Model, BaseNode):
             verbose_name=_("Publishing time"))
     anonymous = models.BooleanField(default=False,
             verbose_name=_("Anonymous"))
-    student_can_see_grade = models.BooleanField(default=True,
-            verbose_name=_("Student can see grade"))
+    students_can_see_points = models.BooleanField(default=True,
+            verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
     grade_plugin = models.CharField(max_length=100,
@@ -1781,7 +1781,7 @@ class Feedback(models.Model):
         Get the grade as a short string suitable for short one-line
         display.
         """
-        if not self.delivery.assignment_group.parentnode.student_can_see_grade:
+        if not self.delivery.assignment_group.parentnode.students_can_see_points:
             return "Not available"
         return self.grade.get_grade_as_short_string(self)
 
@@ -1795,7 +1795,7 @@ class Feedback(models.Model):
             None if getting long string is not supported by the grade
             plugin.
         """
-        if not self.delivery.assignment_group.parentnode.student_can_see_grade:
+        if not self.delivery.assignment_group.parentnode.students_can_see_points:
             return "Not available"
         return self.grade.get_grade_as_long_string(self)
 

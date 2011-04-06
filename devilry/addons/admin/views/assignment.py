@@ -96,7 +96,7 @@ def edit_assignment(request, assignment_id=None):
             model = Assignment
             fields = ['parentnode', 'short_name', 'long_name', 
                     'publishing_time', 'filenames', 'admins', 'anonymous',
-                      'student_can_see_grade', 'attempts', 'must_pass',
+                      'students_can_see_points', 'attempts', 'must_pass',
                       'pointscale', 'autoscale']
             if isnew:
                 fields.append('grade_plugin')
