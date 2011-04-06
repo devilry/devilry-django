@@ -149,28 +149,33 @@ Rate the overall quality:
         Get a grade that maps to the points value
         """
         schema_def = get_schemadef(feedback_obj)
-        l = self.parse_grade_from_points_mapping(schema_def)
-        if len(l) == 0:
-            return None
-        last = l[0][0]
-        for t in l:
-            if self.points < t[1]:
-                break
-            else:
-                last = t
-        return last[0]
+        mapping = self.parse_grade_from_points_mapping(schema_def.grade_to_points_mapping)
+        return self.get_matching_grade(self.points, mapping)
 
-    def parse_grade_from_points_mapping(self, schema_def):
+    def parse_grade_from_points_mapping(self, grade_to_points_mapping):
         """
         Parses the 'grade from points' mapping string
         and return a list of tuples.
         """
         l = list()
-        for line in schema_def.grade_to_points_mapping.splitlines():
+        for line in grade_to_points_mapping.splitlines():
             s = line.split(":")
-            l.append((s[0], int(s[1])))
-        return l
-
+            if len(s) != 2:
+                continue
+            l.append((s[0].strip(), int(s[1])))
+        return sorted(l, key=lambda t: t[1], reverse=False)
+ 
+    def get_matching_grade(self, points, mapping):
+        if len(mapping) == 0:
+            return None
+        last = mapping[0][0]
+        for t in mapping:
+            if points < t[1]:
+                break
+            else:
+                last = t
+        return last[0]
+    
     def __unicode__(self):
         return "RstSchemaGrade(id:%s) for %s" % (self.id,
                 self.get_feedback_obj())
