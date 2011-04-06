@@ -28,7 +28,6 @@ def send_feedback_email(request, messages, delivery_obj):
     rev = reverse('devilry-student-show-delivery', args=(delivery_obj.id,))
     email_message += _("\nThe feedback can be viewed at:\n%s\n") % \
                      (request.build_absolute_uri(rev))
-    email_list = ", ".join(["%s (%s)" % (u.username, u.email) for u in user_list])[:-2]
     try:
         send_email(user_list, 
                    _("New feedback - %s") % (assignment.get_path()), 
@@ -38,10 +37,15 @@ def send_feedback_email(request, messages, delivery_obj):
     except NoEmailAddressException, e:
         messages.add_warning(str(e))
     else:
-        messages.add_info(
+        if delivery_obj.assignment_group.parentnode.anonymous:
+            candidate_ids = ", ".join(["%s" % (candidate.candidate_id) for candidate in cands])
+            messages.add_info(
+                    _("Published feedback notification mail sent to candidate(s) %s" % candidate_ids))
+        else:
+            email_list = ", ".join(["%s (%s)" % (u.username, u.email) for u in user_list])
+            messages.add_info(
                 _("Published feedback notification mail sent to: "
-                    "%(email_list)s") % dict(email_list=email_list))
-
+                  "%(email_list)s") % dict(email_list=email_list))
 
 def publish_feedback_react(request, messages, delivery_obj):
     # Read the group from database, to avoid overwriting status and
