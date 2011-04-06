@@ -1,1 +1,1 @@
-alter table core_assignment add column "student_can_see_grade" boolean NOT NULL DEFAULT true;
+alter table core_assignment add column "students_can_see_points" boolean NOT NULL DEFAULT true;
