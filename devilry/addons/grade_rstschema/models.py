@@ -149,10 +149,10 @@ Rate the overall quality:
         Get a grade that maps to the points value
         """
         schema_def = get_schemadef(feedback_obj)
-        mapping = self.parse_grade_from_points_mapping(schema_def.grade_to_points_mapping)
-        return self.get_matching_grade(self.points, mapping)
+        mapping = self._parse_grade_from_points_mapping(schema_def.grade_to_points_mapping)
+        return self._get_matching_grade(self.points, mapping)
 
-    def parse_grade_from_points_mapping(self, grade_to_points_mapping):
+    def _parse_grade_from_points_mapping(self, grade_to_points_mapping):
         """
         Parses the 'grade from points' mapping string
         and return a list of tuples.
@@ -165,7 +165,10 @@ Rate the overall quality:
             l.append((s[0].strip(), int(s[1])))
         return sorted(l, key=lambda t: t[1], reverse=False)
  
-    def get_matching_grade(self, points, mapping):
+    def _get_matching_grade(self, points, mapping):
+        """
+        Returns the matching grade for the points.
+        """
         if len(mapping) == 0:
             return None
         last = mapping[0][0]
