@@ -8,7 +8,7 @@
 
 {% block show_assignmentgroup_breadcrumb %}
   <li class='current'><a href='#'>
-    {{ assignment_group.get_students }}
+    {{ assignment_group.get_candidates }}
   </a></li>
 {% endblock %}
 
@@ -115,6 +115,8 @@ also have a time of delivery (YYYY-MM-DD hh:mm:ss). You may create feedback on
 as many deliveries as you like. The grade is determined from the latest
 delivery with published feeback.{% endblocktrans %}</p>
 
+{% comment %}
+
 {% if not ungrouped_deliveries %} 
 <p>{% blocktrans %}Deliveries are grouped by deadlines. Deadlines use the same
 datetime-format as deliveries, and are simply a date with an optional text. You
@@ -123,6 +125,7 @@ and to give the student information about when to deliver the assignment.
 Creation and deletion of deliveries does not affect existing deliveries at all.
 {% endblocktrans %}</p>
 {% endif %}
+{% endcomment %}
 </div>
 
 <!-- Prevent the table from floating beside anything below here. -->

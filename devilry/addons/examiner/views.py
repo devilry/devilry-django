@@ -15,7 +15,9 @@ from devilry.ui.filtertable import Columns, Col
 from devilry.addons.admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
-        FilterAfterDeadline)
+        FilterAfterDeadline, create_deadlines_base, clear_deadlines_base,
+        FilterIsOpen, open_close_many_groups_base,
+        publish_many_groups_base)
 from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
                                                     verify_groups_not_exceeding_max_file_size,
@@ -53,8 +55,37 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
                                'devilry-examiner-download_file_collection_as_zip'),
         AssignmentGroupsAction(_("Download deliveries as TAR"),
                                'devilry-examiner-download_file_collection_as_tar'),
-    ]
-    
+
+        AssignmentGroupsAction(_("Create/replace deadline"),
+            'devilry-examiner-create_deadlines'),
+        AssignmentGroupsAction(_("Clear deadlines"),
+            'devilry-examiner-clear_deadlines',
+            confirm_title=_("Confirm clear deadlines"),
+            confirm_message=_("Are you sure you want to clear "\
+                    "deadlines on the following groups?")),
+
+        AssignmentGroupsAction(_("Close groups"),
+            'devilry-examiner-close_many_groups',
+            confirm_title=_("Confirm close groups"),
+            confirm_message=_("Are you sure you want to close "\
+                "the selected groups?")),
+        AssignmentGroupsAction(_("Open groups"),
+            'devilry-examiner-open_many_groups',
+            confirm_title=_("Confirm open groups"),
+            confirm_message=_("Are you sure you want to open "\
+                "the selected groups?")),
+
+        AssignmentGroupsAction(_("Publish latest feedback"),
+            'devilry-examiner-publish_many_groups',
+            confirm_title=_("Confirm publish groups"),
+            confirm_message=_("Are you sure you want to publish "\
+                "the selected groups? This will send an email to each "
+                "member of every selected group.")),
+        
+        AssignmentGroupsAction(_("Show email addresses"),
+                               'devilry-examiner-show_emails'),
+        ]
+
 
     def __init__(self, request, assignment, assignmentgroups):
         self.assignmentgroups = assignmentgroups
@@ -64,6 +95,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
     def get_filters(self):
         filters = [
             FilterStatus(),
+            FilterIsOpen(),
             FilterIsPassingGrade(),
             FilterAfterDeadline(),
         ]
@@ -86,6 +118,7 @@ class AssignmentGroupsExaminerFilterTable(AssignmentGroupsFilterTableBase):
             Col('deliveries_count', "Deliveries", optional=True,
                 can_order=True),
             Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('isopen', "Open?", optional=True),
             Col('grade', "Grade", optional=True),
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
@@ -127,6 +160,8 @@ def list_assignmentgroups(request, assignment_id):
     assignment = get_object_or_404(Assignment, pk=assignment_id)
     assignment_groups = assignment.assignment_groups_where_is_examiner(
             request.user)
+    messages = UiMessages()
+    messages.load(request)
     if assignment_groups.count() == 0:
         return HttpResponseForbidden("Forbidden")
     tbl = AssignmentGroupsExaminerFilterTable.initial_html(request,
@@ -134,6 +169,7 @@ def list_assignmentgroups(request, assignment_id):
                 args=[str(assignment_id)]))
     return render_to_response(
             'devilry/examiner/list_assignmentgroups.django.html', {
+                'messages': messages,
                 'filtertbl': tbl,
                 'assignment': assignment,
                 'is_admin': assignment.can_save(request.user)
@@ -264,21 +300,49 @@ def edit_feedback(request, delivery_id, is_admin=None):
 
 
 @login_required
+def show_emails(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    emails = ''
+    if assignment.anonymous:
+        return HttpResponseForbidden(_("You do not have access to see the email"\
+                                       " addresses for this anonymous assignment."))
+    #Check permission for examiner and add email adresses
+    for g in groups:
+        if not g.can_examine(request.user):
+            return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                           " deliveries from an assignment you"\
+                                           " do not have access to."))
+        else:
+            cands = g.candidates.all()
+            for c in cands:
+                emails += ", %s" % c.student.email
+    # Remove first comma
+    emails = emails[2:]
+    return render_to_response(
+            'devilry/examiner/show_emails.django.html', {
+            "emails" : emails,
+            "assignment" : assignment
+            }, context_instance=RequestContext(request))
+
+
+@login_required
 def download_file_collection(request, assignment_id, archive_type=None):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
     #Check permission for examiner
     for g in groups:
         if not g.can_examine(request.user):
-            return HttpResponseForbidden("Forbidden: You tried to download"\
-                                         "deliveries from an assignment you"\
-                                         "do not have access to.")
+            return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                           " deliveries from an assignment you"\
+                                           " do not have access to."))
     if archive_type == "zip":
         try:
             verify_groups_not_exceeding_max_file_size(groups)
         except Exception, e:
-            return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
-    return create_archive_from_assignmentgroups(request, assignment, groups, archive_type)
+            return HttpResponseForbidden(_("One or more files exceeds the maximum"\
+                                           " file size for ZIP files."))
+    return create_archive_from_assignmentgroups(request, groups, assignment.get_path(), archive_type)
 
 
 @login_required
@@ -286,14 +350,15 @@ def download_delivery(request, delivery_id, archive_type=None):
     delivery = get_object_or_404(Delivery, id=delivery_id)
     #Check permission for examiner
     if not delivery.assignment_group.can_examine(request.user):
-        return HttpResponseForbidden("Forbidden: You tried to download"\
-                                     "deliveries from an assignment you"\
-                                     "do not have access to.")
+        return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                       " deliveries from an assignment you"\
+                                       " do not have access to."))
     if archive_type == "zip":
         try:
             verify_deliveries_not_exceeding_max_file_size([delivery])
         except Exception, e:
-            return HttpResponseForbidden(_("One or more files exceeds the maximum file size for ZIP files."))
+            return HttpResponseForbidden(_("One or more files exceeds the maximum"\
+                                           " file size for ZIP files."))
     return create_archive_from_delivery(request, delivery, archive_type)
 
 @login_required
@@ -302,8 +367,45 @@ def download_group_deliveries(request, delivery_id, archive_type=None):
     group = get_object_or_404(AssignmentGroup, id=delivery.assignment_group.id)
     #Check permission for examiner
     if not delivery.assignment_group.can_examine(request.user):
-        return HttpResponseForbidden("Forbidden: You tried to download"\
-                                     "deliveries from an assignment you"\
-                                     "do not have access to.")
-    return create_archive_from_assignmentgroups(request, group.parentnode, [group], archive_type)
-    
+        return HttpResponseForbidden(_("Forbidden: You tried to download"\
+                                       " deliveries from an assignment you"\
+                                       " do not have access to."))
+    return create_archive_from_assignmentgroups(request, [group], group.parentnode.get_path(), archive_type)
+
+@login_required
+def create_deadlines(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    return create_deadlines_base(request, assignment_id, groups,
+            AssignmentGroupsExaminerFilterTable.get_checkbox_name(),
+            'devilry-examiner-list_assignmentgroups',
+            'devilry-examiner-create_deadlines',
+            'devilry/examiner/create_deadlines.django.html')
+
+@login_required
+def clear_deadlines(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    return clear_deadlines_base(request, assignment_id, groups,
+            'devilry-examiner-list_assignmentgroups')
+
+@login_required
+def close_many_groups(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-examiner-list_assignmentgroups',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=False)
+
+@login_required
+def open_many_groups(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-examiner-list_assignmentgroups',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=True)
+
+@login_required
+def publish_many_groups(request, assignment_id):
+    groups = AssignmentGroupsExaminerFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-examiner-list_assignmentgroups',
+                args=[str(assignment_id)])
+    return publish_many_groups_base(request, assignment_id, groups, redirect_to)

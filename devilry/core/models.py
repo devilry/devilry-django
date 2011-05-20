@@ -695,6 +695,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer):
             verbose_name=_("Publishing time"))
     anonymous = models.BooleanField(default=False,
             verbose_name=_("Anonymous"))
+    students_can_see_points = models.BooleanField(default=True,
+            verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
     grade_plugin = models.CharField(max_length=100,
@@ -1757,6 +1759,7 @@ class Feedback(models.Model):
         display.
         """
         return self.grade.get_grade_as_short_string(self)
+
 
     def get_grade_as_long_string(self):
         """

@@ -59,12 +59,24 @@ urlpatterns = patterns('devilry.addons.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/clear-deadlines$',
         'views.assignmentgroup.clear_deadlines',
         name='devilry-admin-clear_deadlines'),
-                       
-    url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection$',
+
+    url(r'^assignments/(?P<assignment_id>\d+)/open-many-groups$',
+        'views.assignmentgroup.open_many_groups',
+        name='devilry-admin-open_many_groups'),
+    url(r'^assignments/(?P<assignment_id>\d+)/close-many-groups$',
+        'views.assignmentgroup.close_many_groups',
+        name='devilry-admin-close_many_groups'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/publish-many-groups$',
+        'views.assignmentgroup.publish_many_groups',
+        name='devilry-admin-publish_many_groups'),
+
+    url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection_as_tar$',
         'views.assignmentgroup.download_assignment_collection',
-        kwargs={"archive_type":"tar"},
+        kwargs={"archive_type":"tar.gz"},
         name='devilry-admin-download_assignment_collection_as_tar'),
-    url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection$',
+
+    url(r'^assignments/(?P<assignment_id>\d+)/download_assignment_collection_as_zip$',
         'views.assignmentgroup.download_assignment_collection',
         kwargs={"archive_type":"zip"},
         name='devilry-admin-download_assignment_collection_as_zip'),

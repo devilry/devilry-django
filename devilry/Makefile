@@ -114,6 +114,34 @@ create-duck1080-data:
 		--pointscale 10 \
 		--assignment-long-name "Week four"
 
+create-duck3580-data:
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck3580.h01.week1 \
+		--grade-plugin "grade_approved:approvedgrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-30" \
+		--subject-long-name "DUCK3580 - Making the illogical seem logical" \
+		--period-long-name "Fall year zero" \
+		--assignment-long-name "Week one"
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck3580.h01.week2 \
+		--grade-plugin "grade_approved:approvedgrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "-20" \
+		--assignment-long-name "Week two"
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck3580.h01.week3 \
+		--grade-plugin "grade_approved:approvedgrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "recent" \
+		--assignment-long-name "Week three"
+	python adminscripts/create_testgroups.py \
+		duckburgh.univ:duck3580.h01.week4 \
+		--grade-plugin "grade_approved:approvedgrade" \
+		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
+		--deadline-profile "soon" \
+		--assignment-long-name "Week four"
+
 
 clear-exampledb: cleardb
 	rm -rf deliverystore
@@ -122,7 +150,7 @@ init-exampledb: clear-exampledb
 	mkdir deliverystore
 	python manage.py loaddata -v0 core/fixtures/example/users.json
 
-create-exampledb: init-exampledb create-duck1100-data create-duck1080-data
+create-exampledb: init-exampledb create-duck1100-data create-duck1080-data create-duck3580-data
 
 backup-exampledb:
 	rm -rf $(EXAMPLEDATA_BACKUP)

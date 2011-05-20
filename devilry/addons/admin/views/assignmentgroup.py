@@ -19,18 +19,20 @@ from devilry.ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
 from devilry.ui.fields import MultiSelectCharField
 from devilry.ui.messages import UiMessages
-from devilry.addons.quickdash import defaults
 from devilry.addons.admin.assignmentgroup_filtertable import (
     AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
     FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
-    FilterMissingCandidateId, FilterAfterDeadline)
+    FilterMissingCandidateId, FilterAfterDeadline,
+    create_deadlines_base, clear_deadlines_base,
+    FilterIsOpen, open_close_many_groups_base,
+    publish_many_groups_base)
 from devilry.ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
 
-from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
-                                                    verify_groups_not_exceeding_max_file_size,
-                                                    verify_deliveries_not_exceeding_max_file_size)
+from devilry.core.utils.delivery_collection import (
+        create_archive_from_assignmentgroups,
+        verify_groups_not_exceeding_max_file_size)
 
 class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     id = 'assignmentgroups-admin-filtertable'
@@ -53,17 +55,35 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             AssignmentGroupsAction(_("Random distribute examiners"),
                                    'devilry-admin-random_dist_examiners'),
 
+            AssignmentGroupsAction(_("Close groups"),
+                'devilry-admin-close_many_groups',
+                confirm_title=_("Confirm close groups"),
+                confirm_message=_("Are you sure you want to close "\
+                    "the selected groups?")),
+            AssignmentGroupsAction(_("Open groups"),
+                'devilry-admin-open_many_groups',
+                confirm_title=_("Confirm open groups"),
+                confirm_message=_("Are you sure you want to open "\
+                    "the selected groups?")),
+
+            AssignmentGroupsAction(_("Publish latest feedback"),
+                'devilry-admin-publish_many_groups',
+                confirm_title=_("Confirm publish groups"),
+                confirm_message=_("Are you sure you want to publish "\
+                    "the selected groups? This will send an email to each "
+                    "member of every selected group.")),
+
             AssignmentGroupsAction(_("Download deliveries as ZIP"),
                                'devilry-admin-download_assignment_collection_as_zip'),
             AssignmentGroupsAction(_("Download deliveries as TAR"),
                                'devilry-admin-download_assignment_collection_as_tar'),
         ]
     relatedactions = [
-            AssignmentGroupsAction(_("Create new"),
+            AssignmentGroupsAction(_("Create new group"),
                 "devilry-admin-create_assignmentgroup"),
-            AssignmentGroupsAction(_("Create many (advanced)"),
+            AssignmentGroupsAction(_("Create many groups (advanced)"),
                 "devilry-admin-create_assignmentgroups"),
-            AssignmentGroupsAction(_("Create by copy"),
+            AssignmentGroupsAction(_("Create groups by copy"),
                 "devilry-admin-copy_groups"),
             AssignmentGroupsAction(_("Examiner mode"),
                 "devilry-examiner-list_assignmentgroups")
@@ -72,6 +92,7 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
     def get_filters(self):
         filters = [
             FilterStatus(),
+            FilterIsOpen(),
             FilterIsPassingGrade(),
             FilterExaminer(),
             FilterAfterDeadline(),
@@ -97,6 +118,7 @@ class AssignmentGroupsFilterTable(AssignmentGroupsFilterTableBase):
             Col('deliveries_count', "Deliveries", optional=True,
                 can_order=True),
             Col('scaled_points', "Points", optional=True, can_order=True),
+            Col('isopen', "Open?", optional=True),
             Col('grade', "Grade", optional=True),
             Col('status', "Status", can_order=True, optional=True,
                 active_default=True))
@@ -129,16 +151,6 @@ class DeadlineFormForInline(forms.ModelForm):
             widget=forms.Textarea(attrs=dict(rows=5, cols=50)))
     class Meta:
         model = Deadline
-
-class DeadlineForm(forms.ModelForm):
-    """ Deadline form used for standalone. """
-    class Meta:
-        model = Deadline
-        fields = ["deadline", "text"]
-        widgets = {
-                'deadline': DevilryDateTimeWidget,
-                'text': forms.Textarea(attrs=dict(rows=12, cols=70))
-                }
 
 
 @login_required
@@ -549,96 +561,6 @@ def copy_groups(request, assignment_id):
 
 
 @login_required
-def create_deadline(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id)
-    if not assignment.can_save(request.user):
-        return HttpResponseForbidden("Forbidden")
-    
-    if request.method == 'POST':
-        datetimefullformat = '%Y-%m-%d %H:%M:%S'
-        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
-        ids = [g.id for g in groups]
-        selected_deadlines = Deadline.objects.filter(
-                assignment_group__in=ids)
-        distinct_deadlines = selected_deadlines.values('deadline').distinct()
-        deadlines = [('', _("- Create a new deadline -"))]
-        for d in distinct_deadlines:
-            deadline = d['deadline']
-            with_same = selected_deadlines.filter(deadline=deadline).count()
-            if with_same == len(groups):
-                deadlines.append((
-                        deadline.strftime(datetimefullformat),
-                        deadline.strftime(defaults.DATETIME_FORMAT)))
-        has_shared_deadlines = len(deadlines) > 1
-
-            
-        class DeadlineSelectForm(forms.Form):
-            deadline_to_copy = forms.ChoiceField(choices=deadlines,
-                    required=False,
-                    label = _("Deadline"))
-
-        if 'onsite' in request.POST:
-            deadline = Deadline(assignment_group=groups[0])
-            deadlineform = DeadlineForm(request.POST, instance=deadline)
-            selectform = DeadlineSelectForm(request.POST)
-            if selectform.is_valid() and deadlineform.is_valid():
-                deadline = deadlineform.cleaned_data['deadline']
-                text = deadlineform.cleaned_data['text']
-                deadline_to_copy = request.POST.get('deadline_to_copy', '')
-                if deadline_to_copy:
-                    deadline_to_copy = datetime.strptime(deadline_to_copy,
-                            datetimefullformat)
-                    for d in selected_deadlines.filter(deadline=deadline_to_copy):
-                        d.delete()
-                for group in groups:
-                    group.deadlines.create(deadline=deadline, text=text)
-                messages = UiMessages()
-                messages.add_success(_('Deadlines created successfully.'))
-                messages.save(request)
-                return HttpResponseRedirect(reverse(
-                    'devilry-admin-edit_assignment',
-                    args=[assignment_id]))
-        else:
-            deadlineform = DeadlineForm()
-            selectform = DeadlineSelectForm()
-        return render_to_response('devilry/admin/create_deadline.django.html', {
-                'assignment': assignment,
-                'deadlineform': deadlineform,
-                'selectform': selectform,
-                'has_shared_deadlines': has_shared_deadlines,
-                'groups': groups,
-                'checkbox_name': AssignmentGroupsFilterTable.get_checkbox_name()
-                }, context_instance=RequestContext(request))
-    else:
-        return HttpResponseBadRequest()
-
-
-@login_required
-def clear_deadlines(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id)
-    if not assignment.can_save(request.user):
-        return HttpResponseForbidden("Forbidden")
-    
-    if request.method == 'POST':
-        groups = AssignmentGroupsFilterTable.get_selected_groups(request)
-        ids = [g.id for g in groups]
-        selected_deadlines = Deadline.objects.filter(
-                assignment_group__in=ids)
-        for d in selected_deadlines:
-            d.delete()
-        messages = UiMessages()
-        messages.add_success(
-                _('Deadlines successfully cleared from: %(groups)s.' %
-                {'groups': ', '.join([str(g) for g in groups])}))
-        messages.save(request)
-        return HttpResponseRedirect(reverse(
-            'devilry-admin-edit_assignment',
-            args=[assignment_id]))
-    else:
-        return HttpResponseBadRequest()
-
-
-@login_required
 def delete_manyassignmentgroups(request, assignment_id):
     return deletemany_generic(request, AssignmentGroup,
             AssignmentGroupsFilterTable,
@@ -659,4 +581,48 @@ def download_assignment_collection(request, assignment_id, archive_type=None):
             verify_groups_not_exceeding_max_file_size(groups)
         except Exception, e:
             return HttpResponseForbidden(_("One or more files exeeds the maximum file size for ZIP files."))
-    return create_archive_from_assignmentgroups(request, assignment, groups, archive_type)
+    return create_archive_from_assignmentgroups(request, groups, assignment.get_path(), archive_type)
+
+
+
+@login_required
+def create_deadline(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    return create_deadlines_base(request, assignment_id, groups,
+            AssignmentGroupsFilterTable.get_checkbox_name(),
+            'devilry-admin-edit_assignment',
+            'devilry-admin-create_deadline',
+            'devilry/admin/create_deadline.django.html')
+
+@login_required
+def clear_deadlines(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    return clear_deadlines_base(request, assignment_id, groups,
+            'devilry-admin-edit_assignment')
+
+
+@login_required
+def close_many_groups(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-admin-edit_assignment',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=False)
+
+@login_required
+def open_many_groups(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-admin-edit_assignment',
+                args=[str(assignment_id)])
+    return open_close_many_groups_base(request, assignment_id, groups,
+            redirect_to, is_open=True)
+
+
+
+
+@login_required
+def publish_many_groups(request, assignment_id):
+    groups = AssignmentGroupsFilterTable.get_selected_groups(request)
+    redirect_to = reverse('devilry-admin-edit_assignment',
+                args=[str(assignment_id)])
+    return publish_many_groups_base(request, assignment_id, groups, redirect_to)

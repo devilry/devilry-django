@@ -27,7 +27,7 @@
     <tbody>
       {% for group in groups %}
         <tr class="{% cycle "odd" "even" %}
-            {% if group.status < 3 %}
+            {% if group.status < 3 or not group.parentnode.students_can_see_points %}
               trash
             {% else %}
               {% if group.is_passing_grade %}
@@ -47,15 +47,21 @@
           {% else %}
             <td class='{{ group.get_status_student_cssclass }}'>{{ group.get_localized_student_status }}</td>
           {% endif %}
-          <td>{{ group.scaled_points|floatformat:"-2" }}/{{ group.parentnode.pointscale|floatformat:"-2" }}</td>
-        </tr>
+		  {% if group.parentnode.students_can_see_points %}
+			<td>{{ group.scaled_points|floatformat:"-2" }}/{{ group.parentnode.pointscale|floatformat:"-2" }}</td>
+          {% else %}
+			<td>{% trans "Not available" %}</td>
+		  {% endif %}
+		  </tr>
       {% endfor %}
     </tbody>
     <tfoot>
-      <tr>
-        <td colspan='3'>{% trans "Sum" %}</td>
-        <td>{{ total|floatformat:"-2" }}/{{ maxpoints|floatformat:"-2" }}</td>
-      </tr>
-    </tfoot>
+	  {% if show_sum %}
+		<tr>
+		  <td colspan='3'>{% trans "Sum" %}</td>
+		  <td>{{ total|floatformat:"-2" }}/{{ maxpoints|floatformat:"-2" }}</td>
+		</tr>
+      {% endif %}
+	</tfoot>
   </table>
 {% endblock %}

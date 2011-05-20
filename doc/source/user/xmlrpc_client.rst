@@ -11,7 +11,7 @@ Install
 
 
 Quick install
--------------
+=============
 
 You need the ``python-setuptools`` package to install the Devilry command line client. This package is installed on Mac OS X 10.5 and up.
 On Ubuntu, run the following command to install it:
@@ -38,16 +38,29 @@ Add the install path to you ``PATH`` environment variable. You can now run the c
 
     ~$ devilry-examiner.py
 
+
 Installation issues
--------------------
+===================
 
-The command ``sudo easy_install devilry-xmlrpc-client`` might ask you to update your version of setuptools, by running:
 
-::
+Update setuptools
+-----------------
 
-    easy_install -U setuptools
+The command ``sudo easy_install devilry-xmlrpc-client`` might ask you to
+update your version of setuptools, by running::
+
+        easy_install -U setuptools
 
 If so, run this command first, the run ``easy_install devilry-xmlrpc-client`` again.
+
+
+devilry-examiner.py: no such command (or similar)
+-------------------------------------------------
+
+If you do not have the ``devilry-examiner.py`` command available after installing, but
+you can execute ``/usr/local/bin/devilry-examiner.py``, you need to add ``/usr/local/bin/`` to your ``PATH``.
+
+
 
 Getting started
 #######################################################################
@@ -60,40 +73,28 @@ In order to use the Devilry command line client, you should have been given the 
     The login command to use. This will be either ``login`` or ``formlogin``. 
 
 Start by creating a Devilry checkout directory and change to it. You may give this directory any name you want. 
-In this guide, we use ``devilrycheckout``.
-
-::
+In this guide, we use ``devilrycheckout``::
 
     ~$ mkdir devilrycheckout
     ~$ cd devilrycheckout
 
-We then initalize with the server, using the **URL** given to you by your administrator:
-
-::
+We then initalize with the server, using the **URL** given to you by your administrator::
 
     ~/devilrycheckout/$ devilry-examiner.py init URL
 
-Login using:
-
-::
+Login using::
 
     ~/devilrycheckout/$ devilry-examiner.py LOGIN-COMMAND
 
-If your username in your current shell session is not the same as your username with the Devilry server, use the -u option:
-
-::
+If your username in your current shell session is not the same as your username with the Devilry server, use the -u option::
 
     ~/devilrycheckout/$ devilry-examiner.py LOGIN-COMMAND -u username
 
-The next step is to sync every delivery on every active assignment using:
-
-::
+The next step is to sync every delivery on every active assignment using::
 
     ~/devilrycheckout/$ devilry-examiner.py sync
 
-To correct assignments and publish feedback, use the ``sync``, ``info``, ``feedback``, ``publish`` and ``unpublish`` commands. You can run the ``help`` command to get more info about each of these commands, for example:
-
-:: 
+To correct assignments and publish feedback, use the ``sync``, ``info``, ``feedback``, ``publish`` and ``unpublish`` commands. You can run the ``help`` command to get more info about each of these commands, for example::
 
     ~/devilrycheckout/$ devilry-examiner.py sync --help
     ~/devilrycheckout/$ devilry-examiner.py info --help

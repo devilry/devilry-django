@@ -2,12 +2,14 @@
 {% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
 {% load i18n %}
 
-{% block heading %}{% trans "No corrected deliveries" %}{% endblock %}
+{% block heading %}{% trans "Not closed" %}{% endblock %}
 
 {% block help %}
 {{ groupcount }} of the {{ total }}
-groups where you are examiner with status "Not corrected". Groups
-where the deadline has not yet expired are excluded.
+groups where you are examiner with status "Corrected and published" and the 
+groups have not been closed. This implies that a new deadline has been given 
+(or should be given) and that the student should make a new delivery. 
+If the student shouldn't make any more deliveries, the group should be closed. 
 {% endblock %}
 
 
@@ -15,11 +17,6 @@ where the deadline has not yet expired are excluded.
   <div class="unimportant">
     Last delivery: <em>{{ group.time_of_last_delivery|date:"DATETIME_FORMAT" }}</em>
   </div>
-  {% if group.time_of_last_delivery > group.active_deadline %}
-    <div>
-      <em class="bad">{% trans "After deadline" %} ({{ group.active_deadline|date:"DATETIME_FORMAT" }})</em>
-    </div>
-  {% endif %}
   <div>
     <a href="{% url devilry-examiner-edit-feedback group.get_latest_delivery.id %}">
       {% trans "Show delivery/Create feedback" %}
@@ -29,9 +26,9 @@ where the deadline has not yet expired are excluded.
 
 
 {% block footer %}
-  {% with "not_corrected" as ident %}
-    {% with session.dashboard_examiner_not_corrected_orderdesc as orderdesc %}
-      {% with session.dashboard_examiner_not_corrected_showall as showall %}
+  {% with "not_closed" as ident %}
+    {% with session.dashboard_examiner_not_closed_orderdesc as orderdesc %}
+      {% with session.dashboard_examiner_not_closed_showall as showall %}
         {% include "devilry/examiner/dashboard/footerbuttons.django.html" %}
       {% endwith %}
     {% endwith %}
