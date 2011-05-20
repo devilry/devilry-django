@@ -22,7 +22,8 @@ def search_queryset(qryset, search, fields):
         return qryset.filter(q)
 
 def order_queryset(qryset, orderby, fields):
-    return qryset.order_by(*_filter_orderby(orderby, fields))
+    orderby_filtered = _filter_orderby(orderby, fields)
+    return qryset.order_by(*orderby_filtered)
 
 def limit_queryset(qryset, count, start):
     return qryset[start:start+count]

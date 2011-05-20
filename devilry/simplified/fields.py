@@ -46,3 +46,11 @@ class CharWithFallbackField(forms.CharField):
             return self._fallbackvalue
         else:
             return value
+
+class CharListWithFallbackField(CharWithFallbackField):
+    def to_python(self, value):
+        value = super(CharWithFallbackField, self).to_python(value)
+        if value == '':
+            return self._fallbackvalue
+        else:
+            return value.split(',')

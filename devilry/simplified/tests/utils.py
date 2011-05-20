@@ -15,6 +15,7 @@ class TestUtils(TestCase):
     def test_filter_orderby(self):
         self.assertEquals(utils._filter_orderby([], []), [])
         self.assertEquals(utils._filter_orderby([], ["a"]), [])
-        self.assertEquals(utils._filter_orderby(["a", "b", "-c"], ["a"]), ["a"])
+        self.assertEquals(utils._filter_orderby(["a", "b", "-c"], ["a"]),
+                ["a"])
         self.assertEquals(
             utils._filter_orderby(["a", "b", "-c"], ["a", "c"]), ["a", "-c"])
