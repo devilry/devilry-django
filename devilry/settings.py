@@ -60,12 +60,16 @@ ADMIN_MEDIA_PREFIX = '/media/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
-)
+## List of callables that know how to import templates from various sources.
+# For production (see  http://docs.djangoproject.com/en/dev/ref/templates/api/#template-loaders)
+#TEMPLATE_LOADERS = (
+    #('django.template.loaders.cached.Loader', (
+        #'django.template.loaders.filesystem.Loader',
+        #'django.template.loaders.app_directories.Loader',
+    #)),
+#)
+
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
