@@ -23,7 +23,3 @@ class InvalidRequestData(Exception):
             for msg in msgs:
                 r.append("- %s" % msg)
         return str('\n'.join(r))
-
-
-class InvalidRequestFormat(InvalidRequestData):
-    """ Raised when requesting an invalid data format. """
