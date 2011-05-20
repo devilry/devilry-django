@@ -17,11 +17,11 @@ class TestAssignments(TestCase):
         # search
         self.assertEquals(qry[0].short_name, all_assignments[0].short_name)
         qry = Assignments.get(examiner0, search="ek")
-        self.assertEquals(len(qry), 5)
+        self.assertEquals(len(qry), 13)
         qry = Assignments.get(examiner0, search="h0")
         self.assertEquals(len(qry), len(all_assignments))
         qry = Assignments.get(examiner0, search="1100")
-        self.assertEquals(len(qry), len(all_assignments))
+        self.assertEquals(len(qry), 7)
 
     def test_getdata_to_kwargs(self):
         from ..errors import InvalidRequestData
@@ -30,7 +30,7 @@ class TestAssignments(TestCase):
         except InvalidRequestData, e:
             print e
         self.assertEquals(kw, dict(
-                count=50, start=0, orderby="short_name",
+                count=50, start=0, orderby=["short_name"],
                 old=True, active=True, search=u'', longnamefields=False,
                 pointhandlingfields=False
             ))
