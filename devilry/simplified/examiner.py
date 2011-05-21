@@ -9,8 +9,8 @@ from restview import RestView
 class Assignments(RestView):
 
     class GetForm(forms.Form):
-        count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         format = forms.CharField(required=True)
+        count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         start = fields.PositiveIntegerWithFallbackField()
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=["short_name"])
@@ -82,10 +82,19 @@ class Assignments(RestView):
 
 class Groups(RestView):
 
+    class GetForm(forms.Form):
+        format = forms.CharField(required=True)
+        count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
+        start = fields.PositiveIntegerWithFallbackField()
+        orderby = fields.CharListWithFallbackField(
+                fallbackvalue=["short_name"])
+        deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)
+        search = forms.CharField(required=False)
+
     @classmethod
     def getqry(cls, user,
             assignment_id, count=50, start=0, orderby=["id"],
-            details=0, search=""):
+            deadlines=False, search=""):
         """
         List all groups in the given assignment. Provides the following
         information (fields) for each listed group by default:

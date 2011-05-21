@@ -22,17 +22,20 @@ class RestView(View):
 
     @classmethod
     def _serialize(self, resultQry, format):
+        kwargs = dict(use_natural_keys=True)
         if format == 'json':
             return serializers.serialize(format, resultQry.all(),
-                    ensure_ascii=False) # For utf-8 support http://docs.djangoproject.com/en/dev/topics/serialization/#notes-for-specific-serialization-formats
+                    ensure_ascii=False, # For utf-8 support http://docs.djangoproject.com/en/dev/topics/serialization/#notes-for-specific-serialization-formats
+                    indent=2, **kwargs) 
         else:
-            return serializers.serialize(format, resultQry.all())
+            return serializers.serialize(format, resultQry.all(), **kwargs)
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         try:
             form = self.__class__._getdata_to_kwargs(request.GET)
             format = form['format']
             del form['format']
+            form.update(**kwargs)
             resultQry = self.__class__.getqry(request.user, **form)
 
             try:
