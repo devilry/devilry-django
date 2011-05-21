@@ -1,71 +1,41 @@
-dojo.require("dojox.charting.Chart2D");
-dojo.require("dijit.TitlePane");
-dojo.require("dijit.Tree");
-dojo.require("dijit.layout.BorderContainer");
-dojo.require("dijit.layout.ContentPane");
-dojo.require("dijit.form.ComboBox");
-dojo.require("dojo.data.ItemFileWriteStore");
-dojo.require("dojox.data.QueryReadStore");
-dojo.require("dojox.charting.DataSeries");
-
-
-function init_page() {
-	//var main = dojo.byId("main");
-	//var help = new dijit.TitlePane({
-			//href: "{% url devilry-guiexamples-help %}",
-			//title: "Help",
-			//open: false});
-	//help.startup();
-	//main.appendChild(help.domNode);
-}
-
-dojo.addOnLoad(init_page);
+var states = [
+{"abbr":"AL","name":"Alabama","slogan":"The Heart of Dixie"},
+{"abbr":"AK","name":"Alaska","slogan":"The Land of the Midnight Sun"},
+{"abbr":"WI","name":"Wisconsin","slogan":"America's Dairyland"},
+{"abbr":"WY","name":"Wyoming","slogan":"Like No Place on Earth"}
+];
 
 
 
-makeCharts = function() {
-    var chart1 = new dojox.charting.Chart2D("simplechart");
-    chart1.addPlot("default", {
-        type: "Lines"
-    });
-    chart1.addAxis("x");
-    chart1.addAxis("y", {
-        vertical: true
-    });
-    chart1.addSeries("Series 1", [1, 2, 2, 3, 4, 5, 5, 7]);
-    chart1.render();
-};
-
-function datachart() {
-    var store = new dojox.data.QueryReadStore({
-        url:"{% url devilry-guiexamples-assignment_avg_data %}"
-    });
-    var dataseries = dojox.charting.DataSeries(store, {},
-        function(s, item) {
-            return s.getValue(item, "avg_scaled_points");
-        }
-    );
-
-    var chart1 = new dojox.charting.Chart2D("datachart");
-    chart1.addPlot("default", {
-        type: "Columns", gap:5,
+Ext.onReady(function(){
+    console.info('woohoo again!!!');
+    
+    // Define the model for a State
+    Ext.define('State', {
+        extend: "Ext.data.Model",
+        fields: [
+            {type: 'string', name: 'abbr'},
+            {type: 'string', name: 'name'},
+            {type: 'string', name: 'slogan'}
+        ]
     });
 
-    // Create X-axis labels from JSON
-    dojo.xhrGet({
-        url:"{% url devilry-guiexamples-assignment_avg_labels %}",
-        handleAs:"json",
-        load: function(labels){
-            chart1.addAxis("x", {
-                labels: labels
-            });
-        }
+    // The data store holding the states
+    var store = Ext.create('Ext.data.Store', {
+        model: 'State',
+        data: states
     });
 
-    chart1.addAxis("y", {vertical: true});
-    chart1.addSeries("Series 1", dataseries);
-    chart1.render();
-};
+    // Simple ComboBox using the data store
+    var simpleCombo = Ext.create('Ext.form.field.ComboBox', {
+        fieldLabel: 'Select a single state',
+        renderTo: 'simpleCombo',
+        displayField: 'name',
+        width: 400,
+        labelWidth: 130,
+        store: store,
+        queryMode: 'local',
+        typeAhead: true
+    });
+}); //end onReady
 
-dojo.addOnLoad(makeCharts);
-dojo.addOnLoad(datachart);

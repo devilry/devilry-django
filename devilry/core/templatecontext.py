@@ -18,4 +18,5 @@ def template_variables(request):
         'STATUS_CORRECTED_AND_PUBLISHED': AssignmentGroup.CORRECTED_AND_PUBLISHED,
         'session': request.session,
         'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
+        'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
     }

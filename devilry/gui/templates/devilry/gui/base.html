@@ -6,26 +6,53 @@
     <title>
       {% block title %}{{ page_title }}{% endblock %}
     </title>
+
     <link rel="stylesheet" href="{{ DEVILRY_THEME_URL }}/reset.css"
       type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/layout.css"
       type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="{{ DEVILRY_THEME_URL }}/colors.css"
       type="text/css" media="screen" charset="utf-8"/>
+
     {% if debug %}
-      <script src="{{ DEVILRY_RESOURCES_URL }}/dojosdk/dojo/dojo.js"
-        type="text/javascript"
-        djConfig="parseOnLoad:true, isDebug:true"></script>
-      <script type="text/javascript">
-        dojo.registerModulePath("dojodevilry", "{{ DEVILRY_RESOURCES_URL }}/dojodevilry");
-      </script>
-      <link rel="stylesheet"
-        href="{{ DEVILRY_RESOURCES_URL }}/dojosdk/dijit/themes/tundra/tundra.css"/>
     {% endif %}
+
+
+
+    <!-- ** CSS ** -->
+    <!-- base library -->
+    <link rel="stylesheet" type="text/css" href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />
+
+    <!-- overrides to base library -->
+
+
+    <!-- ** Javascript ** -->
+    <!-- ExtJS library: all widgets -->
+    <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/bootstrap.js"></script>
+
+
+    <!-- overrides to library -->
+
+    <!-- extensions -->
+
+    <!-- page specific -->
+
+    <script type="text/javascript">
+      // Path to the blank image should point to a valid location on your server
+      Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/images/default/s.gif';
+
+      Ext.onReady(function(){
+        console.info('woohoo!!!');
+      }); //end onReady
+    </script>
+
+
+
 
     {% block headextra %}{% endblock %}
   </head>
-  <body class="tundra">
+
+  <body>
     <header>
       <h1>
         {% trans "Devilry" %}

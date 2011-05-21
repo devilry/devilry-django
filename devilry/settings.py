@@ -158,8 +158,7 @@ DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
 DEVILRY_RESOURCES_URL = '/resources'
 DEVILRY_THEME_URL = '/resources/gui/themes/devilry'
 #DEVILRY_DOJO_URL = '/resources/dojo/dojo/dojo.js'
-DEVILRY_DOJO_URL = 'http://o.aolcdn.com/dojo/1.5/dojo/dojo.xd.js'
-DEVILRY_DIJIT_THEME_URL = 'http://o.aolcdn.com/dojo/1.5/dijit/themes/tundra/tundra.css'
+DEVILRY_EXTJS_URL = '/resources/ext-4.0.1'
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.auth", 
     "django.core.context_processors.debug",
