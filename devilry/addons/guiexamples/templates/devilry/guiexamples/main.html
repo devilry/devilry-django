@@ -7,18 +7,27 @@
 
 {% block headextra %}
   <script type="text/javascript">
-    {% include "devilry/guiexamples/main.js" %}
+    {% comment %}
+      {% include "devilry/guiexamples/main.js" %}
+    {% endcomment %}
+
+    Ext.onReady(function(){
+        Ext.Loader.setConfig({enabled:true});
+    });
   </script>
+
+  <script type="text/javascript"
+    src="{{ DEVILRY_RESOURCES_URL }}/addons/guiexamples/app.js"></script>
 {% endblock %}
 
 {% block main %}
 
-  Hei
+  <!--<div id="simpleCombo"></div>-->
 
-  <div id="simpleCombo"></div>
+  <!--<div id="grid-example"></div>-->
 
-  <div id="grid-example"></div>
+  <!--<div id="binding-example"></div>-->
 
-  <div id="binding-example"></div>
+  <div id="app-window"></div>
 
 {% endblock %}
