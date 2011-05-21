@@ -13,8 +13,8 @@ Ext.define('guiexamples.view.user.Edit', {
                 items: [
                     {
                         xtype: 'textfield',
-                        name : 'name',
-                        fieldLabel: 'Name'
+                        name : 'username',
+                        fieldLabel: 'User name'
                     },
                     {
                         xtype: 'textfield',

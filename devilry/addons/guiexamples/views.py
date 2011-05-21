@@ -1,13 +1,11 @@
-from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseForbidden
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.utils.simplejson import JSONEncoder
 from django.db.models import Avg
+from django.core import serializers
 
 from devilry.core.models import AssignmentGroup, Assignment
 
@@ -68,4 +66,20 @@ def assignment_avg_data(request):
             avg_scaled_points = Avg("assignmentgroups__scaled_points"))
     qry = qry.values("avg_scaled_points")
     json = QryWrapper(request.GET, qry).json_encode()
+    return HttpResponse(json, content_type="application/json")
+
+@login_required
+def all_users(request):
+    #page = int(request.GET['page'])
+    #limit = int(request.GET['limit'])
+    qry = User.objects.all()
+    items = qry.values('username', 'email')
+    json = JSONEncoder(ensure_ascii=False, indent=2).encode(
+            {'success':True, 'users': [x for x in items]})
+    return HttpResponse(json, content_type="application/json")
+
+@login_required
+def update_users(request):
+    print request.GET
+    json = JSONEncoder().encode({'success':True})
     return HttpResponse(json, content_type="application/json")

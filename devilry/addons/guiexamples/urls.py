@@ -1,4 +1,3 @@
-
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('devilry.addons.guiexamples',
@@ -17,4 +16,10 @@ urlpatterns = patterns('devilry.addons.guiexamples',
     url(r'^assignment-avg-labels$',
         'views.assignment_avg_labels',
         name='devilry-guiexamples-assignment_avg_labels'),
+    url(r'^all-users$',
+        'views.all_users',
+        name='devilry-guiexamples-all_users'),
+    url(r'^update-users$',
+        'views.update_users',
+        name='devilry-guiexamples-update_users'),
 )

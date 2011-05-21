@@ -11,16 +11,29 @@ Ext.define('guiexamples.controller.Users', {
 
     init: function() {
         this.control({
-            'userlist': {
+            'viewport > userlist': {
                 itemdblclick: this.editUser
+            },
+            'useredit button[action=save]': {
+                click: this.updateUser
             }
         });
+    },
+
+    updateUser: function(button) {
+        var win    = button.up('window'),
+            form   = win.down('form'),
+            record = form.getRecord(),
+            values = form.getValues();
+
+        record.set(values);
+        win.close();
+        this.getUsersStore().sync();
     },
 
     editUser: function(grid, record) {
         var view = Ext.widget('useredit');
         view.down('form').loadRecord(record);
-        //console.log('Double clicked on ' + record.get('name'));
     }
 
 });
