@@ -35,10 +35,10 @@ class QryWrapper(object):
 
     def json_encode(self):
         items = [x for x in self.qry]
-        result = dict(
-                numRows = self.numRows,
-                items = items)
-        json = JSONEncoder(ensure_ascii=False, indent=2).encode(result)
+        #result = dict(
+                #numRows = self.numRows,
+                #items = items)
+        json = JSONEncoder(ensure_ascii=False, indent=2).encode(items)
         return json
 
 
