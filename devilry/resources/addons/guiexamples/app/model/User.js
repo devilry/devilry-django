@@ -4,10 +4,11 @@ Ext.define('guiexamples.model.User', {
 
     proxy: {
         type: 'ajax',
-        api: {
-            read: '/guiexamples/all-users',
-            update: '/guiexamples/update-users'
-        },
+        url: '/guiexamples/all-users',
+        //api: {
+            //read: '/guiexamples/all-users',
+            //update: '/guiexamples/update-users'
+        //},
         reader: {
             type: 'json',
             root: 'users',
