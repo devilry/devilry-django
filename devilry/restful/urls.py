@@ -6,8 +6,8 @@ import examiner
 urlpatterns = patterns('devilry.restful',
     url(r'^examiner/assignments/$',
         login_required(examiner.RestAssignments.as_view()),
-        name='devilry-simplified-examiner-assignments'),
+        name='devilry-restful-examiner-assignments'),
     url(r'^examiner/groups/(?P<assignment_id>\d+)/$',
         login_required(examiner.RestGroups.as_view()),
-        name='devilry-simplified-examiner-groups'),
+        name='devilry-restful-examiner-groups'),
 )
