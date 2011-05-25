@@ -20,18 +20,19 @@ class PositiveIntegerWithFallbackField(IntegerWithFallbackField):
                 min_value=0, *args, **kwargs)
 
 
-class BooleanWithFallbackField(forms.NullBooleanField):
+class BooleanWithFallbackField(forms.Field):
     def __init__(self, fallbackvalue=False, *args, **kwargs):
         self._fallbackvalue = fallbackvalue
         super(BooleanWithFallbackField, self).__init__(
                 required=False, *args, **kwargs)
 
     def to_python(self, value):
-        value = super(BooleanWithFallbackField, self).to_python(value)
-        if value == None:
-            return self._fallbackvalue
+        if value in ('0', 'False'):
+            return False
+        elif value in ('1', 'True'):
+            return True
         else:
-            return value
+            return self._fallbackvalue
 
 
 class CharWithFallbackField(forms.CharField):
