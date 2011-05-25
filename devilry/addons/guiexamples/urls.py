@@ -1,4 +1,7 @@
 from django.conf.urls.defaults import *
+from django.contrib.auth.decorators import login_required
+
+from views import RestUser
 
 urlpatterns = patterns('devilry.addons.guiexamples',
     url(r'^$',
@@ -16,10 +19,16 @@ urlpatterns = patterns('devilry.addons.guiexamples',
     url(r'^assignment-avg-labels$',
         'views.assignment_avg_labels',
         name='devilry-guiexamples-assignment_avg_labels'),
-    url(r'^all-users$',
-        'views.all_users',
-        name='devilry-guiexamples-all_users'),
-    url(r'^update-users$',
-        'views.update_users',
-        name='devilry-guiexamples-update_users'),
+    url(r'^all-users/$',
+        login_required(RestUser.as_view()),
+        name='devilry-guiexamples-restusers-get-all'),
+    url(r'^all-users/(?P<username>\w+)$',
+        login_required(RestUser.as_view()),
+        name='devilry.guiexamples.RestUsers'),
+    #url(r'^all-users/$',
+        #'views.all_users',
+        #name='devilry-guiexamples-all_users'),
+    #url(r'^all-users/(?P<username>\w+)$',
+        #'views.update_user',
+        #name='devilry-guiexamples-update_user'),
 )

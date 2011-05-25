@@ -1,13 +1,15 @@
+from django.views.generic import View
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse
-from django.utils.simplejson import JSONEncoder
+from django.utils.simplejson import JSONEncoder, loads
 from django.db.models import Avg
-from django.core import serializers
+from django.forms import ModelForm
 
 from devilry.core.models import AssignmentGroup, Assignment
+
 
 
 @login_required
@@ -68,18 +70,53 @@ def assignment_avg_data(request):
     json = QryWrapper(request.GET, qry).json_encode()
     return HttpResponse(json, content_type="application/json")
 
-@login_required
-def all_users(request):
-    #page = int(request.GET['page'])
-    #limit = int(request.GET['limit'])
-    qry = User.objects.all()
-    items = qry.values('username', 'email')
-    json = JSONEncoder(ensure_ascii=False, indent=2).encode(
-            {'success':True, 'users': [x for x in items]})
-    return HttpResponse(json, content_type="application/json")
+#@login_required
+#def all_users(request):
+    ##page = int(request.GET['page'])
+    ##limit = int(request.GET['limit'])
+    ##if request.method == "POST":
+        ##json = JSONEncoder().encode({'success':True})
+        ##return HttpResponse(json, content_type="application/json")
+    #if request.method == "GET":
+        #qry = User.objects.all()
+        #items = qry.values('username', 'email')
+        #json = JSONEncoder(ensure_ascii=False, indent=2).encode(
+                #{'success':True, 'users': [x for x in items]})
+        #return HttpResponse(json, content_type="application/json")
+    #else:
+        #raise Exception(request.method)
 
-@login_required
-def update_users(request):
-    print request.GET
-    json = JSONEncoder().encode({'success':True})
-    return HttpResponse(json, content_type="application/json")
+#@login_required
+#def update_user(request, username):
+    #print dir(request)
+    #json = JSONEncoder().encode({'success':True})
+    #return HttpResponse(json, content_type="application/json")
+
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model = User
+
+class RestUser(View):
+    def get(self, request, username=None):
+        qry = User.objects.all()
+        items = qry.values('username', 'email')
+        json = JSONEncoder(ensure_ascii=False, indent=2).encode(
+                {'success':True, 'users': [x for x in items]})
+        return HttpResponse(json, content_type="application/json")
+
+    def put(self, request, username):
+        #print username
+        #print dir(request)
+        #print request.raw_post_data 
+        data = loads(request.raw_post_data)
+        print data
+
+        user = get_object_or_404(User, username=username)
+        f = UserForm(data, instance=user)
+        #print dir(f)
+        print f.instance.__dict__
+        #updated_user = f.save()
+        json = JSONEncoder().encode({'success':True})
+        return HttpResponse(json, content_type="application/json")

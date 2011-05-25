@@ -1,10 +1,11 @@
 Ext.define('guiexamples.model.User', {
     extend: 'Ext.data.Model',
     fields: ['username', 'email'],
+    idProperty: 'username',
 
     proxy: {
-        type: 'ajax',
-        url: '/guiexamples/all-users',
+        type: 'rest',
+        url: '/guiexamples/all-users/',
         //api: {
             //read: '/guiexamples/all-users',
             //update: '/guiexamples/update-users'
@@ -12,7 +13,8 @@ Ext.define('guiexamples.model.User', {
         reader: {
             type: 'json',
             root: 'users',
-            successProperty: 'success'
-        }
+            //successProperty: 'success'
+        },
+        writer: 'json'
     }
 });

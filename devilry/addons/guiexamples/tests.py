@@ -1,23 +1,19 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+from django.test.client import Client
+from django.core.urlresolvers import reverse
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+class RestUserTest(TestCase):
+    fixtures = ["tests/guiexamples/users.json"]
 
->>> 1 + 1 == 2
-True
-"""}
+    def test_get(self):
+        #url = reverse("devilry.guiexamples.RestUsers",
+                #kwargs=dict(username="student1"))
+        url = reverse("devilry-guiexamples-assignment_avg_labels")
+        c = Client()
+        c.login(username="student1", password="test")
 
+        r = c.get(url)
+        print r.content
+        #self.assertTrue("Statistics for student0 in duck1100.h01" in r.content)
+        #self.assertContains(r, "No deliveries", 1)

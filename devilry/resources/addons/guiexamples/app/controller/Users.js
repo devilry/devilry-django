@@ -21,14 +21,14 @@ Ext.define('guiexamples.controller.Users', {
     },
 
     updateUser: function(button) {
-        var win    = button.up('window'),
-            form   = win.down('form'),
+        var win = button.up('window'),
+            form = win.down('form'),
             record = form.getRecord(),
             values = form.getValues();
 
         record.set(values);
         win.close();
-        this.getUsersStore().sync();
+        //this.getUsersStore().sync();
     },
 
     editUser: function(grid, record) {
