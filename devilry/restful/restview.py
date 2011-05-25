@@ -1,8 +1,20 @@
 from django.views.generic import View
-from django.core import serializers
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from errors import InvalidRequestData
+from devilry.ui.http import HttpJsonResponse, HttpXmlResponse
+from errors import InvalidRequestDataError, InvalidRequestFormatError
+from serialize import serialize_valuesQuerySet
+
+
+
+def _response(resultQry, format):
+    if format == 'xml':
+        return HttpXmlResponse(resultQry)
+    elif format == 'json':
+        return HttpJsonResponse(resultQry)
+    else:
+        return HttpResponse(resultQry,
+                content_type='text/plain; encoding=utf-8')
 
 
 class RestView(View):
@@ -11,47 +23,32 @@ class RestView(View):
         """
         Converts the ``data`` to a validated :class:`GetForm`.
 
-        Throws :class:`errors.InvalidRequestData` if the form does not
+        Throws :class:`errors.InvalidRequestDataError` if the form does not
         validate.
         """
         form = cls.GetForm(getdata)
         if form.is_valid():
             return form.cleaned_data
         else:
-            raise InvalidRequestData(form)
-
-    @classmethod
-    def _serialize(self, resultQry, format):
-        kwargs = dict(use_natural_keys=True)
-        if format == 'json':
-            return serializers.serialize(format, resultQry.all(),
-                    ensure_ascii=False, # For utf-8 support http://docs.djangoproject.com/en/dev/topics/serialization/#notes-for-specific-serialization-formats
-                    indent=2, **kwargs) 
-        else:
-            return serializers.serialize(format, resultQry.all(), **kwargs)
+            raise InvalidRequestDataError(form)
 
     def get(self, request, **kwargs):
         try:
             form = self.__class__._getdata_to_kwargs(request.GET)
-            format = form['format']
-            del form['format']
-            form.update(**kwargs)
-            resultQry = self.__class__.getqry(request.user, **form)
+        except InvalidRequestDataError, e:
+            return HttpResponseBadRequest("Bad request: %s" % e,
+                    content_type='text/plain; encoding=utf-8')
 
-            try:
-                result = self.__class__._serialize(resultQry, format)
-            except KeyError, e:
-                return HttpResponseBadRequest(
-                    "Bad request: Unknown format: %s" % format)
+        format = form['format']
+        del form['format'] # Remove format, since it is not a part of the GetForm
+        form.update(**kwargs)
+        fields, resultQry = self.__class__.getqry(request.user, **form)
 
-            if format == 'xml':
-                return HttpResponse(result,
-                        content_type='text/xml; encoding=utf-8')
-            elif format == 'json':
-                return HttpResponse(result,
-                        content_type='application/json; encoding=utf-8')
-            else:
-                return HttpResponse(result,
-                        content_type='text/plain; encoding=utf-8')
-        except InvalidRequestData, e:
-            return HttpResponseBadRequest("Bad request: %s" % e)
+        try:
+            resultQry = serialize_valuesQuerySet(fields, resultQry, format)
+        except InvalidRequestFormatError, e:
+            return HttpResponseBadRequest(
+                "Bad request: %s" % format,
+                content_type='text/plain; encoding=utf-8')
+
+        return _response(resultQry, format)

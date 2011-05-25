@@ -3,6 +3,7 @@ import utils
 
 
 class Assignments(object):
+
     @classmethod
     def getqry(cls, user,
             count=50, start=0, orderby=["short_name"],
@@ -47,20 +48,19 @@ class Assignments(object):
 
         :return: The requested assignments as a QuerySet.
         """
-        orderfields = ["short_name",
+        fields = ["id", "short_name",
                 "parentnode__short_name",
                 "parentnode__parentnode__short_name"]
         if longnamefields:
-            orderfields.append("long_name")
-            orderfields.append("parentnode__long_name")
-            orderfields.append("parentnode__parentnode__long_name")
-        searchfields = ["id"] + orderfields
+            fields.append("long_name")
+            fields.append("parentnode__long_name")
+            fields.append("parentnode__parentnode__long_name")
+        searchfields = fields
         qry = Assignment.published_where_is_examiner(user, old=old,
                 active=active)
-        qry = utils.search_queryset(qry, search, searchfields)
-        qry = utils.order_queryset(qry, orderby, orderfields)
-        qry = qry.distinct()
-        return utils.limit_queryset(qry, count, start)
+        qry = utils.qry_common(qry, fields, search, searchfields, orderby,
+                count, start)
+        return fields, qry
 
 
 class Groups(object):
@@ -107,10 +107,9 @@ class Groups(object):
         :return: The requested groups as a QuerySet.
         """
         searchfields = ['name', 'candidates__student__username']
-        orderfields = ['id', 'name']
+        fields = ['id', 'name']
         qry = AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode=assignment_id)
-        qry = utils.search_queryset(qry, search, searchfields)
-        qry = utils.order_queryset(qry, orderby, orderfields)
-        qry = qry.distinct()
-        return utils.limit_queryset(qry, count, start)
+        qry = utils.qry_common(qry, fields, search, searchfields, orderby,
+                count, start)
+        return fields, qry

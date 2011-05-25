@@ -1,5 +1,4 @@
-
-class InvalidRequestData(Exception):
+class InvalidRequestDataError(Exception):
     def __init__(self, form):
         self.form = form
 
@@ -21,3 +20,7 @@ class InvalidRequestData(Exception):
             for msg in msgs:
                 r.append("- %s" % msg)
         return str('\n'.join(r))
+
+
+class InvalidRequestFormatError(Exception):
+    """ Raised when an invalid result-format is requested. """
