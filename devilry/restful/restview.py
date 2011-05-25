@@ -45,8 +45,13 @@ class RestView(View):
                     "Bad request: Unknown format: %s" % format)
 
             if format == 'xml':
-                return HttpResponse(result, content_type='text/xml')
+                return HttpResponse(result,
+                        content_type='text/xml; encoding=utf-8')
+            elif format == 'json':
+                return HttpResponse(result,
+                        content_type='application/json; encoding=utf-8')
             else:
-                return HttpResponse(result, content_type='text/plain')
+                return HttpResponse(result,
+                        content_type='text/plain; encoding=utf-8')
         except InvalidRequestData, e:
             return HttpResponseBadRequest("Bad request: %s" % e)
