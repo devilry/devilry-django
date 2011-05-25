@@ -17,19 +17,11 @@ class TestAssignments(TestCase):
         # search
         self.assertEquals(qry[0].short_name, all_assignments[0].short_name)
         qry = Assignments.getqry(examiner0, search="ek")
-        self.assertEquals(len(qry), 13)
+        self.assertEquals(len(qry), 9)
         qry = Assignments.getqry(examiner0, search="h0")
         self.assertEquals(len(qry), len(all_assignments))
         qry = Assignments.getqry(examiner0, search="1100")
-        self.assertEquals(len(qry), 7)
-
-    def test_getdata_to_kwargs(self):
-        kw = Assignments._getdata_to_kwargs({'format':'json'})
-        self.assertEquals(kw, dict(
-                count=50, start=0, orderby=["short_name"],
-                old=True, active=True, search=u'', longnamefields=False,
-                pointhandlingfields=False, format='json'
-            ))
+        self.assertEquals(len(qry), 4)
 
 
 

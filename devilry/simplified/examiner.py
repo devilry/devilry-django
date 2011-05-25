@@ -1,25 +1,8 @@
-from django import forms
-
 from devilry.core.models import Assignment, AssignmentGroup
 import utils
-import fields
-from restview import RestView
 
 
-class Assignments(RestView):
-
-    class GetForm(forms.Form):
-        format = forms.CharField(required=True)
-        count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
-        start = fields.PositiveIntegerWithFallbackField()
-        orderby = fields.CharListWithFallbackField(
-                fallbackvalue=["short_name"])
-        old = fields.BooleanWithFallbackField(fallbackvalue=True)
-        active = fields.BooleanWithFallbackField(fallbackvalue=True)
-        search = forms.CharField(required=False)
-        longnamefields = fields.BooleanWithFallbackField()
-        pointhandlingfields = fields.BooleanWithFallbackField()
-
+class Assignments(object):
     @classmethod
     def getqry(cls, user,
             count=50, start=0, orderby=["short_name"],
@@ -80,16 +63,7 @@ class Assignments(RestView):
         return utils.limit_queryset(qry, count, start)
 
 
-class Groups(RestView):
-
-    class GetForm(forms.Form):
-        format = forms.CharField(required=True)
-        count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
-        start = fields.PositiveIntegerWithFallbackField()
-        orderby = fields.CharListWithFallbackField(
-                fallbackvalue=["short_name"])
-        deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)
-        search = forms.CharField(required=False)
+class Groups(object):
 
     @classmethod
     def getqry(cls, user,

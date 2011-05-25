@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     #(r'^superadmin/doc/', include('django.contrib.admindocs.urls')),
 
     (r'^superadmin/', include(admin.site.urls)),
-    (r'^simplified/', include('devilry.simplified.urls')),
+    (r'^restful/', include('devilry.restful.urls')),
     (r'^ui/', include('devilry.ui.urls')),
     (r'^student/', include('devilry.addons.student.urls')),
     (r'^examiner/', include('devilry.addons.examiner.urls')),
