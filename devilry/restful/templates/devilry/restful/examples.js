@@ -1,5 +1,6 @@
 Ext.require('devilry.restful.view.assignments.Grid');
 Ext.require('devilry.restful.model.Assignment');
+Ext.require('devilry.restful.model.Subject');
 Ext.require('devilry.restful.store.Assignments');
 
 
@@ -66,7 +67,7 @@ function ajaxGrid()
 function tree()
 {
     var store = Ext.create('Ext.data.TreeStore', {
-        //model: 'devilry.restful.model.Subject',
+        model: 'devilry.restful.model.Subject',
         proxy: {
             type: 'ajax',
             url: '/restful/examiner/tree/',
@@ -76,11 +77,6 @@ function tree()
                 root: 'items'
             },
         },
-        fields: [
-            {name:'id', type:'string'},
-            {name:'short_name', type:'string'},
-            {name:'long_name', type:'string'}
-        ],
         root: {
             nodeType:'async',            
             short_name: 'Subjects',
@@ -91,38 +87,17 @@ function tree()
 
     var tree = Ext.create('Ext.tree.Panel', {
         store: store,
-        //viewConfig: {
-            //plugins: {
-                //ptype: 'treeviewdragdrop'
-            //}
-        //},
         renderTo: 'subjecttree',
         height: 300,
         width: 250,
         title: 'Subjects',
         useArrows: true,
-        displayField: 'short_name',
-        //columns: [{
-                //xtype: 'treecolumn',
-                //text: 'Name',
-                //dataIndex: 'short_name',
-                //width: 150
-            //}]
-        
-        //dockedItems: [{
-            //xtype: 'toolbar',
-            //items: [{
-                //text: 'Expand All',
-                //handler: function(){
-                    //tree.expandAll();
-                //}
-            //}, {
-                //text: 'Collapse All',
-                //handler: function(){
-                    //tree.collapseAll();
-                //}
-            //}]
-        //}]
+        columns: [{
+                xtype: 'treecolumn',
+                text: 'Name',
+                dataIndex: 'short_name',
+                width: 150
+            }]
     });
 
 }
