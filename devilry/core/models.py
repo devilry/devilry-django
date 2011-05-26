@@ -81,7 +81,7 @@ class AbstractIsExaminer(object):
     @classmethod
     def q_is_examiner(cls, user_obj):
         """
-        Return a django.models.Q object which matches assignments
+        Return a django.models.Q object which matches items
         where the given user is examiner.
         """
         raise NotImplementedError()
@@ -415,7 +415,7 @@ class Node(models.Model, BaseNode):
         return Node.objects.get(**Node.get_by_path_kw(path.split('.')))
 
 
-class Subject(models.Model, BaseNode):
+class Subject(models.Model, BaseNode, AbstractIsExaminer):
     """
 
     .. attribute:: parentnode
@@ -477,6 +477,22 @@ class Subject(models.Model, BaseNode):
 
     def clean(self, *args, **kwargs):
         super(Subject, self).clean(*args, **kwargs)
+
+
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(periods__assignments__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(periods__end_time__gte = now)
+        if not old:
+            q &= ~Q(periods__end_time__lt = now)
+        return q
+
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        return Q(periods__assignments__assignmentgroups__examiners=user_obj)
 
 
 class Period(models.Model, BaseNode):

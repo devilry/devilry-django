@@ -213,6 +213,42 @@ class TestSubject(TestCase):
         self.assertRaises(Subject.DoesNotExist, Subject.get_by_path,
                 'doesnotexist')
 
+    def test_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        q = Subject.where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'inf1100')
+
+        ag = create_from_path(
+                'ifi:inf1010.spring10.oblig1.student1')
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Subject.where_is_examiner(examiner1).order_by('short_name')
+        self.assertEquals(q.count(), 2)
+        self.assertEquals(q[0].short_name, 'inf1010')
+        self.assertEquals(q[1].short_name, 'inf1100')
+
+    def test_published_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        q = Subject.published_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'inf1100')
+
+        ag = create_from_path(
+                'ifi:inf1010.spring10.oblig1.student1')
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
+        self.assertEquals(q.count(), 2)
+        self.assertEquals(q[0].short_name, 'inf1010')
+        self.assertEquals(q[1].short_name, 'inf1100')
+
+        assignment1010 = ag.parentnode
+        assignment1010.publishing_time = datetime.now() + timedelta(10)
+        assignment1010.save()
+        q = Subject.published_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+
 
 class TestPeriod(TestCase):
     fixtures = ['tests/core/users.json', 'tests/core/core.json']
