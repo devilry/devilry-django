@@ -257,7 +257,7 @@
     </dl>
   </div>
 
-  {% if not assignment.anonymous %}
+  {% if not delivery.assignment_group.parentnode.anonymous %}
     <div class="booring-message metainfo-item">
       <h2 class="messageheader">{% trans "Emails" %}</h2>
       <dl>
