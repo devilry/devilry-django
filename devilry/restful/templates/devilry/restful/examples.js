@@ -77,9 +77,9 @@ function tree()
             },
         },
         fields: [
-            {name: 'id', type:'int'},
-            {name: 'short_name', type:'string'},
-            {name: 'long_name', type:'string'}
+            {name:'id', type:'string'},
+            {name:'short_name', type:'string'},
+            {name:'long_name', type:'string'}
         ],
         root: {
             nodeType:'async',            
