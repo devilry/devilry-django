@@ -478,7 +478,6 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer):
     def clean(self, *args, **kwargs):
         super(Subject, self).clean(*args, **kwargs)
 
-
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
@@ -489,13 +488,12 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer):
             q &= ~Q(periods__end_time__lt = now)
         return q
 
-
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(periods__assignments__assignmentgroups__examiners=user_obj)
 
 
-class Period(models.Model, BaseNode):
+class Period(models.Model, BaseNode, AbstractIsExaminer):
     """
     A Period represents a period of time, for example a half-year term
     at a university.
@@ -626,6 +624,20 @@ class Period(models.Model, BaseNode):
         """
         now = datetime.now()
         return self.start_time < now and self.end_time > now
+
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(assignments__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(end_time__gte = now)
+        if not old:
+            q &= ~Q(end_time__lt = now)
+        return q
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        return Q(assignments__assignmentgroups__examiners=user_obj)
 
 
 

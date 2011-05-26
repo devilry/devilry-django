@@ -280,6 +280,36 @@ class TestPeriod(TestCase):
         self.assertRaises(ValueError, Period.get_by_path,
                 'does.not.exist')
 
+    def test_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        q = Period.where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+        self.assertEquals(q[0].short_name, 'looong')
+
+        ag = create_from_path(
+                'ifi:inf1010.spring10.oblig1.student1')
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Period.where_is_examiner(examiner1).order_by('short_name')
+        self.assertEquals(q.count(), 2)
+        self.assertEquals(q[0].short_name, 'looong')
+        self.assertEquals(q[1].short_name, 'spring10')
+
+    def test_published_where_is_examiner(self):
+        examiner1 = User.objects.get(username='examiner1')
+        ag = create_from_path(
+                'ifi:inf1010.spring10.oblig1.student1')
+        ag.examiners.add(examiner1)
+        ag.save()
+        q = Period.where_is_examiner(examiner1).order_by('short_name')
+        self.assertEquals(q.count(), 2)
+
+        assignment1010 = ag.parentnode
+        assignment1010.publishing_time = datetime.now() + timedelta(10)
+        assignment1010.save()
+        q = Period.published_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 1)
+
 
 class TestAssignment(TestCase):
     fixtures = ['tests/core/users.json', 'tests/core/core.json']
