@@ -32,6 +32,9 @@ class RestView(View):
         else:
             raise InvalidRequestDataError(form)
 
+    def restultqry_to_list(self, resultQry):
+        return list(resultQry)
+
     def get(self, request, **kwargs):
         try:
             form = self.__class__._getdata_to_kwargs(request.GET)
@@ -44,11 +47,13 @@ class RestView(View):
         form.update(**kwargs) # add variables from PATH
         fields, resultQry = self.__class__.getqry(request.user, **form)
 
+        resultList = self.restultqry_to_list(resultQry.values(*fields))
+
         try:
-            resultQry = serialize_result(fields, resultQry, format)
+            resultList = serialize_result(fields, resultList, format)
         except InvalidRequestFormatError, e:
             return HttpResponseBadRequest(
                 "Bad request: %s" % format,
                 content_type='text/plain; encoding=utf-8')
 
-        return _response(resultQry, format)
+        return _response(resultList, format)
