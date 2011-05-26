@@ -26,6 +26,21 @@ class Subjects(object):
         return GetQryResult(fields, qry)
 
 
+class Periods(object):
+    default_orderby = ['long_name']
+
+    @classmethod
+    def getqry(cls, user,
+            limit=50, start=0, query="",
+            orderby=default_orderby):
+        fields = ['id', 'short_name', 'long_name', 'parentnode__short_name']
+        queryfields = ['short_name', 'long_name', 'parentnode__short_name']
+        qry = models.Period.published_where_is_examiner(user)
+        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
+                limit, start)
+        return GetQryResult(fields, qry)
+
+
 class Assignments(object):
     default_orderby = ["short_name"]
 

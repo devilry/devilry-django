@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from devilry.core import models
-from devilry.simplified.examiner import Subjects, Assignments, Groups
+from devilry.simplified.examiner import Subjects, Periods, Assignments, Groups
 
 
 class TestExaminerSubjects(TestCase):
@@ -22,6 +22,22 @@ class TestExaminerSubjects(TestCase):
         self.assertEquals(len(qry), len(subjects))
         qry = Subjects.getqry(examiner0, query="1100").qry
         self.assertEquals(len(qry), 1)
+
+class TestExaminerPeriods(TestCase):
+    fixtures = ["tests/simplified/data.json"]
+
+    def test_get(self):
+        examiner0 = User.objects.get(username="examiner0")
+        periods = models.Period.published_where_is_examiner(examiner0).order_by("short_name")
+        qry = Periods.getqry(examiner0).qry
+        self.assertEquals(len(qry), len(periods))
+        self.assertEquals(qry[0].short_name, periods[0].short_name)
+
+        # query
+        qry = Periods.getqry(examiner0, query="h01").qry
+        self.assertEquals(len(qry), 3)
+        qry = Periods.getqry(examiner0, query="duck1").qry
+        self.assertEquals(len(qry), 2)
 
 
 class TestExaminerAssignments(TestCase):
