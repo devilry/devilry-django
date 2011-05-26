@@ -66,12 +66,24 @@ function ajaxGrid()
 function tree()
 {
     var store = Ext.create('Ext.data.TreeStore', {
+        //model: 'devilry.restful.model.Subject',
         proxy: {
             type: 'ajax',
-            url: '/restful/examiner/assignments/'
+            url: '/restful/examiner/tree/',
+            //appendId: true,
+            reader: {
+                type: 'json',
+                root: 'items'
+            },
         },
+        fields: [
+            {name: 'id', type:'int'},
+            {name: 'short_name', type:'string'},
+            {name: 'long_name', type:'string'}
+        ],
         root: {
-            text: 'root',
+            nodeType:'async',            
+            short_name: 'Subjects',
             id: 'src',
             expanded: true
         }
@@ -79,30 +91,38 @@ function tree()
 
     var tree = Ext.create('Ext.tree.Panel', {
         store: store,
-        viewConfig: {
-            plugins: {
-                ptype: 'treeviewdragdrop'
-            }
-        },
-        renderTo: 'tree-div',
+        //viewConfig: {
+            //plugins: {
+                //ptype: 'treeviewdragdrop'
+            //}
+        //},
+        renderTo: 'subjecttree',
         height: 300,
         width: 250,
-        title: 'Files',
+        title: 'Subjects',
         useArrows: true,
-        dockedItems: [{
-            xtype: 'toolbar',
-            items: [{
-                text: 'Expand All',
-                handler: function(){
-                    tree.expandAll();
-                }
-            }, {
-                text: 'Collapse All',
-                handler: function(){
-                    tree.collapseAll();
-                }
-            }]
-        }]
+        displayField: 'short_name',
+        //columns: [{
+                //xtype: 'treecolumn',
+                //text: 'Name',
+                //dataIndex: 'short_name',
+                //width: 150
+            //}]
+        
+        //dockedItems: [{
+            //xtype: 'toolbar',
+            //items: [{
+                //text: 'Expand All',
+                //handler: function(){
+                    //tree.expandAll();
+                //}
+            //}, {
+                //text: 'Collapse All',
+                //handler: function(){
+                    //tree.collapseAll();
+                //}
+            //}]
+        //}]
     });
 
 }

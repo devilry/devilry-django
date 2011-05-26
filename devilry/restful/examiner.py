@@ -6,12 +6,30 @@ import fields
 from restview import RestView
 
 
+
 class GetFormBase(forms.Form):
     format = fields.FormatField()
     query = forms.CharField(required=False)
     limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
     start = fields.PositiveIntegerWithFallbackField()
     #page = fields.PositiveIntegerWithFallbackField()
+
+
+class RestSubjects(Subjects, RestView):
+
+    def restultqry_to_list(self, resultQry):
+        tpl = 'src/%(short_name)s'
+        def filter_func(assignmentDict):
+            assignmentDict.update(id=tpl % assignmentDict,
+                    text=assignmentDict['short_name'])
+            #assignmentDict.update(id=tpl % assignmentDict)
+            return assignmentDict
+        return filter(filter_func, resultQry)
+
+    class GetForm(GetFormBase):
+        orderby = fields.CharListWithFallbackField(
+                fallbackvalue=Subjects.default_orderby)
+
 
 class RestAssignments(Assignments, RestView):
 
@@ -37,9 +55,3 @@ class RestGroups(Groups, RestView):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Groups.default_orderby)
         deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)
-
-
-class RestSubjects(Subjects, RestView):
-    class GetForm(GetFormBase):
-        orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Subjects.default_orderby)
