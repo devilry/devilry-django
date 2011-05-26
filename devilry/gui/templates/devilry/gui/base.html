@@ -19,33 +19,20 @@
 
 
 
-    <!-- ** CSS ** -->
-    <!-- base library -->
+    <!-- ** ExtJS ** -->
     <link rel="stylesheet" type="text/css" href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />
 
-    <!-- overrides to base library -->
-
-
-    <!-- ** Javascript ** -->
-    <!-- ExtJS library: all widgets -->
-    <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/bootstrap.js"></script>
-
-
-    <!-- overrides to library -->
-
-    <!-- extensions -->
-
-    <!-- page specific -->
-
+    <script type="text/javascript" src="{{ DEVILRY_EXTJS_URL }}/ext-all-debug.js"></script>
     <script type="text/javascript">
       // Path to the blank image should point to a valid location on your server
       Ext.BLANK_IMAGE_URL = '{{ DEVILRY_EXTJS_URL }}/resources/images/default/s.gif';
-
-      Ext.onReady(function(){
-        console.info('woohoo!!!');
-      }); //end onReady
+      Ext.Loader.setConfig({
+        enabled:true,
+        paths: {
+          'devilry': '/resources/js/devilry'
+        }
+      });
     </script>
-
 
 
 

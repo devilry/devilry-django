@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 import examiner
 
 urlpatterns = patterns('devilry.restful',
+    url(r'^examples$',
+        'views.examples',
+        name='devilry-restful-examples'),
     url(r'^examiner/assignments/$',
         login_required(examiner.RestAssignments.as_view()),
         name='devilry-restful-examiner-assignments'),

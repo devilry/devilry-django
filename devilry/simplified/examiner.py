@@ -15,8 +15,8 @@ class Assignments(object):
 
             - id
             - short_name
-            - period__short_name (parentnode.short_name)
-            - assignment__short_name (parentnode.parentnode.short_name)
+            - parentnode__short_name *(Period short_name)*
+            - parentnode__parentnode__short_name *(Subject short_name)*
 
         For documentation on the fields, see :class:`devilry.core.models.Assignment`.
 

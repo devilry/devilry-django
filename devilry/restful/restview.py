@@ -40,8 +40,8 @@ class RestView(View):
                     content_type='text/plain; encoding=utf-8')
 
         format = form['format']
-        del form['format'] # Remove format, since it is not a part of the GetForm
-        form.update(**kwargs)
+        del form['format'] # Remove format, since it is not an parameter for getqry
+        form.update(**kwargs) # add variables from PATH
         fields, resultQry = self.__class__.getqry(request.user, **form)
 
         try:

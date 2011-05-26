@@ -9,7 +9,7 @@ from restview import RestView
 class RestAssignments(Assignments, RestView):
 
     class GetForm(forms.Form):
-        format = forms.CharField(required=True)
+        format = fields.FormatField()
         count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         start = fields.PositiveIntegerWithFallbackField()
         orderby = fields.CharListWithFallbackField(
@@ -24,7 +24,7 @@ class RestAssignments(Assignments, RestView):
 class RestGroups(Groups, RestView):
 
     class GetForm(forms.Form):
-        format = forms.CharField(required=True)
+        format = fields.FormatField()
         count = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         start = fields.PositiveIntegerWithFallbackField()
         orderby = fields.CharListWithFallbackField(
