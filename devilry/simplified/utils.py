@@ -41,5 +41,4 @@ def qry_common(qry, fields, search, searchfields, orderby, count, start):
     qry = order_queryset(qry, orderby, fields)
     qry = qry.distinct()
     qry = limit_queryset(qry, count, start)
-    qry = qry.values(*fields)
     return qry

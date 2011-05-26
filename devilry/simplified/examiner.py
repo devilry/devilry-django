@@ -1,13 +1,38 @@
-from devilry.core.models import Assignment, AssignmentGroup
+from devilry.core import models
 import utils
 
 
-class Assignments(object):
+class GetQryResult(object):
+    def __init__(self, fields, qry):
+        self.fields = fields
+        self.qry = qry
+
+    def valuesQryset(self):
+        return self.qry.values(*self.fields)
+
+
+class Subjects(object):
+    default_orderby = ['long_name']
 
     @classmethod
     def getqry(cls, user,
-            limit=50, start=0, orderby=["short_name"],
-            old=True, active=True, query="", longnamefields=False,
+            limit=50, start=0, query="",
+            orderby=default_orderby):
+        fields = ['id', 'short_name', 'long_name']
+        queryfields = ['short_name', 'long_name']
+        qry = models.Subject.published_where_is_examiner(user)
+        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
+                limit, start)
+        return GetQryResult(fields, qry)
+
+
+class Assignments(object):
+    default_orderby = ["short_name"]
+
+    @classmethod
+    def getqry(cls, user,
+            limit=50, start=0, query="", orderby=default_orderby,
+            old=True, active=True, longnamefields=False,
             pointhandlingfields=False):
         """
         List all old and active assignments. Provides the following
@@ -56,18 +81,19 @@ class Assignments(object):
             fields.append('parentnode__long_name')
             fields.append('parentnode__parentnode__long_name')
         queryfields = fields
-        qry = Assignment.published_where_is_examiner(user, old=old,
+        qry = models.Assignment.published_where_is_examiner(user, old=old,
                 active=active)
         qry = utils.qry_common(qry, fields, query, queryfields, orderby,
                 limit, start)
-        return fields, qry
+        return GetQryResult(fields, qry)
 
 
 class Groups(object):
+    default_orderby = ['id']
 
     @classmethod
     def getqry(cls, user,
-            assignment_id, limit=50, start=0, orderby=["id"],
+            assignment_id, limit=50, start=0, orderby=default_orderby,
             deadlines=False, query=""):
         """
         List all groups in the given assignment. Provides the following
@@ -108,8 +134,8 @@ class Groups(object):
         """
         queryfields = ['name', 'candidates__student__username']
         fields = ['id', 'name']
-        qry = AssignmentGroup.published_where_is_examiner(user).filter(
+        qry = models.AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode=assignment_id)
         qry = utils.qry_common(qry, fields, query, queryfields, orderby,
                 limit, start)
-        return fields, qry
+        return GetQryResult(fields, qry)

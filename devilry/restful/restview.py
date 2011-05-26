@@ -45,12 +45,11 @@ class RestView(View):
         format = form['format']
         del form['format'] # Remove format, since it is not an parameter for getqry
         form.update(**kwargs) # add variables from PATH
-        fields, resultQry = self.__class__.getqry(request.user, **form)
-
-        resultList = self.restultqry_to_list(resultQry.values(*fields))
+        getqryresult = self.__class__.getqry(request.user, **form)
+        resultList = self.restultqry_to_list(getqryresult.valuesQryset())
 
         try:
-            resultList = serialize_result(fields, resultList, format)
+            resultList = serialize_result(getqryresult.fields, resultList, format)
         except InvalidRequestFormatError, e:
             return HttpResponseBadRequest(
                 "Bad request: %s" % format,

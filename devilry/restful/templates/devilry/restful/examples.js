@@ -1,56 +1,6 @@
-//Ext.require([
-    //'Ext.grid.*',
-    //'Ext.data.*',
-    //'Ext.util.*',
-    //'Ext.state.*',
-    //'Ext.panel.*',
-    //'Ext.layout.container.Border'
-//]);
-
-
-
-
-function comboBox()
-{
-    var states = [
-        {"abbr":"AL","name":"Alabama","slogan":"The Heart of Dixie"},
-        {"abbr":"AK","name":"Alaska","slogan":"The Land of the Midnight Sun"},
-        {"abbr":"WI","name":"Wisconsin","slogan":"America's Dairyland"},
-        {"abbr":"WY","name":"Wyoming","slogan":"Like No Place on Earth"}
-    ];
-
-    // Define the model for a State
-    Ext.define('State', {
-        extend: "Ext.data.Model",
-        fields: [
-            {type: 'string', name: 'abbr'},
-            {type: 'string', name: 'name'},
-            {type: 'string', name: 'slogan'}
-        ]
-    });
-
-    // The data store holding the states
-    var store = Ext.create('Ext.data.Store', {
-        model: 'State',
-        data: states
-    });
-
-    // Simple ComboBox using the data store
-    var simpleCombo = Ext.create('Ext.form.field.ComboBox', {
-        fieldLabel: 'Select a single state',
-        renderTo: 'simpleCombo',
-        displayField: 'name',
-        width: 400,
-        labelWidth: 130,
-        store: store,
-        queryMode: 'local',
-        typeAhead: true
-    });
-}
-
-
-
-
+Ext.require('devilry.restful.view.assignments.Grid');
+Ext.require('devilry.restful.model.Assignment');
+Ext.require('devilry.restful.store.Assignments');
 
 
 function ajaxGrid()
@@ -59,7 +9,7 @@ function ajaxGrid()
 
     var grid = Ext.create('devilry.restful.view.assignments.Grid', {
         store: Ext.create('devilry.restful.store.Assignments', {
-                    pageSize: 5,
+                    //pageSize: 5,
                     longnamefields: 1
                }),
         height: 300,
@@ -113,12 +63,54 @@ function ajaxGrid()
 
 
 
+function tree()
+{
+    var store = Ext.create('Ext.data.TreeStore', {
+        proxy: {
+            type: 'ajax',
+            url: '/restful/examiner/assignments/'
+        },
+        root: {
+            text: 'root',
+            id: 'src',
+            expanded: true
+        }
+    });
 
-Ext.require('devilry.restful.view.assignments.Grid');
-Ext.require('devilry.restful.model.Assignment');
-Ext.require('devilry.restful.store.Assignments');
-Ext.onReady(function(){
-    //comboBox();
+    var tree = Ext.create('Ext.tree.Panel', {
+        store: store,
+        viewConfig: {
+            plugins: {
+                ptype: 'treeviewdragdrop'
+            }
+        },
+        renderTo: 'tree-div',
+        height: 300,
+        width: 250,
+        title: 'Files',
+        useArrows: true,
+        dockedItems: [{
+            xtype: 'toolbar',
+            items: [{
+                text: 'Expand All',
+                handler: function(){
+                    tree.expandAll();
+                }
+            }, {
+                text: 'Collapse All',
+                handler: function(){
+                    tree.collapseAll();
+                }
+            }]
+        }]
+    });
+
+}
+
+
+
+Ext.onReady(function() {
     ajaxGrid();
+    tree();
 });
 

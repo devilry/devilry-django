@@ -1,6 +1,6 @@
 from django import forms
 
-from simplified.examiner import Assignments, Groups
+from simplified.examiner import (Subjects, Assignments, Groups)
 
 import fields
 from restview import RestView
@@ -12,7 +12,6 @@ class GetFormBase(forms.Form):
     limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
     start = fields.PositiveIntegerWithFallbackField()
     #page = fields.PositiveIntegerWithFallbackField()
-
 
 class RestAssignments(Assignments, RestView):
 
@@ -26,7 +25,7 @@ class RestAssignments(Assignments, RestView):
 
     class GetForm(GetFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=["short_name"])
+                fallbackvalue=Assignments.default_orderby)
         old = fields.BooleanWithFallbackField(fallbackvalue=True)
         active = fields.BooleanWithFallbackField(fallbackvalue=True)
         longnamefields = fields.BooleanWithFallbackField()
@@ -34,8 +33,13 @@ class RestAssignments(Assignments, RestView):
 
 
 class RestGroups(Groups, RestView):
-
     class GetForm(GetFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=["short_name"])
+                fallbackvalue=Groups.default_orderby)
         deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)
+
+
+class RestSubjects(Subjects, RestView):
+    class GetForm(GetFormBase):
+        orderby = fields.CharListWithFallbackField(
+                fallbackvalue=Subjects.default_orderby)
