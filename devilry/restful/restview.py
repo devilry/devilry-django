@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 
 from devilry.ui.http import HttpJsonResponse, HttpXmlResponse
 from errors import InvalidRequestDataError, InvalidRequestFormatError
-from serialize import serialize_valuesQuerySet
+from serialize import serialize_result
 
 
 
@@ -45,7 +45,7 @@ class RestView(View):
         fields, resultQry = self.__class__.getqry(request.user, **form)
 
         try:
-            resultQry = serialize_valuesQuerySet(fields, resultQry, format)
+            resultQry = serialize_result(fields, resultQry, format)
         except InvalidRequestFormatError, e:
             return HttpResponseBadRequest(
                 "Bad request: %s" % format,

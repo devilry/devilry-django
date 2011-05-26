@@ -6,8 +6,8 @@ class Assignments(object):
 
     @classmethod
     def getqry(cls, user,
-            count=50, start=0, orderby=["short_name"],
-            old=True, active=True, search="", longnamefields=False,
+            limit=50, start=0, orderby=["short_name"],
+            old=True, active=True, query="", longnamefields=False,
             pointhandlingfields=False):
         """
         List all old and active assignments. Provides the following
@@ -15,16 +15,17 @@ class Assignments(object):
 
             - id
             - short_name
+            - long_name
             - parentnode__short_name *(Period short_name)*
             - parentnode__parentnode__short_name *(Subject short_name)*
 
         For documentation on the fields, see :class:`devilry.core.models.Assignment`.
 
-        :param count:
+        :param limit:
             Number of results.
         :param start:
             Offset where the result should start (If start is 10 and
-            count is 30, results 10 to 40 is returned, including both ends).
+            limit is 30, results 10 to 40 is returned, including both ends).
         :param old:
             Include assignments from old (not active) periods?
         :param active:
@@ -35,10 +36,10 @@ class Assignments(object):
             *autoscale*, *maxpoints*, *attempts* or *must_pass*. See
             :class:`devilry.core.models.Assignment` for documentation on each of
             these fields.
-        :param search:
+        :param query:
             A query to limit the results.
         :param longnamefields:
-            Include the *long_name* field of assignment, period and
+            Include the *long_name* field of period and
             subject for each assignment in the result?
         :param pointhandlingfields:
             Include the *grade_plugin*, *pointscale*, *autoscale*,
@@ -48,18 +49,17 @@ class Assignments(object):
 
         :return: The requested assignments as a QuerySet.
         """
-        fields = ["id", "short_name",
-                "parentnode__short_name",
-                "parentnode__parentnode__short_name"]
+        fields = ['id', 'short_name', 'long_name',
+                'parentnode__short_name',
+                'parentnode__parentnode__short_name']
         if longnamefields:
-            fields.append("long_name")
-            fields.append("parentnode__long_name")
-            fields.append("parentnode__parentnode__long_name")
-        searchfields = fields
+            fields.append('parentnode__long_name')
+            fields.append('parentnode__parentnode__long_name')
+        queryfields = fields
         qry = Assignment.published_where_is_examiner(user, old=old,
                 active=active)
-        qry = utils.qry_common(qry, fields, search, searchfields, orderby,
-                count, start)
+        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
+                limit, start)
         return fields, qry
 
 
@@ -67,8 +67,8 @@ class Groups(object):
 
     @classmethod
     def getqry(cls, user,
-            assignment_id, count=50, start=0, orderby=["id"],
-            deadlines=False, search=""):
+            assignment_id, limit=50, start=0, orderby=["id"],
+            deadlines=False, query=""):
         """
         List all groups in the given assignment. Provides the following
         information (fields) for each listed group by default:
@@ -82,11 +82,11 @@ class Groups(object):
             examiners
                 List of usernames.
 
-        :param count:
+        :param limit:
             Number of results.
         :param start:
             Offset where the result should start (If start is 10 and
-            count is 30, results 10 to 40 is returned, including both ends).
+            limit is 30, results 10 to 40 is returned, including both ends).
         :param orderby:
             Sort the result by this field. Must be one of:
             *id*, *is_open*, *status*, *points*, *scaled_points* or
@@ -101,15 +101,15 @@ class Groups(object):
                     A list of deadlines for this group.
                 active_deadline
                     The active deadline for this group.
-        :param search:
+        :param query:
             A query to limit the results.
 
         :return: The requested groups as a QuerySet.
         """
-        searchfields = ['name', 'candidates__student__username']
+        queryfields = ['name', 'candidates__student__username']
         fields = ['id', 'name']
         qry = AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode=assignment_id)
-        qry = utils.qry_common(qry, fields, search, searchfields, orderby,
-                count, start)
+        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
+                limit, start)
         return fields, qry
