@@ -58,7 +58,10 @@ function ajaxGrid()
     // create the grid
 
     var grid = Ext.create('devilry.restful.view.assignments.Grid', {
-        store: Ext.create('devilry.restful.store.Assignments'),
+        store: Ext.create('devilry.restful.store.Assignments', {
+                    pageSize: 5,
+                    longnamefields: 1
+               }),
         height: 300,
         width: 600,
         renderTo: 'grid-example',
