@@ -12,10 +12,11 @@
     contribute
     documentation
     commandline
-    selenium-tests
 
     simplified
     restful
+
+    designdetails
 
 
 ======================================================================
@@ -25,7 +26,7 @@ Devilry developer documentation overview
 Core
 ######################################################################
 
-* :ref:`devilry.core.models <devilry.core.models>`
+* **devilry.core.models:** :ref:`API <devilry.core.models>` | :ref:`designdetails`
 * :ref:`devilry.core.utils <devilry.core.utils>`
 * :ref:`devilry.core.deliverystore <devilry.core.deliverystore>`
 
@@ -44,14 +45,13 @@ Developing devilry
 * :ref:`developer-contribute`
 * :ref:`developer-documentation`
 * :ref:`developer-commandline`
-* :ref:`developer-selenium-tests`
 
 
 Simplified API
 ######################################################################
 
-* :ref:`developer-simplified`
-* :ref:`developer-restful`
+* :ref:`simplified`
+* :ref:`restful`
 
 
 

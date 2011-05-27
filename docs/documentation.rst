@@ -24,17 +24,8 @@ The devilry data-model file, devilry.core.models.py_, is a good example.
 How documentation is organized
 ==============================
 
-Documentation lives ``doc/``. The sources are in ``doc/source``, and the
-sources are organized like this:
-
-* ``source/index.rst`` --- Frontpage.
-* ``source/contents.rst`` --- Table of contents.
-* ``source/documentation.rst`` --- The documentation index page.
-* ``source/developer`` --- Developer documentation.
-
-Remember to add documentation to both ``contents.rst`` (example:
-``source/developer/contents.rst``) and to the documentation overview
-``source/overview.rst``.
+Documentation lives ``docs/``. Each topic is in a separate file. New files must
+be added to both *toctree* and the overview in ``index.rst``.
 
 
 Required software
@@ -46,7 +37,7 @@ You will need a newer version of Sphinx_, at least version 1.
 Building the documentation
 ==========================
 
-Run *make html* while cwd is *doc/*.
+Run *make html* while cwd is ``docs/``.
 
 
 .. _Sphinx: http://sphinx.pocoo.org/

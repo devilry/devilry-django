@@ -20,7 +20,7 @@ Shortcuts for walking the entire assignment-tree
 .. currentmodule:: devilry.xmlrpc_client.assignmenttree
 
 
-The *assignment tree* is everything in the :ref:`node-tree <overview>` from
+The *assignment tree* is everything in the :ref:`node-tree <devilry.core.models>` from
 *Assignment* and down. The ``devilry.xmlrpc_client.assignmentsync`` module
 provides a layer on top of the the examiner :ref:`XMLRPC <xmlrpc>` making it
 easy to work with and sync a copy of the assignment-tree on the filesystem.

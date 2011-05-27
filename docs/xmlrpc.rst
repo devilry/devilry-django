@@ -34,7 +34,7 @@ First of all we need some functions. XMLRPC works over HTTP, so they basically
 work just like a normal django view. Therefore we choose to put our views in
 *views.py*. First we have to define our function:
 
-.. literalinclude:: /../../devilry/addons/xmlrpc_examiner/views.py
+.. literalinclude:: /../devilry/addons/xmlrpc_examiner/views.py
     :pyobject: list_deliveries
 
 
@@ -60,7 +60,7 @@ Urls
 
 At last we need to add the ``rpc`` object to ``urls.py``:
 
-.. literalinclude:: /../../devilry/addons/xmlrpc_examiner/urls.py
+.. literalinclude:: /../devilry/addons/xmlrpc_examiner/urls.py
 
 
 Check if it is working

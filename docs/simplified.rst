@@ -1,4 +1,4 @@
-.. _developer-simplified:
+.. _simplified:
 
 
 ==========================================

@@ -10,12 +10,13 @@
 
 
 .. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment]
+.. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects>*[Subject], [Node]++0-child-nodes>*[Node], [Subject]++1-periods>*[Period], [Period]++1-assignments>*[Assignment]
+.. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Assignment]++1-assignmentgroups >*[AssignmentGroup], [AssignmentGroup]++1-deliveries >*[Delivery], [AssignmentGroup]++1-deadlines >*[Deadline], [Delivery]++1-feedback >0..1[Feedback], [Delivery]++1-filemetas >*[FileMeta]
 
-.. image::
-    http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects>*[Subject], [Node]++0-child-nodes>*[Node], [Subject]++1-periods>*[Period], [Period]++1-assignments>*[Assignment]
 
-.. image::
-    http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Assignment]++1-assignmentgroups >*[AssignmentGroup], [AssignmentGroup]++1-deliveries >*[Delivery], [AssignmentGroup]++1-deadlines >*[Deadline], [Delivery]++1-feedback >0..1[Feedback], [Delivery]++1-filemetas >*[FileMeta]
+.. image:: images/devilry.core.models.1.png
+
+.. image:: images/devilry.core.models.2.png
 
 
 Functions and attributes

@@ -35,7 +35,7 @@ Creating your own DeliveryStore
 To create your own DeliveryStore you have to implement
 :class:`DeliveryStoreInterface`. A good example is :class:`FsDeliveryStore`:
 
-    .. literalinclude:: /../../devilry/core/deliverystore.py
+    .. literalinclude:: /../devilry/core/deliverystore.py
         :pyobject: FsDeliveryStore
 
 
@@ -47,7 +47,7 @@ We provide a mixing-class,
 when writing unit-tests for your DeliveryStore. Here is how we test
 :class:`FsDeliveryStore`:
 
-    .. literalinclude:: /../../devilry/core/tests.py
+    .. literalinclude:: /../devilry/core/tests.py
         :pyobject: TestFsDeliveryStore
 
 .. currentmodule:: devilry.core.testhelpers
