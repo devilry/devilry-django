@@ -1,0 +1,217 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Command line client &mdash; Devilry v0.1alpha0 documentation</title>
+    <link rel="stylesheet" href="../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1alpha0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v0.1alpha0 documentation" href="../index.html" />
+    <link rel="up" title="Developers" href="contents.html" />
+    <link rel="next" title="Developers" href="../developer/contents.html" />
+    <link rel="prev" title="Devilry user documentation" href="overview.html" /> 
+  </head>
+  <body>
+<div id='projectinfo'>
+	<h1 id='projectname'>Devilry</h1>
+	<div id='projectversion'>Version 0.1</div>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../developer/contents.html" title="Developers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Devilry user documentation"
+             accesskey="P">previous</a> |</li>
+	<li><a href="../index.html">About</a>&nbsp;|&nbsp;</li>
+	<li><a href="overview.html">User documentation</a>&nbsp;|&nbsp;</li>
+	<li><a href="../developer/overview.html">Developer documentation</a>&nbsp;|&nbsp;&nbsp;&nbsp;</li>
+
+          <li><a href="contents.html" accesskey="U">Developers</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="command-line-client">
+<span id="user-xmlrpc-client"></span><h1>Command line client<a class="headerlink" href="#command-line-client" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="quick-install">
+<h3>Quick install<a class="headerlink" href="#quick-install" title="Permalink to this headline">¶</a></h3>
+<p>You need the <tt class="docutils literal"><span class="pre">python-setuptools</span></tt> package to install the Devilry command line client. This package is installed on Mac OS X 10.5 and up.
+On Ubuntu, run the following command to install it:</p>
+<div class="highlight-python"><pre>sudo apt-get install python-setuptools</pre>
+</div>
+<p>Then, run the following command to install the client:</p>
+<div class="highlight-python"><pre>~$ sudo easy_install -U devilry_xmlrpc_client</pre>
+</div>
+<p>This command will generate several lines of output, among which you should locate the following line:</p>
+<div class="highlight-python"><pre>Installing devilry-examiner.py script to /opt/local/Library/Frameworks/Python.framework/Versions/2.6/bin</pre>
+</div>
+<p>Add the install path to you <tt class="docutils literal"><span class="pre">PATH</span></tt> environment variable. You can now run the client by running:</p>
+<div class="highlight-python"><pre>~$ devilry-examiner.py</pre>
+</div>
+</div>
+<div class="section" id="installation-issues">
+<h3>Installation issues<a class="headerlink" href="#installation-issues" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="update-setuptools">
+<h4>Update setuptools<a class="headerlink" href="#update-setuptools" title="Permalink to this headline">¶</a></h4>
+<p>The command <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">easy_install</span> <span class="pre">devilry-xmlrpc-client</span></tt> might ask you to
+update your version of setuptools, by running:</p>
+<div class="highlight-python"><pre>easy_install -U setuptools</pre>
+</div>
+<p>If so, run this command first, the run <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">devilry-xmlrpc-client</span></tt> again.</p>
+</div>
+<div class="section" id="devilry-examiner-py-no-such-command-or-similar">
+<h4>devilry-examiner.py: no such command (or similar)<a class="headerlink" href="#devilry-examiner-py-no-such-command-or-similar" title="Permalink to this headline">¶</a></h4>
+<p>If you do not have the <tt class="docutils literal"><span class="pre">devilry-examiner.py</span></tt> command available after installing, but
+you can execute <tt class="docutils literal"><span class="pre">/usr/local/bin/devilry-examiner.py</span></tt>, you need to add <tt class="docutils literal"><span class="pre">/usr/local/bin/</span></tt> to your <tt class="docutils literal"><span class="pre">PATH</span></tt>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>In order to use the Devilry command line client, you should have been given the following from your administrator:</p>
+<dl class="docutils">
+<dt><strong>URL</strong>:</dt>
+<dd>The server url to connect to</dd>
+<dt><strong>LOGIN-COMMAND</strong>:</dt>
+<dd>The login command to use. This will be either <tt class="docutils literal"><span class="pre">login</span></tt> or <tt class="docutils literal"><span class="pre">formlogin</span></tt>.</dd>
+</dl>
+<p>Start by creating a Devilry checkout directory and change to it. You may give this directory any name you want.
+In this guide, we use <tt class="docutils literal"><span class="pre">devilrycheckout</span></tt>:</p>
+<div class="highlight-python"><pre>~$ mkdir devilrycheckout
+~$ cd devilrycheckout</pre>
+</div>
+<p>We then initalize with the server, using the <strong>URL</strong> given to you by your administrator:</p>
+<div class="highlight-python"><pre>~/devilrycheckout/$ devilry-examiner.py init URL</pre>
+</div>
+<p>Login using:</p>
+<div class="highlight-python"><pre>~/devilrycheckout/$ devilry-examiner.py LOGIN-COMMAND</pre>
+</div>
+<p>If your username in your current shell session is not the same as your username with the Devilry server, use the -u option:</p>
+<div class="highlight-python"><pre>~/devilrycheckout/$ devilry-examiner.py LOGIN-COMMAND -u username</pre>
+</div>
+<p>The next step is to sync every delivery on every active assignment using:</p>
+<div class="highlight-python"><pre>~/devilrycheckout/$ devilry-examiner.py sync</pre>
+</div>
+<p>To correct assignments and publish feedback, use the <tt class="docutils literal"><span class="pre">sync</span></tt>, <tt class="docutils literal"><span class="pre">info</span></tt>, <tt class="docutils literal"><span class="pre">feedback</span></tt>, <tt class="docutils literal"><span class="pre">publish</span></tt> and <tt class="docutils literal"><span class="pre">unpublish</span></tt> commands. You can run the <tt class="docutils literal"><span class="pre">help</span></tt> command to get more info about each of these commands, for example:</p>
+<div class="highlight-python"><pre>~/devilrycheckout/$ devilry-examiner.py sync --help
+~/devilrycheckout/$ devilry-examiner.py info --help</pre>
+</div>
+<p>When you wish to update the local sync with new deliveries, or feedback
+submitted by other examiners (if you work on assignments with more than one
+examiner on each group), just run the <tt class="docutils literal"><span class="pre">login</span></tt> and <tt class="docutils literal"><span class="pre">sync</span></tt> commands within any directory
+below the checkout-directory. You might not have to login more than about
+once a day, but this varies depending on how the devilry-server is
+configured.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Command line client</a><ul>
+<li><a class="reference internal" href="#install">Install</a><ul>
+<li><a class="reference internal" href="#quick-install">Quick install</a></li>
+<li><a class="reference internal" href="#installation-issues">Installation issues</a><ul>
+<li><a class="reference internal" href="#update-setuptools">Update setuptools</a></li>
+<li><a class="reference internal" href="#devilry-examiner-py-no-such-command-or-similar">devilry-examiner.py: no such command (or similar)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#getting-started">Getting started</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">Devilry user documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../developer/contents.html"
+                        title="next chapter">Developers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user/xmlrpc_client.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../developer/contents.html" title="Developers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Devilry user documentation"
+             >previous</a> |</li>
+	<li><a href="../index.html">About</a>&nbsp;|&nbsp;</li>
+	<li><a href="overview.html">User documentation</a>&nbsp;|&nbsp;</li>
+	<li><a href="../developer/overview.html">Developer documentation</a>&nbsp;|&nbsp;&nbsp;&nbsp;</li>
+
+          <li><a href="contents.html" >Developers</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

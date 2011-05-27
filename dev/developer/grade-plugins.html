@@ -1,0 +1,609 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Grade plugins &mdash; Devilry v0.1alpha0 documentation</title>
+    <link rel="stylesheet" href="../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1alpha0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v0.1alpha0 documentation" href="../index.html" />
+    <link rel="up" title="Developers" href="contents.html" />
+    <link rel="next" title="XMLRPC howto" href="xmlrpc.html" />
+    <link rel="prev" title="How to write a plugin" href="plugins.html" /> 
+  </head>
+  <body>
+<div id='projectinfo'>
+	<h1 id='projectname'>Devilry</h1>
+	<div id='projectversion'>Version 0.1</div>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xmlrpc.html" title="XMLRPC howto"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="How to write a plugin"
+             accesskey="P">previous</a> |</li>
+	<li><a href="../index.html">About</a>&nbsp;|&nbsp;</li>
+	<li><a href="../user/overview.html">User documentation</a>&nbsp;|&nbsp;</li>
+	<li><a href="overview.html">Developer documentation</a>&nbsp;|&nbsp;&nbsp;&nbsp;</li>
+
+          <li><a href="contents.html" accesskey="U">Developers</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="grade-plugins">
+<span id="id1"></span><h1>Grade plugins<a class="headerlink" href="#grade-plugins" title="Permalink to this headline">¶</a></h1>
+<p>A grade plugin is a way to plug-in custom grade-handling. We will explain how
+to create a grade plugin by explaining the most simple grade plugin used in
+Devilry, <tt class="docutils literal"><span class="pre">devilry.addons.grade_default</span></tt>. <tt class="docutils literal"><span class="pre">grade_default</span></tt> simply allows for
+any string between 1 and  15 characters to be used as a grade.</p>
+<div class="section" id="the-model">
+<h2>The model<a class="headerlink" href="#the-model" title="Permalink to this headline">¶</a></h2>
+<p>A grade plugin is simply a one-to-one relationship between
+<a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a> and a custom django-model defined by the
+grade-plugin. This is the contents of <em>models.py</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">devilry.core.gradeplugin</span> <span class="kn">import</span> <span class="n">GradeModel</span>
+
+<span class="k">class</span> <span class="nc">CharFieldGrade</span><span class="p">(</span><span class="n">GradeModel</span><span class="p">):</span>
+    <span class="n">grade</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_maxpoints</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_example_xmlrpcstring</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;C&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span>
+
+    <span class="k">def</span> <span class="nf">set_grade_from_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grade</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grade</span> <span class="o">=</span> <span class="n">grade</span>
+
+    <span class="k">def</span> <span class="nf">get_grade_as_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span>
+</pre></div>
+</div>
+<p>As you can see, the model is a subclass of
+<tt class="xref py py-class docutils literal"><span class="pre">devilry.gradeplugin.GradeModel</span></tt>, which in turn is a subclass of
+<tt class="docutils literal"><span class="pre">django.db.Model</span></tt>. <tt class="docutils literal"><span class="pre">GradeModel</span></tt> simply defines and documents some extra
+functions.</p>
+</div>
+<div class="section" id="the-view">
+<h2>The view<a class="headerlink" href="#the-view" title="Permalink to this headline">¶</a></h2>
+<p>Next we have to create a view which examiners can use to give feedback using
+this plugin. To make grade-plugins as flexible as possible, the grade-plugin
+gets complete control of the view for the entire feedback. This means that the
+view has to create a complete view for creating a new
+<a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a>. This is a lot of work, so we provide
+some <a class="reference internal" href="#grade-plugins-feedback-view"><em>shortcuts</em></a> which makes
+it possible for our view to look a simple as this (<em>gradeviews.py</em>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">devilry.addons.examiner.feedback_view</span> <span class="kn">import</span> <span class="n">view_shortcut</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">CharFieldGrade</span>
+
+<span class="k">class</span> <span class="nc">CharFieldGradeForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">CharFieldGrade</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;grade&#39;</span><span class="p">,)</span>
+
+<span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">view_shortcut</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">,</span> <span class="n">CharFieldGrade</span><span class="p">,</span>
+            <span class="n">CharFieldGradeForm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="register-the-plugin">
+<h2>Register the plugin<a class="headerlink" href="#register-the-plugin" title="Permalink to this headline">¶</a></h2>
+<p>To make the plugin register itself when the server starts, you need to put
+something like the following in <tt class="docutils literal"><span class="pre">devilry_plugin.py</span></tt> in you plugin (see
+<em class="xref std std-ref">developer-howto-plugins</em>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">devilry.core</span> <span class="kn">import</span> <span class="n">gradeplugin</span>
+<span class="kn">from</span> <span class="nn">gradeviews</span> <span class="kn">import</span> <span class="n">view</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">CharFieldGrade</span>
+
+<span class="n">gradeplugin</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">gradeplugin</span><span class="o">.</span><span class="n">RegistryItem</span><span class="p">(</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">view</span><span class="p">,</span>
+        <span class="n">xmlrpc_gradeconf</span> <span class="o">=</span> <span class="n">gradeplugin</span><span class="o">.</span><span class="n">XmlrpcGradeConf</span><span class="p">(),</span>
+        <span class="n">model_cls</span> <span class="o">=</span> <span class="n">CharFieldGrade</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Manual grade handling&#39;</span><span class="p">),</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Examiners type in grades manually in a text field &#39;</span> \
+            <span class="s">&#39;without any restrictions beyond a 15 character limit.&#39;</span><span class="p">)</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+<p>You can see that we register our <em>model</em> and our <em>view</em>. The API-docs for
+<a class="reference internal" href="#devilry.core.gradeplugin.registry" title="devilry.core.gradeplugin.registry"><tt class="xref py py-attr docutils literal"><span class="pre">devilry.core.gradeplugin.registry</span></tt></a> explains all the details.</p>
+</div>
+<div class="section" id="module-devilry.core.gradeplugin">
+<span id="grade-plugin-classes"></span><h2>Grade plugin classes<a class="headerlink" href="#module-devilry.core.gradeplugin" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="devilry.core.gradeplugin.registry">
+<tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">registry</tt><a class="headerlink" href="#devilry.core.gradeplugin.registry" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="#devilry.core.gradeplugin.Registry" title="devilry.core.gradeplugin.Registry"><tt class="xref py py-class docutils literal"><span class="pre">Registry</span></tt></a>-object.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="devilry.core.gradeplugin.GradePluginError">
+<em class="property">exception </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">GradePluginError</tt><a class="headerlink" href="#devilry.core.gradeplugin.GradePluginError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Base class for grade plugin errors.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="devilry.core.gradeplugin.GradePluginDoesNotExistError">
+<em class="property">exception </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">GradePluginDoesNotExistError</tt><a class="headerlink" href="#devilry.core.gradeplugin.GradePluginDoesNotExistError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#devilry.core.gradeplugin.GradePluginError" title="devilry.core.gradeplugin.GradePluginError"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.gradeplugin.GradePluginError</span></tt></a></p>
+<p>Raised when a grade plugin does not exist.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="devilry.core.gradeplugin.WrongContentTypeError">
+<em class="property">exception </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">WrongContentTypeError</tt><a class="headerlink" href="#devilry.core.gradeplugin.WrongContentTypeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#devilry.core.gradeplugin.GradePluginError" title="devilry.core.gradeplugin.GradePluginError"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.gradeplugin.GradePluginError</span></tt></a></p>
+<p>Raised when the grade object on a feedback is not using the grade
+plugin on the assignment.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.core.gradeplugin.XmlrpcGradeConf">
+<em class="property">class </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">XmlrpcGradeConf</tt><big>(</big><em>help=None</em>, <em>filename=None</em>, <em>default_filecontents_callback=None</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.XmlrpcGradeConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Provides the configuration-wrapper between a grade-plugin and the
+xmlrpc.</p>
+<p>All parameters are stored as object attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>help</strong> &#8211; Help text explaining the format of the grade.</li>
+<li><strong>filename</strong> &#8211; The reccommended filename. <tt class="xref docutils literal"><span class="pre">None</span></tt> means that no file is
+required.  Note that this is only a hint to the xmlrpc, and
+might be ignored.</li>
+<li><strong>default_filecontents_callback</strong> &#8211; A function which returns the reccommended default contents of
+the grade-file. The function takes a
+<a class="reference internal" href="core.models.html#devilry.core.models.Assignment" title="devilry.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Assignment</span></tt></a> object as it&#8217;s only
+argument.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="devilry.core.gradeplugin.XmlrpcGradeConf.as_dict">
+<tt class="descname">as_dict</tt><big>(</big><em>assignmentobj</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.XmlrpcGradeConf.as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dict with all the attributes except
+<tt class="docutils literal"><span class="pre">default_filecontents_callback</span></tt> which instead is called with
+<tt class="docutils literal"><span class="pre">assignmentobj</span></tt> as argument, and the result is stored with the
+<tt class="docutils literal"><span class="pre">&quot;default_filecontents&quot;</span></tt>-key.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.core.gradeplugin.GradeModel">
+<em class="property">class </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">GradeModel</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt></p>
+<p>GradeModel(id)</p>
+<dl class="classmethod">
+<dt id="devilry.core.gradeplugin.GradeModel.get_maxpoints">
+<em class="property">classmethod </em><tt class="descname">get_maxpoints</tt><big>(</big><em>assignment=None</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_maxpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get maximum number of points possible with this gradeplugin on
+the given assignment. When
+<tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.AssignmentGroup.autoscale</span></tt> is True, this
+is used to update the pointscale.</p>
+<p>This <em>must</em> work when assignment is None (it should return a sane
+default value).</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.core.gradeplugin.GradeModel.init_example">
+<em class="property">classmethod </em><tt class="descname">init_example</tt><big>(</big><em>assignment</em>, <em>points</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.init_example" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the grade plugin with the assignment for use as a
+example. Only needed if the grade plugin has to be configured for
+each assignment.</p>
+<p>This is used to autogenerate examples and test data. You do not have
+to respect the points argument, but doing so enables generation of
+better example data.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.core.gradeplugin.GradeModel.get_example_xmlrpcstring">
+<em class="property">classmethod </em><tt class="descname">get_example_xmlrpcstring</tt><big>(</big><em>assignment</em>, <em>points</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_example_xmlrpcstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a example xmlrpcstring for the given assignment with the
+given number of points. This method should work with the
+initialization made in init_example, and might not work in any other
+cases (grade_rstschema is a example of this).</p>
+<p>This is used to autogenerate examples and test data. You do not have
+to respect the points argument, but doing so enables generation of
+better example data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.get_feedback_obj">
+<tt class="descname">get_feedback_obj</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_feedback_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverse the feedback object which has a generic foreign key to this
+grade model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.get_grade_as_short_string">
+<tt class="descname">get_grade_as_short_string</tt><big>(</big><em>feedback_obj</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_grade_as_short_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string representation of the grade suitable for
+short one-line display. This method is required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feedback_obj</strong> &#8211; The <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a> using this
+grade-object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.supports_long_string">
+<tt class="descname">supports_long_string</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.supports_long_string" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Boolean telling if <a class="reference internal" href="#devilry.core.gradeplugin.GradeModel.get_grade_as_long_string" title="devilry.core.gradeplugin.GradeModel.get_grade_as_long_string"><tt class="xref py py-meth docutils literal"><span class="pre">get_grade_as_long_string()</span></tt></a> is
+supported. This attribute exists to avoid having to create the
+long string twice: once to check if it works, and once to
+display it.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.get_grade_as_long_string">
+<tt class="descname">get_grade_as_long_string</tt><big>(</big><em>feedback_obj</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_grade_as_long_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string representation of the grade which might span
+multiple lines. The string must be formatted with restructured text.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>feedback_obj</strong> &#8211; The <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a> using this
+grade-object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None if this operation is not supported (the default).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.get_grade_as_xmlrpcstring">
+<tt class="descname">get_grade_as_xmlrpcstring</tt><big>(</big><em>feedback_obj</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_grade_as_xmlrpcstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the grade from a string compatible with
+<a class="reference internal" href="#devilry.core.gradeplugin.GradeModel.set_grade_from_xmlrpcstring" title="devilry.core.gradeplugin.GradeModel.set_grade_from_xmlrpcstring"><tt class="xref py py-meth docutils literal"><span class="pre">set_grade_from_xmlrpcstring()</span></tt></a>. This is primarly intended for
+xmlrpc, and a grade-plugin is not required to support it. If
+unsupported, just do not override it, and it will default to raising
+<tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt>, which the core and xmlrpc handles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>feedback_obj</strong> &#8211; The <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a> using this
+grade-object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None if this operation is not supported (the default).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.set_grade_from_xmlrpcstring">
+<tt class="descname">set_grade_from_xmlrpcstring</tt><big>(</big><em>grade</em>, <em>feedback_obj</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.set_grade_from_xmlrpcstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the grade from string. This is primarly intended for xmlrpc, and
+a grade-plugin is not required to support it. If unsupported, just
+do not override it, and it will default to raising
+<tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt>, which the core and xmlrpc handles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feedback_obj</strong> &#8211; The <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a> using this
+grade-object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Raises <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if the operation is not supported.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.get_points">
+<tt class="descname">get_points</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.get_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get points. Used by
+<tt class="xref py py-meth docutils literal"><span class="pre">devilry.core.models.AssignmentGroup.update_gradeplugin_cached_fields()</span></tt>
+to set points. Must be overridden in subclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.is_passing_grade">
+<tt class="descname">is_passing_grade</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.is_passing_grade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if this is a passing grade, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.GradeModel.save">
+<tt class="descname">save</tt><big>(</big><em>feedback_obj</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.GradeModel.save" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feedback_obj</strong> &#8211; The <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a> using this
+grade-object. The save method has to have this parameter to
+handle situations where the grade plugin needs the feedback
+object before the feedback object has been saved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.core.gradeplugin.get_registry_key">
+<tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">get_registry_key</tt><big>(</big><em>model_cls</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.get_registry_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the registry key for the given model class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.core.gradeplugin.RegistryItem">
+<em class="property">class </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">RegistryItem</tt><big>(</big><em>view</em>, <em>model_cls</em>, <em>label</em>, <em>description</em>, <em>admin_url_callback=None</em>, <em>xmlrpc_gradeconf=None</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.RegistryItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Information about a grade plugin.</p>
+<p>All parameters are stored as object attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> &#8211; The view used when creating feedback with this grade-plugin.
+See :ref:</li>
+<li><strong>model_cls</strong> &#8211; A class for storing the grade of a single Feedback. It us used in a
+one-to-one relationship with <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a>
+(The Feedback-class takes care of the relationship).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.core.gradeplugin.Registry">
+<em class="property">class </em><tt class="descclassname">devilry.core.gradeplugin.</tt><tt class="descname">Registry</tt><a class="headerlink" href="#devilry.core.gradeplugin.Registry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Grade-plugin registry. You do not need to create a object of this class.
+It is already available as <a class="reference internal" href="#devilry.core.gradeplugin.registry" title="devilry.core.gradeplugin.registry"><tt class="xref py py-attr docutils literal"><span class="pre">registry</span></tt></a>.</p>
+<dl class="method">
+<dt id="devilry.core.gradeplugin.Registry.register">
+<tt class="descname">register</tt><big>(</big><em>registryitem</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.Registry.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a <a class="reference internal" href="#devilry.core.gradeplugin.RegistryItem" title="devilry.core.gradeplugin.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">RegistryItem</span></tt></a> to the registry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.Registry.getitem">
+<tt class="descname">getitem</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.Registry.getitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference internal" href="#devilry.core.gradeplugin.RegistryItem" title="devilry.core.gradeplugin.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">RegistryItem</span></tt></a> registered with the given <tt class="docutils literal"><span class="pre">key</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.Registry.getitem_from_cls">
+<tt class="descname">getitem_from_cls</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.Registry.getitem_from_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference internal" href="#devilry.core.gradeplugin.RegistryItem" title="devilry.core.gradeplugin.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">RegistryItem</span></tt></a> registered with the given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.Registry.getdefaultkey">
+<tt class="descname">getdefaultkey</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.Registry.getdefaultkey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the default key (the key defined in the
+DEVILRY_DEFAULT_GRADEPLUGIN setting).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.Registry.iterlabels">
+<tt class="descname">iterlabels</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.Registry.iterlabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the registry yielding (key, label).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.core.gradeplugin.Registry.iteritems">
+<tt class="descname">iteritems</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.core.gradeplugin.Registry.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the registry yielding (key, RegistryItem).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-devilry.addons.examiner.feedback_view">
+<span id="feedback-view-shortcuts"></span><span id="grade-plugins-feedback-view"></span><h2>Feedback-view shortcuts<a class="headerlink" href="#module-devilry.addons.examiner.feedback_view" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="devilry.addons.examiner.feedback_view.FeedbackForm">
+<em class="property">class </em><tt class="descclassname">devilry.addons.examiner.feedback_view.</tt><tt class="descname">FeedbackForm</tt><big>(</big><em>data=None</em>, <em>files=None</em>, <em>auto_id='id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=':'</em>, <em>empty_permitted=False</em>, <em>instance=None</em><big>)</big><a class="headerlink" href="#devilry.addons.examiner.feedback_view.FeedbackForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.models.ModelForm</span></tt></p>
+<p>A ModelForm for the <a class="reference internal" href="core.models.html#devilry.core.models.Feedback" title="devilry.core.models.Feedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Feedback</span></tt></a>-class.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.addons.examiner.feedback_view.render_response">
+<tt class="descclassname">devilry.addons.examiner.feedback_view.</tt><tt class="descname">render_response</tt><big>(</big><em>request</em>, <em>delivery_obj</em>, <em>feedback_form</em>, <em>grade_form</em>, <em>template_path='devilry/examiner/edit_feedback.django.html'</em>, <em>uimessages=None</em><big>)</big><a class="headerlink" href="#devilry.addons.examiner.feedback_view.render_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls django.shortcuts.render_to_response with the given
+<tt class="docutils literal"><span class="pre">template_path</span></tt> and  <tt class="docutils literal"><span class="pre">delivery_obj</span></tt>, <tt class="docutils literal"><span class="pre">feedback_form</span></tt> and
+<tt class="docutils literal"><span class="pre">grade_form</span></tt> as template variables. It also adds some template
+variables:</p>
+<blockquote>
+<dl class="docutils">
+<dt>has_any_deadlines</dt>
+<dd>Boolean telling if this group has any deadlines. If this is
+<tt class="xref docutils literal"><span class="pre">False</span></tt>, <tt class="docutils literal"><span class="pre">after_deadline</span></tt>, <tt class="docutils literal"><span class="pre">diff_days</span></tt>, <tt class="docutils literal"><span class="pre">diff_hours</span></tt> and
+<tt class="docutils literal"><span class="pre">diff_minutes</span></tt> will be <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd>
+<dt>after_deadline</dt>
+<dd>Boolean telling if the delivery is after the active deadline.</dd>
+<dt>diff_days</dt>
+<dd>Days between active deadline and delivery.</dd>
+<dt>diff_hours</dt>
+<dd>Hours between active deadline and delivery.</dd>
+<dt>diff_minutes</dt>
+<dd>Minutes between active deadline and delivery.</dd>
+</dl>
+</blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.addons.examiner.feedback_view.view_shortcut">
+<tt class="descclassname">devilry.addons.examiner.feedback_view.</tt><tt class="descname">view_shortcut</tt><big>(</big><em>request</em>, <em>delivery_obj</em>, <em>grade_model_cls</em>, <em>grade_form_cls</em><big>)</big><a class="headerlink" href="#devilry.addons.examiner.feedback_view.view_shortcut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a feedback-view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>delivery_obj</strong> &#8211; A <a class="reference internal" href="core.models.html#devilry.core.models.Delivery" title="devilry.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Delivery</span></tt></a> object.</li>
+<li><strong>grade_model_cls</strong> &#8211; A subclass of class:<cite>devilry.core.gradeplugin.GradeModel</cite>.</li>
+<li><strong>grade_form_cls</strong> &#8211; A <tt class="docutils literal"><span class="pre">django.forms.ModelForm</span></tt> for editing objects of
+<tt class="docutils literal"><span class="pre">grade_model_cls</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Grade plugins</a><ul>
+<li><a class="reference internal" href="#the-model">The model</a></li>
+<li><a class="reference internal" href="#the-view">The view</a></li>
+<li><a class="reference internal" href="#register-the-plugin">Register the plugin</a></li>
+<li><a class="reference internal" href="#module-devilry.core.gradeplugin">Grade plugin classes</a></li>
+<li><a class="reference internal" href="#module-devilry.addons.examiner.feedback_view">Feedback-view shortcuts</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.html"
+                        title="previous chapter">How to write a plugin</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="xmlrpc.html"
+                        title="next chapter">XMLRPC howto</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/developer/grade-plugins.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xmlrpc.html" title="XMLRPC howto"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="How to write a plugin"
+             >previous</a> |</li>
+	<li><a href="../index.html">About</a>&nbsp;|&nbsp;</li>
+	<li><a href="../user/overview.html">User documentation</a>&nbsp;|&nbsp;</li>
+	<li><a href="overview.html">Developer documentation</a>&nbsp;|&nbsp;&nbsp;&nbsp;</li>
+
+          <li><a href="contents.html" >Developers</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>
