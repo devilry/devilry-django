@@ -3,7 +3,8 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 
-from ..examiner import RestSubjects, RestAssignments
+from ..examiner import RestSubjects, RestPeriods, RestAssignments
+
 
 
 class TestRestSubjectsNoFixture(TestCase):
@@ -14,7 +15,7 @@ class TestRestSubjectsNoFixture(TestCase):
 
 class TestRestSubjects(TestCase):
     fixtures = ["tests/simplified/data.json"]
-    url = reverse('devilry-restful-examiner-subjects')
+    url = reverse('devilry-restful-examiner-tree-subjects')
 
     def setUp(self):
         self.client = Client()
@@ -24,9 +25,38 @@ class TestRestSubjects(TestCase):
         r = self.client.get(self.url, data=dict(format='json'))
         data = json.loads(r.content)['items']
         first = data[0]
-        keys = first.keys()
-        keys.sort()
-        self.assertEquals(keys, ['id', 'long_name', 'short_name'])
+        self.assertEquals(first, {
+            u'long_name': u'DUCK1080 - Making the illogical seem logical',
+            u'id': 2,
+            u'short_name': u'duck1080',
+            u'path': u'duck1080'})
+
+
+class TestRestPeriodsNoFixture(TestCase):
+    def test_getdata_to_kwargs(self):
+        kw = RestPeriods._getdata_to_kwargs({})
+        self.assertEquals(kw, dict(
+                limit=50, start=0, orderby=["long_name"], query='',
+                format='json', subject_short_name=''))
+
+class TestRestPeriods(TestCase):
+    fixtures = ["tests/simplified/data.json"]
+    url = reverse('devilry-restful-examiner-tree-periods', args=['duck1100'])
+
+    def setUp(self):
+        self.client = Client()
+        self.client.login(username="examiner1", password="test")
+
+    def test_get(self):
+        r = self.client.get(self.url, data=dict(format='json'))
+        data = json.loads(r.content)['items']
+        first = data[0]
+        self.assertEquals(first, {
+            u'parentnode__short_name': u'duck1100',
+            u'long_name': u'Spring year zero',
+            u'id': 1,
+            u'short_name': u'h01',
+            u'path': u'duck1100/h01'})
 
 
 

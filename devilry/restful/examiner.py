@@ -1,6 +1,6 @@
 from django import forms
 
-from simplified.examiner import (Subjects, Assignments, Groups)
+from simplified.examiner import (Subjects, Periods, Assignments, Groups)
 
 import fields
 from restview import RestView
@@ -18,10 +18,9 @@ class GetFormBase(forms.Form):
 class RestSubjects(Subjects, RestView):
 
     def restultqry_to_list(self, resultQry):
-        tpl = 'src/%(short_name)s'
+        tpl = '/%(short_name)s'
         def filter_func(assignmentDict):
-            assignmentDict.update(id=tpl % assignmentDict,
-                    text=assignmentDict['short_name'])
+            assignmentDict.update(path=tpl % assignmentDict)
             #assignmentDict.update(id=tpl % assignmentDict)
             return assignmentDict
         return filter(filter_func, resultQry)
@@ -31,11 +30,27 @@ class RestSubjects(Subjects, RestView):
                 fallbackvalue=Subjects.default_orderby)
 
 
+class RestPeriods(Periods, RestView):
+
+    def restultqry_to_list(self, resultQry):
+        tpl = '/%(parentnode__short_name)s/%(short_name)s'
+        def filter_func(assignmentDict):
+            assignmentDict.update(path=tpl % assignmentDict)
+            #assignmentDict.update(id=tpl % assignmentDict)
+            return assignmentDict
+        return filter(filter_func, resultQry)
+
+    class GetForm(GetFormBase):
+        orderby = fields.CharListWithFallbackField(
+                fallbackvalue=Subjects.default_orderby)
+        subject_short_name = forms.CharField(required=False)
+
+
 class RestAssignments(Assignments, RestView):
 
     def restultqry_to_list(self, resultQry):
-        tpl = ('%(parentnode__parentnode__short_name)s.'
-            '%(parentnode__short_name)s.%(short_name)s')
+        tpl = ('/%(parentnode__parentnode__short_name)s/'
+            '%(parentnode__short_name)s/%(short_name)s')
         def filter_func(assignmentDict):
             assignmentDict.update(path=tpl % assignmentDict)
             return assignmentDict
@@ -48,6 +63,8 @@ class RestAssignments(Assignments, RestView):
         active = fields.BooleanWithFallbackField(fallbackvalue=True)
         longnamefields = fields.BooleanWithFallbackField()
         pointhandlingfields = fields.BooleanWithFallbackField()
+        subject_short_name = forms.CharField(required=False)
+        period_short_name = forms.CharField(required=False)
 
 
 class RestGroups(Groups, RestView):

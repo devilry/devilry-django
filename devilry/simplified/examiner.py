@@ -31,11 +31,13 @@ class Periods(object):
 
     @classmethod
     def getqry(cls, user,
-            limit=50, start=0, query="",
-            orderby=default_orderby):
+            limit=50, start=0, query='', orderby=default_orderby,
+            subject_short_name=None):
         fields = ['id', 'short_name', 'long_name', 'parentnode__short_name']
         queryfields = ['short_name', 'long_name', 'parentnode__short_name']
         qry = models.Period.published_where_is_examiner(user)
+        if subject_short_name:
+            qry = qry.filter(parentnode__short_name=subject_short_name)
         qry = utils.qry_common(qry, fields, query, queryfields, orderby,
                 limit, start)
         return GetQryResult(fields, qry)
@@ -48,7 +50,8 @@ class Assignments(object):
     def getqry(cls, user,
             limit=50, start=0, query="", orderby=default_orderby,
             old=True, active=True, longnamefields=False,
-            pointhandlingfields=False):
+            pointhandlingfields=False,
+            subject_short_name=None, period_short_name=None):
         """
         List all old and active assignments. Provides the following
         information (fields) for each listed assignment by default:
@@ -98,6 +101,9 @@ class Assignments(object):
         queryfields = fields
         qry = models.Assignment.published_where_is_examiner(user, old=old,
                 active=active)
+        if subject_short_name and period_short_name:
+            qry = qry.filter(parentnode__short_name=period_short_name,
+                    parentnode__parentnode__short_name=subject_short_name)
         qry = utils.qry_common(qry, fields, query, queryfields, orderby,
                 limit, start)
         return GetQryResult(fields, qry)
