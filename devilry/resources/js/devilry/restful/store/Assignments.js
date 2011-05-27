@@ -1,5 +1,6 @@
 Ext.define('devilry.restful.store.Assignments', {
     extend: 'Ext.data.Store',
+    requires: ['devilry.restful.model.Assignment'],
     model: 'devilry.restful.model.Assignment',
     autoLoad: true,
     autoSync: true,

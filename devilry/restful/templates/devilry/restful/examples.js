@@ -1,6 +1,6 @@
 Ext.require('devilry.restful.view.assignments.Grid');
-Ext.require('devilry.restful.model.Assignment');
-Ext.require('devilry.restful.model.Subject');
+Ext.require('devilry.restful.PathRestProxy');
+Ext.require('devilry.restful.store.SubjectTree');
 Ext.require('devilry.restful.store.Assignments');
 
 
@@ -66,41 +66,8 @@ function ajaxGrid()
 
 function tree()
 {
-    Ext.define('PathRestProxy', {
-        extend: 'Ext.data.proxy.Rest',
-        buildUrl: function(request) {
-            var path = request.operation.node.data.path;
-            return '/restful/examiner/tree' + path + '/';
-        }
-    });
 
-    Ext.define('SubjectTreeStore', {
-        extend: 'Ext.data.TreeStore',
-        model: 'devilry.restful.model.Subject',
-        proxy: Ext.create('PathRestProxy', {
-            type: 'ajax',
-            url: '/restful/examiner/tree/',
-            appendId: true,
-            reader: {
-                type: 'json',
-                root: 'items'
-            },
-        }),
-        root: {
-            nodeType:'async',            
-            short_name: 'Subjects',
-            path: '',
-            id: 0,
-            expanded: true
-        },
-    });
-
-    var store = Ext.create('SubjectTreeStore', {});
-    //store.addListener('append', function(tree, parent, node, index) {
-            //console.log(parent);
-            //console.log(node);
-            ////return this.parent.append(tree, parent, node, index);
-        //});
+    var store = Ext.create('devilry.restful.store.SubjectTree');
 
     var tree = Ext.create('Ext.tree.Panel', {
         store: store,
@@ -109,6 +76,7 @@ function tree()
         width: 250,
         title: 'Subjects',
         useArrows: true,
+        rootVisible: false,
         columns: [{
                 xtype: 'treecolumn',
                 text: 'Name',

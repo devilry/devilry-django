@@ -1,6 +1,5 @@
 Ext.define('devilry.restful.model.Assignment', {
     extend: 'Ext.data.Model',
-    belongsTo: 'devilry.restful.model.Period',
     fields: [
         {name:'id', type:'int'},
         {name:'short_name', type:'string'},
