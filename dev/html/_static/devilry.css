@@ -1,0 +1,49 @@
+/* vim: ft=css
+ */
+
+@import url("default.css");
+
+body {
+    font-size: 12px;
+}
+
+h1 {
+    margin: 2px 0 15px 0 !important;
+    padding: 0 !important;
+}
+
+
+div.body>div.section>div.section {
+    margin-top: 20px;
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 15px 0 15px 0;    
+    box-shadow: 2px 2px 5px #aaa;
+    padding: 15px;
+}
+div.body>div.section>div.section>h2 {
+    border: none;
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+div.body>div.section>div.section>div.section>h3 {
+    border: none;
+    margin: 20px 0 15px 0;
+    padding: 0;
+}
+
+tr.field {
+    border: 1px solid #d8d8d8;
+}
+th.field-name {
+    background-color: #f8f8f8 !important;
+}
+td.field-body {
+}
+
+pre {
+    border: 1px solid #d8d8d8;
+    border-left: none;
+    border-right: none;
+}

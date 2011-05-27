@@ -1,0 +1,716 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.xmlrpc_client.assignmenttree &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.xmlrpc_client.assignmenttree</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. attribute:: ID_SEP</span>
+
+<span class="sd">    Separator used to separate id and filenames when handling duplicate</span>
+<span class="sd">    directory names: ``&#39;+&#39;``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">cookielib</span> <span class="kn">import</span> <span class="n">LWPCookieJar</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">urlparse</span> <span class="kn">import</span> <span class="n">urljoin</span>
+<span class="kn">import</span> <span class="nn">xmlrpclib</span>
+<span class="kn">from</span> <span class="nn">ConfigParser</span> <span class="kn">import</span> <span class="n">SafeConfigParser</span><span class="p">,</span> <span class="n">NoOptionError</span>
+
+
+<span class="n">ID_SEP</span> <span class="o">=</span> <span class="s">&#39;+&#39;</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;devilry&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="join_dirname_id"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.join_dirname_id">[docs]</a><span class="k">def</span> <span class="nf">join_dirname_id</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Join ``dirname`` and ``id`` using :attr:`ID_SEP`. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">+</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="overwriteable_filename"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.overwriteable_filename">[docs]</a><span class="k">def</span> <span class="nf">overwriteable_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All files that the sync operations might overwrite without notice</span>
+<span class="sd">    uses this function to prefix the filename with ``&quot;.overwriteable-&quot;``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&#39;.overwriteable-</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename</span>
+</div>
+<div class="viewcode-block" id="OverwriteError"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.OverwriteError">[docs]</a><span class="k">class</span> <span class="nc">OverwriteError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised by :func:`overwrite` when trying to overwrite a file not starting</span>
+<span class="sd">    with ``&quot;.overwriteable-&quot;`` without making a backup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="overwrite"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.overwrite">[docs]</a><span class="k">def</span> <span class="nf">overwrite</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overwrite the given file with the given ``data``. If the file is not</span>
+<span class="sd">    overwriteable (see :func:`overwriteable_filename`), raise</span>
+<span class="sd">    :exc:`OverwriteError`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;.overwriteable-&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">OverwriteError</span><span class="p">(</span><span class="s">&#39;Can not overwrite </span><span class="si">%s</span><span class="s">.&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="make_backup"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.make_backup">[docs]</a><span class="k">def</span> <span class="nf">make_backup</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a backup of the file, ``filepath``, named *[filename].bak-[N]*,</span>
+<span class="sd">    where [N] is the lowest number higher than ``index`` which produces a</span>
+<span class="sd">    unique filename.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backupfile</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.bak-</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">backupfile</span><span class="p">):</span>
+        <span class="n">make_backup</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> was overwritten. Backup written to </span><span class="si">%s</span><span class="s">.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">filepath</span><span class="p">,</span> <span class="n">backupfile</span><span class="p">))</span>
+        <span class="nb">open</span><span class="p">(</span><span class="n">backupfile</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="overwrite_with_backup"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.overwrite_with_backup">[docs]</a><span class="k">def</span> <span class="nf">overwrite_with_backup</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">lastsavefilename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overwrite the given file with the given ``data`` and create a backup</span>
+<span class="sd">    using :func:`make_backup` if the file exists and the contents of the</span>
+<span class="sd">    existing file does not match ``data``.</span>
+
+<span class="sd">    Both ``filename`` and ``lastsavefilename`` are files in the ``dirname``</span>
+<span class="sd">    directory. They do not have to exist. ``lastsavefilename`` is filtered</span>
+<span class="sd">    throught :func:`overwriteable_filename`.</span>
+
+<span class="sd">    If ``lastsavefilename`` is the name of a existing file, a backup will</span>
+<span class="sd">    not be created unless the contents of ``filename`` does not match the</span>
+<span class="sd">    contents of ``lastsavefilename``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+        <span class="n">current_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">current_data</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> matches the server. No update requried.&#39;</span> <span class="o">%</span>
+                    <span class="n">filepath</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">lastsavefile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span>
+                <span class="n">overwriteable_filename</span><span class="p">(</span><span class="n">lastsavefilename</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">lastsavefilename</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lastsavefile</span><span class="p">):</span>
+            <span class="n">lastsave_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">lastsavefile</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lastsave_data</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+                <span class="c"># No need for data if the server matches our last save,</span>
+                <span class="c"># but a warning is needed.</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%(dirname)s</span><span class="s">: </span><span class="si">%(filename)s</span><span class="s"> has local &#39;</span>\
+                        <span class="s">&#39;modifications, but the file on the server &#39;</span> \
+                        <span class="s">&#39;matches your last save, so your local file &#39;</span> \
+                        <span class="s">&#39;remains utouched. Remove </span><span class="si">%(filename)s</span><span class="s"> and sync to &#39;</span> \
+                        <span class="s">&#39;get the file from the server.&#39;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">())</span>
+                <span class="k">return</span>
+            <span class="k">if</span> <span class="n">lastsave_data</span> <span class="o">==</span> <span class="n">current_data</span><span class="p">:</span>
+                <span class="c"># If the file has not changed since last save, we do not</span>
+                <span class="c"># need a backup</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Last-save data for </span><span class="si">%s</span><span class="s"> matches current data. No &#39;</span>\
+                        <span class="s">&#39;backup required.&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Last-save data for </span><span class="si">%s</span><span class="s"> does not match current &#39;</span> \
+                        <span class="s">&#39;data. Backup required.&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+                <span class="n">make_backup</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">make_backup</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;+ </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+    <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lastsavefilename</span><span class="p">:</span>
+        <span class="n">overwrite</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">overwriteable_filename</span><span class="p">(</span><span class="n">lastsavefilename</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Info"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info">[docs]</a><span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">sectionname</span> <span class="o">=</span> <span class="s">&#39;info&#39;</span>
+
+<div class="viewcode-block" id="Info.Error"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.Error">[docs]</a>    <span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Base class for errors with the :class:`Info`-class.</span>
+<span class="sd">        </span>
+<span class="sd">        .. attribute:: info</span>
+
+<span class="sd">            The info-object where the error occurred.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">info</span>
+            <span class="nb">super</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Info.FileDoesNotExistError"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.FileDoesNotExistError">[docs]</a>    <span class="k">class</span> <span class="nc">FileDoesNotExistError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Raised in :meth:`Info.read` when the info-file is missing from</span>
+<span class="sd">        the expected filesystem location. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="Info.FileMissingSectionError"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.FileMissingSectionError">[docs]</a>    <span class="k">class</span> <span class="nc">FileMissingSectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Raised in :meth:`Info.read` when the info-file is missing the</span>
+<span class="sd">        [info]-section. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="Info.FileWrongTypeError"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.FileWrongTypeError">[docs]</a>    <span class="k">class</span> <span class="nc">FileWrongTypeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Raised in :meth:`Info.read` when the *type* stored in the</span>
+<span class="sd">        info-file does not match the expected type. &quot;&quot;&quot;</span>
+
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Info.read_open"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.read_open">[docs]</a>    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">typename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to open a Info for reading.</span>
+<span class="sd">        </span>
+<span class="sd">        If typename is ``None``, :meth:`read` is called with check_typename</span>
+<span class="sd">        set to ``False``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">Info</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">typename</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">typename</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">i</span>
+</div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">typename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param dirpath:</span>
+<span class="sd">            Directory path. If expecting duplicate names, set this to the</span>
+<span class="sd">            name without a id, and use :meth:`determine_location` and</span>
+<span class="sd">            :meth:`rename_if_required` to handle duplicates.</span>
+<span class="sd">        :param typename:</span>
+<span class="sd">            This is used as a sanity check to make sure we are not syncing</span>
+<span class="sd">            two different tree. If you, for example, give typename</span>
+<span class="sd">            ``&quot;Delivery&quot;``, and the :meth:`read`-method reads a file with</span>
+<span class="sd">            typename ``&quot;Assignment&quot;``, :exc:`Info.FileWrongTypeError` is</span>
+<span class="sd">            raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_infofilename</span> <span class="o">=</span> <span class="n">overwriteable_filename</span><span class="p">(</span><span class="s">&#39;info&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_dirpath</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typename</span> <span class="o">=</span> <span class="n">typename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">SafeConfigParser</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Info.set"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set a value. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sectionname</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Info.setmany"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.setmany">[docs]</a>    <span class="k">def</span> <span class="nf">setmany</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set many values. &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Info.get"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a item, but default to ``default`` if the key is not found. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">default</span>
+</div>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a item. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sectionname</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">NoOptionError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Info.get_id"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get the id. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Info.get_dirpath"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.get_dirpath">[docs]</a>    <span class="k">def</span> <span class="nf">get_dirpath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the directory where the info-file is stored on disk. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span>
+</div>
+<div class="viewcode-block" id="Info.get_infofilepath"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.get_infofilepath">[docs]</a>    <span class="k">def</span> <span class="nf">get_infofilepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get path to where the info-file is stored on disk. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span>
+</div>
+<div class="viewcode-block" id="Info.new"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize a new info-object with mandatory data. If working</span>
+<span class="sd">        with a existing info-file, use :meth:`read` instead. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sectionname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Info.read"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_typename</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Read info-file from disk.</span>
+<span class="sd">        If check_typename is ``False``, no exception is raised if the type</span>
+<span class="sd">        in the file, and current typename does not match.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">read</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">Info</span><span class="o">.</span><span class="n">FileDoesNotExistError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;The info-file does not exists.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sectionname</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">Info</span><span class="o">.</span><span class="n">FileMissingSectionError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="s">&#39;The info-file, </span><span class="si">%s</span><span class="s">, has no [</span><span class="si">%s</span><span class="s">]-section. This could &#39;</span> \
+                    <span class="s">&#39;be because you have changed or overwritten the file.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sectionname</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">check_typename</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Info</span><span class="o">.</span><span class="n">FileWrongTypeError</span><span class="p">(</span>
+                    <span class="s">&#39;The expected type, </span><span class="si">%s</span><span class="s">, does not match the existing &#39;</span> \
+                    <span class="s">&#39;type, </span><span class="si">%s</span><span class="s">, in </span><span class="si">%s</span><span class="s">. This could mean you have managed to &#39;</span> \
+                    <span class="s">&#39;checkout one devilry-tree within another.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Info.write"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Write info-file to disk. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">))</span>
+</div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_change_dirpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirpath</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span> <span class="o">=</span> <span class="n">dirpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_infofilepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_infofilename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Info.rename_if_required"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.rename_if_required">[docs]</a>    <span class="k">def</span> <span class="nf">rename_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the directory for this Info does not exist, we use this to</span>
+<span class="sd">        determine if a rename from a non-id-based naming to id-based naming</span>
+<span class="sd">        is required to avoid name-crash. If another directory with the same</span>
+<span class="sd">        name as this one is detected:</span>
+<span class="sd">        </span>
+<span class="sd">            - the *other* directory is renamed to include id in it&#39;s name.</span>
+<span class="sd">            - :attr:`dirname` is changed to include id</span>
+<span class="sd">            - the new directory-name of the *other directory* (the one that</span>
+<span class="sd">              was renamed) is returned.</span>
+
+<span class="sd">        If a rename is not required, ``False`` is returned.</span>
+
+<span class="sd">        **Never** call this unless :meth:`determine_location` returns False.</span>
+
+<span class="sd">        Only used with duplicate dirnames. See :class:`AssignmentTreeWalker`</span>
+<span class="sd">        for more information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#if not self.determine_location(id):</span>
+            <span class="c">#return False</span>
+        <span class="n">parentdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">)</span>
+        <span class="n">dirpath_with_id</span> <span class="o">=</span> <span class="n">join_dirname_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">):</span>
+            <span class="n">existing_id</span> <span class="o">=</span> <span class="n">Info</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="p">)</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+            <span class="n">existing_dirpath_with_id</span> <span class="o">=</span> <span class="n">join_dirname_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">,</span> <span class="n">existing_id</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">,</span> <span class="n">existing_dirpath_with_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_change_dirpath</span><span class="p">(</span><span class="n">dirpath_with_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">existing_dirpath_with_id</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="Info.determine_location"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.Info.determine_location">[docs]</a>    <span class="k">def</span> <span class="nf">determine_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine the correct location of this Info, changing</span>
+<span class="sd">        the dirpath the Info exists, but uses id in it&#39;s path.</span>
+<span class="sd">        </span>
+<span class="sd">        Only used with duplicate dirnames. See :class:`AssignmentTreeWalker`</span>
+<span class="sd">        for more information.</span>
+
+<span class="sd">        :return: True if the determined location exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dirpath_with_id</span> <span class="o">=</span> <span class="n">join_dirname_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirpath_with_id</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_change_dirpath</span><span class="p">(</span><span class="n">dirpath_with_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">):</span>
+            <span class="n">existing_id</span> <span class="o">=</span> <span class="n">Info</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="p">)</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">existing_id</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+</div></div>
+<div class="viewcode-block" id="AssignmentTreeWalker"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker">[docs]</a><span class="k">class</span> <span class="nc">AssignmentTreeWalker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Finds all assignment where the current user is examiner, and walks</span>
+<span class="sd">    through every AssignmentGroup, Delivery, Feedback and FileMeta.</span>
+
+<span class="sd">    Calls :meth:`assignment`, :meth:`assignmentgroup`, :meth:`delivery`,</span>
+<span class="sd">    :meth:`filemeta`, :meth:`feedback_none` and :meth:`feedback_exists` with</span>
+<span class="sd">    the returned dicts from the corresponding functions in the examiner</span>
+<span class="sd">    xmlrpc as argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cookiepath</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">serverurl</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cookiepath</span> <span class="o">=</span> <span class="n">cookiepath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serverurl</span> <span class="o">=</span> <span class="n">serverurl</span>
+        <span class="n">cj</span> <span class="o">=</span> <span class="n">LWPCookieJar</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">cookiepath</span><span class="p">):</span>
+            <span class="n">cj</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">cookiepath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">urlopener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cj</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">assignment</span> <span class="ow">in</span> <span class="n">server</span><span class="o">.</span><span class="n">list_active_assignments</span><span class="p">():</span>
+            <span class="n">assignmentdir</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
+            <span class="n">assignmentinfo</span> <span class="o">=</span> <span class="n">Info</span><span class="p">(</span><span class="n">assignmentdir</span><span class="p">,</span> <span class="s">&quot;Assignment&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assignment</span><span class="p">(</span><span class="n">assignment</span><span class="p">,</span> <span class="n">assignmentinfo</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">server</span><span class="o">.</span><span class="n">list_assignmentgroups</span><span class="p">(</span><span class="n">assignment</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]):</span>
+                <span class="n">groupname</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s">&#39;students&#39;</span><span class="p">])</span>
+                <span class="c"># Note that the correct dirpath depends on the assignment</span>
+                <span class="c"># method setting assignmentinfo.get_dirpath() correctly..</span>
+                <span class="n">groupdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">assignmentinfo</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">(),</span> <span class="n">groupname</span><span class="p">)</span>
+                <span class="n">groupinfo</span> <span class="o">=</span> <span class="n">Info</span><span class="p">(</span><span class="n">groupdir</span><span class="p">,</span> <span class="s">&quot;AssignmentGroup&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assignmentgroup</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">groupinfo</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">delivery</span> <span class="ow">in</span> <span class="n">server</span><span class="o">.</span><span class="n">list_deliveries</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]):</span>
+                    <span class="n">deliverydir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">groupinfo</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">(),</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">delivery</span><span class="p">[</span><span class="s">&#39;number&#39;</span><span class="p">]))</span>
+                    <span class="n">deliveryinfo</span> <span class="o">=</span> <span class="n">Info</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="s">&quot;Delivery&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">deliveryinfo</span><span class="p">)</span>
+
+                    <span class="n">filesdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">deliveryinfo</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">(),</span> <span class="s">&#39;files&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">filemeta</span> <span class="ow">in</span> <span class="n">delivery</span><span class="p">[</span><span class="s">&#39;filemetas&#39;</span><span class="p">]:</span>
+                        <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filesdir</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">(</span><span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">feedback</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">get_feedback</span><span class="p">(</span><span class="n">delivery</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">Fault</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">faultCode</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">feedback_none</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span>
+                                    <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;xmlrpc_gradeconf&#39;</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">feedback_exists</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span>
+                                <span class="n">feedback</span><span class="p">,</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;xmlrpc_gradeconf&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="AssignmentTreeWalker.assignment"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker.assignment">[docs]</a>    <span class="k">def</span> <span class="nf">assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called on each assignment.</span>
+<span class="sd">        </span>
+<span class="sd">        Calls :meth:`assignment_new` if the assignment has not been synced</span>
+<span class="sd">        before, and :meth:`assignment_exists` if not. These two methods do</span>
+<span class="sd">        nothing by default, and are ment to be overridden in subclasses.</span>
+
+<span class="sd">        :param assignment: A dictionary as returned from the </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assignment_exists</span><span class="p">(</span><span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assignment_new</span><span class="p">(</span><span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">assignment_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">assignmentdir</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">assignment_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">assignmentdir</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AssignmentTreeWalker.assignmentgroup"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker.assignmentgroup">[docs]</a>    <span class="k">def</span> <span class="nf">assignmentgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called on each assignment-group.</span>
+<span class="sd">        </span>
+<span class="sd">        Calls :meth:`assignmentgroup_nodeliveries` if the assignmentgroup</span>
+<span class="sd">        has no deliveries, :meth:`assignmentgroup_new` if the assignment has</span>
+<span class="sd">        not been synced before, and :meth:`assignmentgroup_exists` if not.</span>
+<span class="sd">        These three methods do nothing by default, and are ment to be</span>
+<span class="sd">        overridden in subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">number_of_deliveries</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;number_of_deliveries&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">number_of_deliveries</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assignmentgroup_nodeliveries</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">determine_location</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assignmentgroup_exists</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assignmentgroup_new</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">assignmentgroup_nodeliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">groupdir</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">assignmentgroup_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">groupdir</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">assignmentgroup_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">groupdir</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AssignmentTreeWalker.delivery"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker.delivery">[docs]</a>    <span class="k">def</span> <span class="nf">delivery</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called on each delivery.</span>
+<span class="sd">        </span>
+<span class="sd">        Calls :meth:`delivery_new` if the delivery has not been synced</span>
+<span class="sd">        before, and :meth:`delivery_exists` if not. These two methods do</span>
+<span class="sd">        nothing by default, and are ment to be overridden in subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delivery_exists</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delivery_new</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">delivery_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">delivery_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AssignmentTreeWalker.filemeta"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker.filemeta">[docs]</a>    <span class="k">def</span> <span class="nf">filemeta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called on each filemeta.</span>
+<span class="sd">        </span>
+<span class="sd">        Calls :meth:`filemeta_new` if the filemeta has not been synced</span>
+<span class="sd">        before, and :meth:`filemeta_exists` if not. These two methods do</span>
+<span class="sd">        nothing by default, and are ment to be overridden in subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filemeta_exists</span><span class="p">(</span><span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filemeta_new</span><span class="p">(</span><span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">filemeta_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">filemeta_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AssignmentTreeWalker.feedback_none"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker.feedback_none">[docs]</a>    <span class="k">def</span> <span class="nf">feedback_none</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called when there is no feedback on a delivery. Does nothing by</span>
+<span class="sd">        default, and should be overridden in subclasses. &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="AssignmentTreeWalker.feedback_exists"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker.feedback_exists">[docs]</a>    <span class="k">def</span> <span class="nf">feedback_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span> <span class="n">feedback</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called when there is feedback on a delivery. Does nothing by</span>
+<span class="sd">        default, and should be overridden in subclasses. &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+</div></div>
+<div class="viewcode-block" id="AssignmentSync"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.assignmenttree.AssignmentSync">[docs]</a><span class="k">class</span> <span class="nc">AssignmentSync</span><span class="p">(</span><span class="n">AssignmentTreeWalker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. attribute:: bufsize</span>
+
+<span class="sd">        Buffer size used when downloading files. Defaults to ``65536``, and</span>
+<span class="sd">        might be overridden in subclasses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bufsize</span> <span class="o">=</span> <span class="mi">65536</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">,</span> <span class="n">cookiepath</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">serverurl</span><span class="p">,</span>
+            <span class="n">authcookiefile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authcookiefile</span> <span class="o">=</span> <span class="n">authcookiefile</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">rootdir</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">AssignmentSync</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">cookiepath</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span>
+                    <span class="n">serverurl</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_assignment_info_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">setmany</span><span class="p">(</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                <span class="n">short_name</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span>
+                <span class="n">long_name</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">],</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">],</span>
+                <span class="n">publishing_time</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;publishing_time&#39;</span><span class="p">])</span>
+        <span class="n">gradeconf</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;xmlrpc_gradeconf&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">gradeconf</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">setmany</span><span class="p">(</span>
+                <span class="n">gradeconf_help</span> <span class="o">=</span> <span class="n">gradeconf</span><span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">],</span>
+                <span class="n">gradeconf_filename</span> <span class="o">=</span> <span class="n">gradeconf</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">],</span>
+                <span class="n">gradeconf_default_filencontents</span> <span class="o">=</span> <span class="n">gradeconf</span><span class="p">[</span><span class="s">&#39;default_filecontents&#39;</span><span class="p">])</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">assignment_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;+ </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignment_info_refresh</span><span class="p">(</span><span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">assignment_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> already exists&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignment_info_refresh</span><span class="p">(</span><span class="n">assignment</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;xmlrpc_gradeconf&#39;</span><span class="p">]:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s"> does not support creating feedback using &#39;</span> \
+                    <span class="s">&#39;the command-line&#39;</span> <span class="o">%</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">])</span>
+
+
+    <span class="k">def</span> <span class="nf">assignmentgroup_nodeliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Group &quot;</span><span class="si">%s</span><span class="s">&quot; has no deliveries&#39;</span> <span class="o">%</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+
+
+    <span class="k">def</span> <span class="nf">_assignmentgroup_info_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">setmany</span><span class="p">(</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">students</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s">&#39;students&#39;</span><span class="p">]),</span>
+                <span class="n">number_of_deliveries</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;number_of_deliveries&#39;</span><span class="p">])</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">assignmentgroup_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">olddir</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">()</span>
+        <span class="n">renamed_name</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">rename_if_required</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">renamed_name</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Renamed </span><span class="si">%s</span><span class="s"> -&gt; </span><span class="si">%s</span><span class="s"> to avoid name crash with </span><span class="si">%s</span><span class="s">.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">olddir</span><span class="p">,</span> <span class="n">renamed_name</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">()))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;+ </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignmentgroup_info_refresh</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">assignmentgroup_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> already exists.&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignmentgroup_info_refresh</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_delivery_info_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">setmany</span><span class="p">(</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">delivery</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">delivery</span><span class="p">[</span><span class="s">&#39;number&#39;</span><span class="p">],</span>
+                <span class="n">time_of_delivery</span> <span class="o">=</span> <span class="n">delivery</span><span class="p">[</span><span class="s">&#39;time_of_delivery&#39;</span><span class="p">])</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_create_feedbackfile_if_notexists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="s">&#39;feedback.rst&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">lastsave_filename</span> <span class="o">=</span> <span class="n">overwriteable_filename</span><span class="p">(</span><span class="s">&#39;feedback.lastsave.rst&#39;</span><span class="p">)</span>
+            <span class="n">overwrite</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="n">lastsave_filename</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delivery_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">delivery</span><span class="p">[</span><span class="s">&#39;successful&#39;</span><span class="p">]:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Delivery </span><span class="si">%s</span><span class="s"> was not successfully completed, and &#39;</span>
+                    <span class="s">&#39;is therefore ignored.&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+            <span class="k">return</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;+ </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">(),</span> <span class="s">&#39;files&#39;</span><span class="p">))</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_info_refresh</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_feedbackfile_if_notexists</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">delivery_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> already exists.&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_info_refresh</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_feedbackfile_if_notexists</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get_dirpath</span><span class="p">())</span>
+
+
+    <span class="k">def</span> <span class="nf">filemeta_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;+ </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+        <span class="n">serverurl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverurl</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverurl</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">):</span>
+            <span class="n">serverurl</span> <span class="o">=</span> <span class="n">serverurl</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/ui/download-file/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">serverurl</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Downloading file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">filemeta</span><span class="p">[</span><span class="s">&#39;size&#39;</span><span class="p">]</span>
+        <span class="n">left_bytes</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authcookiefile</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authcookiefile</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authcookiefile</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&quot;Cookie&quot;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">urlopener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Could not download file: </span><span class="si">%s</span><span class="s">. This is probably &quot;</span>\
+                    <span class="s">&quot;because the delivery exists on the server, but the &quot;</span>\
+                    <span class="s">&quot;file has been deleted from the file backend by a &quot;</span> \
+                    <span class="s">&quot;administrator.&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">left_bytes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bufsize</span><span class="p">)</span>
+                <span class="n">left_bytes</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">input</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">filemeta_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> already exists.&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_gradeconf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">,</span>
+            <span class="n">grade_as_xmlrpcstring</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">gradeconf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">overwrite_with_backup</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
+                    <span class="n">grade_as_xmlrpcstring</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.lastsave&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">feedback_none</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_gradeconf</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">,</span>
+                <span class="n">gradeconf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;default_filecontents&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">set_feedbackinfo</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span> <span class="n">feedback</span><span class="p">):</span>
+        <span class="n">deliveryinfo</span> <span class="o">=</span> <span class="n">Info</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="s">&#39;Delivery&#39;</span><span class="p">)</span>
+        <span class="n">deliveryinfo</span><span class="o">.</span><span class="n">setmany</span><span class="p">(</span>
+            <span class="n">feedback_text</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">],</span>
+            <span class="n">feedback_format</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">],</span>
+            <span class="n">feedback_published</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;published&#39;</span><span class="p">],</span>
+            <span class="n">feedback_last_modified</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;last_modified&#39;</span><span class="p">],</span>
+            <span class="n">feedback_last_modified_by</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;last_modified_by&#39;</span><span class="p">])</span>
+        <span class="n">deliveryinfo</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">feedback_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery</span><span class="p">,</span> <span class="n">deliverydir</span><span class="p">,</span> <span class="n">feedback</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_gradeconf</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="n">gradeconf</span><span class="p">,</span>
+                <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;grade_as_xmlrpcstring&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">set_feedbackinfo</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="n">feedback</span><span class="p">)</span>
+        <span class="n">overwrite_with_backup</span><span class="p">(</span><span class="n">deliverydir</span><span class="p">,</span> <span class="s">&#39;feedback.rst&#39;</span><span class="p">,</span>
+                <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">),</span>
+                <span class="s">&#39;feedback.lastsave.rst&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

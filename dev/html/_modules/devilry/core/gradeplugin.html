@@ -1,0 +1,380 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.core.gradeplugin &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.core.gradeplugin</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. attribute:: registry</span>
+
+<span class="sd">    A :class:`Registry`-object.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.contrib.contenttypes.models</span> <span class="kn">import</span> <span class="n">ContentType</span>
+
+
+<div class="viewcode-block" id="GradePluginError"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradePluginError">[docs]</a><span class="k">class</span> <span class="nc">GradePluginError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base class for grade plugin errors. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="GradePluginDoesNotExistError"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradePluginDoesNotExistError">[docs]</a><span class="k">class</span> <span class="nc">GradePluginDoesNotExistError</span><span class="p">(</span><span class="n">GradePluginError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised when a grade plugin does not exist. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="WrongContentTypeError"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.WrongContentTypeError">[docs]</a><span class="k">class</span> <span class="nc">WrongContentTypeError</span><span class="p">(</span><span class="n">GradePluginError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised when the grade object on a feedback is not using the grade</span>
+<span class="sd">    plugin on the assignment. &quot;&quot;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="XmlrpcGradeConf"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.XmlrpcGradeConf">[docs]</a><span class="k">class</span> <span class="nc">XmlrpcGradeConf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Provides the configuration-wrapper between a grade-plugin and the</span>
+<span class="sd">    xmlrpc. &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">default_filecontents_callback</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All parameters are stored as object attributes.</span>
+
+<span class="sd">        :param help:</span>
+<span class="sd">            Help text explaining the format of the grade.</span>
+<span class="sd">        :param filename:</span>
+<span class="sd">            The reccommended filename. ``None`` means that no file is</span>
+<span class="sd">            required.  Note that this is only a hint to the xmlrpc, and</span>
+<span class="sd">            might be ignored.</span>
+<span class="sd">        :param default_filecontents_callback:</span>
+<span class="sd">            A function which returns the reccommended default contents of</span>
+<span class="sd">            the grade-file. The function takes a</span>
+<span class="sd">            :class:`devilry.core.models.Assignment` object as it&#39;s only</span>
+<span class="sd">            argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">help</span> <span class="o">=</span> <span class="n">help</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_filecontents_callback</span> <span class="o">=</span> <span class="n">default_filecontents_callback</span>
+
+<div class="viewcode-block" id="XmlrpcGradeConf.as_dict"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.XmlrpcGradeConf.as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignmentobj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a dict with all the attributes except</span>
+<span class="sd">        ``default_filecontents_callback`` which instead is called with</span>
+<span class="sd">        ``assignmentobj`` as argument, and the result is stored with the</span>
+<span class="sd">        ``&quot;default_filecontents&quot;``-key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_filecontents_callback</span><span class="p">:</span>
+            <span class="n">default_filecontents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_filecontents_callback</span><span class="p">(</span>
+                    <span class="n">assignmentobj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default_filecontents</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                <span class="n">default_filecontents</span><span class="o">=</span><span class="n">default_filecontents</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="GradeModel"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel">[docs]</a><span class="k">class</span> <span class="nc">GradeModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="GradeModel.get_maxpoints"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_maxpoints">[docs]</a>    <span class="k">def</span> <span class="nf">get_maxpoints</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get maximum number of points possible with this gradeplugin on</span>
+<span class="sd">        the given assignment. When</span>
+<span class="sd">        :class:`devilry.core.models.AssignmentGroup.autoscale` is True, this</span>
+<span class="sd">        is used to update the pointscale.</span>
+<span class="sd">        </span>
+<span class="sd">        This *must* work when assignment is None (it should return a sane</span>
+<span class="sd">        default value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="GradeModel.init_example"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.init_example">[docs]</a>    <span class="k">def</span> <span class="nf">init_example</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the grade plugin with the assignment for use as a</span>
+<span class="sd">        example. Only needed if the grade plugin has to be configured for</span>
+<span class="sd">        each assignment.</span>
+<span class="sd">        </span>
+<span class="sd">        This is used to autogenerate examples and test data. You do not have</span>
+<span class="sd">        to respect the points argument, but doing so enables generation of</span>
+<span class="sd">        better example data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="GradeModel.get_example_xmlrpcstring"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_example_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">get_example_xmlrpcstring</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a example xmlrpcstring for the given assignment with the</span>
+<span class="sd">        given number of points. This method should work with the</span>
+<span class="sd">        initialization made in init_example, and might not work in any other</span>
+<span class="sd">        cases (grade_rstschema is a example of this).</span>
+<span class="sd">        </span>
+<span class="sd">        This is used to autogenerate examples and test data. You do not have</span>
+<span class="sd">        to respect the points argument, but doing so enables generation of</span>
+<span class="sd">        better example data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="GradeModel.get_feedback_obj"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_feedback_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_feedback_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reverse the feedback object which has a generic foreign key to this</span>
+<span class="sd">        grade model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">devilry.core.models</span> <span class="kn">import</span> <span class="n">Feedback</span> <span class="c"># must be imported here to avoid recursive include</span>
+        <span class="n">typ</span> <span class="o">=</span> <span class="n">ContentType</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_for_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Feedback</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">content_type</span><span class="o">=</span><span class="n">typ</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="n">object_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="GradeModel.get_grade_as_short_string"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_grade_as_short_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a string representation of the grade suitable for</span>
+<span class="sd">        short one-line display. This method is required.</span>
+<span class="sd">        </span>
+<span class="sd">        :param feedback_obj:</span>
+<span class="sd">            The :class:`devilry.core.models.Feedback` using this</span>
+<span class="sd">            grade-object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="GradeModel.supports_long_string"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.supports_long_string">[docs]</a>    <span class="k">def</span> <span class="nf">supports_long_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Boolean telling if :meth:`get_grade_as_long_string` is</span>
+<span class="sd">            supported. This attribute exists to avoid having to create the</span>
+<span class="sd">            long string twice: once to check if it works, and once to</span>
+<span class="sd">            display it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="GradeModel.get_grade_as_long_string"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_grade_as_long_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_long_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string representation of the grade which might span</span>
+<span class="sd">        multiple lines. The string must be formatted with restructured text.</span>
+<span class="sd">        </span>
+<span class="sd">        :param feedback_obj:</span>
+<span class="sd">            The :class:`devilry.core.models.Feedback` using this</span>
+<span class="sd">            grade-object.</span>
+<span class="sd">        :return: None if this operation is not supported (the default).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="GradeModel.get_grade_as_xmlrpcstring"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_grade_as_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the grade from a string compatible with</span>
+<span class="sd">        :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for</span>
+<span class="sd">        xmlrpc, and a grade-plugin is not required to support it. If</span>
+<span class="sd">        unsupported, just do not override it, and it will default to raising</span>
+<span class="sd">        :exc:`NotImplementedError`, which the core and xmlrpc handles.</span>
+<span class="sd">        </span>
+<span class="sd">        :param feedback_obj:</span>
+<span class="sd">            The :class:`devilry.core.models.Feedback` using this</span>
+<span class="sd">            grade-object.</span>
+<span class="sd">        :return: None if this operation is not supported (the default).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="GradeModel.set_grade_from_xmlrpcstring"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.set_grade_from_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">set_grade_from_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grade</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the grade from string. This is primarly intended for xmlrpc, and</span>
+<span class="sd">        a grade-plugin is not required to support it. If unsupported, just</span>
+<span class="sd">        do not override it, and it will default to raising</span>
+<span class="sd">        :exc:`NotImplementedError`, which the core and xmlrpc handles.</span>
+
+<span class="sd">        :param feedback_obj:</span>
+<span class="sd">            The :class:`devilry.core.models.Feedback` using this</span>
+<span class="sd">            grade-object.</span>
+
+<span class="sd">        Raises :exc:`NotImplementedError` if the operation is not supported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="GradeModel.get_points"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.get_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get points. Used by</span>
+<span class="sd">        :meth:`devilry.core.models.AssignmentGroup.update_gradeplugin_cached_fields`</span>
+<span class="sd">        to set points. Must be overridden in subclasses. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="GradeModel.is_passing_grade"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.is_passing_grade">[docs]</a>    <span class="k">def</span> <span class="nf">is_passing_grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return True if this is a passing grade, False otherwise. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="GradeModel.save"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.GradeModel.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback_obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param feedback_obj:</span>
+<span class="sd">            The :class:`devilry.core.models.Feedback` using this</span>
+<span class="sd">            grade-object. The save method has to have this parameter to</span>
+<span class="sd">            handle situations where the grade plugin needs the feedback</span>
+<span class="sd">            object before the feedback object has been saved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GradeModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="get_registry_key"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.get_registry_key">[docs]</a><span class="k">def</span> <span class="nf">get_registry_key</span><span class="p">(</span><span class="n">model_cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Get the registry key for the given model class. &quot;&quot;&quot;</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">model_cls</span><span class="o">.</span><span class="n">_meta</span>
+    <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="RegistryItem"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.RegistryItem">[docs]</a><span class="k">class</span> <span class="nc">RegistryItem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Information about a grade plugin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">model_cls</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span>
+           <span class="n">admin_url_callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">xmlrpc_gradeconf</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;   </span>
+<span class="sd">        All parameters are stored as object attributes.</span>
+
+<span class="sd">        :param view:</span>
+<span class="sd">            The view used when creating feedback with this grade-plugin.</span>
+<span class="sd">            See :ref:</span>
+<span class="sd">        :param model_cls:</span>
+<span class="sd">            A class for storing the grade of a single Feedback. It us used in a</span>
+<span class="sd">            one-to-one relationship with :class:`devilry.core.models.Feedback`</span>
+<span class="sd">            (The Feedback-class takes care of the relationship).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmlrpc_gradeconf</span> <span class="o">=</span> <span class="n">xmlrpc_gradeconf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span> <span class="o">=</span> <span class="n">model_cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">admin_url_callback</span> <span class="o">=</span> <span class="n">admin_url_callback</span>
+
+    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_registry_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="n">_meta</span>
+        <span class="c">#print dir(meta)</span>
+        <span class="c">#for ct in ContentType.objects.all():</span>
+        <span class="c">#    print ct.model</span>
+        <span class="c">#print meta.app_label, meta.module_name</span>
+        <span class="k">return</span> <span class="n">ContentType</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app_label</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">meta</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
+
+</div>
+<div class="viewcode-block" id="Registry"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry">[docs]</a><span class="k">class</span> <span class="nc">Registry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grade-plugin registry. You do not need to create a object of this class.</span>
+<span class="sd">    It is already available as :attr:`registry`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Registry.register"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registryitem</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a :class:`RegistryItem` to the registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">registryitem</span><span class="o">.</span><span class="n">get_key</span><span class="p">()]</span> <span class="o">=</span> <span class="n">registryitem</span>
+</div>
+<div class="viewcode-block" id="Registry.getitem"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry.getitem">[docs]</a>    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the :class:`RegistryItem` registered with the given ``key``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Registry.getitem_from_cls"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry.getitem_from_cls">[docs]</a>    <span class="k">def</span> <span class="nf">getitem_from_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the :class:`RegistryItem` registered with the given class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">get_registry_key</span><span class="p">(</span><span class="n">cls</span><span class="p">)]</span>
+</div>
+<div class="viewcode-block" id="Registry.getdefaultkey"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry.getdefaultkey">[docs]</a>    <span class="k">def</span> <span class="nf">getdefaultkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the default key (the key defined in the</span>
+<span class="sd">        DEVILRY_DEFAULT_GRADEPLUGIN setting).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_DEFAULT_GRADEPLUGIN</span>
+</div>
+<div class="viewcode-block" id="Registry.iterlabels"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry.iterlabels">[docs]</a>    <span class="k">def</span> <span class="nf">iterlabels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Iterate over the registry yielding (key, label). &quot;&quot;&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get_key</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Registry.iteritems"><a class="viewcode-back" href="../../../grade-plugins.html#devilry.core.gradeplugin.Registry.iteritems">[docs]</a>    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Iterate over the registry yielding (key, RegistryItem). &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterlabels</span><span class="p">()</span>
+
+</div>
+<span class="n">registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

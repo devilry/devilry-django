@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.xmlrpc_client.cli &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.xmlrpc_client.cli</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
+<span class="kn">from</span> <span class="nn">ConfigParser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+<span class="kn">import</span> <span class="nn">xmlrpclib</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">Cookie</span> <span class="kn">import</span> <span class="n">SimpleCookie</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">httplib</span>
+<span class="kn">from</span> <span class="nn">urlparse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+
+<span class="kn">from</span> <span class="nn">cookie_transport</span> <span class="kn">import</span> <span class="n">CookieTransport</span><span class="p">,</span> <span class="n">SafeCookieTransport</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;devilry&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="log_fault"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.log_fault">[docs]</a><span class="k">def</span> <span class="nf">log_fault</span><span class="p">(</span><span class="n">fault</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Log a xmlrpclib.Fault to log.error. &quot;&quot;&quot;</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fault</span><span class="o">.</span><span class="n">faultCode</span><span class="p">,</span> <span class="n">fault</span><span class="o">.</span><span class="n">faultString</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="format_long_message"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.format_long_message">[docs]</a><span class="k">def</span> <span class="nf">format_long_message</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">always_show_title</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Format a message which might be long for logging, to make it clear</span>
+<span class="sd">    where the message starts and ends.</span>
+<span class="sd">    </span>
+<span class="sd">    :return:</span>
+<span class="sd">        The formatted message, which will be surrounded by markers if</span>
+<span class="sd">        ``msg`` has more than 200 characters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">always_show_title</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">msg</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sidelen</span> <span class="o">=</span> <span class="p">(</span><span class="mi">68</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">beforesides</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">sidelen</span><span class="p">)])</span>
+        <span class="n">aftersides</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">sidelen</span><span class="p">)])</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">beforesides</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">beforesides</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">aftersides</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">aftersides</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+</div>
+<span class="k">class</span> <span class="nc">Cli</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="o">=</span><span class="p">[],</span> <span class="n">extra_help</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param commands: A list of subclasses of :class:`Command`.</span>
+<span class="sd">        :param extra_help: Extra help text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_extra_help</span><span class="p">(</span><span class="n">extra_help</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Redirect to the command with name matching ``args[1]``. (you add</span>
+<span class="sd">        commands with :meth:`add_command`). If invalid number of arguments,</span>
+<span class="sd">        or ``args[1]==&#39;help&#39;, show help and raise :exc:`SystemExit`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prog</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands_dict</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;usage: </span><span class="si">%s</span><span class="s"> &lt;command&gt;&#39;</span> <span class="o">%</span> <span class="n">prog</span>
+            <span class="k">print</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_commands</span><span class="p">()</span>
+            <span class="k">print</span> <span class="s">&#39;   </span><span class="si">%-12s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;Show command help.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_help</span><span class="p">:</span>
+                <span class="k">print</span>
+                <span class="k">print</span> <span class="n">Template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_extra_help</span><span class="p">)</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="n">prog</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+
+        <span class="n">command</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;help&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;usage: </span><span class="si">%s</span><span class="s"> help &lt;command&gt;&#39;</span> <span class="o">%</span> <span class="n">prog</span>
+                <span class="k">print</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_commands</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands_dict</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]]()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">exit_help</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands_dict</span><span class="p">[</span><span class="n">command</span><span class="p">]()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">cli</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">prog</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_extra_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra_help</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set extra help text. Use $prog to show the program-name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_help</span> <span class="o">=</span> <span class="n">extra_help</span>
+
+    <span class="k">def</span> <span class="nf">_print_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Print available commands. &quot;&quot;&quot;</span>
+        <span class="k">print</span> <span class="s">&#39;The available commands are:&#39;</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;   </span><span class="si">%-12s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">short_info</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add command.</span>
+<span class="sd">        </span>
+<span class="sd">        :param command: A subclass of :class:`Command`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands_dict</span><span class="p">[</span><span class="n">command</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">command</span>
+
+
+
+<div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command">[docs]</a><span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base class for all commands in the cli.</span>
+
+<span class="sd">    .. attribute:: name</span>
+
+<span class="sd">        Name of the argument. Lowercase-only and no spaces. Max 12</span>
+<span class="sd">        characters. Use ``-`` to improve readablilty on long names.</span>
+<span class="sd">    </span>
+<span class="sd">    .. attribute:: short_info</span>
+
+<span class="sd">        Short info shown when :class:`Cli` list commands.</span>
+
+<span class="sd">    .. attribute:: description</span>
+
+<span class="sd">        Description shown in addition to option help and usage.</span>
+
+<span class="sd">    .. attribute:: args_help</span>
+
+<span class="sd">        Description of arguments in usage. Use ``[arg-description]`` for</span>
+<span class="sd">        optional arguments and ``&lt;arg-description&gt;`` for required arguments.</span>
+
+<span class="sd">    .. attribute:: urlpath</span>
+
+<span class="sd">        Path to the xmlrpc used by the command.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">short_info</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">args_help</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">urlpath</span> <span class="o">=</span> <span class="s">&#39;/xmlrpc/&#39;</span>
+
+
+<div class="viewcode-block" id="Command.NotInDevilryDirError"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.NotInDevilryDirError">[docs]</a>    <span class="k">class</span> <span class="nc">NotInDevilryDirError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Raised when searching the current working directory and it&#39;s parents</span>
+<span class="sd">        for a subdirectory named ``&quot;.devilry&quot;``  fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rootdir</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">(</span><span class="n">usage</span><span class="o">=</span><span class="s">&quot;usage: </span><span class="si">%%</span><span class="s">prog </span><span class="si">%s</span><span class="s"> [options] </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args_help</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-q&quot;</span><span class="p">,</span> <span class="s">&quot;--quiet&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_const&quot;</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;loglevel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">&quot;Don&#39;t show extra information (only errors).&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--debug&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_const&quot;</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;loglevel&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">&quot;Show all output, for debugging.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_options</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configfile</span><span class="p">()])</span>
+
+<div class="viewcode-block" id="Command.get_configfile"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_configfile">[docs]</a>    <span class="k">def</span> <span class="nf">get_configfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses :meth:`get_configdir` to find config.cfg in the configdir.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configdir</span><span class="p">(),</span> <span class="s">&#39;config.cfg&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Command.write_config"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.write_config">[docs]</a>    <span class="k">def</span> <span class="nf">write_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update the configfile on disk. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configfile</span><span class="p">(),</span> <span class="s">&#39;wb&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Command.set_config"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.set_config">[docs]</a>    <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set a config value. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="s">&#39;settings&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="s">&#39;settings&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;settings&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.get_config"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a config value. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;settings&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.get_url"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get server url from config-file. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.find_rootdir"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.find_rootdir">[docs]</a>    <span class="k">def</span> <span class="nf">find_rootdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the first parent-directory of ``path`` containing a</span>
+<span class="sd">        directory named ``&quot;.devilry&quot;``.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises :exc:`Command.NotInDevilryDirError` if there is no .devilry</span>
+<span class="sd">        directory within any of the parent-directories of ``path``.</span>
+
+<span class="sd">        :param path: Defaults to current working directory.</span>
+<span class="sd">        :return: The path to the rootdir.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">cdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;.devilry&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cdir</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">path</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="k">raise</span> <span class="n">Command</span><span class="o">.</span><span class="n">NotInDevilryDirError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Command.get_configdir"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_configdir">[docs]</a>    <span class="k">def</span> <span class="nf">get_configdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the config-directory (the .devilry directory). &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_rootdir</span><span class="p">(),</span> <span class="s">&#39;.devilry&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.get_cookiepath"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_cookiepath">[docs]</a>    <span class="k">def</span> <span class="nf">get_cookiepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The cli uses cookies to maintain a session. The cookie-file is</span>
+<span class="sd">        stored in *cookie.txt* in the configdir using cookielib.LWPCookieJar format.  This</span>
+<span class="sd">        method returns the path to the cookie file. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configdir</span><span class="p">(),</span> <span class="s">&#39;cookies.txt&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.get_auth_cookiepath"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_auth_cookiepath">[docs]</a>    <span class="k">def</span> <span class="nf">get_auth_cookiepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The cli uses cookies to send authentication tokens when using</span>
+<span class="sd">        form based authentication. Authentication cookies are stored in</span>
+<span class="sd">        *authcookies.txt* in the configdir. Format is one cookie per line</span>
+<span class="sd">        just like they where returned from the http response, but without</span>
+<span class="sd">        any header name (like &quot;Set-Cookie: &quot;) .</span>
+<span class="sd">        This method returns the path to the auth cookie file. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configdir</span><span class="p">(),</span> <span class="s">&#39;authcookies.txt&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.get_logfilepath"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_logfilepath">[docs]</a>    <span class="k">def</span> <span class="nf">get_logfilepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get path to the log-file. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_configdir</span><span class="p">(),</span> <span class="s">&#39;everything.log&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Command.configure_loghandlers"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.configure_loghandlers">[docs]</a>    <span class="k">def</span> <span class="nf">configure_loghandlers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Configure log handling. &quot;&quot;&quot;</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%(message)s</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console</span><span class="p">)</span>
+
+        <span class="c"># Keep 10mb of complete logs, in files of 1mb</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_logfilepath</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">Command</span><span class="o">.</span><span class="n">NotInDevilryDirError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">RotatingFileHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span>
+                    <span class="n">maxBytes</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">,</span>
+                    <span class="n">backupCount</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+                    <span class="s">&quot;</span><span class="si">%(asctime)s</span><span class="s">: </span><span class="si">%(levelname)s</span><span class="s">: </span><span class="si">%(message)s</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Command.cli"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.cli">[docs]</a>    <span class="k">def</span> <span class="nf">cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">prog</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Start the cli. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prog</span> <span class="o">=</span> <span class="n">prog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configure_loghandlers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Command.add_user_option"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.add_user_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_user_option</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a option for providing username using -u or --username. The</span>
+<span class="sd">        optparse dest is ``&quot;username&quot;``. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-u&quot;</span><span class="p">,</span> <span class="s">&quot;--username&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;USERNAME&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s">&quot;username&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">(),</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">&quot;Username default to current system user (</span><span class="si">%s</span><span class="s">).&quot;</span> <span class="o">%</span> \
+                    <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="Command.add_options"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.add_options">[docs]</a>    <span class="k">def</span> <span class="nf">add_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Override to add options to the optionparser. Does nothing by</span>
+<span class="sd">        default. &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Command.command"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.command">[docs]</a>    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Override to and put the code for the command here. Does nothing by</span>
+<span class="sd">        default. &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Command.exit_help"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.exit_help">[docs]</a>    <span class="k">def</span> <span class="nf">exit_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Show help and exit. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Command.validate_argslen"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.validate_argslen">[docs]</a>    <span class="k">def</span> <span class="nf">validate_argslen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Validate the length of :attr:`args`, and call :meth:`exit_help`</span>
+<span class="sd">        if the validation fails. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="n">length</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exit_help</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Command.get_serverproxy"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Command.get_serverproxy">[docs]</a>    <span class="k">def</span> <span class="nf">get_serverproxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a server-proxy object. If the url starts with https, a</span>
+<span class="sd">        server-proxy with SSL-support is created. &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">):</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">urlpath</span>
+        <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;https&#39;</span><span class="p">):</span>
+            <span class="n">transport</span><span class="o">=</span><span class="n">SafeCookieTransport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cookiepath</span><span class="p">(),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_auth_cookiepath</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">transport</span><span class="o">=</span><span class="n">CookieTransport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cookiepath</span><span class="p">(),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_auth_cookiepath</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">ServerProxy</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+</div></div>
+<div class="viewcode-block" id="CommandUsingConfig"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.CommandUsingConfig">[docs]</a><span class="k">class</span> <span class="nc">CommandUsingConfig</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Use this as a base for commands which needs to set or get</span>
+<span class="sd">    configuration values.</span>
+
+<span class="sd">    Extends the __init__ method of :class:`Command` with a call to</span>
+<span class="sd">    :meth:`Command.read_config`. &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CommandUsingConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+
+
+<span class="c">############################################################################</span>
+<span class="c"># Some commonly used commands</span>
+<span class="c">############################################################################</span>
+
+</div>
+<div class="viewcode-block" id="Init"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Init">[docs]</a><span class="k">class</span> <span class="nc">Init</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Init command.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;init&#39;</span>
+    <span class="n">short_info</span> <span class="o">=</span> <span class="s">&#39;Initialize.&#39;</span>
+    <span class="n">args_help</span> <span class="o">=</span> <span class="s">&#39;&lt;url&gt;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_rootdir</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">Command</span><span class="o">.</span><span class="n">NotInDevilryDirError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                    <span class="s">&#39;You are in a existing Devilry directory tree. &#39;</span>\
+                    <span class="s">&#39;Initialization aborted.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_argslen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s">&#39;.devilry&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_config</span><span class="p">()</span>
+
+</div>
+<span class="k">class</span> <span class="nc">LoginBase</span><span class="p">(</span><span class="n">CommandUsingConfig</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_user_option</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s">&#39;Password for user &quot;</span><span class="si">%s</span><span class="s">&quot;: &#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Login"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.Login">[docs]</a><span class="k">class</span> <span class="nc">Login</span><span class="p">(</span><span class="n">LoginBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Login command. &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;login&#39;</span>
+    <span class="n">short_info</span> <span class="o">=</span><span class="s">&#39;Login to the devilry server.&#39;</span> 
+    <span class="n">args_help</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">urlpath</span> <span class="o">=</span> <span class="s">&#39;/xmlrpc/&#39;</span>
+
+    <span class="n">user_disabled</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">login_failed</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">successful_login</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="nf">add_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_user_option</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s">&#39;Password: &#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_serverproxy</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_password</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s">&quot;Aborting..&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">Fault</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log_fault</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">xmlrpclib</span><span class="o">.</span><span class="n">ProtocolError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;ProtocolError: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                    <span class="s">&quot;This error might happen when you try to abort &quot;</span>\
+                    <span class="s">&quot;(ctrl-c) the password prompt.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">successful_login</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Login successful&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Login failed. Reason:&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_disabled</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Your user is disabled.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ret</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_failed</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Invalid username/password.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="FormLogin"><a class="viewcode-back" href="../../../commandline.html#devilry.xmlrpc_client.cli.FormLogin">[docs]</a><span class="k">class</span> <span class="nc">FormLogin</span><span class="p">(</span><span class="n">LoginBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Login via a http POST request. &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;formlogin&#39;</span>
+    <span class="n">short_info</span> <span class="o">=</span><span class="s">&#39;Authenticate with a external server using a HTTP POST &#39;</span>\
+        <span class="s">&#39; request. This login method might be used if the Devilry server &#39;</span>\
+        <span class="s">&#39;does not handle authorization.&#39;</span>
+    <span class="n">args_help</span> <span class="o">=</span> <span class="s">&#39;[login-url]&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">add_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FormLogin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_options</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--login-url&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;/login&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s">&quot;loginurl&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;Login url. Defaults to /login on the &#39;</span>\
+                <span class="s">&#39;url specified in &quot;init&quot;.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--login-username-field&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;user&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s">&quot;login_usernamefield&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;user&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">&#39;You should get this value from your server admin. It is &#39;</span>\
+                <span class="s">&#39;the name of the html form input field containing the &#39;</span>\
+                <span class="s">&#39;username. Defaults to &quot;user&quot;.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--login-passworld-field&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;password&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s">&quot;login_passworldfield&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;password&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">&#39;You should get this value from your server admin. It is &#39;</span>\
+                <span class="s">&#39;the name of the html form input field containing the &#39;</span>\
+                <span class="s">&#39;password. Defaults to &quot;password&quot;.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logindata</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">login_usernamefield</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">login_passworldfield</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_password</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">loginurl</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">loginurl</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_url</span><span class="p">())</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;/login&#39;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">netloc</span>
+        <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s">&quot;https&quot;</span><span class="p">:</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+        <span class="c">#conn.set_debuglevel(1)</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">logindata</span><span class="p">),</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">})</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">setcookie</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s">&quot;Set-Cookie&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">setcookie</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Login failed. This is usually because of &quot;</span>\
+                        <span class="s">&quot;invalid username/password, but might be &quot;</span>\
+                        <span class="s">&quot;caused by wrong login url or server errors. &quot;</span>\
+                        <span class="s">&quot;Technical error message: Login url did not &quot;</span> \
+                        <span class="s">&quot;respond with any authorization cookies.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cookie</span> <span class="o">=</span> <span class="n">SimpleCookie</span><span class="p">()</span>
+                <span class="n">cookie</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">setcookie</span><span class="p">)</span>
+
+                <span class="c"># Writing to cookiefile. See get_auth_cookiepath() for format info.</span>
+                <span class="n">cookieout</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">output</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;Set-Cookie: &quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+                <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_auth_cookiepath</span><span class="p">(),</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cookieout</span><span class="p">)</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Login successful.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s">&quot;Login failed with the following message: </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">msg</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

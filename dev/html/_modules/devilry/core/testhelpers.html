@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.core.testhelpers &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.core.testhelpers</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">import</span> <span class="nn">gradeplugin</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Subject</span><span class="p">,</span> <span class="n">Period</span><span class="p">,</span> <span class="n">Assignment</span><span class="p">,</span> <span class="n">AssignmentGroup</span><span class="p">,</span> \
+        <span class="n">Delivery</span><span class="p">,</span> <span class="n">FileMeta</span><span class="p">,</span> <span class="n">Candidate</span>
+<span class="kn">from</span> <span class="nn">deliverystore</span> <span class="kn">import</span> <span class="n">FileNotFoundError</span>
+
+
+
+<span class="k">def</span> <span class="nf">create_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">grade_plugin_key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gradeplugin_maxpoints</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a Node, Subject, Period, Assignment or AssignmentGroup from</span>
+<span class="sd">    ``path``.</span>
+
+<span class="sd">    :param grade_plugin_key: Key of the grade plugin to use on assignments.</span>
+<span class="sd">        This defaults to the default grade plugin.</span>
+<span class="sd">    :param gradeplugin_maxpoints: The ``points`` parameter sent to</span>
+<span class="sd">        :meth:`gradeplugin.GradeModel.init_example` if creating a</span>
+<span class="sd">        assignment.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples::</span>
+
+<span class="sd">        assignmentgroup = create_from_path(</span>
+<span class="sd">                &#39;ifi:inf1100.spring05.oblig1.student1,student2&#39;)</span>
+<span class="sd">        oblig1 = create_from_path(</span>
+<span class="sd">                &#39;ifi:inf1100.spring05.oblig1&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">split</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">nodename</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="n">nodename</span><span class="p">,</span> <span class="n">long_name</span><span class="o">=</span><span class="n">nodename</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="n">nodename</span><span class="p">)</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">node</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">last</span>
+    <span class="n">pathsplit</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+
+    <span class="c"># Subject</span>
+    <span class="n">subjectname</span> <span class="o">=</span> <span class="n">pathsplit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">subject</span> <span class="o">=</span> <span class="n">Subject</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="n">subjectname</span><span class="p">,</span>
+            <span class="n">long_name</span><span class="o">=</span><span class="n">subjectname</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subject</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+        <span class="n">subject</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">subject</span> <span class="o">=</span> <span class="n">Subject</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="n">subjectname</span><span class="p">)</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">subject</span>
+
+    <span class="c"># Period</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathsplit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">periodname</span> <span class="o">=</span> <span class="n">pathsplit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">period</span> <span class="o">=</span> <span class="n">Period</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="n">periodname</span><span class="p">,</span>
+                <span class="n">long_name</span><span class="o">=</span><span class="n">periodname</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="n">start_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="n">end_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">period</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+            <span class="n">period</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">period</span> <span class="o">=</span> <span class="n">Period</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
+                    <span class="n">short_name</span><span class="o">=</span><span class="n">periodname</span><span class="p">)</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">period</span>
+
+    <span class="c"># Assignment</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathsplit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">assignmentname</span> <span class="o">=</span> <span class="n">pathsplit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">assignment</span> <span class="o">=</span> <span class="n">Assignment</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">period</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="n">assignmentname</span><span class="p">,</span>
+                <span class="n">long_name</span><span class="o">=</span><span class="n">assignmentname</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="n">publishing_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="n">gp</span> <span class="o">=</span> <span class="n">grade_plugin_key</span> <span class="ow">or</span> <span class="n">gradeplugin</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">getdefaultkey</span><span class="p">()</span>
+        <span class="n">assignment</span><span class="o">.</span><span class="n">grade_plugin</span> <span class="o">=</span> <span class="n">gp</span>
+        
+        <span class="n">assignment</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">assignment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">assignment</span> <span class="o">=</span> <span class="n">Assignment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
+                    <span class="n">short_name</span><span class="o">=</span><span class="n">assignmentname</span><span class="p">)</span>
+        <span class="n">assignment</span><span class="o">.</span><span class="n">get_gradeplugin_registryitem</span><span class="p">()</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="n">init_example</span><span class="p">(</span>
+                <span class="n">assignment</span><span class="p">,</span> <span class="n">gradeplugin_maxpoints</span><span class="p">)</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">assignment</span>
+
+    <span class="c"># Candidates</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pathsplit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">usernames</span> <span class="o">=</span> <span class="n">pathsplit</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">usernames</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
+            <span class="n">users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">assignment_group</span> <span class="o">=</span> <span class="n">AssignmentGroup</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">assignment</span><span class="p">)</span>
+        <span class="n">assignment_group</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+        <span class="n">assignment_group</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+            <span class="n">assignment_group</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Candidate</span><span class="p">(</span><span class="n">student</span><span class="o">=</span><span class="n">user</span><span class="p">))</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">assignment_group</span>
+    <span class="k">return</span> <span class="n">last</span>
+
+
+<div class="viewcode-block" id="TestDeliveryStoreMixin"><a class="viewcode-back" href="../../../core.deliverystore.html#devilry.core.testhelpers.TestDeliveryStoreMixin">[docs]</a><span class="k">class</span> <span class="nc">TestDeliveryStoreMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Mixin-class that tests if</span>
+<span class="sd">    :class:`devilry.core.deliverystore.DeliveryStoreInterface` is</span>
+<span class="sd">    implemented correctly.</span>
+
+<span class="sd">    You only need to override</span>
+<span class="sd">    :meth:`get_storageobj`, and maybe :meth:`setUp` and :meth:`tearDown`,</span>
+<span class="sd">    but make sure you call ``super(..., self).setUp()`` if you override it.</span>
+<span class="sd">    </span>
+<span class="sd">    You **must** mixin this class before :class:`django.test.TestCase` like</span>
+<span class="sd">    so::</span>
+
+<span class="sd">        class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):</span>
+<span class="sd">            ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fixtures</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tests/core/users.json&#39;</span><span class="p">,</span> <span class="s">&#39;tests/core/core.json&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TestDeliveryStoreMixin.get_storageobj"><a class="viewcode-back" href="../../../core.deliverystore.html#devilry.core.testhelpers.TestDeliveryStoreMixin.get_storageobj">[docs]</a>    <span class="k">def</span> <span class="nf">get_storageobj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a object implementing</span>
+<span class="sd">        :class:`devilry.core.deliverystore.DeliveryStoreInterface` &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="TestDeliveryStoreMixin.setUp"><a class="viewcode-back" href="../../../core.deliverystore.html#devilry.core.testhelpers.TestDeliveryStoreMixin.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Make sure to call this if you override it in subclasses, or the</span>
+<span class="sd">        tests **will fail**. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span> <span class="o">=</span> <span class="n">FileMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">delivery</span> <span class="o">=</span> <span class="n">Delivery</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;test.txt&#39;</span>
+</div>
+    <span class="k">def</span> <span class="nf">test_writemany</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_storageobj</span><span class="p">()</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">write_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39; world&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;!&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEquals</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;hello world!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_readwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_storageobj</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">FileNotFoundError</span><span class="p">,</span> <span class="n">store</span><span class="o">.</span><span class="n">read_open</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">write_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">))</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">FileNotFoundError</span><span class="p">,</span> <span class="n">store</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="p">)</span>
+
+</div>
+<span class="k">class</span> <span class="nc">SeleniumTestBase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="n">fixtures</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">clear_testdb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;git checkout deliverystore.dbm.dat&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;git checkout deliverystore.dbm.dir&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">DATABASE_NAME</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">DATABASE_NAME</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;python manage.py syncdb --noinput&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_fixtures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixtures</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;No fixtures in testcase: </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_testdb</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;python manage.py loaddata -v0 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> \
+                <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixtures</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">assert403</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&quot;403&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&quot;FORBIDDEN&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;403 not raised for </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kw</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

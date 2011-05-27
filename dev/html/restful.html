@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RESTful web service API &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="Design details" href="designdetails.html" />
+    <link rel="prev" title="Simplified API" href="simplified.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="designdetails.html" title="Design details"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="simplified.html" title="Simplified API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="restful-web-service-api">
+<span id="restful"></span><h1>RESTful web service API<a class="headerlink" href="#restful-web-service-api" title="Permalink to this headline">¶</a></h1>
+<p><em>Under development</em></p>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services">http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services</a></p>
+<div class="section" id="http-status-codes">
+<h2>HTTP status codes<a class="headerlink" href="#http-status-codes" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>200 OK</dt>
+<dd>The request was succesful. The requested data is returned.</dd>
+<dt>400 Bad Request</dt>
+<dd>A parameter is invalid. The data contains an error message.</dd>
+<dt>401 Unauthorized</dt>
+<dd>Authorization required.</dd>
+<dt>403 Forbidden</dt>
+<dd>Not authorized to access this page.</dd>
+<dt>404 Not found</dt>
+<dd>Resource not found at the given url.</dd>
+</dl>
+</div>
+<div class="section" id="examiner">
+<h2>/examiner/<a class="headerlink" href="#examiner" title="Permalink to this headline">¶</a></h2>
+<p>All urls in the /examiner/ path work on data where the authenticated user is
+examiner.</p>
+<div class="section" id="assignments">
+<h3>assignments/<a class="headerlink" href="#assignments" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="GET">
+<tt class="descname">GET</tt><big>(</big><em>count=50</em>, <em>start=0</em>, <em>orderby=&quot;short_name&quot;</em>, <em>old=0</em>, <em>active=1</em>, <em>search=&quot;&quot;</em>, <em>longnamefields=0</em>, <em>pointhandlingfields=0</em><big>)</big><a class="headerlink" href="#GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all old and active assignments. Should provide the following
+information (fields) for each listed assignment by default:</p>
+<blockquote>
+<div><ul class="simple">
+<li>id</li>
+<li>short_name</li>
+<li>period__short_name (parentnode.short_name)</li>
+<li>assignment__short_name (parentnode.parentnode.short_name)</li>
+</ul>
+</div></blockquote>
+<p>For documentation on the fields, see <a class="reference internal" href="core.models.html#devilry.core.models.Assignment" title="devilry.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Assignment</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>count</strong> &#8211; Number of results.</li>
+<li><strong>start</strong> &#8211; Offset where the result should start (If start is 10 and
+count is 30, results 10 to 40 is returned, including both ends).</li>
+<li><strong>old</strong> &#8211; Include assignments from old (not active) periods?</li>
+<li><strong>active</strong> &#8211; Include assignments from old (not active) periods?</li>
+<li><strong>orderby</strong> &#8211; Sort the result by this field. Must be one of:
+<em>id</em>, <em>short_name</em>, <em>long_name</em>, <em>id</em>, <em>publishing_time</em>, <em>pointscale</em>,
+<em>autoscale</em>, <em>maxpoints</em>, <em>attempts</em> or <em>must_pass</em>. See
+<a class="reference internal" href="core.models.html#devilry.core.models.Assignment" title="devilry.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.Assignment</span></tt></a> for documentation on each of
+these fields.</li>
+<li><strong>search</strong> &#8211; A query to limit the results.</li>
+<li><strong>longnamefields</strong> &#8211; Include the <em>long_name</em> field of assignment, period and
+subject for each assignment in the result?</li>
+<li><strong>pointhandlingfields</strong> &#8211; Include the <em>grade_plugin</em>, <em>pointscale</em>, <em>autoscale</em>,
+<em>maxpoints</em>, <em>attempts</em>, and <em>must_pass</em> fields for each assignment in
+the result? The <em>grade_plugin</em> field contains the (human readable and
+translated) label instead of the grade plugin key.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The requested assignments if all is OK.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="groups-assignment-id">
+<h3>groups/{assignment-id}/<a class="headerlink" href="#groups-assignment-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><em>count=50</em>, <em>start=0</em>, <em>orderby=&quot;id&quot;</em>, <em>details=0</em>, <em>search=&quot;&quot;</em><big>)</big></dt>
+<dd><p>List all groups in the given assignment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>count</strong> &#8211; Number of results.</li>
+<li><strong>start</strong> &#8211; Offset where the result should start (If start is 10 and
+count is 30, results 10 to 40 is returned, including both ends).</li>
+<li><strong>orderby</strong> &#8211; Sort the result by this field. Must be one of:
+<em>id</em>, <em>is_open</em>, <em>status</em>, <em>points</em>, <em>scaled_points</em> or
+<em>active_deadline</em> (only if details is 1).
+See <a class="reference internal" href="core.models.html#devilry.core.models.AssignmentGroup" title="devilry.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.core.models.AssignmentGroup</span></tt></a> for documentation on
+each of these fields.</li>
+<li><strong>details</strong> &#8211; <p>Add details? If 1, the result will contain the following
+additional fields:</p>
+<dl class="docutils">
+<dt>deadlines</dt>
+<dd>A list of deadlines for this group.</dd>
+<dt>active_deadline</dt>
+<dd>The active deadline for this group.</dd>
+</dl>
+</li>
+<li><strong>search</strong> &#8211; A query to limit the results.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The requested groups if all is OK.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="group-group-id">
+<h3>group/{group-id}<a class="headerlink" href="#group-group-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>Get all available information about the given group (not about any deliveries).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="deliveries-group-id">
+<h3>deliveries/{group-id}/<a class="headerlink" href="#deliveries-group-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>List all deliveries by this group.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="delivery-delivery-id">
+<h3>delivery/{delivery-id}<a class="headerlink" href="#delivery-delivery-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>Get all information about the delivery with the given delivery-id,
+including feedback. This view might choose between embedding and linking/referencing
+<em>files/</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="PUT">
+<tt class="descname">PUT</tt><big>(</big><big>)</big><a class="headerlink" href="#PUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or update feedback on the delivery.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="DELETE">
+<tt class="descname">DELETE</tt><big>(</big><big>)</big><a class="headerlink" href="#DELETE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the feedback on the delivery.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="files-delivery-id">
+<h3>files/{delivery-id}/<a class="headerlink" href="#files-delivery-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>List all files in a delivery.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="download-file-file-id">
+<h3>download-file/{file-id}<a class="headerlink" href="#download-file-file-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>Download the requested file.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="list-filearchive-file-id">
+<h3>list-filearchive/{file-id}<a class="headerlink" href="#list-filearchive-file-id" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>List the contents of the file, if it is a supported archive format.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="download-filearchive-file-file-id-path">
+<h3>download-filearchive-file/{file-id}/path<a class="headerlink" href="#download-filearchive-file-file-id-path" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
+<dd><p>Download a single file from within a supported archive format.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">RESTful web service API</a><ul>
+<li><a class="reference internal" href="#http-status-codes">HTTP status codes</a></li>
+<li><a class="reference internal" href="#examiner">/examiner/</a><ul>
+<li><a class="reference internal" href="#assignments">assignments/</a></li>
+<li><a class="reference internal" href="#groups-assignment-id">groups/{assignment-id}/</a></li>
+<li><a class="reference internal" href="#group-group-id">group/{group-id}</a></li>
+<li><a class="reference internal" href="#deliveries-group-id">deliveries/{group-id}/</a></li>
+<li><a class="reference internal" href="#delivery-delivery-id">delivery/{delivery-id}</a></li>
+<li><a class="reference internal" href="#files-delivery-id">files/{delivery-id}/</a></li>
+<li><a class="reference internal" href="#download-file-file-id">download-file/{file-id}</a></li>
+<li><a class="reference internal" href="#list-filearchive-file-id">list-filearchive/{file-id}</a></li>
+<li><a class="reference internal" href="#download-filearchive-file-file-id-path">download-filearchive-file/{file-id}/path</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="simplified.html"
+                        title="previous chapter">Simplified API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="designdetails.html"
+                        title="next chapter">Design details</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/restful.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="designdetails.html" title="Design details"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="simplified.html" title="Simplified API"
+             >previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
