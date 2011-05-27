@@ -10,7 +10,7 @@
 
 A *DeliveryStore* is a place to put the files from deliveries. In more
 technical terms, it is a place where each file related to a
-:ref:`devilry.core.models.FileMeta` is stored.
+:class:`devilry.core.models.FileMeta` is stored.
 
 
 Selecting a DeliveryStore
