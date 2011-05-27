@@ -215,3 +215,8 @@ man_pages = [
     ('index', 'devilry', u'Devilry Documentation',
      [u'The Devilry Team'], 1)
 ]
+
+
+autodoc_member_order = 'bysource'
+autodoc_default_flags = ['members', 'show-inheritance']
+autoclass_content = 'both'

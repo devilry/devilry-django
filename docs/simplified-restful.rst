@@ -5,6 +5,8 @@
 RESTful web service API
 ==========================================
 
+*Under development*
+
 http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services
 
 HTTP status codes
