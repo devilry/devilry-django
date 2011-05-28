@@ -240,34 +240,6 @@ update-simplified-testfixture: create-simple-testdb
 	python manage.py dumpdata --indent 2 > simplified/fixtures/tests/simplified/data.json
 
 
-######################################################
-# Selenium testing
-######################################################
-
-selenium-clear-db: cleardb
-	git checkout deliverystore.dbm.dat
-	git checkout deliverystore.dbm.dir
-
-selenium-student-test: selenium-clear-db
-	python manage.py loaddata -v0 addons/student/fixtures/selenium/student/*.json
-	sleep 2
-	export DJANGO_SETTINGS_MODULE=devilry.settings
-	python addons/student/seleniumtests.py
-
-selenium-examiner-test:
-	export DJANGO_SETTINGS_MODULE=devilry.settings
-	python addons/examiner/seleniumtests.py
-
-selenium-admin-test: selenium-clear-db
-	python manage.py loaddata -v0 addons/admin/fixtures/selenium.json
-	sleep 2
-	export DJANGO_SETTINGS_MODULE=devilry.settings
-	python addons/admin/seleniumtests.py
-
-selenium-tests: selenium-student-test selenium-examiner-test selenium-admin-test
-
-clean:
-	coverage erase
 
 
 ###########################################################
@@ -280,11 +252,15 @@ test:
 html-testreport: test
 	coverage html
 
+clean-coverage:
+	coverage erase
+
+
 ###########################################################
-# Doc
+# Cleanup
 ###########################################################
 
-htmldoc:
-	make -C ../doc/ html
-cleanhtmldoc:
-	make -C ../doc/ clean
+cleanpyc:
+	find . -name "*.pyc" -exec rm {} \;
+
+clean: clean-coverage
