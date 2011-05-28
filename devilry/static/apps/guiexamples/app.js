@@ -1,7 +1,7 @@
 Ext.application({
     name: 'guiexamples',
 
-    appFolder: '/resources/addons/guiexamples/app',
+    appFolder: '/static/apps/guiexamples/app',
 
     controllers: [
         'Users'

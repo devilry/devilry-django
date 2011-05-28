@@ -22,14 +22,14 @@ from parser import RstValidationError, rstdoc_from_string
 class RstSchemaDefWidget(forms.Textarea):
     class Media:
         js = (
-            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/jquery.markitup.js",
-            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/rstschemadef.js",
-            settings.DEVILRY_RESOURCES_URL + "/ui/js/rstedit_widget.js",
+            settings.DEVILRY_STATIC_URL + "/markitup/markitup/jquery.markitup.js",
+            settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/rstschemadef.js",
+            settings.DEVILRY_STATIC_URL + "/ui/js/rstedit_widget.js",
         )
         css = {
             'all': [
-                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/skins/simple/style.css",
-                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/style.css"
+                settings.DEVILRY_STATIC_URL + "/markitup/markitup/skins/simple/style.css",
+                settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/style.css"
         ]}
 
     def __init__(self, attrs={}):

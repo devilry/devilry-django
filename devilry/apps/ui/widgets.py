@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class DevilryDateWidget(forms.DateTimeInput):
     class Media:
-        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/datewidget.js",)
+        js = (settings.DEVILRY_STATIC_URL + "/ui/js/datewidget.js",)
 
     def __init__(self, attrs={}):
         super(DevilryDateWidget, self).__init__(
@@ -15,7 +15,7 @@ class DevilryDateWidget(forms.DateTimeInput):
 
 class DevilryTimeWidget(forms.TimeInput):
     class Media:
-        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/timewidget.js",)
+        js = (settings.DEVILRY_STATIC_URL + "/ui/js/timewidget.js",)
 
     def __init__(self, attrs={}):
         super(DevilryTimeWidget, self).__init__(
@@ -38,7 +38,7 @@ class DevilryDateTimeWidget(forms.SplitDateTimeWidget):
 
 class DevilryMultiSelectFewUsersDb(forms.TextInput):
     class Media:
-        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_user_field.js",)
+        js = (settings.DEVILRY_STATIC_URL + "/ui/js/multiSelect_char_user_field.js",)
                 
     def __init__(self, attrs={}):
         attrs["size"] = 60
@@ -57,7 +57,7 @@ class DevilryMultiSelectFewUsersDb(forms.TextInput):
 
 class DevilryMultiSelectFewUsers(forms.TextInput):
     class Media:
-        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_user_field.js",)
+        js = (settings.DEVILRY_STATIC_URL + "/ui/js/multiSelect_char_user_field.js",)
                 
     def __init__(self, attrs={}):
         attrs["size"] = 60
@@ -67,7 +67,7 @@ class DevilryMultiSelectFewUsers(forms.TextInput):
 
 class DevilryMultiSelectFewCandidates(forms.TextInput):
     class Media:
-        js = (settings.DEVILRY_RESOURCES_URL + "/ui/js/multiSelect_char_candidates_field.js",)
+        js = (settings.DEVILRY_STATIC_URL + "/ui/js/multiSelect_char_candidates_field.js",)
                 
     def __init__(self, attrs={}):
         attrs["size"] = 60
@@ -78,14 +78,14 @@ class DevilryMultiSelectFewCandidates(forms.TextInput):
 class RstEditWidget(forms.Textarea):
     class Media:
         js = (
-            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/jquery.markitup.js",
-            settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/rst.js",
-            settings.DEVILRY_RESOURCES_URL + "/ui/js/rstedit_widget.js",
+            settings.DEVILRY_STATIC_URL + "/markitup/markitup/jquery.markitup.js",
+            settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/rst.js",
+            settings.DEVILRY_STATIC_URL + "/ui/js/rstedit_widget.js",
         )
         css = {
             'all': [
-                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/skins/simple/style.css",
-                settings.DEVILRY_RESOURCES_URL + "/markitup/markitup/sets/rst/style.css"
+                settings.DEVILRY_STATIC_URL + "/markitup/markitup/skins/simple/style.css",
+                settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/style.css"
         ]}
 
     def __init__(self, attrs={}):

@@ -35,8 +35,8 @@ urlpatterns = patterns('',
     (r'^xmlrpc_examiner/', include('devilry.apps.xmlrpc_examiner.urls')),
     (r'^', include('devilry.apps.quickdash.urls')),
 
-    (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': settings.DEVILRY_RESOURCES_ROOT}),
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.DEVILRY_STATIC_ROOT}),
     *debugpatterns
 )
 

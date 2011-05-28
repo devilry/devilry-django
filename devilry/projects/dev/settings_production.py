@@ -9,8 +9,8 @@ DEBUG = False
 DEVILRY_MAIN_PAGE = '/django/example/'
 LOGIN_URL = '/django/example/'
 DEVILRY_LOGOUT_URL = None
-DEVILRY_RESOURCES_URL = '/resources'
-ADMIN_MEDIA_PREFIX = DEVILRY_RESOURCES_URL + '/superadminmedia/'
+DEVILRY_STATIC_URL = '/static'
+ADMIN_MEDIA_PREFIX = DEVILRY_STATIC_URL + '/superadminmedia/'
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
     # Authentication against the REMOTE_USER environment variable.

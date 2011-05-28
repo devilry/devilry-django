@@ -2,7 +2,7 @@ from django.template.defaultfilters import stringfilter
 from django import template
 from django.utils.safestring import mark_safe
 
-from ..ui.templatetags_helpers import truncate_filename
+from ..templatetags_helpers import truncate_filename
 
 
 register = template.Library()

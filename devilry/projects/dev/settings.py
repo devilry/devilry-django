@@ -119,10 +119,10 @@ INSTALLED_APPS = (
 
 
 
-DEVILRY_RESOURCES_ROOT = join(this_dir, 'resources')
-DEVILRY_RESOURCES_URL = '/resources'
-DEVILRY_THEME_URL = '/resources/gui/themes/devilry'
-DEVILRY_EXTJS_URL = '/resources/ext-4.0.1'
+DEVILRY_STATIC_ROOT = join(dirname(dirname(this_dir)), 'static') # ../../static/
+DEVILRY_STATIC_URL = '/static'
+DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/gui/themes/devilry'
+DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/ext-4.0.1'
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.auth", 
     "django.core.context_processors.debug",
