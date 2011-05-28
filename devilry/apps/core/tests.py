@@ -29,7 +29,7 @@ FileMeta.deliverystore = MemoryDeliveryStore()
 
 
 class TestBaseNode(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def setUp(self):
         self.thesuperuser= User.objects.get(username='thesuperuser')
@@ -69,7 +69,7 @@ class TestBaseNode(TestCase):
 
 
 class TestNode(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def setUp(self):
         self.uioadmin = User.objects.get(username='uioadmin')
@@ -181,7 +181,7 @@ class TestNode(TestCase):
 
 
 class TestSubject(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def test_unique(self):
         s = Subject(parentnode=Node.objects.get(short_name='ifi'),
@@ -251,7 +251,7 @@ class TestSubject(TestCase):
 
 
 class TestPeriod(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def test_unique(self):
         n = Period(parentnode=Subject.objects.get(short_name='inf1100'),
@@ -312,7 +312,7 @@ class TestPeriod(TestCase):
 
 
 class TestAssignment(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def test_unique(self):
         n = Assignment(parentnode=Period.objects.get(short_name='looong'),
@@ -499,7 +499,7 @@ class TestAssignment(TestCase):
 
 
 class TestAssignmentGroup(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')
@@ -682,7 +682,7 @@ class TestAssignmentGroup(TestCase):
 
         
 class TestCandidate(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
     
     def test_non_anonymous(self):
         assignmentgroup1 = AssignmentGroup.objects.get(id=1)
@@ -699,7 +699,7 @@ class TestCandidate(TestCase):
         
 
 class TestDelivery(TestCase):
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')

@@ -14,7 +14,7 @@ class TestRestSubjectsNoFixture(TestCase):
                 limit=50, start=0, orderby=["long_name"], query='', format='json'))
 
 class TestRestSubjects(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
     url = reverse('devilry-restful-examiner-tree-subjects')
 
     def setUp(self):
@@ -40,7 +40,7 @@ class TestRestPeriodsNoFixture(TestCase):
                 format='json', subject_short_name=''))
 
 class TestRestPeriods(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
     url = reverse('devilry-restful-examiner-tree-periods', args=['duck1100'])
 
     def setUp(self):
@@ -71,7 +71,7 @@ class TestRestAssignmentsNoFixture(TestCase):
             ))
 
 class TestRestAssignments(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
     url = reverse('devilry-restful-examiner-assignments')
 
     def setUp(self):

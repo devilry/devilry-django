@@ -6,7 +6,7 @@ from ..examiner import Subjects, Periods, Assignments, Groups
 
 
 class TestExaminerSubjects(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
 
     def test_get(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -24,7 +24,7 @@ class TestExaminerSubjects(TestCase):
         self.assertEquals(len(qry), 1)
 
 class TestExaminerPeriods(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
 
     def test_get(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -41,7 +41,7 @@ class TestExaminerPeriods(TestCase):
 
 
 class TestExaminerAssignments(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
 
     def test_get(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -61,7 +61,7 @@ class TestExaminerAssignments(TestCase):
 
 
 class TestExaminerGroups(TestCase):
-    fixtures = ["tests/simplified/data.json"]
+    fixtures = ["simplified/data.json"]
 
     def test_get(self):
         examiner0 = User.objects.get(username="examiner0")

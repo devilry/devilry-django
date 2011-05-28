@@ -122,7 +122,7 @@ class TestDeliveryStoreMixin(object):
         class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):
             ...
     """
-    fixtures = ['tests/core/users.json', 'tests/core/core.json']
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def get_storageobj(self):
         """ Return a object implementing

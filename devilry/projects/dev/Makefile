@@ -1,7 +1,5 @@
 # vim: set ts=4 sts=4 noexpandtab sw=4:
 
-PRODTEST=devilry.cfg.test2
-PROD=devilry.cfg.prod1
 EXAMPLEDATA_BACKUP=exampledata-backup
 HTMLHELP=Makefile.readme.rst.html
 NUM_STUDENTS=30
@@ -9,6 +7,9 @@ NUM_EXAMINERS=2
 NUM_SIMPLETEST_EXAMINERS=2
 NUM_SIMPLETEST_STUDENTS=12
 CREATE_TESTGROUPS=python ../../apps/adminscripts/create_testgroups.py
+DEVILRY_DIR=../..
+BASE_USERS_JSON=fixtures/users.json
+SIMPLIFIED_DATA_JSON=${DEVILRY_DIR}/apps/simplified/fixtures/simplified/data.json
 
 
 
@@ -28,7 +29,7 @@ cleardb:
 	@echo "Database is now clean."
 	@echo "Use 'python manage.py loaddata' to load fixtures into the empty database. Example:"
 	@echo
-	@echo "   ~# python manage.py loaddata core/fixtures/tests/core/*.json"
+	@echo "   ~# python manage.py loaddata ../../simplified/fixtures/simplified/*.json"
 
 
 #######################################################
@@ -150,7 +151,7 @@ clear-exampledb: cleardb
 
 init-exampledb: clear-exampledb
 	mkdir deliverystore
-	python manage.py loaddata -v0 core/fixtures/example/users.json
+	python manage.py loaddata -v0 ${BASE_USERS_JSON}
 
 create-exampledb: init-exampledb create-duck1100-data create-duck1080-data create-duck3580-data
 
@@ -238,8 +239,10 @@ create-simple-testdb: init-exampledb
 		--deadline-profile "soon" \
 		--assignment-long-name "Week four"
 
-update-simplified-testfixture: create-simple-testdb
-	python manage.py dumpdata --indent 2 > simplified/fixtures/tests/simplified/data.json
+dump-simplified-testfixture:
+	python manage.py dumpdata --indent 2 core auth.user > ${SIMPLIFIED_DATA_JSON}
+
+update-simplified-testfixture: create-simple-testdb dump-simplified-testfixture
 
 
 
