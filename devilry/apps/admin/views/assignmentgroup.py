@@ -13,24 +13,24 @@ from django.utils.translation import ugettext as _
 from django.forms.models import inlineformset_factory, formset_factory
 from django.contrib.auth.models import User
 
-from devilry.core.models import Assignment, AssignmentGroup, \
+from ...core.models import Assignment, AssignmentGroup, \
         Deadline, Candidate
-from devilry.ui.widgets import DevilryDateTimeWidget, \
+from ...ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryMultiSelectFewCandidates
-from devilry.ui.fields import MultiSelectCharField
-from devilry.ui.messages import UiMessages
-from devilry.addons.admin.assignmentgroup_filtertable import (
+from ...ui.fields import MultiSelectCharField
+from ...ui.messages import UiMessages
+from ..assignmentgroup_filtertable import (
     AssignmentGroupsFilterTableBase, AssignmentGroupsAction, FilterStatus,
     FilterIsPassingGrade, FilterExaminer, FilterNumberOfCandidates,
     FilterMissingCandidateId, FilterAfterDeadline,
     create_deadlines_base, clear_deadlines_base,
     FilterIsOpen, open_close_many_groups_base,
     publish_many_groups_base)
-from devilry.ui.filtertable import Columns, Col
+from ...ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
 
-from devilry.core.utils.delivery_collection import (
+from ...core.utils.delivery_collection import (
         create_archive_from_assignmentgroups,
         verify_groups_not_exceeding_max_file_size)
 

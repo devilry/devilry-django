@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from views import RestUser
 
-urlpatterns = patterns('devilry.addons.guiexamples',
+urlpatterns = patterns('devilry.apps.guiexamples',
     url(r'^$',
         'views.main',
         name='devilry-guiexamples-main'),

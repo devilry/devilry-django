@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.db.models import Max
 
-from devilry.core.models import AssignmentGroup
+from ..core.models import AssignmentGroup
 
 from utils import filter_not_corrected
 
@@ -51,7 +51,7 @@ class ExaminerImportantItem(object):
         return self.total
 
     def render(self, request):
-        from devilry.core.utils.GroupNodes import group_assignmentgroups
+        from ..core.utils.GroupNodes import group_assignmentgroups
         if self.total > 0:
             subjects = group_assignmentgroups(self.groups)
             if isinstance(self.groups, list):

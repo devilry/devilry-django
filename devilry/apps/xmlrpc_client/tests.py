@@ -10,9 +10,9 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 
-from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
-from devilry.core.testhelpers import create_from_path
-import devilry.core.models
+from ..xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
+from ..core.testhelpers import create_from_path
+from ..core import models
 
 from cookie_transport import CookieTransport, SafeCookieTransport
 from assignmenttree import AssignmentSync, Info, join_dirname_id, \
@@ -185,7 +185,7 @@ class TestAssignmentGroupSync(TestAssignmentSyncBase):
                 'uio.ifi:inf1100.looong.oblig1.student2,student3')
         assignmentgroup.examiners.add(self.examiner1)
         assignmentgroup.save()
-        delivery = devilry.core.models.Delivery.begin(assignmentgroup, self.student2)
+        delivery = models.Delivery.begin(assignmentgroup, self.student2)
         delivery.finish()
         self.sync()
         dircontent = os.listdir(self.folder)
@@ -230,8 +230,8 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
                 '2010-06-19 14:47:29')
 
     def test_add_delivery(self):
-        assignmentgroup = devilry.core.models.AssignmentGroup.objects.get(id=1)
-        delivery = devilry.core.models.Delivery.begin(assignmentgroup, self.student2)
+        assignmentgroup = models.AssignmentGroup.objects.get(id=1)
+        delivery = models.Delivery.begin(assignmentgroup, self.student2)
         delivery.finish()
         delivery.time_of_delivery = datetime(2010, 6, 19, 14, 47, 29)
         delivery.save()
@@ -246,7 +246,7 @@ class TestAssignmentDeliverySync(TestAssignmentSyncBase):
         info.read([self.infofile])
         self.assertRaises(NoOptionError, info.get, 'info', 'feedback_format')
 
-        delivery = devilry.core.models.Delivery.objects.get(id=1)
+        delivery = models.Delivery.objects.get(id=1)
         f = delivery.get_feedback()
         f.text = 'test'
         f.published = True
@@ -446,7 +446,7 @@ class TestFeedback(TestCommandBaseWithSync):
         self.deliverypath = os.path.join(self.root, 'inf1100.looong.oblig1',
                 'student1', '1')
         deliveryinfo = Info.read_open(self.deliverypath, 'Delivery')
-        self.delivery = devilry.core.models.Delivery.objects.get(
+        self.delivery = models.Delivery.objects.get(
                 id = deliveryinfo.get_id())
 
         self.lastsavedfeedbackfile = os.path.join(self.deliverypath,
@@ -468,7 +468,7 @@ class TestFeedback(TestCommandBaseWithSync):
                 'ERROR:The given directory is not a delivery-directory.')
 
     def test_feedback(self):
-        self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
+        self.assertRaises(models.Feedback.DoesNotExist,
                 lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
@@ -483,7 +483,7 @@ class TestFeedback(TestCommandBaseWithSync):
                 'Approved')
 
     def test_feedback_from_file(self):
-        self.assertRaises(devilry.core.models.Feedback.DoesNotExist,
+        self.assertRaises(models.Feedback.DoesNotExist,
                 lambda: self.delivery.feedback)
         Feedback = self.create_commandcls(examinercmd.Feedback)
         f = Feedback()
@@ -588,8 +588,8 @@ class TestRstSchema(TestCommandBaseWithSync):
         super(TestRstSchema, self).setUp()
         self.login('examiner1')
 
-        from devilry.core.models import Delivery
-        from devilry.addons.grade_rstschema.models import RstSchemaDefinition
+        from ..core.models import Delivery
+        from ..grade_rstschema.models import RstSchemaDefinition
 
         assignmentgroup = create_from_path(
                 'ifi:inf1010.spring09.someassignment.student1')

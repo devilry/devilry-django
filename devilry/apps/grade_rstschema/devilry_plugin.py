@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
-from devilry.core import gradeplugin
-from devilry.adminscripts.dbsanity import dbsanity_registry
+from ..core import gradeplugin
+from ..adminscripts.dbsanity import dbsanity_registry
 
 from gradeviews import view
 from models import RstSchemaGrade, RstSchemaDefinition

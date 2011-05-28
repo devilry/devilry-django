@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('devilry.addons.gradestats',
+urlpatterns = patterns('devilry.apps.gradestats',
     url(r'^userstats/(?P<period_id>\d+)$',
         'views.userstats',
         name='devilry-gradestats-userstats'),

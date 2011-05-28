@@ -99,9 +99,9 @@ if __name__ == "__main__":
     set_django_settings_module(opt)
     load_devilry_plugins()
     from django.contrib.auth.models import User
-    from devilry.core.models import Delivery
-    from devilry.core.testhelpers import create_from_path
-    from devilry.core.gradeplugin import registry
+    from devilry.apps.core.models import Delivery
+    from devilry.apps.core.testhelpers import create_from_path
+    from devilry.apps.core.gradeplugin import registry
 
     def exit_help():
         p.print_help()

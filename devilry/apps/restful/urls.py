@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 import examiner
 
-urlpatterns = patterns('devilry.restful',
+urlpatterns = patterns('devilry.apps.restful',
     url(r'^examples$',
         'views.examples',
         name='devilry-restful-examples'),

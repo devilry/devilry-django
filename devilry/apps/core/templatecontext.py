@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from devilry.core.models import AssignmentGroup
+from ..core.models import AssignmentGroup
 
 
 def template_variables(request):

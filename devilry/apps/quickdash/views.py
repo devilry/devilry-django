@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from devilry.ui.messages import UiMessages
-from devilry.addons.quickdash.dashboardplugin_registry import registry
+from ..ui.messages import UiMessages
+from ..quickdash.dashboardplugin_registry import registry
 
 
 @login_required

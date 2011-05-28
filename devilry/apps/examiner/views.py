@@ -6,23 +6,23 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django import forms
 
-from devilry.core.utils.GroupNodes import group_assignments
-from devilry.core.models import Delivery, AssignmentGroup, Assignment, Deadline
-from devilry.core import gradeplugin
-from devilry.ui.widgets import DevilryDateTimeWidget
-from devilry.ui.messages import UiMessages
-from devilry.ui.filtertable import Columns, Col
-from devilry.addons.admin.assignmentgroup_filtertable import (
+from ..core.utils.GroupNodes import group_assignments
+from ..core.models import Delivery, AssignmentGroup, Assignment, Deadline
+from ..core import gradeplugin
+from ..ui.widgets import DevilryDateTimeWidget
+from ..ui.messages import UiMessages
+from ..ui.filtertable import Columns, Col
+from ..admin.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
         FilterAfterDeadline, create_deadlines_base, clear_deadlines_base,
         FilterIsOpen, open_close_many_groups_base,
         publish_many_groups_base)
-from devilry.core.utils.delivery_collection import (create_archive_from_assignmentgroups,
+from ..core.utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
                                                     verify_groups_not_exceeding_max_file_size,
                                                     verify_deliveries_not_exceeding_max_file_size)
-from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
+from ..core.utils.assignmentgroup import GroupDeliveriesByDeadline
 from django.conf import settings
 
 class DeadlineForm(forms.ModelForm):

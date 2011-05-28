@@ -4,7 +4,7 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.utils.simplejson import JSONDecoder
 
-from devilry.core.models import Period
+from ..core.models import Period
 from views import PeriodStatsFilterTable
 
 

@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.db.models import Max, Count
 
-from devilry.core.models import AssignmentGroup
+from ..core.models import AssignmentGroup
 
 
 def student_important(request, *args, **kwargs):

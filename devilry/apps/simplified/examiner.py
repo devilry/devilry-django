@@ -1,4 +1,4 @@
-from devilry.core import models
+from ..core import models
 import utils
 
 

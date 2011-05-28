@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _
 from models import ApprovedGrade
 
-from devilry.core import gradeplugin
+from ..core import gradeplugin
 
 from gradeviews import view
 

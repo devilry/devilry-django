@@ -1,4 +1,4 @@
-from devilry.ui.filtertable import RowAction
+from ..ui.filtertable import RowAction
 
 # TODO: Change this so it uses ui.actionregistry
 

@@ -22,7 +22,7 @@ for clsname in ['node', 'subject', 'period', 'assignment']:
             name='devilry-admin-list_%(clsname)ss_json' % vars()),
         ]
 
-urlpatterns = patterns('devilry.addons.admin',
+urlpatterns = patterns('devilry.apps.admin',
     url(r'^assignments/(?P<assignment_id>\d+)/group/edit/(?P<assignmentgroup_id>\d+)$',
         'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-edit_assignmentgroup'),

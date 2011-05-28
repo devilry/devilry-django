@@ -19,7 +19,7 @@ setup_logging(opt)
 # Django must be imported after setting DJANGO_SETTINGS_MODULE
 set_django_settings_module(opt)
 from django.contrib.auth.models import User
-from devilry.core.models import Period
+from devilry.apps.core.models import Period
 
 def exit_help():
     p.print_help()
@@ -36,8 +36,22 @@ period = Period.objects.get(short_name=period_short_name,
         parentnode__short_name=subject_short_name)
 users = User.objects.filter(
     candidate__assignment_group__parentnode__parentnode=period).distinct()
-for user in users:
-    print "%s;%s;%s" % (
-            subject_short_name.upper(),
-            user.username,
-            period.student_passes_period(user))
+
+
+for assignment in period.assignments.all():
+    for group in assignment.assignmentgroups.all():
+        for candidate in group.candidates.all():
+            print "%s;%s;%s;%s;%s" % (
+                    subject_short_name.upper(),
+                    period_short_name,
+                    assignment.short_name,
+                    candidate.student.username,
+                    group.is_passing_grade)
+
+#for user in users:
+    #for assignment in period.assignments:
+        #if student in assignment
+    #print "%s;%s;%s" % (
+            #subject_short_name.upper(),
+            #user.username,
+            #period.student_passes_period(user))

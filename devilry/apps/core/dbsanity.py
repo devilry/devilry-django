@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext as _
 
-from devilry.adminscripts.dbsanity import DbSanityCheck
+from ..adminscripts.dbsanity import DbSanityCheck
 from models import Feedback, Assignment, AssignmentGroup
 from gradeplugin import (GradePluginDoesNotExistError,
         WrongContentTypeError, GradePluginError)

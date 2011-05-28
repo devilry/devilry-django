@@ -10,11 +10,11 @@ from django.db.models.query import QuerySet
 from django.template.defaultfilters import floatformat
 from django.http import HttpResponse
 
-from devilry.core.models import AssignmentGroup, Period
-#from devilry.core import pluginloader
-from devilry.ui.filtertable import (FilterTable, Columns, Col, Row,
+from ..core.models import AssignmentGroup, Period
+#from ..core import pluginloader
+from ..ui.filtertable import (FilterTable, Columns, Col, Row,
         RowAction, Filter, FilterLabel)
-from devilry.core.utils.coreutils import AssignmentUtils
+from ..core.utils.coreutils import AssignmentUtils
 
 #pluginloader.autodiscover()
 

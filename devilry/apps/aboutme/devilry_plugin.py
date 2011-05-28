@@ -1,6 +1,6 @@
 #from django.utils.translation import ugettext as _
 
-#from devilry.addons.quickdash.dashboardplugin_registry import (
+#from ..quickdash.dashboardplugin_registry import (
         #DashboardItem, personalgroup)
 
 #import dashboardviews

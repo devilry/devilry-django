@@ -14,14 +14,14 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, \
         HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404
 
-from devilry.ui.messages import UiMessages
-from devilry.ui.widgets import DevilryDateTimeWidget
-from devilry.addons.quickdash import defaults
-from devilry.core.models import (AssignmentGroup, Candidate, Assignment,
+from ..ui.messages import UiMessages
+from ..ui.widgets import DevilryDateTimeWidget
+from ..quickdash import defaults
+from ..core.models import (AssignmentGroup, Candidate, Assignment,
         Deadline)
-from devilry.ui.filtertable import (Filter, Action, FilterTable,
+from ..ui.filtertable import (Filter, Action, FilterTable,
         Row, FilterLabel)
-from devilry.ui.examiner import post_publish_feedback
+from ..ui.examiner import post_publish_feedback
 
 
 class FilterStatus(Filter):

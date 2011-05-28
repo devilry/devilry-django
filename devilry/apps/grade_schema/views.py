@@ -6,9 +6,9 @@ from django.template import RequestContext
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext as _
-from devilry.ui.messages import UiMessages
+from ..ui.messages import UiMessages
 from models import SchemaGrade, Entry
-from devilry.core.models import Assignment
+from ..core.models import Assignment
 
 
 class EntryForm(forms.ModelForm):

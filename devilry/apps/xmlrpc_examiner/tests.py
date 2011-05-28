@@ -4,9 +4,9 @@ import xmlrpclib
 from django.test import TestCase
 from django.test.client import Client
 
-from devilry.xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
-from devilry.core.models import Assignment, AssignmentGroup, Delivery, FileMeta
-from devilry.core.deliverystore import MemoryDeliveryStore
+from ..xmlrpc.testhelpers import get_serverproxy, XmlRpcAssertsMixin
+from ..core.models import Assignment, AssignmentGroup, Delivery, FileMeta
+from ..core.deliverystore import MemoryDeliveryStore
 
 
 class TestXmlRpc(TestCase, XmlRpcAssertsMixin):

@@ -1,6 +1,6 @@
 from django import forms
 
-from devilry.addons.examiner.feedback_view import \
+from ..examiner.feedback_view import \
     parse_feedback_form, redirect_after_successful_save, render_response, \
     save_feedback_form
 

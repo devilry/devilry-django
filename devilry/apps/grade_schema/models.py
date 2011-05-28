@@ -1,6 +1,6 @@
 from django.db import models
-from devilry.core.models import Assignment
-from devilry.core.gradeplugin import GradeModel
+from ..core.models import Assignment
+from ..core.gradeplugin import GradeModel
 
 
 class SchemaGrade(models.Model):

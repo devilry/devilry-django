@@ -5,8 +5,8 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.db.models import Q
 
-from devilry.ui.messages import UiMessages
-from devilry.ui.filtertable import FilterTable, Action, Filter, FilterLabel
+from ...ui.messages import UiMessages
+from ...ui.filtertable import FilterTable, Action, Filter, FilterLabel
 
 
 admins_help_text = _('Comma-separated list of administrators. Just start '\
@@ -134,7 +134,7 @@ class EditBase(object):
         raise NotImplementedError()
     
     #def get_reverse_url(self, *args):
-        #return reverse('devilry.addons.admin.views.edit_' + self.VIEW_NAME,
+        #return reverse('devilry.apps.admin.views.edit_' + self.VIEW_NAME,
                 #args=args)
 
     def create_view(self):

@@ -1,5 +1,5 @@
 from django import forms
-from devilry.addons.examiner.feedback_view import view_shortcut
+from ..examiner.feedback_view import view_shortcut
 from models import CharFieldGrade
 
 class CharFieldGradeForm(forms.ModelForm):

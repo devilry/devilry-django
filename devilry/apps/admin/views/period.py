@@ -7,16 +7,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden
 
-from devilry.ui.filtertable import Columns, Col, Row
-from devilry.core.models import Subject, Period
-from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
+from ...ui.filtertable import Columns, Col, Row
+from ...core.models import Subject, Period
+from ...ui.widgets import (DevilryMultiSelectFewUsersDb,
         DevilryLongNameWidget, DevilryDateTimeWidget)
-from devilry.ui.fields import MultiSelectCharField
-from devilry.ui.messages import UiMessages
+from ...ui.fields import MultiSelectCharField
+from ...ui.messages import UiMessages
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
         deletemany_generic, admins_help_text)
-from devilry.addons.admin.actionregistry import periodactions
+from ..actionregistry import periodactions
 
 
 class PeriodFilterTable(BaseNodeFilterTable):

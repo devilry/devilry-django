@@ -15,8 +15,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from devilry.addons.grade_approved.models import ApprovedGrade
-from devilry.core import pluginloader
+from ..grade_approved.models import ApprovedGrade
+from ..core import pluginloader
 
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
         Delivery, Candidate, Feedback, FileMeta)

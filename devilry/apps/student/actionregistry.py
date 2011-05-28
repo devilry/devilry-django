@@ -1,4 +1,4 @@
-from devilry.ui.actionregistry import ActionRegistry
+from ..ui.actionregistry import ActionRegistry
 
 # Action registry taking Period objects as item.
 periodactions = ActionRegistry()

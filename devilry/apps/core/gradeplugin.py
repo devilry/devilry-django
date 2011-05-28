@@ -105,7 +105,7 @@ class GradeModel(models.Model):
         Reverse the feedback object which has a generic foreign key to this
         grade model.
         """
-        from devilry.core.models import Feedback # must be imported here to avoid recursive include
+        from ..core.models import Feedback # must be imported here to avoid recursive include
         typ = ContentType.objects.get_for_model(self)
         return Feedback.objects.get(content_type=typ.id,
                 object_id=self.id)

@@ -2,7 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django import forms
 from django.utils.translation import ugettext as _
-from devilry.addons.examiner import feedback_view
+from ..examiner import feedback_view
 from models import SchemaGrade, Entry, Result, SchemaGradeResults
 from django.forms.models import inlineformset_factory
 

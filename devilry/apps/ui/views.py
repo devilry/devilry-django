@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.utils.simplejson import JSONEncoder
 from django.db.models import Q
 
-from devilry.core.models import FileMeta
+from ..core.models import FileMeta
 from templatetags.rst_to_html import rst_to_html
 
 def logout_view(request):

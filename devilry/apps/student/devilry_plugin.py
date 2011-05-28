@@ -1,9 +1,9 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
-from devilry.addons.quickdash.dashboardplugin_registry import (registry, 
+from ..quickdash.dashboardplugin_registry import (registry, 
         DashboardView, DashboardItem, personalgroup)
-from devilry.core.models import AssignmentGroup
+from ..core.models import AssignmentGroup
 
 import dashboardviews
 

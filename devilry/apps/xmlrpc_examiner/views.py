@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden, Http404
 
-from devilry.core import gradeplugin
-from devilry.core.models import Assignment, AssignmentGroup, Delivery, \
+from ..core import gradeplugin
+from ..core.models import Assignment, AssignmentGroup, Delivery, \
     Feedback
-from devilry.xmlrpc import XmlRpc
+from ..xmlrpc import XmlRpc
 
 
 doc = """The functions required to do the most common operations required by

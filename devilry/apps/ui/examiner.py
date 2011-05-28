@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
-from devilry.core.models import AssignmentGroup
-from devilry.core.devilry_email import (
+from ..core.models import AssignmentGroup
+from ..core.devilry_email import (
         send_email, NoEmailAddressException,
         SMTPException)
 

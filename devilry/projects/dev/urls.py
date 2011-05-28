@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from devilry.core import pluginloader
+from devilry.apps.core import pluginloader
 
 from django.contrib import admin
 admin.autodiscover()
@@ -9,7 +9,7 @@ admin.autodiscover()
 debugpatterns = []
 if settings.DEBUG:
     debugpatterns = [
-        (r'^guiexamples/', include('devilry.addons.guiexamples.urls'))]
+        (r'^guiexamples/', include('devilry.apps.guiexamples.urls'))]
 
 urlpatterns = patterns('',
     # Example:
@@ -20,20 +20,21 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     #(r'^superadmin/doc/', include('django.contrib.admindocs.urls')),
-
     (r'^superadmin/', include(admin.site.urls)),
-    (r'^restful/', include('devilry.restful.urls')),
-    (r'^ui/', include('devilry.ui.urls')),
-    (r'^student/', include('devilry.addons.student.urls')),
-    (r'^examiner/', include('devilry.addons.examiner.urls')),
-    (r'^admin/', include('devilry.addons.admin.urls')),
-    (r'^grade_schema/', include('devilry.addons.grade_schema.urls')),
-    (r'^grade_rstschema/', include('devilry.addons.grade_rstschema.urls')),
-    (r'^gradestats/', include('devilry.addons.gradestats.urls')),
-    (r'^adminscripts/', include('devilry.adminscripts.urls')),
-    (r'^xmlrpc/', include('devilry.xmlrpc.urls')),
-    (r'^xmlrpc_examiner/', include('devilry.addons.xmlrpc_examiner.urls')),
-    (r'^', include('devilry.addons.quickdash.urls')),
+
+    (r'^restful/', include('devilry.apps.restful.urls')),
+    (r'^ui/', include('devilry.apps.ui.urls')),
+    (r'^student/', include('devilry.apps.student.urls')),
+    (r'^examiner/', include('devilry.apps.examiner.urls')),
+    (r'^admin/', include('devilry.apps.admin.urls')),
+    (r'^grade_schema/', include('devilry.apps.grade_schema.urls')),
+    (r'^grade_rstschema/', include('devilry.apps.grade_rstschema.urls')),
+    (r'^gradestats/', include('devilry.apps.gradestats.urls')),
+    (r'^adminscripts/', include('devilry.apps.adminscripts.urls')),
+    (r'^xmlrpc/', include('devilry.apps.xmlrpc.urls')),
+    (r'^xmlrpc_examiner/', include('devilry.apps.xmlrpc_examiner.urls')),
+    (r'^', include('devilry.apps.quickdash.urls')),
+
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.DEVILRY_RESOURCES_ROOT}),
     *debugpatterns

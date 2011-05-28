@@ -33,7 +33,7 @@ def add_debug_opt(optparser):
 
 def add_settings_option(optparser):
     default_settings = os.environ.get("DJANGO_SETTINGS_MODULE",
-            'devilry.settings') 
+            'devilry.projects.dev.settings') 
     optparser.add_option("--settings", dest="settings",
             default=default_settings,
             help='Django settings file. Defaults to the value of the '\
@@ -49,5 +49,5 @@ def setup_logging(opt):
             format='%(levelname)7s: %(message)s')
 
 def load_devilry_plugins():
-    from devilry.core import pluginloader
+    from devilry.apps.core import pluginloader
     pluginloader.autodiscover()

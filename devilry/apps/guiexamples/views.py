@@ -8,7 +8,7 @@ from django.utils.simplejson import JSONEncoder, loads
 from django.db.models import Avg
 from django.forms import ModelForm
 
-from devilry.core.models import AssignmentGroup, Assignment
+from ..core.models import AssignmentGroup, Assignment
 
 
 

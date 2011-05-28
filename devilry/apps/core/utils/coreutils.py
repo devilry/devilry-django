@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _
 from django.utils.formats import date_format
 
-from devilry.core.models import Assignment
+from ...core.models import Assignment
 
 
 class AssignmentUtils(object):

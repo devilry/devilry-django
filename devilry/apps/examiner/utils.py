@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db.models import Max
 
-from devilry.core.models import AssignmentGroup
+from ..core.models import AssignmentGroup
 
 
 

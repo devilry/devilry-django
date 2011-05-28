@@ -6,12 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden
 
-from devilry.ui.filtertable import Columns, Col, Row
-from devilry.core.models import Node
-from devilry.ui.widgets import (DevilryMultiSelectFewUsersDb,
+from ...ui.filtertable import Columns, Col, Row
+from ...core.models import Node
+from ...ui.widgets import (DevilryMultiSelectFewUsersDb,
         DevilryLongNameWidget)
-from devilry.ui.fields import MultiSelectCharField
-from devilry.ui.messages import UiMessages
+from ...ui.fields import MultiSelectCharField
+from ...ui.messages import UiMessages
 
 from shortcuts import (BaseNodeFilterTable, NodeAction, EditBase,
         deletemany_generic, admins_help_text)

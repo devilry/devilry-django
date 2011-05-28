@@ -2,8 +2,8 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.forms.util import ValidationError
 
-from devilry.core.gradeplugin import GradeModel
-from devilry.core.models import Assignment
+from ..core.gradeplugin import GradeModel
+from ..core.models import Assignment
 
 from parser import rstdoc_from_string
 import text

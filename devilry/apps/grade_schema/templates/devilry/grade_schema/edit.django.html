@@ -5,7 +5,7 @@
 
 {% block main %}
 
-<form method='post' action='{% url devilry.addons.grade_schema.views.edit_schema schema.assignment.id %}'>
+<form method='post' action='{% url devilry.apps.grade_schema.views.edit_schema schema.assignment.id %}'>
 	<table>
 	{{ formset.as_table }}
 	</table>

@@ -19,7 +19,7 @@ setup_logging(opt)
 # Django must be imported after setting DJANGO_SETTINGS_MODULE
 set_django_settings_module(opt)
 load_devilry_plugins()
-from devilry.adminscripts.dbsanity import dbsanity_registry
+from devilry.apps.adminscripts.dbsanity import dbsanity_registry
 
 def exit_help():
     p.print_help()

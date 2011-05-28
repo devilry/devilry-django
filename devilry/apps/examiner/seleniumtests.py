@@ -1,7 +1,7 @@
 from selenium import selenium
 import unittest
 
-from devilry.core.testhelpers import SeleniumTestBase
+from ..core.testhelpers import SeleniumTestBase
 
 
 class CommonTestsMixin(object):
@@ -56,7 +56,7 @@ class CommonTestsMixin(object):
 
 
 class TestAsExaminer(SeleniumTestBase, CommonTestsMixin):
-    fixtures = ['addons/examiner/fixtures/selenium.json']
+    fixtures = ['apps/examiner/fixtures/selenium.json']
 
     def setUp(self):
         self.load_fixtures()
@@ -90,7 +90,7 @@ class TestAsExaminer(SeleniumTestBase, CommonTestsMixin):
 
 
 class TestAsSuperadmin(SeleniumTestBase, CommonTestsMixin):
-    fixtures = ['addons/examiner/fixtures/selenium.json']
+    fixtures = ['apps/examiner/fixtures/selenium.json']
 
     def setUp(self):
         self.load_fixtures()
@@ -104,7 +104,7 @@ class TestAsSuperadmin(SeleniumTestBase, CommonTestsMixin):
 
 
 class TestAsAdmin(SeleniumTestBase, CommonTestsMixin):
-    fixtures = ['addons/examiner/fixtures/selenium.json']
+    fixtures = ['apps/examiner/fixtures/selenium.json']
 
     def setUp(self):
         self.load_fixtures()

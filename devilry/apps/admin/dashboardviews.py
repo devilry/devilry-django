@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from django.template import RequestContext
 
-from devilry.core.models import Node, Subject, Period, Assignment
+from ..core.models import Node, Subject, Period, Assignment
 
 
 def main(request):

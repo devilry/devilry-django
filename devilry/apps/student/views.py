@@ -10,12 +10,12 @@ from django.forms.formsets import formset_factory
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
-from devilry.ui.messages import UiMessages
-from devilry.core.utils.GroupNodes import group_assignmentgroups
-from devilry.core.models import Delivery, AssignmentGroup
-from devilry.ui.defaults import DATETIME_FORMAT
-from devilry.core.utils.verify_unique_entries import verify_unique_entries
-from devilry.core.devilry_email import send_email
+from ..ui.messages import UiMessages
+from ..core.utils.GroupNodes import group_assignmentgroups
+from ..core.models import Delivery, AssignmentGroup
+from ..ui.defaults import DATETIME_FORMAT
+from ..core.utils.verify_unique_entries import verify_unique_entries
+from ..core.devilry_email import send_email
 from actionregistry import periodactions, groupactions
 
 

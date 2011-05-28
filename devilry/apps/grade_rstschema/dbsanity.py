@@ -1,6 +1,6 @@
-from devilry.adminscripts.dbsanity import (DbSanityCheck, dbsanity_registry)
-from devilry.core.gradeplugin import registry, get_registry_key
-from devilry.core.models import Period
+from ..adminscripts.dbsanity import (DbSanityCheck, dbsanity_registry)
+from ..core.gradeplugin import registry, get_registry_key
+from ..core.models import Period
 
 from models import RstSchemaGrade, RstSchemaDefinition
 

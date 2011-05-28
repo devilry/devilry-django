@@ -48,10 +48,43 @@ MIDDLEWARE_CLASSES = [
 ]
 
 
-ROOT_URLCONF = 'devilry.urls'
+ROOT_URLCONF = 'devilry.projects.dev.urls'
 
 LOGIN_URL = '/ui/login'
 DEVILRY_LOGOUT_URL = '/ui/logout'
+
+
+#INSTALLED_APPS = (
+    #'django.contrib.markup', 
+    #'django.contrib.sessions',
+    #'django.contrib.sites',
+    #'django.contrib.admin',
+    #'django.contrib.webdesign',
+    #'django.contrib.auth',
+    #'django.contrib.contenttypes',
+
+    #'devilry.apps.core',
+    #'devilry.apps.ui',
+    #'devilry.apps.gui',
+    #'devilry.apps.xmlrpc',
+
+    #'devilry.apps.simplified',
+    #'devilry.apps.restful',
+
+    #'devilry.apps.student',
+    #'devilry.apps.examiner',
+    #'devilry.apps.xmlrpc_examiner',
+    #'devilry.apps.admin',
+    #'devilry.apps.grade_approved',
+    #'devilry.apps.grade_default',
+    #'devilry.apps.grade_schema',
+    #'devilry.apps.grade_rstschema',
+    #'devilry.apps.quickdash',
+    #'devilry.apps.gradestats',
+
+    #'devilry.apps.xmlrpc_client',
+    #'devilry.apps.guiexamples',
+#)
 
 
 INSTALLED_APPS = (
@@ -59,32 +92,29 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.webdesign',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-
-    'devilry.apps.core',
-    'devilry.apps.ui',
-    'devilry.apps.gui',
-    'devilry.apps.xmlrpc',
-
-    'devilry.apps.simplified',
-    'devilry.apps.restful',
-
     'devilry.apps.student',
     'devilry.apps.examiner',
-    'devilry.apps.xmlrpc_examiner',
     'devilry.apps.admin',
     'devilry.apps.grade_approved',
     'devilry.apps.grade_default',
     'devilry.apps.grade_schema',
     'devilry.apps.grade_rstschema',
     'devilry.apps.quickdash',
+    'devilry.apps.xmlrpc_examiner',
+    'devilry.apps.xmlrpc',
+    'devilry.apps.xmlrpc_client',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'devilry.apps.core',
+    'devilry.apps.ui',
+    'devilry.apps.adminscripts',
     'devilry.apps.gradestats',
 
-    'devilry.apps.xmlrpc_client',
     'devilry.apps.guiexamples',
+    'devilry.apps.simplified',
+    'devilry.apps.restful',
 )
+
 
 
 

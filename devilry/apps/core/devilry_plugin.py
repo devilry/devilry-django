@@ -1,4 +1,4 @@
-from devilry.adminscripts.dbsanity import dbsanity_registry
+from ..adminscripts.dbsanity import dbsanity_registry
 
 from dbsanity import (GradepluginsSanityCheck,
     AssignmentGroupSanityCheck, AssignmentSanityCheck)

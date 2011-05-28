@@ -1,4 +1,4 @@
-from devilry.core.utils import OrderedDict
+from ...core.utils import OrderedDict
 
 
 def group_assignmentgroups(assignment_groups):

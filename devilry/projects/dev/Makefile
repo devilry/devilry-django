@@ -8,6 +8,8 @@ NUM_STUDENTS=30
 NUM_EXAMINERS=2
 NUM_SIMPLETEST_EXAMINERS=2
 NUM_SIMPLETEST_STUDENTS=12
+CREATE_TESTGROUPS=python ../../apps/adminscripts/create_testgroups.py
+
 
 
 help:
@@ -34,7 +36,7 @@ cleardb:
 #######################################################
 
 create-duck1100-data:
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week1 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
@@ -42,39 +44,39 @@ create-duck1100-data:
 		--subject-long-name "DUCK1100 - Getting started with python" \
 		--period-long-name "Spring year zero" \
 		--assignment-long-name "The one and only week one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week2 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "-20" --grade-maxpoints 10 \
 		--assignment-long-name "The one and only week two"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week3 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "old" --grade-maxpoints 9 \
 		--assignment-long-name "The one and only week three"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week4 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "recent" --grade-maxpoints 12 \
 		--assignment-long-name "The one and only week four"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week5 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "soon" --grade-maxpoints 6 \
 		--assignment-long-name "The one and only week five"
 
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.proj1 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students 10 --num-examiners=$(NUM_EXAMINERS) \
 		--student-name-prefix=projstud --pointscale=40\
 		--deadline-profile "recent" \
 		--assignment-long-name "Project one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.proj2 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students 8 --num-examiners=$(NUM_EXAMINERS) \
@@ -83,7 +85,7 @@ create-duck1100-data:
 		--assignment-long-name "Project two"
 
 create-duck1080-data:
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week1 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
@@ -92,21 +94,21 @@ create-duck1080-data:
 		--subject-long-name "DUCK1080 - Making the illogical seem logical" \
 		--period-long-name "Fall year zero" \
 		--assignment-long-name "Week one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week2 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "-20" --grade-maxpoints 9 \
 		--pointscale 10 \
 		--assignment-long-name "Week two"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week3 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "recent" --grade-maxpoints 8 \
 		--pointscale 10 \
 		--assignment-long-name "Week three"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week4 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
@@ -115,7 +117,7 @@ create-duck1080-data:
 		--assignment-long-name "Week four"
 
 create-duck3580-data:
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck3580.h01.week1 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
@@ -123,19 +125,19 @@ create-duck3580-data:
 		--subject-long-name "DUCK3580 - Making the illogical seem logical" \
 		--period-long-name "Fall year zero" \
 		--assignment-long-name "Week one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck3580.h01.week2 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "-20" \
 		--assignment-long-name "Week two"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck3580.h01.week3 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
 		--deadline-profile "recent" \
 		--assignment-long-name "Week three"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck3580.h01.week4 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students $(NUM_STUDENTS) --num-examiners=$(NUM_EXAMINERS) \
@@ -172,7 +174,7 @@ restore-exampledb:
 
 
 create-simple-testdb: init-exampledb
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week1 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
@@ -180,25 +182,25 @@ create-simple-testdb: init-exampledb
 		--subject-long-name "DUCK1100 - Getting started with python" \
 		--period-long-name "Spring year zero" \
 		--assignment-long-name "The one and only week one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week2 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
 		--deadline-profile "-20" --grade-maxpoints 10 \
 		--assignment-long-name "The one and only week two"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week3 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
 		--deadline-profile "old" --grade-maxpoints 9 \
 		--assignment-long-name "The one and only week three"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1100.h01.week4 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
 		--deadline-profile "recent" --grade-maxpoints 12 \
 		--assignment-long-name "The one and only week four"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week1 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
@@ -207,21 +209,21 @@ create-simple-testdb: init-exampledb
 		--subject-long-name "DUCK1080 - Making the illogical seem logical" \
 		--period-long-name "Fall year zero" \
 		--assignment-long-name "Week one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week2 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
 		--deadline-profile "-20" --grade-maxpoints 9 \
 		--pointscale 10 \
 		--assignment-long-name "Week two"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck1080.h01.week3 \
 		--grade-plugin "grade_rstschema:rstschemagrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
 		--deadline-profile "recent" --grade-maxpoints 8 \
 		--pointscale 10 \
 		--assignment-long-name "Week three"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck3580.h01.week1 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \
@@ -229,7 +231,7 @@ create-simple-testdb: init-exampledb
 		--subject-long-name "DUCK3580 - Making the illogical seem logical" \
 		--period-long-name "Fall year zero" \
 		--assignment-long-name "Week one"
-	python adminscripts/create_testgroups.py \
+	${CREATE_TESTGROUPS} \
 		duckburgh.univ:duck3580.h01.week4 \
 		--grade-plugin "grade_approved:approvedgrade" \
 		--num-students $(NUM_SIMPLETEST_STUDENTS) --num-examiners=$(NUM_SIMPLETEST_EXAMINERS) \

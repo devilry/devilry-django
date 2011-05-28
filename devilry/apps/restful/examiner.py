@@ -1,6 +1,6 @@
 from django import forms
 
-from simplified.examiner import (Subjects, Periods, Assignments, Groups)
+from ..simplified.examiner import (Subjects, Periods, Assignments, Groups)
 
 import fields
 from restview import RestView

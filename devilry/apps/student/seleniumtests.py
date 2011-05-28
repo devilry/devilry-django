@@ -1,7 +1,7 @@
 from selenium import selenium
 import unittest
 
-from devilry.core.testhelpers import SeleniumTestBase
+from ..core.testhelpers import SeleniumTestBase
 
 
 class TestDashboard(SeleniumTestBase):

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-from devilry.core.gradeplugin import GradeModel
+from ..core.gradeplugin import GradeModel
 
 
 

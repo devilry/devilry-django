@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 
-urlpatterns = patterns('devilry.addons.quickdash',
+urlpatterns = patterns('devilry.apps.quickdash',
     url(r'^$',
         'views.main', name='devilry-main'),
 )

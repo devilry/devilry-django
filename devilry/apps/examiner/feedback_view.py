@@ -5,11 +5,11 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 
-from devilry.core.models import Feedback, AssignmentGroup, Delivery
-from devilry.ui.widgets import RstEditWidget
-from devilry.ui.messages import UiMessages
-from devilry.ui.examiner import post_publish_feedback
-from devilry.core.utils.assignmentgroup import GroupDeliveriesByDeadline
+from ..core.models import Feedback, AssignmentGroup
+from ..ui.widgets import RstEditWidget
+from ..ui.messages import UiMessages
+from ..ui.examiner import post_publish_feedback
+from ..core.utils.assignmentgroup import GroupDeliveriesByDeadline
 
 from utils import get_next_notcorrected_in_assignment, \
         get_prev_notcorrected_in_assignment

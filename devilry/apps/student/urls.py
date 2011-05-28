@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('devilry.addons.student',
+urlpatterns = patterns('devilry.apps.student',
     url(r'^$',
         'views.list_assignments',
         name='devilry-student-list_assignments'),

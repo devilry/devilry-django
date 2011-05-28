@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from devilry.core.models import Feedback
+from ..core.models import Feedback
 from models import CharFieldGrade
 
 

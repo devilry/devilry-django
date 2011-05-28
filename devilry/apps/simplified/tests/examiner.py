@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from devilry.core import models
-from devilry.simplified.examiner import Subjects, Periods, Assignments, Groups
+from ...core import models
+from ..examiner import Subjects, Periods, Assignments, Groups
 
 
 class TestExaminerSubjects(TestCase):

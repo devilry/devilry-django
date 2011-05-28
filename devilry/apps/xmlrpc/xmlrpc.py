@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 
-from devilry.core.utils import OrderedDict
+from ..core.utils import OrderedDict
 
 
 class RpcFuncInfo(object):

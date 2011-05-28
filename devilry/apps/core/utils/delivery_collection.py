@@ -2,8 +2,8 @@ from django.utils.formats import date_format
 from django.http import HttpResponse  
 from django.conf import settings
 
-from devilry.core.models import AssignmentGroup, Assignment
-from devilry.ui.defaults import DATETIME_FORMAT
+from ...core.models import AssignmentGroup, Assignment
+from ...ui.defaults import DATETIME_FORMAT
 
 from stream_archives import StreamableZip, StreamableTar
 

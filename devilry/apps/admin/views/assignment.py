@@ -8,13 +8,13 @@ from django.template import RequestContext
 from django import forms
 from django.utils.translation import ugettext as _
 
-from devilry.core.models import Period, Assignment
-from devilry.ui.messages import UiMessages
-from devilry.ui.widgets import DevilryDateTimeWidget, \
+from ...core.models import Period, Assignment
+from ...ui.messages import UiMessages
+from ...ui.widgets import DevilryDateTimeWidget, \
     DevilryMultiSelectFewUsersDb, DevilryLongNameWidget
-from devilry.ui.fields import MultiSelectCharField
-from devilry.core import gradeplugin
-from devilry.ui.filtertable import Columns, Col, Row
+from ...ui.fields import MultiSelectCharField
+from ...core import gradeplugin
+from ...ui.filtertable import Columns, Col, Row
 
 from assignmentgroup import AssignmentGroupsFilterTable
 from shortcuts import (BaseNodeFilterTable, NodeAction,

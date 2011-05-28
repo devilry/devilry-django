@@ -8,9 +8,9 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-from devilry.ui.messages import UiMessages
-from devilry.core.models import Assignment, Subject, Period, AssignmentGroup
-from devilry.core.utils.GroupNodes import group_assignmentgroups
+from ..ui.messages import UiMessages
+from ..core.models import Assignment, Subject, Period, AssignmentGroup
+from ..core.utils.GroupNodes import group_assignmentgroups
 
 from html import input_form
 from models import RstSchemaDefinition

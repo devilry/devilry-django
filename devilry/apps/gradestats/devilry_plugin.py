@@ -1,9 +1,9 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
-from devilry.addons.admin.actionregistry import \
+from ..admin.actionregistry import \
         periodactions as admin_periodactions
-from devilry.addons.student.actionregistry import \
+from ..student.actionregistry import \
         periodactions as student_periodactions, \
         groupactions as student_groupactions
 

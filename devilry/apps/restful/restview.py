@@ -1,7 +1,7 @@
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from devilry.ui.http import HttpJsonResponse, HttpXmlResponse
+from ..ui.http import HttpJsonResponse, HttpXmlResponse
 from errors import InvalidRequestDataError, InvalidRequestFormatError
 from serialize import serialize_result
 
