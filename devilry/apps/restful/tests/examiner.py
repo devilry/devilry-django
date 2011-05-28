@@ -29,7 +29,7 @@ class TestRestSubjects(TestCase):
             u'long_name': u'DUCK1080 - Making the illogical seem logical',
             u'id': 2,
             u'short_name': u'duck1080',
-            u'path': u'duck1080'})
+            u'path': u'/duck1080'})
 
 
 class TestRestPeriodsNoFixture(TestCase):
@@ -56,7 +56,7 @@ class TestRestPeriods(TestCase):
             u'long_name': u'Spring year zero',
             u'id': 1,
             u'short_name': u'h01',
-            u'path': u'duck1100/h01'})
+            u'path': u'/duck1100/h01'})
 
 
 
@@ -66,7 +66,8 @@ class TestRestAssignmentsNoFixture(TestCase):
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"],
                 old=True, active=True, query=u'', longnamefields=False,
-                pointhandlingfields=False, format='json'
+                pointhandlingfields=False, format='json',
+                period_short_name = '', subject_short_name=''
             ))
 
 class TestRestAssignments(TestCase):
@@ -81,13 +82,13 @@ class TestRestAssignments(TestCase):
         r = self.client.get(self.url, data=dict(format='json'))
         data = json.loads(r.content)
         first = data['items'][0]
-        keys = first.keys()
-        keys.sort()
-        self.assertEquals(keys,
-                ['id', 'long_name',
-                'parentnode__parentnode__short_name',
-                'parentnode__short_name',
-                'path', 'short_name'])
+        self.assertEquals(first, {
+            u'short_name': u'week1',
+            u'parentnode__short_name': u'h01',
+            u'long_name': u'The one and only week one',
+            u'parentnode__parentnode__short_name': u'duck1100',
+            u'path': u'/duck1100/h01/week1',
+            u'id': 1})
 
     def test_get_manyargs(self):
         r = self.client.get(self.url, data=dict(format='json',
