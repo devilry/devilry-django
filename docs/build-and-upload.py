@@ -25,7 +25,7 @@ this_dir = abspath(dirname(__file__))
 version = 'dev'
 repodir = join(dirname(dirname(this_dir)), 'devilry-docwebsite')
 outdir = join(repodir, version)
-indir = join(this_dir, 'build', 'html')
+indir = join(this_dir, '.build', 'html')
 
 
 system("make clean html")
