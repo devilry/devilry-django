@@ -85,6 +85,13 @@ function tree()
             }]
     });
 
+    tree.addListener('itemclick', function(t, record, item, index, e) {
+        var data = record.data;
+        if(data.leaf) {
+            console.log(data);
+        }
+    });
+
 }
 
 
