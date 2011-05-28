@@ -97,4 +97,4 @@ class PeriodStatsFilterTableTest(TestCase):
         self.assertContains(r, "No deliveries", 1)
         self.assertContains(r, "The one and only week", 5)
         self.assertTemplateUsed(r,
-                'devilry/gradestats/admin-user.django.html')
+                'devilry/gradestats/user.django.html')
