@@ -9,8 +9,6 @@
     grade-plugins
     xmlrpc
 
-    contribute
-    documentation
     commandline
 
     simplified
@@ -42,8 +40,6 @@ Plugin development
 Developing devilry
 ######################################################################
 
-* :ref:`developer-contribute`
-* :ref:`developer-documentation`
 * :ref:`developer-commandline`
 
 
