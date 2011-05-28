@@ -124,7 +124,7 @@ DEVILRY_STATIC_URL = '/static'
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/gui/themes/devilry'
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/ext-4.0.1'
 TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.core.context_processors.auth", 
+    "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
