@@ -14,6 +14,8 @@ DATABASES = {
     }
 }
 
+INSTALLED_APPS = INSTALLED_APPS + ['devilry.apps.guiexamples']
+
 
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
