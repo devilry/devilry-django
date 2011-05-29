@@ -1,12 +1,12 @@
-.. _devilry.core.models:
+.. _devilry.apps.core.models:
 
-=========================================================
-:mod:`devilry.core.models` --- Devilry core datastructure
-=========================================================
+===============================================================
+:mod:`devilry.apps.core.models` --- Devilry core datastructure
+===============================================================
 
 .. For some reason required to make cross references work.
    http://groups.google.com/group/sphinx-dev/browse_thread/thread/dd921549bc146a5c/2f39d79ce46d447f
-.. currentmodule:: devilry.core.models
+.. currentmodule:: devilry.apps.core.models
 
 
 .. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment]
@@ -22,7 +22,7 @@
 Functions and attributes
 #########################################################
 
-.. automodule:: devilry.core.models
+.. automodule:: devilry.apps.core.models
     :members: pathsep, splitpath
     :no-members:
 
@@ -30,20 +30,20 @@ Functions and attributes
 BaseNode
 #########################################################
 
-.. autoclass:: devilry.core.models.BaseNode
+.. autoclass:: devilry.apps.core.models.BaseNode
     :no-members:
 
 
 AbstractIsAdmin
 #########################################################
 
-.. autoclass:: devilry.core.models.AbstractIsAdmin
+.. autoclass:: devilry.apps.core.models.AbstractIsAdmin
 
 
 AbstractIsExaminer
 #########################################################
 
-.. autoclass:: devilry.core.models.AbstractIsExaminer
+.. autoclass:: devilry.apps.core.models.AbstractIsExaminer
 
 
 Node
@@ -62,7 +62,7 @@ node-hierarchy:
         - Department of informatics
         - Department of mathematics
 
-.. autoclass:: devilry.core.models.Node
+.. autoclass:: devilry.apps.core.models.Node
 
 
 Subject
@@ -71,7 +71,7 @@ Subject
 A subject is a course, seminar, class or something else being given
 regularly. A subject is further divided into periods.
 
-.. autoclass:: devilry.core.models.Subject
+.. autoclass:: devilry.apps.core.models.Subject
 
 Period
 #########################################################
@@ -79,7 +79,7 @@ Period
 A Period is a limited period of time, like *spring 2009*, *week 34 2010* or
 even a single day.
 
-.. autoclass:: devilry.core.models.Period
+.. autoclass:: devilry.apps.core.models.Period
 
 Assignment
 #########################################################
@@ -98,18 +98,18 @@ We have three main classifications of assignments:
    past and current time is before ``Period.end_time``.
 
 
-.. autoclass:: devilry.core.models.Assignment
+.. autoclass:: devilry.apps.core.models.Assignment
 
 
 Candidate
 #########################################################
 
-.. autoclass:: devilry.core.models.Candidate
+.. autoclass:: devilry.apps.core.models.Candidate
 
 AssignmentGroup
 #########################################################
 
-.. autoclass:: devilry.core.models.AssignmentGroup
+.. autoclass:: devilry.apps.core.models.AssignmentGroup
 
 
 Deadline
@@ -117,7 +117,7 @@ Deadline
 
 Each :class:`AssignmentGroup` have zero or more deadlines.
 
-.. autoclass:: devilry.core.models.Deadline
+.. autoclass:: devilry.apps.core.models.Deadline
 
 
 Delivery
@@ -135,19 +135,19 @@ use :meth:`Delivery.begin`, :meth:`~Delivery.add_file` and
 The input to :meth:`add_file` will normally be a file-like object,
 but as shown above it can be anything you want.
 
-.. autoclass:: devilry.core.models.Delivery
+.. autoclass:: devilry.apps.core.models.Delivery
 
 
 Feedback
 #########################################################
 
-.. autoclass:: devilry.core.models.Feedback
+.. autoclass:: devilry.apps.core.models.Feedback
 
 
 FileMeta
 #########################################################
 
-.. autoclass:: devilry.core.models.FileMeta
+.. autoclass:: devilry.apps.core.models.FileMeta
 
 
 

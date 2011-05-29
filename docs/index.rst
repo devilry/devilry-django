@@ -24,9 +24,9 @@ Devilry developer documentation overview
 Core
 ######################################################################
 
-* **devilry.core.models:** :ref:`API <devilry.core.models>` | :ref:`designdetails`
-* :ref:`devilry.core.utils <devilry.core.utils>`
-* :ref:`devilry.core.deliverystore <devilry.core.deliverystore>`
+* **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>` | :ref:`designdetails`
+* :ref:`devilry.apps.core.utils <devilry.apps.core.utils>`
+* :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
 
 
 Plugin development
