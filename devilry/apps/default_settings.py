@@ -70,9 +70,11 @@ INSTALLED_APPS = (
     'devilry.apps.adminscripts',
     'devilry.apps.gradestats',
 
+    'devilry.apps.gui',
     'devilry.apps.guiexamples',
     'devilry.apps.simplified',
     'devilry.apps.restful',
+    'django.contrib.webdesign',
 )
 
 
