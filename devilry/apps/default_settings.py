@@ -13,7 +13,7 @@ DATETIME_FORMAT = "N j, Y, H:i"
 LOGIN_URL = '/ui/login'
 
 INSTALLED_APPS = [
-    'django.contrib.markup', 
+    'django.contrib.markup',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
