@@ -583,100 +583,100 @@ class TestFeedback(TestCommandBaseWithSync):
                     'files'])
 
 
-class TestRstSchema(TestCommandBaseWithSync):
-    def setUp(self):
-        super(TestRstSchema, self).setUp()
-        self.login('examiner1')
+#class TestRstSchema(TestCommandBaseWithSync):
+    #def setUp(self):
+        #super(TestRstSchema, self).setUp()
+        #self.login('examiner1')
 
-        from ..core.models import Delivery
-        from ..grade_rstschema.models import RstSchemaDefinition
+        #from ..core.models import Delivery
+        #from ..grade_rstschema.models import RstSchemaDefinition
 
-        assignmentgroup = create_from_path(
-                'ifi:inf1010.spring09.someassignment.student1')
-        assignmentgroup.examiners.add(self.examiner1)
-        assignment = assignmentgroup.parentnode
-        assignment.grade_plugin = 'grade_rstschema:rstschemagrade'
-        assignment.save()
-        self.delivery = Delivery.begin(assignmentgroup, self.examiner1)
-        self.delivery.finish()
-        schemadef = RstSchemaDefinition()
-        schemadef.assignment = assignment
-        schemadef.schemadef = 'Input\n\n.. field:: 0-10\n    :default: 5'
-        schemadef.save()
+        #assignmentgroup = create_from_path(
+                #'ifi:inf1010.spring09.someassignment.student1')
+        #assignmentgroup.examiners.add(self.examiner1)
+        #assignment = assignmentgroup.parentnode
+        #assignment.grade_plugin = 'grade_rstschema:rstschemagrade'
+        #assignment.save()
+        #self.delivery = Delivery.begin(assignmentgroup, self.examiner1)
+        #self.delivery.finish()
+        #schemadef = RstSchemaDefinition()
+        #schemadef.assignment = assignment
+        #schemadef.schemadef = 'Input\n\n.. field:: 0-10\n    :default: 5'
+        #schemadef.save()
 
-        self.deliverypath = os.path.join(self.root,
-                'inf1010.spring09.someassignment',
-                'student1', '1')
-        self.rstfile = os.path.join(self.deliverypath, 'schema.rst')
-        self.lastsavedfeedbackfile = os.path.join(self.deliverypath,
-                overwriteable_filename('schema.rst.lastsave'))
+        #self.deliverypath = os.path.join(self.root,
+                #'inf1010.spring09.someassignment',
+                #'student1', '1')
+        #self.rstfile = os.path.join(self.deliverypath, 'schema.rst')
+        #self.lastsavedfeedbackfile = os.path.join(self.deliverypath,
+                #overwriteable_filename('schema.rst.lastsave'))
 
-    def get_sorted_dircontent(self):
-        dircontent = os.listdir(self.deliverypath)
-        dircontent.sort()
-        return dircontent
+    #def get_sorted_dircontent(self):
+        #dircontent = os.listdir(self.deliverypath)
+        #dircontent.sort()
+        #return dircontent
 
-    def test_rstschema(self):
-        self.sync()
-        logvalue = self.logdata.getvalue().strip()
-        dircontent = self.get_sorted_dircontent()
-        self.assertEquals(dircontent,
-                ['.overwriteable-feedback.lastsave.rst',
-                    '.overwriteable-info',
-                    '.overwriteable-schema.rst.lastsave', 'feedback.rst',
-                    'files', 'schema.rst'])
-        valuetpl = 'Input [0-10]\n[[[ %s ]]]'
-        self.assertEquals(open(self.rstfile, 'rb').read(),
-                valuetpl % 5)
+    #def test_rstschema(self):
+        #self.sync()
+        #logvalue = self.logdata.getvalue().strip()
+        #dircontent = self.get_sorted_dircontent()
+        #self.assertEquals(dircontent,
+                #['.overwriteable-feedback.lastsave.rst',
+                    #'.overwriteable-info',
+                    #'.overwriteable-schema.rst.lastsave', 'feedback.rst',
+                    #'files', 'schema.rst'])
+        #valuetpl = 'Input [0-10]\n[[[ %s ]]]'
+        #self.assertEquals(open(self.rstfile, 'rb').read(),
+                #valuetpl % 5)
 
-        ## Changes locally, but not on server does not cause backup?
-        open(self.rstfile, 'wb').write(valuetpl % 2)
-        self.reset_log()
-        self.sync()
-        logvalue = self.logdata.getvalue().strip()
-        important_logpart = 'WARNING:inf1010.spring09.someassignment/student1/1: schema.rst has local modifications, but the file on the server matches your last save, so your local file remains utouched. Remove schema.rst and sync to get the file from the server.'
-        self.assertTrue(important_logpart in logvalue)
-        self.assertEquals(self.get_sorted_dircontent(),
-                ['.overwriteable-feedback.lastsave.rst',
-                    '.overwriteable-info',
-                    '.overwriteable-schema.rst.lastsave', 'feedback.rst',
-                    'files', 'schema.rst'])
-        info = Info.read_open(self.deliverypath, 'Delivery')
-        self.assertEquals(open(self.rstfile, 'rb').read(),
-                valuetpl % 2)
+        ### Changes locally, but not on server does not cause backup?
+        #open(self.rstfile, 'wb').write(valuetpl % 2)
+        #self.reset_log()
+        #self.sync()
+        #logvalue = self.logdata.getvalue().strip()
+        #important_logpart = 'WARNING:inf1010.spring09.someassignment/student1/1: schema.rst has local modifications, but the file on the server matches your last save, so your local file remains utouched. Remove schema.rst and sync to get the file from the server.'
+        #self.assertTrue(important_logpart in logvalue)
+        #self.assertEquals(self.get_sorted_dircontent(),
+                #['.overwriteable-feedback.lastsave.rst',
+                    #'.overwriteable-info',
+                    #'.overwriteable-schema.rst.lastsave', 'feedback.rst',
+                    #'files', 'schema.rst'])
+        #info = Info.read_open(self.deliverypath, 'Delivery')
+        #self.assertEquals(open(self.rstfile, 'rb').read(),
+                #valuetpl % 2)
 
-        # Same change locally and on server does not cause backup?
-        f = self.delivery.get_feedback()
-        f.set_grade_from_xmlrpcstring(valuetpl % 2)
-        f.last_modified_by = self.examiner1
-        f.save()
-        self.sync()
-        self.assertEquals(self.get_sorted_dircontent(),
-                ['.overwriteable-feedback.lastsave.rst',
-                    '.overwriteable-info',
-                    '.overwriteable-schema.rst.lastsave', 'feedback.rst',
-                    'files', 'schema.rst'])
-        info = Info.read_open(self.deliverypath, 'Delivery')
+        ## Same change locally and on server does not cause backup?
+        #f = self.delivery.get_feedback()
+        #f.set_grade_from_xmlrpcstring(valuetpl % 2)
+        #f.last_modified_by = self.examiner1
+        #f.save()
+        #self.sync()
+        #self.assertEquals(self.get_sorted_dircontent(),
+                #['.overwriteable-feedback.lastsave.rst',
+                    #'.overwriteable-info',
+                    #'.overwriteable-schema.rst.lastsave', 'feedback.rst',
+                    #'files', 'schema.rst'])
+        #info = Info.read_open(self.deliverypath, 'Delivery')
 
-        # Changes locally and on server cause backup?
-        f.set_grade_from_xmlrpcstring(valuetpl % 4)
-        f.save()
-        self.sync()
-        self.assertEquals(self.get_sorted_dircontent(),
-                ['.overwriteable-feedback.lastsave.rst',
-                    '.overwriteable-info',
-                    '.overwriteable-schema.rst.lastsave', 'feedback.rst',
-                    'files', 'schema.rst', 'schema.rst.bak-0'])
-        info = Info.read_open(self.deliverypath, 'Delivery')
-        self.assertEquals(open(self.rstfile, 'rb').read(),
-                valuetpl % 4)
-        self.assertEquals(open(self.rstfile + '.bak-0', 'rb').read(),
-                valuetpl % 2)
+        ## Changes locally and on server cause backup?
+        #f.set_grade_from_xmlrpcstring(valuetpl % 4)
+        #f.save()
+        #self.sync()
+        #self.assertEquals(self.get_sorted_dircontent(),
+                #['.overwriteable-feedback.lastsave.rst',
+                    #'.overwriteable-info',
+                    #'.overwriteable-schema.rst.lastsave', 'feedback.rst',
+                    #'files', 'schema.rst', 'schema.rst.bak-0'])
+        #info = Info.read_open(self.deliverypath, 'Delivery')
+        #self.assertEquals(open(self.rstfile, 'rb').read(),
+                #valuetpl % 4)
+        #self.assertEquals(open(self.rstfile + '.bak-0', 'rb').read(),
+                #valuetpl % 2)
 
-        # ... but not another backup?
-        self.sync()
-        self.assertEquals(self.get_sorted_dircontent(),
-                ['.overwriteable-feedback.lastsave.rst',
-                    '.overwriteable-info',
-                    '.overwriteable-schema.rst.lastsave', 'feedback.rst',
-                    'files', 'schema.rst', 'schema.rst.bak-0'])
+        ## ... but not another backup?
+        #self.sync()
+        #self.assertEquals(self.get_sorted_dircontent(),
+                #['.overwriteable-feedback.lastsave.rst',
+                    #'.overwriteable-info',
+                    #'.overwriteable-schema.rst.lastsave', 'feedback.rst',
+                    #'files', 'schema.rst', 'schema.rst.bak-0'])
