@@ -18,13 +18,13 @@ for documentation).
 Creating a XMLRPC for your Devilry plugin
 #########################################
 
-It is very easy to export parts of your addons as a *XMLRPC* with the help of
-the ``devilry.xmlrpc`` module. *XMLRPC* can be used to communicate with the
+It is very easy to export parts of your apps as a *XMLRPC* with the help of
+the ``devilry.apps.xmlrpc`` module. *XMLRPC* can be used to communicate with the
 devilry server from any programming language with support for XMLRPC with
 cookies over SSL.
 
 We will explain how to use XMLRPC by explaining how the
-``devilry.addons.xmlrpc_examiner`` module works. The module exports the most
+``devilry.apps.xmlrpc_examiner`` module works. The module exports the most
 common functionality required by *examiners*.
 
 A function
@@ -34,14 +34,14 @@ First of all we need some functions. XMLRPC works over HTTP, so they basically
 work just like a normal django view. Therefore we choose to put our views in
 *views.py*. First we have to define our function:
 
-.. literalinclude:: /../devilry/addons/xmlrpc_examiner/views.py
+.. literalinclude:: /../devilry/apps/xmlrpc_examiner/views.py
     :pyobject: list_deliveries
 
 
 Make it into a XMLRPC-function
 ------------------------------
 
-Next we need to create a :class:`devilry.xmlrpc.XmlRpc` object where we can
+Next we need to create a :class:`devilry.apps.xmlrpc.XmlRpc` object where we can
 register our function::
 
     doc = """The functions required to do the most common operations required by
@@ -60,7 +60,7 @@ Urls
 
 At last we need to add the ``rpc`` object to ``urls.py``:
 
-.. literalinclude:: /../devilry/addons/xmlrpc_examiner/urls.py
+.. literalinclude:: /../devilry/apps/xmlrpc_examiner/urls.py
 
 
 Check if it is working
@@ -91,13 +91,13 @@ For examples of how to:
 - write unit-tests.
 - document arguments and constraints
 
-You should check out the sourcecode for `devilry.addons.xmlrpc_examiner`_.
+You should check out the sourcecode for `devilry.apps.xmlrpc_examiner`_.
 
-.. _`devilry.addons.xmlrpc_examiner`:
-    http://github.com/devilry/devilry-django/tree/master/devilry/addons/xmlrpc_examiner
+.. _`devilry.apps.xmlrpc_examiner`:
+    http://github.com/devilry/devilry-django/tree/master/devilry/apps/xmlrpc_examiner
 
 
 API
 ###
 
-.. autoclass:: devilry.xmlrpc.XmlRpc
+.. autoclass:: devilry.apps.xmlrpc.XmlRpc

@@ -44,7 +44,7 @@ assignments/
         - period__short_name (parentnode.short_name)
         - assignment__short_name (parentnode.parentnode.short_name)
 
-    For documentation on the fields, see :class:`devilry.core.models.Assignment`.
+    For documentation on the fields, see :class:`devilry.apps.core.models.Assignment`.
 
     :param count:
         Number of results.
@@ -59,7 +59,7 @@ assignments/
         Sort the result by this field. Must be one of:
         *id*, *short_name*, *long_name*, *id*, *publishing_time*, *pointscale*,
         *autoscale*, *maxpoints*, *attempts* or *must_pass*. See
-        :class:`devilry.core.models.Assignment` for documentation on each of
+        :class:`devilry.apps.core.models.Assignment` for documentation on each of
         these fields.
     :param search: A query to limit the results.
     :param longnamefields: Include the *long_name* field of assignment, period and
@@ -86,7 +86,7 @@ groups/{assignment-id}/
     :param orderby: Sort the result by this field. Must be one of:
         *id*, *is_open*, *status*, *points*, *scaled_points* or
         *active_deadline* (only if details is 1).
-        See :class:`devilry.core.models.AssignmentGroup` for documentation on
+        See :class:`devilry.apps.core.models.AssignmentGroup` for documentation on
         each of these fields.
     :param details: Add details? If 1, the result will contain the following
         additional fields:
