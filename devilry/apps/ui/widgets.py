@@ -75,18 +75,18 @@ class DevilryMultiSelectFewCandidates(forms.TextInput):
         super(DevilryMultiSelectFewCandidates, self).__init__(attrs)
 
 
+MARKITUP_JS  = (
+        settings.DEVILRY_MARKITUP_URL + "/markitup/jquery.markitup.js",
+        settings.DEVILRY_MARKITUP_URL + "/markitup/sets/rst/rst.js",
+        settings.DEVILRY_STATIC_URL + "/ui/js/rstedit_widget.js")
+MARKITUP_CSS = (
+            settings.DEVILRY_MARKITUP_URL + "/markitup/skins/simple/style.css",
+            settings.DEVILRY_MARKITUP_URL + "/markitup/sets/rst/style.css")
+
 class RstEditWidget(forms.Textarea):
     class Media:
-        js = (
-            settings.DEVILRY_STATIC_URL + "/markitup/markitup/jquery.markitup.js",
-            settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/rst.js",
-            settings.DEVILRY_STATIC_URL + "/ui/js/rstedit_widget.js",
-        )
-        css = {
-            'all': [
-                settings.DEVILRY_STATIC_URL + "/markitup/markitup/skins/simple/style.css",
-                settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/style.css"
-        ]}
+        js = MARKITUP_JS
+        css = {'all': MARKITUP_CSS}
 
     def __init__(self, attrs={}):
         if not 'cols' in attrs:

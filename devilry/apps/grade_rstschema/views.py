@@ -6,11 +6,10 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django import forms
 from django.utils.translation import ugettext as _
-from django.conf import settings
 
 from ..ui.messages import UiMessages
-from ..core.models import Assignment, Subject, Period, AssignmentGroup
-from ..core.utils.GroupNodes import group_assignmentgroups
+from ..ui.widgets import MARKITUP_CSS, MARKITUP_JS
+from ..core.models import Assignment
 
 from html import input_form
 from models import RstSchemaDefinition
@@ -21,16 +20,8 @@ from parser import RstValidationError, rstdoc_from_string
 
 class RstSchemaDefWidget(forms.Textarea):
     class Media:
-        js = (
-            settings.DEVILRY_STATIC_URL + "/markitup/markitup/jquery.markitup.js",
-            settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/rstschemadef.js",
-            settings.DEVILRY_STATIC_URL + "/ui/js/rstedit_widget.js",
-        )
-        css = {
-            'all': [
-                settings.DEVILRY_STATIC_URL + "/markitup/markitup/skins/simple/style.css",
-                settings.DEVILRY_STATIC_URL + "/markitup/markitup/sets/rst/style.css"
-        ]}
+        js = MARKITUP_JS
+        css = {'all': MARKITUP_CSS}
 
     def __init__(self, attrs={}):
         if not 'cols' in attrs:

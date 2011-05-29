@@ -15,8 +15,9 @@ DEVILRY_JQUERY_UI_THEME = 'devilry-blue'
 DEVILRY_STATIC_URL = '/static'
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/apps/theme/themes/devilry'
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/jslibs/extjs'
-DEVILRY_LOGOUT_URL = '/ui/logout'
 DEVILRY_JQUERY_URL = DEVILRY_STATIC_URL + '/jslibs/jquery'
+DEVILRY_MARKITUP_URL = DEVILRY_STATIC_URL + '/jslibs/markitup'
+DEVILRY_LOGOUT_URL = '/ui/logout'
 
 #Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000

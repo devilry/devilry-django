@@ -19,4 +19,5 @@ def template_variables(request):
         'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
         'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
         'DEVILRY_JQUERY_URL': settings.DEVILRY_JQUERY_URL,
+        'DEVILRY_MARKITUP_URL': settings.DEVILRY_MARKITUP_URL,
     }
