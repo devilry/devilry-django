@@ -49,5 +49,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django.core.context_processors.debug",
-    'devilry.apps.core.templatecontext.template_variables',
+    'devilry.apps.ui.templatecontext.template_variables',
 )
