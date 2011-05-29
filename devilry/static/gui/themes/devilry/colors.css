@@ -1,0 +1,25 @@
+body {
+	background-color: #fff;
+	color: #222;
+}
+
+body>header {background-color: #000; color: #fff;}
+body>header a#projectlink {color: #a00;}
+body>header>nav {background-color: #111;}
+body>header>nav a {color: #08C;}
+body>header>nav a:hover {color: #05a;}
+
+body>#main {background-color: #f8f8f8;}
+
+body>footer {
+	color: #D4D2CE;
+	border-top-color: 1px solid #ECEBE9;
+	background-color: #fff;
+}
+
+body>footer a {
+	color: #D4D2CE;
+}
+body>footer a:hover {
+	color: #776B5F;
+}

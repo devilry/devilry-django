@@ -1,0 +1,17 @@
+{% extends "devilry/examiner/edit_feedback.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block gradeform %}
+	<div class='rst-preview'>
+		{{ grade_form|safe }}
+	</div>
+  {% comment %}
+	<script type="text/javascript">
+    $(function() {
+      $(".rstschema_field-radio").buttonset();
+    });
+	</script>
+  <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/grade_rstschema/jsstyle-form.js"></script>
+  {% endcomment %}
+{% endblock %}
