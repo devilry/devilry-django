@@ -23,9 +23,8 @@ INSTALLED_APPS = [
 
     'devilry.apps.core',
     'devilry.apps.ui',
-    'devilry.apps.gui',
     'devilry.apps.simplified',
-
+    'devilry.apps.theme',
     'devilry.apps.restful',
 
     'devilry.apps.student',

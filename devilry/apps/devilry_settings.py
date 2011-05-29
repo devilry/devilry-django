@@ -1,5 +1,5 @@
 """
-Settings defined by Devilry.
+Defaults for settings defined by Devilry.
 """
 
 
@@ -13,7 +13,7 @@ DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
 
 DEVILRY_JQUERY_UI_THEME = 'devilry-blue'
 DEVILRY_STATIC_URL = '/static'
-DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/gui/themes/devilry'
+DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/apps/theme/themes/devilry'
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/ext-4.0.1'
 DEVILRY_LOGOUT_URL = '/ui/logout'
 
