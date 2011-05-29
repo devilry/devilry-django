@@ -1,5 +1,8 @@
 # Overrides the required settings to run using mod_wsgi as configured
 # in ../wsgi/example.wsgi
+#
+# NOTE this file has not been maintained, and is probably not usable,
+# however it is kept until we make a proper production project example
 
 
 from settings import *
