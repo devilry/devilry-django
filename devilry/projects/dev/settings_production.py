@@ -22,5 +22,5 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.RemoteUserBackend',
 )
 
-DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
+DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = '/devilry/upload'

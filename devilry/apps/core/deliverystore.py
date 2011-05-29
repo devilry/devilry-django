@@ -8,7 +8,7 @@ import dumbdbm
 
 
 def load_deliverystore_backend():
-    s = settings.DELIVERY_STORE_BACKEND.rsplit('.', 1)
+    s = settings.DEVILRY_DELIVERY_STORE_BACKEND.rsplit('.', 1)
     if len(s) != 2:
         raise ImproperlyConfigured(
                 'Error splitting %s into module and classname.' %

@@ -52,7 +52,7 @@ def backup(settings, opt, backupdir, djangoadmin):
 
     # File backup
     logging.info("Backing up the files ...")
-    if settings.DELIVERY_STORE_BACKEND == 'devilry.core.deliverystore.FsDeliveryStore':
+    if settings.DEVILRY_DELIVERY_STORE_BACKEND == 'devilry.core.deliverystore.FsDeliveryStore':
         logging.info("Storing files in %(fsdeliverystore_tarfile)s." %
                 vars())
         try:
@@ -105,7 +105,7 @@ def restore(settings, opt, restoredir, djangoadmin):
 
     # File restore
     logging.info("Restoring the files ...")
-    if settings.DELIVERY_STORE_BACKEND == 'devilry.core.deliverystore.FsDeliveryStore':
+    if settings.DEVILRY_DELIVERY_STORE_BACKEND == 'devilry.core.deliverystore.FsDeliveryStore':
         logging.info("Restoring delivery-files from %(fsdeliverystore_tarfile)s." %
                 vars())
         try:

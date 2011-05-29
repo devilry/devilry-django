@@ -2,9 +2,6 @@ from django.utils.formats import date_format
 from django.http import HttpResponse  
 from django.conf import settings
 
-from ...core.models import AssignmentGroup, Assignment
-from ...ui.defaults import DATETIME_FORMAT
-
 from stream_archives import StreamableZip, StreamableTar
 
 
@@ -43,13 +40,13 @@ def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
             if include_delivery_explanation:
                 filename = "%s/%s/%d/%s" % (directory_prefix, group_name,
                                                 delivery.number, f.filename)
-            # File size is greater than MAX_ARCHIVE_CHUNK_SIZE bytes
-            # Write only chunks of size MAX_ARCHIVE_CHUNK_SIZE to the archive
-            if f.size > settings.MAX_ARCHIVE_CHUNK_SIZE:
+            # File size is greater than DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes
+            # Write only chunks of size DEVILRY_MAX_ARCHIVE_CHUNK_SIZE to the archive
+            if f.size > settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE:
                 if not archive.can_write_chunks():
                     raise Exception("The size of file %s is greater than the "\
                                     "maximum allowed size. Download stream aborted.")
-                chunk_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+                chunk_size = settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE
                 # Open file stream for reading
                 file_to_stream = f.read_open()
                 # Open a filestream in the archive
@@ -114,7 +111,7 @@ def verify_groups_not_exceeding_max_file_size(groups):
         verify_deliveries_not_exceeding_max_file_size(g.deliveries.all())
 
 def verify_deliveries_not_exceeding_max_file_size(deliveries):
-    max_size = settings.MAX_ARCHIVE_CHUNK_SIZE
+    max_size = settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE
     for d in deliveries:
         for f_meta in d.filemetas.all():
             if f_meta.size > max_size:

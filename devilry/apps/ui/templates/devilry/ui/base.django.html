@@ -65,7 +65,7 @@
                   $.gritter.add({
                     title: "{{ mtitle|escapejs }}",
                     text: "{{ message|escapejs }}",
-                    image: "{{ DEVILRY_STATIC_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/icons/{{ message_class }}.png",
+                    image: "{{ DEVILRY_STATIC_URL }}/jquery/css/{{ DEVILRY_JQUERY_UI_THEME }}/icons/{{ message_class }}.png",
                     {% if sticky %}
                       sticky: true,
                     {% else %}
@@ -88,7 +88,7 @@
 
     {% block theme %}
       <link rel="stylesheet" type="text/css"
-        href="{{ DEVILRY_STATIC_URL }}/jquery/css/{{ JQUERY_UI_THEME }}/devilry.css" />
+        href="{{ DEVILRY_STATIC_URL }}/jquery/css/{{ DEVILRY_JQUERY_UI_THEME }}/devilry.css" />
     {% endblock %}
 
 		{% block customjs %}{% endblock %}

@@ -7,11 +7,11 @@ class NoEmailAddressException(Exception):
     pass
 
 def send_email(user_objects_to_send_to, subject, message):
-    if not settings.SEND_EMAIL_TO_USERS:
+    if not settings.DEVILRY_SEND_EMAIL_TO_USERS:
         return
 
     message += "\n\n--\n"
-    message += settings.EMAIL_SIGNATURE
+    message += settings.DEVILRY_EMAIL_SIGNATURE
     emails = []
     invalid_emails = []
 
@@ -23,7 +23,7 @@ def send_email(user_objects_to_send_to, subject, message):
         else:
             emails.append(u.email)
     try:
-        send_mail(settings.EMAIL_SUBJECT_PREFIX + subject, message, settings.EMAIL_DEFAULT_FROM,
+        send_mail(settings.EMAIL_SUBJECT_PREFIX + subject, message, settings.DEVILRY_EMAIL_DEFAULT_FROM,
                   emails, fail_silently=False)
     except SMTPException, e:
         send_email_admins("Invalid email",
@@ -46,5 +46,5 @@ def send_email_admins(subject, message, fail_silently=False):
     for name, email in settings.ADMINS:
         emails.append(email)
 
-    send_mail(settings.EMAIL_SUBJECT_PREFIX_ADMIN + subject, message, settings.EMAIL_DEFAULT_FROM,
+    send_mail(settings.DEVILRY_EMAIL_SUBJECT_PREFIX_ADMIN + subject, message, settings.DEVILRY_EMAIL_DEFAULT_FROM,
               emails, fail_silently)
