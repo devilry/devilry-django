@@ -1,9 +1,7 @@
 {% extends "devilry/ui/rst_preview.django.html" %}
 
 {% block media %}
-	<script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/jquery/js/jquery.js"></script>          
-	<script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/jquery/js/jquery-ui.js"></script>          
-	<link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/jquery/css/{{ DEVILRY_JQUERY_UI_THEME }}/jquery-ui.css" />
+	<script type="text/javascript" src="{{ DEVILRY_JQUERY_URL }}/js/jquery.js"></script>          
   <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/grade_rstschema/jsstyle-form.js"></script>
 	<link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/base.css" />
 {% endblock %}

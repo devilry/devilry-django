@@ -7,8 +7,8 @@
 
     {% with "1.8.5" as JQUERY_UI_VERSION %}
       {% block jquery %}
-        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/jquery/js/jquery-1.4.2.min.js"></script>
-        <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/jquery/js/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.min.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_JQUERY_URL }}/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="{{ DEVILRY_JQUERY_URL }}/js/jquery-ui-{{ JQUERY_UI_VERSION }}.custom.min.js"></script>
         <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/ui/js/devilry-utils.js"></script>
         <script type="text/javascript">
           var DEVILRY_STATIC_URL = "{{ DEVILRY_STATIC_URL }}";
@@ -26,9 +26,9 @@
 
         {% block tipTip %}
           <script type="text/javascript"
-            src="{{ DEVILRY_STATIC_URL }}/jquery/plugins/tipTipv13/jquery.tipTip.minified.js"></script>
+            src="{{ DEVILRY_JQUERY_URL }}/plugins/tipTipv13/jquery.tipTip.minified.js"></script>
           <link rel="stylesheet" type="text/css"
-            href="{{ DEVILRY_STATIC_URL }}/jquery/plugins/tipTipv13/tipTip.css" />
+            href="{{ DEVILRY_JQUERY_URL }}/plugins/tipTipv13/tipTip.css" />
           <script type="text/javascript">
             $(function(){
                 $(".tooltip-hover").tipTip();
@@ -42,9 +42,9 @@
 
         {% block xbreadcrumbs %}
           <script type="text/javascript"
-            src="{{ DEVILRY_STATIC_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
+            src="{{ DEVILRY_JQUERY_URL }}/plugins/xbreadcrumbs/xbreadcrumbs.js"></script>
           <link rel="stylesheet" type="text/css"
-            href="{{ DEVILRY_STATIC_URL }}/jquery/plugins/xbreadcrumbs/xbreadcrumbs.css" />
+            href="{{ DEVILRY_JQUERY_URL }}/plugins/xbreadcrumbs/xbreadcrumbs.css" />
           <script type="text/javascript">
             $(function(){
                 $("#breadcrumbs-list").xBreadcrumbs();
@@ -54,9 +54,9 @@
 
         {% block gritter %}
           <script type="text/javascript"
-            src="{{ DEVILRY_STATIC_URL }}/jquery/plugins/gritter/js/jquery.gritter.min.js"></script>
+            src="{{ DEVILRY_JQUERY_URL }}/plugins/gritter/js/jquery.gritter.min.js"></script>
           <link rel="stylesheet" type="text/css"
-            href="{{ DEVILRY_STATIC_URL }}/jquery/plugins/gritter/css/jquery.gritter.css" />
+            href="{{ DEVILRY_JQUERY_URL }}/plugins/gritter/css/jquery.gritter.css" />
                 
           {% if messages %}
             <script type="text/javascript">
@@ -65,7 +65,7 @@
                   $.gritter.add({
                     title: "{{ mtitle|escapejs }}",
                     text: "{{ message|escapejs }}",
-                    image: "{{ DEVILRY_STATIC_URL }}/jquery/css/{{ DEVILRY_JQUERY_UI_THEME }}/icons/{{ message_class }}.png",
+                    image: "{{ DEVILRY_JQUERY_URL }}/css/{{ DEVILRY_JQUERY_UI_THEME }}/icons/{{ message_class }}.png",
                     {% if sticky %}
                       sticky: true,
                     {% else %}
@@ -88,7 +88,7 @@
 
     {% block theme %}
       <link rel="stylesheet" type="text/css"
-        href="{{ DEVILRY_STATIC_URL }}/jquery/css/{{ DEVILRY_JQUERY_UI_THEME }}/devilry.css" />
+        href="{{ DEVILRY_JQUERY_URL }}/css/{{ DEVILRY_JQUERY_UI_THEME }}/devilry.css" />
     {% endblock %}
 
 		{% block customjs %}{% endblock %}

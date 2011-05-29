@@ -18,4 +18,5 @@ def template_variables(request):
         'session': request.session,
         'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
         'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
+        'DEVILRY_JQUERY_URL': settings.DEVILRY_JQUERY_URL,
     }
