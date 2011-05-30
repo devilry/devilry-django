@@ -9,19 +9,19 @@ Developing and extending the command line client
 Command and general purpose subclasses
 #######################################################################
 
-.. currentmodule:: devilry.xmlrpc_client.cli
+.. currentmodule:: devilry.apps.xmlrpc_client.cli
 
-.. automodule:: devilry.xmlrpc_client.cli
+.. automodule:: devilry.apps.xmlrpc_client.cli
 
 
 Shortcuts for walking the entire assignment-tree 
 #######################################################################
 
-.. currentmodule:: devilry.xmlrpc_client.assignmenttree
+.. currentmodule:: devilry.apps.xmlrpc_client.assignmenttree
 
 
-The *assignment tree* is everything in the :ref:`node-tree <devilry.core.models>` from
-*Assignment* and down. The ``devilry.xmlrpc_client.assignmentsync`` module
+The *assignment tree* is everything in the :ref:`node-tree <devilry.apps.core.models>` from
+*Assignment* and down. The ``devilry.apps.xmlrpc_client.assignmentsync`` module
 provides a layer on top of the the examiner :ref:`XMLRPC <xmlrpc>` making it
 easy to work with and sync a copy of the assignment-tree on the filesystem.
 
@@ -72,7 +72,7 @@ possibility:
        existing directory (adding id to the name) if determine_location
        returns False.
 
-.. autoclass:: devilry.xmlrpc_client.assignmenttree.Info
+.. autoclass:: devilry.apps.xmlrpc_client.assignmenttree.Info
 
 
 AssignmentTreeWalker-objects
@@ -82,7 +82,7 @@ AssignmentTreeWalker does not change anything on the filesystem or on the
 server (see :class:`AssignmentSync` for that), but provides a base for any
 operation needing to walk the assignment-tree using the *examiner xmlrpc*.
 
-.. autoclass:: devilry.xmlrpc_client.assignmenttree.AssignmentTreeWalker
+.. autoclass:: devilry.apps.xmlrpc_client.assignmenttree.AssignmentTreeWalker
 
 
 AssignmentSync
@@ -91,11 +91,11 @@ AssignmentSync
 Uses :class:`AssignmentTreeWalker` to sync all deliveries on any
 active assignment where the current user is examiner to the filesystem.
 
-.. autoclass:: devilry.xmlrpc_client.assignmenttree.AssignmentSync
+.. autoclass:: devilry.apps.xmlrpc_client.assignmenttree.AssignmentSync
 
 
-The rest of devilry.xmlrpc_client.assignmenttree
-================================================
+The rest of devilry.apps.xmlrpc_client.assignmenttree
+=====================================================
 
-.. automodule:: devilry.xmlrpc_client.assignmenttree
+.. automodule:: devilry.apps.xmlrpc_client.assignmenttree
     :exclude-members: AssignmentSync, AssignmentTreeWalker, Info

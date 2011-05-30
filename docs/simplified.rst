@@ -55,4 +55,4 @@ The API version 1
 devilry.simplified.examiner
 ===========================
 
-.. automodule:: devilry.simplified.examiner
+.. automodule:: devilry.apps.simplified.examiner

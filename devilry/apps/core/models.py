@@ -1887,7 +1887,7 @@ class FileMeta(models.Model):
 
     .. attribute:: deliverystore
 
-        The current :ref:`DeliveryStore <ref-devilry.core.deliverystore>`.
+        The current :ref:`DeliveryStore <devilry.apps.core.deliverystore>`.
     """
     delivery = models.ForeignKey(Delivery, related_name='filemetas')
     filename = models.CharField(max_length=255)
