@@ -64,12 +64,11 @@ function ajaxGrid()
 
 
 
-function tree()
-{
+function subjectTree() {
 
     var store = Ext.create('devilry.restful.store.SubjectTree');
 
-    var tree = Ext.create('Ext.tree.Panel', {
+    var subjectTree = Ext.create('Ext.tree.Panel', {
         store: store,
         renderTo: 'subjecttree',
         height: 300,
@@ -85,7 +84,7 @@ function tree()
             }]
     });
 
-    tree.addListener('itemclick', function(t, record, item, index, e) {
+    subjectTree.addListener('itemclick', function(t, record, item, index, e) {
         var data = record.data;
         if(data.leaf) {
             console.log(data);
@@ -95,9 +94,86 @@ function tree()
 }
 
 
+function subjectForm() {
+    Ext.define('example.fielderror', {
+        extend: 'Ext.data.Model',
+        fields: ['id', 'msg']
+    });
+
+    var formPanel = Ext.create('Ext.form.Panel', {
+        renderTo: 'subjectform',
+        frame: true,
+        title: 'Subject Form',
+        width: 340,
+        bodyPadding: 5,
+        waitMsgTarget: true,
+
+        fieldDefaults: {
+            labelAlign: 'right',
+            labelWidth: 85,
+            msgTarget: 'side'
+        },
+
+        // configure how to read the XML data
+        reader: Ext.create('Ext.data.reader.Json', {
+            model: 'devilry.restful.model.Subject',
+            root: 'items',
+            successProperty: 'success'
+        }),
+
+        // configure how to read the XML errors
+        //errorReader: Ext.create('Ext.data.reader.Xml', {
+            //model: 'example.fielderror',
+            //record: 'field',
+            //successProperty: '@success'
+        //}),
+
+        items: [{
+            xtype: 'fieldset',
+            title: 'Contact Information',
+            defaultType: 'textfield',
+            defaults: {
+                width: 280
+            },
+            items: [{
+                fieldLabel: 'Short name',
+                emptyText: 'duck1010',
+                name: 'short_name'
+            }, {
+                fieldLabel: 'Long name',
+                emptyText: 'Learning to fly',
+                name: 'long_name'
+            }]
+        }],
+
+        buttons: [{
+            text: 'Load',
+            handler: function() {
+                formPanel.getForm().load({
+                    url: 'xml-form-data.xml',
+                    waitMsg: 'Loading...'
+                });
+            }
+        }, {
+            text: 'Submit',
+            disabled: true,
+            formBind: true,
+            handler: function() {
+                this.up('form').getForm().submit({
+                    url: 'xml-form-errors.xml',
+                    submitEmptyText: false,
+                    waitMsg: 'Saving Data...'
+                });
+            }
+        }]
+    });
+}
+
+
 
 Ext.onReady(function() {
     ajaxGrid();
-    tree();
+    subjectTree();
+    subjectForm();
 });
 
