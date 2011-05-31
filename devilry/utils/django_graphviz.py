@@ -8,9 +8,6 @@ from django.db.models.base import ModelBase
 from graphviz import UmlClassLabel, Association, Node, Edge
 
 
-def model_to_id(model):
-    return model._meta.db_table
-
 def fieldnames_to_labels(model):
     fieldnames = []
     for fn in model._meta.get_all_field_names():
@@ -26,45 +23,64 @@ def fieldnames_to_labels(model):
             fieldnames.append('+ %s' % fn)
     return fieldnames
 
-def model_to_dot(modelcls, show_fields=False):
-    meta = modelcls._meta
-    id = model_to_id(modelcls)
-    values = []
-    if show_fields:
-        values = fieldnames_to_labels(modelcls)
-    label = UmlClassLabel(id, values=values)
-    return Node(id, label)
+
+class GetIdMixin(object):
+    def get_id(self, model):
+        return '%s.%s' % (getmodule(model).__name__, model.__name__)
+
+    def get_dotid(self, model):
+        return self.get_id(model).replace('.', '_')
 
 
-def model_to_associations(model, models):
-    associations = []
-    for rel in model._meta.get_all_related_objects():
-        #label = rel.var_name
-        if rel.model in models:
-            assoc = Association(model_to_id(model),
-                    model_to_id(rel.model), Edge('1', '*'))
-            associations.append(assoc)
-    for rel in model._meta.get_all_related_many_to_many_objects():
-        #label = rel.var_name
-        if rel.model in models:
-            assoc = Association(model_to_id(model),
-                    model_to_id(rel.model), Edge('*', '*'))
-            associations.append(assoc)
-    return associations
+class ModelsToDot(list, GetIdMixin):
+    def __init__(self, models, show_values=False):
+        self.models = models
+        self.show_values = show_values
+
+        for model in models:
+            node = self.model_to_dot(model)
+            self.append(node)
+
+    def add_associations(self):
+        for model in self.models:
+            self.add_association(model)
+
+    def model_to_dot(self, model):
+        meta = model._meta
+        id = self.get_dotid(model)
+        values = []
+        if self.show_values:
+            values = fieldnames_to_labels(model)
+        label = UmlClassLabel(self.get_title(model), values=values)
+        return Node(id, label)
+
+    def add_association(self, model):
+        for rel in model._meta.get_all_related_objects():
+            #label = rel.var_name
+            if rel.model in self.models:
+                assoc = Association(self.get_dotid(model),
+                        self.get_dotid(rel.model), Edge('1', '*'))
+                self.append(assoc)
+        for rel in model._meta.get_all_related_many_to_many_objects():
+            label = rel.var_name
+            #print label, dir(rel)
+            if rel.model in self.models:
+                #print model, dir(model._meta)
+                assoc = Association(self.get_dotid(model),
+                        self.get_dotid(rel.model), Edge('*', '*'))
+                self.append(assoc)
+
+    def get_title(self, model):
+        return self.get_id(model)
 
 
-def models_to_dot(models, show_fields=False):
-    nodes = []
-    nodesdct = {}
-    associations = []
-    for model in models:
-        node = model_to_dot(model, show_fields)
-        nodes.append(node)
-        associations.extend(model_to_associations(model, models))
-    return nodes + associations
+class ModelsToDbDot(ModelsToDot):
+    def get_title(self, model):
+        return model._meta.db_table
 
 
-class Models(set):
+
+class Models(set, GetIdMixin):
     def __init__(self, pattern, *models):
         super(Models, self).__init__(*models)
         self.patt = re.compile(pattern)
@@ -94,9 +110,6 @@ class Models(set):
                 var = getattr(mod, name)
                 if isinstance(var, ModelBase):
                     self.recursive_add_models(var)
-
-    def get_id(self, model):
-        return '%s.%s' % (getmodule(model).__name__, model.__name__)
 
     def add(self, model):
         if self.patt.match(self.get_id(model)):

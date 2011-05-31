@@ -4,13 +4,13 @@ class UmlClassLabel(object):
     headrow_tpl = '  <TR><TD bgcolor="#669933" align="CENTER">'\
         '<FONT COLOR="#ffffff" point-size="12">%s</FONT></TD></TR>\n'
     partrow_tpl = '  <TR><TD bgcolor="#ffffff" balign="LEFT" align="LEFT">%s</TD></TR>\n'
-    def __init__(self, classname, values=[], methods=[]):
-        self.classname = classname
+    def __init__(self, title, values=[], methods=[]):
+        self.title = title
         self.values = values
         self.methods = methods
 
     def __str__(self):
-        label = [self.headrow_tpl % self.classname]
+        label = [self.headrow_tpl % self.title]
         def add(part):
             label.append(self.partrow_tpl % '<BR/>\n'.join(part))
         if self.values:
