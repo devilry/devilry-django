@@ -1,7 +1,3 @@
-import re
-from django.db.models import fields
-
-
 class UmlClassLabel(object):
     table_tpl = '<\n<TABLE BORDER="0" CELLBORDER="1" CELLPADDING="6" '\
             'CELLSPACING="0">\n%s</TABLE>>'
@@ -12,16 +8,6 @@ class UmlClassLabel(object):
         self.classname = classname
         self.values = values
         self.methods = methods
-
-    def __str2__(self):
-        label = [self.classname]
-        def add(part):
-            label.append('\\l'.join(part) + '\\l')
-        if self.values:
-            add(self.values)
-        if self.methods:
-            add(self.methods)
-        return '"{%s}"' % '|'.join(label)
 
     def __str__(self):
         label = [self.headrow_tpl % self.classname]
@@ -121,77 +107,3 @@ class Graph(object):
 
     def extend(self, items):
         self.items.extend(items)
-
-
-def model_to_id(model):
-    return model._meta.db_table
-
-def fieldnames_to_labels(model):
-    fieldnames = []
-    for fn in model._meta.get_all_field_names():
-        field = model._meta.get_field_by_name(fn)[0]
-        #print fn, field, type(field)
-        if isinstance(field, fields.related.ManyToManyField):
-            #print fn, field
-            pass
-        elif isinstance(field, fields.related.RelatedObject):
-            pass
-        else:
-            #print fn, field
-            fieldnames.append('+ %s' % fn)
-    return fieldnames
-
-def model_to_dot(modelcls, show_fields=False):
-    meta = modelcls._meta
-    id = model_to_id(modelcls)
-    values = []
-    if show_fields:
-        values = fieldnames_to_labels(modelcls)
-    label = UmlClassLabel(id, values=values)
-    return Node(id, label)
-
-
-def model_to_associations(model, models):
-    associations = []
-    for rel in model._meta.get_all_related_objects():
-        #label = rel.var_name
-        if rel.model in models:
-            assoc = Association(model_to_id(model),
-                    model_to_id(rel.model), Edge('1', '*'))
-            associations.append(assoc)
-    for rel in model._meta.get_all_related_many_to_many_objects():
-        #label = rel.var_name
-        if rel.model in models:
-            assoc = Association(model_to_id(model),
-                    model_to_id(rel.model), Edge('*', '*'))
-            associations.append(assoc)
-    return associations
-
-
-def models_to_dot(models, show_fields=False):
-    nodes = []
-    nodesdct = {}
-    associations = []
-    for model in models:
-        node = model_to_dot(model, show_fields)
-        nodes.append(node)
-        associations.extend(model_to_associations(model, models))
-    return nodes + associations
-
-def recursive_get_models(model, pattern="*"):
-    models = []
-    searched = set()
-    def recurse(curmodel):
-        if curmodel in searched:
-            return
-        id = model_to_id(curmodel)
-        if not re.match(pattern, id):
-            return
-        models.append(curmodel)
-        searched.add(curmodel)
-        for rel in curmodel._meta.get_all_related_objects():
-            recurse(rel.model)
-        for rel in curmodel._meta.get_all_related_many_to_many_objects():
-            recurse(rel.model)
-    recurse(model)
-    return models
