@@ -18,7 +18,8 @@ setup_logging(opt)
 # Django must be imported after setting DJANGO_SETTINGS_MODULE
 set_django_settings_module(opt)
 from devilry.utils.graphviz import Graph
-from devilry.utils.django_graphviz import (Models, ModelsToDot)
+from devilry.utils.django_graphviz import (Models, ModelsToDot,
+        ModelsToDbDot)
 
 def exit_help():
     p.print_help()
@@ -30,7 +31,7 @@ outfile = args[0]
 
 models = Models('^(devilry\.|django\.contrib\.auth\.).*$')
 models.add_installed_apps_models()
-dotitems = ModelsToDot(models, show_values=True)
+dotitems = ModelsToDbDot(models, show_values=True)
 dotitems.add_associations()
 graph = Graph(*dotitems)
 #print graph

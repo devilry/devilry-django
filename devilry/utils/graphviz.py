@@ -1,3 +1,11 @@
+class UmlField(list):
+    def __init__(self, name, visibility='+'):
+        self.name = name
+        self.visibility = visibility
+    def __str__(self):
+        return '%(visibility)s %(name)s' % self.__dict__
+
+
 class UmlClassLabel(object):
     table_tpl = '<\n<TABLE BORDER="0" CELLBORDER="1" CELLPADDING="6" '\
             'CELLSPACING="0">\n%s</TABLE>>'
@@ -12,7 +20,8 @@ class UmlClassLabel(object):
     def __str__(self):
         label = [self.headrow_tpl % self.title]
         def add(part):
-            label.append(self.partrow_tpl % '<BR/>\n'.join(part))
+            label.append(self.partrow_tpl % '<BR/>\n'.join(
+                [str(x) for x in part]))
         if self.values:
             add(self.values)
         if self.methods:
