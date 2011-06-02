@@ -27,20 +27,14 @@ class ModelsToDiagramDot(list, GetIdMixin):
             node = self.model_to_dotnode(model)
             self.append(node)
 
-    def modelfield_to_umlfield(self, field):
-        if isinstance(field, fields.related.ManyToManyField):
-            return None
-        elif isinstance(field, fields.related.RelatedObject):
-            return None
-        #elif isinstance(field, fields.related.ForeignKey):
-        else:
-            return UmlField(field.column)
+    def modelfield_to_umlfield(self, fieldname, field):
+        raise NotImplementedError()
 
     def modelfields_to_umlfields(self, model):
         umlfields = []
-        for fn in model._meta.get_all_field_names():
-            field = model._meta.get_field_by_name(fn)[0]
-            umlfield = self.modelfield_to_umlfield(field)
+        for fieldname in model._meta.get_all_field_names():
+            field = model._meta.get_field_by_name(fieldname)[0]
+            umlfield = self.modelfield_to_umlfield(fieldname, field)
             if umlfield != None:
                 umlfields.append(umlfield)
         return umlfields
@@ -86,10 +80,28 @@ class ModelsToClassDiagramDot(ModelsToDiagramDot):
                 self.get_dotid(related_obj.model), Edge('*', '*'))
         self.append(assoc)
 
+    def modelfield_to_umlfield(self, fieldname, field):
+        if isinstance(field, fields.related.ManyToManyField):
+            return None
+        elif isinstance(field, fields.related.RelatedObject):
+            return None
+        #elif isinstance(field, fields.related.ForeignKey):
+        else:
+            return UmlField(fieldname)
+
 
 class ModelsToDbDiagramDot(ModelsToDiagramDot):
     def get_title(self, model):
         return model._meta.db_table
+
+    def modelfield_to_umlfield(self, fieldname, field):
+        if isinstance(field, fields.related.ManyToManyField):
+            return None
+        elif isinstance(field, fields.related.RelatedObject):
+            return None
+        #elif isinstance(field, fields.related.ForeignKey):
+        else:
+            return UmlField(field.column)
 
     def manytomany_to_dotnode(self, field, id):
         values = []

@@ -31,7 +31,8 @@ outfile = args[0]
 
 models = ModelSet('^(devilry\.|django\.contrib\.auth\.).*$')
 models.add_installed_apps_models()
-dotitems = ModelsToDbDiagramDot(models, show_values=True)
+#dotitems = ModelsToDbDiagramDot(models, show_values=True)
+dotitems = ModelsToClassDiagramDot(models, show_values=True)
 dotitems.add_relations()
 graph = Graph(*dotitems)
 #print graph
