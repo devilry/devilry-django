@@ -109,11 +109,12 @@ class ModelsToDbDot(ModelsToDot):
         node = self.manytomany_to_dotnode(field, table_name)
         self.append(node)
         #node = self.model_to_dotnode(model)
-        assoc = Association(self.get_dotid(model),
+        assocA = Association(self.get_dotid(model),
                 table_name, Edge('1', '*'))
-        assoc = Association(table_name,
+        assocB = Association(table_name,
                 self.get_dotid(related_obj.model), Edge('1', '*'))
-        self.append(assoc)
+        self.append(assocA)
+        self.append(assocB)
 
 
 
