@@ -9,28 +9,16 @@ from graphviz import UmlClassLabel, Association, Node, Edge, UmlField
 
 
 
-def fieldnames_to_labels(model):
-    fieldnames = []
-    for fn in model._meta.get_all_field_names():
-        field = model._meta.get_field_by_name(fn)[0]
-        if isinstance(field, fields.related.ManyToManyField):
-            pass
-        elif isinstance(field, fields.related.RelatedObject):
-            pass
-        else:
-            fieldnames.append(UmlField(fn))
-    return fieldnames
-
 
 class GetIdMixin(object):
     def get_id(self, model):
         return '%s.%s' % (getmodule(model).__name__, model.__name__)
 
     def get_dotid(self, model):
-        return self.get_id(model).replace('.', '_')
+        return model._meta.db_table
 
 
-class ModelsToDot(list, GetIdMixin):
+class ModelsToDiagramDot(list, GetIdMixin):
     def __init__(self, models, show_values=False):
         self.models = models
         self.show_values = show_values
@@ -39,45 +27,67 @@ class ModelsToDot(list, GetIdMixin):
             node = self.model_to_dotnode(model)
             self.append(node)
 
+    def modelfield_to_umlfield(self, field):
+        if isinstance(field, fields.related.ManyToManyField):
+            return None
+        elif isinstance(field, fields.related.RelatedObject):
+            return None
+        #elif isinstance(field, fields.related.ForeignKey):
+        else:
+            return UmlField(field.column)
+
+    def modelfields_to_umlfields(self, model):
+        umlfields = []
+        for fn in model._meta.get_all_field_names():
+            field = model._meta.get_field_by_name(fn)[0]
+            umlfield = self.modelfield_to_umlfield(field)
+            if umlfield != None:
+                umlfields.append(umlfield)
+        return umlfields
+
     def model_to_dotnode(self, model):
         meta = model._meta
         id = self.get_dotid(model)
         values = []
         if self.show_values:
-            values = fieldnames_to_labels(model)
+            values = self.modelfields_to_umlfields(model)
         label = UmlClassLabel(self.get_title(model), values=values)
         return Node(id, label)
 
-    def add_onetomany_association(self, model, related_obj):
+    def add_onetomany_relation(self, model, related_obj):
         if not related_obj.model in self.models:
             return
         assoc = Association(self.get_dotid(model),
                 self.get_dotid(related_obj.model), Edge('1', '*'))
         self.append(assoc)
 
-    def add_manytomany_association(self, model, related_obj):
-        #label = related_obj.var_name
+    def add_manytomany_relation(self, model, related_obj):
+        raise NotImplementedError()
+
+    def add_relation(self, model):
+        for related_obj in model._meta.get_all_related_objects():
+            self.add_onetomany_relation(model, related_obj)
+        for related_obj in model._meta.get_all_related_many_to_many_objects():
+            self.add_manytomany_relation(model, related_obj)
+
+    def add_relations(self):
+        for model in self.models:
+            self.add_relation(model)
+
+    def get_title(self, model):
+        return self.get_id(model)
+
+
+class ModelsToClassDiagramDot(ModelsToDiagramDot):
+    def add_manytomany_relation(self, model, related_obj):
         if not related_obj.model in self.models:
             return
         assoc = Association(self.get_dotid(model),
                 self.get_dotid(related_obj.model), Edge('*', '*'))
         self.append(assoc)
 
-    def add_association(self, model):
-        for related_obj in model._meta.get_all_related_objects():
-            self.add_onetomany_association(model, related_obj)
-        for related_obj in model._meta.get_all_related_many_to_many_objects():
-            self.add_manytomany_association(model, related_obj)
 
-    def add_associations(self):
-        for model in self.models:
-            self.add_association(model)
-
-    def get_title(self, model):
-        return self.get_id(model)
-
-
-class ModelsToDbDot(ModelsToDot):
+class ModelsToDbDiagramDot(ModelsToDiagramDot):
     def get_title(self, model):
         return model._meta.db_table
 
@@ -90,7 +100,7 @@ class ModelsToDbDot(ModelsToDot):
         label = UmlClassLabel(field.m2m_db_table(), values=values)
         return Node(id, label)
 
-    def add_manytomany_association(self, model, related_obj):
+    def add_manytomany_relation(self, model, related_obj):
         if not related_obj.model in self.models:
             return
         """ Example from the relation to core.models.Node from User:
@@ -118,12 +128,14 @@ class ModelsToDbDot(ModelsToDot):
 
 
 
-class Models(set, GetIdMixin):
+class ModelSet(set, GetIdMixin):
+    """ A set containing django db models, with methods to ease creating a
+    set of related models and all models in install apps. """
     def __init__(self, pattern, *models):
-        super(Models, self).__init__(*models)
+        super(ModelSet, self).__init__(*models)
         self.patt = re.compile(pattern)
 
-    def recursive_add_models(self, model):
+    def recursive_add_related_models(self, model):
         def recurse(curmodel):
             if curmodel in self:
                 return
@@ -147,14 +159,14 @@ class Models(set, GetIdMixin):
             for name in dir(mod):
                 var = getattr(mod, name)
                 if isinstance(var, ModelBase):
-                    self.recursive_add_models(var)
+                    self.recursive_add_related_models(var)
 
     def add(self, model):
         if self.patt.match(self.get_id(model)):
-            super(Models, self).add(model)
+            super(ModelSet, self).add(model)
 
 
 if __name__ == '__main__':
-    models = Models('^(devilry|django\.contrib\.auth)\..*$')
+    models = ModelSet('^(devilry|django\.contrib\.auth)\..*$')
     models.add_installed_apps_models()
     print models
