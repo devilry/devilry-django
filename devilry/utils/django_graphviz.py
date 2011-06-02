@@ -112,7 +112,7 @@ class ModelsToDbDot(ModelsToDot):
         assocA = Association(self.get_dotid(model),
                 table_name, Edge('1', '*'))
         assocB = Association(table_name,
-                self.get_dotid(related_obj.model), Edge('1', '*'))
+                self.get_dotid(related_obj.model), Edge('*', '1'))
         self.append(assocA)
         self.append(assocB)
 
