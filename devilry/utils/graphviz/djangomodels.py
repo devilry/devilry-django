@@ -5,7 +5,7 @@ from django.utils.importlib import import_module
 from django.db.models import fields
 from django.db.models.base import ModelBase
 
-from graphviz import UmlClassLabel, Association, Node, Edge, UmlField
+from dot import UmlClassLabel, Association, Node, Edge, UmlField
 
 
 
