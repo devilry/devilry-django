@@ -1,57 +1,41 @@
 from ..core import models
-import utils
+from base import SimplifiedBase
 
 
-class GetQryResult(object):
-    def __init__(self, fields, qry):
-        self.fields = fields
-        self.qry = qry
 
-    def valuesQryset(self):
-        return self.qry.values(*self.fields)
-
-
-class Subjects(object):
+class Subjects(SimplifiedBase):
     default_orderby = ['long_name']
 
     @classmethod
-    def getqry(cls, user,
-            limit=50, start=0, query="",
-            orderby=default_orderby):
+    def getqry(cls, user, **standard_opts):
         fields = ['id', 'short_name', 'long_name']
         queryfields = ['short_name', 'long_name']
-        qry = models.Subject.published_where_is_examiner(user)
-        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
-                limit, start)
-        return GetQryResult(fields, qry)
+        qryset = models.Subject.published_where_is_examiner(user)
+        return cls._get(fields, queryfields, qryset, standard_opts)
 
 
-class Periods(object):
+class Periods(SimplifiedBase):
     default_orderby = ['long_name']
 
     @classmethod
-    def getqry(cls, user,
-            limit=50, start=0, query='', orderby=default_orderby,
-            subject_short_name=None):
+    def getqry(cls, user, subject_short_name=None, **standard_opts):
         fields = ['id', 'short_name', 'long_name', 'parentnode__short_name']
         queryfields = ['short_name', 'long_name', 'parentnode__short_name']
-        qry = models.Period.published_where_is_examiner(user)
+        qryset = models.Period.published_where_is_examiner(user)
         if subject_short_name:
-            qry = qry.filter(parentnode__short_name=subject_short_name)
-        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
-                limit, start)
-        return GetQryResult(fields, qry)
+            qryset = qryset.filter(parentnode__short_name=subject_short_name)
+        return cls._get(fields, queryfields, qryset, standard_opts)
 
 
-class Assignments(object):
+class Assignments(SimplifiedBase):
     default_orderby = ["short_name"]
 
     @classmethod
     def getqry(cls, user,
-            limit=50, start=0, query="", orderby=default_orderby,
             old=True, active=True, longnamefields=False,
             pointhandlingfields=False,
-            subject_short_name=None, period_short_name=None):
+            subject_short_name=None, period_short_name=None,
+            **standard_opts):
         """
         List all old and active assignments. Provides the following
         information (fields) for each listed assignment by default:
@@ -99,23 +83,20 @@ class Assignments(object):
             fields.append('parentnode__long_name')
             fields.append('parentnode__parentnode__long_name')
         queryfields = fields
-        qry = models.Assignment.published_where_is_examiner(user, old=old,
+        qryset = models.Assignment.published_where_is_examiner(user, old=old,
                 active=active)
         if subject_short_name and period_short_name:
-            qry = qry.filter(parentnode__short_name=period_short_name,
+            qryset = qryset.filter(parentnode__short_name=period_short_name,
                     parentnode__parentnode__short_name=subject_short_name)
-        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
-                limit, start)
-        return GetQryResult(fields, qry)
+        return cls._get(fields, queryfields, qryset, standard_opts)
 
 
-class Groups(object):
+class Groups(SimplifiedBase):
     default_orderby = ['id']
 
     @classmethod
     def getqry(cls, user,
-            assignment_id, limit=50, start=0, orderby=default_orderby,
-            deadlines=False, query=""):
+            assignment_id, deadlines=False, **standard_opts):
         """
         List all groups in the given assignment. Provides the following
         information (fields) for each listed group by default:
@@ -155,8 +136,6 @@ class Groups(object):
         """
         queryfields = ['name', 'candidates__student__username']
         fields = ['id', 'name']
-        qry = models.AssignmentGroup.published_where_is_examiner(user).filter(
+        qryset = models.AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode=assignment_id)
-        qry = utils.qry_common(qry, fields, query, queryfields, orderby,
-                limit, start)
-        return GetQryResult(fields, qry)
+        return cls._get(fields, queryfields, qryset, standard_opts)

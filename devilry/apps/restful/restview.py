@@ -43,7 +43,7 @@ class RestView(View):
                     content_type='text/plain; encoding=utf-8')
 
         format = form['format']
-        del form['format'] # Remove format, since it is not an parameter for getqry
+        del form['format'] # Remove format, since it is not an parameter for get
         form.update(**kwargs) # add variables from PATH
         getqryresult = self.__class__.getqry(request.user, **form)
         resultList = self.restultqry_to_list(getqryresult.valuesQryset())
