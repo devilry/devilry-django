@@ -8,7 +8,7 @@ from ..examiner import Subjects, Periods, Assignments, Groups
 class TestExaminerSubjects(TestCase):
     fixtures = ["simplified/data.json"]
 
-    def test_get(self):
+    def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         subjects = models.Subject.published_where_is_examiner(examiner0).order_by("short_name")
         qryset = Subjects.search(examiner0).qryset
@@ -26,7 +26,7 @@ class TestExaminerSubjects(TestCase):
 class TestExaminerPeriods(TestCase):
     fixtures = ["simplified/data.json"]
 
-    def test_get(self):
+    def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         periods = models.Period.published_where_is_examiner(examiner0).order_by("short_name")
         qryset = Periods.search(examiner0).qryset
@@ -43,7 +43,7 @@ class TestExaminerPeriods(TestCase):
 class TestExaminerAssignments(TestCase):
     fixtures = ["simplified/data.json"]
 
-    def test_get(self):
+    def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         all_assignments = models.Assignment.objects.all().order_by("short_name")
         qryset = Assignments.search(examiner0).qryset
@@ -63,7 +63,7 @@ class TestExaminerAssignments(TestCase):
 class TestExaminerGroups(TestCase):
     fixtures = ["simplified/data.json"]
 
-    def test_get(self):
+    def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         assignment = models.Assignment.published_where_is_examiner(examiner0)[0]
 
