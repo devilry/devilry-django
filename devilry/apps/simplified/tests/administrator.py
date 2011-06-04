@@ -43,6 +43,7 @@ class TestAdministratorNode(TestCase):
         self.assertEquals(1,
                 models.Node.where_is_admin(self.daisy).count())
 
+
     def test_create(self):
         kw = dict(long_name='Test',
                 parentnode_id=self.univ.id)
@@ -55,8 +56,11 @@ class TestAdministratorNode(TestCase):
         with self.assertRaises(PermissionDeniedException):
             node = Node.create(self.daisy, short_name='test3', **kw)
 
+    #def test_create_validation(self):
 
-    def test_replace(self):
+
+
+    def test_update(self):
         self.assertEquals(self.duckburgh.short_name, 'duckburgh')
         self.assertEquals(self.duckburgh.long_name, 'Duckburgh')
         self.assertEquals(self.duckburgh.parentnode, None)
@@ -65,28 +69,33 @@ class TestAdministratorNode(TestCase):
                     short_name='test',
                     long_name='Test',
                     parentnode_id=self.univ.id)
-        node = Node.replace(self.clarabelle, **kw)
+        node = Node.update(self.clarabelle, **kw)
         self.assertEquals(node.short_name, 'test')
         self.assertEquals(node.long_name, 'Test')
         self.assertEquals(node.parentnode, self.univ)
 
-        node = Node.replace(self.grandma, **kw) # superuser allowed
+        node = Node.update(self.grandma, **kw) # superuser allowed
         with self.assertRaises(PermissionDeniedException):
-            node = Node.replace(self.daisy, **kw)
+            node = Node.update(self.daisy, **kw)
 
-    def test_replace_errors(self):
+    def test_update_validation(self):
         invalidid = 100000
         self.assertRaises(models.Node.DoesNotExist, models.Node.objects.get,
                 id=invalidid)
-        self.assertRaises(models.Node.DoesNotExist,
-                Node.replace,
-                    self.clarabelle,
+        with self.assertRaises(models.Node.DoesNotExist):
+            Node.update(self.clarabelle,
                     id=self.duckburgh.id,
                     short_name='test',
                     long_name='Test',
                     parentnode_id=invalidid)
+        with self.assertRaises(models.Node.DoesNotExist):
+            Node.update(self.clarabelle,
+                    id=invalidid,
+                    short_name='test2',
+                    long_name='Test 2',
+                    parentnode_id=None)
         with self.assertRaisesRegexp(ValidationError,
                 "long_name.*short_name"):
-            Node.replace(
+            Node.update(
                     self.clarabelle, self.duckburgh.id,
                     short_name=None, long_name=None)

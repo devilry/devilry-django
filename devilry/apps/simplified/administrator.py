@@ -34,9 +34,9 @@ class Node(SimplifiedBase):
         return node
 
     @classmethod
-    def replace(cls, user, id, short_name, long_name,
+    def update(cls, user, id, short_name, long_name,
             parentnode_id=None):
-        """ Replace the data in the :class:`devilry.apps.core.models.Node`
+        """ Update the data in the :class:`devilry.apps.core.models.Node`
         with the given ``id``.
 
         :throws devilry.apps.core.models.Node.DoesNotExist:
