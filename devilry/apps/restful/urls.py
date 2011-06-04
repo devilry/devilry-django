@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 
 import examiner
 
-def nologin_required(f):
-    return f
-login_required = nologin_required
+#def nologin_required(f):
+    #return f
+#login_required = nologin_required
 
 urlpatterns = patterns('devilry.apps.restful',
     url(r'^examiner/tree/$',
