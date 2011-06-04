@@ -9,7 +9,7 @@ from ..examiner import RestSubject, RestPeriod, RestAssignment
 
 class TestRestSubjectNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestSubject._getdata_to_kwargs({})
+        kw = RestSubject._searchform_to_kwargs({})
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"], query='', format='json'))
 
@@ -34,7 +34,7 @@ class TestRestSubject(TestCase):
 
 class TestRestPeriodNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestPeriod._getdata_to_kwargs({})
+        kw = RestPeriod._searchform_to_kwargs({})
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"], query='',
                 format='json', subject_short_name=''))
@@ -62,7 +62,7 @@ class TestRestPeriod(TestCase):
 
 class TestRestAssignmentNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestAssignment._getdata_to_kwargs({})
+        kw = RestAssignment._searchform_to_kwargs({})
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"],
                 old=True, active=True, query=u'', longnamefields=False,

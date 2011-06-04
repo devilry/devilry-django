@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 from django.contrib.auth.decorators import login_required
 
 import examiner
+import administrator
 
 #def nologin_required(f):
     #return f
@@ -24,4 +25,12 @@ urlpatterns = patterns('devilry.apps.restful',
     url(r'^examiner/groups/(?P<assignment_id>\d+)/$',
         login_required(examiner.RestGroup.as_view()),
         name='devilry-restful-examiner-group'),
+
+    url(r'^administrator/nodes/$',
+        login_required(administrator.RestNode.as_view()),
+        name='devilry-restful-administrator-nodesearch'),
+
+    url(r'^administrator/nodes/(?P<id>\d+)$',
+        login_required(administrator.RestNode.as_view()),
+        name='devilry-restful-administrator-node'),
 )

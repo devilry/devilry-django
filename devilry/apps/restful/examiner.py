@@ -6,7 +6,8 @@ from restview import RestView
 from base import SearchFormBase
 
 
-class RestSubject(Subject, RestView):
+class RestSubject(RestView):
+    SIMPCLASS = Subject
 
     def restultqry_to_list(self, resultQry):
         tpl = '/%(short_name)s'
@@ -21,7 +22,8 @@ class RestSubject(Subject, RestView):
                 fallbackvalue=Subject.get_default_ordering())
 
 
-class RestPeriod(Period, RestView):
+class RestPeriod(RestView):
+    SIMPCLASS = Period
 
     def restultqry_to_list(self, resultQry):
         tpl = '/%(parentnode__short_name)s/%(short_name)s'
@@ -37,7 +39,8 @@ class RestPeriod(Period, RestView):
         subject_short_name = forms.CharField(required=False)
 
 
-class RestAssignment(Assignment, RestView):
+class RestAssignment(RestView):
+    SIMPCLASS = Assignment
 
     def restultqry_to_list(self, resultQry):
         tpl = ('/%(parentnode__parentnode__short_name)s/'
@@ -58,7 +61,8 @@ class RestAssignment(Assignment, RestView):
         period_short_name = forms.CharField(required=False)
 
 
-class RestGroup(Group, RestView):
+class RestGroup(RestView):
+    SIMPCLASS = Group
     class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Group.get_default_ordering())
