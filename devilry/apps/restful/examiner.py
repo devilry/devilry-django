@@ -3,7 +3,7 @@ from django import forms
 from ..simplified.examiner import (Subject, Period, Assignment, Group)
 import fields
 from restview import RestView
-from base import GetFormBase
+from base import SearchFormBase
 
 
 class RestSubject(Subject, RestView):
@@ -16,7 +16,7 @@ class RestSubject(Subject, RestView):
             return assignmentDict
         return filter(filter_func, resultQry)
 
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Subject.get_default_ordering())
 
@@ -31,7 +31,7 @@ class RestPeriod(Period, RestView):
             return assignmentDict
         return filter(filter_func, resultQry)
 
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Subject.get_default_ordering())
         subject_short_name = forms.CharField(required=False)
@@ -47,7 +47,7 @@ class RestAssignment(Assignment, RestView):
             return assignmentDict
         return filter(filter_func, resultQry)
 
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Assignment.get_default_ordering())
         old = fields.BooleanWithFallbackField(fallbackvalue=True)
@@ -59,7 +59,7 @@ class RestAssignment(Assignment, RestView):
 
 
 class RestGroup(Group, RestView):
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Group.get_default_ordering())
         deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)

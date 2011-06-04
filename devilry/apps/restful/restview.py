@@ -21,12 +21,12 @@ class RestView(View):
     @classmethod
     def _getdata_to_kwargs(cls, getdata):
         """
-        Converts the ``data`` to a validated :class:`GetForm`.
+        Converts the ``data`` to a validated :class:`SearchForm`.
 
         Throws :class:`errors.InvalidRequestDataError` if the form does not
         validate.
         """
-        form = cls.GetForm(getdata)
+        form = cls.SearchForm(getdata)
         if form.is_valid():
             return form.cleaned_data
         else:

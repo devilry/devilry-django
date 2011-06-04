@@ -1,7 +1,7 @@
 from django import forms
 import fields
 
-class GetFormBase(forms.Form):
+class SearchFormBase(forms.Form):
     format = fields.FormatField()
     query = forms.CharField(required=False)
     limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
