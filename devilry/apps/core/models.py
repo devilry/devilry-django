@@ -322,8 +322,10 @@ class Node(models.Model, BaseNode):
     def _can_save_id_none(self, user_obj):
         if self.parentnode == None and not user_obj.is_superuser:
             return False
-        else:
+        elif self.parentnode.is_admin(user_obj):
             return True
+        else:
+            return False
 
     def get_path(self):
         if self.parentnode:
