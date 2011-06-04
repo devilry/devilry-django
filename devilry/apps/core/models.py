@@ -320,9 +320,7 @@ class Node(models.Model, BaseNode):
         unique_together = ('short_name', 'parentnode')
 
     def _can_save_id_none(self, user_obj):
-        if self.parentnode == None and not user_obj.is_superuser:
-            return False
-        elif self.parentnode.is_admin(user_obj):
+        if self.parentnode != None and self.parentnode.is_admin(user_obj):
             return True
         else:
             return False
