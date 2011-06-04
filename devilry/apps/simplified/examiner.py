@@ -3,8 +3,8 @@ from base import SimplifiedBase
 
 
 
-class Subjects(SimplifiedBase):
-    default_orderby = ['long_name']
+class Subject(SimplifiedBase):
+    CORE_MODEL = models.Subject
 
     @classmethod
     def search(cls, user, **standard_opts):
@@ -14,8 +14,8 @@ class Subjects(SimplifiedBase):
         return cls._get(fields, queryfields, qryset, standard_opts)
 
 
-class Periods(SimplifiedBase):
-    default_orderby = ['long_name']
+class Period(SimplifiedBase):
+    CORE_MODEL = models.Period
 
     @classmethod
     def search(cls, user, subject_short_name=None, **standard_opts):
@@ -27,8 +27,8 @@ class Periods(SimplifiedBase):
         return cls._get(fields, queryfields, qryset, standard_opts)
 
 
-class Assignments(SimplifiedBase):
-    default_orderby = ["short_name"]
+class Assignment(SimplifiedBase):
+    CORE_MODEL = models.Assignment
 
     @classmethod
     def search(cls, user,
@@ -91,8 +91,8 @@ class Assignments(SimplifiedBase):
         return cls._get(fields, queryfields, qryset, standard_opts)
 
 
-class Groups(SimplifiedBase):
-    default_orderby = ['id']
+class Group(SimplifiedBase):
+    CORE_MODEL = models.AssignmentGroup
 
     @classmethod
     def search(cls, user,

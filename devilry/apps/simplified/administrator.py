@@ -6,6 +6,7 @@ from exceptions import PermissionDenied
 class Node(SimplifiedBase):
     """ Facade to simplify administrator actions on
     :class:`devilry.apps.core.models.Node`. """
+    CORE_MODEL = models.Node
 
     @classmethod
     def _authorize(cls, user, node):

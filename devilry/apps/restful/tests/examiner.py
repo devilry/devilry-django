@@ -3,17 +3,17 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 
-from ..examiner import RestSubjects, RestPeriods, RestAssignments
+from ..examiner import RestSubject, RestPeriod, RestAssignment
 
 
 
-class TestRestSubjectsNoFixture(TestCase):
+class TestRestSubjectNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestSubjects._getdata_to_kwargs({})
+        kw = RestSubject._getdata_to_kwargs({})
         self.assertEquals(kw, dict(
-                limit=50, start=0, orderby=["long_name"], query='', format='json'))
+                limit=50, start=0, orderby=["short_name"], query='', format='json'))
 
-class TestRestSubjects(TestCase):
+class TestRestSubject(TestCase):
     fixtures = ["simplified/data.json"]
     url = reverse('devilry-restful-examiner-tree-subjects')
 
@@ -32,14 +32,14 @@ class TestRestSubjects(TestCase):
             u'path': u'/duck1080'})
 
 
-class TestRestPeriodsNoFixture(TestCase):
+class TestRestPeriodNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestPeriods._getdata_to_kwargs({})
+        kw = RestPeriod._getdata_to_kwargs({})
         self.assertEquals(kw, dict(
-                limit=50, start=0, orderby=["long_name"], query='',
+                limit=50, start=0, orderby=["short_name"], query='',
                 format='json', subject_short_name=''))
 
-class TestRestPeriods(TestCase):
+class TestRestPeriod(TestCase):
     fixtures = ["simplified/data.json"]
     url = reverse('devilry-restful-examiner-tree-periods', args=['duck1100'])
 
@@ -60,9 +60,9 @@ class TestRestPeriods(TestCase):
 
 
 
-class TestRestAssignmentsNoFixture(TestCase):
+class TestRestAssignmentNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestAssignments._getdata_to_kwargs({})
+        kw = RestAssignment._getdata_to_kwargs({})
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"],
                 old=True, active=True, query=u'', longnamefields=False,
@@ -70,7 +70,7 @@ class TestRestAssignmentsNoFixture(TestCase):
                 period_short_name = '', subject_short_name=''
             ))
 
-class TestRestAssignments(TestCase):
+class TestRestAssignment(TestCase):
     fixtures = ["simplified/data.json"]
     url = reverse('devilry-restful-examiner-assignments')
 
