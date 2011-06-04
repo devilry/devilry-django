@@ -68,3 +68,9 @@ class SimplifiedBase(object):
         cls._set_orderby(standard_opts)
         result._standard_operations(**standard_opts)
         return result
+
+    @classmethod
+    def _save_model(cls, model):
+        """ Save and validate a model. """
+        model.full_clean()
+        model.save()
