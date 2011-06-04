@@ -1367,10 +1367,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             return d.feedback.get_grade_as_short_string()
 
     def can_save(self, user_obj):
-        """ Check if the user has permission to save this AssignmentGroup.
-        This only runs :meth:`Assignment.is_admin`, so there is no need to
-        use this if you have already used can_save() on the
-        :attr:`parentnode`. """
+        """ Check if the user has permission to save this AssignmentGroup. """
         if user_obj.is_superuser:
             return True
         elif self.parentnode:
