@@ -60,6 +60,7 @@ class RestView(View):
 
     def put(self, request, **kwargs):
         instance = self.__class__.SIMPCLASS.CORE_MODEL(**kwargs)
-        form = self.__class__.ModelForm(request.PUT, instance=instance)
-        print form.instance
+        print request.raw_post_data
+        #form = self.__class__.ModelForm(request.PUT, instance=instance)
+        #print form.instance
         return _response("hei", "text")

@@ -13,8 +13,7 @@ class RestNode(RestView):
         orderby = fields.CharListWithFallbackField(
                 fallbackvalue=Node.get_default_ordering())
 
-
-    class ModelForm(ModelForm):
+    class Form(ModelForm):
         class Meta:
             model = Node.CORE_MODEL
             fields = ('id', 'short_name', 'long_name', 'parentnode')
