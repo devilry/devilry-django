@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from ...core import models
 from ..administrator import Node
-from ..exceptions import PermissionDeniedException
+from ..exceptions import PermissionDenied
 
 
 class TestAdministratorNode(TestCase):
@@ -20,28 +20,12 @@ class TestAdministratorNode(TestCase):
 
         self.daisy = User.objects.get(username="daisy")
         self.assertEquals(0,
-                models.Node.where_is_admin(self.daisy).count())
+                models.Node.where_is_admin_or_superadmin(self.daisy).count())
 
+        self.invalidid = 100000
+        self.assertRaises(models.Node.DoesNotExist, models.Node.objects.get,
+                id=self.invalidid)
 
-    def test_query(self):
-        clarabelle = User.objects.get(username="clarabelle")
-        nodes = models.Node.objects.all().order_by("short_name")
-        qryset = Node.search(self.clarabelle).qryset
-        self.assertEquals(len(qryset), len(nodes))
-        self.assertEquals(qryset[0].short_name, nodes[0].short_name)
-
-        # query
-        qryset = Node.search(self.clarabelle, query="burgh").qryset
-        self.assertEquals(len(qryset), 1)
-        qryset = Node.search(self.clarabelle, query="univ").qryset
-        self.assertEquals(len(qryset), 1)
-        qryset = Node.search(self.clarabelle, query="").qryset
-        self.assertEquals(len(qryset), 2)
-
-    def test_query_security(self):
-        self.duckburgh.admins.add(self.daisy)
-        self.assertEquals(1,
-                models.Node.where_is_admin(self.daisy).count())
 
 
     def test_create(self):
@@ -53,11 +37,26 @@ class TestAdministratorNode(TestCase):
         self.assertEquals(node.parentnode, self.univ)
 
         node = Node.create(self.grandma, short_name='test2', **kw) # superuser allowed
-        with self.assertRaises(PermissionDeniedException):
+        with self.assertRaises(PermissionDenied):
             node = Node.create(self.daisy, short_name='test3', **kw)
 
-    #def test_create_validation(self):
+    def test_create_validation(self):
+        with self.assertRaises(models.Node.DoesNotExist):
+            Node.create(self.clarabelle,
+                    short_name='test',
+                    long_name='Test',
+                    parentnode_id=self.invalidid)
+        with self.assertRaisesRegexp(ValidationError,
+                "long_name.*short_name"):
+            Node.update(
+                    self.clarabelle, self.duckburgh.id,
+                    short_name=None, long_name=None)
 
+    def test_get(self):
+        node = Node.get(self.clarabelle, id=self.univ.id)
+        node = Node.get(self.grandma, self.univ.id) # superuser allowed
+        with self.assertRaises(PermissionDenied):
+            node = Node.get(self.daisy, self.univ.id) # superuser allowed
 
 
     def test_update(self):
@@ -75,22 +74,19 @@ class TestAdministratorNode(TestCase):
         self.assertEquals(node.parentnode, self.univ)
 
         node = Node.update(self.grandma, **kw) # superuser allowed
-        with self.assertRaises(PermissionDeniedException):
+        with self.assertRaises(PermissionDenied):
             node = Node.update(self.daisy, **kw)
 
     def test_update_validation(self):
-        invalidid = 100000
-        self.assertRaises(models.Node.DoesNotExist, models.Node.objects.get,
-                id=invalidid)
         with self.assertRaises(models.Node.DoesNotExist):
             Node.update(self.clarabelle,
                     id=self.duckburgh.id,
                     short_name='test',
                     long_name='Test',
-                    parentnode_id=invalidid)
+                    parentnode_id=self.invalidid)
         with self.assertRaises(models.Node.DoesNotExist):
             Node.update(self.clarabelle,
-                    id=invalidid,
+                    id=self.invalidid,
                     short_name='test2',
                     long_name='Test 2',
                     parentnode_id=None)
@@ -99,3 +95,50 @@ class TestAdministratorNode(TestCase):
             Node.update(
                     self.clarabelle, self.duckburgh.id,
                     short_name=None, long_name=None)
+
+
+    def test_delete_asnodeadmin(self):
+        Node.delete(self.clarabelle, id=self.univ.id)
+        with self.assertRaises(models.Node.DoesNotExist):
+            node = models.Node.objects.get(id=self.univ.id)
+    def test_delete_assuperadmin(self):
+        Node.delete(self.grandma, id=self.univ.id)
+        with self.assertRaises(models.Node.DoesNotExist):
+            node = models.Node.objects.get(id=self.univ.id)
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            Node.delete(self.daisy, id=self.univ.id)
+
+
+
+    def test_search(self):
+        clarabelle = User.objects.get(username="clarabelle")
+        nodes = models.Node.objects.all().order_by("short_name")
+        qryset = Node.search(self.clarabelle).qryset
+        self.assertEquals(len(qryset), len(nodes))
+        self.assertEquals(qryset[0].short_name, nodes[0].short_name)
+
+        # query
+        qryset = Node.search(self.clarabelle, query="burgh").qryset
+        self.assertEquals(len(qryset), 1)
+        qryset = Node.search(self.clarabelle, query="univ").qryset
+        self.assertEquals(len(qryset), 1)
+        qryset = Node.search(self.clarabelle).qryset
+        self.assertEquals(len(qryset), 2)
+        qryset = Node.search(self.grandma).qryset
+        self.assertEquals(len(qryset), len(nodes))
+
+        self.univ.parentnode = self.duckburgh
+        self.univ.save()
+        qryset = Node.search(self.grandma,
+                parentnode_id=self.duckburgh.id).qryset
+        self.assertEquals(len(qryset), 1)
+        self.assertEquals(qryset[0].short_name, 'univ')
+
+    def test_search_security(self):
+        qryset = Node.search(self.daisy).qryset
+        self.assertEquals(len(qryset), 0)
+
+        self.duckburgh.admins.add(self.daisy)
+        qryset = Node.search(self.daisy).qryset
+        self.assertEquals(len(qryset), 1)
