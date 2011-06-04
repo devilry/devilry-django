@@ -45,7 +45,7 @@ class RestView(View):
         format = form['format']
         del form['format'] # Remove format, since it is not an parameter for get
         form.update(**kwargs) # add variables from PATH
-        getqryresult = self.__class__.getqry(request.user, **form)
+        getqryresult = self.__class__.search(request.user, **form)
         resultList = self.restultqry_to_list(getqryresult.valuesQryset())
 
         try:

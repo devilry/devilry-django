@@ -17,19 +17,19 @@ class TestAdministratorNode(TestCase):
         self.duckburgh.admins.add(self.clarabelle)
         
 
-    def test_get(self):
+    def test_query(self):
         clarabelle = User.objects.get(username="clarabelle")
         nodes = models.Node.objects.all().order_by("short_name")
-        qryset = Node.getqry(self.clarabelle).qryset
+        qryset = Node.search(self.clarabelle).qryset
         self.assertEquals(len(qryset), len(nodes))
         self.assertEquals(qryset[0].short_name, nodes[0].short_name)
 
         # query
-        qryset = Node.getqry(self.clarabelle, query="burgh").qryset
+        qryset = Node.search(self.clarabelle, query="burgh").qryset
         self.assertEquals(len(qryset), 1)
-        qryset = Node.getqry(self.clarabelle, query="univ").qryset
+        qryset = Node.search(self.clarabelle, query="univ").qryset
         self.assertEquals(len(qryset), 1)
-        qryset = Node.getqry(self.clarabelle, query="").qryset
+        qryset = Node.search(self.clarabelle, query="").qryset
         self.assertEquals(len(qryset), 2)
 
     def test_get_security(self):
@@ -39,11 +39,11 @@ class TestAdministratorNode(TestCase):
         self.assertEquals(1,
                 models.Node.where_is_admin(self.daisy).count())
 
-    def test_replaceitem(self):
+    def test_replace(self):
         self.assertEquals(self.duckburgh.short_name, 'duckburgh')
         self.assertEquals(self.duckburgh.long_name, 'Duckburgh')
         self.assertEquals(self.duckburgh.parentnode, None)
-        node = Node.replaceitem(self.clarabelle,
+        node = Node.replace(self.clarabelle,
                 id=self.duckburgh.id,
                 short_name='test',
                 long_name='Test',

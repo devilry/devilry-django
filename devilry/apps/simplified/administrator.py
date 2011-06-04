@@ -6,8 +6,7 @@ class Node(SimplifiedBase):
     #default_orderby = 
 
     @classmethod
-    def getqry(cls, user, **standard_opts):
-    #def search(cls, user, **standard_opts):
+    def search(cls, user, **standard_opts):
         fields = ['id', 'short_name', 'long_name']
         queryfields = ['short_name', 'long_name']
         qryset = models.Node.where_is_admin_or_superadmin(user)
@@ -16,7 +15,7 @@ class Node(SimplifiedBase):
         return result
 
     @classmethod
-    def replaceitem(cls, user, id, short_name=None, long_name=None,
+    def replace(cls, user, id, short_name=None, long_name=None,
             parentnode_id=None):
         node = models.Node.objects.get(id=id)
         node.short_name = short_name
@@ -27,13 +26,13 @@ class Node(SimplifiedBase):
         return node
 
     @classmethod
-    def createitem(cls, user, **kwargs):
+    def create(cls, user, **kwargs):
         pass
 
     @classmethod
-    def getitem(cls, id):
+    def get(cls, id):
         pass
 
     @classmethod
-    def deleteitem(cls, id):
+    def delete(cls, id):
         pass

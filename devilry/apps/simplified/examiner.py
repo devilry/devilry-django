@@ -7,7 +7,7 @@ class Subjects(SimplifiedBase):
     default_orderby = ['long_name']
 
     @classmethod
-    def getqry(cls, user, **standard_opts):
+    def search(cls, user, **standard_opts):
         fields = ['id', 'short_name', 'long_name']
         queryfields = ['short_name', 'long_name']
         qryset = models.Subject.published_where_is_examiner(user)
@@ -18,7 +18,7 @@ class Periods(SimplifiedBase):
     default_orderby = ['long_name']
 
     @classmethod
-    def getqry(cls, user, subject_short_name=None, **standard_opts):
+    def search(cls, user, subject_short_name=None, **standard_opts):
         fields = ['id', 'short_name', 'long_name', 'parentnode__short_name']
         queryfields = ['short_name', 'long_name', 'parentnode__short_name']
         qryset = models.Period.published_where_is_examiner(user)
@@ -31,7 +31,7 @@ class Assignments(SimplifiedBase):
     default_orderby = ["short_name"]
 
     @classmethod
-    def getqry(cls, user,
+    def search(cls, user,
             old=True, active=True, longnamefields=False,
             pointhandlingfields=False,
             subject_short_name=None, period_short_name=None,
@@ -95,7 +95,7 @@ class Groups(SimplifiedBase):
     default_orderby = ['id']
 
     @classmethod
-    def getqry(cls, user,
+    def search(cls, user,
             assignment_id, deadlines=False, **standard_opts):
         """
         List all groups in the given assignment. Provides the following
