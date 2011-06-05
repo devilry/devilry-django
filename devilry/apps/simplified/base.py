@@ -55,8 +55,8 @@ class GetQryResult(object):
         self._limit_queryset(limit, start)
 
 
-
 class SimplifiedBase(object):
+
     @classmethod
     def get_default_ordering(cls):
         return cls.CORE_MODEL._meta.ordering
@@ -67,14 +67,30 @@ class SimplifiedBase(object):
                 cls.get_default_ordering())
 
     @classmethod
-    def _get(cls, fields, queryfields, qryset, standard_opts):
-        result = GetQryResult(fields, queryfields, qryset)
-        cls._set_orderby(standard_opts)
-        result._standard_operations(**standard_opts)
-        return result
+    def get(cls, user, id):
+        obj = cls._meta.model.objects.get(id=id)
+        cls._authorize(user, obj)
+        return obj
 
-    @classmethod
-    def _save_model(cls, model):
-        """ Save and validate a model. """
-        model.full_clean()
-        model.save()
+    #@classmethod
+    #def update(cls, user, **kwargs):
+        #obj = cls.get(user, id)
+        #for attrname, value in kwargs.iteritems():
+            #setattr(obj, attrname, value)
+        #cls._set_parentnode_from_id(obj, parentnode_id)
+        #obj.full_clean()
+        #obj.save()
+        #return obj
+
+    #@classmethod
+    #def _get(cls, fields, queryfields, qryset, standard_opts):
+        #result = GetQryResult(fields, queryfields, qryset)
+        #cls._set_orderby(standard_opts)
+        #result._standard_operations(**standard_opts)
+        #return result
+
+    #@classmethod
+    #def _save_model(cls, model):
+        #""" Save and validate a model. """
+        #model.full_clean()
+        #model.save()

@@ -56,3 +56,10 @@ devilry.simplified.examiner
 ===========================
 
 .. automodule:: devilry.apps.simplified.examiner
+
+
+
+devilry.simplified.administrator
+================================
+.. automodule:: devilry.apps.simplified.administrator
+   :inherited-members:
