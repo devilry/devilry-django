@@ -71,6 +71,9 @@ class ModelsToDiagramDot(list, GetIdMixin):
     def get_title(self, model):
         return self.get_id(model)
 
+    def create_umlfield(self, field, fieldname):
+        raise NotImplementedError()
+
 
 class ModelsToClassDiagramDot(ModelsToDiagramDot):
     def add_manytomany_relation(self, model, related_obj):
@@ -80,6 +83,11 @@ class ModelsToClassDiagramDot(ModelsToDiagramDot):
                 self.get_dotid(related_obj.model), Edge('*', '*'))
         self.append(assoc)
 
+    def create_umlfield(self, field, fieldname):
+        fieldtype = '%s.%s' % (field.__class__.__module__,
+                field.__class__.__name__)
+        return UmlField(fieldname, fieldtype)
+
     def modelfield_to_umlfield(self, fieldname, field):
         if isinstance(field, fields.related.ManyToManyField):
             return None
@@ -87,13 +95,16 @@ class ModelsToClassDiagramDot(ModelsToDiagramDot):
             return None
         #elif isinstance(field, fields.related.ForeignKey):
         else:
-            return UmlField(fieldname)
+            return self.create_umlfield(field, fieldname)
 
 
 class ModelsToDbDiagramDot(ModelsToDiagramDot):
     def get_title(self, model):
         return model._meta.db_table
 
+    def create_umlfield(self, field, fieldname):
+        return UmlField(field.column, field.db_type())
+
     def modelfield_to_umlfield(self, fieldname, field):
         if isinstance(field, fields.related.ManyToManyField):
             return None
@@ -101,14 +112,14 @@ class ModelsToDbDiagramDot(ModelsToDiagramDot):
             return None
         #elif isinstance(field, fields.related.ForeignKey):
         else:
-            return UmlField(field.column)
+            return self.create_umlfield(field, fieldname)
 
     def manytomany_to_dotnode(self, field, id):
         values = []
         if self.show_values:
             values = [
-                    UmlField(field.m2m_column_name()),
-                    UmlField(field.m2m_reverse_name())]
+                    UmlField(field.m2m_column_name(), 'integer'),  # TODO: make this use the actual type
+                    UmlField(field.m2m_reverse_name(), 'integer')] # TODO: make this use the actual type
         label = UmlClassLabel(field.m2m_db_table(), values=values)
         return Node(id, label)
 
