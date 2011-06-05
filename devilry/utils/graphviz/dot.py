@@ -10,7 +10,7 @@ class UmlField(list):
 class UmlClassLabel(object):
     table_tpl = '<\n<TABLE BORDER="0" CELLBORDER="1" CELLPADDING="6" '\
             'CELLSPACING="0">\n%s</TABLE>>'
-    headrow_tpl = '  <TR><TD bgcolor="#669933" align="CENTER">'\
+    headrow_tpl = '  <TR><TD bgcolor="#222222" align="CENTER">'\
         '<FONT COLOR="#ffffff" point-size="12">%s</FONT></TD></TR>\n'
     partrow_tpl = '  <TR><TD bgcolor="#ffffff" balign="LEFT" align="LEFT">%s</TD></TR>\n'
     def __init__(self, title, values=[], methods=[]):
@@ -69,11 +69,16 @@ class Node(object):
         return '%(id)s [label=%(label)s]' % self.__dict__
 
 
+def pixels_to_inches(px, dpi=75):
+    return px / float(dpi)
+
+
 class Graph(object):
     tpl = """
 %(graphtype)s G {
     fontname = "Lucida Grande"
     fontsize = 10
+    %(size)s
 
     node [
         fontname = "Lucida Grande"
@@ -88,12 +93,18 @@ class Graph(object):
 
     %(items)s
 }"""
-    def __init__(self, *items):
+    def __init__(self, items, width=None, height=None):
         self.set_directed()
         self.items = list(items)
+        self.size = ''
+        if width:
+            w = pixels_to_inches(width)
+            h = pixels_to_inches(height)
+            self.size = 'size = "%.3f,%.3f"' % (w, h)
 
     def __str__(self):
         return self.tpl % dict(
+                size = self.size,
                 graphtype = self.graphtype,
                 items = '\n\n    '.join(self.stritems()))
 

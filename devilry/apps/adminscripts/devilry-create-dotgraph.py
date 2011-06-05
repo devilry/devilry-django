@@ -24,6 +24,9 @@ Create PDF database diagram with all details:
 
 Create PNG class diagram with all details:
    %(prog)s --cls --show-fields -o cls.dot && dot -Tpng -o cls.png cls.dot
+
+Create PNG and choose maximum size:
+    %(prog)s -o db.dot --height 2000 --width 550 && dot -Tpng -o db.png db.dot
 """ % dict(prog=argv[0])
 
 
@@ -49,6 +52,12 @@ p.add_option('-o', "--out-file", dest="outfile",
 p.add_option("--filter", dest="filter",
         default=default_filter,
         help='Filter the used models using a regex. Default: "%s"' % default_filter)
+p.add_option("--width", dest="width",
+        default=None, type='int',
+        help='Output width in pixels. Only used when --height is supplied.')
+p.add_option("--height", dest="height",
+        default=None, type='int',
+        help='Output height in pixels. Only used when --width is supplied.')
 
 (opt, args) = p.parse_args()
 setup_logging(opt)
@@ -73,7 +82,11 @@ if opt.classdiagram:
 else:
     dotitems = ModelsToDbDiagramDot(models, show_values=opt.show_fields)
 dotitems.add_relations()
-graph = Graph(*dotitems)
+
+if opt.height and opt.width:
+    graph = Graph(dotitems, opt.height, opt.width)
+else:
+    graph = Graph(dotitems)
 
 dotcode = str(graph)
 if opt.sphinx_format:
