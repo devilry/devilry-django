@@ -1,21 +1,13 @@
 from django import forms
 
-from ..simplified.examiner import (Subjects, Periods, Assignments, Groups)
-
+from ..simplified.examiner import (Subject, Period, Assignment, Group)
 import fields
 from restview import RestView
+from base import SearchFormBase
 
 
-
-class GetFormBase(forms.Form):
-    format = fields.FormatField()
-    query = forms.CharField(required=False)
-    limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
-    start = fields.PositiveIntegerWithFallbackField()
-    #page = fields.PositiveIntegerWithFallbackField()
-
-
-class RestSubjects(Subjects, RestView):
+class RestSubject(RestView):
+    SIMPCLASS = Subject
 
     def restultqry_to_list(self, resultQry):
         tpl = '/%(short_name)s'
@@ -25,12 +17,13 @@ class RestSubjects(Subjects, RestView):
             return assignmentDict
         return filter(filter_func, resultQry)
 
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Subjects.default_orderby)
+                fallbackvalue=Subject.get_default_ordering())
 
 
-class RestPeriods(Periods, RestView):
+class RestPeriod(RestView):
+    SIMPCLASS = Period
 
     def restultqry_to_list(self, resultQry):
         tpl = '/%(parentnode__short_name)s/%(short_name)s'
@@ -40,13 +33,14 @@ class RestPeriods(Periods, RestView):
             return assignmentDict
         return filter(filter_func, resultQry)
 
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Subjects.default_orderby)
+                fallbackvalue=Subject.get_default_ordering())
         subject_short_name = forms.CharField(required=False)
 
 
-class RestAssignments(Assignments, RestView):
+class RestAssignment(RestView):
+    SIMPCLASS = Assignment
 
     def restultqry_to_list(self, resultQry):
         tpl = ('/%(parentnode__parentnode__short_name)s/'
@@ -56,9 +50,9 @@ class RestAssignments(Assignments, RestView):
             return assignmentDict
         return filter(filter_func, resultQry)
 
-    class GetForm(GetFormBase):
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Assignments.default_orderby)
+                fallbackvalue=Assignment.get_default_ordering())
         old = fields.BooleanWithFallbackField(fallbackvalue=True)
         active = fields.BooleanWithFallbackField(fallbackvalue=True)
         longnamefields = fields.BooleanWithFallbackField()
@@ -67,8 +61,9 @@ class RestAssignments(Assignments, RestView):
         period_short_name = forms.CharField(required=False)
 
 
-class RestGroups(Groups, RestView):
-    class GetForm(GetFormBase):
+class RestGroup(RestView):
+    SIMPCLASS = Group
+    class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Groups.default_orderby)
+                fallbackvalue=Group.get_default_ordering())
         deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)

@@ -318,12 +318,13 @@ class Node(models.Model, BaseNode):
         verbose_name = _('Node')
         verbose_name_plural = _('Nodes')
         unique_together = ('short_name', 'parentnode')
+        ordering = ['short_name']
 
     def _can_save_id_none(self, user_obj):
-        if self.parentnode == None and not user_obj.is_superuser:
-            return False
-        else:
+        if self.parentnode != None and self.parentnode.is_admin(user_obj):
             return True
+        else:
+            return False
 
     def get_path(self):
         if self.parentnode:
@@ -445,6 +446,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer):
     class Meta:
         verbose_name = _('Subject')
         verbose_name_plural = _('Subjects')
+        ordering = ['short_name']
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
@@ -528,6 +530,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer):
         verbose_name = _('Period')
         verbose_name_plural = _('Periods')
         unique_together = ('short_name', 'parentnode')
+        ordering = ['short_name']
 
     short_name = ShortNameField()
     long_name = LongNameField()
@@ -715,6 +718,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer):
         verbose_name = _('Assignment')
         verbose_name_plural = _('Assignments')
         unique_together = ('short_name', 'parentnode')
+        ordering = ['short_name']
 
     short_name = ShortNameField()
     long_name = LongNameField()
@@ -1121,6 +1125,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     is_passing_grade = models.BooleanField(default=False)
 
 
+    class Meta:
+        ordering = ['id']
+
+
     def _get_scaled_points(self):
         scale = float(self.parentnode.pointscale)
         maxpoints = self.parentnode.maxpoints
@@ -1367,10 +1375,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             return d.feedback.get_grade_as_short_string()
 
     def can_save(self, user_obj):
-        """ Check if the user has permission to save this AssignmentGroup.
-        This only runs :meth:`Assignment.is_admin`, so there is no need to
-        use this if you have already used can_save() on the
-        :attr:`parentnode`. """
+        """ Check if the user has permission to save this AssignmentGroup. """
         if user_obj.is_superuser:
             return True
         elif self.parentnode:

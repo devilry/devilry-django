@@ -58,9 +58,13 @@ class GetQryResult(object):
 
 class SimplifiedBase(object):
     @classmethod
+    def get_default_ordering(cls):
+        return cls.CORE_MODEL._meta.ordering
+
+    @classmethod
     def _set_orderby(cls, standard_opts):
         standard_opts['orderby'] = standard_opts.get('orderby',
-                cls.default_orderby)
+                cls.get_default_ordering())
 
     @classmethod
     def _get(cls, fields, queryfields, qryset, standard_opts):
@@ -68,3 +72,9 @@ class SimplifiedBase(object):
         cls._set_orderby(standard_opts)
         result._standard_operations(**standard_opts)
         return result
+
+    @classmethod
+    def _save_model(cls, model):
+        """ Save and validate a model. """
+        model.full_clean()
+        model.save()

@@ -33,11 +33,10 @@ class TestBaseNode(TestCase):
 
     def setUp(self):
         self.thesuperuser= User.objects.get(username='thesuperuser')
-        self.uioadmin = User.objects.get(username='uioadmin')
-        self.uioadmin = User.objects.get(username='uioadmin')
-        self.ifiadmin = User.objects.get(username='ifiadmin')
-        self.uio = Node.objects.get(pk=1)
-        self.ifi = Node.objects.get(pk=2)
+        self.uio = Node.objects.get(short_name='uio', parentnode=None)
+        self.ifi = Node.objects.get(short_name='ifi', parentnode=self.uio)
+        self.uioadmin = User.objects.get(username='uioadmin') # admin on the uio node
+        self.ifiadmin = User.objects.get(username='ifiadmin') # admin on the ifi node
 
     def test_is_admin(self):
         self.assertTrue(self.uio.is_admin(self.uioadmin))
@@ -59,7 +58,11 @@ class TestBaseNode(TestCase):
         self.assertFalse(self.uio.can_save(self.ifiadmin))
         self.assertTrue(self.ifi.can_save(self.ifiadmin))
         self.assertTrue(self.ifi.can_save(self.uioadmin))
+
         self.assertTrue(Node().can_save(self.thesuperuser))
+        self.assertFalse(Node(parentnode=None).can_save(self.uioadmin))
+        self.assertTrue(Node(parentnode=self.uio).can_save(self.uioadmin))
+        self.assertFalse(Node(parentnode=self.uio).can_save(self.ifiadmin))
 
     def test_can_save_id_none(self):
         deepdummy1 = Node.objects.get(pk=4)

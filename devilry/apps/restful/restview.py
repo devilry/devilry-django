@@ -19,14 +19,14 @@ def _response(resultQry, format):
 
 class RestView(View):
     @classmethod
-    def _getdata_to_kwargs(cls, getdata):
+    def _searchform_to_kwargs(cls, getdata):
         """
-        Converts the ``data`` to a validated :class:`GetForm`.
+        Converts the ``data`` to a validated :class:`SearchForm`.
 
         Throws :class:`errors.InvalidRequestDataError` if the form does not
         validate.
         """
-        form = cls.GetForm(getdata)
+        form = cls.SearchForm(getdata)
         if form.is_valid():
             return form.cleaned_data
         else:
@@ -37,7 +37,7 @@ class RestView(View):
 
     def get(self, request, **kwargs):
         try:
-            form = self.__class__._getdata_to_kwargs(request.GET)
+            form = self.__class__._searchform_to_kwargs(request.GET)
         except InvalidRequestDataError, e:
             return HttpResponseBadRequest("Bad request: %s" % e,
                     content_type='text/plain; encoding=utf-8')
@@ -45,7 +45,7 @@ class RestView(View):
         format = form['format']
         del form['format'] # Remove format, since it is not an parameter for get
         form.update(**kwargs) # add variables from PATH
-        getqryresult = self.__class__.search(request.user, **form)
+        getqryresult = self.SIMPCLASS.search(request.user, **form)
         resultList = self.restultqry_to_list(getqryresult.valuesQryset())
 
         try:
@@ -56,3 +56,11 @@ class RestView(View):
                 content_type='text/plain; encoding=utf-8')
 
         return _response(resultList, format)
+
+
+    def put(self, request, **kwargs):
+        instance = self.__class__.SIMPCLASS.CORE_MODEL(**kwargs)
+        print request.raw_post_data
+        #form = self.__class__.ModelForm(request.PUT, instance=instance)
+        #print form.instance
+        return _response("hei", "text")
