@@ -1,9 +1,10 @@
 class UmlField(list):
-    def __init__(self, name, visibility='+'):
+    def __init__(self, name, fieldtype='', visibility='+'):
         self.name = name
+        self.fieldtype = fieldtype
         self.visibility = visibility
     def __str__(self):
-        return '%(visibility)s %(name)s' % self.__dict__
+        return '%(visibility)s %(name)s: %(fieldtype)s' % self.__dict__
 
 
 class UmlClassLabel(object):
@@ -77,7 +78,7 @@ class Graph(object):
     node [
         fontname = "Lucida Grande"
         fontsize = 10
-        shape = "plaintext"
+        shape = "none"
     ]
 
     edge [
