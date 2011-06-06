@@ -57,6 +57,8 @@ class TestAdministratorNode(TestCase):
         node = Node.get(self.grandma, self.univ.id) # superuser allowed
         with self.assertRaises(PermissionDenied):
             node = Node.get(self.daisy, self.univ.id) # superuser allowed
+        node = Node.get(self.grandma, dict(short_name=self.univ.short_name))
+        self.assertEquals(node.short_name, 'univ')
 
 
     def test_update(self):
@@ -76,6 +78,12 @@ class TestAdministratorNode(TestCase):
         node = Node.update(self.grandma, **kw) # superuser allowed
         with self.assertRaises(PermissionDenied):
             node = Node.update(self.daisy, **kw)
+
+        node = Node.update(self.grandma,
+                dict(short_name='test'),
+                long_name = 'My Duckburgh Test')
+        self.assertEquals(node.long_name, 'My Duckburgh Test')
+
 
     def test_update_validation(self):
         with self.assertRaises(models.Node.DoesNotExist):
@@ -101,6 +109,12 @@ class TestAdministratorNode(TestCase):
         Node.delete(self.clarabelle, id=self.univ.id)
         with self.assertRaises(models.Node.DoesNotExist):
             node = models.Node.objects.get(id=self.univ.id)
+
+    def test_delete_asnodeadmin_by_short_name(self):
+        Node.delete(self.clarabelle, dict(short_name='univ'))
+        with self.assertRaises(models.Node.DoesNotExist):
+            Node.delete(self.clarabelle, dict(short_name='univ'))
+
     def test_delete_assuperadmin(self):
         Node.delete(self.grandma, id=self.univ.id)
         with self.assertRaises(models.Node.DoesNotExist):
@@ -108,7 +122,6 @@ class TestAdministratorNode(TestCase):
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):
             Node.delete(self.daisy, id=self.univ.id)
-
 
 
     def test_search(self):

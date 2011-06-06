@@ -2,12 +2,14 @@ from types import MethodType
 
 from django.db.models.fields.related import RelatedObject, ManyToManyField
 
+from getqryresult import GetQryResult
+
 
 def _create_doc(cls, fieldnames=None):
     meta = cls._meta
     clspath = '%s.%s' % (cls.__module__, cls.__name__)
     fieldnames = fieldnames or meta.model._meta.get_all_field_names()
-    fields = []
+    resultfields = []
     for fieldname in fieldnames:
         field = meta.model._meta.get_field_by_name(fieldname)[0]
         if isinstance(field, ManyToManyField):
@@ -20,7 +22,7 @@ def _create_doc(cls, fieldnames=None):
             else:
                 help_text = ''
             #print type(field), field.name, help_text
-            fields.append(':param %s: %s' % (field.name, help_text))
+            resultfields.append(':param %s: %s' % (field.name, help_text))
 
     #throws = [
             #':throws devilry.apps.core.models.Node.DoesNotExist:',
@@ -30,14 +32,18 @@ def _create_doc(cls, fieldnames=None):
 
     get_doc = '\n'.join(
             ['Get a %(modelname)s object.'] + ['\n'] +
-            throws + ['\n\n'] + fields)
+            throws + ['\n\n'] + resultfields)
     modelname = meta.model.__name__
     return get_doc % vars()
 
 
 def _create_get_method(cls):
     def get(cls, user, id):
-        obj = cls._meta.model.objects.get(id=id)
+        if isinstance(id, dict):
+            kw = id
+        else:
+            kw = dict(id=id)
+        obj = cls._meta.model.objects.get(**kw)
         cls._authorize(user, obj)
         return obj
     setattr(cls, get.__name__, MethodType(get, cls))
@@ -68,14 +74,32 @@ def _create_create_method(cls):
         return obj
     setattr(cls, create.__name__, MethodType(create, cls))
 
+def _create_search_method(cls):
+    def search(cls, user, **kwargs):
+        resultfields = cls._meta.search_resultfields
+        searchfields = cls._meta.search_searchfields
+        qryset = cls.create_searchqryset(user, **kwargs)
+        result = GetQryResult(resultfields, searchfields, qryset)
+        standard_opts = dict(
+            query = kwargs.pop('query', ''),
+            start = kwargs.pop('start', 0),
+            limit = kwargs.pop('limit', 50),
+            orderby = kwargs.pop('orderby', cls._meta.ordering)
+        )
+        result._standard_operations(**standard_opts)
+        return result
+    setattr(cls, search.__name__, MethodType(search, cls))
+
 
 def simplified_api(cls):
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))
     meta = cls.Meta
     cls._meta = meta
+    cls._meta.ordering = cls._meta.model._meta.ordering
     _create_get_method(cls)
     _create_delete_method(cls)
     _create_update_method(cls)
     _create_create_method(cls)
+    _create_search_method(cls)
     return cls

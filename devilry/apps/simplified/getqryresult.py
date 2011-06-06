@@ -1,17 +1,17 @@
 from django.db.models import Q
 
 class GetQryResult(object):
-    def __init__(self, fields, queryfields, qryset):
-        self.fields = fields
-        self.queryfields = queryfields
+    def __init__(self, resultfields, searchfields, qryset):
+        self.resultfields = resultfields
+        self.searchfields = searchfields
         self.qryset = qryset
 
     def valuesQryset(self):
-        return self.qryset.values(*self.fields)
+        return self.qryset.values(*self.resultfields)
 
     def _create_q(self, query):
         filterargs = None
-        for field in self.queryfields:
+        for field in self.searchfields:
             q = Q(**{"%s__icontains" % field: query})
             if filterargs:
                 filterargs |= q
@@ -34,12 +34,12 @@ class GetQryResult(object):
 
     def _filter_orderby(self, orderby):
         """
-        Returns a list of all fields in ``orderby`` which is in ``fields``
+        Returns a list of all resultfields in ``orderby`` which is in ``resultfields``
         (including those prefixed with a character, such as '-')
         """
         def filter_test(orderfield):
-            return orderfield in self.fields or \
-                    (orderfield[1:] in self.fields and orderfield[0] == '-')
+            return orderfield in self.resultfields or \
+                    (orderfield[1:] in self.resultfields and orderfield[0] == '-')
         return filter(filter_test, orderby)
 
     def _order_queryset(self, orderby):
