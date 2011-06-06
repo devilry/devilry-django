@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from ...core import models
-from ..examiner import Subject, Period, Assignment, Group
+from ..examiner import Subject, Period, Assignment#, Group
 
 
 class TestExaminerSubject(TestCase):
@@ -22,6 +22,7 @@ class TestExaminerSubject(TestCase):
         self.assertEquals(len(qryset), len(subjects))
         qryset = Subject.search(examiner0, query="1100").qryset
         self.assertEquals(len(qryset), 1)
+
 
 class TestExaminerPeriod(TestCase):
     fixtures = ["simplified/data.json"]
@@ -60,29 +61,29 @@ class TestExaminerAssignment(TestCase):
 
 
 
-class TestExaminerGroup(TestCase):
-    fixtures = ["simplified/data.json"]
+#class TestExaminerGroup(TestCase):
+    #fixtures = ["simplified/data.json"]
 
-    def test_search(self):
-        examiner0 = User.objects.get(username="examiner0")
-        assignment = models.Assignment.published_where_is_examiner(examiner0)[0]
+    #def test_search(self):
+        #examiner0 = User.objects.get(username="examiner0")
+        #assignment = models.Assignment.published_where_is_examiner(examiner0)[0]
 
-        qryset = Group.search(examiner0, assignment.id,
-                orderby=["-id"], limit=2).qryset
-        self.assertEquals(assignment.id, qryset[0].parentnode.id)
-        self.assertTrue(qryset[0].id > qryset[1].id)
-        self.assertEquals(qryset.count(), 2)
+        #qryset = Group.search(examiner0, assignment.id,
+                #orderby=["-id"], limit=2).qryset
+        #self.assertEquals(assignment.id, qryset[0].parentnode.id)
+        #self.assertTrue(qryset[0].id > qryset[1].id)
+        #self.assertEquals(qryset.count(), 2)
 
-        qryset = Group.search(examiner0, assignment.id,
-                query="student0").qryset
-        self.assertEquals(qryset.count(), 1)
-        qryset = Group.search(examiner0, assignment.id,
-                query="thisisatest").qryset
-        self.assertEquals(qryset.count(), 0)
+        #qryset = Group.search(examiner0, assignment.id,
+                #query="student0").qryset
+        #self.assertEquals(qryset.count(), 1)
+        #qryset = Group.search(examiner0, assignment.id,
+                #query="thisisatest").qryset
+        #self.assertEquals(qryset.count(), 0)
 
-        g = Group.search(examiner0, assignment.id).qryset[0]
-        g.name = "thisisatest"
-        g.save()
-        qryset = Group.search(examiner0, assignment.id,
-                query="thisisatest").qryset
-        self.assertEquals(qryset.count(), 1)
+        #g = Group.search(examiner0, assignment.id).qryset[0]
+        #g.name = "thisisatest"
+        #g.save()
+        #qryset = Group.search(examiner0, assignment.id,
+                #query="thisisatest").qryset
+        #self.assertEquals(qryset.count(), 1)

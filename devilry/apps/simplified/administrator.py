@@ -1,11 +1,11 @@
 from ..core import models
 from simplified_api import simplified_api
-from exceptions import PermissionDenied
+from can_save_authmixin import CanSaveAuthMixin
 
 
 
 @simplified_api
-class Node:
+class Node(CanSaveAuthMixin):
     """ Facade to simplify administrator actions on
     :class:`devilry.apps.core.models.Node`.
 
@@ -32,11 +32,6 @@ class Node:
         model = models.Node
         search_resultfields = ['id', 'short_name', 'long_name']
         search_searchfields = ['short_name', 'long_name']
-
-    @classmethod
-    def _authorize(cls, user, node):
-        if not node.can_save(user):
-            raise PermissionDenied()
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):

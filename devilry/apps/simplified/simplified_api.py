@@ -44,7 +44,7 @@ def _create_get_method(cls):
         else:
             kw = dict(id=id)
         obj = cls._meta.model.objects.get(**kw)
-        cls._authorize(user, obj)
+        cls.authorize(user, obj)
         return obj
     setattr(cls, get.__name__, MethodType(get, cls))
     #cls.get.__func__.__doc__
@@ -68,16 +68,29 @@ def _create_update_method(cls):
 def _create_create_method(cls):
     def create(cls, user, **field_values):
         obj =  cls._meta.model(**field_values)
-        cls._authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+        cls.authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
         obj.full_clean()
         obj.save()
         return obj
     setattr(cls, create.__name__, MethodType(create, cls))
 
+
+def _parse_fieldspec(fieldlst, fieldgroups):
+    if isinstance(fieldlst, dict):
+        base = fieldlst.get('__BASE__', [])
+        fields = list(base)
+        for group in fieldgroups:
+            fields.extend(fieldlst.get(group, []))
+        return fields
+    else:
+        return fieldlst
+
 def _create_search_method(cls):
     def search(cls, user, **kwargs):
-        resultfields = cls._meta.search_resultfields
-        searchfields = cls._meta.search_searchfields
+        resultfields = _parse_fieldspec(cls._meta.search_resultfields,
+                kwargs.pop('search_fieldgroups', []))
+        searchfields = _parse_fieldspec(cls._meta.search_searchfields,
+                kwargs.pop('result_fieldgroups', []))
         qryset = cls.create_searchqryset(user, **kwargs)
         result = GetQryResult(resultfields, searchfields, qryset)
         standard_opts = dict(
