@@ -45,17 +45,3 @@ class Node:
         if parentnode_id != "DO_NOT_FILTER":
             qryset = qryset.filter(parentnode__id = parentnode_id)
         return qryset
-
-if __name__ == '__main__':
-    from django.contrib.auth.models import User
-    grandma = User.objects.get(username='grandma') # Would usually get this from request.user
-
-    n = Node.create(grandma, short_name='mytestnode',
-        long_name='My Test Node')
-    print n
-    print Node.search(grandma, query='mytest')
-    Node.update(id=n.id, short_name='helloworld')
-    print Node.search(grandma, query='mytest') # Returns nothing
-    print Node.search(grandma, query='helloworld')
-    Node.delete(id=n.id)
-    print Node.search(grandma, query='helloworld') # Returns nothing
