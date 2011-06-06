@@ -114,9 +114,4 @@ def simplified_api(cls):
         cls._meta.methods = []
     for method in cls._meta.methods:
         globals()['_create_%s_method' % method](cls)
-        #_create_get_method(cls)
-        #_create_delete_method(cls)
-        #_create_update_method(cls)
-        #_create_create_method(cls)
-        #_create_search_method(cls)
     return cls
