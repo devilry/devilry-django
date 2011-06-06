@@ -16,6 +16,7 @@ class Subject(CanSaveAuthMixin, PublishedWhereIsExaminerMixin):
         model = models.Subject
         search_resultfields = ['id', 'short_name', 'long_name']
         search_searchfields = ['short_name', 'long_name']
+        methods = ['search']
 
 
 @simplified_api
@@ -24,6 +25,7 @@ class Period(CanSaveAuthMixin, PublishedWhereIsExaminerMixin):
         model = models.Period
         search_resultfields = ['id', 'short_name', 'long_name', 'parentnode__short_name']
         search_searchfields = ['short_name', 'long_name', 'parentnode__short_name']
+        methods = ['search']
 
 
 @simplified_api
@@ -37,6 +39,7 @@ class Assignment(CanSaveAuthMixin):
         search_searchfields = ['short_name', 'long_name',
                 'parentnode__short_name',
                 'parentnode__parentnode__short_name']
+        methods = ['search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -58,6 +61,7 @@ class Group(CanSaveAuthMixin):
         model = models.AssignmentGroup
         search_searchfields = ['name', 'candidates__student__username']
         search_resultfields = ['id', 'name']
+        methods = ['search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):

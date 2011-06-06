@@ -32,6 +32,7 @@ class Node(CanSaveAuthMixin):
         model = models.Node
         search_resultfields = ['id', 'short_name', 'long_name']
         search_searchfields = ['short_name', 'long_name']
+        methods = ['create', 'get', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):

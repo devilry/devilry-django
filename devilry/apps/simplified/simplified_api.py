@@ -110,9 +110,13 @@ def simplified_api(cls):
     meta = cls.Meta
     cls._meta = meta
     cls._meta.ordering = cls._meta.model._meta.ordering
-    _create_get_method(cls)
-    _create_delete_method(cls)
-    _create_update_method(cls)
-    _create_create_method(cls)
-    _create_search_method(cls)
+    if not hasattr(meta, 'methods'):
+        cls._meta.methods = []
+    for method in cls._meta.methods:
+        globals()['_create_%s_method' % method](cls)
+        #_create_get_method(cls)
+        #_create_delete_method(cls)
+        #_create_update_method(cls)
+        #_create_create_method(cls)
+        #_create_search_method(cls)
     return cls
