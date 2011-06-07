@@ -122,6 +122,8 @@ def _create_read_method(cls):
         obj = _readauth_get(cls, user, id) # authorization in _writeauth_get
         resultfields = _parse_fieldgroups(cls._meta.resultfields,
                 result_fieldgroups)
+        #if hasattr(cls, 'filter_read_resultfields'):
+            #resultfields = cls.filter_read_resultfields(user, obj, resultfields)
         return _model_to_dict(obj, fields=resultfields)
     setattr(cls, read.__name__, MethodType(read, cls))
 
