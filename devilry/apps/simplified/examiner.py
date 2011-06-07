@@ -1,6 +1,7 @@
 from ..core import models
 from can_save_authmixin import CanSaveAuthMixin
 from simplified_api import simplified_api
+from exceptions import PermissionDenied
 
 
 class PublishedWhereIsExaminerMixin(object):
@@ -8,38 +9,46 @@ class PublishedWhereIsExaminerMixin(object):
     def create_searchqryset(cls, user, **kwargs):
         return cls._meta.model.published_where_is_examiner(user)
 
+    @classmethod
+    def read_authorize(cls, user, obj):
+        if not cls._meta.model.published_where_is_examiner(user).filter(id=obj.id):
+            raise PermissionDenied()
 
 
 @simplified_api
-class Subject(CanSaveAuthMixin, PublishedWhereIsExaminerMixin):
+class Subject(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Subject
-        search_resultfields = ['id', 'short_name', 'long_name']
-        search_searchfields = ['short_name', 'long_name']
-        methods = ['search']
+        resultfields = ['id', 'short_name', 'long_name']
+        searchfields = ['short_name', 'long_name']
+        methods = ['search', 'read']
 
 
 @simplified_api
-class Period(CanSaveAuthMixin, PublishedWhereIsExaminerMixin):
+class Period(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Period
-        search_resultfields = ['id', 'short_name', 'long_name', 'parentnode__short_name']
-        search_searchfields = ['short_name', 'long_name', 'parentnode__short_name']
-        methods = ['search']
+        resultfields = {
+                '__BASE__': ['id', 'short_name', 'long_name', 'parentnode__id'],
+                'subject': ['parentnode__short_name', 'parentnode__long_name']}
+        searchfields = ['short_name', 'long_name', 'parentnode__short_name']
+        methods = ['search', 'read']
 
 
 @simplified_api
-class Assignment(CanSaveAuthMixin):
+class Assignment(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Assignment
-        search_resultfields = {
-                    '__BASE__': ['id', 'short_name', 'long_name', 'parentnode__short_name'],
-                    'long': ['parentnode__short_name', 'parentnode__long_name',
+        resultfields = {
+                    '__BASE__': ['id', 'short_name', 'long_name', 'parentnode__id'],
+                    'period': ['parentnode__short_name', 'parentnode__long_name',
+                        'parentnode__parentnode__id'],
+                    'subject': ['parentnode__parentnode__short_name',
                         'parentnode__parentnode__long_name']}
-        search_searchfields = ['short_name', 'long_name',
+        searchfields = ['short_name', 'long_name',
                 'parentnode__short_name',
                 'parentnode__parentnode__short_name']
-        methods = ['search']
+        methods = ['search', 'read']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -56,12 +65,12 @@ class Assignment(CanSaveAuthMixin):
 
 
 @simplified_api
-class Group(CanSaveAuthMixin):
+class Group(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
-        search_searchfields = ['name', 'candidates__student__username']
-        search_resultfields = ['id', 'name']
-        methods = ['search']
+        resultfields = ['id', 'name']
+        searchfields = ['name', 'candidates__student__username']
+        methods = ['search', 'read']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
