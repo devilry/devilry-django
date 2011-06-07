@@ -65,7 +65,7 @@ class Assignment(PublishedWhereIsExaminerMixin):
 
 
 @simplified_api
-class Group(PublishedWhereIsExaminerMixin):
+class AssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
         resultfields = ['id', 'name']
@@ -75,5 +75,9 @@ class Group(PublishedWhereIsExaminerMixin):
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         assignment = kwargs['assignment']
+        #if isinstance(assignment, int):
+            #assignment = models.Assignment.objects.get(id=assignment)
+        #if assignment.anonymous:
+            #TODO
         return models.AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode = assignment)

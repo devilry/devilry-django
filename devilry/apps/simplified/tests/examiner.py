@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from ...core import models
-from ..examiner import Subject, Period, Assignment, Group
+from ..examiner import Subject, Period, Assignment, AssignmentGroup
 from ..exceptions import PermissionDenied
 
 
@@ -183,36 +183,36 @@ class TestExaminerGroup(ExaminerTestCase):
         examiner0 = User.objects.get(username="examiner0")
         assignment = models.Assignment.published_where_is_examiner(examiner0)[0]
 
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
                 orderby=["-id"], limit=2).qryset
         self.assertEquals(assignment.id, qryset[0].parentnode.id)
         self.assertTrue(qryset[0].id > qryset[1].id)
         self.assertEquals(qryset.count(), 2)
 
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
                 query="student0").qryset
         self.assertEquals(qryset.count(), 1)
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
                 query="thisisatest").qryset
         self.assertEquals(qryset.count(), 0)
 
-        g = Group.search(examiner0, assignment=assignment).qryset[0]
+        g = AssignmentGroup.search(examiner0, assignment=assignment).qryset[0]
         g.name = "thisisatest"
         g.save()
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
                 query="thisisatest").qryset
         self.assertEquals(qryset.count(), 1)
 
     def test_read(self):
-        group = Group.read(self.duck1100examiner, self.group_core.id)
+        group = AssignmentGroup.read(self.duck1100examiner, self.group_core.id)
         self.assertEquals(group, dict(
                 id = self.group_core.id,
                 name = None))
 
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
-            group = Group.read(self.testexaminerNoPerm, self.group_core.id)
+            group = AssignmentGroup.read(self.testexaminerNoPerm, self.group_core.id)
         with self.assertRaises(PermissionDenied):
-            group = Group.read(self.duck1080examiner, self.group_core.id)
+            group = AssignmentGroup.read(self.duck1080examiner, self.group_core.id)
         with self.assertRaises(PermissionDenied):
-            group = Group.read(self.superadmin, self.group_core.id)
+            group = AssignmentGroup.read(self.superadmin, self.group_core.id)
