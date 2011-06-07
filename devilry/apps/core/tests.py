@@ -16,13 +16,13 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 from ..grade_approved.models import ApprovedGrade
-from ..core import pluginloader
 
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
         Delivery, Candidate, Feedback, FileMeta)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
     DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
+import pluginloader
 
 pluginloader.autodiscover()
 FileMeta.deliverystore = MemoryDeliveryStore()
