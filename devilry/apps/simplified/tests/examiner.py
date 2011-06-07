@@ -2,8 +2,12 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from ...core import models
+from ...core import pluginloader
 from ..examiner import Subject, Period, Assignment, AssignmentGroup
 from ..exceptions import PermissionDenied
+
+
+pluginloader.autodiscover()
 
 
 class ExaminerTestCase(TestCase):
@@ -12,6 +16,7 @@ class ExaminerTestCase(TestCase):
     def setUp(self):
         self.duck1100_core = models.Subject.objects.get(short_name='duck1100')
         self.duck1080_core = models.Subject.objects.get(short_name='duck1080')
+        self.duck3580_core = models.Subject.objects.get(short_name='duck3580')
 
         self.duck1100examiner = User(username='duck1100examiner')
         self.duck1100examiner.save()
@@ -20,6 +25,11 @@ class ExaminerTestCase(TestCase):
         self.duck1080examiner = User(username='duck1080examiner')
         self.duck1080examiner.save()
         self.duck1080_core.periods.all()[0].assignments.all()[0].assignmentgroups.all()[0].examiners.add(self.duck1080examiner)
+
+        self.duck3580examiner = User(username='duck3580examiner')
+        self.duck3580examiner.save()
+        for group in self.duck3580_core.periods.all()[0].assignments.all()[0].assignmentgroups.all():
+            group.examiners.add(self.duck3580examiner)
 
         self.testexaminerNoPerm = User(username='testuserNoPerm')
         self.testexaminerNoPerm.save()
@@ -175,36 +185,62 @@ class TestExaminerGroup(ExaminerTestCase):
 
     def setUp(self):
         super(TestExaminerGroup, self).setUp()
-        duck1100_h01_week1_core = self.duck1100_core.periods.get(
+        duck3580_h01_week1_core = self.duck3580_core.periods.get(
                 short_name='h01').assignments.get(short_name='week1')
-        self.group_core = duck1100_h01_week1_core.assignmentgroups.all()[0]
+        self.group_core = duck3580_h01_week1_core.assignmentgroups.all()[0]
 
     def test_search(self):
-        examiner0 = User.objects.get(username="examiner0")
-        assignment = models.Assignment.published_where_is_examiner(examiner0)[0]
+        assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
-        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
-                orderby=["-id"], limit=2).qryset
+        result = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                orderby=["-id"], limit=2)
+        qryset = result.qryset
         self.assertEquals(assignment.id, qryset[0].parentnode.id)
         self.assertTrue(qryset[0].id > qryset[1].id)
         self.assertEquals(qryset.count(), 2)
 
-        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
                 query="student0").qryset
         self.assertEquals(qryset.count(), 1)
-        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
                 query="thisisatest").qryset
         self.assertEquals(qryset.count(), 0)
 
-        g = AssignmentGroup.search(examiner0, assignment=assignment).qryset[0]
+        g = AssignmentGroup.search(self.duck3580examiner, assignment=assignment).qryset[0]
         g.name = "thisisatest"
         g.save()
-        qryset = AssignmentGroup.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(self.duck3580examiner, assignment=assignment.id,
                 query="thisisatest").qryset
         self.assertEquals(qryset.count(), 1)
 
+    def test_search_security(self):
+        assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
+
+        result = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                orderby=["-id"], limit=2)
+        qryset = result.qryset
+        self.assertEquals(result.resultfields, ['id', 'name'])
+        self.assertEquals(result.searchfields, ['name',
+            'candidates__candidate_id', 'candidates__student__username'])
+
+        assignment.anonymous = True
+        assignment.save()
+        result = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id)
+        self.assertEquals(result.searchfields, ['name', 'candidates__candidate_id'])
+
+        qryset = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                query="student0").qryset # Should not be able to search for username on anonymous
+        self.assertEquals(qryset.count(), 0)
+
+
     def test_read(self):
-        group = AssignmentGroup.read(self.duck1100examiner, self.group_core.id)
+        group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
         self.assertEquals(group, dict(
                 id = self.group_core.id,
                 name = None))

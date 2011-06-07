@@ -1,7 +1,7 @@
 from ..core import models
-from can_save_authmixin import CanSaveAuthMixin
 from simplified_api import simplified_api
 from exceptions import PermissionDenied
+from getqryresult import GetQryResult
 
 
 class PublishedWhereIsExaminerMixin(object):
@@ -69,15 +69,18 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
         resultfields = ['id', 'name']
-        searchfields = ['name', 'candidates__student__username']
+        searchfields = ['name', 'candidates__candidate_id']
         methods = ['search', 'read']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         assignment = kwargs['assignment']
-        #if isinstance(assignment, int):
-            #assignment = models.Assignment.objects.get(id=assignment)
-        #if assignment.anonymous:
-            #TODO
-        return models.AssignmentGroup.published_where_is_examiner(user).filter(
+        if isinstance(assignment, int):
+            assignment = models.Assignment.objects.get(id=assignment)
+        qryset = models.AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode = assignment)
+        searchfields = list(cls._meta.searchfields)
+        if not assignment.anonymous:
+            searchfields.append('candidates__student__username')
+        result = GetQryResult(cls._meta.resultfields, searchfields, qryset)
+        return result

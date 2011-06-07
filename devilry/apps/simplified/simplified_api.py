@@ -1,7 +1,6 @@
 from types import MethodType
 
 from django.db.models.fields.related import RelatedObject, ManyToManyField
-from django.forms.models import model_to_dict
 
 from getqryresult import GetQryResult
 
@@ -136,7 +135,10 @@ def _create_search_method(cls):
         searchfields = _parse_fieldgroups(cls._meta.searchfields,
                 kwargs.pop('search_fieldgroups', []))
         qryset = cls.create_searchqryset(user, **kwargs)
-        result = GetQryResult(resultfields, searchfields, qryset)
+        if isinstance(qryset, GetQryResult):
+            result = qryset
+        else:
+            result = GetQryResult(resultfields, searchfields, qryset)
         standard_opts = dict(
             query = kwargs.pop('query', ''),
             start = kwargs.pop('start', 0),
