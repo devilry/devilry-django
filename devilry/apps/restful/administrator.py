@@ -1,9 +1,9 @@
 from ..simplified.administrator import Node
-from restview import RestView
+from restview import ModelRestView
 from restful_api import restful_api
 
 
 @restful_api
-class RestNode(RestView):
+class RestNode(ModelRestView):
     class Meta:
         simplified = Node

@@ -13,8 +13,7 @@ class TestAdministratorRestNodeNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
         kw = RestNode._searchform_to_kwargs({})
         self.assertEquals(kw, dict(
-                limit=50, start=0, orderby=["short_name"], query='',
-                content_type='application/json'))
+                limit=50, start=0, orderby=["short_name"], query=''))
 
 
 class TestAdministratorRestNode(TestCase):
@@ -29,8 +28,8 @@ class TestAdministratorRestNode(TestCase):
 
     def test_get(self):
         url = reverse('devilry-restful-administrator-nodesearch')
-        r = self.client.get(url, data={'content_type':'application/json', 'id':1})
-        print r.content
+        r = self.client.get(url, data={'id':1},
+                content_type='application/json')
         data = json.loads(r.content)['items']
         first = data[0]
         self.assertEquals(first, {
