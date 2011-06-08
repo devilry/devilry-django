@@ -30,7 +30,7 @@ from ...ui.filtertable import Columns, Col
 
 from shortcuts import deletemany_generic
 
-from ...core.utils.delivery_collection import (
+from ....utils.delivery_collection import (
         create_archive_from_assignmentgroups,
         verify_groups_not_exceeding_max_file_size)
 
