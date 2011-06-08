@@ -301,7 +301,7 @@ class Node(models.Model, BaseNode):
         A django.db.models.ManyToManyField_ that holds all the admins of the
         `Node`_.
 
-    .. attribute:: nodes
+    .. attribute:: child_nodes
 
         A set of child_nodes for this node
  
@@ -337,6 +337,10 @@ class Node(models.Model, BaseNode):
     get_full_path.short_description = BaseNode.get_full_path.short_description
     
     def iter_childnodes(self):
+        """
+        Recursively iterates over all child nodes, and their child nodes.
+        For a list of direct child nodes, use atribute child_nodes instead.
+        """
         for node in Node.objects.filter(parentnode=self):
             yield node
             for c in node.iter_childnodes():
