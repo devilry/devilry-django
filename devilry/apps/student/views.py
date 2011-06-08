@@ -11,11 +11,11 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from ..ui.messages import UiMessages
-from ..core.utils.GroupNodes import group_assignmentgroups
+from ...utils.GroupNodes import group_assignmentgroups
 from ..core.models import Delivery, AssignmentGroup
 from ..ui.defaults import DATETIME_FORMAT
-from ..core.utils.verify_unique_entries import verify_unique_entries
-from ..core.devilry_email import send_email
+from ...utils.verify_unique_entries import verify_unique_entries
+from ...utils.devilry_email import send_email
 from actionregistry import periodactions, groupactions
 
 

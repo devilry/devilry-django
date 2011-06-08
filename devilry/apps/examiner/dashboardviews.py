@@ -51,7 +51,7 @@ class ExaminerImportantItem(object):
         return self.total
 
     def render(self, request):
-        from ..core.utils.GroupNodes import group_assignmentgroups
+        from ...utils.GroupNodes import group_assignmentgroups
         if self.total > 0:
             subjects = group_assignmentgroups(self.groups)
             if isinstance(self.groups, list):

@@ -5,9 +5,9 @@ Tests the StreamableZip and StreamableTar implementations.
 
 from django.test import TestCase
 
-from ...core.models import (Assignment, AssignmentGroup)
-from ...core.utils.delivery_collection import create_archive_from_assignmentgroups
-from ...core.utils.stream_archives import StreamableZip, StreamableTar, \
+from ..apps.core.models import (Assignment, AssignmentGroup)
+from delivery_collection import create_archive_from_assignmentgroups
+from stream_archives import StreamableZip, StreamableTar, \
                                                UnsupportedOperation, FileStreamException
 
 from django.utils import unittest

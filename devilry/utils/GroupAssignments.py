@@ -1,4 +1,4 @@
-from ...core.utils import OrderedDict
+import OrderedDict
 
 
 def group_assignmentgroups(assignment_groups):

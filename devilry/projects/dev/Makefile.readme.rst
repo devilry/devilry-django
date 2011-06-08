@@ -23,9 +23,9 @@ init-exampledb
     
     **Note:** All users has "test" as password.
 create-duck1100-data
-    Create data for the duck1100 subject using adminscripts/create_testgroups.py.
+    Create data for the duck1100 subject using scripts/create_testgroups.py.
 create-duck1080-data
-    Create data for the duck1080 subject using adminscripts/create_testgroups.py.
+    Create data for the duck1080 subject using scripts/create_testgroups.py.
 create-exampledb
     Runs "init-exampledb" followed by "create-duck1100-data" and
     "create-duck1080-data".
@@ -45,7 +45,7 @@ Typical workflow:
         ---> ~$ make init-exampledb create-duck1080-data NUM_STUDENTS=40
         or
         ---> ~$ make init-exampledb
-             ~$ adminscripts/create_testgroups.py somenode:duck20xx.hxx.someassignment [more arguments]
+             ~$ scripts/create_testgroups.py somenode:duck20xx.hxx.someassignment [more arguments]
         or
         ---> other cobinations suiting the current development.
 
@@ -63,7 +63,7 @@ Typical workflow:
 Why not just a static dataset?
 
    - Because we need to test stuff relative to current time.
-   - Because adminscripts/create_testgroups.py can make relevant
+   - Because scripts/create_testgroups.py can make relevant
      testdata when needed. Just run it with --help for more help.
 
 Notes:

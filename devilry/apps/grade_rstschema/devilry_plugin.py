@@ -2,13 +2,11 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
 from ..core import gradeplugin
-from ..adminscripts.dbsanity import dbsanity_registry
 
 from gradeviews import view
 from models import RstSchemaGrade, RstSchemaDefinition
 import field
 import text
-from dbsanity import RstGradeDbSanityCheck
 
 
 def url_callback(assignment_id):
@@ -41,5 +39,3 @@ gradeplugin.registry.register(gradeplugin.RegistryItem(
 # register .. field:: with rst
 field.register_directive()
 
-# Register db sanity checks
-dbsanity_registry.register(RstGradeDbSanityCheck)

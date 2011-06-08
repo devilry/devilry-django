@@ -10,7 +10,6 @@ devilry_urls = [
     (r'^grade_schema/', include('devilry.apps.grade_schema.urls')),
     (r'^grade_rstschema/', include('devilry.apps.grade_rstschema.urls')),
     (r'^gradestats/', include('devilry.apps.gradestats.urls')),
-    (r'^adminscripts/', include('devilry.apps.adminscripts.urls')),
     (r'^xmlrpc/', include('devilry.apps.xmlrpc.urls')),
     (r'^xmlrpc_examiner/', include('devilry.apps.xmlrpc_examiner.urls')),
     (r'^', include('devilry.apps.quickdash.urls')),
