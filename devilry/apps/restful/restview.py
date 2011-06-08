@@ -3,7 +3,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import simplejson as json
 from django.shortcuts import get_object_or_404
 
-from errors import InvalidRequestDataError, InvalidRequestFormatError
+from errors import InvalidRequestDataError
 
 
 
