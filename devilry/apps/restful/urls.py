@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
 import examiner
@@ -23,7 +23,7 @@ urlpatterns = patterns('devilry.apps.restful',
         login_required(examiner.RestAssignment.as_view()),
         name='devilry-restful-examiner-assignment'),
     url(r'^examiner/groups/(?P<assignment_id>\d+)/$',
-        login_required(examiner.RestGroup.as_view()),
+        login_required(examiner.RestAssignmentGroup.as_view()),
         name='devilry-restful-examiner-group'),
 
     url(r'^administrator/nodes/$',

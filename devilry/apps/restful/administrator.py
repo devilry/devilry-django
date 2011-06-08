@@ -11,9 +11,9 @@ class RestNode(RestView):
     SIMPCLASS = Node
     class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Node.get_default_ordering())
+                fallbackvalue=Node._meta.ordering)
 
     class Form(ModelForm):
         class Meta:
-            model = Node.CORE_MODEL
+            model = Node._meta.model
             fields = ('id', 'short_name', 'long_name', 'parentnode')

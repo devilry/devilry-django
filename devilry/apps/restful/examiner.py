@@ -1,6 +1,6 @@
 from django import forms
 
-from ..simplified.examiner import (Subject, Period, Assignment, Group)
+from ..simplified.examiner import (Subject, Period, Assignment, AssignmentGroup)
 import fields
 from restview import RestView
 from base import SearchFormBase
@@ -19,7 +19,7 @@ class RestSubject(RestView):
 
     class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Subject.get_default_ordering())
+                fallbackvalue=Subject._meta.ordering)
 
 
 class RestPeriod(RestView):
@@ -35,7 +35,7 @@ class RestPeriod(RestView):
 
     class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Subject.get_default_ordering())
+                fallbackvalue=Subject._meta.ordering)
         subject_short_name = forms.CharField(required=False)
 
 
@@ -46,13 +46,14 @@ class RestAssignment(RestView):
         tpl = ('/%(parentnode__parentnode__short_name)s/'
             '%(parentnode__short_name)s/%(short_name)s')
         def filter_func(assignmentDict):
+            print assignmentDict
             assignmentDict.update(path=tpl % assignmentDict)
             return assignmentDict
         return filter(filter_func, resultQry)
 
     class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Assignment.get_default_ordering())
+                fallbackvalue=Assignment._meta.ordering)
         old = fields.BooleanWithFallbackField(fallbackvalue=True)
         active = fields.BooleanWithFallbackField(fallbackvalue=True)
         longnamefields = fields.BooleanWithFallbackField()
@@ -61,9 +62,9 @@ class RestAssignment(RestView):
         period_short_name = forms.CharField(required=False)
 
 
-class RestGroup(RestView):
-    SIMPCLASS = Group
+class RestAssignmentGroup(RestView):
+    SIMPCLASS = AssignmentGroup
     class SearchForm(SearchFormBase):
         orderby = fields.CharListWithFallbackField(
-                fallbackvalue=Group.get_default_ordering())
+                fallbackvalue=AssignmentGroup._meta.ordering)
         deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)

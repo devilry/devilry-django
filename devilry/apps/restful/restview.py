@@ -49,7 +49,7 @@ class RestView(View):
         resultList = self.restultqry_to_list(getqryresult.valuesQryset())
 
         try:
-            resultList = serialize_result(getqryresult.fields, resultList, format)
+            resultList = serialize_result(getqryresult.resultfields, resultList, format)
         except InvalidRequestFormatError, e:
             return HttpResponseBadRequest(
                 "Bad request: %s" % format,
@@ -59,7 +59,7 @@ class RestView(View):
 
 
     def put(self, request, **kwargs):
-        instance = self.__class__.SIMPCLASS.CORE_MODEL(**kwargs)
+        instance = self.__class__.SIMPCLASS._meta.model(**kwargs)
         print request.raw_post_data
         #form = self.__class__.ModelForm(request.PUT, instance=instance)
         #print form.instance
