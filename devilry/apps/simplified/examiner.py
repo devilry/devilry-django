@@ -73,14 +73,15 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
         methods = ['search', 'read']
 
     @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        assignment = kwargs['assignment']
+    def create_searchqryset(cls, user, assignment, **kwargs):
         if isinstance(assignment, int):
             assignment = models.Assignment.objects.get(id=assignment)
         qryset = models.AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode = assignment)
-        searchfields = list(cls._meta.searchfields)
-        if not assignment.anonymous:
+        if assignment.anonymous:
+            searchfields = cls._meta.searchfields
+        else:
+            searchfields = list(cls._meta.searchfields) # Important to copy this! If we do not, we append to the class variable.
             searchfields.append('candidates__student__username')
         result = GetQryResult(cls._meta.resultfields, searchfields, qryset)
         return result
