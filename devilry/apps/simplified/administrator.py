@@ -17,13 +17,18 @@ class Node(CanSaveAuthMixin):
         from devilry.apps.simplified.administrator import Node
 
         grandma = User.objects.get(username='grandma') # Would usually get this from request.user
+
         n = Node.create(grandma, short_name='mytestnode',
             long_name='My Test Node')
         print "Created node:", n.short_name, n.long_name
+
         print "One result", Node.search(grandma, query='mytest').qryset
+
         Node.update(grandma, id=n.id, short_name='helloworld')
+
         print "Empty result:", Node.search(grandma, query='mytest').qryset # Returns nothing
         print "One result:", Node.search(grandma, query='helloworld').qryset
+
         Node.delete(grandma, id=n.id)
         print "Empty result:", Node.search(grandma, query='helloworld').qryset # Returns nothing
     """
