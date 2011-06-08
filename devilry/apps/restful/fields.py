@@ -50,7 +50,7 @@ class CharWithFallbackField(forms.CharField):
 
 class FormatField(CharWithFallbackField):
     def __init__(self):
-        super(FormatField, self).__init__(fallbackvalue='json')
+        super(FormatField, self).__init__(fallbackvalue='application/json')
 
 class CharListWithFallbackField(CharWithFallbackField):
     def to_python(self, value):

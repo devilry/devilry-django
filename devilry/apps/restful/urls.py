@@ -30,7 +30,7 @@ urlpatterns = patterns('devilry.apps.restful',
         login_required(administrator.RestNode.as_view()),
         name='devilry-restful-administrator-nodesearch'),
 
-    url(r'^administrator/nodes/(?P<id>\d+)$',
+    url(r'^administrator/nodes/(?P<pk>\d+)$',
         login_required(administrator.RestNode.as_view()),
         name='devilry-restful-administrator-node'),
 )
