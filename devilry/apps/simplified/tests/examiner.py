@@ -2,11 +2,41 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from ...core import models
-from ..examiner import Subject, Period, Assignment, Group
+from ...core import pluginloader
+from ..examiner import Subject, Period, Assignment, AssignmentGroup
+from ..exceptions import PermissionDenied
 
 
-class TestExaminerSubject(TestCase):
+pluginloader.autodiscover()
+
+
+class ExaminerTestCase(TestCase):
     fixtures = ["simplified/data.json"]
+
+    def setUp(self):
+        self.duck1100_core = models.Subject.objects.get(short_name='duck1100')
+        self.duck1080_core = models.Subject.objects.get(short_name='duck1080')
+        self.duck3580_core = models.Subject.objects.get(short_name='duck3580')
+
+        self.duck1100examiner = User(username='duck1100examiner')
+        self.duck1100examiner.save()
+        self.duck1100_core.periods.all()[0].assignments.all()[0].assignmentgroups.all()[0].examiners.add(self.duck1100examiner)
+
+        self.duck1080examiner = User(username='duck1080examiner')
+        self.duck1080examiner.save()
+        self.duck1080_core.periods.all()[0].assignments.all()[0].assignmentgroups.all()[0].examiners.add(self.duck1080examiner)
+
+        self.duck3580examiner = User(username='duck3580examiner')
+        self.duck3580examiner.save()
+        for group in self.duck3580_core.periods.all()[0].assignments.all()[0].assignmentgroups.all():
+            group.examiners.add(self.duck3580examiner)
+
+        self.testexaminerNoPerm = User(username='testuserNoPerm')
+        self.testexaminerNoPerm.save()
+        self.superadmin = User.objects.get(username='grandma')
+
+
+class TestExaminerSubject(ExaminerTestCase):
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -23,9 +53,26 @@ class TestExaminerSubject(TestCase):
         qryset = Subject.search(examiner0, query="1100").qryset
         self.assertEquals(len(qryset), 1)
 
+    def test_read(self):
+        duck1100 = Subject.read(self.duck1100examiner, self.duck1100_core.id)
+        self.assertEquals(duck1100, dict(
+                short_name = 'duck1100',
+                long_name = self.duck1100_core.long_name,
+                id = self.duck1100_core.id))
 
-class TestExaminerPeriod(TestCase):
-    fixtures = ["simplified/data.json"]
+    def test_read_security(self):
+        with self.assertRaises(PermissionDenied):
+            duck1100 = Subject.read(self.testexaminerNoPerm, self.duck1100_core.id)
+        with self.assertRaises(PermissionDenied):
+            duck1100 = Subject.read(self.duck1080examiner, self.duck1100_core.id)
+        with self.assertRaises(PermissionDenied):
+            duck1100 = Subject.read(self.superadmin, self.duck1100_core.id)
+
+
+class TestExaminerPeriod(ExaminerTestCase):
+    def setUp(self):
+        super(TestExaminerPeriod, self).setUp()
+        self.duck1100_h01_core = self.duck1100_core.periods.get(short_name='h01')
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -40,9 +87,39 @@ class TestExaminerPeriod(TestCase):
         qryset = Period.search(examiner0, query="duck1").qryset
         self.assertEquals(len(qryset), 2)
 
+    def test_read(self):
+        duck1100_h01 = Period.read(self.duck1100examiner, self.duck1100_h01_core.id)
+        self.assertEquals(duck1100_h01, dict(
+                id = self.duck1100_h01_core.id,
+                short_name = 'h01',
+                long_name = self.duck1100_h01_core.long_name,
+                parentnode__id = self.duck1100_h01_core.parentnode_id))
 
-class TestExaminerAssignment(TestCase):
-    fixtures = ["simplified/data.json"]
+        duck1100_h01 = Period.read(self.duck1100examiner,
+                self.duck1100_h01_core.id,
+                result_fieldgroups=['subject'])
+        self.assertEquals(duck1100_h01, dict(
+                id = self.duck1100_h01_core.id,
+                short_name = 'h01',
+                long_name = self.duck1100_h01_core.long_name,
+                parentnode__id = self.duck1100_h01_core.parentnode_id,
+                parentnode__short_name = self.duck1100_h01_core.parentnode.short_name,
+                parentnode__long_name = self.duck1100_h01_core.parentnode.long_name))
+
+    def test_read_security(self):
+        with self.assertRaises(PermissionDenied):
+            duck1100_h01 = Period.read(self.testexaminerNoPerm, self.duck1100_h01_core.id)
+        with self.assertRaises(PermissionDenied):
+            duck1100_h01 = Period.read(self.duck1080examiner, self.duck1100_h01_core.id)
+        with self.assertRaises(PermissionDenied):
+            duck1100_h01 = Period.read(self.superadmin, self.duck1100_h01_core.id)
+
+
+class TestExaminerAssignment(ExaminerTestCase):
+    def setUp(self):
+        super(TestExaminerAssignment, self).setUp()
+        self.duck1100_h01_week1_core = self.duck1100_core.periods.get(
+                short_name='h01').assignments.get(short_name='week1')
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -59,31 +136,119 @@ class TestExaminerAssignment(TestCase):
         qryset = Assignment.search(examiner0, query="1100").qryset
         self.assertEquals(len(qryset), 4)
 
+    def test_read(self):
+        duck1100_h01_week1 = Assignment.read(self.duck1100examiner,
+                self.duck1100_h01_week1_core.id)
+        self.assertEquals(duck1100_h01_week1, dict(
+                id = self.duck1100_h01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_h01_week1_core.long_name,
+                parentnode__id=self.duck1100_h01_week1_core.parentnode.id))
+
+        duck1100_h01_week1 = Assignment.read(self.duck1100examiner,
+                self.duck1100_h01_week1_core.id,
+                result_fieldgroups=['period'])
+        self.assertEquals(duck1100_h01_week1, dict(
+                id = self.duck1100_h01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_h01_week1_core.long_name,
+                parentnode__id=self.duck1100_h01_week1_core.parentnode.id,
+                parentnode__short_name=self.duck1100_h01_week1_core.parentnode.short_name,
+                parentnode__long_name=self.duck1100_h01_week1_core.parentnode.long_name,
+                parentnode__parentnode__id=self.duck1100_h01_week1_core.parentnode.parentnode_id))
+
+        duck1100_h01_week1 = Assignment.read(self.duck1100examiner,
+                self.duck1100_h01_week1_core.id,
+                result_fieldgroups=['period', 'subject'])
+        self.assertEquals(duck1100_h01_week1, dict(
+                id = self.duck1100_h01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_h01_week1_core.long_name,
+                parentnode__id=self.duck1100_h01_week1_core.parentnode.id,
+                parentnode__short_name=self.duck1100_h01_week1_core.parentnode.short_name,
+                parentnode__long_name=self.duck1100_h01_week1_core.parentnode.long_name,
+                parentnode__parentnode__id=self.duck1100_h01_week1_core.parentnode.parentnode_id,
+                parentnode__parentnode__short_name=self.duck1100_h01_week1_core.parentnode.parentnode.short_name,
+                parentnode__parentnode__long_name=self.duck1100_h01_week1_core.parentnode.parentnode.long_name))
+
+    def test_read_security(self):
+        with self.assertRaises(PermissionDenied):
+            duck1100_h01_week1 = Period.read(self.testexaminerNoPerm, self.duck1100_h01_week1_core.id)
+        with self.assertRaises(PermissionDenied):
+            duck1100_h01_week1 = Period.read(self.duck1080examiner, self.duck1100_h01_week1_core.id)
+        with self.assertRaises(PermissionDenied):
+            duck1100_h01_week1 = Period.read(self.superadmin, self.duck1100_h01_week1_core.id)
 
 
-class TestExaminerGroup(TestCase):
-    fixtures = ["simplified/data.json"]
+
+class TestExaminerGroup(ExaminerTestCase):
+
+    def setUp(self):
+        super(TestExaminerGroup, self).setUp()
+        duck3580_h01_week1_core = self.duck3580_core.periods.get(
+                short_name='h01').assignments.get(short_name='week1')
+        self.group_core = duck3580_h01_week1_core.assignmentgroups.all()[0]
 
     def test_search(self):
-        examiner0 = User.objects.get(username="examiner0")
-        assignment = models.Assignment.published_where_is_examiner(examiner0)[0]
+        assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
-        qryset = Group.search(examiner0, assignment=assignment.id,
-                orderby=["-id"], limit=2).qryset
+        result = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                orderby=["-id"], limit=2)
+        qryset = result.qryset
         self.assertEquals(assignment.id, qryset[0].parentnode.id)
         self.assertTrue(qryset[0].id > qryset[1].id)
         self.assertEquals(qryset.count(), 2)
 
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
                 query="student0").qryset
         self.assertEquals(qryset.count(), 1)
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
                 query="thisisatest").qryset
         self.assertEquals(qryset.count(), 0)
 
-        g = Group.search(examiner0, assignment=assignment).qryset[0]
+        g = AssignmentGroup.search(self.duck3580examiner, assignment=assignment).qryset[0]
         g.name = "thisisatest"
         g.save()
-        qryset = Group.search(examiner0, assignment=assignment.id,
+        qryset = AssignmentGroup.search(self.duck3580examiner, assignment=assignment.id,
                 query="thisisatest").qryset
         self.assertEquals(qryset.count(), 1)
+
+    def test_search_security(self):
+        assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
+
+        result = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                orderby=["-id"], limit=2)
+        qryset = result.qryset
+        self.assertEquals(result.resultfields, ['id', 'name'])
+        self.assertEquals(result.searchfields, ['name',
+            'candidates__candidate_id', 'candidates__student__username'])
+
+        assignment.anonymous = True
+        assignment.save()
+        result = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id)
+        self.assertEquals(result.searchfields, ['name', 'candidates__candidate_id'])
+
+        qryset = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                query="student0").qryset # Should not be able to search for username on anonymous
+        self.assertEquals(qryset.count(), 0)
+
+
+    def test_read(self):
+        group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
+        self.assertEquals(group, dict(
+                id = self.group_core.id,
+                name = None))
+
+    def test_read_security(self):
+        with self.assertRaises(PermissionDenied):
+            group = AssignmentGroup.read(self.testexaminerNoPerm, self.group_core.id)
+        with self.assertRaises(PermissionDenied):
+            group = AssignmentGroup.read(self.duck1080examiner, self.group_core.id)
+        with self.assertRaises(PermissionDenied):
+            group = AssignmentGroup.read(self.superadmin, self.group_core.id)

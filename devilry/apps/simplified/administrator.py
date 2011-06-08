@@ -30,8 +30,8 @@ class Node(CanSaveAuthMixin):
 
     class Meta:
         model = models.Node
-        search_resultfields = ['id', 'short_name', 'long_name']
-        search_searchfields = ['short_name', 'long_name']
+        resultfields = ['id', 'short_name', 'long_name']
+        searchfields = ['short_name', 'long_name']
         methods = ['create', 'get', 'update', 'delete', 'search']
 
     @classmethod
