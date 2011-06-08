@@ -181,10 +181,10 @@ class TestExaminerAssignment(ExaminerTestCase):
 
 
 
-class TestExaminerGroup(ExaminerTestCase):
+class TestExaminerAssignmentGroup(ExaminerTestCase):
 
     def setUp(self):
-        super(TestExaminerGroup, self).setUp()
+        super(TestExaminerAssignmentGroup, self).setUp()
         duck3580_h01_week1_core = self.duck3580_core.periods.get(
                 short_name='h01').assignments.get(short_name='week1')
         self.group_core = duck3580_h01_week1_core.assignmentgroups.all()[0]

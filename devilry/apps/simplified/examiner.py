@@ -73,8 +73,7 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
         methods = ['search', 'read']
 
     @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        assignment = kwargs['assignment']
+    def create_searchqryset(cls, user, assignment, **kwargs):
         if isinstance(assignment, int):
             assignment = models.Assignment.objects.get(id=assignment)
         qryset = models.AssignmentGroup.published_where_is_examiner(user).filter(
