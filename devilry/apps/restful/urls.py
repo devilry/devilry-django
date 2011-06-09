@@ -8,9 +8,6 @@ import administrator
     #return f
 #login_required = nologin_required
 
-def nologin_required(f):
-    return f
-login_required = nologin_required
 
 urlpatterns = patterns('devilry.apps.restful',
     url(r'^examiner/tree/$',
