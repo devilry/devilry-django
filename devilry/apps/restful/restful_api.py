@@ -7,7 +7,7 @@ import fields
 
 def _create_seachform(cls):
     class SearchForm(forms.Form):
-        content_type = fields.FormatField()
+        #format = fields.FormatField()
         query = forms.CharField(required=False)
         limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         start = fields.PositiveIntegerWithFallbackField()

@@ -52,12 +52,12 @@ class TestAdministratorNode(TestCase):
                     self.clarabelle, self.duckburgh.id,
                     short_name=None, long_name=None)
 
-    def test_get(self):
-        node = Node.get(self.clarabelle, id=self.univ.id)
-        node = Node.get(self.grandma, self.univ.id) # superuser allowed
+    def test_read_model(self):
+        node = Node.read_model(self.clarabelle, id=self.univ.id)
+        node = Node.read_model(self.grandma, self.univ.id) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            node = Node.get(self.daisy, self.univ.id) # superuser allowed
-        node = Node.get(self.grandma, dict(short_name=self.univ.short_name))
+            node = Node.read_model(self.daisy, self.univ.id) # superuser allowed
+        node = Node.read_model(self.grandma, dict(short_name=self.univ.short_name))
         self.assertEquals(node.short_name, 'univ')
 
 

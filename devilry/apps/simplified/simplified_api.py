@@ -66,10 +66,10 @@ def _readauth_get(cls, user, id):
     return obj
 
 
-def _create_get_method(cls):
-    def get(cls, user, id):
+def _create_read_model_method(cls):
+    def read_model(cls, user, id):
         return _writeauth_get(cls, user, id)
-    setattr(cls, get.__name__, MethodType(get, cls))
+    setattr(cls, read_model.__name__, MethodType(read_model, cls))
     #cls.get.__func__.__doc__
 
 def _create_delete_method(cls):
@@ -173,7 +173,7 @@ def simplified_api(cls):
     cls._meta.methods = set(cls._meta.methods)
     if 'read' in cls._meta.methods:
         _require_attr(cls, 'read_authorize')
-    if cls._meta.methods.issubset(set(['create', 'get', 'update', 'delete'])):
+    if cls._meta.methods.issubset(set(['create', 'read_model', 'update', 'delete'])):
         _require_attr(cls, 'write_authorize')
     for method in cls._meta.methods:
         globals()['_create_%s_method' % method](cls)

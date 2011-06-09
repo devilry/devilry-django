@@ -12,6 +12,7 @@ from ...core import models
 class TestAdministratorRestNodeNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
         kw = RestNode._searchform_to_kwargs({})
+        print kw
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"], query=''))
 

@@ -6,3 +6,8 @@ class CanSaveAuthMixin(object):
     def write_authorize(cls, user, obj):
         if not obj.can_save(user):
             raise PermissionDenied()
+
+    @classmethod
+    def read_authorize(cls, user, obj):
+        if not obj.can_save(user):
+            raise PermissionDenied()
