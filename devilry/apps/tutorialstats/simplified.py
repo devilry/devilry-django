@@ -7,7 +7,7 @@ import models
 class StatConfig(object):
     class Meta:
         model = models.StatConfig
-        resultfields = ['name', 'period__id', 'user__id']
+        resultfields = ['id', 'name', 'period__id', 'user__id']
         searchfields = ['name']
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
@@ -15,7 +15,6 @@ class StatConfig(object):
     def create_searchqryset(cls, user, **kwargs):
         qryset = models.StatConfig.objects.filter(user=user)
         return qryset
-
 
     @classmethod
     def write_authorize(cls, user, obj):
