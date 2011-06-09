@@ -9,6 +9,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Custom urls for this project
+    (r'^tutorialstats/', include('devilry.apps.tutorialstats.urls')),
     (r'^guiexamples/', include('devilry.apps.guiexamples.urls')),
     (r'^restful_examples/', include('devilry.apps.restful_examples.urls')),
 
