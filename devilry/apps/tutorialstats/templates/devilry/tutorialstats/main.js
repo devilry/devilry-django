@@ -1,6 +1,3 @@
-//Ext.require('devilry.restful.view.assignments.Grid');
-//Ext.require('devilry.restful.PathRestProxy');
-//Ext.require('devilry.restful.store.SubjectTree');
 Ext.require('devilry.tutorialstats.store.StatConfig');
 
 
