@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from ...core import models
-from ..administrator import Node
+from ..administrator import Node, Subject
 from ..exceptions import PermissionDenied
 
 
@@ -155,3 +155,17 @@ class TestAdministratorNode(TestCase):
         self.duckburgh.admins.add(self.daisy)
         qryset = Node.search(self.daisy).qryset
         self.assertEquals(len(qryset), 1)
+
+
+class TestAdministratorSubject(TestCase):
+    fixtures = ["simplified/data.json"]
+    
+    def setUp(self):
+        self.grandma = User.objects.get(username='grandma') # superuser
+        self.univ = models.Node.objects.get(short_name='univ')
+        self.duck1100 = models.Subject.objects.get(short_name='duck1100')
+
+
+    def test_read_model(self):
+        subject = Subject.read_model(self.grandma, id=self.duck1100.id)
+        self.assertEquals(subject.short_name, 'duck1100')
