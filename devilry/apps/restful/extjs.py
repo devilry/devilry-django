@@ -22,18 +22,21 @@ def _iter_fields(simplifiedcls):
 def _create_extjs_model_field(cls):
     simplified = cls._meta.simplified
     tpl = """
-    Ext.define('StatConfig', {
+    Ext.define('%(modelname)s', {
         extend: 'Ext.data.Model',
-        fields: %(fields)s,
+        fields: %(modelfields)s,
         idProperty: '%(idprop)s'
     });"""
 
     modelfields = []
     for fieldname, field in _iter_fields(simplified):
         exttype = cls.field_to_extjs_type(field, fieldname)
-        modelfields.append(dict(name='fieldname', type=exttype))
+        modelfields.append(dict(name=fieldname, type=exttype))
     idprop = 'id'
-    cls.extjs_model = tpl % dict(idprop=idprop, fields=json.dumps(modelfields))
+    modelname = simplified._meta.model._meta.db_table
+    modelfields = json.dumps(modelfields)
+    cls._meta.extjs_modelname = modelname
+    cls.extjs_model_class = tpl % vars()
 
 
 def extjs_modelapi(cls):
@@ -48,3 +51,22 @@ class ExtJsMixin(object):
             return 'int'
         else:
             return 'string'
+
+    @classmethod
+    def get_extjs_store_object(cls):
+        modelname = cls._meta.extjs_modelname
+        resturl = cls.get_rest_url()
+        return """ Ext.create('Ext.data.Store', {
+            model: '%(modelname)s',
+            autoLoad: true,
+            autoSync: true,
+            proxy: {
+                type: 'rest',
+                url: '%(resturl)s',
+                reader: {
+                    type: 'json',
+                    root: 'items'
+                },
+                writer: 'json'
+            }
+        });""" % vars()

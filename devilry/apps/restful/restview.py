@@ -1,7 +1,10 @@
+from django.core.urlresolvers import reverse
 from django.views.generic import View
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import simplejson as json
 from django.shortcuts import get_object_or_404
+from django.conf.urls.defaults import url
+from django.contrib.auth.decorators import login_required
 
 from errors import InvalidRequestDataError
 
@@ -55,6 +58,16 @@ class ModelRestView(RestView):
             return form.cleaned_data
         else:
             raise InvalidRequestDataError(form)
+
+    @classmethod
+    def create_rest_url(cls):
+        return url(r'^%s/(?P<pk>\d+)?$' % cls._meta.urlprefix,
+            login_required(cls.as_view()),
+            name=cls._meta.urlname)
+
+    @classmethod
+    def get_rest_url(cls):
+        return reverse(cls._meta.urlname)
 
     def restultqry_to_list(self, resultQry):
         return list(resultQry)

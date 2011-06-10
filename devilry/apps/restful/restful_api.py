@@ -31,11 +31,13 @@ def _create_editform(cls):
     cls.EditForm = EditForm
 
 
-
 def restful_api(cls):
     meta = cls.Meta
     cls._meta = meta
     _require_metaattr(cls, 'simplified')
+    cls._meta.urlprefix = cls.__name__.lower()
+    model = cls._meta.simplified._meta.model
+    cls._meta.urlname = model._meta.db_table
     _create_seachform(cls)
     _create_editform(cls)
     return cls

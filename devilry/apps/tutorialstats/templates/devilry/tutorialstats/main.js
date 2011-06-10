@@ -1,32 +1,8 @@
 
 function comboBox()
 {
-    Ext.define('StatConfig', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name:'id', type:'int'},
-            {name:'name', type:'string'},
-            {name:'period__id', type:'int'},
-            {name:'user__id', type:'int'}
-        ],
-        idProperty: 'id'
-    });
-
-    var store = Ext.create('Ext.data.Store', {
-        model: 'StatConfig',
-        autoLoad: true,
-        autoSync: true,
-        proxy: {
-            type: 'rest',
-            url: '/tutorialstats/rest/',
-            reader: {
-                type: 'json',
-                root: 'items'
-            },
-            writer: 'json'
-        }
-    });
-
+    {{ RestStatConfig.extjs_model_class|safe }}
+    var store = {{ RestStatConfig.get_extjs_store_object|safe }}
     var simpleCombo = Ext.create('Ext.form.field.ComboBox', {
         fieldLabel: 'Select statistics config',
         renderTo: 'simpleCombo',
