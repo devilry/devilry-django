@@ -2,7 +2,6 @@ from django.views.generic import View
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import simplejson as json
 from django.shortcuts import get_object_or_404
-from django.db.models import fields
 
 from errors import InvalidRequestDataError
 
@@ -105,12 +104,3 @@ class ModelRestView(RestView):
 
     def get(self, request, **kwargs):
         return self._serialize_wrapper('_get', **kwargs)
-
-
-    @classmethod
-    def field_to_extjs_type(cls, field, fieldname):
-        if isinstance(field, fields.IntegerField):
-            return 'int'
-        else:
-            return 'string'
-

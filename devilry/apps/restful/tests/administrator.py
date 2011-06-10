@@ -14,7 +14,6 @@ class TestAdministratorRestNodeNoFixture(TestCase):
         kw = RestNode._searchform_to_kwargs({})
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"], query=''))
-        print RestNode.extjs_model
 
 
 class TestAdministratorRestNode(TestCase):
