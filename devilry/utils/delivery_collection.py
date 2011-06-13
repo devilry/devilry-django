@@ -4,8 +4,15 @@ from django.conf import settings
 
 from stream_archives import StreamableZip, StreamableTar
 
+class ArchiveException(Exception):
+    "Archive exceptions"
+
 
 def create_archive_from_assignmentgroups(request, assignmentgroups, file_name, archive_type):
+    """
+    Creates a archive of type archive_type, named file_name, containing all the 
+    deliveries in each of the assignmentgroups in the list assignmentgroups. 
+    """
     archive = get_archive_from_archive_type(archive_type)
     it = iter_archive_assignmentgroups(archive, assignmentgroups)
     response = HttpResponse(it, mimetype="application/%s" % archive_type)
@@ -14,10 +21,14 @@ def create_archive_from_assignmentgroups(request, assignmentgroups, file_name, a
 
 
 def create_archive_from_delivery(request, delivery, archive_type):
+    """
+    Creates a archive of type archive_type, named assignment.get_path(), 
+    containing all files in the delivery.
+    """
     archive = get_archive_from_archive_type(archive_type)
     group = delivery.assignment_group
     assignment = group.parentnode
-    group_name = get_assignmentgroup_name(group)
+    group_name = _get_assignmentgroup_name(group)
     it = iter_archive_deliveries(archive, group_name, assignment.get_path(), [delivery])
     response = HttpResponse(it, mimetype="application/%s" % archive_type)  
     response["Content-Disposition"] = "attachment; filename=%s.%s" % (assignment.get_path(), archive_type)  
@@ -25,6 +36,12 @@ def create_archive_from_delivery(request, delivery, archive_type):
 
 
 def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
+    """
+    Adds files one by one from the list of deliveries into the archive. 
+    After writing each file to the archive, the new bytes in the archive
+    is yielded. If a file is bigger than DEVILRY_MAX_ARCHIVE_CHUNK_SIZE,
+    Only DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes are written before it's yielded.
+    """
     include_delivery_explanation = False
     if len(deliveries) > 1:
         include_delivery_explanation = True
@@ -44,8 +61,8 @@ def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
             # Write only chunks of size DEVILRY_MAX_ARCHIVE_CHUNK_SIZE to the archive
             if f.size > settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE:
                 if not archive.can_write_chunks():
-                    raise Exception("The size of file %s is greater than the "\
-                                    "maximum allowed size. Download stream aborted.")
+                    raise ArchiveException("The size of file %s is greater than the "\
+                                           "maximum allowed size. Download stream aborted.")
                 chunk_size = settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE
                 # Open file stream for reading
                 file_to_stream = f.read_open()
@@ -79,9 +96,9 @@ def iter_archive_assignmentgroups(archive, assignmentgroups):
     Creates an archive, adds files delivered by the assignmentgroups
     and yields the data.
     """
-    name_matches = get_dictionary_with_name_matches(assignmentgroups)
+    name_matches = _get_dictionary_with_name_matches(assignmentgroups)
     for group in assignmentgroups:
-        group_name = get_assignmentgroup_name(group)
+        group_name = _get_assignmentgroup_name(group)
         # If multiple groups with the same members exists,
         # postfix the name with assignmentgroup ID.
         if name_matches[group_name] > 1:
@@ -96,26 +113,30 @@ def iter_archive_assignmentgroups(archive, assignmentgroups):
 
 
 def get_archive_from_archive_type(archive_type):
+    """
+    Checks that the archive_type is either zip, tar or tar.gz,
+    and return the correct archive class.
+    """
     archive = None
     if archive_type == 'zip':
         archive = StreamableZip()
     elif archive_type == 'tar' or archive_type == 'tgz' or archive_type == 'tar.gz':
         archive = StreamableTar(archive_type)
     else:
-        raise Exception("archive_type is invalid:%s" % archive_type)
+        raise ArchiveException("archive_type is invalid:%s" % archive_type)
     return archive
 
 
 def verify_groups_not_exceeding_max_file_size(groups):
     for g in groups:
-        verify_deliveries_not_exceeding_max_file_size(g.deliveries.all())
+        _verify_deliveries_not_exceeding_max_file_size(g.deliveries.all())
 
 def verify_deliveries_not_exceeding_max_file_size(deliveries):
     max_size = settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE
     for d in deliveries:
         for f_meta in d.filemetas.all():
             if f_meta.size > max_size:
-                raise Exception()
+                raise ArchiveException()
 
 def inclusive_range(start, stop, step=1):
     """
@@ -131,7 +152,7 @@ def inclusive_range(start, stop, step=1):
         l.append(stop)
     return l
 
-def get_assignmentgroup_name(assigmentgroup):
+def _get_assignmentgroup_name(assigmentgroup):
     """
     Returns a string containing the group member of the
     assignmentgroup separated by '-'.
@@ -140,7 +161,7 @@ def get_assignmentgroup_name(assigmentgroup):
     cands = cands.replace(", ", "-")
     return cands
 
-def get_dictionary_with_name_matches(assignmentgroups):
+def _get_dictionary_with_name_matches(assignmentgroups):
     """
     Takes a list of assignmentgroups and returns
     a dictionary containing the count of groups
@@ -148,7 +169,7 @@ def get_dictionary_with_name_matches(assignmentgroups):
     """
     matches = {}
     for assigmentgroup in assignmentgroups:
-        name = get_assignmentgroup_name(assigmentgroup)
+        name = _get_assignmentgroup_name(assigmentgroup)
         if matches.has_key(name):
             matches[name] =  matches[name] + 1
         else:
