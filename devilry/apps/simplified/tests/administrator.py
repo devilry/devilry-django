@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from ...core import models
-from ..administrator import Node
+from ..administrator import Node, Subject
 from ..exceptions import PermissionDenied
 
 
@@ -58,6 +58,8 @@ class TestAdministratorNode(TestCase):
         with self.assertRaises(PermissionDenied):
             node = Node.read_model(self.daisy, self.univ.id) # superuser allowed
         node = Node.read_model(self.grandma, dict(short_name=self.univ.short_name))
+        self.assertEquals(node.short_name, 'univ')
+        node = Node.read_model(self.grandma, id=self.univ.id)
         self.assertEquals(node.short_name, 'univ')
 
 
@@ -155,3 +157,34 @@ class TestAdministratorNode(TestCase):
         self.duckburgh.admins.add(self.daisy)
         qryset = Node.search(self.daisy).qryset
         self.assertEquals(len(qryset), 1)
+
+
+class TestAdministratorSubject(TestCase):
+    fixtures = ["simplified/data.json"]
+    
+    def setUp(self):
+        self.grandma = User.objects.get(username='grandma') # superuser
+        self.duck1100 = models.Subject.objects.get(short_name='duck1100')
+        self.clarabelle = User.objects.get(username="clarabelle")
+        self.univ = models.Node.objects.get(short_name='univ')
+        self.univ.admins.add(self.clarabelle)
+
+        self.daisy = User.objects.get(username="daisy")
+        self.assertEquals(0,
+                models.Node.where_is_admin_or_superadmin(self.daisy).count())
+
+        self.invalidid = 100000
+        self.assertRaises(models.Node.DoesNotExist, models.Node.objects.get,
+                id=self.invalidid)
+
+
+    def test_read_model(self):
+        subject = Subject.read_model(self.clarabelle, id=self.duck1100.id)
+        subject = Subject.read_model(self.grandma, self.duck1100.id) # superuser allowed
+        with self.assertRaises(PermissionDenied):
+            node = Subject.read_model(self.daisy, self.duck1100.id) # superuser allowed
+        subject = Subject.read_model(self.grandma, id=self.duck1100.id)
+        self.assertEquals(subject.short_name, 'duck1100')
+        subject = Subject.read_model(self.grandma,
+                dict(short_name=self.duck1100.short_name))
+        self.assertEquals(subject.short_name, 'duck1100')

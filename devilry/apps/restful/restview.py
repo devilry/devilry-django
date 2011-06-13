@@ -1,7 +1,10 @@
+from django.core.urlresolvers import reverse
 from django.views.generic import View
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import simplejson as json
 from django.shortcuts import get_object_or_404
+from django.conf.urls.defaults import url
+from django.contrib.auth.decorators import login_required
 
 from errors import InvalidRequestDataError
 
@@ -24,8 +27,21 @@ class SerializerRegistry(dict):
         return result.httpresponsecls(i.serializer(result.result),
                 content_type='%s; encoding=%s' % (format, result.encoding))
 
+
+
+
+def json_serialize_handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError('Object of type %s with value of %s is not JSON serializable' % (
+            type(obj), repr(obj)))
+
+def json_serialize(s):
+    return json.dumps(s, default=json_serialize_handler)
+
 _serializers = SerializerRegistry()
-_serializers['application/json'] = SerializerRegistryItem(json.dumps, json.loads)
+_serializers['application/json'] = SerializerRegistryItem(json_serialize, json.loads)
 
 
 
@@ -56,8 +72,32 @@ class ModelRestView(RestView):
         else:
             raise InvalidRequestDataError(form)
 
+    @classmethod
+    def create_rest_url(cls):
+        return url(r'^%s/(?P<pk>\d+)?$' % cls._meta.urlprefix,
+            login_required(cls.as_view()),
+            name=cls._meta.urlname)
+
+    @classmethod
+    def get_rest_url(cls, *args, **kwargs):
+        return reverse(cls._meta.urlname, args=args, kwargs=kwargs)
+
+    @classmethod
+    def filter_urlmap(cls, itemdct):
+        if not hasattr(cls._meta, 'urlmap'):
+            return itemdct
+        for fieldname, mapping in cls._meta.urlmap.iteritems():
+            url = mapping.restfulcls.get_rest_url(itemdct[mapping.idfield])
+            itemdct[fieldname] = url
+        return itemdct
+
+    @classmethod
+    def filter_resultitem(cls, itemdct):
+        return cls.filter_urlmap(itemdct)
+
     def restultqry_to_list(self, resultQry):
-        return list(resultQry)
+        return [self.__class__.filter_resultitem(itemdct) \
+                for itemdct in resultQry]
 
     def _get(self, request, **kwargs):
         try:

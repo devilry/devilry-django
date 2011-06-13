@@ -4,6 +4,11 @@ from ..simplified.simplified_api import _require_metaattr
 import fields
 
 
+class UrlMapping(object):
+    def __init__(self, restfulcls, idfield):
+        self.restfulcls = restfulcls
+        self.idfield = idfield
+
 
 def _create_seachform(cls):
     class SearchForm(forms.Form):
@@ -35,6 +40,11 @@ def restful_api(cls):
     meta = cls.Meta
     cls._meta = meta
     _require_metaattr(cls, 'simplified')
+    cls._meta.urlprefix = cls.__name__.lower()
+    model = cls._meta.simplified._meta.model
+    cls._meta.urlname = model._meta.db_table
     _create_seachform(cls)
     _create_editform(cls)
+    if not hasattr(cls._meta, 'urlmap'):
+        cls._meta.urlmap = {}
     return cls
