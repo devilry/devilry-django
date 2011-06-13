@@ -8,9 +8,9 @@ class ArchiveException(Exception):
     "Archive exceptions"
 
 
-def create_archive_from_assignmentgroups(request, assignmentgroups, file_name, archive_type):
+def create_archive_from_assignmentgroups(assignmentgroups, file_name, archive_type):
     """
-    Creates a archive of type archive_type, named file_name, containing all the 
+    Creates an archive of type archive_type, named file_name, containing all the 
     deliveries in each of the assignmentgroups in the list assignmentgroups. 
     """
     archive = get_archive_from_archive_type(archive_type)
@@ -20,9 +20,9 @@ def create_archive_from_assignmentgroups(request, assignmentgroups, file_name, a
     return response
 
 
-def create_archive_from_delivery(request, delivery, archive_type):
+def create_archive_from_delivery(delivery, archive_type):
     """
-    Creates a archive of type archive_type, named assignment.get_path(), 
+    Creates an archive of type archive_type, named assignment.get_path(), 
     containing all files in the delivery.
     """
     archive = get_archive_from_archive_type(archive_type)
