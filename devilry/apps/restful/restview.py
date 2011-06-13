@@ -87,10 +87,8 @@ class ModelRestView(RestView):
         if not hasattr(cls._meta, 'urlmap'):
             return itemdct
         for fieldname, mapping in cls._meta.urlmap.iteritems():
-            #print dir(mapping.restfulcls)
             url = mapping.restfulcls.get_rest_url(itemdct[mapping.idfield])
             itemdct[fieldname] = url
-        print "Hei", itemdct
         return itemdct
 
     @classmethod
