@@ -5,23 +5,20 @@ Tests the StreamableZip and StreamableTar implementations.
 
 from django.test import TestCase
 
-from devilry.apps.core.models import (Assignment, AssignmentGroup)
-from delivery_collection import create_archive_from_assignmentgroups
-from stream_archives import StreamableZip, StreamableTar, \
+#from devilry.apps.core.models import (Assignment, AssignmentGroup)
+#from ..delivery_collection import create_archive_from_assignmentgroups
+from ..stream_archives import StreamableZip, StreamableTar, \
                                                UnsupportedOperation, FileStreamException
 
-from django.utils import unittest
+from zipfile import ZipFile
+import tarfile
 
-from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
-import tarfile, copy
-
-import sys
 import os
 import random
 
 class TestStreamableArchive(TestCase):
 
-    def __init__(self):
+    def setUp(self):
         self.testfile = "testfile.zip"
         self.file1_name = "TestFile1"
         self.file1_content = u"This is the content of testfile 1 ------------------"
@@ -29,7 +26,7 @@ class TestStreamableArchive(TestCase):
         self.file2_content = u"This is the content of testfile 2 ++++++++++++++++++"
         self.file3_name = "dir1/dir2/TestFile3"
         self.file3_content = u"This is the content of testfile 3 ******************"
-        
+
     def add_files_to_archive(self, archive):
         archive.add_file(self.file1_name, self.file1_content)
         archive.add_file(self.file2_name, self.file2_content)
@@ -98,6 +95,8 @@ class TestStreamableArchive(TestCase):
         """
         Test adding files to a StreamableTar.
         """
+        print "Test tar add file"
+
         archive = StreamableTar()
         self.add_files_to_archive(archive)
         archive.close()
@@ -160,8 +159,7 @@ class TestStreamableArchive(TestCase):
         content3 = zfile.read(self.file3_name)
         self.assertEquals(self.file1_content, content1)
         self.assertEquals(self.file2_content, content2)
-        self.assertEquals(self.file3_content, content3)
-        
+        self.assertEquals(self.file3_content, content3)        
         os.remove(self.testfile)
 
     
