@@ -1,4 +1,8 @@
 class GroupDeliveriesByDeadline():
+    """
+    Takes a list of assignmentgroups and places them in three lists/categories; 
+    after_last_deadline, self.within_a_deadline and self.ungrouped_deliveries.
+    """
     def __init__(self, group):
         self.after_last_deadline = []
         self.within_a_deadline = []
