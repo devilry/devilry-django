@@ -32,6 +32,8 @@ def _create_extjs_model_field(cls):
     for fieldname, field in _iter_fields(simplified):
         exttype = cls.field_to_extjs_type(field, fieldname)
         modelfields.append(dict(name=fieldname, type=exttype))
+    for fieldname in cls._meta.urlmap:
+        modelfields.append(dict(name=fieldname, type='string'))
     idprop = 'id'
     modelname = simplified._meta.model._meta.db_table
     modelfields = json.dumps(modelfields)

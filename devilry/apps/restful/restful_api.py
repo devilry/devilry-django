@@ -45,4 +45,6 @@ def restful_api(cls):
     cls._meta.urlname = model._meta.db_table
     _create_seachform(cls)
     _create_editform(cls)
+    if not hasattr(cls._meta, 'urlmap'):
+        cls._meta.urlmap = {}
     return cls
