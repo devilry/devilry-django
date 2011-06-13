@@ -63,3 +63,21 @@ class Subject(CanSaveAuthMixin):
         if parentnode_id != "DO_NOT_FILTER":
             qryset = qryset.filter(parentnode__id = parentnode_id)
         return qryset
+
+
+@simplified_api
+class Period(CanSaveAuthMixin):
+    class Meta:
+        model = models.Period
+        resultfields = ['id', 'short_name', 'long_name', 'parentnode__id',
+                'start_time', 'end_time']
+        searchfields = ['short_name', 'long_name']
+        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        qryset = models.Period.where_is_admin_or_superadmin(user)
+        parentnode__id = kwargs.pop('parentnode__id', None)
+        if parentnode__id != None:
+            qryset = qryset.filter(parentnode__id = parentnode__id)
+        return qryset

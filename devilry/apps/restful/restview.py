@@ -27,8 +27,21 @@ class SerializerRegistry(dict):
         return result.httpresponsecls(i.serializer(result.result),
                 content_type='%s; encoding=%s' % (format, result.encoding))
 
+
+
+
+def json_serialize_handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError('Object of type %s with value of %s is not JSON serializable' % (
+            type(obj), repr(obj)))
+
+def json_serialize(s):
+    return json.dumps(s, default=json_serialize_handler)
+
 _serializers = SerializerRegistry()
-_serializers['application/json'] = SerializerRegistryItem(json.dumps, json.loads)
+_serializers['application/json'] = SerializerRegistryItem(json_serialize, json.loads)
 
 
 
@@ -66,11 +79,27 @@ class ModelRestView(RestView):
             name=cls._meta.urlname)
 
     @classmethod
-    def get_rest_url(cls):
-        return reverse(cls._meta.urlname)
+    def get_rest_url(cls, *args, **kwargs):
+        return reverse(cls._meta.urlname, args=args, kwargs=kwargs)
+
+    @classmethod
+    def filter_urlmap(cls, itemdct):
+        if not hasattr(cls._meta, 'urlmap'):
+            return itemdct
+        for fieldname, mapping in cls._meta.urlmap.iteritems():
+            #print dir(mapping.restfulcls)
+            url = mapping.restfulcls.get_rest_url(itemdct[mapping.idfield])
+            itemdct[fieldname] = url
+        print "Hei", itemdct
+        return itemdct
+
+    @classmethod
+    def filter_resultitem(cls, itemdct):
+        return cls.filter_urlmap(itemdct)
 
     def restultqry_to_list(self, resultQry):
-        return list(resultQry)
+        return [self.__class__.filter_resultitem(itemdct) \
+                for itemdct in resultQry]
 
     def _get(self, request, **kwargs):
         try:

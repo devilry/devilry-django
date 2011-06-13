@@ -4,6 +4,11 @@ from ..simplified.simplified_api import _require_metaattr
 import fields
 
 
+class UrlMapping(object):
+    def __init__(self, restfulcls, idfield):
+        self.restfulcls = restfulcls
+        self.idfield = idfield
+
 
 def _create_seachform(cls):
     class SearchForm(forms.Form):

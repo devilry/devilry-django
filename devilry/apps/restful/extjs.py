@@ -47,7 +47,7 @@ def extjs_modelapi(cls):
 class ExtJsMixin(object):
     @classmethod
     def field_to_extjs_type(cls, field, fieldname):
-        print type(field)
+        #print type(field)
         if isinstance(field, fields.IntegerField):
             return 'int'
         elif isinstance(field, fields.AutoField):
