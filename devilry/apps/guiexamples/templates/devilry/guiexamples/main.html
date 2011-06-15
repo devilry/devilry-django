@@ -1,0 +1,33 @@
+{% extends "devilry/theme/base.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2 ft=htmldjango: {% endcomment %}
+{% load webdesign %}
+
+
+{% block title %}Devilry gui demo{% endblock %}
+
+{% block headextra %}
+  <script type="text/javascript">
+    {% comment %}
+      {% include "devilry/guiexamples/main.js" %}
+    {% endcomment %}
+
+    Ext.onReady(function(){
+        Ext.Loader.setConfig({enabled:true});
+    });
+  </script>
+
+  <script type="text/javascript"
+    src="{{ DEVILRY_STATIC_URL }}/apps/guiexamples/app.js"></script>
+{% endblock %}
+
+{% block main %}
+
+  <!--<div id="simpleCombo"></div>-->
+
+  <!--<div id="grid-example"></div>-->
+
+  <!--<div id="binding-example"></div>-->
+
+  <div id="app-window"></div>
+
+{% endblock %}

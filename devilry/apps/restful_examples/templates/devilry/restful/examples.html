@@ -1,0 +1,32 @@
+{% extends "devilry/theme/base.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2 ft=htmldjango: {% endcomment %}
+{% load webdesign %}
+
+
+{% block title %}Devilry gui demo{% endblock %}
+
+{% block headextra %}
+  {% comment %}
+  <script type="text/javascript"
+    src="{{ DEVILRY_STATIC_URL }}/apps/guiexamples/app.js"></script>
+  {% endcomment %}
+
+  <script type="text/javascript">
+    {% include "devilry/restful/examples.js" %}
+  </script>
+
+  <style type='text/css'>
+    .comboSmall{ font-size: 0.8em; color: #444; }
+    .comboMain { font-weight: bold; }
+  </style>
+{% endblock %}
+
+{% block main %}
+
+  <div id="grid-example"></div>
+  <div id="simpleCombo"></div>
+  <div id="fancyCombo"></div>
+  <div id="subjecttree"></div>
+  <div id="subjectform"></div>
+
+{% endblock %}

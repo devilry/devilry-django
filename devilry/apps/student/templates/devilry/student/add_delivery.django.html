@@ -1,0 +1,86 @@
+{% extends "devilry/student/base.django.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Add delivery" %}
+{% endblock %}
+
+{% block belowheading %}
+  {% if filenames_to_deliver %}
+    {% trans "You should add files with exactly the same name as the spesified name." %}
+  {% else %}
+    {% trans "Add as many files as you want" %}
+  {% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+  <li><a href='{% url devilry-student-show-assignmentgroup assignment_group.id %}'>
+    {{ assignment_group }}</a></li>
+  <li class="current"><a href="#">
+    {% trans "Add delivery" %}
+  </a></li>
+{% endblock %}
+
+
+{% block customjs %}
+<script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/apps/ui/js/jquery.devilrymultifile.js"></script>
+<script type="text/javascript">
+  $(function() {
+    {% if not filenames_to_deliver and not using_ie %}
+      $("#fileupload").devilryMultiFile();
+    {% endif %}
+  });
+</script>
+{% endblock %}
+
+{% block customcss %}
+<style type="text/css">
+  .fileupload-item-without-file {
+    margin-bottom: 15px;
+    color: red;
+  }
+  .fileupload-item-with-file {
+    margin-bottom: 7px 0;
+  }
+  .fileupload-with-filelist {
+    margin-bottom: 20px;
+  }
+  .fileupload-with-filelist h2 {
+    margin-top: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block main %}
+
+<form enctype="multipart/form-data"
+    action="{% url devilry-student-add-delivery assignment_group.id %}"
+    method="post" id='add_delivery-form'>
+  <table id="fileupload" class="zebra" style="margin-bottom: 15px;">
+    {% if filenames_to_deliver %}
+      {{ formset.management_form }}
+      {% for form in formset.forms %}
+        {% for field in form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+      {% endfor %}
+      {% for filename in filenames_to_deliver %}
+        <tr>
+          <th><label for="id_form-{{ forloop.counter0 }}-file">{{ filename }}:</label></th>
+          <td><input type="file" name="form-{{ forloop.counter0 }}-file" id="id_form-{{ forloop.counter0 }}-file" /></td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      {{ formset }}
+    {% endif %}
+  </table>
+  <div class='button-row'>
+    <input type="submit" name="deliver" id="id_submit"
+      {% if filenames_to_deliver %}class="button"{% endif %}
+      value="{% trans "Deliver" %}" />
+  </div>
+</form>
+
+{% endblock %}

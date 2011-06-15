@@ -1,0 +1,210 @@
+{% comment %} vim: set ts=2 sts=2 et sw=2: {% endcomment %}
+{% load i18n %}
+
+<style type='text/css'>
+.filtertable-table {
+  margin-top: 0 !important;
+  width:100%;
+}
+.filtertable-actions a {
+  width: 99%;
+  display: block;
+}
+.filtertable-filters ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.filtertable-filters li {
+  margin: 0;
+  padding: 0;
+}
+.filtertable-actions ul {
+  padding-left: 20px;
+}
+
+.filtertable-searchbox {
+  text-align: left;
+}
+.filtertable-searchfield {
+  width: 70%;
+}
+
+.filtertable-main {
+  margin-left: 300px;
+}
+.filtertable-sidebar {
+  width: 270px;
+  float: left;
+}
+.filtertable-pagelabel {
+  margin-bottom: 8px;
+}
+.filtertable-checkboxcell {
+  text-align: center;
+}
+
+
+.filtertable-filtercount {
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+.devilry-th-ui-icon {
+  float: right;
+}
+.devilry-th-clickable {
+  cursor: pointer;
+}
+.filtertable-table th.ui-,
+.filtertable-table th.ui-state-active {
+  
+}
+.devilry-ui-icon-in-dialog {
+  float:left; margin:0 7px 20px 0;
+}
+.devilry-ui-infobox {
+  padding: 0 .7em;
+}
+
+table.zebra {
+}
+
+table.zebra tr.odd td {
+  background-color: #fff;
+}
+table.zebra tr.even td {
+  background-color: #fafafa;
+}
+table.zebra tr.odd td.highlight-column {
+  background-color: #efefef;
+}
+table.zebra tr.even td.highlight-column {
+  background-color: #dfdfdf;
+}
+
+</style>
+
+<div class='filtertable' id='{{ id }}'>
+  <form action="#" method="post">
+    <div class="filtertable-sidebar">
+      {% if has_search or has_filters %}
+        <h3><a href="#" class='filtertable-accordion-head'>Search / Filter</a></h3>
+        <div>
+          {% if has_search %}
+            <div class='filtertable-searchbox'>
+              <h4>Search:</h4>
+              <input type="text" class="filtertable-searchfield tooltip-focus" title="{{ search_help }}" />
+              <button class="filtertable-searchbtn">Search</button>
+            </div>
+          {% endif %}
+          {% if has_filters %}
+            <div class="filtertable-filters">
+              {% comment %}This is filled using javascript{% endcomment %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if has_selection_actions or has_related_actions %}
+        <h3><a href="#" class='filtertable-accordion-head'>Actions</a></h3>
+        <div class="filtertable-actions">
+          {% if has_selection_actions %}
+            <h4>On selected rows</h4>
+            <ul class="filtertable-selectionactions">
+              {% comment %}This is filled using javascript{% endcomment %}
+            </ul>
+          {% endif %}
+          {% if has_related_actions %}
+            <h4>Related</h4>
+            <ul class="filtertable-relatedactions">
+              {% comment %}This is filled using javascript{% endcomment %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <h3><a href="#" class='filtertable-accordion-head'>Settings</a></h3>
+      <div>
+        <div>
+          <h4>Rows per page:</h4>
+          <input type="text" class="filtertable-perpagefield tooltip-focus"
+            style="width:60px" title="Number of rows to display on each page."/>
+          <button class="filtertable-perpage-updatebtn">Refresh</button>
+          <button class="filtertable-perpage-allbtn tooltip-hover"
+            title="Show all available rows on a single page">All</button>
+        </div>
+        <div class="filtertable-settings-cols">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </div>
+        <div>
+          <h4>Reset</h4>
+          <button class='filtertable-reset-button button tooltip-hover ui-priority-secondary'
+            title="Reset table to it's default state, clearing any searches, filters or settings.">Reset table</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="filtertable-main ui-state-widget">
+      <div class='filtertable-data'>
+        <table class="filtertable-table zebra">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </table>
+        <div class="filtertable-pagechanger">
+          {% comment %}This is filled using javascript{% endcomment %}
+        </div>
+        <div class="ui-widget" style="margin-top:15px;">
+          <div class="devilry-ui-infobox ui-state-highlight ui-corner-all">
+            <p>
+              <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+              <span class="filtertable-statusmsg"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class='filtertable-loading' style='display:none'>
+        {% trans "Loading..." %}
+      </div>
+    </div>
+  </form>
+
+  <div class="filtertable-noselection-dialog" title="No row selected">
+    <p><span class="ui-icon ui-icon-alert devilry-ui-icon-in-dialog"></span>
+    You have to select at least one row.</p>
+  </div>
+  
+  <div class="filtertable-confirm-selection-dialog" style="display:none;">
+    <p>
+      <span class="ui-icon ui-icon-alert devilry-ui-icon-in-dialog"></span>
+      <span>
+        {% comment %}This is filled using javascript{% endcomment %}
+      </span>
+    </p>
+      {% comment %}This is filled using javascript{% endcomment %}
+    <div>
+    </div>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+
+
+<script type="text/javascript" src="{{ DEVILRY_STATIC_URL}}/apps/ui/js/jquery.filtertable.js"></script> 
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#{{ id }}").filtertable("{{ jsonurl }}", {
+        has_related_actions: {{ has_related_actions|yesno:"true,false" }},
+        has_selection_actions: {{ has_selection_actions|yesno:"true,false" }},
+        has_search: {{ has_search|yesno:"true,false" }},
+        has_filters: {{ has_filters|yesno:"true,false" }},
+        resultcount_supported: {{ resultcount_supported|yesno:"true,false" }},
+        accordion_event: "click"
+      });
+
+    {% comment %}
+    // Stop clicking from sending the user to the top of the page. Use with accordion_event:"mouseover".
+    $('.filtertable-accordion-head').click(function() {
+      return false;
+    });
+    {% endcomment %}
+  });
+</script>

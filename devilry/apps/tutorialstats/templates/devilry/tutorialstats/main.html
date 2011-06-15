@@ -1,0 +1,15 @@
+{% extends "devilry/theme/base.html" %}
+{% comment %} vim: set ts=2 sts=2 et sw=2 ft=htmldjango: {% endcomment %}
+
+
+{% block title %}Devilry gui demo{% endblock %}
+
+{% block headextra %}
+  <script type="text/javascript">
+    {% include "devilry/tutorialstats/main.js" %}
+  </script>
+{% endblock %}
+
+{% block main %}
+  <div id="simpleCombo"></div>
+{% endblock %}
