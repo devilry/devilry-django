@@ -7,6 +7,7 @@
 
 
 from datetime import datetime
+from datetime import timedelta
 import re
 
 from django.db import models
@@ -1162,9 +1163,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         return (scale/maxpoints) * self.points
 
     def save(self, *args, **kwargs):
+        create_default_deadline = False
+        # Only if object doesn't yet exist in the database
+        if not self.pk:
+            create_default_deadline = True
         self.scaled_points = self._get_scaled_points()
         super(AssignmentGroup, self).save(*args, **kwargs)
-
+        if create_default_deadline:
+            self.create_default_deadline()
+        
     def create_default_deadline(self):
         # Create the head deadline for this assignmentgroup
         head_deadline = Deadline()
@@ -1562,9 +1569,14 @@ class Delivery(models.Model, AbstractIsAdmin):
     successful = models.BooleanField(blank=True, default=False)
 
     def delivered_too_late(self):
+        """ Compares the deadline and time of delivery with 1 minute in slack.
+        With a deadline at 15:00, delivering on 15:00:40 (forty seconds past 
+        the deadline) will not be registered as 'too late'
+        """
         if self.deadline_tag.is_head:
             return False
-        return (self.deadline_tag.deadline < self.time_of_delivery)
+        diff = self.time_of_delivery - self.deadline_tag.deadline
+        return diff > timedelta(minutes=1)
     after_deadline = property(delivered_too_late)
 
     class Meta:
