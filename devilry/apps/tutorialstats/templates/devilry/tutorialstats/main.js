@@ -25,49 +25,72 @@ function comboBox()
 
 
 
-    // Period model and store (used in graph)
-    {{ RestPeriod|extjs_model }}
-    var periodstore = {{ RestPeriod|extjs_store }}
+
+
+    Ext.define('restperiodpoints', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {"type": "string", "name": "username"},
+            {"type": "int", "name": "sumperiod"}],
+        idProperty: 'username'
+    });
+    
+
 
     var chart = null;
 
     // When selecting an item in the combobox
     function on_select_combo(field, value, options) {
         var data = value[0].data;
-        var period_url = console.log(data.period_url);
-        if(period_url) {
-            console.log(period_url);
-        }
-
-        if(chart == null) {
-            chart = Ext.create('Ext.chart.Chart', {
-                width: 600,
-                height: 400,
-                store: periodstore,
-                renderTo: 'graph',
-
-                // Define axes
-                axes: [{
-                    type: 'Numeric',
-                    position: 'bottom',
-                    fields: ['id'],
-                    title: 'Id',
-                    minimum: 0
-                }, {
-                    type: 'Category',
-                    position: 'left',
-                    fields: ['long_name'],
-                    title: 'Period'
-                }],
-
-                // Define series
-                series: [{
-                    type: 'bar',
-                    axis: 'bottom',
-                    xField: 'long_name',
-                    yField: ['id']
-                }]
+        var periodpoints_url = data.periodpoints_url;
+        if(periodpoints_url) {
+            //console.log(periodpoints_url);
+            var restperiodpoints_store = Ext.create('Ext.data.Store', {
+                model: 'restperiodpoints',
+                autoLoad: true,
+                autoSync: true,
+                proxy: {
+                    type: 'rest',
+                    url: periodpoints_url,
+                    reader: {
+                        type: 'json',
+                        root: 'items'
+                    }
+                }
             });
+
+            if(chart) {
+                chart.bindStore(restperiodpoints_store);
+            } else {
+                chart = Ext.create('Ext.chart.Chart', {
+                    width: 600,
+                    height: 400,
+                    store: restperiodpoints_store,
+                    renderTo: 'graph',
+
+                    // Define axes
+                    axes: [{
+                        type: 'Numeric',
+                        position: 'bottom',
+                        fields: ['sumperiod'],
+                        title: 'Points this period',
+                        minimum: 0
+                    }, {
+                        type: 'Category',
+                        position: 'left',
+                        fields: ['username'],
+                        title: 'Student'
+                    }],
+
+                    // Define series
+                    series: [{
+                        type: 'bar',
+                        axis: 'bottom',
+                        xField: 'username',
+                        yField: ['sumperiod']
+                    }]
+                });
+            }
         }
     }
 

@@ -70,11 +70,15 @@ def extjs_store(restfulcls):
         proxy: {
             type: 'rest',
             url: '%(resturl)s',
+            extraParams: {use_getqry: true},
             reader: {
                 type: 'json',
                 root: 'items'
             },
-            writer: 'json'
+            writer: {
+                type: 'json',
+                allowSingle: false
+            }
         }
     });""" % vars()
     return mark_safe(js)

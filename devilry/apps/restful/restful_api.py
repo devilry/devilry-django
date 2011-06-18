@@ -37,14 +37,25 @@ def _create_editform(cls):
 
 
 def restful_api(cls):
-    meta = cls.Meta
+    try:
+        meta = cls.Meta
+    except AttributeError:
+        class Meta:
+            """ Fake meta class """
+        meta = Meta
     cls._meta = meta
-    _require_metaattr(cls, 'simplified')
     cls._meta.urlprefix = cls.__name__.lower()
-    model = cls._meta.simplified._meta.model
-    cls._meta.urlname = model._meta.db_table
-    _create_seachform(cls)
-    _create_editform(cls)
     if not hasattr(cls._meta, 'urlmap'):
         cls._meta.urlmap = {}
+    urlname = '%s-%s' % (cls.__module__, cls.__name__)
+    cls._meta.urlname = urlname.replace('.', '-')
+    return cls
+
+
+def restful_modelapi(cls):
+    cls = restful_api(cls)
+    _require_metaattr(cls, 'simplified')
+    model = cls._meta.simplified._meta.model
+    _create_seachform(cls)
+    _create_editform(cls)
     return cls

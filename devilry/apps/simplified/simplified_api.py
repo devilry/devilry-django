@@ -113,7 +113,9 @@ def _create_read_method(cls):
 def _create_delete_method(cls):
     def delete(cls, user, idorkw):
         obj = _writeauth_get(cls, user, idorkw) # authorization in _writeauth_get
+        pk = obj.pk
         obj.delete()
+        return pk
     setattr(cls, delete.__name__, MethodType(delete, cls))
 
 def _create_update_method(cls):
