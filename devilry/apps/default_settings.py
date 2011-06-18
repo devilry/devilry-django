@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'devilry.apps.simplified',
     'devilry.apps.theme',
     'devilry.apps.restful',
+    'devilry.apps.extjshelpers',
 
     'devilry.apps.student',
     'devilry.apps.examiner',
