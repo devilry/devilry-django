@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.core.urlresolvers import reverse
 from django.views.generic import View
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -45,19 +47,21 @@ _serializers['application/json'] = SerializerRegistryItem(json_serialize, json.l
 
 
 
-class RestView(View):
-    def _serialize_wrapper(self, methodname, *args, **kwargs):
-        m = getattr(self, methodname)
-        result = m(self.request, *args, **kwargs)
-        format = self.request.META.get('Accept', 'application/json')
+def serialize(f):
+    @wraps(f)
+    def wrapper(self, request, *args, **kwargs):
+        result = f(self, request, *args, **kwargs) # returns a RestResult object
+        format = request.META.get('Accept', 'application/json')
         if not format in _serializers:
             return HttpResponseBadRequest(
                 "Bad request: %s" % format,
                 format='text/plain; encoding=utf-8')
         return _serializers.create_response(result, format)
+    return wrapper
 
 
-class ModelRestView(RestView):
+
+class ModelRestView(View):
     @classmethod
     def _searchform_to_kwargs(cls, getdata):
         """
@@ -99,7 +103,8 @@ class ModelRestView(RestView):
         return [self.__class__.filter_resultitem(itemdct) \
                 for itemdct in resultQry]
 
-    def _get(self, request, **kwargs):
+
+    def _getlist(self, request, kwargs):
         try:
             form = self.__class__._searchform_to_kwargs(request.GET)
         except InvalidRequestDataError, e:
@@ -112,6 +117,18 @@ class ModelRestView(RestView):
         resultList = self.restultqry_to_list(getqryresult.valuesQryset())
         result = dict(total=len(resultList), success=True, items=resultList)
         return RestResult(result)
+
+    def _getitem(self, request, kwargs):
+        pk = kwargs['pk']
+
+        return RestResult(dict(hello='world'))
+
+    @serialize
+    def get(self, request, **kwargs):
+        if kwargs['pk'] != None:
+            return self._getitem(request, kwargs)
+        else:
+            return self._getlist(request, kwargs)
 
 
     def _create_or_replace(self, instance=None):
@@ -127,20 +144,13 @@ class ModelRestView(RestView):
             result = dict(success=False, fielderrors=fielderrors, non_field_errors=non_field_errors)
         return RestResult(result)
 
-    def _post(self, request, pk=0):
+    @serialize
+    def post(self, request, pk=0):
         """ Create """
         return self._create_or_replace()
 
-    def _put(self, request, pk):
+    @serialize
+    def put(self, request, pk):
         """ Replace/Update """
         instance = get_object_or_404(self._meta.simplified._meta.model, pk=pk)
         return self._create_or_replace(instance)
-
-    def post(self, request, pk):
-        return self._serialize_wrapper('_post', pk)
-
-    def put(self, request, pk):
-        return self._serialize_wrapper('_put', pk)
-
-    def get(self, request, **kwargs):
-        return self._serialize_wrapper('_get', **kwargs)
