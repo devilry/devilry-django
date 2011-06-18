@@ -26,7 +26,7 @@ def _create_doc(cls, fieldnames=None):
 
     #throws = [
             #':throws devilry.apps.core.models.Node.DoesNotExist:',
-            #'   If the node with ``id`` does not exists, or if',
+            #'   If the node with ``idorkw`` does not exists, or if',
             #'   parentnode is not None, and no node with ``id==parentnode_id``',
             #'   exists.']
 
@@ -48,56 +48,23 @@ def _parse_fieldgroups(fieldlst, fieldgroups):
         return fieldlst
 
 
-def _writeauth_get(cls, user, id):
-    if isinstance(id, dict):
-        kw = id
+def _writeauth_get(cls, user, idorkw):
+    if isinstance(idorkw, dict):
+        kw = idorkw
     else:
-        kw = dict(id=id)
+        kw = dict(pk=idorkw)
     obj = cls._meta.model.objects.get(**kw)
     cls.write_authorize(user, obj)
     return obj
-def _readauth_get(cls, user, id):
-    if isinstance(id, dict):
-        kw = id
+
+def _readauth_get(cls, user, idorkw):
+    if isinstance(idorkw, dict):
+        kw = idorkw
     else:
-        kw = dict(id=id)
+        kw = dict(pk=idorkw)
     obj = cls._meta.model.objects.get(**kw)
     cls.read_authorize(user, obj)
     return obj
-
-
-def _create_read_model_method(cls):
-    def read_model(cls, user, id):
-        return _writeauth_get(cls, user, id)
-    setattr(cls, read_model.__name__, MethodType(read_model, cls))
-    #cls.get.__func__.__doc__
-
-def _create_delete_method(cls):
-    def delete(cls, user, id):
-        obj = _writeauth_get(cls, user, id) # authorization in _writeauth_get
-        obj.delete()
-    setattr(cls, delete.__name__, MethodType(delete, cls))
-
-def _create_update_method(cls):
-    def update(cls, user, id, **field_values):
-        obj = _writeauth_get(cls, user, id) # authorization in _writeauth_get
-        for fieldname, value in field_values.iteritems():
-            setattr(obj, fieldname, value)
-        obj.full_clean()
-        obj.save()
-        return obj
-    setattr(cls, update.__name__, MethodType(update, cls))
-
-def _create_create_method(cls):
-    def create(cls, user, **field_values):
-        obj =  cls._meta.model(**field_values)
-        cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
-        obj.full_clean()
-        obj.save()
-        return obj
-    setattr(cls, create.__name__, MethodType(create, cls))
-
-
 
 
 def _recurse_getmodelattr(instance, path):
@@ -117,9 +84,25 @@ def _model_to_dict(instance, fields):
             dct[field] = getattr(instance, field)
     return dct
 
+
+def _create_create_method(cls):
+    def create(cls, user, **field_values):
+        obj =  cls._meta.model(**field_values)
+        cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+        obj.full_clean()
+        obj.save()
+        return obj
+    setattr(cls, create.__name__, MethodType(create, cls))
+
+def _create_read_model_method(cls):
+    def read_model(cls, user, idorkw):
+        return _writeauth_get(cls, user, idorkw)
+    setattr(cls, read_model.__name__, MethodType(read_model, cls))
+    #cls.get.__func__.__doc__
+
 def _create_read_method(cls):
-    def read(cls, user, id, result_fieldgroups=[]):
-        obj = _readauth_get(cls, user, id) # authorization in _writeauth_get
+    def read(cls, user, idorkw, result_fieldgroups=[]):
+        obj = _readauth_get(cls, user, idorkw) # authorization in _writeauth_get
         resultfields = _parse_fieldgroups(cls._meta.resultfields,
                 result_fieldgroups)
         #if hasattr(cls, 'filter_read_resultfields'):
@@ -127,8 +110,21 @@ def _create_read_method(cls):
         return _model_to_dict(obj, fields=resultfields)
     setattr(cls, read.__name__, MethodType(read, cls))
 
+def _create_delete_method(cls):
+    def delete(cls, user, idorkw):
+        obj = _writeauth_get(cls, user, idorkw) # authorization in _writeauth_get
+        obj.delete()
+    setattr(cls, delete.__name__, MethodType(delete, cls))
 
-
+def _create_update_method(cls):
+    def update(cls, user, idorkw, **field_values):
+        obj = _writeauth_get(cls, user, idorkw) # authorization in _writeauth_get
+        for fieldname, value in field_values.iteritems():
+            setattr(obj, fieldname, value)
+        obj.full_clean()
+        obj.save()
+        return obj
+    setattr(cls, update.__name__, MethodType(update, cls))
 
 def _create_search_method(cls):
     def search(cls, user, **kwargs):
@@ -150,6 +146,7 @@ def _create_search_method(cls):
         result._standard_operations(**standard_opts)
         return result
     setattr(cls, search.__name__, MethodType(search, cls))
+
 
 def _require_metaattr(cls, attr):
     if not hasattr(cls._meta, attr):

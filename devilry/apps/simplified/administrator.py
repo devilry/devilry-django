@@ -55,11 +55,11 @@ class Subject(CanSaveAuthMixin):
         resultfields = ['id', 'short_name', 'long_name']
         searchfields = ['short_name', 'long_name']
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
-    
+
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         qryset = models.Subject.where_is_admin_or_superadmin(user)
-        parentnode_id = kwargs.pop('parentnode_id', 'DO_NOT_FILTER')
+        parentnode_id = kwargs.pop('parentnode_id', None)
         if parentnode_id != "DO_NOT_FILTER":
             qryset = qryset.filter(parentnode__id = parentnode_id)
         return qryset

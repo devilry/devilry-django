@@ -78,7 +78,7 @@ class ModelRestView(View):
 
     @classmethod
     def create_rest_url(cls):
-        return url(r'^%s/(?P<pk>\d+)?$' % cls._meta.urlprefix,
+        return url(r'^%s/(?P<pk>[a-zA-Z0-9]+)?$' % cls._meta.urlprefix,
             login_required(cls.as_view()),
             name=cls._meta.urlname)
 
@@ -103,7 +103,6 @@ class ModelRestView(View):
         return [self.__class__.filter_resultitem(itemdct) \
                 for itemdct in resultQry]
 
-
     def _getlist(self, request, kwargs):
         try:
             form = self.__class__._searchform_to_kwargs(request.GET)
@@ -120,16 +119,8 @@ class ModelRestView(View):
 
     def _getitem(self, request, kwargs):
         pk = kwargs['pk']
-
-        return RestResult(dict(hello='world'))
-
-    @serialize
-    def get(self, request, **kwargs):
-        if kwargs['pk'] != None:
-            return self._getitem(request, kwargs)
-        else:
-            return self._getlist(request, kwargs)
-
+        data = self._meta.simplified.read(request.user, pk)
+        return RestResult(data)
 
     def _create_or_replace(self, instance=None):
         data = json.loads(self.request.raw_post_data)
@@ -144,13 +135,22 @@ class ModelRestView(View):
             result = dict(success=False, fielderrors=fielderrors, non_field_errors=non_field_errors)
         return RestResult(result)
 
+
+    @serialize
+    def get(self, request, **kwargs):
+        """ Maps to the read method of the simplified class. """
+        if kwargs['pk'] != None:
+            return self._getitem(request, kwargs)
+        else:
+            return self._getlist(request, kwargs)
+
     @serialize
     def post(self, request, pk=0):
-        """ Create """
+        """ Maps to the ``create`` method of the simplified class. """
         return self._create_or_replace()
 
     @serialize
     def put(self, request, pk):
-        """ Replace/Update """
+        """ Maps to the ``update`` method of the simplified class. """
         instance = get_object_or_404(self._meta.simplified._meta.model, pk=pk)
         return self._create_or_replace(instance)
