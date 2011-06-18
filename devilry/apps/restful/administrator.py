@@ -1,25 +1,21 @@
 from ..simplified.administrator import Node, Subject, Period
 from restview import ModelRestView
 from restful_api import restful_api
-import extjs
 
 
-@extjs.extjs_modelapi
 @restful_api
-class RestNode(ModelRestView, extjs.ExtJsMixin):
+class RestNode(ModelRestView):
     class Meta:
         simplified = Node
 
 
-@extjs.extjs_modelapi
 @restful_api
-class RestSubject(ModelRestView, extjs.ExtJsMixin):
+class RestSubject(ModelRestView):
     class Meta:
         simplified = Subject
 
 
-@extjs.extjs_modelapi
 @restful_api
-class RestPeriod(ModelRestView, extjs.ExtJsMixin):
+class RestPeriod(ModelRestView):
     class Meta:
         simplified = Period

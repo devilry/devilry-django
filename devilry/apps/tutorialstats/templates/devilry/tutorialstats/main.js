@@ -17,71 +17,60 @@ function comboBox()
         labelWidth: 130,
         store: store,
         queryMode: 'local',
-        typeAhead: true
+        typeAhead: true,
+        listeners: {
+            'select': on_select_combo
+        }
     });
 
 
-    window.generateData = function(n, floor) {
-        var data = [],
-            p = (Math.random() * 11) + 1,
-            i;
 
-        floor = (!floor && floor !== 0) ? 20 : floor;
+    // Period model and store (used in graph)
+    {{ RestPeriod|extjs_model }}
+    var periodstore = {{ RestPeriod|extjs_store }}
 
-        for (i = 0; i < (n || 12); i++) {
-            data.push({
-                name: Ext.Date.monthNames[i % 12],
-                data1: Math.floor(Math.max((Math.random() * 100), floor)),
+    var chart = null;
+
+    // When selecting an item in the combobox
+    function on_select_combo(field, value, options) {
+        var data = value[0].data;
+        var period_url = console.log(data.period_url);
+        if(period_url) {
+            console.log(period_url);
+        }
+
+        if(chart == null) {
+            chart = Ext.create('Ext.chart.Chart', {
+                width: 600,
+                height: 400,
+                store: periodstore,
+                renderTo: 'graph',
+
+                // Define axes
+                axes: [{
+                    type: 'Numeric',
+                    position: 'bottom',
+                    fields: ['id'],
+                    title: 'Id',
+                    minimum: 0
+                }, {
+                    type: 'Category',
+                    position: 'left',
+                    fields: ['long_name'],
+                    title: 'Period'
+                }],
+
+                // Define series
+                series: [{
+                    type: 'bar',
+                    axis: 'bottom',
+                    xField: 'long_name',
+                    yField: ['id']
+                }]
             });
         }
-        return data;
-    };
+    }
 
-
-    var chartstore = Ext.create('Ext.data.JsonStore', {
-        fields: ['name', 'data1'],
-        data: generateData()
-    });
-
-
-    var chart = Ext.create('Ext.chart.Chart', {
-        width: 200,
-        height: 200,
-        store: chartstore,
-
-        // Define axes
-        axes: [{
-            type: 'Numeric',
-            position: 'bottom',
-            fields: ['data1'],
-            title: 'Number of Hits',
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'left',
-            fields: ['name'],
-            title: 'Month of the Year'
-        }],
-
-        // Define series
-        series: [{
-            type: 'bar',
-            axis: 'bottom',
-            xField: 'name',
-            yField: ['data1']
-        }]
-    });
-
-    var win = Ext.create('Ext.Window', {
-        width: 800,
-        height: 600,
-        hidden: false,
-        maximizable: true,
-        title: 'Bar Chart',
-        renderTo: Ext.getBody(),
-        layout: 'fit',
-        items: [chart]
-    });
 }
 
 
