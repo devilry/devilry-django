@@ -6,12 +6,11 @@
 {% block headextra %}
     <script type="text/javascript">
         function comboBox() {
-            // Get the extjs model generated from the datamodel
+            // Create the extjs model (generated from the django datamodel)
             {{ RestStatConfig|extjs_model }}
 
-            // Get the extjs store generated from the rest config
+            // Crate the extjs store (generated from the REST config)
             var store = {{ RestStatConfig|extjs_store }}
-
 
             // Create the chart
             var chart = Ext.create('devilry.tutorialstats.BarChart', 'graph');
