@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'devilry.apps.administrator',
     'devilry.apps.grade_approved',
     'devilry.apps.grade_default',
-    'devilry.apps.grade_schema',
     'devilry.apps.grade_rstschema',
     'devilry.apps.quickdash',
     'devilry.apps.gradestats',
