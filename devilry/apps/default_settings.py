@@ -36,10 +36,6 @@ INSTALLED_APPS = [
     'devilry.apps.quickdash',
     'devilry.apps.gradestats',
 
-    'devilry.apps.xmlrpc',
-    'devilry.apps.xmlrpc_examiner',
-    'devilry.apps.xmlrpc_client',
-
     # Not apps, but here for django to discover them:
     'devilry.simplified'
 ]
