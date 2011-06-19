@@ -185,6 +185,8 @@ class ModelRestView(RestView):
     def crud_read(self, request, id):
         """ Maps to the ``read`` method of the simplified class. """
         data = self._meta.simplified.read(self.request.user, id)
+        if 'wrap_in_items' in self.request.GET:
+            data = dict(items=data, total=1, success=True)
         return RestResult(data)
 
 

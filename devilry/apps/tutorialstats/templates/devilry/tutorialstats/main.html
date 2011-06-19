@@ -18,20 +18,84 @@
 
             // Create the config selector
             var configSelector = Ext.create('devilry.tutorialstats.ConfigSelector', store, 'simpleCombo', chart);
+
+
+
+            Ext.define('example.fielderror', {
+                extend: 'Ext.data.Model',
+                fields: ['id', 'msg']
+            });
+
+            var formPanel = Ext.create('Ext.form.Panel', {
+                renderTo: 'editform',
+                frame: true,
+                title: 'JSON Form',
+                width: 340,
+                bodyPadding: 5,
+                waitMsgTarget: true,
+
+                fieldDefaults: {
+                    labelAlign: 'right',
+                    labelWidth: 85,
+                    msgTarget: 'side'
+                },
+
+                // configure how to read the JSON data
+                reader: Ext.create('Ext.data.reader.Json', {
+                    model: 'devilry.apps.tutorialstats.simplified.StatConfig',
+                    root: 'items',
+                    successProperty: 'success'
+                }),
+
+                // configure how to read the XML errors
+                errorReader: Ext.create('Ext.data.reader.Json', {
+                    model: 'example.fielderror',
+                    root: 'itemrs',
+                    successProperty: 'success'
+                }),
+
+                items: [{
+                    xtype: 'fieldset',
+                    title: 'Contact Information',
+                    defaultType: 'textfield',
+                    defaults: {
+                        width: 280
+                    },
+                    items: [{
+                        fieldLabel: 'Name',
+                        emptyText: 'Name',
+                        name: 'name'
+                    }, {
+                        fieldLabel: 'User ID',
+                        emptyText: 'User ID',
+                        name: 'user__id'
+                    }]
+                }],
+
+                buttons: [{
+                    text: 'Load',
+                    handler: function() {
+                        formPanel.getForm().load({
+                            url: '/tutorialstats/reststatconfig/1',
+                            params: {wrap_in_items: true},
+                            method: 'GET',
+                            waitMsg: 'Loading...'
+                        });
+                    }
+                }]
+            });
+
         }
 
         Ext.require('devilry.tutorialstats.ConfigSelector');
         Ext.onReady(function() {
             comboBox();
         });
-
-
-
-
     </script>
 {% endblock %}
 
 {% block main %}
     <div id="simpleCombo"></div>
+    <div id="editform"></div>
     <div id="graph"></div>
 {% endblock %}
