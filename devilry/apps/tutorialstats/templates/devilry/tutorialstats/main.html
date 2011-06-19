@@ -1,78 +1,10 @@
 {% extends "devilry/theme/base.html" %}
-{% comment %} vim: set ts=4 sts=4 et sw=4 ft=htmldjango: {% endcomment %}
 {% load extjs %}
-
 
 {% block title %}Devilry gui demo{% endblock %}
 
 {% block headextra %}
     <script type="text/javascript">
-        
-
-
-        function create_restperiodpoints_store(periodpoints_url) {
-            return Ext.create('Ext.data.Store', {
-                model: 'restperiodpoints',
-                autoLoad: true,
-                autoSync: true,
-                proxy: {
-                    type: 'rest',
-                    url: periodpoints_url,
-                    reader: {
-                        type: 'json',
-                        root: 'items'
-                    }
-                }
-            });
-        }
-
-        var chart = null;
-        function create_chart(restperiodpoints_store) {
-            chart = Ext.create('Ext.chart.Chart', {
-                width: 600,
-                height: 400,
-                store: restperiodpoints_store,
-                renderTo: 'graph',
-
-                // Define axes
-                axes: [{
-                    type: 'Numeric',
-                    position: 'bottom',
-                    fields: ['sumperiod'],
-                    title: 'Points this period',
-                    minimum: 0
-                }, {
-                    type: 'Category',
-                    position: 'left',
-                    fields: ['username'],
-                    title: 'Student'
-                }],
-
-                // Define series
-                series: [{
-                    type: 'bar',
-                    axis: 'bottom',
-                    xField: 'username',
-                    yField: ['sumperiod']
-                }]
-            });
-        }
-
-        /* When selecting an item in the combobox */
-        function on_select_combo(field, value, options) {
-            var data = value[0].data;
-            var periodpoints_url = data.periodpoints_url;
-            if(periodpoints_url) {
-                var restperiodpoints_store = create_restperiodpoints_store(periodpoints_url);
-
-                if(chart) {
-                    chart.bindStore(restperiodpoints_store);
-                } else {
-                    create_chart(restperiodpoints_store);
-                }
-            }
-        }
-
         function comboBox() {
             // Get the extjs model generated from the datamodel
             {{ RestStatConfig|extjs_model }}
@@ -80,32 +12,16 @@
             // Get the extjs store generated from the rest config
             var store = {{ RestStatConfig|extjs_store }}
 
-            // Use them to create a simple combobox.
-            var simpleCombo = Ext.create('Ext.form.field.ComboBox', {
-                fieldLabel: 'Select statistics config',
-                renderTo: 'simpleCombo',
-                displayField: 'name',
-                width: 400,
-                labelWidth: 130,
-                store: store,
-                queryMode: 'local',
-                typeAhead: true,
-                listeners: {
-                    'select': on_select_combo
-                }
-            });
 
-            Ext.define('restperiodpoints', {
-                extend: 'Ext.data.Model',
-                fields: [
-                    {"type": "string", "name": "username"},
-                    {"type": "int", "name": "sumperiod"}
-                ],
-                idProperty: 'username'
-            });
+            // Create the chart
+            var chart = Ext.create('devilry.tutorialstats.BarChart', 'graph');
+            //chart.refresh('/tutorialstats/restperiodpoints/1');
+
+            // Create the config selector
+            var configSelector = Ext.create('devilry.tutorialstats.ConfigSelector', store, 'simpleCombo', chart);
         }
 
-
+        Ext.require('devilry.tutorialstats.ConfigSelector');
         Ext.onReady(function() {
             comboBox();
         });
