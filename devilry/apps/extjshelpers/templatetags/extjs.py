@@ -26,7 +26,7 @@ def _iter_fields(simplifiedcls):
 
 def _get_extjs_modelname(restfulcls):
     simplified = restfulcls._meta.simplified
-    return simplified._meta.model._meta.db_table
+    return '{module}.{name}'.format(module=simplified.__module__, name=simplified.__name__)
 
 
 def _field_to_extjs_type(field, fieldname):
