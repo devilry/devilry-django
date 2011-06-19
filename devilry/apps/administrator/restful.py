@@ -1,4 +1,4 @@
-from ..restful import restful_modelapi, ModelRestView
+from ...restful import restful_modelapi, ModelRestView
 from simplified import Node, Subject, Period
 
 

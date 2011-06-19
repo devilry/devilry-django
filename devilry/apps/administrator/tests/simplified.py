@@ -2,8 +2,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+from ....simplified import PermissionDenied
 from ...core import models
-from ...simplified import PermissionDenied
 from ..simplified import Node, Subject
 
 

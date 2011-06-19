@@ -2,7 +2,6 @@ from django.conf.urls.defaults import include
 from django.conf import settings
 
 devilry_urls = [
-    (r'^restful/', include('devilry.apps.restful.urls')),
     (r'^ui/', include('devilry.apps.ui.urls')),
     (r'^student/', include('devilry.apps.student.urls')),
     (r'^examiner/', include('devilry.apps.examiner.urls')),

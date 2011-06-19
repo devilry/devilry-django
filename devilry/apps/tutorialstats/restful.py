@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.db.models import Sum
 
-from ..restful.restview import ModelRestView, RestView, RestResult
-from ..restful.restful_api import restful_api, restful_modelapi, UrlMapping
+from ...restful import (ModelRestView, RestView, RestResult, restful_api,
+        restful_modelapi, UrlMapping)
 from simplified import StatConfig
 
 

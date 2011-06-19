@@ -1,5 +1,4 @@
-from ..simplified.exceptions import PermissionDenied
-from ..simplified.simplified_api import simplified_api
+from ...simplified import PermissionDenied, simplified_api
 import models
 
 

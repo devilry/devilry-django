@@ -23,9 +23,7 @@ INSTALLED_APPS = [
 
     'devilry.apps.core',
     'devilry.apps.ui',
-    'devilry.apps.simplified',
     'devilry.apps.theme',
-    'devilry.apps.restful',
     'devilry.apps.extjshelpers',
 
     'devilry.apps.student',
@@ -41,6 +39,8 @@ INSTALLED_APPS = [
     'devilry.apps.xmlrpc',
     'devilry.apps.xmlrpc_examiner',
     'devilry.apps.xmlrpc_client',
+
+    'devilry.simplified'
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = (

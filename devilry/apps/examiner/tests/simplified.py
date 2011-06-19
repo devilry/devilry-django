@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
+from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
 from ..simplified import Subject, Period, Assignment, AssignmentGroup
-from ...simplified import PermissionDenied
 
 
 pluginloader.autodiscover()
