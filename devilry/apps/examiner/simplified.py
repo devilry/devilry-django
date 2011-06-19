@@ -1,7 +1,5 @@
 from ..core import models
-from simplified_api import simplified_api
-from exceptions import PermissionDenied
-from getqryresult import GetQryResult
+from ..simplified import simplified_api, PermissionDenied, GetQryResult
 
 
 class PublishedWhereIsExaminerMixin(object):

@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 
 from ...core import models
 from ...core import pluginloader
-from ..examiner import Subject, Period, Assignment, AssignmentGroup
-from ..exceptions import PermissionDenied
+from ..simplified import Subject, Period, Assignment, AssignmentGroup
+from ...simplified import PermissionDenied
 
 
 pluginloader.autodiscover()
 
 
-class ExaminerTestCase(TestCase):
+class SimplifiedExaminerTestCase(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -36,7 +36,7 @@ class ExaminerTestCase(TestCase):
         self.superadmin = User.objects.get(username='grandma')
 
 
-class TestExaminerSubject(ExaminerTestCase):
+class TestSimplifiedExaminerSubject(SimplifiedExaminerTestCase):
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
@@ -69,9 +69,9 @@ class TestExaminerSubject(ExaminerTestCase):
             duck1100 = Subject.read(self.superadmin, self.duck1100_core.id)
 
 
-class TestExaminerPeriod(ExaminerTestCase):
+class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestCase):
     def setUp(self):
-        super(TestExaminerPeriod, self).setUp()
+        super(TestSimplifiedExaminerPeriod, self).setUp()
         self.duck1100_h01_core = self.duck1100_core.periods.get(short_name='h01')
 
     def test_search(self):
@@ -115,9 +115,9 @@ class TestExaminerPeriod(ExaminerTestCase):
             duck1100_h01 = Period.read(self.superadmin, self.duck1100_h01_core.id)
 
 
-class TestExaminerAssignment(ExaminerTestCase):
+class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
     def setUp(self):
-        super(TestExaminerAssignment, self).setUp()
+        super(TestSimplifiedExaminerAssignment, self).setUp()
         self.duck1100_h01_week1_core = self.duck1100_core.periods.get(
                 short_name='h01').assignments.get(short_name='week1')
 
@@ -181,10 +181,10 @@ class TestExaminerAssignment(ExaminerTestCase):
 
 
 
-class TestExaminerAssignmentGroup(ExaminerTestCase):
+class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
 
     def setUp(self):
-        super(TestExaminerAssignmentGroup, self).setUp()
+        super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
         duck3580_h01_week1_core = self.duck3580_core.periods.get(
                 short_name='h01').assignments.get(short_name='week1')
         self.group_core = duck3580_h01_week1_core.assignmentgroups.all()[0]

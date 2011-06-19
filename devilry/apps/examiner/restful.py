@@ -1,8 +1,8 @@
 from django import forms
 
-from ..simplified.examiner import (Subject, Period, Assignment, AssignmentGroup)
-import fields
-from base import SearchFormBase
+from ..simplified import (Subject, Period, Assignment, AssignmentGroup)
+from ..restful import fields
+from ..restful import SearchFormBase
 
 
 #class RestSubject(RestView):
