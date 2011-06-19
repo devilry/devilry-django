@@ -159,7 +159,7 @@ class ModelRestView(RestView):
 
     def crud_search(self, request, **kwargs):
         """ Maps to the ``search`` method of the simplified class. """
-        if 'use_getqry' in self.request.GET:
+        if 'data_in_qrystring' in self.request.GET:
             data = self.request.GET
         else:
             try:

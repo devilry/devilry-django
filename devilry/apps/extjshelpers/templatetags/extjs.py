@@ -50,11 +50,24 @@ def extjs_model(restfulcls):
     idprop = 'id'
     modelname = _get_extjs_modelname(restfulcls)
     modelfields = json.dumps(modelfields)
+    resturl = restfulcls.get_rest_url()
     js = """
     Ext.define('%(modelname)s', {
         extend: 'Ext.data.Model',
         fields: %(modelfields)s,
-        idProperty: '%(idprop)s'
+        idProperty: '%(idprop)s',
+        proxy: {
+            type: 'rest',
+            url: '%(resturl)s',
+            extraParams: {data_in_qrystring: true},
+            reader: {
+                type: 'json',
+                root: 'items'
+            },
+            writer: {
+                type: 'json'
+            }
+        }
     });""" % vars()
     return mark_safe(js)
 
@@ -62,23 +75,9 @@ def extjs_model(restfulcls):
 @register.filter
 def extjs_store(restfulcls):
     modelname = _get_extjs_modelname(restfulcls)
-    resturl = restfulcls.get_rest_url()
     js = """ Ext.create('Ext.data.Store', {
         model: '%(modelname)s',
         autoLoad: true,
-        autoSync: true,
-        proxy: {
-            type: 'rest',
-            url: '%(resturl)s',
-            extraParams: {use_getqry: true},
-            reader: {
-                type: 'json',
-                root: 'items'
-            },
-            writer: {
-                type: 'json',
-                allowSingle: false
-            }
-        }
+        autoSync: true
     });""" % vars()
     return mark_safe(js)

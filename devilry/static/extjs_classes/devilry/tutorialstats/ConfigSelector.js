@@ -1,10 +1,13 @@
 Ext.define('devilry.tutorialstats.ConfigSelector', {
     requires: 'devilry.tutorialstats.BarChart',
+    extend: 'Ext.form.field.ComboBox',
 
-    constructor: function(store, renderTo, chart) {
+    constructor: function(store, renderTo, chart, editform) {
         this.chart = chart;
+        this.editform = editform;
+        this.store = store;
 
-        this.combo = Ext.create('Ext.form.field.ComboBox', {
+        this.callParent([{
             fieldLabel: 'Select statistics config',
             renderTo: renderTo,
             displayField: 'name',
@@ -17,7 +20,7 @@ Ext.define('devilry.tutorialstats.ConfigSelector', {
                 scope: this, // Without this, on_select_combo runs within the scope of the object that fired the event!
                 select: this.on_select_combo
             }
-        });
+        }]);
 
         return this;
     },
@@ -30,5 +33,9 @@ Ext.define('devilry.tutorialstats.ConfigSelector', {
         if(periodpoints_url) {
             this.chart.refresh(periodpoints_url);
         }
+
+        var item = store.getById(data.id);
+        console.log(item);
+        this.editform.getForm().loadRecord(item);
     }
 });
