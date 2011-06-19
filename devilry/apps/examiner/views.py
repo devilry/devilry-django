@@ -12,7 +12,7 @@ from ..core import gradeplugin
 from ..ui.widgets import DevilryDateTimeWidget
 from ..ui.messages import UiMessages
 from ..ui.filtertable import Columns, Col
-from ..admin.assignmentgroup_filtertable import (
+from ..administrator.assignmentgroup_filtertable import (
         AssignmentGroupsFilterTableBase, AssignmentGroupsAction,
         FilterStatus, FilterIsPassingGrade, FilterNumberOfCandidates,
         FilterAfterDeadline, create_deadlines_base, clear_deadlines_base,

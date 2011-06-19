@@ -3,11 +3,11 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from ...core import models
-from ..administrator import Node, Subject
-from ..exceptions import PermissionDenied
+from ...simplified import PermissionDenied
+from ..simplified import Node, Subject
 
 
-class TestAdministratorNode(TestCase):
+class TestSimplifiedAdministratorNode(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -159,7 +159,7 @@ class TestAdministratorNode(TestCase):
         self.assertEquals(len(qryset), 1)
 
 
-class TestAdministratorSubject(TestCase):
+class TestSimplifiedAdministratorSubject(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):

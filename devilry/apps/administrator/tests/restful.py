@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
-from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 
-from ..administrator import RestNode
+from ..restful import RestNode
 from ...core import models
 
 
@@ -27,9 +26,9 @@ class TestAdministratorRestNode(TestCase):
         self.univ = models.Node.objects.get(short_name='univ')
         self.univ.admins.add(clarabelle)
 
-    def test_get(self):
-        url = reverse('devilry-restful-administrator-nodesearch')
-        r = self.client.get(url, data={'id':1},
+    def test_search(self):
+        url = RestNode.get_rest_url()
+        r = self.client.get(url, data={'data_in_qrystring': True},
                 content_type='application/json')
         data = json.loads(r.content)['items']
         first = data[0]
@@ -40,20 +39,22 @@ class TestAdministratorRestNode(TestCase):
             u'parentnode__id': None
             })
 
-    def test_post(self):
-        url = reverse('devilry-restful-administrator-node', args=[self.univ.id])
+    def test_create(self):
+        self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
+        url = RestNode.get_rest_url(self.univ.id)
         data = dict(short_name='testnode', long_name='Test Node', parentnode=None)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         response = json.loads(r.content)
         self.assertTrue(response['success'])
+        self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 1)
         fromdb = models.Node.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'testnode')
         self.assertEquals(fromdb.long_name, 'Test Node')
         self.assertEquals(fromdb.parentnode, None)
 
-    def test_post_errors(self):
-        url = reverse('devilry-restful-administrator-node', args=[self.univ.id])
+    def test_create_errors(self):
+        url = RestNode.get_rest_url(self.univ.id)
         data = dict(short_name='uniV', long_name='Univ', parentnode=None)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
@@ -63,16 +64,16 @@ class TestAdministratorRestNode(TestCase):
             fielderrors = {u'short_name': [u"Can only contain numbers, lowercase letters, '_' and '-'. "]},
             non_field_errors = []))
 
-    def test_put(self):
-        url = reverse('devilry-restful-administrator-node', args=[self.univ.id])
+    def test_update(self):
+        url = RestNode.get_rest_url(self.univ.id)
         data = dict(id=2, short_name='univ', long_name='Univ', parentnode=None)
         r = self.client.put(url, data=json.dumps(data),
                 content_type='application/json')
         response = json.loads(r.content)
         self.assertEquals(response, dict(success=True, id=2))
 
-    def test_put_errors(self):
-        url = reverse('devilry-restful-administrator-node', args=[self.univ.id])
+    def test_update_errors(self):
+        url = RestNode.get_rest_url(self.univ.id)
         data = dict(id=2, short_name='uniV', long_name='Univ', parentnode=None)
         r = self.client.put(url, data=json.dumps(data),
                 content_type='application/json')
@@ -81,3 +82,12 @@ class TestAdministratorRestNode(TestCase):
             success = False,
             fielderrors = {u'short_name': [u"Can only contain numbers, lowercase letters, '_' and '-'. "]},
             non_field_errors = []))
+
+
+    def test_delete(self):
+        url = RestNode.get_rest_url(self.univ.id)
+
+        # TODO: delete should not be recursive
+        self.assertEquals(models.Node.objects.filter(id=self.univ.id).count(), 1)
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(models.Node.objects.filter(id=self.univ.id).count(), 0)

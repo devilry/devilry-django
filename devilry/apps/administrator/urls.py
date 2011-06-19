@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 
+import restful
 
 # Node, Subject, Period and Assignment has exactly the same url-format
 generic_urls = []
@@ -22,7 +23,7 @@ for clsname in ['node', 'subject', 'period', 'assignment']:
             name='devilry-admin-list_%(clsname)ss_json' % vars()),
         ]
 
-urlpatterns = patterns('devilry.apps.admin',
+urlpatterns = patterns('devilry.apps.administrator',
     url(r'^assignments/(?P<assignment_id>\d+)/group/edit/(?P<assignmentgroup_id>\d+)$',
         'views.assignmentgroup.edit_assignmentgroup',
         name='devilry-admin-edit_assignmentgroup'),
@@ -85,6 +86,9 @@ urlpatterns = patterns('devilry.apps.admin',
         'views.assignment.assignmentgroups_json',
         name='devilry-admin-assignmentgroups-json'),
 
+    restful.RestNode.create_rest_url(),
+    restful.RestSubject.create_rest_url(),
+    restful.RestPeriod.create_rest_url(),
 
     *generic_urls
 )

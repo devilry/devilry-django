@@ -1,6 +1,5 @@
-from ..simplified.administrator import Node, Subject, Period
-from restview import ModelRestView
-from restful_api import restful_modelapi
+from ..restful import restful_modelapi, ModelRestView
+from simplified import Node, Subject, Period
 
 
 @restful_modelapi

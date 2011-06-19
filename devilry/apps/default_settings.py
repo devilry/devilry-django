@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 
     'devilry.apps.student',
     'devilry.apps.examiner',
-    'devilry.apps.admin',
+    'devilry.apps.administrator',
     'devilry.apps.grade_approved',
     'devilry.apps.grade_default',
     'devilry.apps.grade_schema',

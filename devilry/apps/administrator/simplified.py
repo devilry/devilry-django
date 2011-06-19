@@ -1,7 +1,18 @@
 from ..core import models
-from simplified_api import simplified_api
-from can_save_authmixin import CanSaveAuthMixin
+from ..simplified import simplified_api, PermissionDenied
 
+
+
+class CanSaveAuthMixin(object):
+    @classmethod
+    def write_authorize(cls, user, obj):
+        if not obj.can_save(user):
+            raise PermissionDenied()
+
+    @classmethod
+    def read_authorize(cls, user, obj):
+        if not obj.can_save(user):
+            raise PermissionDenied()
 
 
 @simplified_api
