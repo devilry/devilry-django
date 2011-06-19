@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'devilry.apps.xmlrpc_examiner',
     'devilry.apps.xmlrpc_client',
 
+    # Not apps, but here for django to discover them:
     'devilry.simplified'
 ]
 
