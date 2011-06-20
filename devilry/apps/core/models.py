@@ -1064,6 +1064,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
         Calculated as: `float(pointscale)/maxpoints * points`.
 
+        **Note:** This field is a cache for the calculation above.
+
     .. attribute:: NO_DELIVERIES
 
         The numberic value corresponding to :attr:`status` *no deliveries*.
