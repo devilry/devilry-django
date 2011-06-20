@@ -7,6 +7,9 @@ def getdir(filename):
 def getthisdir():
     return getdir(__file__)
 
+def getreporoot():
+    return abspath(dirname(dirname(getthisdir())))
+
 def getscriptsdir():
     thisdir = getthisdir()
     return join(dirname(thisdir), 'scripts')
