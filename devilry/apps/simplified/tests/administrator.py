@@ -171,8 +171,7 @@ class TestAdministratorSubject(TestCase):
         self.univ.admins.add(self.clarabelle)
         self.duckburgh.admins.add(self.clarabelle)
         self.daisy = User.objects.get(username="daisy")
-
-
+    
     def test_read_model(self):
         subject = Subject.read_model(self.clarabelle, id=self.duck1100.id)
         subject = Subject.read_model(self.grandma, self.duck1100.id) # superuser allowed
@@ -214,6 +213,40 @@ class TestAdministratorSubject(TestCase):
         self.assertEquals(subject.long_name, 'Test')
         self.assertEquals(subject.parentnode, self.univ)
 
-        subject = Node.create(self.grandma, short_name='test2', **kw) # superuser allowed
+        subject = Subject.create(self.grandma, short_name='test2', **kw) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            subject = Node.create(self.daisy, short_name='test3', **kw)
+            subject = Subject.create(self.daisy, short_name='test3', **kw)
+
+    def test_update(self):
+        self.assertEquals(self.duck1100.short_name, 'duck1100')
+
+        kw = dict(id=self.duck1100.id,
+                    short_name='test',
+                    long_name='Test',
+                    parentnode_id=self.univ.id)
+        subject = Subject.update(self.clarabelle, **kw)
+        self.assertEquals(subject.short_name, 'test')
+        self.assertEquals(subject.long_name, 'Test')
+        self.assertEquals(subject.parentnode, self.univ)
+        
+        with self.assertRaises(PermissionDenied):
+            subject = Subject.update(self.daisy, **kw)
+    
+    def test_delete_asnodeadmin(self):
+        Subject.delete(self.clarabelle, id=self.duck1100.id)
+        with self.assertRaises(models.Subject.DoesNotExist):
+            subject = models.Subject.objects.get(id=self.duck1100.id)
+
+    def test_delete_asnodeadmin_by_short_name(self):
+        Subject.delete(self.clarabelle, dict(short_name='duck1100'))
+        with self.assertRaises(models.Subject.DoesNotExist):
+            Subject.delete(self.clarabelle, dict(short_name='duck1100'))
+
+    def test_delete_assuperadmin(self):
+        Subject.delete(self.grandma, id=self.duck1100.id)
+        with self.assertRaises(models.Subject.DoesNotExist):
+            subject = models.Subject.objects.get(id=self.duck1100.id)
+
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            Subject.delete(self.daisy, id=self.duck1100.id)
