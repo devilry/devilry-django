@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # Create simplified test DB.
 
+#################################################################
+# WARNING: DO NOT CHANGE this file lightly. The resulting
+# database is used to generate the simplifed.json fixture,
+# which is used in many tests.
+#################################################################
+
 from subprocess import call
 from os.path import join
 from common import getscriptsdir
