@@ -4,12 +4,12 @@ EXAMPLEDATA_BACKUP=exampledata-backup
 HTMLHELP=Makefile.readme.rst.html
 NUM_STUDENTS=30
 NUM_EXAMINERS=2
-NUM_SIMPLETEST_EXAMINERS=2
-NUM_SIMPLETEST_STUDENTS=12
+NUM_SIMPLETEST_EXAMINERS=1
+NUM_SIMPLETEST_STUDENTS=2
 CREATE_TESTGROUPS=python ../../scripts/create_testgroups.py
 DEVILRY_DIR=../..
 BASE_USERS_JSON=fixtures/users.json
-SIMPLIFIED_DATA_JSON=${DEVILRY_DIR}/apps/simplified/fixtures/simplified/data.json
+SIMPLIFIED_DATA_JSON=${DEVILRY_DIR}/simplified/fixtures/simplified/data.json
 
 
 
