@@ -80,7 +80,7 @@ if __name__ == '__main__':
     create_testgroups(
             path = 'duckburgh.univ:duck3580.fall01',
             numstudents = 2, numexaminers = 1,
-            subject_long_name = 'DUCK1080 - Making the web work',
+            subject_long_name = 'DUCK3580 - Making the web work',
             period_long_name = 'Fall year zero',
             assignments = [
                 {'shortname': 'week1', 'deadlineprofile': '-30',
