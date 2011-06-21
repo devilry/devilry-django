@@ -16,7 +16,8 @@ def create_archive_from_assignmentgroups(assignmentgroups, file_name, archive_ty
     archive = get_archive_from_archive_type(archive_type)
     it = iter_archive_assignmentgroups(archive, assignmentgroups)
     response = HttpResponse(it, mimetype="application/%s" % archive_type)
-    response["Content-Disposition"] = "attachment; filename=%s.%s" % (file_name, archive_type)  
+    response["Content-Disposition"] = "attachment; filename=%s.%s" % \
+                                      (file_name, archive_type)  
     return response
 
 
@@ -31,7 +32,8 @@ def create_archive_from_delivery(delivery, archive_type):
     group_name = _get_assignmentgroup_name(group)
     it = iter_archive_deliveries(archive, group_name, assignment.get_path(), [delivery])
     response = HttpResponse(it, mimetype="application/%s" % archive_type)  
-    response["Content-Disposition"] = "attachment; filename=%s.%s" % (assignment.get_path(), archive_type)  
+    response["Content-Disposition"] = "attachment; filename=%s.%s" % \
+                                      (assignment.get_path(), archive_type)  
     return response
 
 
@@ -40,13 +42,14 @@ def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
     Adds files one by one from the list of deliveries into the archive. 
     After writing each file to the archive, the new bytes in the archive
     is yielded. If a file is bigger than DEVILRY_MAX_ARCHIVE_CHUNK_SIZE,
-    Only DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes are written before it's yielded.
+    only DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes are written before it's yielded.
+    The returned object is an iterator.
     """
     include_delivery_explanation = False
     if len(deliveries) > 1:
         include_delivery_explanation = True
-        multiple_deliveries_content = "Delivery-ID    File count    Total size     Delivery time  \r\n"
-
+        multiple_deliveries_content = "Delivery-ID    File count    Total size"\
+                                      "     Delivery time  \r\n"
     for delivery in deliveries:
         metas = delivery.filemetas.all()
         delivery_size = 0
@@ -61,8 +64,9 @@ def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
             # Write only chunks of size DEVILRY_MAX_ARCHIVE_CHUNK_SIZE to the archive
             if f.size > settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE:
                 if not archive.can_write_chunks():
-                    raise ArchiveException("The size of file %s is greater than the "\
-                                           "maximum allowed size. Download stream aborted.")
+                    raise ArchiveException("The size of file %s is greater than "\
+                                            "the maximum allowed size. Download "\
+                                            "stream aborted.")
                 chunk_size = settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE
                 # Open file stream for reading
                 file_to_stream = f.read_open()
@@ -80,9 +84,12 @@ def iter_archive_deliveries(archive, group_name, directory_prefix, deliveries):
                 # Read the content from the streamable archive and yield the data
                 yield archive.read()            
         if include_delivery_explanation:
-            multiple_deliveries_content += "  %3d            %3d          %5d        %s\r\n" % \
-                                           (delivery.number, len(metas), delivery_size,
-                                            date_format(delivery.time_of_delivery, "DATETIME_FORMAT"))
+            multiple_deliveries_content += "  %3d            %3d          %5d"\
+                                           "%s\r\n" % \
+                                           (delivery.number, len(metas), 
+                                            delivery_size,
+                                            date_format(delivery.time_of_delivery, 
+                                           "DATETIME_FORMAT"))
     # Adding file explaining multiple deliveries
     if include_delivery_explanation:
         archive.add_file("%s/%s/%s" %
@@ -127,16 +134,28 @@ def get_archive_from_archive_type(archive_type):
     return archive
 
 
-def verify_groups_not_exceeding_max_file_size(groups):
-    for g in groups:
-        _verify_deliveries_not_exceeding_max_file_size(g.deliveries.all())
+def verify_groups_not_exceeding_max_file_size(assignmentgroups):
+    """
+    For each assignmentgroups in groups, calls 
+    :meth:`verify_deliveries_not_exceeding_max_file_size`. If the size of a file
+    in a delivery exceeds the settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE, an 
+    ArchiveException is raised.
+    """
+    for ag in assignmentgroups:
+        verify_deliveries_not_exceeding_max_file_size(ag.deliveries.all())
+
 
 def verify_deliveries_not_exceeding_max_file_size(deliveries):
+    """
+    Goes through all the files in each deliverery, and if the size of a file
+    exceeds the DEVILRY_MAX_ARCHIVE_CHUNK_SIZE, an ArchiveException is raised.
+    """
     max_size = settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE
     for d in deliveries:
         for f_meta in d.filemetas.all():
             if f_meta.size > max_size:
                 raise ArchiveException()
+
 
 def inclusive_range(start, stop, step=1):
     """
@@ -152,14 +171,16 @@ def inclusive_range(start, stop, step=1):
         l.append(stop)
     return l
 
+
 def _get_assignmentgroup_name(assigmentgroup):
     """
-    Returns a string containing the group member of the
+    Returns a string containing the group members of the
     assignmentgroup separated by '-'.
     """
     cands = assigmentgroup.get_candidates()
     cands = cands.replace(", ", "-")
     return cands
+
 
 def _get_dictionary_with_name_matches(assignmentgroups):
     """

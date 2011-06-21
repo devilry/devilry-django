@@ -13,5 +13,9 @@
 .. autofunction:: devilry.utils.delivery_collection.iter_archive_deliveries(archive, group_name, directory_prefix, deliveries)
 
 .. autofunction:: devilry.utils.delivery_collection.iter_archive_assignmentgroups(archive, assignmentgroups)
+
+.. autofunction:: devilry.utils.delivery_collection.verify_groups_not_exceeding_max_file_size(assignmentgroups)
+
+.. autofunction:: devilry.utils.delivery_collection.verify_deliveries_not_exceeding_max_file_size(deliveries)
    
    
