@@ -1569,14 +1569,12 @@ class Delivery(models.Model, AbstractIsAdmin):
     successful = models.BooleanField(blank=True, default=False)
 
     def delivered_too_late(self):
-        """ Compares the deadline and time of delivery with 1 minute in slack.
-        With a deadline at 15:00, delivering on 15:00:40 (forty seconds past 
-        the deadline) will not be registered as 'too late'
+        """ Compares the deadline and time of delivery.
+        If time_of_delivery is greater than the deadline, return True.
         """
         if self.deadline_tag.is_head:
             return False
-        diff = self.time_of_delivery - self.deadline_tag.deadline
-        return diff > timedelta(minutes=1)
+        return self.time_of_delivery > self.deadline_tag.deadline
     after_deadline = property(delivered_too_late)
 
     class Meta:
@@ -1613,10 +1611,10 @@ class Delivery(models.Model, AbstractIsAdmin):
                 
         # Find correct deadline and tag the delivery 
         last_deadline = None
-        for tmp in assignment_group.deadlines.all().order_by('deadline'):
-            last_deadline = tmp
-            if d.time_of_delivery < tmp.deadline:
-                d.deadline_tag = tmp
+        for deadline in assignment_group.deadlines.all().order_by('deadline'):
+            last_deadline = deadline
+            if d.time_of_delivery < deadline.deadline:
+                d.deadline_tag = deadline
                 break
         # Delivered too late, so use the last deadline
         if d.deadline_tag == None and not last_deadline == None:
