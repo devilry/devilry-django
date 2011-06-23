@@ -1,10 +1,10 @@
-.. _devilry.apps.core.utils:
+.. _devilry.utils.ordereddict:
 
 ==========================================================
-:mod:`devilry.apps.core.utils` --- Devilry core utilities
+:mod:`devilry.utils.ordereddict`
 ==========================================================
 
-.. class:: devilry.apps.core.utils.OrderedDict
+.. class:: devilry.utils.OrderedDict
 
     If python version >=2.7, `collections.OrderedDict`_ is imported. For older
     python versions, the fallback mentioned in the OrderedDict docs is

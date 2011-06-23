@@ -21,7 +21,8 @@ from ..administrator.assignmentgroup_filtertable import (
 from ...utils.delivery_collection import (create_archive_from_assignmentgroups,
                                                     create_archive_from_delivery,
                                                     verify_groups_not_exceeding_max_file_size,
-                                                    verify_deliveries_not_exceeding_max_file_size)
+                                                    verify_deliveries_not_exceeding_max_file_size,
+                                          ArchiveException)
 from ...utils.assignmentgroup import GroupDeliveriesByDeadline
 from django.conf import settings
 
@@ -339,10 +340,10 @@ def download_file_collection(request, assignment_id, archive_type=None):
     if archive_type == "zip":
         try:
             verify_groups_not_exceeding_max_file_size(groups)
-        except Exception, e:
+        except ArchiveException:
             return HttpResponseForbidden(_("One or more files exceeds the maximum"\
                                            " file size for ZIP files."))
-    return create_archive_from_assignmentgroups(request, groups, assignment.get_path(), archive_type)
+    return create_archive_from_assignmentgroups(groups, assignment.get_path(), archive_type)
 
 
 @login_required
@@ -356,10 +357,10 @@ def download_delivery(request, delivery_id, archive_type=None):
     if archive_type == "zip":
         try:
             verify_deliveries_not_exceeding_max_file_size([delivery])
-        except Exception, e:
+        except ArchiveException:
             return HttpResponseForbidden(_("One or more files exceeds the maximum"\
                                            " file size for ZIP files."))
-    return create_archive_from_delivery(request, delivery, archive_type)
+    return create_archive_from_delivery(delivery, archive_type)
 
 @login_required
 def download_group_deliveries(request, delivery_id, archive_type=None):
@@ -370,7 +371,7 @@ def download_group_deliveries(request, delivery_id, archive_type=None):
         return HttpResponseForbidden(_("Forbidden: You tried to download"\
                                        " deliveries from an assignment you"\
                                        " do not have access to."))
-    return create_archive_from_assignmentgroups(request, [group], group.parentnode.get_path(), archive_type)
+    return create_archive_from_assignmentgroups([group], group.parentnode.get_path(), archive_type)
 
 @login_required
 def create_deadlines(request, assignment_id):

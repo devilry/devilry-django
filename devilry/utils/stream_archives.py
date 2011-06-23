@@ -1,4 +1,4 @@
-from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
+from zipfile import ZipFile, ZIP_DEFLATED
 import tarfile, copy
 
 class MemoryIO(object):
