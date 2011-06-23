@@ -5,9 +5,8 @@ import restful
 import views
 
 urlpatterns = patterns('devilry.apps.tutorialstats',
-    url(r'^rest/(?P<pk>\d+)?$',
-        login_required(restful.RestStatConfig.as_view()),
-        name='devilry-tutorialstats-rest'),
+    restful.RestStatConfig.create_rest_url(),
+    restful.RestPeriodPoints.create_rest_url(),
     url(r'^$',
         login_required(views.main),
         name='devilry-tutorialstats-main'),

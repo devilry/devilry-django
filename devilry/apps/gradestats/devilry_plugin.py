@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
-from ..admin.actionregistry import \
+from ..administrator.actionregistry import \
         periodactions as admin_periodactions
 from ..student.actionregistry import \
         periodactions as student_periodactions, \

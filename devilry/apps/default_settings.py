@@ -23,23 +23,20 @@ INSTALLED_APPS = [
 
     'devilry.apps.core',
     'devilry.apps.ui',
-    'devilry.apps.simplified',
     'devilry.apps.theme',
-    'devilry.apps.restful',
+    'devilry.apps.extjshelpers',
 
     'devilry.apps.student',
     'devilry.apps.examiner',
-    'devilry.apps.admin',
+    'devilry.apps.administrator',
     'devilry.apps.grade_approved',
     'devilry.apps.grade_default',
-    'devilry.apps.grade_schema',
     'devilry.apps.grade_rstschema',
     'devilry.apps.quickdash',
     'devilry.apps.gradestats',
 
-    'devilry.apps.xmlrpc',
-    'devilry.apps.xmlrpc_examiner',
-    'devilry.apps.xmlrpc_client',
+    # Not apps, but here for django to discover them:
+    'devilry.simplified'
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = (

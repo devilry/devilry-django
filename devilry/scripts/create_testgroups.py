@@ -285,7 +285,7 @@ if __name__ == "__main__":
             logging.debug("Deadline is in the future. Made deliveries, but "\
                     "no feedback")
             pass # No feedback
-            
+
 
 
     assignmentpath = args[0]
@@ -302,7 +302,7 @@ if __name__ == "__main__":
         raise SystemExit("--grade-plugin is required. Possible values: %s" %
                 ', '.join(['"%s"' % key for key, i in registry.iteritems()]))
     gradeplugin = opt.gradeplugin
-    
+
     if opt.deadline:
         deadline = datetime.strptime(opt.deadline, "%Y-%m-%d")
     else:

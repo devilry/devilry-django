@@ -2,7 +2,6 @@
     :hidden:
     
     core.models
-    core.utils
     core.deliverystore
 
     plugins
@@ -16,6 +15,8 @@
 
     designdetails
 
+    utils.assignmentgroup
+    utils.ordereddict
 
 ======================================================================
 Devilry developer documentation overview
@@ -58,5 +59,16 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+
+Utils
+######################################################################
+
+* :ref:`devilry.utils.ordereddict`
+* :ref:`devilry.utils.assignmentgroup`
+* :ref:`devilry.utils.devilry_email`
+* :ref:`devilry.utils.groupnodes`
+* :ref:`devilry.utils.delivery_collection`
 
 
