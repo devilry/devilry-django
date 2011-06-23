@@ -228,16 +228,16 @@ class TestSimplifiedAdministratorSubject(TestCase):
                     short_name='test',
                     long_name='Test',
                     parentnode_id=self.univ.id)
-        subject = Subject.update(self.clarabelle, **kw)
+        subject = Subject.update(self.clarabelle, idorkw=self.duck1100.id, **kw)
         self.assertEquals(subject.short_name, 'test')
         self.assertEquals(subject.long_name, 'Test')
         self.assertEquals(subject.parentnode, self.univ)
         
         with self.assertRaises(PermissionDenied):
-            subject = Subject.update(self.daisy, **kw)
+            subject = Subject.update(self.daisy, idorkw=self.duck1100.id, **kw)
     
     def test_delete_asnodeadmin(self):
-        Subject.delete(self.clarabelle, id=self.duck1100.id)
+        Subject.delete(self.clarabelle, idorkw=self.duck1100.id)
         with self.assertRaises(models.Subject.DoesNotExist):
             subject = models.Subject.objects.get(id=self.duck1100.id)
 
@@ -247,10 +247,10 @@ class TestSimplifiedAdministratorSubject(TestCase):
             Subject.delete(self.clarabelle, dict(short_name='duck1100'))
 
     def test_delete_assuperadmin(self):
-        Subject.delete(self.grandma, id=self.duck1100.id)
+        Subject.delete(self.grandma, idorkw=self.duck1100.id)
         with self.assertRaises(models.Subject.DoesNotExist):
             subject = models.Subject.objects.get(id=self.duck1100.id)
 
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):
-            Subject.delete(self.daisy, id=self.duck1100.id)
+            Subject.delete(self.daisy, idorkw=self.duck1100.id)
