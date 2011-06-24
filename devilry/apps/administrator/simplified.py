@@ -82,7 +82,8 @@ class Period(CanSaveAuthMixin):
         model = models.Period
         resultfields = ['id', 'short_name', 'long_name', 'parentnode__id',
                 'start_time', 'end_time']
-        searchfields = ['short_name', 'long_name']
+        searchfields = ['short_name', 'long_name', 'parentnode__short_name',
+                'parentnode__long_name']
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
