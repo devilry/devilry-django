@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Clear and initialize exampledb.
+# Clear and initialize exampledb. Creates a database with the standard users, but no other devilry data.
 
 if __name__ == '__main__':
     from os import mkdir
