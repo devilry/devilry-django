@@ -83,3 +83,21 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
             searchfields.append('candidates__student__username')
         result = GetQryResult(cls._meta.resultfields, searchfields, qryset)
         return result
+
+
+@simplified_api
+class Delivery(PublishedWhereIsExaminerMixin):
+    class Meta:
+        model = models.Delivery
+        resultfields = ['time_of_delivery', 'number', 'delivered_by'] # Result from read() (what the dict contains)
+        searchfields = [
+                #'delivered_by',
+                'assignment_group__parentnode__short_name', # Name of assignment
+                'assignment_group__parentnode__long_name', # Name of assignment
+                'assignment_group__parentnode__parentnode__short_name', # Name of period
+                'assignment_group__parentnode__parentnode__long_name', # Name of period
+                'assignment_group__parentnode__parentnode__parentnode__short_name', # Name of subject
+                'assignment_group__parentnode__parentnode__parentnode__long_name' # Name of subject
+                ] # What should search() search from
+        methods = ['search', 'read']
+

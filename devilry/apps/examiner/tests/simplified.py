@@ -34,6 +34,7 @@ class SimplifiedExaminerTestCase(TestCase):
         self.testexaminerNoPerm = User(username='testuserNoPerm')
         self.testexaminerNoPerm.save()
         self.superadmin = User.objects.get(username='grandma')
+        self.assertTrue(self.superadmin.is_superuser)
 
 
 class TestSimplifiedExaminerSubject(SimplifiedExaminerTestCase):
@@ -188,7 +189,6 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1')
         self.group_core = duck3580_fall01_week1_core.assignmentgroups.all()[0]
-
     def test_search(self):
         assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
@@ -252,3 +252,28 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
             group = AssignmentGroup.read(self.duck1080examiner, self.group_core.id)
         with self.assertRaises(PermissionDenied):
             group = AssignmentGroup.read(self.superadmin, self.group_core.id)
+
+class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
+
+    def setUp(self):
+        super(TestSimplifiedExaminerDelivery, self).setUp()
+        duck3580_fall01_week1_core = self.duck3580_core.periods.get(
+                short_name='fall01').assignments.get(short_name='week1') #assingment group
+        self.delivery_core = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] #single delivery
+        print "delivery = ", self.delivery_core.delivered_by
+        
+    def test_search(self):
+        pass
+
+    def test_search_security(self):
+        pass
+
+    def test_read(self):
+        delivery = Delivery.read(self.duck3580examiner, self.duck3580_core.id)
+        self.assertEquals(delivery, dict(
+            time_of_delivery = self.delivery_core.time_of_delivery,
+            number = self.delivery_core.number,
+            delivered_by = self.delivery_core.delivered_by))
+
+    def test_read_security(self):
+        pass
