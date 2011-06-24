@@ -286,7 +286,7 @@ class TestSimplifiedAdministratorPeriod(TestCase):
     def setUp(self):
         self.grandma = User.objects.get(username='grandma') # superuser
         self.duck1100_h01_core = models.Period.objects.get(parentnode__short_name='duck1100', 
-                short_name='h01')
+                short_name='spring01')
         self.clarabelle = User.objects.get(username="clarabelle")
         self.univ = models.Node.objects.get(short_name='univ')
         self.duckburgh = models.Node.objects.get(short_name='duckburgh')
@@ -314,11 +314,11 @@ class TestSimplifiedAdministratorPeriod(TestCase):
     def test_read_model(self):
         period = Period.read_model(self.clarabelle,
                 idorkw=self.duck1100_h01_core.id)
-        self.assertEquals(period.short_name, 'h01')
+        self.assertEquals(period.short_name, 'spring01')
         period = Period.read_model(self.clarabelle,
                 dict(short_name=self.duck1100_h01_core.short_name,
                     parentnode__short_name = 'duck1100'))
-        self.assertEquals(period.short_name, 'h01')
+        self.assertEquals(period.short_name, 'spring01')
 
     def test_read_model_security(self):
         period = Period.read_model(self.grandma, 
@@ -356,7 +356,7 @@ class TestSimplifiedAdministratorPeriod(TestCase):
             period = Period.create(self.daisy, short_name='test3', **kw)
 
     def test_update(self):
-        self.assertEquals(self.duck1100_h01_core.short_name, 'h01')
+        self.assertEquals(self.duck1100_h01_core.short_name, 'spring01')
         
         kw = dict(
                 short_name = 'test1',
@@ -388,7 +388,7 @@ class TestSimplifiedAdministratorPeriod(TestCase):
             period = models.Period.objects.get(id=self.duck1100_h01_core.id)
 
     def test_delete_asnodeadmin_by_short_name(self):
-        Period.delete(self.clarabelle, dict(short_name='h01',
+        Period.delete(self.clarabelle, dict(short_name='spring01',
             parentnode__short_name='duck1100'))
         with self.assertRaises(models.Period.DoesNotExist):
             period = models.Period.objects.get(id=self.duck1100_h01_core.id)
@@ -408,17 +408,19 @@ class TestSimplifiedAdministratorPeriod(TestCase):
         self.assertEquals(len(qryset), len(periods))
         self.assertEquals(qryset[0].short_name, periods[0].short_name)
 
-        qryset = Period.search(self.grandma, query="h0").qryset
-        self.assertEquals(len(qryset), 3)
+        qryset = Period.search(self.grandma, query="spring0").qryset
+        self.assertEquals(len(qryset), 1)
+        qryset = Period.search(self.grandma, query="fall").qryset
+        self.assertEquals(len(qryset), 2)
         qryset = Period.search(self.grandma, query="01").qryset
         self.assertEquals(len(qryset), len(periods))
         qryset = Period.search(self.grandma, query="1100").qryset
         self.assertEquals(len(qryset), 1)
 
     def test_search_security(self):
-        qryset = Period.search(self.daisy, query="h01").qryset
+        qryset = Period.search(self.daisy, query="spring01").qryset
         self.assertEquals(len(qryset), 0)
         self.duck1100_h01_core.admins.add(self.daisy)
-        qryset = Period.search(self.daisy, query="h01").qryset
+        qryset = Period.search(self.daisy, query="spring01").qryset
         self.assertEquals(len(qryset), 1)
 
