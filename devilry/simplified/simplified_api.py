@@ -5,7 +5,7 @@ from django.db.models.fields.related import RelatedObject, ManyToManyField
 from getqryresult import GetQryResult
 
 
-def _create_doc(cls, fieldnames=None):
+def _create_read_doc(cls, fieldnames=None):
     meta = cls._meta
     clspath = '%s.%s' % (cls.__module__, cls.__name__)
     fieldnames = fieldnames or meta.model._meta.get_all_field_names()
@@ -31,8 +31,7 @@ def _create_doc(cls, fieldnames=None):
             #'   exists.']
 
     get_doc = '\n'.join(
-            ['Get a %(modelname)s object.'] + ['\n'] +
-            throws + ['\n\n'] + resultfields)
+            ['Get a %(modelname)s object.'] + ['\n\n'] + resultfields)
     modelname = meta.model.__name__
     return get_doc % vars()
 
@@ -102,6 +101,11 @@ def _create_read_model_method(cls):
 
 def _create_read_method(cls):
     def read(cls, user, idorkw, result_fieldgroups=[]):
+        """
+        :param user: Django user object.
+        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :result_fieldgroups: List of additions to the __BASE__ list if resultfields is a dict.
+        """
         obj = _readauth_get(cls, user, idorkw) # authorization in _writeauth_get
         resultfields = _parse_fieldgroups(cls._meta.resultfields,
                 result_fieldgroups)
@@ -130,6 +134,12 @@ def _create_update_method(cls):
 
 def _create_search_method(cls):
     def search(cls, user, **kwargs):
+        """
+        :param query:
+        :param start:
+        :param limit:
+        :param orderby:
+        """
         resultfields = _parse_fieldgroups(cls._meta.resultfields,
                     kwargs.pop('result_fieldgroups', []))
         searchfields = _parse_fieldgroups(cls._meta.searchfields,
@@ -150,6 +160,8 @@ def _create_search_method(cls):
     setattr(cls, search.__name__, MethodType(search, cls))
 
 
+
+
 def _require_metaattr(cls, attr):
     if not hasattr(cls._meta, attr):
         raise ValueError('%s.%s.Meta is missing the required "%s" attribute.' % (
@@ -165,6 +177,8 @@ def simplified_api(cls):
     meta = cls.Meta
     cls._meta = meta
     cls._meta.ordering = cls._meta.model._meta.ordering
+
+    # Check required meta options
     _require_metaattr(cls, 'model')
     _require_metaattr(cls, 'methods')
     _require_metaattr(cls, 'resultfields')
@@ -174,6 +188,8 @@ def simplified_api(cls):
         _require_attr(cls, 'read_authorize')
     if cls._meta.methods.issubset(set(['create', 'read_model', 'update', 'delete'])):
         _require_attr(cls, 'write_authorize')
+
+    # Dynamically create create(), read(), read_model(), update(), delete()
     for method in cls._meta.methods:
         globals()['_create_%s_method' % method](cls)
     return cls
