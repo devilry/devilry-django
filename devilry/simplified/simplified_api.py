@@ -135,7 +135,7 @@ def _create_update_method(cls):
 def _create_search_method(cls):
     def search(cls, user, **kwargs):
         """
-        :param query:
+        :param query: 
         :param start:
         :param limit:
         :param orderby:
@@ -150,7 +150,7 @@ def _create_search_method(cls):
         else:
             result = GetQryResult(resultfields, searchfields, qryset)
         standard_opts = dict(
-            query = kwargs.pop('query', ''),
+            query = kwargs.pop('query', None),
             start = kwargs.pop('start', 0),
             limit = kwargs.pop('limit', 50),
             orderby = kwargs.pop('orderby', cls._meta.ordering)
@@ -158,9 +158,6 @@ def _create_search_method(cls):
         result._standard_operations(**standard_opts)
         return result
     setattr(cls, search.__name__, MethodType(search, cls))
-
-
-
 
 def _require_metaattr(cls, attr):
     if not hasattr(cls._meta, attr):

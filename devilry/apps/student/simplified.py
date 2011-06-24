@@ -43,4 +43,5 @@ class Delivery(PublishedWhereIsCandidateMixin):
                         _period_long,
                         _assignment_long,
                         _assignment_short]
-        methods = ['search', 'read', 'create', 'update', 'delete']
+        methods = ['search', 'read', 'create', 'update', 'delete']        
+
