@@ -679,7 +679,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer):
 
     .. attribute:: assignmentgroups
 
-        A set of the assignmentgroups for this assignment.
+        A set of the :class:`AssignmentGroup` for this assignment.
 
     .. attribute:: filenames
     
