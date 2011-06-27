@@ -13,7 +13,7 @@ import re
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q, Max
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -1471,6 +1471,7 @@ class Deadline(models.Model):
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
     is_head = models.BooleanField(default=False)
+    deliveries_available_before_deadline = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = _('Deadline')
@@ -1507,8 +1508,9 @@ class Deadline(models.Model):
 
     def delete(self, *args, **kwargs):
         """ Prevent deletion if this is the head deadline """
-        if not self.is_head:
-            super(Deadline, self).delete(*args, **kwargs)
+        if self.is_head:
+            raise PermissionDenied()
+        super(Deadline, self).delete(*args, **kwargs)
 
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
