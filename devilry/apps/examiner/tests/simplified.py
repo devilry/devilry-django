@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
-from ..simplified import Subject, Period, Assignment, AssignmentGroup
+from ..simplified import Subject, Period, Assignment, AssignmentGroup, Delivery
 
 
 pluginloader.autodiscover()
@@ -259,21 +259,29 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         super(TestSimplifiedExaminerDelivery, self).setUp()
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1') #assingment group
-        self.delivery_core = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] #single delivery
-        print "delivery = ", self.delivery_core.delivered_by
+        self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] #single delivery
         
     def test_search(self):
         pass
-
+    """
+        deliveries = models.Delivery.published_where_is_examiner(self.duck3580examiner)[0]
+        qryset = Delivery.search()
+"""
     def test_search_security(self):
         pass
 
     def test_read(self):
-        delivery = Delivery.read(self.duck3580examiner, self.duck3580_core.id)
+        delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
         self.assertEquals(delivery, dict(
-            time_of_delivery = self.delivery_core.time_of_delivery,
-            number = self.delivery_core.number,
-            delivered_by = self.delivery_core.delivered_by))
+            time_of_delivery = self.delivery_duck3580.time_of_delivery,
+            number = self.delivery_duck3580.number,
+            delivered_by = self.delivery_duck3580.delivered_by))
 
     def test_read_security(self):
-        pass
+        with self.assertRaises(PermissionDenied):
+            delivery = Delivery.read(self.testexaminerNoPerm, self.delivery_duck3580.id)
+        with self.assertRaises(PermissionDenied):
+            delivery = Delivery.read(self.duck1080examiner, self.delivery_duck3580.id)
+        with self.assertRaises(PermissionDenied):
+            delivery = Delivery.read(self.superadmin, self.delivery_duck3580.id)
+

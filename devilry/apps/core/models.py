@@ -1466,7 +1466,7 @@ class Deadline(models.Model):
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
-class Delivery(models.Model, AbstractIsAdmin):
+class Delivery(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
 
@@ -1559,6 +1559,10 @@ class Delivery(models.Model, AbstractIsAdmin):
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
 
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        return Q(assignment_group__examiners=user_obj)
+                
     @classmethod
     def begin(cls, assignment_group, user_obj):
         """ Begin delivery.
