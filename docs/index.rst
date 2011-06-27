@@ -6,9 +6,6 @@
 
     plugins
     grade-plugins
-    xmlrpc
-
-    commandline
 
     simplified
     restful
@@ -35,13 +32,7 @@ Plugin development
 
 * **The basics:** :ref:`plugins`
 * **Grade plugins:** :ref:`Overview <grade-plugins>`
-* **XMLRPC:** :ref:`Overview <xmlrpc>`
 
-
-Developing devilry
-######################################################################
-
-* :ref:`developer-commandline`
 
 
 Simplified API
