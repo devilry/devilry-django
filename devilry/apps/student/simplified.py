@@ -1,6 +1,7 @@
 from ...simplified import simplified_api, PermissionDenied
 from ..core import models
 
+
 class PublishedWhereIsCandidateMixin(object):
 
     @classmethod
@@ -43,5 +44,4 @@ class Delivery(PublishedWhereIsCandidateMixin):
                         _period_long,
                         _assignment_long,
                         _assignment_short]
-        methods = ['search', 'read', 'create', 'update', 'delete']        
-
+        methods = ['search', 'read', 'create', 'update', 'delete']

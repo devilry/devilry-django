@@ -8,7 +8,9 @@ from ..simplified import Delivery
 
 import datetime
 
+
 class SimplifiedDeliveryTestCase(TestCase):
+
     fixtures = ["simplified/data.json"]
 
     # def setUp(self):
@@ -34,40 +36,39 @@ class SimplifiedDeliveryTestCase(TestCase):
 class TestSimplifiedDelivery(SimplifiedDeliveryTestCase):
 
     def test_search(self):
-        
+
         candidate0 = User.objects.get(username="student0")
 
         # student0 has 11 deliveries total
         #               4 deliveries in duck1100
         #               4 deliveries in duck3580
-        
+
         # check that:
         #   all deliveries are returned
-        all = Delivery.search(candidate0).qryset
-        for d in all:
-            print d
-        self.assertEquals(Delivery.search(candidate0, query="lksdjflksdjf").qryset.count(), 0)
+        self.assertEquals(Delivery.search(candidate0).qryset.count(), 9)
 
-        #   all deliveries in subject duck1100 are returned 
+        #   that a bogus search returns 0 hits
+        self.assertEquals(Delivery.search(candidate0, query="this_hopefully_does_not_return_anything").qryset.count(), 0)
+
+        #   all deliveries in subject duck1100 are returned
         self.assertEquals(Delivery.search(candidate0, query="duck1100").qryset.count(), 4)
 
-        #   all deliveries in subject duck3580 are returned 
+        #   all deliveries in subject duck3580 are returned
         self.assertEquals(Delivery.search(candidate0, query="duck3580").qryset.count(), 2)
 
-        #   all deliveries from period "h01" are returned 
-        self.assertEquals(Delivery.search(candidate0, query="fall01").qryset.count(), 11)
+        #   all deliveries from period "h01" are returned
+        self.assertEquals(Delivery.search(candidate0, query="fall01").qryset.count(), 5)
 
-        #   all deliveries from assignment "week1" are returned 
-        self.assertEquals(Delivery.search(candidate0, query="week1").qryset.count(), 5)
+        #   all deliveries from assignment "week1" are returned
+        self.assertEquals(Delivery.search(candidate0, query="week1").qryset.count(), 3)
 
-        
-    #def test_read(self):
-        
-        # candidate0 = User.objects.get(username="student0")
+    def test_read(self):
 
-        # #        deliveries = models.Delivery.objects.filter(assignment_group__candidates__student=candidate0).all()
-        # #delivery = Delivery.read(candidate0, Delivery.search(candidate0).qryset[0].id)
-        # self.assertEquals(delivery['number'], 1)
-        # self.assertEquals(delivery['successful'], 1)
-        # # TODO: test time_of_delivery in some way
-        # self.assertEquals(delivery['time_of_delivery'], some_date)
+        candidate0 = User.objects.get(username="student0")
+
+        #        deliveries = models.Delivery.objects.filter(assignment_group__candidates__student=candidate0).all()
+        delivery = Delivery.read(candidate0, Delivery.search(candidate0).qryset[0].id, ["subject","period","subject"])
+        self.assertEquals(delivery['number'], 1)
+        self.assertEquals(delivery['successful'], 1)
+        # TODO: test time_of_delivery in some way
+        self.assertEquals(delivery['time_of_delivery'], datetime.datetime.now())
