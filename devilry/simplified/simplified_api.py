@@ -40,7 +40,7 @@ def _parse_fieldgroups(fieldlst, fieldgroups):
     if isinstance(fieldlst, dict):
         base = fieldlst.get('__BASE__', [])
         fields = list(base)
-        for group in fieldlst.keys():
+        for group in fieldgroups:
             fields.extend(fieldlst.get(group, []))
         return fields
     else:
