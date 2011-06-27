@@ -259,16 +259,46 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         super(TestSimplifiedExaminerDelivery, self).setUp()
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1') #assingment group
-        self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] #single delivery
+        self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0]#single delivery
         
     def test_search(self):
-        pass
-    """
-        deliveries = models.Delivery.published_where_is_examiner(self.duck3580examiner)[0]
-        qryset = Delivery.search()
-"""
+        examiner0 =  User.objects.get(username="examiner0")
+        #deliveries where examiner 0 is examiner
+        deliveries = models.Delivery.published_where_is_examiner(examiner0)
+
+        #search for all deliveries where examiner0 is examiner
+        qryset = Delivery.search(examiner0).qryset
+        self.assertEquals(len(qryset), len(deliveries)) #number of deliveries
+        self.assertEquals(qryset[5].number, deliveries[5].number) #delivery number
+        self.assertEquals(qryset[2], deliveries[2]) #compare deliveries
+        
+        #search period
+        qryset = Delivery.search(examiner0, query="fall01").qryset
+        self.assertEquals(len(qryset), 10)
+        #search subject
+        qryset = Delivery.search(examiner0, query="1100").qryset
+        self.assertEquals(len(qryset), 9)
+        #search period
+        qryset = Delivery.search(examiner0, query="week4").qryset
+        self.assertEquals(len(qryset), 1)
+
     def test_search_security(self):
-        pass
+        examiner0 = User.objects.get(username="examiner0")
+        deliveries = models.Assignment.published_where_is_examiner(examiner0)
+        result = Delivery.search(examiner0)
+
+        result = Delivery.search(self.testexaminerNoPerm).qryset
+        self.assertEquals(len(result), 0)
+
+        result = Delivery.search(self.duck3580examiner).qryset
+        deliveries = models.Delivery.published_where_is_examiner(self.duck3580examiner)
+        self.assertEquals(len(deliveries), len(result))
+
+        result = Delivery.search(self.duck3580examiner, query="duck1100")
+        self.assertEquals(len(result.qryset), 0) #no permission
+
+        result = Delivery.search(self.duck3580examiner, query="week4")
+        self.assertEquals(len(result.qryset), 0) #no permission
 
     def test_read(self):
         delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
@@ -284,4 +314,5 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
             delivery = Delivery.read(self.duck1080examiner, self.delivery_duck3580.id)
         with self.assertRaises(PermissionDenied):
             delivery = Delivery.read(self.superadmin, self.delivery_duck3580.id)
+
 
