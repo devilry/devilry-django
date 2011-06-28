@@ -826,3 +826,12 @@ class TestTestHelpers(TestCase):
         ag2 = create_from_path(
                 'ifi:inf1100.spring10.oblig1.student1,student2')
         self.assertNotEquals(ag1.id, ag2.id)
+
+class TestFeedback(TestCase):
+    fixtures = ['simplified/data.json']
+
+    def test_published_where_is_examiner(self):
+        examiner0 = User.objects.get(username='examiner0')
+        examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
+        self.assertEquals(len(examiner0_feedbacks), 15)
+

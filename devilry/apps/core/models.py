@@ -1689,7 +1689,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
 
 
-class Feedback(models.Model):
+class Feedback(models.Model, AbstractIsExaminer):
     """
     Represents the feedback for a given `Delivery`_.
 
@@ -1784,6 +1784,37 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+
+    @classmethod
+    def published_where_is_examiner(cls, user_obj, old=True, active=True):
+        """ Returns a QuerySet matching all :ref:`published
+        <assignment-classifications>` deliveries where the given user
+        is student.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return Feedback.objects.filter(
+                cls.q_is_examiner(user_obj) &
+                cls.q_published(old=old, active=active))
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        """
+        Returns a django.models.Q object matching Deliveries where
+        the given student is candidate.
+        """
+        return Q(delivery__assignment_group__examiners=user_obj)
+    
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__gte = now)
+        if not old:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
+        return q
 
     def save(self, *args, **kwargs):
         super(Feedback, self).save(*args, **kwargs)
