@@ -744,6 +744,21 @@ class TestDelivery(TestCase):
         feedback.delete()
         self.assertEquals(ApprovedGrade.objects.all().count(), 0)
         
+    def test_published_where_is_candidate(self):
+        student1 = User.objects.get(username='student1')
+        student2 = User.objects.get(username='student2')
+        student3 = User.objects.get(username='student3')
+        student4 = User.objects.get(username='student4')
+
+        # In the fixtures, student1 has 2 deliveries
+        #                  student2 has 1 delivery
+        #                  student3 has 1 delivery
+        #                  student4 has 0 deliveries
+        self.assertEquals(Delivery.published_where_is_candidate(student1).count(), 2)
+        self.assertEquals(Delivery.published_where_is_candidate(student2).count(), 1)
+        self.assertEquals(Delivery.published_where_is_candidate(student3).count(), 1)
+        self.assertEquals(Delivery.published_where_is_candidate(student4).count(), 0)
+        
 
 
 # TODO: Feedback tests
@@ -811,3 +826,12 @@ class TestTestHelpers(TestCase):
         ag2 = create_from_path(
                 'ifi:inf1100.spring10.oblig1.student1,student2')
         self.assertNotEquals(ag1.id, ag2.id)
+
+class TestFeedback(TestCase):
+    fixtures = ['simplified/data.json']
+
+    def test_published_where_is_examiner(self):
+        examiner0 = User.objects.get(username='examiner0')
+        examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
+        self.assertEquals(len(examiner0_feedbacks), 15)
+
