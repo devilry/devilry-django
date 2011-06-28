@@ -83,3 +83,36 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
             searchfields.append('candidates__student__username')
         result = GetQryResult(cls._meta.resultfields, searchfields, qryset)
         return result
+
+
+@simplified_api
+class Delivery(PublishedWhereIsExaminerMixin):
+    class Meta:
+        model = models.Delivery
+        resultfields = ['time_of_delivery', 'number', 'delivered_by'] # Result from read() (what the dict contains)
+        searchfields = [
+                #'delivered_by',
+                'assignment_group__parentnode__short_name', # Name of assignment
+                'assignment_group__parentnode__long_name', # Name of assignment
+                'assignment_group__parentnode__parentnode__short_name', # Name of period
+                'assignment_group__parentnode__parentnode__long_name', # Name of period
+                'assignment_group__parentnode__parentnode__parentnode__short_name', # Name of subject
+                'assignment_group__parentnode__parentnode__parentnode__long_name' # Name of subject
+                ] # What should search() search from
+        methods = ['search', 'read']
+
+@simplified_api
+class Feedback(PublishedWhereIsExaminerMixin):
+    class Meta:
+        model = models.Feedback
+        resultfields = ['delivery', 'text', 'format']
+        searchfields = [
+                #delivery__delivered_by
+                'delivery__assignment_group__parentnode__parentnode__parentnode__long_name', #subject
+                'delivery__assignment_group__parentnode__parentnode__parentnode__short_name', #subject
+                'delivery__assignment_group__parentnode__parentnode__long_name', #period
+                'delivery__assignment_group__parentnode__parentnode__short_name', #period
+                'delivery__assignment_group__parentnode__long_name', #assignment
+                'delivery__assignment_group__parentnode__short_name', #assignment
+                ]
+        methods = ['search', 'read', 'create'] #TODO 'delete', 'update'

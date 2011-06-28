@@ -20,10 +20,10 @@ class GetQryResult(object):
         return filterargs
 
     def _query_queryset(self, query):
-        q = self._create_q(query)
-        if q == None:
+        if not query:
             self.qryset = self.qryset.all()
         else:
+            q = self._create_q(query)
             self.qryset = self.qryset.filter(q)
 
     def _distinct(self):
