@@ -66,7 +66,7 @@ class Assignment(PublishedWhereIsExaminerMixin):
 class AssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
-        resultfields = ['id', 'name']
+        resultfields = ['id', 'name'] #TODO add subject, period, assignment, candidates
         searchfields = ['name', 'candidates__candidate_id']
         methods = ['search', 'read']
 
@@ -89,7 +89,18 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
 class Delivery(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Delivery
-        resultfields = ['time_of_delivery', 'number', 'delivered_by'] # Result from read() (what the dict contains)
+        resultfields = {
+                    '__BASE__': ['time_of_delivery', 'number', 'delivered_by', 'id'],
+                    'subject': ['assignment_group__parentnode__parentnode__parentnode__long_name',
+                        'assignment_group__parentnode__parentnode__parentnode__short_name',
+                        'assignment_group__parentnode__parentnode__parentnode__id'],
+                    'period': [ 'assignment_group__parentnode__parentnode__long_name',
+                        'assignment_group__parentnode__parentnode__short_name',
+                        'assignment_group__parentnode__parentnode__id'],
+                    'assignment':['assignment_group__parentnode__long_name', 
+                        'assignment_group__parentnode__short_name',
+                        'assignment_group__parentnode__id']
+                    }
         searchfields = [
                 #'delivered_by',
                 'assignment_group__parentnode__short_name', # Name of assignment
@@ -101,11 +112,24 @@ class Delivery(PublishedWhereIsExaminerMixin):
                 ] # What should search() search from
         methods = ['search', 'read']
 
+
+
 @simplified_api
 class Feedback(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Feedback
-        resultfields = ['delivery', 'text', 'format']
+        resultfields = {
+                    '__BASE__': ['delivery', 'text', 'format', 'id'],
+                    'subject': ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
+                        'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
+                        'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
+                    'period': [ 'delivery__assignment_group__parentnode__parentnode__long_name',
+                        'delivery__assignment_group__parentnode__parentnode__short_name',
+                        'delivery__assignment_group__parentnode__parentnode__id'],
+                    'assignment':['delivery__assignment_group__parentnode__long_name', 
+                        'delivery__assignment_group__parentnode__short_name',
+                        'delivery__assignment_group__parentnode__id']
+                    }
         searchfields = [
                 #delivery__delivered_by
                 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name', #subject
@@ -116,3 +140,4 @@ class Feedback(PublishedWhereIsExaminerMixin):
                 'delivery__assignment_group__parentnode__short_name', #assignment
                 ]
         methods = ['search', 'read', 'create'] #TODO 'delete', 'update'
+
