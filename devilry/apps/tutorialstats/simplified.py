@@ -1,8 +1,8 @@
-from ...simplified import PermissionDenied, simplified_api
+from ...simplified import PermissionDenied, simplified_modelapi
 import models
 
 
-@simplified_api
+@simplified_modelapi
 class StatConfig(object):
     class Meta:
         model = models.StatConfig

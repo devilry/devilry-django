@@ -1,6 +1,6 @@
 from exceptions import PermissionDenied
 from qryresultwrapper import QryResultWrapper
-import create
+import create as _create
 
 
 def _require_metaattr(cls, attr):
@@ -13,7 +13,7 @@ def _require_attr(cls, attr):
         raise ValueError('%s.%s is missing the required "%s" attribute.' % (
             cls.__module__, cls.__name__, attr))
 
-def simplified_api(cls):
+def simplified_modelapi(cls):
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))
     meta = cls.Meta
@@ -33,5 +33,5 @@ def simplified_api(cls):
 
     # Dynamically create create(), read(), read_model(), update(), delete()
     for method in cls._meta.methods:
-        getattr(create, 'create_%s_method' % method)(cls) # Calls create.create_[CRUD+S]_method(cls)
+        getattr(_create, 'create_%s_method' % method)(cls) # Calls create.create_[CRUD+S]_method(cls)
     return cls

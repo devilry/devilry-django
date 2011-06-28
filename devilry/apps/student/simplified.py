@@ -1,4 +1,4 @@
-from ...simplified import simplified_api, PermissionDenied
+from ...simplified import simplified_modelapi, PermissionDenied
 from ..core import models
 
 
@@ -14,7 +14,7 @@ class PublishedWhereIsCandidateMixin(object):
             raise PermissionDenied()
 
 
-@simplified_api
+@simplified_modelapi
 class Feedback(PublishedWhereIsCandidateMixin):
 
     class Meta:
@@ -56,7 +56,7 @@ class Feedback(PublishedWhereIsCandidateMixin):
         methods = ['search', 'read']
 
 
-@simplified_api
+@simplified_modelapi
 class Delivery(PublishedWhereIsCandidateMixin):
 
     class Meta:
@@ -92,7 +92,7 @@ class Delivery(PublishedWhereIsCandidateMixin):
         methods = ['search', 'read', 'delete']
 
 
-@simplified_api
+@simplified_modelapi
 class Assignment(PublishedWhereIsCandidateMixin):
 
         class Meta:
@@ -120,7 +120,7 @@ class Assignment(PublishedWhereIsCandidateMixin):
             methods = ['search', 'read']
 
 
-@simplified_api
+@simplified_modelapi
 class Period(PublishedWhereIsCandidateMixin):
 
     class Meta:
@@ -141,7 +141,7 @@ class Period(PublishedWhereIsCandidateMixin):
         methods = ['search', 'read']
 
 
-@simplified_api
+@simplified_modelapi
 class Subject(PublishedWhereIsCandidateMixin):
 
     class Meta:

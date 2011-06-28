@@ -1,4 +1,4 @@
-from ...simplified import simplified_api, PermissionDenied
+from ...simplified import simplified_modelapi, PermissionDenied
 from ..core import models
 
 
@@ -15,7 +15,7 @@ class CanSaveAuthMixin(object):
             raise PermissionDenied()
 
 
-@simplified_api
+@simplified_modelapi
 class Node(CanSaveAuthMixin):
     """ Facade to simplify administrator actions on
     :class:`devilry.apps.core.models.Node`.
@@ -59,7 +59,7 @@ class Node(CanSaveAuthMixin):
         return qryset
 
 
-@simplified_api
+@simplified_modelapi
 class Subject(CanSaveAuthMixin):
     class Meta:
         model = models.Subject
@@ -76,7 +76,7 @@ class Subject(CanSaveAuthMixin):
         return qryset
 
 
-@simplified_api
+@simplified_modelapi
 class Period(CanSaveAuthMixin):
     class Meta:
         model = models.Period
@@ -94,7 +94,7 @@ class Period(CanSaveAuthMixin):
             qryset = qryset.filter(parentnode__id = parentnode__id)
         return qryset
 
-@simplified_api
+@simplified_modelapi
 class Assignment(CanSaveAuthMixin):
     class Meta:
         model = models.Assignment

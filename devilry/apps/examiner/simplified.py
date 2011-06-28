@@ -1,4 +1,4 @@
-from ...simplified import simplified_api, PermissionDenied, QryResultWrapper
+from ...simplified import simplified_modelapi, PermissionDenied, QryResultWrapper
 from ..core import models
 
 
@@ -13,7 +13,7 @@ class PublishedWhereIsExaminerMixin(object):
             raise PermissionDenied()
 
 
-@simplified_api
+@simplified_modelapi
 class Subject(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Subject
@@ -22,7 +22,7 @@ class Subject(PublishedWhereIsExaminerMixin):
         methods = ['search', 'read']
 
 
-@simplified_api
+@simplified_modelapi
 class Period(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Period
@@ -33,7 +33,7 @@ class Period(PublishedWhereIsExaminerMixin):
         methods = ['search', 'read']
 
 
-@simplified_api
+@simplified_modelapi
 class Assignment(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Assignment
@@ -62,7 +62,7 @@ class Assignment(PublishedWhereIsExaminerMixin):
         return qryset
 
 
-@simplified_api
+@simplified_modelapi
 class AssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
@@ -85,7 +85,7 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
         return result
 
 
-@simplified_api
+@simplified_modelapi
 class Delivery(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Delivery
@@ -114,7 +114,7 @@ class Delivery(PublishedWhereIsExaminerMixin):
 
 
 
-@simplified_api
+@simplified_modelapi
 class Feedback(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Feedback
