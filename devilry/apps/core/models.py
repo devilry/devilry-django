@@ -61,6 +61,21 @@ class AbstractIsAdmin(object):
             return cls.where_is_admin(user_obj)
 
 
+class AbstractIsCandidate(object):
+
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        raise NotImplementedError()
+
+    @classmethod
+    def published_where_is_candidate(cls, user_obj, old, active):
+        raise NotImplementedError()
+
+    @classmethod
+    def q_published(cls, old, active):
+        raise NotImplementedError()
+
+
 class AbstractIsExaminer(object):
     """ Abstract class implemented by all classes where it is natural to
     need to check if a user is examiner. """
@@ -1066,6 +1081,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
         Calculated as: `float(pointscale)/maxpoints * points`.
 
+        **Note:** This field is a cache for the calculation above.
+
     .. attribute:: NO_DELIVERIES
 
         The numberic value corresponding to :attr:`status` *no deliveries*.
@@ -1515,7 +1532,7 @@ class Deadline(models.Model):
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
-class Delivery(models.Model, AbstractIsAdmin):
+class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
 
@@ -1586,11 +1603,47 @@ class Delivery(models.Model, AbstractIsAdmin):
         unique_together = ('assignment_group', 'number')
 
     @classmethod
+    def published_where_is_candidate(cls, user_obj, old=True, active=True):
+        """ Returns a QuerySet matching all :ref:`published
+        <assignment-classifications>` deliveries where the given user
+        is student.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return Delivery.objects.filter(
+                cls.q_is_candidate(user_obj) &
+                cls.q_published(old=old, active=active))
+
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        """
+        Returns a django.models.Q object matching Deliveries where
+        the given student is candidate.
+        """
+        return Q(assignment_group__candidates__student=user_obj)
+    
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(assignment_group__parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(assignment_group__parentnode__parentnode__end_time__gte = now)
+        if not old:
+            q &= ~Q(assignment_group__parentnode__parentnode__end_time__lt = now)
+        return q
+
+    
+    @classmethod
     def q_is_admin(cls, user_obj):
         return Q(assignment_group__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        return Q(assignment_group__examiners=user_obj)
 
     @classmethod
     def begin(cls, assignment_group, user_obj):
@@ -1729,7 +1782,7 @@ class Delivery(models.Model, AbstractIsAdmin):
 
 
 
-class Feedback(models.Model):
+class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     """
     Represents the feedback for a given `Delivery`_.
 
@@ -1824,6 +1877,57 @@ class Feedback(models.Model):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+    @classmethod
+    def published_where_is_candidate(cls, user_obj, old=True, active=True):
+        """ Returns a QuerySet matching all :ref:`published
+        <assignment-classifications>` feedbacks where the given user
+        is student.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return Feedback.objects.filter(
+                cls.q_is_candidate(user_obj) &
+                cls.q_published(old=old, active=active))
+
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        """
+        Returns a django.models.Q object matching Deliveries where
+        the given student is candidate.
+        """
+        return Q(delivery__assignment_group__candidates__student=user_obj)
+    
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(deliver__assignment_group__parentnode__parentnode__end_time__gte = now)
+        if not old:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
+        return q
+
+    @classmethod
+    def published_where_is_examiner(cls, user_obj, old=True, active=True):
+        """ Returns a QuerySet matching all :ref:`published
+        <assignment-classifications>` deliveries where the given user
+        is student.
+        
+        :param user_obj: A django.contrib.auth.models.User_ object.
+        :rtype: QuerySet
+        """
+        return Feedback.objects.filter(
+                cls.q_is_examiner(user_obj) &
+                cls.q_published(old=old, active=active))
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        """
+        Returns a django.models.Q object matching Deliveries where
+        the given student is candidate.
+        """
+        return Q(delivery__assignment_group__examiners=user_obj)
 
     def save(self, *args, **kwargs):
         super(Feedback, self).save(*args, **kwargs)

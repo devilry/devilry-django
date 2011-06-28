@@ -1,13 +1,27 @@
-from ..restful.restview import ModelRestView
-from ..restful.restful_api import restful_api, UrlMapping
-from ..restful.extjs import extjs_modelapi, ExtJsMixin
-from ..restful.administrator import RestPeriod
+from django.contrib.auth.models import User
+from django.db.models import Sum
+
+from ...restful import (ModelRestView, RestView, RestResult, restful_api,
+        restful_modelapi, UrlMapping)
 from simplified import StatConfig
 
 
-@extjs_modelapi
+
+
 @restful_api
-class RestStatConfig(ModelRestView, ExtJsMixin):
+class RestPeriodPoints(RestView):
+
+    def crud_read(self, request, id):
+        dataset = User.objects.filter(
+            candidate__assignment_group__parentnode__parentnode__id=id).distinct()
+        dataset = dataset.annotate(
+                sumperiod=Sum('candidate__assignment_group__scaled_points'))
+        data = dataset.values('username', 'sumperiod')
+        return RestResult(dict(items=data))
+
+
+@restful_modelapi
+class RestStatConfig(ModelRestView):
     class Meta:
         simplified = StatConfig
-        urlmap = {'period_url': UrlMapping(RestPeriod, 'period__id')}
+        urlmap = {'periodpoints_url': UrlMapping(RestPeriodPoints, 'period__id')}

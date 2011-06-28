@@ -1,5 +1,4 @@
 <!DOCTYPE HTML>
-{% comment %} vim: set ts=2 sts=2 et sw=2 ft=htmldjango: {% endcomment %}
 {% load i18n %}
 <html>
   <head>
@@ -32,6 +31,12 @@
           'devilry': '{{ DEVILRY_STATIC_URL}}/extjs_classes/devilry'
         }
       });
+
+      {% comment %}
+      Ext.Ajax.defaultHeaders = {
+          'Accept': 'application/json'
+      };
+      {% endcomment %}
     </script>
 
 
