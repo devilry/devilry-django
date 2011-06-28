@@ -650,13 +650,13 @@ class TestAssignmentGroup(TestCase):
         ag = AssignmentGroup.objects.get(id=1)
         d = ag.deliveries.all()[0]
         d.save()
-        self.assertEquals(ag.status,
-                AssignmentGroup.NOT_CORRECTED)
-        self.assertEquals(ag.get_localized_status(),
-                "Not corrected")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Not corrected")
 
+        self.assertEquals(ag.status,
+                AssignmentGroup.AWAITING_CORRECTION)
+        self.assertEquals(ag.get_localized_status(),
+                "Awaiting correction")
+        self.assertEquals(ag.get_localized_student_status(),
+                "Awaiting correction")
         d.feedback = Feedback(
                 format = 'rst',
                 text = 'test',
@@ -670,7 +670,7 @@ class TestAssignmentGroup(TestCase):
         self.assertEquals(ag.get_localized_status(),
                 "Corrected, not published")
         self.assertEquals(ag.get_localized_student_status(),
-                "Not corrected")
+                "Awaiting correction")
 
         d.feedback.published = True
         d.feedback.save()
@@ -773,10 +773,13 @@ class TestFeedback(TestCase):
         self.candidate1 = User.objects.get(username='student1')
 
     def test_published_where_is_candidate(self):
-
         self.assertEquals(Feedback.published_where_is_candidate(self.candidate0).count(), 8)
         self.assertEquals(Feedback.published_where_is_candidate(self.candidate1).count(), 7)
-
+        
+    def test_published_where_is_examiner(self):
+        examiner0 = User.objects.get(username='examiner0')
+        examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
+        self.assertEquals(len(examiner0_feedbacks), 15)
 
 class TestMemoryDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def get_storageobj(self):
@@ -841,12 +844,3 @@ class TestTestHelpers(TestCase):
         ag2 = create_from_path(
                 'ifi:inf1100.spring10.oblig1.student1,student2')
         self.assertNotEquals(ag1.id, ag2.id)
-
-class TestFeedback(TestCase):
-    fixtures = ['simplified/data.json']
-
-    def test_published_where_is_examiner(self):
-        examiner0 = User.objects.get(username='examiner0')
-        examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
-        self.assertEquals(len(examiner0_feedbacks), 15)
-

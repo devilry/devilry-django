@@ -1,81 +1,6 @@
 [
   {
     "pk": 1, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 2, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 3, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 4, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 5, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 6, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 7, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 8, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 9, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 10, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 11, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 12, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 13, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 14, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 15, 
-    "model": "core.grademodel", 
-    "fields": {}
-  }, 
-  {
-    "pk": 1, 
     "model": "core.node", 
     "fields": {
       "long_name": "Duckburgh", 
@@ -129,11 +54,11 @@
     "model": "core.period", 
     "fields": {
       "short_name": "fall01", 
-      "start_time": "2011-05-03 09:53:12", 
+      "start_time": "2011-05-10 21:10:59", 
       "parentnode": 2, 
       "long_name": "Fall year zero", 
       "admins": [], 
-      "end_time": "2011-07-01 09:53:12", 
+      "end_time": "2011-07-08 21:10:59", 
       "minimum_points": 0
     }
   }, 
@@ -142,11 +67,11 @@
     "model": "core.period", 
     "fields": {
       "short_name": "fall01", 
-      "start_time": "2011-05-03 09:53:14", 
+      "start_time": "2011-05-10 21:11:02", 
       "parentnode": 3, 
       "long_name": "Fall year zero", 
       "admins": [], 
-      "end_time": "2011-07-01 09:53:14", 
+      "end_time": "2011-07-08 21:11:02", 
       "minimum_points": 0
     }
   }, 
@@ -155,11 +80,11 @@
     "model": "core.period", 
     "fields": {
       "short_name": "spring01", 
-      "start_time": "2011-05-03 09:53:09", 
+      "start_time": "2011-05-10 21:10:55", 
       "parentnode": 1, 
       "long_name": "Spring year zero", 
       "admins": [], 
-      "end_time": "2011-07-01 09:53:09", 
+      "end_time": "2011-07-08 21:10:55", 
       "minimum_points": 0
     }
   }, 
@@ -171,7 +96,7 @@
       "autoscale": true, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week1", 
-      "publishing_time": "2011-05-08 09:53:09", 
+      "publishing_time": "2011-05-15 21:10:55", 
       "admins": [], 
       "parentnode": 1, 
       "filenames": null, 
@@ -191,7 +116,7 @@
       "autoscale": false, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week1", 
-      "publishing_time": "2011-05-08 09:53:12", 
+      "publishing_time": "2011-05-15 21:10:59", 
       "admins": [], 
       "parentnode": 2, 
       "filenames": null, 
@@ -211,7 +136,7 @@
       "autoscale": true, 
       "grade_plugin": "grade_approved:approvedgrade", 
       "short_name": "week1", 
-      "publishing_time": "2011-05-08 09:53:14", 
+      "publishing_time": "2011-05-15 21:11:02", 
       "admins": [], 
       "parentnode": 3, 
       "filenames": null, 
@@ -231,7 +156,7 @@
       "autoscale": true, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week2", 
-      "publishing_time": "2011-05-18 09:53:10", 
+      "publishing_time": "2011-05-25 21:10:56", 
       "admins": [], 
       "parentnode": 1, 
       "filenames": null, 
@@ -251,7 +176,7 @@
       "autoscale": false, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week2", 
-      "publishing_time": "2011-05-18 09:53:12", 
+      "publishing_time": "2011-05-25 21:11:00", 
       "admins": [], 
       "parentnode": 2, 
       "filenames": null, 
@@ -271,7 +196,7 @@
       "autoscale": true, 
       "grade_plugin": "grade_approved:approvedgrade", 
       "short_name": "week2", 
-      "publishing_time": "2011-06-04 09:53:14", 
+      "publishing_time": "2011-06-11 21:11:03", 
       "admins": [], 
       "parentnode": 3, 
       "filenames": null, 
@@ -291,7 +216,7 @@
       "autoscale": true, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week3", 
-      "publishing_time": "2011-05-29 09:53:10", 
+      "publishing_time": "2011-06-05 21:10:57", 
       "admins": [], 
       "parentnode": 1, 
       "filenames": null, 
@@ -311,7 +236,7 @@
       "autoscale": false, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week3", 
-      "publishing_time": "2011-06-04 09:53:13", 
+      "publishing_time": "2011-06-11 21:11:01", 
       "admins": [], 
       "parentnode": 2, 
       "filenames": null, 
@@ -331,7 +256,7 @@
       "autoscale": true, 
       "grade_plugin": "grade_rstschema:rstschemagrade", 
       "short_name": "week4", 
-      "publishing_time": "2011-06-04 09:53:11", 
+      "publishing_time": "2011-06-11 21:10:58", 
       "admins": [], 
       "parentnode": 1, 
       "filenames": null, 
@@ -509,12 +434,12 @@
     "pk": 1, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 1, 
-      "scaled_points": 14.0, 
-      "points": 14, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -525,12 +450,12 @@
     "pk": 2, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 1, 
-      "scaled_points": 9.0, 
-      "points": 9, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -541,12 +466,12 @@
     "pk": 3, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 2, 
-      "scaled_points": 10.0, 
-      "points": 10, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -557,12 +482,12 @@
     "pk": 4, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 2, 
-      "scaled_points": 6.0, 
-      "points": 6, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -573,12 +498,12 @@
     "pk": 5, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 3, 
-      "scaled_points": 9.0, 
-      "points": 9, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -589,12 +514,12 @@
     "pk": 6, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 3, 
-      "scaled_points": 5.0, 
-      "points": 5, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -605,12 +530,12 @@
     "pk": 7, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 4, 
-      "scaled_points": 9.0, 
-      "points": 9, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -621,7 +546,7 @@
     "pk": 8, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 0, 
+      "status": 2, 
       "is_passing_grade": false, 
       "name": null, 
       "parentnode": 4, 
@@ -637,12 +562,12 @@
     "pk": 9, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 5, 
-      "scaled_points": 10.0, 
-      "points": 11, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -653,12 +578,12 @@
     "pk": 10, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 5, 
-      "scaled_points": 5.4545454545454541, 
-      "points": 6, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -669,12 +594,12 @@
     "pk": 11, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 6, 
-      "scaled_points": 10.0, 
-      "points": 10, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -685,12 +610,12 @@
     "pk": 12, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 6, 
-      "scaled_points": 6.0, 
-      "points": 6, 
+      "scaled_points": 0.0, 
+      "points": 0, 
       "is_open": true, 
       "examiners": [
         24
@@ -701,7 +626,7 @@
     "pk": 13, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 1, 
+      "status": 2, 
       "is_passing_grade": false, 
       "name": null, 
       "parentnode": 7, 
@@ -717,7 +642,7 @@
     "pk": 14, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 1, 
+      "status": 2, 
       "is_passing_grade": false, 
       "name": null, 
       "parentnode": 7, 
@@ -733,8 +658,8 @@
     "pk": 15, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 8, 
       "scaled_points": 0.0, 
@@ -749,8 +674,8 @@
     "pk": 16, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 8, 
       "scaled_points": 0.0, 
@@ -765,8 +690,8 @@
     "pk": 17, 
     "model": "core.assignmentgroup", 
     "fields": {
-      "status": 3, 
-      "is_passing_grade": true, 
+      "status": 2, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 9, 
       "scaled_points": 0.0, 
@@ -782,7 +707,7 @@
     "model": "core.assignmentgroup", 
     "fields": {
       "status": 2, 
-      "is_passing_grade": true, 
+      "is_passing_grade": false, 
       "name": null, 
       "parentnode": 9, 
       "scaled_points": 0.0, 
@@ -794,164 +719,434 @@
     }
   }, 
   {
-    "pk": 17, 
+    "pk": 35, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-18 09:53:14", 
-      "assignment_group": 17
-    }
-  }, 
-  {
-    "pk": 18, 
-    "model": "core.deadline", 
-    "fields": {
-      "text": null, 
-      "deadline": "2011-06-18 09:53:14", 
+      "deadline": "2011-06-28 21:11:04", 
       "assignment_group": 18
     }
   }, 
   {
-    "pk": 13, 
+    "pk": 33, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-18 09:53:13", 
-      "assignment_group": 13
+      "deadline": "2011-06-28 21:11:03", 
+      "assignment_group": 17
     }
   }, 
   {
-    "pk": 14, 
+    "pk": 31, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-18 09:53:13", 
+      "deadline": "2011-06-28 21:11:02", 
+      "assignment_group": 16
+    }
+  }, 
+  {
+    "pk": 29, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
+      "text": null, 
+      "deadline": "2011-06-28 21:11:02", 
+      "assignment_group": 15
+    }
+  }, 
+  {
+    "pk": 27, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
+      "text": null, 
+      "deadline": "2011-06-28 21:11:01", 
       "assignment_group": 14
     }
   }, 
   {
-    "pk": 7, 
+    "pk": 25, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-18 09:53:11", 
-      "assignment_group": 7
+      "deadline": "2011-06-28 21:11:01", 
+      "assignment_group": 13
     }
   }, 
   {
-    "pk": 8, 
+    "pk": 23, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-18 09:53:11", 
-      "assignment_group": 8
-    }
-  }, 
-  {
-    "pk": 5, 
-    "model": "core.deadline", 
-    "fields": {
-      "text": null, 
-      "deadline": "2011-06-12 09:53:10", 
-      "assignment_group": 5
-    }
-  }, 
-  {
-    "pk": 6, 
-    "model": "core.deadline", 
-    "fields": {
-      "text": null, 
-      "deadline": "2011-06-12 09:53:10", 
-      "assignment_group": 6
-    }
-  }, 
-  {
-    "pk": 11, 
-    "model": "core.deadline", 
-    "fields": {
-      "text": null, 
-      "deadline": "2011-06-01 09:53:12", 
-      "assignment_group": 11
-    }
-  }, 
-  {
-    "pk": 12, 
-    "model": "core.deadline", 
-    "fields": {
-      "text": null, 
-      "deadline": "2011-06-01 09:53:12", 
+      "deadline": "2011-06-28 21:11:00", 
       "assignment_group": 12
     }
   }, 
   {
-    "pk": 3, 
+    "pk": 21, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-01 09:53:10", 
-      "assignment_group": 3
+      "deadline": "2011-06-28 21:11:00", 
+      "assignment_group": 11
     }
   }, 
   {
-    "pk": 4, 
+    "pk": 19, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-06-01 09:53:10", 
-      "assignment_group": 4
+      "deadline": "2011-06-28 21:10:59", 
+      "assignment_group": 10
+    }
+  }, 
+  {
+    "pk": 17, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
+      "text": null, 
+      "deadline": "2011-06-28 21:10:59", 
+      "assignment_group": 9
     }
   }, 
   {
     "pk": 15, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-05-22 09:53:14", 
-      "assignment_group": 15
+      "deadline": "2011-06-28 21:10:58", 
+      "assignment_group": 8
     }
   }, 
   {
-    "pk": 16, 
+    "pk": 13, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-05-22 09:53:14", 
-      "assignment_group": 16
+      "deadline": "2011-06-28 21:10:58", 
+      "assignment_group": 7
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
+      "text": null, 
+      "deadline": "2011-06-28 21:10:57", 
+      "assignment_group": 6
     }
   }, 
   {
     "pk": 9, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-05-22 09:53:12", 
-      "assignment_group": 9
+      "deadline": "2011-06-28 21:10:57", 
+      "assignment_group": 5
     }
   }, 
   {
-    "pk": 10, 
+    "pk": 7, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-05-22 09:53:12", 
-      "assignment_group": 10
+      "deadline": "2011-06-28 21:10:56", 
+      "assignment_group": 4
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
+      "text": null, 
+      "deadline": "2011-06-28 21:10:56", 
+      "assignment_group": 3
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
+      "text": null, 
+      "deadline": "2011-06-28 21:10:55", 
+      "assignment_group": 2
     }
   }, 
   {
     "pk": 1, 
     "model": "core.deadline", 
     "fields": {
+      "status": 2, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": true, 
       "text": null, 
-      "deadline": "2011-05-22 09:53:09", 
+      "deadline": "2011-06-28 21:10:55", 
       "assignment_group": 1
+    }
+  }, 
+  {
+    "pk": 34, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-25 21:11:03", 
+      "assignment_group": 17
+    }
+  }, 
+  {
+    "pk": 36, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-25 21:11:03", 
+      "assignment_group": 18
+    }
+  }, 
+  {
+    "pk": 26, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-25 21:11:01", 
+      "assignment_group": 13
+    }
+  }, 
+  {
+    "pk": 28, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-25 21:11:01", 
+      "assignment_group": 14
+    }
+  }, 
+  {
+    "pk": 14, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-25 21:10:58", 
+      "assignment_group": 7
+    }
+  }, 
+  {
+    "pk": 16, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-25 21:10:58", 
+      "assignment_group": 8
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-19 21:10:57", 
+      "assignment_group": 5
+    }
+  }, 
+  {
+    "pk": 12, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-19 21:10:57", 
+      "assignment_group": 6
+    }
+  }, 
+  {
+    "pk": 22, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-08 21:11:00", 
+      "assignment_group": 11
+    }
+  }, 
+  {
+    "pk": 24, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-08 21:11:00", 
+      "assignment_group": 12
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-08 21:10:56", 
+      "assignment_group": 3
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-06-08 21:10:56", 
+      "assignment_group": 4
+    }
+  }, 
+  {
+    "pk": 30, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-05-29 21:11:02", 
+      "assignment_group": 15
+    }
+  }, 
+  {
+    "pk": 32, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-05-29 21:11:02", 
+      "assignment_group": 16
+    }
+  }, 
+  {
+    "pk": 18, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-05-29 21:10:59", 
+      "assignment_group": 9
+    }
+  }, 
+  {
+    "pk": 20, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-05-29 21:10:59", 
+      "assignment_group": 10
     }
   }, 
   {
     "pk": 2, 
     "model": "core.deadline", 
     "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
       "text": null, 
-      "deadline": "2011-05-22 09:53:09", 
+      "deadline": "2011-05-29 21:10:55", 
+      "assignment_group": 1
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "core.deadline", 
+    "fields": {
+      "status": 0, 
+      "deliveries_available_before_deadline": false, 
+      "is_head": false, 
+      "text": null, 
+      "deadline": "2011-05-29 21:10:55", 
       "assignment_group": 2
     }
   }, 
@@ -959,419 +1154,240 @@
     "pk": 19, 
     "model": "core.delivery", 
     "fields": {
+      "successful": true, 
+      "number": 2, 
+      "delivered_by": 22, 
+      "deadline_tag": 33, 
+      "assignment_group": 17, 
+      "time_of_delivery": "2011-06-28 22:31:03"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
       "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-18 02:24:14", 
-      "number": 1, 
-      "assignment_group": 18
-    }
-  }, 
-  {
-    "pk": 9, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 22, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-18 01:29:11", 
-      "number": 1, 
-      "assignment_group": 7
-    }
-  }, 
-  {
-    "pk": 14, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 22, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-18 00:31:13", 
-      "number": 1, 
-      "assignment_group": 13
+      "deadline_tag": 7, 
+      "assignment_group": 4, 
+      "time_of_delivery": "2011-06-28 21:28:56"
     }
   }, 
   {
     "pk": 18, 
     "model": "core.delivery", 
     "fields": {
-      "delivered_by": 22, 
       "successful": true, 
-      "time_of_delivery": "2011-06-18 00:19:14", 
       "number": 1, 
-      "assignment_group": 17
+      "delivered_by": 22, 
+      "deadline_tag": 33, 
+      "assignment_group": 17, 
+      "time_of_delivery": "2011-06-28 21:06:03"
     }
   }, 
   {
-    "pk": 15, 
+    "pk": 10, 
     "model": "core.delivery", 
     "fields": {
-      "delivered_by": 23, 
       "successful": true, 
-      "time_of_delivery": "2011-06-17 21:54:13", 
       "number": 1, 
-      "assignment_group": 14
+      "delivered_by": 22, 
+      "deadline_tag": 17, 
+      "assignment_group": 9, 
+      "time_of_delivery": "2011-06-28 20:46:59"
     }
   }, 
   {
     "pk": 7, 
     "model": "core.delivery", 
     "fields": {
+      "successful": true, 
+      "number": 1, 
       "delivered_by": 22, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-11 21:17:10", 
-      "number": 1, 
-      "assignment_group": 5
+      "deadline_tag": 13, 
+      "assignment_group": 7, 
+      "time_of_delivery": "2011-06-28 19:44:58"
     }
   }, 
   {
-    "pk": 8, 
+    "pk": 11, 
     "model": "core.delivery", 
     "fields": {
+      "successful": true, 
+      "number": 1, 
       "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-11 18:21:10", 
-      "number": 1, 
-      "assignment_group": 6
-    }
-  }, 
-  {
-    "pk": 12, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 22, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-01 10:04:12", 
-      "number": 1, 
-      "assignment_group": 11
-    }
-  }, 
-  {
-    "pk": 6, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-01 00:27:10", 
-      "number": 3, 
-      "assignment_group": 4
-    }
-  }, 
-  {
-    "pk": 5, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-01 00:24:10", 
-      "number": 2, 
-      "assignment_group": 4
-    }
-  }, 
-  {
-    "pk": 3, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 22, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-01 00:21:10", 
-      "number": 1, 
-      "assignment_group": 3
-    }
-  }, 
-  {
-    "pk": 4, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-06-01 00:08:10", 
-      "number": 1, 
-      "assignment_group": 4
-    }
-  }, 
-  {
-    "pk": 13, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-05-31 20:00:12", 
-      "number": 1, 
-      "assignment_group": 12
+      "deadline_tag": 19, 
+      "assignment_group": 10, 
+      "time_of_delivery": "2011-06-28 19:29:59"
     }
   }, 
   {
     "pk": 2, 
     "model": "core.delivery", 
     "fields": {
-      "delivered_by": 23, 
       "successful": true, 
-      "time_of_delivery": "2011-05-22 06:24:09", 
       "number": 1, 
-      "assignment_group": 2
+      "delivered_by": 23, 
+      "deadline_tag": 3, 
+      "assignment_group": 2, 
+      "time_of_delivery": "2011-06-28 19:07:55"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 23, 
+      "deadline_tag": 11, 
+      "assignment_group": 6, 
+      "time_of_delivery": "2011-06-28 17:56:57"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 22, 
+      "deadline_tag": 9, 
+      "assignment_group": 5, 
+      "time_of_delivery": "2011-06-28 15:19:57"
+    }
+  }, 
+  {
+    "pk": 20, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 23, 
+      "deadline_tag": 35, 
+      "assignment_group": 18, 
+      "time_of_delivery": "2011-06-28 14:12:04"
     }
   }, 
   {
     "pk": 16, 
     "model": "core.delivery", 
     "fields": {
-      "delivered_by": 22, 
       "successful": true, 
-      "time_of_delivery": "2011-05-22 00:11:14", 
       "number": 1, 
-      "assignment_group": 15
+      "delivered_by": 22, 
+      "deadline_tag": 29, 
+      "assignment_group": 15, 
+      "time_of_delivery": "2011-06-28 13:14:02"
     }
   }, 
   {
-    "pk": 10, 
+    "pk": 9, 
     "model": "core.delivery", 
     "fields": {
-      "delivered_by": 22, 
       "successful": true, 
-      "time_of_delivery": "2011-05-21 21:15:12", 
+      "number": 2, 
+      "delivered_by": 23, 
+      "deadline_tag": 15, 
+      "assignment_group": 8, 
+      "time_of_delivery": "2011-06-28 12:45:58"
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
       "number": 1, 
-      "assignment_group": 9
+      "delivered_by": 23, 
+      "deadline_tag": 23, 
+      "assignment_group": 12, 
+      "time_of_delivery": "2011-06-28 12:32:00"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 22, 
+      "deadline_tag": 5, 
+      "assignment_group": 3, 
+      "time_of_delivery": "2011-06-28 12:09:56"
+    }
+  }, 
+  {
+    "pk": 15, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 23, 
+      "deadline_tag": 27, 
+      "assignment_group": 14, 
+      "time_of_delivery": "2011-06-28 10:22:01"
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "core.delivery", 
+    "fields": {
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 23, 
+      "deadline_tag": 15, 
+      "assignment_group": 8, 
+      "time_of_delivery": "2011-06-28 10:15:58"
     }
   }, 
   {
     "pk": 17, 
     "model": "core.delivery", 
     "fields": {
-      "delivered_by": 23, 
       "successful": true, 
-      "time_of_delivery": "2011-05-21 20:57:14", 
       "number": 1, 
-      "assignment_group": 16
+      "delivered_by": 23, 
+      "deadline_tag": 31, 
+      "assignment_group": 16, 
+      "time_of_delivery": "2011-06-28 08:30:02"
     }
   }, 
   {
     "pk": 1, 
     "model": "core.delivery", 
     "fields": {
+      "successful": true, 
+      "number": 1, 
       "delivered_by": 22, 
-      "successful": true, 
-      "time_of_delivery": "2011-05-21 19:15:09", 
-      "number": 1, 
-      "assignment_group": 1
-    }
-  }, 
-  {
-    "pk": 11, 
-    "model": "core.delivery", 
-    "fields": {
-      "delivered_by": 23, 
-      "successful": true, 
-      "time_of_delivery": "2011-05-21 19:08:12", 
-      "number": 1, 
-      "assignment_group": 10
-    }
-  }, 
-  {
-    "pk": 1, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 1, 
-      "last_modified": "2011-06-21 09:53:09", 
-      "object_id": 1, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 2, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 2, 
-      "last_modified": "2011-06-21 09:53:09", 
-      "object_id": 2, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 3, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 3, 
-      "last_modified": "2011-06-21 09:53:10", 
-      "object_id": 3, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 4, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 6, 
-      "last_modified": "2011-06-21 09:53:10", 
-      "object_id": 4, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 5, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 7, 
-      "last_modified": "2011-06-21 09:53:10", 
-      "object_id": 5, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 6, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 8, 
-      "last_modified": "2011-06-21 09:53:11", 
-      "object_id": 6, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 7, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 9, 
-      "last_modified": "2011-06-21 09:53:11", 
-      "object_id": 7, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 8, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 10, 
-      "last_modified": "2011-06-21 09:53:12", 
-      "object_id": 8, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 9, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 11, 
-      "last_modified": "2011-06-21 09:53:12", 
-      "object_id": 9, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 10, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 12, 
-      "last_modified": "2011-06-21 09:53:12", 
-      "object_id": 10, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 11, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 13, 
-      "last_modified": "2011-06-21 09:53:13", 
-      "object_id": 11, 
-      "content_type": 23, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 12, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 16, 
-      "last_modified": "2011-06-21 09:53:14", 
-      "object_id": 12, 
-      "content_type": 20, 
-      "published": true
-    }
-  }, 
-  {
-    "pk": 13, 
-    "model": "core.feedback", 
-    "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 17, 
-      "last_modified": "2011-06-21 09:53:14", 
-      "object_id": 13, 
-      "content_type": 20, 
-      "published": true
+      "deadline_tag": 1, 
+      "assignment_group": 1, 
+      "time_of_delivery": "2011-06-28 08:23:55"
     }
   }, 
   {
     "pk": 14, 
-    "model": "core.feedback", 
+    "model": "core.delivery", 
     "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 18, 
-      "last_modified": "2011-06-21 09:53:15", 
-      "object_id": 14, 
-      "content_type": 20, 
-      "published": true
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 22, 
+      "deadline_tag": 25, 
+      "assignment_group": 13, 
+      "time_of_delivery": "2011-06-28 07:11:01"
     }
   }, 
   {
-    "pk": 15, 
-    "model": "core.feedback", 
+    "pk": 12, 
+    "model": "core.delivery", 
     "fields": {
-      "format": "('rst', 'ReStructured Text')", 
-      "text": "Some text here:)", 
-      "last_modified_by": 24, 
-      "delivery": 19, 
-      "last_modified": "2011-06-21 09:53:15", 
-      "object_id": 15, 
-      "content_type": 20, 
-      "published": false
+      "successful": true, 
+      "number": 1, 
+      "delivered_by": 22, 
+      "deadline_tag": 21, 
+      "assignment_group": 11, 
+      "time_of_delivery": "2011-06-28 05:33:00"
     }
   }, 
   {
@@ -1541,6 +1557,15 @@
     "model": "core.filemeta", 
     "fields": {
       "delivery": 19, 
+      "size": 41, 
+      "filename": "helloworld.java"
+    }
+  }, 
+  {
+    "pk": 60, 
+    "model": "core.filemeta", 
+    "fields": {
+      "delivery": 20, 
       "size": 41, 
       "filename": "helloworld.java"
     }
@@ -1717,6 +1742,15 @@
     }
   }, 
   {
+    "pk": 59, 
+    "model": "core.filemeta", 
+    "fields": {
+      "delivery": 20, 
+      "size": 19, 
+      "filename": "helloworld.py"
+    }
+  }, 
+  {
     "pk": 1, 
     "model": "core.filemeta", 
     "fields": {
@@ -1883,6 +1917,15 @@
     "model": "core.filemeta", 
     "fields": {
       "delivery": 19, 
+      "size": 17, 
+      "filename": "helloworld.txt"
+    }
+  }, 
+  {
+    "pk": 58, 
+    "model": "core.filemeta", 
+    "fields": {
+      "delivery": 20, 
       "size": 17, 
       "filename": "helloworld.txt"
     }
@@ -2275,12 +2318,12 @@
       "is_active": true, 
       "is_superuser": false, 
       "is_staff": false, 
-      "last_login": "2011-06-21 09:53:09", 
+      "last_login": "2011-06-28 21:10:55", 
       "groups": [], 
       "user_permissions": [], 
-      "password": "sha1$6baf3$daad4cfd77eefdb0918372ba8ec240b096ddfbb0", 
+      "password": "sha1$148bd$05909f31e1b7be5bdf951e82c06b83c7d4492931", 
       "email": "student0@example.com", 
-      "date_joined": "2011-06-21 09:53:09"
+      "date_joined": "2011-06-28 21:10:55"
     }
   }, 
   {
@@ -2293,12 +2336,12 @@
       "is_active": true, 
       "is_superuser": false, 
       "is_staff": false, 
-      "last_login": "2011-06-21 09:53:09", 
+      "last_login": "2011-06-28 21:10:55", 
       "groups": [], 
       "user_permissions": [], 
-      "password": "sha1$cd923$e7cf0a454cf6e81972b8bbaf4c67a110b8dc77d9", 
+      "password": "sha1$d1a45$c3bf28b0deb13cf6806f88003ec054feeee3636d", 
       "email": "student1@example.com", 
-      "date_joined": "2011-06-21 09:53:09"
+      "date_joined": "2011-06-28 21:10:55"
     }
   }, 
   {
@@ -2311,12 +2354,12 @@
       "is_active": true, 
       "is_superuser": false, 
       "is_staff": false, 
-      "last_login": "2011-06-21 09:53:09", 
+      "last_login": "2011-06-28 21:10:55", 
       "groups": [], 
       "user_permissions": [], 
-      "password": "sha1$af04d$7b3ac992ec350322b27e5a9338599b02d804c315", 
+      "password": "sha1$018af$71db5c1c5a57b5cfc81744a7bf66ac78f0524ce4", 
       "email": "examiner0@example.com", 
-      "date_joined": "2011-06-21 09:53:09"
+      "date_joined": "2011-06-28 21:10:55"
     }
   }
 ]
