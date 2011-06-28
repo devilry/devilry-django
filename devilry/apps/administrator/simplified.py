@@ -98,7 +98,14 @@ class Period(CanSaveAuthMixin):
 class Assignment(CanSaveAuthMixin):
     class Meta:
         model = models.Assignment
-        resultfields = ['id', 'short_name', 'long_name', 'parentnode__id']
+        resultfields = {
+                '__BASE__':['id', 'short_name', 'long_name', 'parentnode__id'], 
+                'period': ['parentnode__short_name', 'parentnode__long_name',
+                        'parentnode__parentnode__id'],
+                'subject': ['parentnode__parentnode__short_name',
+                        'parentnode__parentnode__long_name'], 
+                'pointfields': ['anonymous', 'must_pass', 'maxpoints',
+                    'attempts']}
         searchfields = ['short_name', 'long_name']
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 

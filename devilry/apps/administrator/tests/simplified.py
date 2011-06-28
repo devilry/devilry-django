@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from ....simplified import PermissionDenied
 from ...core import models
-from ..simplified import Node, Subject, Period
+from ..simplified import Node, Subject, Period, Assignment
 
 
 class TestSimplifiedAdministratorNode(TestCase):
@@ -424,3 +424,164 @@ class TestSimplifiedAdministratorPeriod(TestCase):
         qryset = Period.search(self.daisy, query="spring01").qryset
         self.assertEquals(len(qryset), 1)
 
+class TestSimplifiedAdministratorAssignment(TestCase):
+    fixtures = ["simplified/data.json"]
+
+    def setUp(self):
+        self.grandma = User.objects.get(username='grandma') # superuser
+        self.clarabelle = User.objects.get(username="clarabelle")
+        self.univ = models.Node.objects.get(short_name='univ')
+        self.univ.admins.add(self.clarabelle)
+        self.daisy = User.objects.get(username="daisy")
+        self.assertEquals(0,
+                models.Node.where_is_admin_or_superadmin(self.daisy).count())
+        self.duck1100_core = models.Subject.objects.get(short_name='duck1100')
+        self.duck1100_spring01_week1_core = self.duck1100_core.periods.get(
+                short_name='spring01').assignments.get(short_name='week1')
+
+    def test_read_base(self):
+        assignment = Assignment.read(self.clarabelle, self.duck1100_spring01_week1_core.id) 
+        self.assertEquals(assignment, dict(
+                id = self.duck1100_spring01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_spring01_week1_core.long_name,
+                parentnode__id=self.duck1100_spring01_week1_core.parentnode.id))
+
+    def test_read_period(self):
+        assignment = Assignment.read(self.clarabelle,
+                self.duck1100_spring01_week1_core.id,
+                result_fieldgroups=['period'])
+        self.assertEquals(assignment, dict(
+                id = self.duck1100_spring01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_spring01_week1_core.long_name,
+                parentnode__id=self.duck1100_spring01_week1_core.parentnode.id,
+                parentnode__short_name=self.duck1100_spring01_week1_core.parentnode.short_name,
+                parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.long_name,
+                parentnode__parentnode__id=self.duck1100_spring01_week1_core.parentnode.parentnode_id))
+
+    def test_read_period_subject(self):
+        assignment = Assignment.read(self.clarabelle,
+                self.duck1100_spring01_week1_core.id,
+                result_fieldgroups=['period', 'subject'])
+        self.assertEquals(assignment, dict(
+                id = self.duck1100_spring01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_spring01_week1_core.long_name,
+                parentnode__id=self.duck1100_spring01_week1_core.parentnode.id,
+                parentnode__short_name=self.duck1100_spring01_week1_core.parentnode.short_name,
+                parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.long_name,
+                parentnode__parentnode__id=self.duck1100_spring01_week1_core.parentnode.parentnode_id,
+                parentnode__parentnode__short_name=self.duck1100_spring01_week1_core.parentnode.parentnode.short_name,
+                parentnode__parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.parentnode.long_name))
+
+    def test_read_period_subject_pointfields(self):
+        assignment = Assignment.read(self.clarabelle,
+                self.duck1100_spring01_week1_core.id,
+                result_fieldgroups=['period', 'subject', 'pointfields'])
+        self.assertEquals(assignment, dict(
+                id = self.duck1100_spring01_week1_core.id,
+                short_name = 'week1',
+                long_name = self.duck1100_spring01_week1_core.long_name,
+                parentnode__id=self.duck1100_spring01_week1_core.parentnode.id,
+                parentnode__short_name=self.duck1100_spring01_week1_core.parentnode.short_name,
+                parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.long_name,
+                parentnode__parentnode__id=self.duck1100_spring01_week1_core.parentnode.parentnode_id,
+                parentnode__parentnode__short_name=self.duck1100_spring01_week1_core.parentnode.parentnode.short_name,
+                parentnode__parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.parentnode.long_name,
+                anonymous = self.duck1100_spring01_week1_core.anonymous,
+                must_pass = self.duck1100_spring01_week1_core.must_pass, 
+                maxpoints = self.duck1100_spring01_week1_core.maxpoints,
+                attempts = self.duck1100_spring01_week1_core.attempts))
+
+    def test_read_security(self):
+        #test superuser allowed
+        assignment = Assignment.read(self.grandma, self.duck1100_spring01_week1_core.id) 
+
+        #test user with no permissions
+        with self.assertRaises(PermissionDenied):
+            assignment = Assignment.read(self.daisy,
+                    self.duck1100_spring01_week1_core.id)
+        with self.assertRaises(PermissionDenied):
+            assignment = Assignment.read(self.daisy,
+                    self.duck1100_spring01_week1_core.id,
+                    result_fieldgroups=['period', 'subject'])
+    
+    def test_read_model(self):
+        assignment = Assignment.read_model(self.clarabelle, 
+                idorkw=self.duck1100_spring01_week1_core.id)
+
+        self.assertEquals(assignment, self.duck1100_spring01_week1_core)
+
+    def test_read_model_security(self):
+        #test superuser allowed
+        Assignment.read_model(self.grandma,
+                self.duck1100_spring01_week1_core.id)
+
+        #test user with no permissions
+        with self.assertRaises(PermissionDenied):
+            Assignment.read(self.daisy,
+                self.duck1100_spring01_week1_core.id)
+
+    def test_search(self):
+        assignments = models.Assignment.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
+        qryset = Assignment.search(self.grandma).qryset
+        self.assertEquals(len(qryset), len(assignments))
+        self.assertEquals(qryset[0].short_name, assignments[0].short_name)
+
+        #duck3580, duck1100 and duck1080 have all got an assignment called 'week1'
+        qryset = Assignment.search(self.grandma, query="ek1").qryset
+        self.assertEquals(len(qryset), 3)
+        #this should hit all 9 assignments with 'week' in its short_name
+        qryset = Assignment.search(self.grandma, query="week").qryset
+        self.assertEquals(len(qryset), 9)
+        #no assignments has 'duck' in its short_name
+        qryset = Assignment.search(self.grandma, query="duck").qryset
+        self.assertEquals(len(qryset), 0)
+
+
+    def test_search_security(self):
+        #test user with no permissions
+        qryset = Assignment.search(self.daisy, query="ek1").qryset
+        self.assertEquals(len(qryset), 0)
+
+        #make daisy admin in subject 'duck1100'
+        self.duck1100_h01_core = models.Period.objects.get(parentnode__short_name='duck1100', 
+                short_name='spring01')
+        self.duck1100_h01_core.admins.add(self.daisy)
+        
+        #admin in subject 'duck1100' has access to 'week1' in 'duck1100'
+        qryset = Assignment.search(self.daisy, query="ek1").qryset
+        self.assertEquals(len(qryset), 1)
+
+    def test_create(self):
+        #TODO
+        pass
+
+    def test_create_security(self):
+        #TODO
+        pass
+
+    def test_update(self):
+        #TODO
+        pass
+        
+    def test_update_security(self):
+        #TODO
+        pass
+    
+    def test_delete_asnodeadmin(self):
+        #TODO
+        pass
+
+    def test_delete_asnodeadmin_by_short_name(self):
+        #TODO
+        pass
+
+    def test_delete_assuperadmin(self):
+        #TODO
+        pass
+
+    def test_delete_noperm(self):
+        #TODO
+        pass
