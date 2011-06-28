@@ -1,6 +1,6 @@
 from django import forms
 
-from ..simplified.simplified_api import _require_metaattr
+from ..simplified import _require_metaattr
 import fields
 
 

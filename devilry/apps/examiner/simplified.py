@@ -1,4 +1,4 @@
-from ...simplified import simplified_api, PermissionDenied, GetQryResult
+from ...simplified import simplified_api, PermissionDenied, QryResultWrapper
 from ..core import models
 
 
@@ -81,7 +81,7 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
         else:
             searchfields = list(cls._meta.searchfields) # Important to copy this! If we do not, we append to the class variable.
             searchfields.append('candidates__student__username')
-        result = GetQryResult(cls._meta.resultfields, searchfields, qryset)
+        result = QryResultWrapper(cls._meta.resultfields, searchfields, qryset)
         return result
 
 

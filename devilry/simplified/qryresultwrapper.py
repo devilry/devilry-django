@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-class GetQryResult(object):
+class QryResultWrapper(object):
     def __init__(self, resultfields, searchfields, qryset):
         self.resultfields = resultfields
         self.searchfields = searchfields
