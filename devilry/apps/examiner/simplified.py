@@ -101,3 +101,18 @@ class Delivery(PublishedWhereIsExaminerMixin):
                 ] # What should search() search from
         methods = ['search', 'read']
 
+@simplified_api
+class Feedback(PublishedWhereIsExaminerMixin):
+    class Meta:
+        model = models.Feedback
+        resultfields = ['delivery', 'text', 'format']
+        searchfields = [
+                #delivery__delivered_by
+                'delivery__assignment_group__parentnode__parentnode__parentnode__long_name', #subject
+                'delivery__assignment_group__parentnode__parentnode__parentnode__short_name', #subject
+                'delivery__assignment_group__parentnode__parentnode__long_name', #period
+                'delivery__assignment_group__parentnode__parentnode__short_name', #period
+                'delivery__assignment_group__parentnode__long_name', #assignment
+                'delivery__assignment_group__parentnode__short_name', #assignment
+                ]
+        methods = ['search', 'read', 'create'] #TODO 'delete', 'update'

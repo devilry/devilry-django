@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
-from ..simplified import Subject, Period, Assignment, AssignmentGroup, Delivery
+from ..simplified import Subject, Period, Assignment, AssignmentGroup, Delivery, Feedback
 
 
 pluginloader.autodiscover()
@@ -189,6 +189,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1')
         self.group_core = duck3580_fall01_week1_core.assignmentgroups.all()[0]
+
     def test_search(self):
         assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
@@ -238,7 +239,6 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
                 query="student0").qryset # Should not be able to search for username on anonymous
         self.assertEquals(qryset.count(), 0)
 
-
     def test_read(self):
         group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
         self.assertEquals(group, dict(
@@ -283,22 +283,18 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         self.assertEquals(len(qryset), 1)
 
     def test_search_security(self):
-        examiner0 = User.objects.get(username="examiner0")
-        deliveries = models.Assignment.published_where_is_examiner(examiner0)
-        result = Delivery.search(examiner0)
-
+        #search by examiner with no permission returns no hits
         result = Delivery.search(self.testexaminerNoPerm).qryset
         self.assertEquals(len(result), 0)
 
+        #open search resturns only deliveries where the examiner is examiner
         result = Delivery.search(self.duck3580examiner).qryset
         deliveries = models.Delivery.published_where_is_examiner(self.duck3580examiner)
         self.assertEquals(len(deliveries), len(result))
 
+        #duck3580examiner searching for duck1100 returns no hits
         result = Delivery.search(self.duck3580examiner, query="duck1100")
-        self.assertEquals(len(result.qryset), 0) #no permission
-
-        result = Delivery.search(self.duck3580examiner, query="week4")
-        self.assertEquals(len(result.qryset), 0) #no permission
+        self.assertEquals(len(result.qryset), 0)
 
     def test_read(self):
         delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
@@ -315,4 +311,69 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         with self.assertRaises(PermissionDenied):
             delivery = Delivery.read(self.superadmin, self.delivery_duck3580.id)
 
+class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
+
+    def setUp(self):
+        super(TestSimplifiedExaminerFeedback, self).setUp()
+        self.duck1100_feedback_core = self.duck1100_core.periods.get(
+                short_name='spring01').assignments.get(
+                short_name='week1').assignmentgroups.all()[0].deliveries.all()[0].feedback
+
+    def test_read(self):
+        feedback = Feedback.read(self.duck1100examiner, self.duck1100_feedback_core.id)
+        self.assertEquals(feedback, dict(
+            delivery=self.duck1100_feedback_core.delivery,
+            text=self.duck1100_feedback_core.text,
+            format=self.duck1100_feedback_core.format))
+
+    def test_read_security(self):
+        with self.assertRaises(PermissionDenied):
+            Feedback.read(self.testexaminerNoPerm, self.duck1100_feedback_core.id)
+        with self.assertRaises(PermissionDenied):
+            Feedback.read(self.duck3580examiner, self.duck1100_feedback_core.id)
+        with self.assertRaises(PermissionDenied):
+            Feedback.read(self.superadmin, self.duck1100_feedback_core.id) #TODO correct?
+            
+    def test_search(self):
+        examiner0 = User.objects.get(username="examiner0")
+        #examiner0s feedbacks
+        feedbacks = models.Feedback.published_where_is_examiner(examiner0)
+        
+        #seach for all feedbacks where examiner0 is examiner
+        qryset = Feedback.search(examiner0).qryset 
+        self.assertEquals(len(qryset), len(feedbacks))
+        self.assertEquals(qryset[1], feedbacks[1])
+
+        #search period
+        qryset = Feedback.search(examiner0, query="spring01").qryset
+        self.assertEquals(len(qryset), 7)
+        #search subject
+        qryset = Feedback.search(examiner0, query="duck3580").qryset
+        self.assertEquals(len(qryset), 4)
+        #search period
+        qryset = Feedback.search(examiner0, query="week3").qryset
+        self.assertEquals(len(qryset), 2)
+
+    def test_search_security(self):
+        #search by examiner with no permission returns no hits
+        result = Feedback.search(self.testexaminerNoPerm).qryset
+        self.assertEquals(len(result), 0)
+
+        #open search resturns only deliveries where the examiner is examiner
+        result = Feedback.search(self.duck3580examiner).qryset
+        duck3580_feedbacks = models.Feedback.published_where_is_examiner(self.duck3580examiner)
+        self.assertEquals(len(duck3580_feedbacks), len(result))
+
+        #duck3580examiner searching for duck1100 returns no hits
+        result = Feedback.search(self.duck3580examiner, query="duck1100")
+        self.assertEquals(len(result.qryset), 0)
+
+    def test_create(self):
+        #TODO
+        pass
+
+    def test_ceate_security(self):
+        #TODO
+        pass
+    #TODO tests for delete and update also?
 
