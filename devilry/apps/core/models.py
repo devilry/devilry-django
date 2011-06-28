@@ -62,17 +62,36 @@ class AbstractIsAdmin(object):
 
 class AbstractIsCandidate(object):
 
+    # TODO: document this shit
+
     @classmethod
     def q_is_candidate(cls, user_obj):
         raise NotImplementedError()
 
     @classmethod
-    def published_where_is_candidate(cls, user_obj, old, active):
+    def q_published(cls, old, active):
         raise NotImplementedError()
 
     @classmethod
-    def q_published(cls, old, active):
-        raise NotImplementedError()
+    def where_is_candidate(cls, user_obj):
+        return cls.objects.filter(
+                cls.q_is_candidate(user_obj)
+            ).distinct()
+
+    @classmethod
+    def published_where_is_candidate(cls, user_obj, old=True, active=True):
+        return cls.objects.filter(
+                cls.q_published(old=old, active=active) &
+                cls.q_is_candidate(user_obj)
+                ).distinct()
+
+    @classmethod
+    def active_where_is_candidate(cls, user_obj):
+        return cls.published_where_is_candidate(user_obj, old=False, active=True)
+
+    @classmethod
+    def old_where_is_candidate(cls, user_obj):
+        return cls.published_where_is_candidate(user_obj, active=False)
 
 
 class AbstractIsExaminer(object):
@@ -435,7 +454,7 @@ class Node(models.Model, BaseNode):
         return Node.objects.get(**Node.get_by_path_kw(path.split('.')))
 
 
-class Subject(models.Model, BaseNode, AbstractIsExaminer):
+class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
 
     .. attribute:: parentnode
@@ -502,19 +521,23 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer):
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(periods__assignments__publishing_time__lt = now)
+        q = Q(periods__assignments__publishing_time__lt=now)
         if not active:
-            q &= ~Q(periods__end_time__gte = now)
+            q &= ~Q(periods__end_time__gte=now)
         if not old:
-            q &= ~Q(periods__end_time__lt = now)
+            q &= ~Q(periods__end_time__lt=now)
         return q
 
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(periods__assignments__assignmentgroups__examiners=user_obj)
 
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        return Q(periods__assignments__assignmentgroups__candidates=user_obj)
 
-class Period(models.Model, BaseNode, AbstractIsExaminer):
+
+class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
     A Period represents a period of time, for example a half-year term
     at a university.
@@ -564,6 +587,20 @@ class Period(models.Model, BaseNode, AbstractIsExaminer):
     minimum_points = models.PositiveIntegerField(default=0,
             help_text=_('Students must get at least this many points to '\
                     'pass the period.'))
+
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(assignments__publishing_time__lt=now)
+        if not active:
+            q &= ~Q(end_time__gte=now)
+        if not old:
+            q &= ~Q(end_time__lt=now)
+        return q
+
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        return Q(assignmentgroups__candidates__student=user_obj)
 
     def student_sum_scaled_points(self, user):
         groups = AssignmentGroup.published_where_is_candidate(user).filter(
@@ -648,22 +685,11 @@ class Period(models.Model, BaseNode, AbstractIsExaminer):
         return self.start_time < now and self.end_time > now
 
     @classmethod
-    def q_published(cls, old=True, active=True):
-        now = datetime.now()
-        q = Q(assignments__publishing_time__lt = now)
-        if not active:
-            q &= ~Q(end_time__gte = now)
-        if not old:
-            q &= ~Q(end_time__lt = now)
-        return q
-
-    @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignments__assignmentgroups__examiners=user_obj)
 
 
-
-class Assignment(models.Model, BaseNode, AbstractIsExaminer):
+class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
 
     .. attribute:: parentnode
@@ -796,6 +822,19 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer):
                 'when a group is automatically closed. Leave this '
                 'empty if you do not want to use this feature.'))
 
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(publishing_time__lt=now)
+        if not active:
+            q &= ~Q(parentnode__end_time__gte=now)
+        if not old:
+            q &= ~Q(parentnode__end_time__lt=now)
+        return q
+
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        return Q(assignmentgroups__candidates__student=user_obj)
 
     def _get_maxpoints(self):
         gradeplugincls = self.get_gradeplugin_registryitem().model_cls
@@ -859,21 +898,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer):
                 Q(parentnode__parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
-
-    @classmethod
-    def q_published(cls, old=True, active=True):
-        now = datetime.now()
-        q = Q(publishing_time__lt = now)
-        if not active:
-            q &= ~Q(parentnode__end_time__gte = now)
-        if not old:
-            q &= ~Q(parentnode__end_time__lt = now)
-        return q
-
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignmentgroups__examiners=user_obj)
-
 
     @classmethod
     def get_by_path(self, path):
@@ -1536,19 +1563,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         unique_together = ('assignment_group', 'number')
 
     @classmethod
-    def published_where_is_candidate(cls, user_obj, old=True, active=True):
-        """ Returns a QuerySet matching all :ref:`published
-        <assignment-classifications>` deliveries where the given user
-        is student.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Delivery.objects.filter(
-                cls.q_is_candidate(user_obj) &
-                cls.q_published(old=old, active=active))
-
-    @classmethod
     def q_is_candidate(cls, user_obj):
         """
         Returns a django.models.Q object matching Deliveries where
@@ -1703,7 +1717,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
-
 class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     """
     Represents the feedback for a given `Delivery`_.
@@ -1799,18 +1812,18 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
-    @classmethod
-    def published_where_is_candidate(cls, user_obj, old=True, active=True):
-        """ Returns a QuerySet matching all :ref:`published
-        <assignment-classifications>` feedbacks where the given user
-        is student.
+    # @classmethod
+    # def published_where_is_candidate(cls, user_obj, old=True, active=True):
+    #     """ Returns a QuerySet matching all :ref:`published
+    #     <assignment-classifications>` feedbacks where the given user
+    #     is student.
         
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Feedback.objects.filter(
-                cls.q_is_candidate(user_obj) &
-                cls.q_published(old=old, active=active))
+    #     :param user_obj: A django.contrib.auth.models.User_ object.
+    #     :rtype: QuerySet
+    #     """
+    #     return Feedback.objects.filter(
+    #             cls.q_is_candidate(user_obj) &
+    #             cls.q_published(old=old, active=active))
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -1831,26 +1844,13 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         return q
 
     @classmethod
-    def published_where_is_examiner(cls, user_obj, old=True, active=True):
-        """ Returns a QuerySet matching all :ref:`published
-        <assignment-classifications>` deliveries where the given user
-        is student.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return Feedback.objects.filter(
-                cls.q_is_examiner(user_obj) &
-                cls.q_published(old=old, active=active))
-
-    @classmethod
     def q_is_examiner(cls, user_obj):
         """
         Returns a django.models.Q object matching Deliveries where
         the given student is candidate.
         """
         return Q(delivery__assignment_group__examiners=user_obj)
-
+    
     def save(self, *args, **kwargs):
         super(Feedback, self).save(*args, **kwargs)
         self.delivery.assignment_group.update_gradeplugin_cached_fields()
