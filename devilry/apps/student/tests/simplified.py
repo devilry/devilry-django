@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
-from ..simplified import Delivery, Feedback
+from ..simplified import Delivery, Feedback, Assignment, Period, Subject
 
 import datetime
 
@@ -200,3 +200,24 @@ class TestSimplifiedFeedback(SimplifiedDeliveryTestCase):
         #   a superadmin can't read
         with self.assertRaises(PermissionDenied):
             Feedback.read(superadmin, 1)
+
+
+class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
+    
+    # def setUp(self):
+    #     self._subject_long     = 'parentnode__parentnode__parentnode__long_name'
+    #     self._subject_short    = 'parentnode__parentnode__parentnode__short_name'
+    #     self._subject_id       = 'parentnode__parentnode__parentnode__id'
+
+    #     self._period_long      = 'parentnode__parentnode__long_name'
+    #     self._period_short     = 'parentnode__parentnode__short_name'
+    #     self._period_id        = 'parentnode__parentnode__id'
+
+    #     self.candidate0 = User.objects.get(username="student0")
+    #     self.candidate1 = User.objects.get(username="student0")
+
+    # def test_search(self):
+
+    #     print Assignment.search(self.candidate0).qryset
+    #     self.assertEquals(Assignment.search(self.candidate0).qryset.count(), 8)
+    pass
