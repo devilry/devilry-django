@@ -276,13 +276,13 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         
         #search period
         qryset = Delivery.search(examiner0, query="fall01").qryset
-        self.assertEquals(len(qryset), 10)
+        self.assertEquals(len(qryset), 9)
         #search subject
         qryset = Delivery.search(examiner0, query="1100").qryset
-        self.assertEquals(len(qryset), 9)
+        self.assertEquals(len(qryset), 7)
         #search period
         qryset = Delivery.search(examiner0, query="week4").qryset
-        self.assertEquals(len(qryset), 1)
+        self.assertEquals(len(qryset), 2)
 
     def test_search_security(self):
         #search by examiner with no permission returns no hits
@@ -441,7 +441,7 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
 
         #search period
         qryset = Feedback.search(examiner0, query="spring01").qryset
-        self.assertEquals(len(qryset), 7)
+        self.assertEquals(len(qryset), 5)
         #search subject
         qryset = Feedback.search(examiner0, query="duck3580").qryset
         self.assertEquals(len(qryset), 4)
