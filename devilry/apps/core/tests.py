@@ -760,8 +760,23 @@ class TestDelivery(TestCase):
         self.assertEquals(Delivery.published_where_is_candidate(student4).count(), 0)
         
 
-
 # TODO: Feedback tests
+class TestFeedback(TestCase):
+
+    # fixtures = ['core/deprecated_users.json', 'core/core.json']
+    # using the 'new' test-data, since the 'old' data doesn't have
+    # feedbacks inserted
+    fixtures = ['simplified/data.json']
+
+    def setUp(self):
+        self.candidate0 = User.objects.get(username='student0')
+        self.candidate1 = User.objects.get(username='student1')
+
+    def test_published_where_is_candidate(self):
+
+        self.assertEquals(Feedback.published_where_is_candidate(self.candidate0).count(), 8)
+        self.assertEquals(Feedback.published_where_is_candidate(self.candidate1).count(), 7)
+
 
 class TestMemoryDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def get_storageobj(self):
