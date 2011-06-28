@@ -1577,7 +1577,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignment_group__examiners=user_obj)
-                
+
     @classmethod
     def begin(cls, assignment_group, user_obj):
         """ Begin delivery.
