@@ -758,7 +758,7 @@ class TestDelivery(TestCase):
         self.assertEquals(Delivery.published_where_is_candidate(student2).count(), 1)
         self.assertEquals(Delivery.published_where_is_candidate(student3).count(), 1)
         self.assertEquals(Delivery.published_where_is_candidate(student4).count(), 0)
-        
+
 
 # TODO: Feedback tests
 class TestFeedback(TestCase):
