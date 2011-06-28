@@ -240,6 +240,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         self.assertEquals(qryset.count(), 0)
 
     def test_read(self):
+        #TODO add tests for read with fieldgroups
         group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
         self.assertEquals(group, dict(
                 id = self.group_core.id,
@@ -254,12 +255,13 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
             group = AssignmentGroup.read(self.superadmin, self.group_core.id)
 
 class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
+#TODO anonymous deliveries
 
     def setUp(self):
         super(TestSimplifiedExaminerDelivery, self).setUp()
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1') #assingment group
-        self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0]#single delivery
+        self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0]#single delivery 
         
     def test_search(self):
         examiner0 =  User.objects.get(username="examiner0")
@@ -297,12 +299,58 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         self.assertEquals(len(result.qryset), 0)
 
     def test_read(self):
-        delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
-        self.assertEquals(delivery, dict(
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
+        self.assertEquals(duck3580_delivery, dict(
             time_of_delivery = self.delivery_duck3580.time_of_delivery,
             number = self.delivery_duck3580.number,
-            delivered_by = self.delivery_duck3580.delivered_by))
+            delivered_by = self.delivery_duck3580.delivered_by,
+            id=self.delivery_duck3580.id))
 
+        #read with fieldgroup subject
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id,
+                result_fieldgroups=['subject'])
+        self.assertEquals(duck3580_delivery, dict(
+            time_of_delivery=self.delivery_duck3580.time_of_delivery,
+            number=self.delivery_duck3580.number,
+            delivered_by=self.delivery_duck3580.delivered_by,
+            id=self.delivery_duck3580.id,
+            assignment_group__parentnode__parentnode__parentnode__long_name=
+                self.delivery_duck3580.assignment_group.parentnode.parentnode.parentnode.long_name,
+            assignment_group__parentnode__parentnode__parentnode__short_name=
+                self.delivery_duck3580.assignment_group.parentnode.parentnode.parentnode.short_name,
+            assignment_group__parentnode__parentnode__parentnode__id=
+                self.delivery_duck3580.assignment_group.parentnode.parentnode.parentnode.id))
+
+        #read with fieldgroup period
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id,
+                result_fieldgroups=['period'])
+        self.assertEquals(duck3580_delivery, dict(
+            time_of_delivery=self.delivery_duck3580.time_of_delivery,
+            number=self.delivery_duck3580.number,
+            delivered_by=self.delivery_duck3580.delivered_by,
+            id=self.delivery_duck3580.id,
+            assignment_group__parentnode__parentnode__long_name=
+                self.delivery_duck3580.assignment_group.parentnode.parentnode.long_name,
+            assignment_group__parentnode__parentnode__short_name=
+                self.delivery_duck3580.assignment_group.parentnode.parentnode.short_name,
+            assignment_group__parentnode__parentnode__id=
+                self.delivery_duck3580.assignment_group.parentnode.parentnode.id))
+
+        #read with fieldgroup assignment
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id,
+                result_fieldgroups=['assignment'])
+        self.assertEquals(duck3580_delivery, dict(
+            time_of_delivery=self.delivery_duck3580.time_of_delivery,
+            number=self.delivery_duck3580.number,
+            delivered_by=self.delivery_duck3580.delivered_by,
+            id=self.delivery_duck3580.id,
+            assignment_group__parentnode__long_name=
+                self.delivery_duck3580.assignment_group.parentnode.long_name,
+            assignment_group__parentnode__short_name=
+                self.delivery_duck3580.assignment_group.parentnode.short_name,
+            assignment_group__parentnode__id=
+                self.delivery_duck3580.assignment_group.parentnode.id))
+            
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
             delivery = Delivery.read(self.testexaminerNoPerm, self.delivery_duck3580.id)
@@ -312,6 +360,7 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
             delivery = Delivery.read(self.superadmin, self.delivery_duck3580.id)
 
 class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
+#TODO anonymous deliveries
 
     def setUp(self):
         super(TestSimplifiedExaminerFeedback, self).setUp()
@@ -320,12 +369,58 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
                 short_name='week1').assignmentgroups.all()[0].deliveries.all()[0].feedback
 
     def test_read(self):
-        feedback = Feedback.read(self.duck1100examiner, self.duck1100_feedback_core.id)
-        self.assertEquals(feedback, dict(
+        duck1100_feedback = Feedback.read(self.duck1100examiner, self.duck1100_feedback_core.id)
+        self.assertEquals(duck1100_feedback, dict(
             delivery=self.duck1100_feedback_core.delivery,
             text=self.duck1100_feedback_core.text,
-            format=self.duck1100_feedback_core.format))
+            format=self.duck1100_feedback_core.format,
+            id=self.duck1100_feedback_core.id))
 
+        #read with fieldgroup subject
+        duck1100_feedback = Feedback.read(self.duck1100examiner, self.duck1100_feedback_core.id,
+                result_fieldgroups=['subject'])
+        self.assertEquals(duck1100_feedback, dict(
+            delivery=self.duck1100_feedback_core.delivery,
+            text=self.duck1100_feedback_core.text,
+            format=self.duck1100_feedback_core.format,
+            id=self.duck1100_feedback_core.id,
+            delivery__assignment_group__parentnode__parentnode__parentnode__long_name=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.parentnode.parentnode.long_name,
+            delivery__assignment_group__parentnode__parentnode__parentnode__short_name=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.parentnode.parentnode.short_name,
+            delivery__assignment_group__parentnode__parentnode__parentnode__id=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.parentnode.parentnode.id))
+
+        #read with fieldgroup period
+        duck1100_feedback = Feedback.read(self.duck1100examiner, self.duck1100_feedback_core.id,
+                result_fieldgroups=['period'])
+        self.assertEquals(duck1100_feedback, dict(
+            delivery=self.duck1100_feedback_core.delivery,
+            text=self.duck1100_feedback_core.text,
+            format=self.duck1100_feedback_core.format,
+            id=self.duck1100_feedback_core.id,
+            delivery__assignment_group__parentnode__parentnode__long_name=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.parentnode.long_name,
+            delivery__assignment_group__parentnode__parentnode__short_name=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.parentnode.short_name,
+            delivery__assignment_group__parentnode__parentnode__id=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.parentnode.id))
+
+        #read with fieldgroup assignment
+        duck1100_feedback = Feedback.read(self.duck1100examiner, self.duck1100_feedback_core.id,
+                result_fieldgroups=['assignment'])
+        self.assertEquals(duck1100_feedback, dict(
+            delivery=self.duck1100_feedback_core.delivery,
+            text=self.duck1100_feedback_core.text,
+            format=self.duck1100_feedback_core.format,
+            id=self.duck1100_feedback_core.id,
+            delivery__assignment_group__parentnode__long_name=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.long_name,
+            delivery__assignment_group__parentnode__short_name=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.short_name,
+            delivery__assignment_group__parentnode__id=
+                self.duck1100_feedback_core.delivery.assignment_group.parentnode.id))
+      
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
             Feedback.read(self.testexaminerNoPerm, self.duck1100_feedback_core.id)
