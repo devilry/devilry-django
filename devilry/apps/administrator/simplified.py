@@ -93,3 +93,26 @@ class Period(CanSaveAuthMixin):
         if parentnode__id != None:
             qryset = qryset.filter(parentnode__id = parentnode__id)
         return qryset
+
+@simplified_api
+class Assignment(CanSaveAuthMixin):
+    class Meta:
+        model = models.Assignment
+        resultfields = {
+                '__BASE__':['id', 'short_name', 'long_name', 'parentnode__id'], 
+                'period': ['parentnode__short_name', 'parentnode__long_name',
+                        'parentnode__parentnode__id'],
+                'subject': ['parentnode__parentnode__short_name',
+                        'parentnode__parentnode__long_name'], 
+                'pointfields': ['anonymous', 'must_pass', 'maxpoints',
+                    'attempts']}
+        searchfields = ['short_name', 'long_name']
+        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        qryset = models.Assignment.where_is_admin_or_superadmin(user)
+        parentnode__id = kwargs.pop('parentnode__id', None)
+        if parentnode__id != None:
+            qryset = qryset.filter(parentnode__id = parentnode__id)
+        return qryset

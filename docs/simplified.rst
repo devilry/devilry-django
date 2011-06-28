@@ -46,20 +46,3 @@ to use the core directly if you wish to make complex queries which is not needed
 by a common *task*. To put it simple: It is not an API for doing things that are
 not supported by the devilry web interface.
 
-
-
-The API version 1
-#####################################################################
-
-
-devilry.simplified.examiner
-===========================
-
-.. automodule:: devilry.apps.simplified.examiner
-
-
-
-devilry.simplified.administrator
-================================
-.. automodule:: devilry.apps.simplified.administrator
-   :inherited-members:
