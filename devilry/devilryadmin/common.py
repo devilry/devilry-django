@@ -1,6 +1,6 @@
 from os import listdir, getcwd
 from os.path import dirname, abspath, join, exists
-from subprocess import call
+from subprocess import call, Popen, PIPE
 from sys import argv
 from os import environ
 
@@ -11,6 +11,24 @@ def getdir(filepath):
 def getthisdir():
     """ Get the directory containing this module (and all commands). """
     return getdir(__file__)
+
+def get_devilryadminfixture_path(fixturename):
+    """ Returns the path to a fixture within the ``fixtures/`` subdirectory of
+    *this dir* (see :func:`getthisdir`).  """
+    return join(getthisdir(), 'fixtures', fixturename)
+
+def load_devilryadmin_fixture(fixturename):
+    """ Load the given fixture, its path is detected using
+    :func:`get_devilryadminfixture_path`. """
+    fixturepath = get_devilryadminfixture_path(fixturename)
+    print "Loading fixture: {0}".format(fixturepath)
+    call(['python', 'manage.py', 'loaddata', '-v0', fixturepath])
+
+def dumpfixture(fixturepath, *appnames):
+    p = Popen(['python', 'manage.py', 'dumpdata', '--indent', '2'] + list(appnames),
+             stdout=PIPE)
+    output = p.communicate()[0]
+    open(fixturepath, 'w').write(output)
 
 def getprogname():
     """ Get the current progname (I.E.: devilryadmin.py dosomethingcool) """

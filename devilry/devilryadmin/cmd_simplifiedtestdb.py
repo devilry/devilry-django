@@ -3,7 +3,7 @@
 
 #################################################################
 # WARNING: DO NOT CHANGE this file lightly. The resulting
-# database is used to generate the simplifed.json fixture,
+# database is used to generate the simplifed fixture,
 # which is used in many tests.
 #################################################################
 
@@ -38,7 +38,7 @@ def create_testgroups(
 
 if __name__ == '__main__':
     from common import depends
-    depends('init_exampledb')
+    depends('init_exampledb', 'load_grandmauser', 'load_duckburghusers')
 
     # Duck 1100
     create_testgroups(
