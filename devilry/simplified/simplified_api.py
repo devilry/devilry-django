@@ -135,10 +135,11 @@ def _create_update_method(cls):
 def _create_search_method(cls):
     def search(cls, user, **kwargs):
         """
-        :param query: 
         :param start:
         :param limit:
         :param orderby:
+        :return: The result of fiter() on cls.meta.model.
+        :rtype: QuerySet
         """
         resultfields = _parse_fieldgroups(cls._meta.resultfields,
                     kwargs.pop('result_fieldgroups', []))

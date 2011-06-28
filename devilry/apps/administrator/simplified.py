@@ -71,7 +71,7 @@ class Subject(CanSaveAuthMixin):
     def create_searchqryset(cls, user, **kwargs):
         qryset = models.Subject.where_is_admin_or_superadmin(user)
         parentnode_id = kwargs.pop('parentnode_id', None)
-        if parentnode_id != "DO_NOT_FILTER":
+        if parentnode_id != None:
             qryset = qryset.filter(parentnode__id = parentnode_id)
         return qryset
 
@@ -82,7 +82,8 @@ class Period(CanSaveAuthMixin):
         model = models.Period
         resultfields = ['id', 'short_name', 'long_name', 'parentnode__id',
                 'start_time', 'end_time']
-        searchfields = ['short_name', 'long_name']
+        searchfields = ['short_name', 'long_name', 'parentnode__short_name',
+                'parentnode__long_name']
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
