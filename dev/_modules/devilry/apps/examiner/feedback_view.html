@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.addons.examiner.feedback_view &mdash; Devilry v1.0 documentation</title>
+    <title>devilry.apps.examiner.feedback_view &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -45,7 +45,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for devilry.addons.examiner.feedback_view</h1><div class="highlight"><pre>
+  <h1>Source code for devilry.apps.examiner.feedback_view</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
 <span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
 <span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse</span>
@@ -53,18 +53,18 @@
 <span class="kn">from</span> <span class="nn">django.template</span> <span class="kn">import</span> <span class="n">RequestContext</span>
 <span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
 
-<span class="kn">from</span> <span class="nn">devilry.core.models</span> <span class="kn">import</span> <span class="n">Feedback</span><span class="p">,</span> <span class="n">AssignmentGroup</span><span class="p">,</span> <span class="n">Delivery</span>
-<span class="kn">from</span> <span class="nn">devilry.ui.widgets</span> <span class="kn">import</span> <span class="n">RstEditWidget</span>
-<span class="kn">from</span> <span class="nn">devilry.ui.messages</span> <span class="kn">import</span> <span class="n">UiMessages</span>
-<span class="kn">from</span> <span class="nn">devilry.ui.examiner</span> <span class="kn">import</span> <span class="n">post_publish_feedback</span>
-<span class="kn">from</span> <span class="nn">devilry.core.utils.assignmentgroup</span> <span class="kn">import</span> <span class="n">GroupDeliveriesByDeadline</span>
+<span class="kn">from</span> <span class="nn">..core.models</span> <span class="kn">import</span> <span class="n">Feedback</span><span class="p">,</span> <span class="n">AssignmentGroup</span>
+<span class="kn">from</span> <span class="nn">..ui.widgets</span> <span class="kn">import</span> <span class="n">RstEditWidget</span>
+<span class="kn">from</span> <span class="nn">..ui.messages</span> <span class="kn">import</span> <span class="n">UiMessages</span>
+<span class="kn">from</span> <span class="nn">..ui.examiner</span> <span class="kn">import</span> <span class="n">post_publish_feedback</span>
+<span class="kn">from</span> <span class="nn">...utils.assignmentgroup</span> <span class="kn">import</span> <span class="n">GroupDeliveriesByDeadline</span>
 
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">get_next_notcorrected_in_assignment</span><span class="p">,</span> \
         <span class="n">get_prev_notcorrected_in_assignment</span>
 
 
 
-<div class="viewcode-block" id="FeedbackForm"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.addons.examiner.feedback_view.FeedbackForm">[docs]</a><span class="k">class</span> <span class="nc">FeedbackForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="FeedbackForm"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.examiner.feedback_view.FeedbackForm">[docs]</a><span class="k">class</span> <span class="nc">FeedbackForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A ModelForm for the :class:`devilry.core.models.Feedback`-class. &quot;&quot;&quot;</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Feedback</span>
@@ -97,7 +97,7 @@
                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">delivery_obj</span><span class="o">.</span><span class="n">id</span><span class="p">,)))</span>
 
 
-<div class="viewcode-block" id="render_response"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.addons.examiner.feedback_view.render_response">[docs]</a><span class="k">def</span> <span class="nf">render_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">,</span> <span class="n">feedback_form</span><span class="p">,</span> <span class="n">grade_form</span><span class="p">,</span>
+<div class="viewcode-block" id="render_response"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.examiner.feedback_view.render_response">[docs]</a><span class="k">def</span> <span class="nf">render_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">,</span> <span class="n">feedback_form</span><span class="p">,</span> <span class="n">grade_form</span><span class="p">,</span>
         <span class="n">template_path</span><span class="o">=</span><span class="s">&#39;devilry/examiner/edit_feedback.django.html&#39;</span><span class="p">,</span>
         <span class="n">uimessages</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Calls django.shortcuts.render_to_response with the given</span>
@@ -175,7 +175,7 @@
 
 
 
-<div class="viewcode-block" id="view_shortcut"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.addons.examiner.feedback_view.view_shortcut">[docs]</a><span class="k">def</span> <span class="nf">view_shortcut</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">,</span> <span class="n">grade_model_cls</span><span class="p">,</span> <span class="n">grade_form_cls</span><span class="p">):</span>
+<div class="viewcode-block" id="view_shortcut"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.examiner.feedback_view.view_shortcut">[docs]</a><span class="k">def</span> <span class="nf">view_shortcut</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">,</span> <span class="n">grade_model_cls</span><span class="p">,</span> <span class="n">grade_form_cls</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a feedback-view.</span>
 

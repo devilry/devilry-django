@@ -1,0 +1,130 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.simplified &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.simplified</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">exceptions</span> <span class="kn">import</span> <span class="n">PermissionDenied</span>
+<span class="kn">from</span> <span class="nn">qryresultwrapper</span> <span class="kn">import</span> <span class="n">QryResultWrapper</span>
+<span class="kn">from</span> <span class="nn">fieldspec</span> <span class="kn">import</span> <span class="n">FieldSpec</span>
+<span class="kn">import</span> <span class="nn">create</span> <span class="kn">as</span> <span class="nn">_create</span>
+
+
+<span class="k">def</span> <span class="nf">_require_metaattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Note that this method is also used in ``devilry.restful``. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.Meta is missing the required &quot;</span><span class="si">%s</span><span class="s">&quot; attribute.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">_require_attr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s"> is missing the required &quot;</span><span class="si">%s</span><span class="s">&quot; attribute.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+
+<div class="viewcode-block" id="simplified_modelapi"><a class="viewcode-back" href="../../simplified.html#devilry.simplified.simplified_modelapi">[docs]</a><span class="k">def</span> <span class="nf">simplified_modelapi</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Decorator.... &quot;&quot;&quot;</span>
+    <span class="c">#bases = tuple([SimplifiedBase] + list(cls.__bases__))</span>
+    <span class="c">#cls = type(cls.__name__, bases, dict(cls.__dict__))</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">Meta</span>
+    <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span> <span class="o">=</span> <span class="n">meta</span>
+    <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">ordering</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">ordering</span>
+
+    <span class="c"># Check required meta options</span>
+    <span class="n">_require_metaattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;model&#39;</span><span class="p">)</span>
+    <span class="n">_require_metaattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;methods&#39;</span><span class="p">)</span>
+    <span class="n">_require_metaattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;resultfields&#39;</span><span class="p">)</span>
+    <span class="n">_require_metaattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;searchfields&#39;</span><span class="p">)</span>
+    <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s">&#39;read&#39;</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
+        <span class="n">_require_attr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;read_authorize&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read_model&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">])):</span>
+        <span class="n">_require_attr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;write_authorize&#39;</span><span class="p">)</span>
+
+    <span class="c"># Dynamically create create(), read(), read_model(), update(), delete()</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">_create</span><span class="p">,</span> <span class="s">&#39;create_</span><span class="si">%s</span><span class="s">_method&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)(</span><span class="n">cls</span><span class="p">)</span> <span class="c"># Calls create.create_[CRUD+S]_method(cls)</span>
+    <span class="k">return</span> <span class="n">cls</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.utils.delivery_collection &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.utils.delivery_collection</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.utils.formats</span> <span class="kn">import</span> <span class="n">date_format</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>  
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">from</span> <span class="nn">stream_archives</span> <span class="kn">import</span> <span class="n">StreamableZip</span><span class="p">,</span> <span class="n">StreamableTar</span>
+
+<div class="viewcode-block" id="ArchiveException"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.ArchiveException">[docs]</a><span class="k">class</span> <span class="nc">ArchiveException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="s">&quot;Archive exceptions&quot;</span>
+
+</div>
+<div class="viewcode-block" id="create_archive_from_assignmentgroups"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.create_archive_from_assignmentgroups">[docs]</a><span class="k">def</span> <span class="nf">create_archive_from_assignmentgroups</span><span class="p">(</span><span class="n">assignmentgroups</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">archive_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an archive of type archive_type, named file_name, containing all the </span>
+<span class="sd">    deliveries in each of the assignmentgroups in the list assignmentgroups. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">archive</span> <span class="o">=</span> <span class="n">get_archive_from_archive_type</span><span class="p">(</span><span class="n">archive_type</span><span class="p">)</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="n">iter_archive_assignmentgroups</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">assignmentgroups</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="s">&quot;application/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">archive_type</span><span class="p">)</span>
+    <span class="n">response</span><span class="p">[</span><span class="s">&quot;Content-Disposition&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;attachment; filename=</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> \
+                                      <span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">archive_type</span><span class="p">)</span>  
+    <span class="k">return</span> <span class="n">response</span>
+
+</div>
+<div class="viewcode-block" id="create_archive_from_delivery"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.create_archive_from_delivery">[docs]</a><span class="k">def</span> <span class="nf">create_archive_from_delivery</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">archive_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an archive of type archive_type, named assignment.get_path(), </span>
+<span class="sd">    containing all files in the delivery.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">archive</span> <span class="o">=</span> <span class="n">get_archive_from_archive_type</span><span class="p">(</span><span class="n">archive_type</span><span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span>
+    <span class="n">assignment</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">parentnode</span>
+    <span class="n">group_name</span> <span class="o">=</span> <span class="n">_get_assignmentgroup_name</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="n">iter_archive_deliveries</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">assignment</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span> <span class="p">[</span><span class="n">delivery</span><span class="p">])</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="s">&quot;application/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">archive_type</span><span class="p">)</span>  
+    <span class="n">response</span><span class="p">[</span><span class="s">&quot;Content-Disposition&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;attachment; filename=</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> \
+                                      <span class="p">(</span><span class="n">assignment</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span> <span class="n">archive_type</span><span class="p">)</span>  
+    <span class="k">return</span> <span class="n">response</span>
+
+</div>
+<div class="viewcode-block" id="iter_archive_deliveries"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.iter_archive_deliveries">[docs]</a><span class="k">def</span> <span class="nf">iter_archive_deliveries</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">directory_prefix</span><span class="p">,</span> <span class="n">deliveries</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds files one by one from the list of deliveries into the archive. </span>
+<span class="sd">    After writing each file to the archive, the new bytes in the archive</span>
+<span class="sd">    is yielded. If a file is bigger than DEVILRY_MAX_ARCHIVE_CHUNK_SIZE,</span>
+<span class="sd">    only DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes are written before it&#39;s yielded.</span>
+<span class="sd">    The returned object is an iterator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">include_delivery_explanation</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deliveries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">include_delivery_explanation</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">multiple_deliveries_content</span> <span class="o">=</span> <span class="s">&quot;Delivery-ID    File count    Total size&quot;</span>\
+                                      <span class="s">&quot;     Delivery time  </span><span class="se">\r\n</span><span class="s">&quot;</span>
+    <span class="k">for</span> <span class="n">delivery</span> <span class="ow">in</span> <span class="n">deliveries</span><span class="p">:</span>
+        <span class="n">metas</span> <span class="o">=</span> <span class="n">delivery</span><span class="o">.</span><span class="n">filemetas</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">delivery_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">metas</span><span class="p">:</span>
+            <span class="n">delivery_size</span> <span class="o">+=</span> <span class="n">f</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">directory_prefix</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span>
+                                 <span class="n">f</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">include_delivery_explanation</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/</span><span class="si">%d</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">directory_prefix</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span>
+                                                <span class="n">delivery</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="c"># File size is greater than DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes</span>
+            <span class="c"># Write only chunks of size DEVILRY_MAX_ARCHIVE_CHUNK_SIZE to the archive</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_MAX_ARCHIVE_CHUNK_SIZE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">archive</span><span class="o">.</span><span class="n">can_write_chunks</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="n">ArchiveException</span><span class="p">(</span><span class="s">&quot;The size of file </span><span class="si">%s</span><span class="s"> is greater than &quot;</span>\
+                                            <span class="s">&quot;the maximum allowed size. Download &quot;</span>\
+                                            <span class="s">&quot;stream aborted.&quot;</span><span class="p">)</span>
+                <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_MAX_ARCHIVE_CHUNK_SIZE</span>
+                <span class="c"># Open file stream for reading</span>
+                <span class="n">file_to_stream</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read_open</span><span class="p">()</span>
+                <span class="c"># Open a filestream in the archive</span>
+                <span class="n">archive</span><span class="o">.</span><span class="n">open_filestream</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inclusive_range</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">):</span>
+                    <span class="nb">bytes</span> <span class="o">=</span> <span class="n">file_to_stream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+                    <span class="n">archive</span><span class="o">.</span><span class="n">append_file_chunk</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">bytes</span><span class="p">))</span>
+                    <span class="c"># Read the chunk from the archive and yield the data</span>
+                    <span class="k">yield</span> <span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">archive</span><span class="o">.</span><span class="n">close_filestream</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">bytes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read_open</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                <span class="n">archive</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span>
+                <span class="c"># Read the content from the streamable archive and yield the data</span>
+                <span class="k">yield</span> <span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>            
+        <span class="k">if</span> <span class="n">include_delivery_explanation</span><span class="p">:</span>
+            <span class="n">multiple_deliveries_content</span> <span class="o">+=</span> <span class="s">&quot;  </span><span class="si">%3d</span><span class="s">            </span><span class="si">%3d</span><span class="s">          </span><span class="si">%5d</span><span class="s">&quot;</span>\
+                                           <span class="s">&quot;</span><span class="si">%s</span><span class="se">\r\n</span><span class="s">&quot;</span> <span class="o">%</span> \
+                                           <span class="p">(</span><span class="n">delivery</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">metas</span><span class="p">),</span> 
+                                            <span class="n">delivery_size</span><span class="p">,</span>
+                                            <span class="n">date_format</span><span class="p">(</span><span class="n">delivery</span><span class="o">.</span><span class="n">time_of_delivery</span><span class="p">,</span> 
+                                           <span class="s">&quot;DATETIME_FORMAT&quot;</span><span class="p">))</span>
+    <span class="c"># Adding file explaining multiple deliveries</span>
+    <span class="k">if</span> <span class="n">include_delivery_explanation</span><span class="p">:</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">directory_prefix</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span>
+                          <span class="s">&quot;Deliveries.txt&quot;</span><span class="p">),</span>
+                         <span class="n">multiple_deliveries_content</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;ascii&quot;</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="iter_archive_assignmentgroups"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.iter_archive_assignmentgroups">[docs]</a><span class="k">def</span> <span class="nf">iter_archive_assignmentgroups</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">assignmentgroups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an archive, adds files delivered by the assignmentgroups</span>
+<span class="sd">    and yields the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name_matches</span> <span class="o">=</span> <span class="n">_get_dictionary_with_name_matches</span><span class="p">(</span><span class="n">assignmentgroups</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">assignmentgroups</span><span class="p">:</span>
+        <span class="n">group_name</span> <span class="o">=</span> <span class="n">_get_assignmentgroup_name</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="c"># If multiple groups with the same members exists,</span>
+        <span class="c"># postfix the name with assignmentgroup ID.</span>
+        <span class="k">if</span> <span class="n">name_matches</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">+</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">deliveries</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="n">iter_archive_deliveries</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span>
+                                             <span class="n">group</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
+                                             <span class="n">deliveries</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="nb">bytes</span>
+    <span class="n">archive</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+</div>
+<span class="k">def</span> <span class="nf">get_archive_from_archive_type</span><span class="p">(</span><span class="n">archive_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks that the archive_type is either zip, tar or tar.gz,</span>
+<span class="sd">    and return the correct archive class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">archive</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">archive_type</span> <span class="o">==</span> <span class="s">&#39;zip&#39;</span><span class="p">:</span>
+        <span class="n">archive</span> <span class="o">=</span> <span class="n">StreamableZip</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">archive_type</span> <span class="o">==</span> <span class="s">&#39;tar&#39;</span> <span class="ow">or</span> <span class="n">archive_type</span> <span class="o">==</span> <span class="s">&#39;tgz&#39;</span> <span class="ow">or</span> <span class="n">archive_type</span> <span class="o">==</span> <span class="s">&#39;tar.gz&#39;</span><span class="p">:</span>
+        <span class="n">archive</span> <span class="o">=</span> <span class="n">StreamableTar</span><span class="p">(</span><span class="n">archive_type</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ArchiveException</span><span class="p">(</span><span class="s">&quot;archive_type is invalid:</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">archive_type</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">archive</span>
+
+
+<div class="viewcode-block" id="verify_groups_not_exceeding_max_file_size"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.verify_groups_not_exceeding_max_file_size">[docs]</a><span class="k">def</span> <span class="nf">verify_groups_not_exceeding_max_file_size</span><span class="p">(</span><span class="n">assignmentgroups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For each assignmentgroups in groups, calls </span>
+<span class="sd">    :meth:`verify_deliveries_not_exceeding_max_file_size`. If the size of a file</span>
+<span class="sd">    in a delivery exceeds the settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE, an </span>
+<span class="sd">    ArchiveException is raised.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">assignmentgroups</span><span class="p">:</span>
+        <span class="n">verify_deliveries_not_exceeding_max_file_size</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="verify_deliveries_not_exceeding_max_file_size"><a class="viewcode-back" href="../../../utils.delivery_collection.html#devilry.utils.delivery_collection.verify_deliveries_not_exceeding_max_file_size">[docs]</a><span class="k">def</span> <span class="nf">verify_deliveries_not_exceeding_max_file_size</span><span class="p">(</span><span class="n">deliveries</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Goes through all the files in each deliverery, and if the size of a file</span>
+<span class="sd">    exceeds the DEVILRY_MAX_ARCHIVE_CHUNK_SIZE, an ArchiveException is raised.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">max_size</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_MAX_ARCHIVE_CHUNK_SIZE</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">deliveries</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f_meta</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">filemetas</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">f_meta</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_size</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArchiveException</span><span class="p">()</span>
+
+</div>
+<span class="k">def</span> <span class="nf">inclusive_range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A range() clone, but this includes the right limit</span>
+<span class="sd">    as is if the last step doesn&#39;t divide on stop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">start</span>
+    <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">stop</span><span class="p">:</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">step</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">stop</span><span class="p">:</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">l</span>
+
+
+<span class="k">def</span> <span class="nf">_get_assignmentgroup_name</span><span class="p">(</span><span class="n">assigmentgroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a string containing the group members of the</span>
+<span class="sd">    assignmentgroup separated by &#39;-&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cands</span> <span class="o">=</span> <span class="n">assigmentgroup</span><span class="o">.</span><span class="n">get_candidates</span><span class="p">()</span>
+    <span class="n">cands</span> <span class="o">=</span> <span class="n">cands</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span> <span class="s">&quot;-&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cands</span>
+
+
+<span class="k">def</span> <span class="nf">_get_dictionary_with_name_matches</span><span class="p">(</span><span class="n">assignmentgroups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a list of assignmentgroups and returns</span>
+<span class="sd">    a dictionary containing the count of groups</span>
+<span class="sd">    with similar names sa values in the dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">assigmentgroup</span> <span class="ow">in</span> <span class="n">assignmentgroups</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">_get_assignmentgroup_name</span><span class="p">(</span><span class="n">assigmentgroup</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matches</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">matches</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span>  <span class="n">matches</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">matches</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">matches</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

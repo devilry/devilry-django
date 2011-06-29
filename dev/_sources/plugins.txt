@@ -38,7 +38,7 @@ where you can put code that you want to autoload.
 
 First initialize the plugin system by adding::
 
-    from devilry.core import pluginloader
+    from devilry.apps.core import pluginloader
     pluginloader.autodiscover()
 
 to your ``mysite/urls.py``, making it look something like this::
@@ -49,7 +49,7 @@ to your ``mysite/urls.py``, making it look something like this::
     #from django.contrib import admin
     #admin.autodiscover()
 
-    from devilry.core import pluginloader
+    from devilry.apps.core import pluginloader
     pluginloader.autodiscover()
 
     urlpatterns = patterns('',

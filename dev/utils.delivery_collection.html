@@ -1,0 +1,149 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.utils.delivery_collection &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="devilry-utils-delivery-collection">
+<span id="id1"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.utils.delivery_collection</span></tt><a class="headerlink" href="#devilry-utils-delivery-collection" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="devilry.utils.delivery_collection.ArchiveException">
+<em class="property">class </em><tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">ArchiveException</tt><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#ArchiveException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.ArchiveException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Archive exceptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.utils.delivery_collection.create_archive_from_assignmentgroups">
+<tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">create_archive_from_assignmentgroups</tt><big>(</big><em>request</em>, <em>assignmentgroups</em>, <em>file_name</em>, <em>archive_type</em><big>)</big><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#create_archive_from_assignmentgroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.create_archive_from_assignmentgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an archive of type archive_type, named file_name, containing all the 
+deliveries in each of the assignmentgroups in the list assignmentgroups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.utils.delivery_collection.create_archive_from_delivery">
+<tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">create_archive_from_delivery</tt><big>(</big><em>request</em>, <em>delivery</em>, <em>archive_type</em><big>)</big><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#create_archive_from_delivery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.create_archive_from_delivery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an archive of type archive_type, named assignment.get_path(), 
+containing all files in the delivery.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.utils.delivery_collection.iter_archive_deliveries">
+<tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">iter_archive_deliveries</tt><big>(</big><em>archive</em>, <em>group_name</em>, <em>directory_prefix</em>, <em>deliveries</em><big>)</big><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#iter_archive_deliveries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.iter_archive_deliveries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds files one by one from the list of deliveries into the archive. 
+After writing each file to the archive, the new bytes in the archive
+is yielded. If a file is bigger than DEVILRY_MAX_ARCHIVE_CHUNK_SIZE,
+only DEVILRY_MAX_ARCHIVE_CHUNK_SIZE bytes are written before it&#8217;s yielded.
+The returned object is an iterator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.utils.delivery_collection.iter_archive_assignmentgroups">
+<tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">iter_archive_assignmentgroups</tt><big>(</big><em>archive</em>, <em>assignmentgroups</em><big>)</big><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#iter_archive_assignmentgroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.iter_archive_assignmentgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an archive, adds files delivered by the assignmentgroups
+and yields the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.utils.delivery_collection.verify_groups_not_exceeding_max_file_size">
+<tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">verify_groups_not_exceeding_max_file_size</tt><big>(</big><em>assignmentgroups</em><big>)</big><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#verify_groups_not_exceeding_max_file_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.verify_groups_not_exceeding_max_file_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each assignmentgroups in groups, calls 
+<tt class="xref py py-meth docutils literal"><span class="pre">verify_deliveries_not_exceeding_max_file_size()</span></tt>. If the size of a file
+in a delivery exceeds the settings.DEVILRY_MAX_ARCHIVE_CHUNK_SIZE, an 
+ArchiveException is raised.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.utils.delivery_collection.verify_deliveries_not_exceeding_max_file_size">
+<tt class="descclassname">devilry.utils.delivery_collection.</tt><tt class="descname">verify_deliveries_not_exceeding_max_file_size</tt><big>(</big><em>deliveries</em><big>)</big><a class="reference internal" href="_modules/devilry/utils/delivery_collection.html#verify_deliveries_not_exceeding_max_file_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.utils.delivery_collection.verify_deliveries_not_exceeding_max_file_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes through all the files in each deliverery, and if the size of a file
+exceeds the DEVILRY_MAX_ARCHIVE_CHUNK_SIZE, an ArchiveException is raised.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/utils.delivery_collection.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

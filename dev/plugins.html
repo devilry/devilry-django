@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
     <link rel="next" title="Grade plugins" href="grade-plugins.html" />
-    <link rel="prev" title="devilry.core.deliverystore — DeliveryStore" href="core.deliverystore.html" /> 
+    <link rel="prev" title="devilry.apps.core.deliverystore — DeliveryStore" href="core.deliverystore.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="grade-plugins.html" title="Grade plugins"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="core.deliverystore.html" title="devilry.core.deliverystore — DeliveryStore"
+          <a href="core.deliverystore.html" title="devilry.apps.core.deliverystore — DeliveryStore"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -77,7 +77,7 @@ place to do the integration. Just like <tt class="docutils literal"><span class=
 your application with the Django admin interface, devilry provides a place
 where you can put code that you want to autoload.</p>
 <p>First initialize the plugin system by adding:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilry.core</span> <span class="kn">import</span> <span class="n">pluginloader</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilry.apps.core</span> <span class="kn">import</span> <span class="n">pluginloader</span>
 <span class="n">pluginloader</span><span class="o">.</span><span class="n">autodiscover</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -88,7 +88,7 @@ where you can put code that you want to autoload.</p>
 <span class="c">#from django.contrib import admin</span>
 <span class="c">#admin.autodiscover()</span>
 
-<span class="kn">from</span> <span class="nn">devilry.core</span> <span class="kn">import</span> <span class="n">pluginloader</span>
+<span class="kn">from</span> <span class="nn">devilry.apps.core</span> <span class="kn">import</span> <span class="n">pluginloader</span>
 <span class="n">pluginloader</span><span class="o">.</span><span class="n">autodiscover</span><span class="p">()</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
@@ -147,7 +147,7 @@ restart the server.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="core.deliverystore.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">devilry.core.deliverystore</span></tt> &#8212; DeliveryStore</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">devilry.apps.core.deliverystore</span></tt> &#8212; DeliveryStore</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="grade-plugins.html"
                         title="next chapter">Grade plugins</a></p>
@@ -186,7 +186,7 @@ restart the server.</p>
           <a href="grade-plugins.html" title="Grade plugins"
              >next</a> |</li>
         <li class="right" >
-          <a href="core.deliverystore.html" title="devilry.core.deliverystore — DeliveryStore"
+          <a href="core.deliverystore.html" title="devilry.apps.core.deliverystore — DeliveryStore"
              >previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>

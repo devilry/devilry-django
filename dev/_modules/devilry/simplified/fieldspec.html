@@ -1,0 +1,121 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.simplified.fieldspec &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="devilry.simplified" href="../simplified.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../simplified.html" accesskey="U">devilry.simplified</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.simplified.fieldspec</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="FieldSpec"><a class="viewcode-back" href="../../../simplified.html#devilry.simplified.fieldspec.FieldSpec">[docs]</a><span class="k">class</span> <span class="nc">FieldSpec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">always_available_fields</span><span class="p">,</span> <span class="o">**</span><span class="n">additional_fieldgroups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param always_available_fields:</span>
+<span class="sd">            Fields that is always available.</span>
+<span class="sd">        :param additional_fieldgroups:</span>
+<span class="sd">            Each key is the name of a fieldgroup, and the value is</span>
+<span class="sd">            a list/tuple/iterable of field names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">always_available_fields</span> <span class="o">=</span> <span class="n">always_available_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">additional_fieldgroups</span> <span class="o">=</span> <span class="n">additional_fieldgroups</span>
+
+
+<div class="viewcode-block" id="FieldSpec.aslist"><a class="viewcode-back" href="../../../simplified.html#devilry.simplified.fieldspec.FieldSpec.aslist">[docs]</a>    <span class="k">def</span> <span class="nf">aslist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldgroups</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the fields in ``always_available_fields`` and all</span>
+<span class="sd">        fields in any of the ``fieldgroups``.</span>
+
+<span class="sd">        :param fieldgroups:</span>
+<span class="sd">            Tuple/list of fieldgroups. Fieldgroups are keys in</span>
+<span class="sd">            ``additional_fieldgroups`` (see __init__).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fieldgroups</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">always_available_fields</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">fieldgroups</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_fieldgroups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="k">return</span> <span class="n">fields</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">always_available_fields</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../simplified.html" >devilry.simplified</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -7,36 +7,36 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>devilry.core.models &mdash; Devilry v1.0 documentation</title>
-    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <title>devilry.apps.core.models &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
+        URL_ROOT:    '../../../../',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
+          <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
+          <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -45,7 +45,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for devilry.core.models</h1><div class="highlight"><pre>
+  <h1>Source code for devilry.apps.core.models</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. attribute:: pathsep</span>
 
@@ -77,12 +77,12 @@
 <span class="n">pathsep</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span> <span class="c"># path separator for Node-paths</span>
 
 
-<div class="viewcode-block" id="AbstractIsAdmin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsAdmin">[docs]</a><span class="k">class</span> <span class="nc">AbstractIsAdmin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsAdmin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsAdmin">[docs]</a><span class="k">class</span> <span class="nc">AbstractIsAdmin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Abstract class implemented by all classes where it is natural to</span>
 <span class="sd">    need to check if a user has admin rights. &quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsAdmin.q_is_admin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsAdmin.q_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsAdmin.q_is_admin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsAdmin.q_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a django.db.models.Q object matching all objects of this</span>
 <span class="sd">        type where the given user is admin. The matched result is not</span>
@@ -94,12 +94,12 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsAdmin.where_is_admin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsAdmin.where_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsAdmin.where_is_admin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsAdmin.where_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get all objects of this type where the given user is admin. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">q_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsAdmin.where_is_admin_or_superadmin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsAdmin.where_is_admin_or_superadmin">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsAdmin.where_is_admin_or_superadmin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsAdmin.where_is_admin_or_superadmin">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get all objects of this type where the given user is admin, or</span>
 <span class="sd">        all objects if the user is superadmin. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
@@ -108,12 +108,46 @@
             <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">where_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="AbstractIsExaminer"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer">[docs]</a><span class="k">class</span> <span class="nc">AbstractIsExaminer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AbstractIsCandidate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="c"># TODO: document this shit</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">active</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">q_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">published_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">q_published</span><span class="p">(</span><span class="n">old</span><span class="o">=</span><span class="n">old</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="n">active</span><span class="p">)</span> <span class="o">&amp;</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">q_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">active_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">old_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AbstractIsExaminer"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer">[docs]</a><span class="k">class</span> <span class="nc">AbstractIsExaminer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Abstract class implemented by all classes where it is natural to</span>
 <span class="sd">    need to check if a user is examiner. &quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.q_published"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer.q_published">[docs]</a>    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsExaminer.q_published"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer.q_published">[docs]</a>    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a django.models.Q object which matches all items of this type</span>
 <span class="sd">        where :attr:`Assignment.publishing_time` is in the future.</span>
@@ -127,7 +161,7 @@
 
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.q_is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer.q_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsExaminer.q_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer.q_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a django.models.Q object which matches items</span>
 <span class="sd">        where the given user is examiner.</span>
@@ -136,7 +170,7 @@
 
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.where_is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer.where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsExaminer.where_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer.where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get all items of this type where the given ``user_obj`` is</span>
 <span class="sd">        examiner on one of the assignment groups.</span>
 
@@ -148,7 +182,7 @@
             <span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.published_where_is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer.published_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">published_where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsExaminer.published_where_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer.published_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">published_where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get all published &lt;assignment-classifications&gt;` items of this type</span>
 <span class="sd">        where the given ``user_obj`` is examiner on one of the assignment</span>
@@ -166,7 +200,7 @@
                 <span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.active_where_is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer.active_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">active_where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsExaminer.active_where_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer.active_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">active_where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut for :meth:`published_where_is_examiner` with</span>
 <span class="sd">        ``old=False``.</span>
@@ -175,7 +209,7 @@
                 <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.old_where_is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AbstractIsExaminer.old_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">old_where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AbstractIsExaminer.old_where_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AbstractIsExaminer.old_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">old_where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut for :meth:`published_where_is_examiner` with</span>
 <span class="sd">        ``active=False``.</span>
@@ -205,7 +239,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="splitpath"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.splitpath">[docs]</a><span class="k">def</span> <span class="nf">splitpath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">expected_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="splitpath"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.splitpath">[docs]</a><span class="k">def</span> <span class="nf">splitpath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">expected_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Split the path on :attr:`pathsep` and return the resulting list.</span>
 <span class="sd">    Example:</span>
 
@@ -265,7 +299,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">LongNameField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="BaseNode"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.BaseNode">[docs]</a><span class="k">class</span> <span class="nc">BaseNode</span><span class="p">(</span><span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">SaveInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNode"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.BaseNode">[docs]</a><span class="k">class</span> <span class="nc">BaseNode</span><span class="p">(</span><span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">SaveInterface</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The base class of the Devilry hierarchy. Implements basic functionality</span>
 <span class="sd">    used by the other Node classes. This is an abstract datamodel, so it</span>
@@ -333,7 +367,7 @@
             <span class="k">return</span> <span class="bp">False</span>
 
 </div>
-<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">):</span>
+<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class is typically used to represent a hierarchy of institutions, </span>
 <span class="sd">    faculties and departments.</span>
@@ -349,7 +383,7 @@
 <span class="sd">        A django.db.models.ManyToManyField_ that holds all the admins of the</span>
 <span class="sd">        `Node`_.</span>
 
-<span class="sd">    .. attribute:: nodes</span>
+<span class="sd">    .. attribute:: child_nodes</span>
 
 <span class="sd">        A set of child_nodes for this node</span>
 <span class="sd"> </span>
@@ -366,12 +400,13 @@
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Node&#39;</span><span class="p">)</span>
         <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Nodes&#39;</span><span class="p">)</span>
         <span class="n">unique_together</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode&#39;</span><span class="p">)</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_can_save_id_none</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
@@ -383,13 +418,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
     <span class="n">get_full_path</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="n">BaseNode</span><span class="o">.</span><span class="n">get_full_path</span><span class="o">.</span><span class="n">short_description</span>
     
-    <span class="k">def</span> <span class="nf">iter_childnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.iter_childnodes"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Node.iter_childnodes">[docs]</a>    <span class="k">def</span> <span class="nf">iter_childnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursively iterates over all child nodes, and their child nodes.</span>
+<span class="sd">        For a list of direct child nodes, use atribute child_nodes instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">yield</span> <span class="n">node</span>
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">iter_childnodes</span><span class="p">():</span>
                 <span class="k">yield</span> <span class="n">c</span>
-
-<div class="viewcode-block" id="Node.clean"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Node.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Node.clean"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Node.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the node, making sure it does not do something stupid.</span>
 
 <span class="sd">        Always call this before save()! Read about validation here:</span>
@@ -434,7 +473,7 @@
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">pk__in</span><span class="o">=</span><span class="n">cls</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Node.get_by_path_kw"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Node.get_by_path_kw">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path_kw</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">pathlist</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_by_path_kw"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Node.get_by_path_kw">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path_kw</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">pathlist</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Used by :meth:`get_by_path` to create the required kwargs for</span>
 <span class="sd">        Node.objects.get(). Might be a starting point for more sophisticated</span>
 <span class="sd">        queries including paths. Example::</span>
@@ -451,7 +490,7 @@
         <span class="k">return</span> <span class="n">kw</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Node.get_by_path"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Node.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.get_by_path"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Node.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a node by path.</span>
 
 <span class="sd">        Raises :exc:`Node.DoesNotExist` if the query does not match.</span>
@@ -463,7 +502,7 @@
         <span class="k">return</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">Node</span><span class="o">.</span><span class="n">get_by_path_kw</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)))</span>
 
 </div></div>
-<div class="viewcode-block" id="Subject"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Subject">[docs]</a><span class="k">class</span> <span class="nc">Subject</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
+<div class="viewcode-block" id="Subject"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Subject">[docs]</a><span class="k">class</span> <span class="nc">Subject</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">,</span> <span class="n">AbstractIsCandidate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    .. attribute:: parentnode</span>
@@ -493,6 +532,7 @@
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">)</span>
         <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Subjects&#39;</span><span class="p">)</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">]</span>
 
     <span class="n">short_name</span> <span class="o">=</span> <span class="n">ShortNameField</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="n">LongNameField</span><span class="p">()</span>
@@ -505,7 +545,7 @@
                 <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Subject.get_by_path"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Subject.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="Subject.get_by_path"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Subject.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a Subject by path.</span>
 
 <span class="sd">        Only matches on :attr:`short_name` for subjects because it is</span>
@@ -518,7 +558,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Subject</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Subject.get_path"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Subject.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Subject.get_path"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Subject.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Only returns :attr:`short_name` for subject since it is</span>
 <span class="sd">        guaranteed to be unique. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_name</span>
@@ -529,19 +569,23 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">periods__assignments__publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">periods__assignments__publishing_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">periods__end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">periods__end_time__gte</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">periods__end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">periods__end_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">q</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">periods__assignments__assignmentgroups__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">periods__assignments__assignmentgroups__candidates</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+
 </div>
-<div class="viewcode-block" id="Period"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Period">[docs]</a><span class="k">class</span> <span class="nc">Period</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
+<div class="viewcode-block" id="Period"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Period">[docs]</a><span class="k">class</span> <span class="nc">Period</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">,</span> <span class="n">AbstractIsCandidate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Period represents a period of time, for example a half-year term</span>
 <span class="sd">    at a university.</span>
@@ -576,6 +620,7 @@
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Period&#39;</span><span class="p">)</span>
         <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Periods&#39;</span><span class="p">)</span>
         <span class="n">unique_together</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode&#39;</span><span class="p">)</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">]</span>
 
     <span class="n">short_name</span> <span class="o">=</span> <span class="n">ShortNameField</span><span class="p">()</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="n">LongNameField</span><span class="p">()</span>
@@ -590,6 +635,20 @@
     <span class="n">minimum_points</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">help_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Students must get at least this many points to &#39;</span>\
                     <span class="s">&#39;pass the period.&#39;</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignments__publishing_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">end_time__gte</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">end_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignmentgroups__candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">student_sum_scaled_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
@@ -616,7 +675,7 @@
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Period.not_ended_where_is_admin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Period.not_ended_where_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">not_ended_where_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="Period.not_ended_where_is_admin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Period.not_ended_where_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">not_ended_where_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all Periods where the given user is</span>
 <span class="sd">        admin and end_time is in the future.</span>
 <span class="sd">        </span>
@@ -626,7 +685,7 @@
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">where_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">end_time__gt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Period.not_ended_where_is_admin_or_superadmin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Period.not_ended_where_is_admin_or_superadmin">[docs]</a>    <span class="k">def</span> <span class="nf">not_ended_where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="Period.not_ended_where_is_admin_or_superadmin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Period.not_ended_where_is_admin_or_superadmin">[docs]</a>    <span class="k">def</span> <span class="nf">not_ended_where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all Periods where the given user is</span>
 <span class="sd">        admin or superadmin and end_time is in the future.</span>
 <span class="sd">        </span>
@@ -639,7 +698,7 @@
             <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">not_ended_where_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Period.get_by_path"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Period.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="Period.get_by_path"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Period.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a Period by path.</span>
 
 <span class="sd">        Raises :exc:`Period.DoesNotExist` if the query does not match.</span>
@@ -654,7 +713,7 @@
                 <span class="n">parentnode__short_name</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
                 <span class="n">short_name</span><span class="o">=</span><span class="n">period</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Period.clean"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Period.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Period.clean"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Period.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the period.</span>
 
 <span class="sd">        Always call this before save()! Read about validation here:</span>
@@ -667,29 +726,18 @@
                 <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Start time must be before end time.&#39;</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Period</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Period.is_active"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Period.is_active">[docs]</a>    <span class="k">def</span> <span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Period.is_active"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Period.is_active">[docs]</a>    <span class="k">def</span> <span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns true if the period is active</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">now</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">&gt;</span> <span class="n">now</span>
 </div>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignments__publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">q</span>
-
-    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignments__assignmentgroups__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 
-
 </div>
-<div class="viewcode-block" id="Assignment"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment">[docs]</a><span class="k">class</span> <span class="nc">Assignment</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment">[docs]</a><span class="k">class</span> <span class="nc">Assignment</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">,</span> <span class="n">AbstractIsCandidate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    .. attribute:: parentnode</span>
@@ -720,7 +768,7 @@
 
 <span class="sd">    .. attribute:: assignmentgroups</span>
 
-<span class="sd">        A set of the assignmentgroups for this assignment.</span>
+<span class="sd">        A set of the :class:`AssignmentGroup` for this assignment.</span>
 
 <span class="sd">    .. attribute:: filenames</span>
 <span class="sd">    </span>
@@ -763,6 +811,7 @@
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Assignment&#39;</span><span class="p">)</span>
         <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Assignments&#39;</span><span class="p">)</span>
         <span class="n">unique_together</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode&#39;</span><span class="p">)</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">]</span>
 
     <span class="n">short_name</span> <span class="o">=</span> <span class="n">ShortNameField</span><span class="p">()</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="n">LongNameField</span><span class="p">()</span>
@@ -821,6 +870,19 @@
                 <span class="s">&#39;when a group is automatically closed. Leave this &#39;</span>
                 <span class="s">&#39;empty if you do not want to use this feature.&#39;</span><span class="p">))</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">publishing_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">parentnode__end_time__gte</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">parentnode__end_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignmentgroups__candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_maxpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">gradeplugincls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gradeplugin_registryitem</span><span class="p">()</span><span class="o">.</span><span class="n">model_cls</span>
@@ -834,7 +896,7 @@
             <span class="n">group</span><span class="o">.</span><span class="n">scaled_points</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">_get_scaled_points</span><span class="p">()</span>
             <span class="n">group</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Assignment.save"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.save"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Save and recalculate the value of :attr:`maxpoints` and</span>
 <span class="sd">        :attr:`pointscale`. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_maxpoints</span><span class="p">()</span>
@@ -843,12 +905,12 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Assignment</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_scalepoints</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Assignment.get_gradeplugin_registryitem"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.get_gradeplugin_registryitem">[docs]</a>    <span class="k">def</span> <span class="nf">get_gradeplugin_registryitem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.get_gradeplugin_registryitem"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.get_gradeplugin_registryitem">[docs]</a>    <span class="k">def</span> <span class="nf">get_gradeplugin_registryitem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the :class:`devilry.core.gradeplugin.RegistryItem`</span>
 <span class="sd">        for the current :attr:`grade_plugin`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">gradeplugin</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grade_plugin</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Assignment.validate_gradeplugin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.validate_gradeplugin">[docs]</a>    <span class="k">def</span> <span class="nf">validate_gradeplugin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.validate_gradeplugin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.validate_gradeplugin">[docs]</a>    <span class="k">def</span> <span class="nf">validate_gradeplugin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Check if grade plugin is valid (exists). </span>
 <span class="sd">        Raise :exc:`devilry.core.gradeplugin.GradePluginDoesNotExistError`</span>
 <span class="sd">        on error. &quot;&quot;&quot;</span>
@@ -862,11 +924,11 @@
                 <span class="s">&#39;this except to re-enable the missing grade plugin.&#39;</span> <span class="o">%</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">grade_plugin</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="Assignment.get_filenames"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.get_filenames">[docs]</a>    <span class="k">def</span> <span class="nf">get_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.get_filenames"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.get_filenames">[docs]</a>    <span class="k">def</span> <span class="nf">get_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the filenames as a list of strings. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Assignment.validate_filenames"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.validate_filenames">[docs]</a>    <span class="k">def</span> <span class="nf">validate_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.validate_filenames"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.validate_filenames">[docs]</a>    <span class="k">def</span> <span class="nf">validate_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Raise ValueError unless each filename in the iterable</span>
 <span class="sd">        ``filenames`` is one of the filenames on this assignment. Nothing is</span>
 <span class="sd">        done if :attr:`filenames` is not set, or set to a empty string. &quot;&quot;&quot;</span>
@@ -884,24 +946,12 @@
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">parentnode__end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">parentnode__end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">q</span>
-
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignmentgroups__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 
-
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Assignment.get_by_path"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.get_by_path"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a Assignment by path.</span>
 
 <span class="sd">        Raises :exc:`Assignment.DoesNotExist` if the query does not match.</span>
@@ -918,7 +968,7 @@
                 <span class="n">parentnode__short_name</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
                 <span class="n">short_name</span><span class="o">=</span><span class="n">assignment</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Assignment.assignment_groups_where_is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.assignment_groups_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">assignment_groups_where_is_examiner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.assignment_groups_where_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.assignment_groups_where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">assignment_groups_where_is_examiner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get all assignment groups within this assignment where the given</span>
 <span class="sd">        ``user_obj`` is examiner.</span>
 <span class="sd">        </span>
@@ -928,7 +978,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignmentgroups</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="n">Q</span><span class="p">(</span><span class="n">examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">))</span>
     </div>
-<div class="viewcode-block" id="Assignment.assignment_groups_where_can_examine"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.assignment_groups_where_can_examine">[docs]</a>    <span class="k">def</span> <span class="nf">assignment_groups_where_can_examine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.assignment_groups_where_can_examine"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.assignment_groups_where_can_examine">[docs]</a>    <span class="k">def</span> <span class="nf">assignment_groups_where_can_examine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get all assignment groups within this assignment where the given</span>
 <span class="sd">        ``user_obj`` is examiner or admin. If the user is superadmin, all</span>
 <span class="sd">        assignments are returned.</span>
@@ -946,7 +996,7 @@
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span>
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)))</span>
             </div>
-<div class="viewcode-block" id="Assignment.clean"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Assignment.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Assignment.clean"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Assignment.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the assignment.</span>
 
 <span class="sd">        Always call this before save()! Read about validation here:</span>
@@ -964,7 +1014,7 @@
                       <span class="o">%</span> <span class="nb">dict</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">))))</span>
 
 </div></div>
-<div class="viewcode-block" id="Candidate"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Candidate">[docs]</a><span class="k">class</span> <span class="nc">Candidate</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Candidate">[docs]</a><span class="k">class</span> <span class="nc">Candidate</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. attribute:: assignment_group</span>
 
@@ -989,7 +1039,7 @@
     <span class="c"># TODO unique within assignment as an option.</span>
     <span class="n">candidate_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Candidate.get_identifier"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Candidate.get_identifier">[docs]</a>    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Candidate.get_identifier"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Candidate.get_identifier">[docs]</a>    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gives the identifier of the candidate. When the Assignment is anyonymous</span>
 <span class="sd">        the candidate_id is returned. Else, the student name is returned. This </span>
@@ -1007,7 +1057,7 @@
     <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Candidate.clean"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Candidate.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Candidate.clean"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Candidate.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the assignment.</span>
 
 <span class="sd">        Always call this before save()! Read about validation here:</span>
@@ -1028,7 +1078,7 @@
 
 
 <span class="c"># TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.</span></div></div>
-<div class="viewcode-block" id="AssignmentGroup"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup">[docs]</a><span class="k">class</span> <span class="nc">AssignmentGroup</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup">[docs]</a><span class="k">class</span> <span class="nc">AssignmentGroup</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a student or a group of students. </span>
 
@@ -1104,6 +1154,8 @@
 
 <span class="sd">        Calculated as: `float(pointscale)/maxpoints * points`.</span>
 
+<span class="sd">        **Note:** This field is a cache for the calculation above.</span>
+
 <span class="sd">    .. attribute:: NO_DELIVERIES</span>
 
 <span class="sd">        The numberic value corresponding to :attr:`status` *no deliveries*.</span>
@@ -1169,6 +1221,10 @@
     <span class="n">is_passing_grade</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span>
+
+
     <span class="k">def</span> <span class="nf">_get_scaled_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">pointscale</span><span class="p">)</span>
         <span class="n">maxpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">maxpoints</span>
@@ -1189,7 +1245,7 @@
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AssignmentGroup.q_is_candidate"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.q_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.q_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.q_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a django.models.Q object matching AssignmentGroups where</span>
 <span class="sd">        the given student is candidate.</span>
@@ -1197,7 +1253,7 @@
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AssignmentGroup.where_is_candidate"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.where_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all AssignmentGroups where the</span>
 <span class="sd">        given user is student.</span>
 <span class="sd">        </span>
@@ -1207,7 +1263,7 @@
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">q_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AssignmentGroup.published_where_is_candidate"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.published_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">published_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.published_where_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.published_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">published_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all :ref:`published</span>
 <span class="sd">        &lt;assignment-classifications&gt;` assignment groups where the given user</span>
 <span class="sd">        is student.</span>
@@ -1220,7 +1276,7 @@
                 <span class="n">cls</span><span class="o">.</span><span class="n">q_published</span><span class="p">(</span><span class="n">old</span><span class="o">=</span><span class="n">old</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="n">active</span><span class="p">))</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AssignmentGroup.active_where_is_candidate"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.active_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">active_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.active_where_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.active_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">active_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all :ref:`active</span>
 <span class="sd">        &lt;assignment-classifications&gt;` assignment groups where the given user</span>
 <span class="sd">        is student.</span>
@@ -1231,7 +1287,7 @@
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AssignmentGroup.old_where_is_candidate"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.old_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">old_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.old_where_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.old_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">old_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all :ref:`old</span>
 <span class="sd">        &lt;assignment-classifications&gt;` assignment groups where the given user</span>
 <span class="sd">        is student.</span>
@@ -1260,7 +1316,7 @@
         <span class="k">return</span> <span class="s">u&#39;</span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">get_candidates</span><span class="p">())</span>
     
-<div class="viewcode-block" id="AssignmentGroup.get_students"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_students">[docs]</a>    <span class="k">def</span> <span class="nf">get_students</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_students"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_students">[docs]</a>    <span class="k">def</span> <span class="nf">get_students</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a string containing all students in the group separated by</span>
 <span class="sd">        comma and a space, like: ``superman, spiderman, batman``.</span>
 
@@ -1272,7 +1328,7 @@
                 <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span></div>
     <span class="n">get_students</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Students&#39;</span><span class="p">)</span>
  
-<div class="viewcode-block" id="AssignmentGroup.get_candidates"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_candidates">[docs]</a>    <span class="k">def</span> <span class="nf">get_candidates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_candidates"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_candidates">[docs]</a>    <span class="k">def</span> <span class="nf">get_candidates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a string containing all candiates in the group separated by</span>
 <span class="sd">        comma and a space, like: ``superman, spiderman, batman`` for normal</span>
 <span class="sd">        assignments, and something like: ``321, 1533, 111`` for anonymous</span>
@@ -1282,7 +1338,7 @@
                 <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span></div>
     <span class="n">get_students</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Students&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AssignmentGroup.get_examiners"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_examiners">[docs]</a>    <span class="k">def</span> <span class="nf">get_examiners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_examiners"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_examiners">[docs]</a>    <span class="k">def</span> <span class="nf">get_examiners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a string contaning all examiners in the group separated by</span>
 <span class="sd">        comma (``&#39;,&#39;``). &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s">u&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">examiners</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span></div>
@@ -1294,11 +1350,11 @@
     <span class="k">def</span> <span class="nf">is_candidate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="AssignmentGroup.is_examiner"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">is_examiner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">is_examiner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return True if user is examiner on this assignment group &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">examiners</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">user_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.can_examine"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.can_examine">[docs]</a>    <span class="k">def</span> <span class="nf">can_examine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.can_examine"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.can_examine">[docs]</a>    <span class="k">def</span> <span class="nf">can_examine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return True if the user has permission to examine (creeate</span>
 <span class="sd">        feedback and browse files) on this assignment group.</span>
 <span class="sd">        </span>
@@ -1306,21 +1362,21 @@
         <span class="k">return</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span> \
                 <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_examiner</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_localized_status"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_localized_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_localized_status"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_localized_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the current status string from :attr:`status_mapping`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_mapping</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_localized_student_status"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_localized_student_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_student_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_localized_student_status"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_localized_student_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_student_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
 <span class="sd">        :attr:`status_mapping_student`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_mapping_student</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_status_cssclass"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_status_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_status_cssclass"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_status_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
 <span class="sd">        :attr:`status_mapping_cssclass`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_status_student_cssclass"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_status_student_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_student_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_status_student_cssclass"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_status_student_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_student_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
 <span class="sd">        :attr:`status_mapping_student_cssclass`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_mapping_student_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
@@ -1344,11 +1400,11 @@
         <span class="sd">&quot;&quot;&quot; Query for the correct status, and set :attr:`status`. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_status_from_qry</span><span class="p">()</span>
 
-<div class="viewcode-block" id="AssignmentGroup.get_number_of_deliveries"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_number_of_deliveries">[docs]</a>    <span class="k">def</span> <span class="nf">get_number_of_deliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_number_of_deliveries"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_number_of_deliveries">[docs]</a>    <span class="k">def</span> <span class="nf">get_number_of_deliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the number of deliveries by this assignment group. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_latest_delivery"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_latest_delivery">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_delivery</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_latest_delivery"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_latest_delivery">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_delivery</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the latest delivery by this assignment group,</span>
 <span class="sd">        or ``None`` if there is no deliveries. &quot;&quot;&quot;</span>
         <span class="n">qry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -1358,7 +1414,7 @@
             <span class="k">return</span> <span class="n">qry</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
                     <span class="n">models</span><span class="o">.</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;time_of_delivery&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_latest_delivery_with_feedback"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_latest_delivery_with_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_delivery_with_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_latest_delivery_with_feedback"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_latest_delivery_with_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_delivery_with_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the latest delivery by this assignment group with feedback,</span>
 <span class="sd">        or ``None`` if there is no deliveries with feedback. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1371,14 +1427,14 @@
                 <span class="k">return</span> <span class="n">qry</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
                         <span class="n">models</span><span class="o">.</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;time_of_delivery&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_deliveries_with_published_feedback"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_deliveries_with_published_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_deliveries_with_published_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_deliveries_with_published_feedback"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_deliveries_with_published_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_deliveries_with_published_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the the deliveries by this assignment group which have</span>
 <span class="sd">        published feedback.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">feedback__published</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_latest_delivery_with_published_feedback"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_latest_delivery_with_published_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_delivery_with_published_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_latest_delivery_with_published_feedback"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_latest_delivery_with_published_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_delivery_with_published_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the latest delivery with published feedback.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1406,7 +1462,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_passing_grade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gradeplugin_cached_fields</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
-<div class="viewcode-block" id="AssignmentGroup.get_grade_as_short_string"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_grade_as_short_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_grade_as_short_string"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_grade_as_short_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the grade as a &quot;short string&quot;. &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latest_delivery_with_published_feedback</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">:</span>
@@ -1414,11 +1470,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">get_grade_as_short_string</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="AssignmentGroup.can_save"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.can_save">[docs]</a>    <span class="k">def</span> <span class="nf">can_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Check if the user has permission to save this AssignmentGroup.</span>
-<span class="sd">        This only runs :meth:`Assignment.is_admin`, so there is no need to</span>
-<span class="sd">        use this if you have already used can_save() on the</span>
-<span class="sd">        :attr:`parentnode`. &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AssignmentGroup.can_save"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.can_save">[docs]</a>    <span class="k">def</span> <span class="nf">can_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the user has permission to save this AssignmentGroup. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
@@ -1426,7 +1479,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
     </div>
-<div class="viewcode-block" id="AssignmentGroup.can_add_deliveries"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.can_add_deliveries">[docs]</a>    <span class="k">def</span> <span class="nf">can_add_deliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.can_add_deliveries"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.can_add_deliveries">[docs]</a>    <span class="k">def</span> <span class="nf">can_add_deliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns true if a student can add deliveries on this assignmengroup</span>
 <span class="sd">        </span>
 <span class="sd">        Both the assignmentgroups is_open attribute, and the periods start</span>
@@ -1435,7 +1488,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_active</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="AssignmentGroup.get_active_deadline"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.AssignmentGroup.get_active_deadline">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_deadline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AssignmentGroup.get_active_deadline"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.AssignmentGroup.get_active_deadline">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_deadline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the active deadline.</span>
 <span class="sd">            </span>
 <span class="sd">        :return:</span>
@@ -1448,7 +1501,7 @@
             <span class="k">return</span> <span class="n">deadlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 </div></div>
-<div class="viewcode-block" id="Deadline"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Deadline">[docs]</a><span class="k">class</span> <span class="nc">Deadline</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Deadline"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Deadline">[docs]</a><span class="k">class</span> <span class="nc">Deadline</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. attribute:: assignment_group</span>
 
@@ -1472,7 +1525,7 @@
         <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Deadlines&#39;</span><span class="p">)</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;-deadline&#39;</span><span class="p">]</span>
     
-<div class="viewcode-block" id="Deadline.clean"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Deadline.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Deadline.clean"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Deadline.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the deadline.</span>
 
 <span class="sd">        Always call this before save()! Read about validation here:</span>
@@ -1496,14 +1549,14 @@
     <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deadline</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Deadline.is_old"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Deadline.is_old">[docs]</a>    <span class="k">def</span> <span class="nf">is_old</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Deadline.is_old"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Deadline.is_old">[docs]</a>    <span class="k">def</span> <span class="nf">is_old</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return True if :attr:`deadline` expired. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadline</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
 
 <span class="c"># TODO: Constraint: Can only be delivered by a person in the assignment group?</span>
 <span class="c">#                   Or maybe an administrator?</span></div></div>
-<div class="viewcode-block" id="Delivery"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery">[docs]</a><span class="k">class</span> <span class="nc">Delivery</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsAdmin</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery">[docs]</a><span class="k">class</span> <span class="nc">Delivery</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">AbstractIsCandidate</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A class representing a given delivery from an `AssignmentGroup`_.</span>
 
 
@@ -1558,6 +1611,25 @@
         <span class="n">unique_together</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Delivery.q_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.q_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a django.models.Q object matching Deliveries where</span>
+<span class="sd">        the given student is candidate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+    </div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
                 <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
@@ -1565,7 +1637,11 @@
                 <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span> \
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Delivery.begin"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.begin">[docs]</a>    <span class="k">def</span> <span class="nf">begin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment_group</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Delivery.begin"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.begin">[docs]</a>    <span class="k">def</span> <span class="nf">begin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">assignment_group</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Begin delivery.</span>
 
 <span class="sd">        Creates a delivery with ``time_of_delivery`` set to current time,</span>
@@ -1585,7 +1661,7 @@
         <span class="n">d</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">d</span>
 </div>
-<div class="viewcode-block" id="Delivery.add_file"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">iterable_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.add_file"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">iterable_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Add a file to the delivery.</span>
 <span class="sd">        </span>
 <span class="sd">        :param filename:</span>
@@ -1608,14 +1684,14 @@
         <span class="n">filemeta</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">filemeta</span>
 </div>
-<div class="viewcode-block" id="Delivery.finish"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.finish">[docs]</a>    <span class="k">def</span> <span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.finish"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.finish">[docs]</a>    <span class="k">def</span> <span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Finish the delivery by updating the time of delivery, marking it</span>
 <span class="sd">        as successful and saving. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_of_delivery</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">successful</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Delivery.get_feedback"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.get_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.get_feedback"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.get_feedback">[docs]</a>    <span class="k">def</span> <span class="nf">get_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the feedback for this delivery. If the feedback does not</span>
 <span class="sd">        exists, a new :class:`Feedback`-object is created but not saved.</span>
 
@@ -1628,7 +1704,7 @@
         <span class="k">except</span> <span class="n">Feedback</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Feedback</span><span class="p">(</span><span class="n">delivery</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Delivery.get_status_number"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.get_status_number">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.get_status_number"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.get_status_number">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the numeric status for this delivery.</span>
 
 <span class="sd">        :return: The numeric status:</span>
@@ -1645,7 +1721,7 @@
             <span class="k">pass</span>
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">NOT_CORRECTED</span>
 </div>
-<div class="viewcode-block" id="Delivery.get_localized_status"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.get_localized_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.get_localized_status"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.get_localized_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the current status string from</span>
 <span class="sd">        :attr:`AssignmentGroup.status_mapping`.</span>
@@ -1653,7 +1729,7 @@
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status_number</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping</span><span class="p">[</span><span class="n">status</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Delivery.get_localized_student_status"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.get_localized_student_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_student_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.get_localized_student_status"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.get_localized_student_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_student_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the current status string from</span>
 <span class="sd">        :attr:`AssignmentGroup.status_mapping_student`.</span>
@@ -1661,18 +1737,18 @@
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status_number</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_student</span><span class="p">[</span><span class="n">status</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Delivery.get_status_cssclass"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.get_status_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.get_status_cssclass"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.get_status_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the css class for the current status from</span>
 <span class="sd">        :attr:`AssignmentGroup.status_mapping_cssclass`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_status_number</span><span class="p">()]</span>
 </div>
-<div class="viewcode-block" id="Delivery.get_status_student_cssclass"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.get_status_student_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_student_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.get_status_student_cssclass"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.get_status_student_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_student_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the css class for the current status from</span>
 <span class="sd">        :attr:`AssignmentGroup.status_mapping_student_cssclass`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_student_cssclass</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">get_status_number</span><span class="p">()]</span>
             </div>
-<div class="viewcode-block" id="Delivery.save"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Delivery.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Delivery.save"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Delivery.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set :attr:`number` automatically to one greater than what is was</span>
 <span class="sd">        last.</span>
@@ -1688,9 +1764,8 @@
         <span class="k">return</span> <span class="s">u&#39;</span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assignment_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
                 <span class="n">date_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_of_delivery</span><span class="p">,</span> <span class="s">&quot;DATETIME_FORMAT&quot;</span><span class="p">))</span>
 
-
 </div>
-<div class="viewcode-block" id="Feedback"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback">[docs]</a><span class="k">class</span> <span class="nc">Feedback</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback">[docs]</a><span class="k">class</span> <span class="nc">Feedback</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">,</span> <span class="n">AbstractIsCandidate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents the feedback for a given `Delivery`_.</span>
 
@@ -1785,7 +1860,45 @@
     <span class="n">object_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">()</span>
     <span class="n">grade</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericForeignKey</span><span class="p">(</span><span class="s">&#39;content_type&#39;</span><span class="p">,</span> <span class="s">&#39;object_id&#39;</span><span class="p">)</span>
 
+    <span class="c"># @classmethod</span>
+    <span class="c"># def published_where_is_candidate(cls, user_obj, old=True, active=True):</span>
+    <span class="c">#     &quot;&quot;&quot; Returns a QuerySet matching all :ref:`published</span>
+    <span class="c">#     &lt;assignment-classifications&gt;` feedbacks where the given user</span>
+    <span class="c">#     is student.</span>
+        
+    <span class="c">#     :param user_obj: A django.contrib.auth.models.User_ object.</span>
+    <span class="c">#     :rtype: QuerySet</span>
+    <span class="c">#     &quot;&quot;&quot;</span>
+    <span class="c">#     return Feedback.objects.filter(</span>
+    <span class="c">#             cls.q_is_candidate(user_obj) &amp;</span>
+    <span class="c">#             cls.q_published(old=old, active=active))</span>
 
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Feedback.q_is_candidate"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.q_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a django.models.Q object matching Deliveries where</span>
+<span class="sd">        the given student is candidate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+    </div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__parentnode__publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">deliver__assignment_group__parentnode__parentnode__end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__parentnode__parentnode__end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Feedback.q_is_examiner"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.q_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a django.models.Q object matching Deliveries where</span>
+<span class="sd">        the given student is candidate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+    </div>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Feedback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">update_gradeplugin_cached_fields</span><span class="p">()</span>
@@ -1793,13 +1906,13 @@
     <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;Feedback on </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">delivery</span>
 
-<div class="viewcode-block" id="Feedback.get_grade_object_info"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.get_grade_object_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_object_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.get_grade_object_info"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.get_grade_object_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_object_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get information about the grade object as a string. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s">&#39;content_type: </span><span class="si">%s</span><span class="s">, object_id:</span><span class="si">%s</span><span class="s">, &#39;</span> \
                 <span class="s">&#39;grade: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Feedback.get_grade"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.get_grade">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.get_grade"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.get_grade">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get :attr:`grade`, but raise :exc:`ValueError` if the grade</span>
 <span class="sd">        object is not a subclass of</span>
 <span class="sd">        :class:`devilry.core.gradeplugin.GradeModel`. &quot;&quot;&quot;</span>
@@ -1807,7 +1920,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_gradeobj</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span>
 </div>
-<div class="viewcode-block" id="Feedback.validate_gradeobj"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.validate_gradeobj">[docs]</a>    <span class="k">def</span> <span class="nf">validate_gradeobj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.validate_gradeobj"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.validate_gradeobj">[docs]</a>    <span class="k">def</span> <span class="nf">validate_gradeobj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Validate the grade object integrity. When this fails, the</span>
 <span class="sd">        database integrity is corrupt. Raises one of the subclasses of</span>
 <span class="sd">        :exc:`devilry.core.gradeplugin.GradePluginError` on error. &quot;&quot;&quot;</span>
@@ -1829,7 +1942,7 @@
                     <span class="n">correct_ct</span><span class="p">,</span> <span class="n">correct_ct</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> 
                     <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span><span class="o">.</span><span class="n">pk</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="Feedback.get_grade_as_short_string"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.get_grade_as_short_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.get_grade_as_short_string"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.get_grade_as_short_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the grade as a short string suitable for short one-line</span>
 <span class="sd">        display.</span>
@@ -1837,7 +1950,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="o">.</span><span class="n">get_grade_as_short_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Feedback.get_grade_as_long_string"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.get_grade_as_long_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_long_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.get_grade_as_long_string"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.get_grade_as_long_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_long_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the grade as a longer string formatted with restructured</span>
 <span class="sd">        text.</span>
@@ -1848,7 +1961,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="o">.</span><span class="n">get_grade_as_long_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Feedback.set_grade_from_xmlrpcstring"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.set_grade_from_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">set_grade_from_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grade</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.set_grade_from_xmlrpcstring"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.set_grade_from_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">set_grade_from_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grade</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the grade from string. This is primarly intended for xmlrpc, and</span>
 <span class="sd">        a grade-plugin is not required to support it.</span>
@@ -1872,7 +1985,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">grade</span> <span class="o">=</span> <span class="n">gradeobj</span>
         <span class="k">return</span> <span class="n">ok_message</span>
 </div>
-<div class="viewcode-block" id="Feedback.get_grade_as_xmlrpcstring"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.get_grade_as_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.get_grade_as_xmlrpcstring"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.get_grade_as_xmlrpcstring">[docs]</a>    <span class="k">def</span> <span class="nf">get_grade_as_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the grade as a string compatible with</span>
 <span class="sd">        :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for xmlrpc,</span>
@@ -1890,14 +2003,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="o">.</span><span class="n">get_grade_as_xmlrpcstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         </div>
-<div class="viewcode-block" id="Feedback.get_assignment"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.get_assignment">[docs]</a>    <span class="k">def</span> <span class="nf">get_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.get_assignment"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.get_assignment">[docs]</a>    <span class="k">def</span> <span class="nf">get_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut for getting the assignment</span>
 <span class="sd">        (``delivery.assignment_group.parentnode``).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">parentnode</span>
 </div>
-<div class="viewcode-block" id="Feedback.clean"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.Feedback.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Feedback.clean"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.Feedback.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the Feedback, making sure it does not do something stupid.</span>
 
 <span class="sd">        Always call this before save()! Read about validation here:</span>
@@ -1916,7 +2029,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Feedback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="FileMeta"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.FileMeta">[docs]</a><span class="k">class</span> <span class="nc">FileMeta</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="FileMeta"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.FileMeta">[docs]</a><span class="k">class</span> <span class="nc">FileMeta</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents the metadata for a file belonging to a `Delivery`_.</span>
 
@@ -1935,7 +2048,7 @@
 
 <span class="sd">    .. attribute:: deliverystore</span>
 
-<span class="sd">        The current :ref:`DeliveryStore &lt;ref-devilry.core.deliverystore&gt;`.</span>
+<span class="sd">        The current :ref:`DeliveryStore &lt;devilry.apps.core.deliverystore&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">delivery</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Delivery</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;filemetas&#39;</span><span class="p">)</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
@@ -1949,7 +2062,7 @@
         <span class="n">unique_together</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;delivery&#39;</span><span class="p">,</span> <span class="s">&#39;filename&#39;</span><span class="p">)</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="FileMeta.remove_file"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.FileMeta.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileMeta.remove_file"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.FileMeta.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove the file using the</span>
 <span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method</span>
@@ -1957,7 +2070,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="FileMeta.file_exists"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.FileMeta.file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileMeta.file_exists"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.FileMeta.file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the file exists using the</span>
 <span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method</span>
@@ -1965,7 +2078,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="FileMeta.read_open"><a class="viewcode-back" href="../../../core.models.html#devilry.core.models.FileMeta.read_open">[docs]</a>    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileMeta.read_open"><a class="viewcode-back" href="../../../../core.models.html#devilry.apps.core.models.FileMeta.read_open">[docs]</a>    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Open file for reading using the</span>
 <span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method</span>
@@ -2019,7 +2132,7 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
-    <form class="search" action="../../../search.html" method="get">
+    <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
@@ -2038,13 +2151,13 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
+          <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
+          <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
