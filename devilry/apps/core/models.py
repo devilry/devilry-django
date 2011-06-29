@@ -1832,24 +1832,22 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
 
 class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
-    """
-    Represents the feedback for a given `Delivery`_.
+    """ Represents a feedback for a `Delivery`_.
 
-    Typical usage for manual manipulation of feedbacks (in tests and xmlrpc)::
+    Each delivery can have zero or more feedbacks. Each Feedback object stores
+    static data that an examiner has published on a delivery. Feedback is
+    created and edited in a _grade+feedback editor_ in a _grade plugin_, and
+    when an examiner chose to publish feedback, a static copy of the data
+    he/she created in the _grade+feedback editor_ is stored in a Feedback.
 
-        test = Assignment(
-                parentnode = Period.objects.get(pk=1),
-                publishing_time = datetime.now(),
-                anonymous = False,
-                grade_plugin = "grade_approved:approvedgrade")
-        group = test.assignmentgroups.create(name="My group")
-        delivery = Delivery.begin(group, User.objects.get(username="student1"))
-        delivery.add_file("test.txt", ["test"])
-        delivery.finish()
-        feedback = delivery.get_feedback()
-        feedback.last_modified_by = User.objects.get(username="examiner1")
-        feedback.set_grade_from_xmlrpcstring("approved")
-        feedback.save()
+    Feedbacks are only visible to students when
+    :attr:`Deadline.feedbacks_published` on the related deadline is ``True``.
+    Feedbacks are related to Deadlines through its :attr:`delivery`.
+
+    Students are presented with the last feedback on a delivery, however they
+    can browse every Feedback on their deliveries. This history is to protect
+    the student from administrators or examiners that change published
+    feedback to avoid that a student can make an issue out of a bad feedback.
 
     .. attribute:: text
 
