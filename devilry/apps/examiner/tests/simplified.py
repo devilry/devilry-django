@@ -42,16 +42,16 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestCase):
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         subjects = models.Subject.published_where_is_examiner(examiner0).order_by("short_name")
-        qryset = Subject.search(examiner0).qryset
+        qryset = Subject.search(examiner0)
         self.assertEquals(len(qryset), len(subjects))
-        self.assertEquals(qryset[0].short_name, subjects[0].short_name)
+        self.assertEquals(qryset[0]['short_name'], subjects[0].short_name)
 
         # query
-        qryset = Subject.search(examiner0, query="duck1").qryset
+        qryset = Subject.search(examiner0, query="duck1")
         self.assertEquals(len(qryset), 2)
-        qryset = Subject.search(examiner0, query="duck").qryset
+        qryset = Subject.search(examiner0, query="duck")
         self.assertEquals(len(qryset), len(subjects))
-        qryset = Subject.search(examiner0, query="1100").qryset
+        qryset = Subject.search(examiner0, query="1100")
         self.assertEquals(len(qryset), 1)
 
     def test_read(self):
@@ -78,14 +78,14 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestCase):
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         periods = models.Period.published_where_is_examiner(examiner0).order_by("short_name")
-        qryset = Period.search(examiner0).qryset
+        qryset = Period.search(examiner0)
         self.assertEquals(len(qryset), len(periods))
-        self.assertEquals(qryset[0].short_name, periods[0].short_name)
+        self.assertEquals(qryset[0]['short_name'], periods[0].short_name)
 
         # query
-        qryset = Period.search(examiner0, query="fall01").qryset
+        qryset = Period.search(examiner0, query="fall01")
         self.assertEquals(len(qryset), 2)
-        qryset = Period.search(examiner0, query="duck1").qryset
+        qryset = Period.search(examiner0, query="duck1")
         self.assertEquals(len(qryset), 2)
 
     def test_read(self):
@@ -125,16 +125,16 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         all_assignments = models.Assignment.objects.all().order_by("short_name")
-        qryset = Assignment.search(examiner0).qryset
+        qryset = Assignment.search(examiner0)
         self.assertEquals(len(qryset), len(all_assignments))
-        self.assertEquals(qryset[0].short_name, all_assignments[0].short_name)
+        self.assertEquals(qryset[0]['short_name'], all_assignments[0].short_name)
 
         # query
-        qryset = Assignment.search(examiner0, query="ek").qryset
+        qryset = Assignment.search(examiner0, query="ek")
         self.assertEquals(len(qryset), 9)
-        qryset = Assignment.search(examiner0, query="fall0").qryset
+        qryset = Assignment.search(examiner0, query="fall0")
         self.assertEquals(len(qryset), 5)
-        qryset = Assignment.search(examiner0, query="1100").qryset
+        qryset = Assignment.search(examiner0, query="1100")
         self.assertEquals(len(qryset), 4)
 
     def test_read(self):
@@ -193,28 +193,27 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
     def test_search(self):
         assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
-        result = AssignmentGroup.search(self.duck3580examiner,
+        qryset = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 orderby=["-id"], limit=2)
-        qryset = result.qryset
-        self.assertEquals(assignment.id, qryset[0].parentnode.id)
-        self.assertTrue(qryset[0].id > qryset[1].id)
+        self.assertEquals(assignment.assignmentgroups.order_by('-id')[0].id, qryset[0]['id'])
+        self.assertTrue(qryset[0]['id'] > qryset[1]['id'])
         self.assertEquals(qryset.count(), 2)
 
         qryset = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
-                query="student0").qryset
+                query="student0")
         self.assertEquals(qryset.count(), 1)
         qryset = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
-                query="thisisatest").qryset
+                query="thisisatest")
         self.assertEquals(qryset.count(), 0)
 
-        g = AssignmentGroup.search(self.duck3580examiner, assignment=assignment).qryset[0]
+        g = AssignmentGroup.search(self.duck3580examiner, assignment=assignment)._insecure_django_qryset[0]
         g.name = "thisisatest"
         g.save()
         qryset = AssignmentGroup.search(self.duck3580examiner, assignment=assignment.id,
-                query="thisisatest").qryset
+                query="thisisatest")
         self.assertEquals(qryset.count(), 1)
 
     def test_search_security(self):
@@ -223,7 +222,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         result = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 orderby=["-id"], limit=2)
-        qryset = result.qryset
+        qryset = result
         self.assertEquals(result.resultfields, ['id', 'name'])
         self.assertEquals(result.searchfields, ['name',
             'candidates__candidate_id', 'candidates__student__username'])
@@ -236,7 +235,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
 
         qryset = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
-                query="student0").qryset # Should not be able to search for username on anonymous
+                query="student0") # Should not be able to search for username on anonymous
         self.assertEquals(qryset.count(), 0)
 
     def test_read(self):
@@ -262,41 +261,41 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1') #assingment group
         self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0]#single delivery 
-        
+
     def test_search(self):
         examiner0 =  User.objects.get(username="examiner0")
         #deliveries where examiner 0 is examiner
         deliveries = models.Delivery.published_where_is_examiner(examiner0)
 
         #search for all deliveries where examiner0 is examiner
-        qryset = Delivery.search(examiner0).qryset
+        qryset = Delivery.search(examiner0)
         self.assertEquals(len(qryset), len(deliveries)) #number of deliveries
-        self.assertEquals(qryset[5].number, deliveries[5].number) #delivery number
-        self.assertEquals(qryset[2], deliveries[2]) #compare deliveries
-        
+        self.assertEquals(qryset[5]['number'], deliveries[5].number) #delivery number
+        self.assertEquals(qryset[2]['id'], deliveries[2].id) #compare deliveries
+
         #search period
-        qryset = Delivery.search(examiner0, query="fall01").qryset
+        qryset = Delivery.search(examiner0, query="fall01")
         self.assertEquals(len(qryset), 9)
         #search subject
-        qryset = Delivery.search(examiner0, query="1100").qryset
+        qryset = Delivery.search(examiner0, query="1100")
         self.assertEquals(len(qryset), 7)
         #search period
-        qryset = Delivery.search(examiner0, query="week4").qryset
+        qryset = Delivery.search(examiner0, query="week4")
         self.assertEquals(len(qryset), 2)
 
     def test_search_security(self):
         #search by examiner with no permission returns no hits
-        result = Delivery.search(self.testexaminerNoPerm).qryset
+        result = Delivery.search(self.testexaminerNoPerm)
         self.assertEquals(len(result), 0)
 
         #open search resturns only deliveries where the examiner is examiner
-        result = Delivery.search(self.duck3580examiner).qryset
+        result = Delivery.search(self.duck3580examiner)
         deliveries = models.Delivery.published_where_is_examiner(self.duck3580examiner)
         self.assertEquals(len(deliveries), len(result))
 
         #duck3580examiner searching for duck1100 returns no hits
         result = Delivery.search(self.duck3580examiner, query="duck1100")
-        self.assertEquals(len(result.qryset), 0)
+        self.assertEquals(len(result), 0)
 
     def test_read(self):
         duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
@@ -420,7 +419,7 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
                 self.duck1100_feedback_core.delivery.assignment_group.parentnode.short_name,
             delivery__assignment_group__parentnode__id=
                 self.duck1100_feedback_core.delivery.assignment_group.parentnode.id))
-      
+
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
             Feedback.read(self.testexaminerNoPerm, self.duck1100_feedback_core.id)
@@ -428,40 +427,40 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
             Feedback.read(self.duck3580examiner, self.duck1100_feedback_core.id)
         with self.assertRaises(PermissionDenied):
             Feedback.read(self.superadmin, self.duck1100_feedback_core.id) #TODO correct?
-            
+
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         #examiner0s feedbacks
         feedbacks = models.Feedback.published_where_is_examiner(examiner0)
-        
+
         #seach for all feedbacks where examiner0 is examiner
-        qryset = Feedback.search(examiner0).qryset 
+        qryset = Feedback.search(examiner0)
         self.assertEquals(len(qryset), len(feedbacks))
-        self.assertEquals(qryset[1], feedbacks[1])
+        self.assertEquals(qryset[1]['id'], feedbacks[1].id)
 
         #search period
-        qryset = Feedback.search(examiner0, query="spring01").qryset
+        qryset = Feedback.search(examiner0, query="spring01")
         self.assertEquals(len(qryset), 5)
         #search subject
-        qryset = Feedback.search(examiner0, query="duck3580").qryset
+        qryset = Feedback.search(examiner0, query="duck3580")
         self.assertEquals(len(qryset), 4)
         #search period
-        qryset = Feedback.search(examiner0, query="week3").qryset
+        qryset = Feedback.search(examiner0, query="week3")
         self.assertEquals(len(qryset), 2)
 
     def test_search_security(self):
         #search by examiner with no permission returns no hits
-        result = Feedback.search(self.testexaminerNoPerm).qryset
+        result = Feedback.search(self.testexaminerNoPerm)
         self.assertEquals(len(result), 0)
 
         #open search resturns only deliveries where the examiner is examiner
-        result = Feedback.search(self.duck3580examiner).qryset
+        result = Feedback.search(self.duck3580examiner)
         duck3580_feedbacks = models.Feedback.published_where_is_examiner(self.duck3580examiner)
         self.assertEquals(len(duck3580_feedbacks), len(result))
 
         #duck3580examiner searching for duck1100 returns no hits
         result = Feedback.search(self.duck3580examiner, query="duck1100")
-        self.assertEquals(len(result.qryset), 0)
+        self.assertEquals(len(result), 0)
 
     def test_create(self):
         #TODO
