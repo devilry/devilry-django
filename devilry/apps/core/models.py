@@ -1812,6 +1812,8 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
 
+    points = models.PositiveIntegerField(default=0,
+                                         help_text = _('Number of points given on this feedback.'))
 
 
     class Meta:
