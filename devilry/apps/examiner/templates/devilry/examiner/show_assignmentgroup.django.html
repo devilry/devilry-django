@@ -111,7 +111,7 @@ group in the table to the right.{% endblocktrans %}</p>
 <p>{% blocktrans %}In the <em>deliveries section</em> you will find all deliveries by the
 group. Each delivery has a number starting with <em>1</em> and counting up for
 each new delivery, making the highest number the latest delivery. Each delivery
-also have a time of delivery (YYYY-MM-DD hh:mm:ss). You may create feedback on
+also has a time of delivery (YYYY-MM-DD hh:mm:ss). You may create feedback on
 as many deliveries as you like. The grade is determined from the latest
 delivery with published feeback.{% endblocktrans %}</p>
 
@@ -151,7 +151,7 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
     </a>
   </p>
 {% else %}
-  <p class='info-box'>{% trans "This group is closed for deliveries. Click 'Open group' to allow students to add new deliveries." %}</p>
+  <p class='info-message'>{% trans "This group is closed for deliveries. Click 'Open group' to allow students to add new deliveries." %}</p>
   <p>
     <a href="{% url devilry-examiner-open_assignmentgroup assignment_group.id %}"
         id='openclosebtn' class='button'>
@@ -160,71 +160,58 @@ Creation and deletion of deliveries does not affect existing deliveries at all.
   </p>
 {% endif %}
 
+{% if delivery_groups %}
 
-
-{% if assignment_group.get_number_of_deliveries > 0 %}
-<h2>{% trans "Deliveries" %}</h2>
-{% endif %}
-
-{% if ungrouped_deliveries %} 
-<div class='deadline-box'>
-  <h3>{% trans "Deliveries" %}</h3>
-  <ul class="deliverylist">
-    {% for delivery in ungrouped_deliveries %}
-    {% include "devilry/examiner/include/deliverylisting.django.html" %}
-    {% endfor %}
-  </ul>
-</div>
-{% else %}
-{% if after_deadline %}
-{% with "yes" as after_last_deadline_msg %}
-<div class='deadline-box deadline-box-after'>
-  <h3>{% trans "After last deadline" %}</h3>
-  <ul class="deliverylist">
-    {% for delivery in after_deadline %}
-      {% include "devilry/examiner/include/deliverylisting.django.html" %}
-    {% endfor %}
-  </ul>
-</div>
-{% endwith %}
-{% endif %}
-
-{% for deadline, deliveries in within_a_deadline %}
-<div class='deadline-box'>
-  <div class='delete-deadline'>
-    <a class='delete-deadline-button'
-        href='{% url devilry-examiner-delete_deadline assignment_group.id deadline.id %}'>
-      {% trans "Delete deadline" %}
-    </a>
-  </div>
-  <h3>
-    {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
-      {% blocktrans %}Delivered before {{ deadline }}{% endblocktrans %}
-    {% endwith %}
-  </h3>
-  {% if deadline.text %}
-  <div class='deadline-text'>
-    <div class='deadline-text-prefix'>{% trans "Deadline text" %}:</div>
-    <div class='deadline-text-text'>{{ deadline.text }}</div>
-  </div>
+  {% if assignment_group.deliveries.all %}
+	<h2>{% trans "Deliveries" %}</h2>
   {% endif %}
-  <div>
-    {% if not  deliveries %}
-      <p class='unimportant'>
-        {% trans "No deliveries on this deadline" %}
-      </p>
-    {% else %}
-      <ul class="deliverylist">
-      {% for delivery in deliveries %}
-        {% include "devilry/examiner/include/deliverylisting.django.html" %}
-      {% endfor %}
-      </ul>
-    {% endif %}
-  </div>
-</div>
-{% endfor %}
 
+  {% for deadline, deliveries in delivery_groups %}
+	<div class='deadline-box'>
+	  {% comment %} Only show delete button on deadlines with no deliveries, 
+	                and not on head deadline
+	  {% endcomment %}
+	  {% if not deadline.is_head and not deadline.deliveries.all %}
+		<div class='delete-deadline'>
+		  <a class='delete-deadline-button'
+			 href='{% url devilry-examiner-delete_deadline assignment_group.id deadline.id %}'>
+			{% trans "Delete deadline" %}
+		  </a>
+		</div>
+	  {% endif %}
+	
+	  {% if deadline.is_head %}
+		<h3> Not delivered on a deadline</h3>
+	  {% else %}
+		<h3>
+		  {% with deadline.deadline|date:"DATETIME_FORMAT" as deadline %}
+			{% blocktrans %} Deadline {{ deadline }}{% endblocktrans %}
+		  {% endwith %}
+		</h3>
+		{% if deadline.text %}
+		  <div class='deadline-text'>
+			<div class='deadline-text-prefix'>{% trans "Deadline text" %}:</div>
+			<div class='deadline-text-text'>{{ deadline.text }}</div>
+		  </div>
+		{% endif %}
+	  {% endif %}
+
+	  {% if deadline.deliveries.all %}
+		<div>
+		  {% if not deliveries %}
+			<p class='unimportant'>
+			  {% trans "No deliveries on this deadline" %}
+			</p>
+		  {% else %}
+			<ul class="deliverylist">
+			  {% for delivery in deliveries %}
+				{% include "devilry/examiner/include/deliverylisting.django.html" %}
+			  {% endfor %}
+			</ul>
+		  {% endif %}
+		</div>
+	  {% endif %}
+	</div>
+  {% endfor %}
 {% endif %}
-
-
 {% endblock %}

@@ -7,12 +7,13 @@
 
 
 from datetime import datetime
+from datetime import timedelta
 import re
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q, Max
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -1069,15 +1070,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     .. attribute:: status
 
-        Stores data that can be deduces from other data in the database, but
-        since this requires complex queries, we store it as a integer
-        instead, with the following values:
-
-            0. No deliveries
-            1. Not corrected
-            2. Corrected, not published
-            3. Corrected and published
-                The group has at least one published feedback.
+        **Cached field**: This status is a cached value of the status on the last
+        deadline on this assignmentgroup.
 
     .. attribute:: status_mapping
 
@@ -1112,49 +1106,53 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
         The numberic value corresponding to :attr:`status` *no deliveries*.
 
-    .. attribute:: NOT_CORRECTED
+    .. attribute:: DEADLINE_NOT_EXPIRED
 
-        The numberic value corresponding to :attr:`status` *not corrected*.
+        The numberic value corresponding to :attr:`status` *deadline not expired*.
+
+    .. attribute:: AWAITING_CORRECTION
+
+        The numberic value corresponding to :attr:`status` *awaiting correction*.
 
     .. attribute:: CORRECTED_NOT_PUBLISHED
 
-        The numberic value corresponding to :attr:`status` *corrected, not
-        published*.
+        The numberic value corresponding to :attr:`status` *corrected, not published*.
 
     .. attribute:: CORRECTED_AND_PUBLISHED
 
-        The numberic value corresponding to :attr:`status` *corrected, and
-        published*.
+        The numberic value corresponding to :attr:`status` *corrected and published*.
+
     """
     status_mapping = (
         _("No deliveries"),
-        _("Not corrected"),
+        _("Has deliveries"),
         _("Corrected, not published"),
         _("Corrected and published"),
     )
     status_mapping_student = (
         status_mapping[0],
         status_mapping[1],
-        status_mapping[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping[1],
         _("Corrected"),
     )
     status_mapping_cssclass = (
         _("status_no_deliveries"),
-        _("status_not_corrected"),
+        _("status_has_deliveries"),
         _("status_corrected_not_published"),
         _("status_corrected_and_published"),
     )
     status_mapping_student_cssclass = (
         status_mapping_cssclass[0],
         status_mapping_cssclass[1],
-        status_mapping_cssclass[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping_cssclass[1],
         status_mapping_cssclass[3],
     )
+
     NO_DELIVERIES = 0
-    NOT_CORRECTED = 1
+    HAS_DELIVERIES = 1
     CORRECTED_NOT_PUBLISHED = 2
     CORRECTED_AND_PUBLISHED = 3
-
+    
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
     examiners = models.ManyToManyField(User, blank=True,
@@ -1172,10 +1170,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     scaled_points = models.FloatField(default=0.0)
     is_passing_grade = models.BooleanField(default=False)
 
-
     class Meta:
         ordering = ['id']
-
 
     def _get_scaled_points(self):
         scale = float(self.parentnode.pointscale)
@@ -1185,9 +1181,22 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         return (scale/maxpoints) * self.points
 
     def save(self, *args, **kwargs):
+        create_default_deadline = False
+        # Only if object doesn't yet exist in the database
+        if not self.pk:
+            create_default_deadline = True
         self.scaled_points = self._get_scaled_points()
         super(AssignmentGroup, self).save(*args, **kwargs)
-
+        if create_default_deadline:
+            self.create_default_deadline()
+        
+    def create_default_deadline(self):
+        # Create the head deadline for this assignmentgroup
+        head_deadline = Deadline()
+        head_deadline.deadline = datetime.now()
+        head_deadline.assignment_group = self
+        head_deadline.is_head = True
+        head_deadline.save()
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -1248,7 +1257,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         :rtype: QuerySet
         """
         return cls.published_where_is_candidate(user_obj, active=False)
-
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -1314,39 +1322,43 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         return user_obj.is_superuser or self.is_admin(user_obj) \
                 or self.is_examiner(user_obj)
 
+    def get_active_deadline(self):
+        """ Get the active deadline.
+            
+        :return:
+            Latest deadline, if no deadline has been created, the default deadline.
+        """
+        now = datetime.now()
+        deadlines = self.deadlines.filter(deadline__gt=now).order_by('deadline')
+        if len(deadlines) == 0:
+            # Return the latest deadline (this will be the closest one in the 
+            # past since the qry above failed)
+            deadlines = self.deadlines.order_by('-deadline')
+        return deadlines[0]
+
+    def _get_status_from_qry(self):
+        """Get status from active deadline"""
+        active_deadline = self.get_active_deadline()
+        return active_deadline.status
+
     def get_localized_status(self):
-        """ Returns the current status string from :attr:`status_mapping`. """
-        return self.status_mapping[self.status]
+        """ Returns the current status string from :attr:`AssignmentGroup.status_mapping`. """
+        return AssignmentGroup.status_mapping[self.status]
 
     def get_localized_student_status(self):
         """ Returns the current status string from
-        :attr:`status_mapping_student`. """
-        return self.status_mapping_student[self.status]
+        :attr:`AssignmentGroup.status_mapping_student`. """
+        return AssignmentGroup.status_mapping_student[self.status]
 
     def get_status_cssclass(self):
         """ Returns the current status string from
-        :attr:`status_mapping_cssclass`. """
-        return self.status_mapping_cssclass[self.status]
+        :attr:`AssignmentGroup.status_mapping_cssclass`. """
+        return AssignmentGroup.status_mapping_cssclass[self.status]
 
     def get_status_student_cssclass(self):
         """ Returns the current status string from
-        :attr:`status_mapping_student_cssclass`. """
-        return self.status_mapping_student_cssclass[self.status]
-
-    def _get_status_from_qry(self):
-        if self.deliveries.all().count() == 0:
-            return self.NO_DELIVERIES
-        else:
-            qry = self.deliveries.filter(
-                    feedback__isnull=False)
-            if qry.count() == 0:
-                return self.NOT_CORRECTED
-            else:
-                qry = qry.filter(feedback__published=True)
-                if qry.count() == 0:
-                    return self.CORRECTED_NOT_PUBLISHED
-                else:
-                    return self.CORRECTED_AND_PUBLISHED
+        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
+        return AssignmentGroup.status_mapping_student_cssclass[self.status]
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
@@ -1430,28 +1442,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             return self.parentnode.is_admin(user_obj)
         else:
             return False
-    
+
     def can_add_deliveries(self):
-        """ Returns true if a student can add deliveries on this assignmengroup
+        """ Returns true if a student can add deliveries on this assignmentgroup
         
         Both the assignmentgroups is_open attribute, and the periods start
         and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
 
-
-    def get_active_deadline(self):
-        """ Get the active deadline.
-            
-        :return:
-            Latest deadline, or None if no deadline is set.
-        """
-        deadlines = self.deadlines.order_by('-deadline')
-        if len(deadlines) == 0:
-            return None
-        else:
-            return deadlines[0]
-
+    
 
 class Deadline(models.Model):
     """
@@ -1466,16 +1466,58 @@ class Deadline(models.Model):
     .. attribute:: text
 
         A optional deadline text.
+
+   .. attribute:: deliveries
+
+        A django ``RelatedManager`` that holds the :class:`deliveries
+        <Delivery>` on this group.
+
+   .. attribute:: status
+
+        The status of this deadline. The data can be deduces from other data in the database, but
+        since this requires complex queries, we store it as a integer
+        instead, with the following values:
+
+            0. No deliveries
+            1. Has deliveries
+            2. Corrected, not published
+            3. Corrected and published
     """
+    status = models.PositiveIntegerField(
+            default = 0,
+            choices = enumerate(AssignmentGroup.status_mapping),
+            verbose_name = _('Status'))
     assignment_group = models.ForeignKey(AssignmentGroup,
             related_name='deadlines') 
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
+    is_head = models.BooleanField(default=False)
+    deliveries_available_before_deadline = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Deadline')
         verbose_name_plural = _('Deadlines')
         ordering = ['-deadline']
+
+    def _get_status_from_qry(self):
+        """Get status from active deadline"""
+        if self.deliveries.all().count == 0:
+            return AssignmentGroup.NO_DELIVERIES
+        else:
+            qry = self.deliveries.filter(
+                feedback__isnull=False)
+            if qry.count() == 0:
+                return AssignmentGroup.HAS_DELIVERIES
+            else:
+                qry = qry.filter(feedback__published=True)
+                if qry.count() == 0:
+                    return AssignmentGroup.CORRECTED_NOT_PUBLISHED
+                else:
+                    return AssignmentGroup.CORRECTED_AND_PUBLISHED
+
+    def _update_status(self):
+        """ Query for the correct status, and set :attr:`status`. """
+        self.status = self._get_status_from_qry()
     
     def clean(self, *args, **kwargs):
         """Validate the deadline.
@@ -1505,6 +1547,12 @@ class Deadline(models.Model):
         """ Return True if :attr:`deadline` expired. """
         return self.deadline < datetime.now()
 
+    def delete(self, *args, **kwargs):
+        """ Prevent deletion if this is the head deadline """
+        if self.is_head:
+            raise PermissionDenied()
+        super(Deadline, self).delete(*args, **kwargs)
+
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
@@ -1522,9 +1570,13 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
 
+    .. attribute:: deadline_tag
+
+       Adjango.db.models.ForeignKey_ pointing to the Deadline for this Delivery.
+
     .. attribute:: number
 
-        A django.db.models.PositiveIntegerField with the delivery-number
+        A django.db.models.PositiveIntegerField_ with the delivery-number
         within this assignment-group. This number is automatically
         incremented within each assignmentgroup, starting from 1. Must be
         unique within the assignment-group. Automatic incrementation is used
@@ -1540,6 +1592,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         A django.db.models.BooleanField_ telling whether or not the Delivery
         was successfully uploaded.
 
+    .. attribute:: after_deadline
+
+        A django.db.models.BooleanField_ telling whether or not the Delivery
+        was delived after deadline..
+
     .. attribute:: filemetas
 
         A set of filemetas for this delivery.
@@ -1549,12 +1606,38 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
        A django.db.models.OneToOneField to Feedback.
 
     """
-    
+    status_mapping = (
+        _("Not corrected"),
+        _("Corrected"),
+        _("Corrected, not published"),
+        _("Corrected and published"),
+    )
+    status_mapping_student = (
+        status_mapping[0],
+        status_mapping[1],
+        status_mapping[2],
+        status_mapping[3],
+    )
+    NOT_CORRECTED = 0
+    CORRECTED = 1
+    CORRECTED_AND_PUBLISHED = 2
+    CORRECTED_NOT_PUBLISHED = 3
+
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
+    deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
+
+    def delivered_too_late(self):
+        """ Compares the deadline and time of delivery.
+        If time_of_delivery is greater than the deadline, return True.
+        """
+        if self.deadline_tag.is_head:
+            return False
+        return self.time_of_delivery > self.deadline_tag.deadline
+    after_deadline = property(delivered_too_late)
 
     class Meta:
         verbose_name = _('Delivery')
@@ -1610,6 +1693,19 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         d.time_of_delivery = datetime.now()
         d.delivered_by = user_obj
         d.successful = False
+
+         # Find correct deadline and tag the delivery 
+        last_deadline = None
+        deadline_set = False
+        for deadline in assignment_group.deadlines.all().order_by('deadline'):
+            last_deadline = deadline
+            if d.time_of_delivery < deadline.deadline:
+                d.deadline_tag = deadline
+                deadline_set = True
+                break
+        # Delivered too late, so use the last deadline
+        if not deadline_set:
+            d.deadline_tag = last_deadline
         d.save()
         return d
 
@@ -1660,44 +1756,44 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """ Get the numeric status for this delivery.
 
         :return: The numeric status:
-            :attr:`AssignmentGroup.NOT_CORRECTED`,
-            :attr:`AssignmentGroup.CORRECTED_NOT_PUBLISHED` or
-            :attr:`AssignmentGroup.CORRECTED_AND_PUBLISHED`.
+            :attr:`Delivery.NOT_CORRECTED`,
+            :attr:`Delivery.CORRECTED_NOT_PUBLISHED` or
+            :attr:`Delivery.CORRECTED_AND_PUBLISHED`.
         """
         try:
             if self.feedback.published:
-                return AssignmentGroup.CORRECTED_AND_PUBLISHED
+                return Delivery.CORRECTED_AND_PUBLISHED
             else:
-                return AssignmentGroup.CORRECTED_NOT_PUBLISHED
+                return Delivery.CORRECTED_NOT_PUBLISHED
         except Feedback.DoesNotExist:
             pass
-        return AssignmentGroup.NOT_CORRECTED
-
+        return Delivery.NOT_CORRECTED
+    
     def get_localized_status(self):
         """
         Returns the current status string from
         :attr:`AssignmentGroup.status_mapping`.
         """
         status = self.get_status_number()
-        return AssignmentGroup.status_mapping[status]
+        return status_mapping[status]
 
     def get_localized_student_status(self):
         """
         Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping_student`.
+        :attr:`status_mapping_student`.
         """
         status = self.get_status_number()
-        return AssignmentGroup.status_mapping_student[status]
+        return status_mapping_student[status]
 
     def get_status_cssclass(self):
         """ Returns the css class for the current status from
-        :attr:`AssignmentGroup.status_mapping_cssclass`. """
-        return AssignmentGroup.status_mapping_cssclass[self.get_status_number()]
+        :attr:`status_mapping_cssclass`. """
+        return status_mapping_cssclass[self.get_status_number()]
 
     def get_status_student_cssclass(self):
         """ Returns the css class for the current status from
-        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
-        return AssignmentGroup.status_mapping_student_cssclass[
+        :attr:`status_mapping_student_cssclass`. """
+        return status_mapping_student_cssclass[
                 self.get_status_number()]
             
     def save(self, *args, **kwargs):
@@ -2066,14 +2162,17 @@ def feedback_grade_delete_handler(sender, **kwargs):
     if feedback.grade != None:
         feedback.grade.delete()
 
-
 def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']
-    feedback.delivery.assignment_group._update_status()
-    feedback.delivery.assignment_group.save()
+    update_deadline_and_assignmentgroup_status(feedback.delivery)
 
 def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
     delivery = kwargs['instance']
+    update_deadline_and_assignmentgroup_status(delivery)
+
+def update_deadline_and_assignmentgroup_status(delivery):
+    delivery.deadline_tag._update_status()
+    delivery.deadline_tag.save()
     delivery.assignment_group._update_status()
     delivery.assignment_group.save()
 

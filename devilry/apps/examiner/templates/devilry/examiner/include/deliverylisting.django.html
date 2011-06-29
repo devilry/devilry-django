@@ -9,6 +9,13 @@
     <a href='{% url devilry-examiner-edit-feedback delivery.id %}' class="deliverydate">
       {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
     </a>
+
+	{% if delivery.after_deadline %}
+	<div class="bad">
+	  After deadline
+	</div>
+	{% endif %}
+	
     <div class="unimportant">
       {% spaceless %}
         {{ delivery|status }}

@@ -271,22 +271,19 @@ def show_assignmentgroup(request, assignmentgroup_id, is_admin=None):
     if not assignment_group.can_examine(request.user):
         return HttpResponseForbidden("Forbidden")
     _handle_is_admin(request, is_admin)
-
+    active_deadline = assignment_group.get_active_deadline()
     show_deadline_hint = assignment_group.is_open and \
-        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED
-
+        assignment_group.status == AssignmentGroup.CORRECTED_AND_PUBLISHED and \
+        active_deadline != None and not len(active_deadline.deliveries.all()) == 0
     messages = UiMessages()
     messages.load(request)
-    
     dg = GroupDeliveriesByDeadline(assignment_group)
     return render_to_response(
             'devilry/examiner/show_assignmentgroup.django.html', {
-                'assignment_group': assignment_group,
-                'after_deadline': dg.after_last_deadline,
-                'within_a_deadline': dg.within_a_deadline,
-                'ungrouped_deliveries': dg.ungrouped_deliveries,
-                'show_deadline_hint': show_deadline_hint,
-                'messages': messages,
+            'assignment_group': assignment_group,
+            'delivery_groups': dg.groups,
+            'show_deadline_hint': show_deadline_hint,
+            'messages': messages,
             }, context_instance=RequestContext(request))
 
 

@@ -120,13 +120,13 @@ class CorrectedNotClosed(ExaminerImportantItem):
 def examiner_important(request, *args, **kwargs):
     not_corrected = NotCorrected(request)
     not_published = NotPublished(request)
-    not_closed = CorrectedNotClosed(request)
+    #not_closed = CorrectedNotClosed(request)
     if len(not_corrected) == 0 and len(not_published) == 0:
         return None
     return render_to_string(
         'devilry/examiner/dashboard/examiner_important.django.html', {
             "items": [
-                not_closed.render(request),
+                #not_closed.render(request),
                 not_corrected.render(request),
                 not_published.render(request)]
         }, context_instance=RequestContext(request))
