@@ -15,8 +15,6 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from ..grade_approved.models import ApprovedGrade
-
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
         Delivery, Candidate, Feedback, FileMeta, Deadline)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
