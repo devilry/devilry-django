@@ -865,20 +865,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         for the current :attr:`grade_plugin`. """
         return gradeplugin.registry.getitem(self.grade_plugin)
 
-    def validate_gradeplugin(self):
-        """ Check if grade plugin is valid (exists). 
-        Raise :exc:`devilry.core.gradeplugin.GradePluginDoesNotExistError`
-        on error. """
-        try:
-            ri = self.get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise gradeplugin.GradePluginDoesNotExistError(
-                'Invalid grade plugin "%s" on assignment: %s. This is '\
-                'usually because a grade plugin has been removed from '\
-                'the INSTALLED_APPS setting. There is no easy fix for '\
-                'this except to re-enable the missing grade plugin.' % (
-                    self.grade_plugin, self))
-
     def get_filenames(self):
         """ Get the filenames as a list of strings. """
         return self.filenames.split()
