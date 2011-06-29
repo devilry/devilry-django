@@ -24,7 +24,7 @@ def _create_seachform(cls):
 def _create_editform(cls):
     formfields = []
     model = cls._meta.simplified._meta.model
-    for fieldname in cls._meta.simplified._meta.resultfields:
+    for fieldname in cls._meta.simplified._meta.resultfields.always_available_fields:
         if fieldname.endswith("__id"):
             formfields.append(fieldname[:-4])
         else:

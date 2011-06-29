@@ -64,8 +64,7 @@ def create_read_method(cls):
         :result_fieldgroups: List of additions to the __BASE__ list if resultfields is a dict.
         """
         obj = _readauth_get(cls, user, idorkw) # authorization in _writeauth_get
-        resultfields = _parse_fieldgroups(cls._meta.resultfields,
-                result_fieldgroups)
+        resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
         #if hasattr(cls, 'filter_read_resultfields'):
             #resultfields = cls.filter_read_resultfields(user, obj, resultfields)
         return modelinstance_to_dict(obj, fields=resultfields)
@@ -98,10 +97,8 @@ def create_search_method(cls):
         :return: The result of fiter() on cls.meta.model.
         :rtype: QryResultWrapper
         """
-        resultfields = _parse_fieldgroups(cls._meta.resultfields,
-                    kwargs.pop('result_fieldgroups', []))
-        searchfields = _parse_fieldgroups(cls._meta.searchfields,
-                kwargs.pop('search_fieldgroups', []))
+        resultfields = cls._meta.resultfields.aslist(kwargs.pop('result_fieldgroups', None))
+        searchfields = cls._meta.searchfields.aslist(kwargs.pop('search_fieldgroups', None))
         qryset = cls.create_searchqryset(user, **kwargs)
         if isinstance(qryset, QryResultWrapper):
             result = qryset

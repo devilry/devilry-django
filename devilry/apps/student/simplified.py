@@ -1,4 +1,4 @@
-from ...simplified import simplified_modelapi, PermissionDenied
+from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
 from ..core import models
 
 
@@ -36,23 +36,19 @@ class Feedback(PublishedWhereIsCandidateMixin):
         _delivery_success = 'delivery__successful'
 
         model = models.Feedback
-        resultfields = {
-            '__BASE__'   : ['id', 'format', 'text'],
-            'period'     : [_period_short, _period_long, _period_id],
-            'subject'    : [_subject_long, _subject_short, _subject_id],
-            'assignment' : [_assignment_short, _assignment_long, _assignment_id],
-            'delivery'   : [_delivery_time, _delivery_number, _delivery_success],
-            }
-        searchfields = [
-            _subject_short,
-            _subject_long,
-            _period_short,
-            _period_long,
-            _assignment_long,
-            _assignment_short,
-            _delivery_success,
-            _delivery_number
-            ]
+        resultfields = FieldSpec('id', 'format', 'text',
+                                 period = [_period_short, _period_long, _period_id],
+                                 subject = [_subject_long, _subject_short, _subject_id],
+                                 assignment = [_assignment_short, _assignment_long, _assignment_id],
+                                 delivery = [_delivery_time, _delivery_number, _delivery_success])
+        searchfields = FieldSpec(_subject_short,
+                                 _subject_long,
+                                 _period_short,
+                                 _period_long,
+                                 _assignment_long,
+                                 _assignment_short,
+                                 _delivery_success,
+                                 _delivery_number)
         methods = ['search', 'read']
 
 
@@ -74,13 +70,11 @@ class Delivery(PublishedWhereIsCandidateMixin):
         _assignment_id    = 'assignment_group__parentnode__id'
 
         model = models.Delivery
-        resultfields = {
-            '__BASE__'   : ['id', 'time_of_delivery', 'number', 'successful'],
-            'period'     : [_period_short, _period_long, _period_id],
-            'subject'    : [_subject_long, _subject_short, _subject_id],
-            'assignment' : [_assignment_short, _assignment_long, _assignment_id],
-            }
-        searchfields = [
+        resultfields = FieldSpec('id', 'time_of_delivery', 'number', 'successful',
+                                 period = [_period_short, _period_long, _period_id],
+                                 subject = [_subject_long, _subject_short, _subject_id],
+                                 assignment = [_assignment_short, _assignment_long, _assignment_id])
+        searchfields = FieldSpec(
             _subject_short,
             _subject_long,
             _period_short,
@@ -88,7 +82,7 @@ class Delivery(PublishedWhereIsCandidateMixin):
             _assignment_long,
             _assignment_short,
             'successful'
-            ]
+            )
         methods = ['search', 'read', 'delete']
 
 
@@ -106,17 +100,15 @@ class Assignment(PublishedWhereIsCandidateMixin):
             _period_id        = 'parentnode__parentnode__id'
 
             model = models.Assignment
-            resultfields = {
-                '__BASE__'   : ['id', 'format', 'text'],
-                'period'     : [_period_short, _period_long, _period_id],
-                'subject'    : [_subject_long, _subject_short, _subject_id],
-                }
-            searchfields = [
+            resultfields = FieldSpec('id', 'format', 'text',
+                                     period = [_period_short, _period_long, _period_id],
+                                     subject = [_subject_long, _subject_short, _subject_id])
+            searchfields = FieldSpec(
                 _subject_short,
                 _subject_long,
                 _period_short,
                 _period_long,
-                ]
+                )
             methods = ['search', 'read']
 
 
@@ -124,20 +116,14 @@ class Assignment(PublishedWhereIsCandidateMixin):
 class Period(PublishedWhereIsCandidateMixin):
 
     class Meta:
-
         _subject_long     = 'parentnode__long_name'
         _subject_short    = 'parentnode__short_name'
         _subject_id       = 'parentnode__id'
 
         model = models.Period
-        resultfields = {
-            '__BASE__'   : ['id', 'format', 'text'],
-            'subject'    : [_subject_long, _subject_short, _subject_id],
-            }
-        searchfields = [
-            _subject_long,
-            _subject_short,
-            ]
+        resultfields = FieldSpec('id', 'format', 'text',
+                                 subject = [_subject_long, _subject_short, _subject_id])
+        searchfields = FieldSpec(_subject_long, _subject_short)
         methods = ['search', 'read']
 
 
@@ -145,8 +131,7 @@ class Period(PublishedWhereIsCandidateMixin):
 class Subject(PublishedWhereIsCandidateMixin):
 
     class Meta:
-
         model = models.Subject
-        resultfields = ['id', 'short_name', 'long_name', 'periods']
-        searchfields = ['short_name', 'long_name', 'periods']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'periods')
+        searchfields = FieldSpec('short_name', 'long_name', 'periods')
         methods = ['search', 'read']

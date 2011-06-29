@@ -223,7 +223,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
                 assignment=assignment.id,
                 orderby=["-id"], limit=2)
         qrywrap = result
-        self.assertEquals(result.resultfields, ['id', 'name'])
+        self.assertEquals(result.resultfields, ('id', 'name'))
         self.assertEquals(result.searchfields, ['name',
             'candidates__candidate_id', 'candidates__student__username'])
 
@@ -231,7 +231,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         assignment.save()
         result = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id)
-        self.assertEquals(result.searchfields, ['name', 'candidates__candidate_id'])
+        self.assertEquals(result.searchfields, ('name', 'candidates__candidate_id'))
 
         qrywrap = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,

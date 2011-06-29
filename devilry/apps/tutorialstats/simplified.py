@@ -1,4 +1,4 @@
-from ...simplified import PermissionDenied, simplified_modelapi
+from ...simplified import PermissionDenied, simplified_modelapi, FieldSpec
 import models
 
 
@@ -6,8 +6,8 @@ import models
 class StatConfig(object):
     class Meta:
         model = models.StatConfig
-        resultfields = ['id', 'name', 'period__id', 'user__id']
-        searchfields = ['name']
+        resultfields = FieldSpec('id', 'name', 'period__id', 'user__id')
+        searchfields = FieldSpec('name')
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod

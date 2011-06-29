@@ -1,4 +1,4 @@
-from ...simplified import simplified_modelapi, PermissionDenied
+from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
 from ..core import models
 
 
@@ -46,8 +46,8 @@ class Node(CanSaveAuthMixin):
 
     class Meta:
         model = models.Node
-        resultfields = ['id', 'short_name', 'long_name', 'parentnode__id']
-        searchfields = ['short_name', 'long_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
+        searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
@@ -63,8 +63,8 @@ class Node(CanSaveAuthMixin):
 class Subject(CanSaveAuthMixin):
     class Meta:
         model = models.Subject
-        resultfields = ['id', 'short_name', 'long_name']
-        searchfields = ['short_name', 'long_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name')
+        searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
@@ -80,10 +80,10 @@ class Subject(CanSaveAuthMixin):
 class Period(CanSaveAuthMixin):
     class Meta:
         model = models.Period
-        resultfields = ['id', 'short_name', 'long_name', 'parentnode__id',
-                'start_time', 'end_time']
-        searchfields = ['short_name', 'long_name', 'parentnode__short_name',
-                'parentnode__long_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+                'start_time', 'end_time')
+        searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
+                'parentnode__long_name')
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
@@ -98,15 +98,15 @@ class Period(CanSaveAuthMixin):
 class Assignment(CanSaveAuthMixin):
     class Meta:
         model = models.Assignment
-        resultfields = {
-                '__BASE__':['id', 'short_name', 'long_name', 'parentnode__id'], 
-                'period': ['parentnode__short_name', 'parentnode__long_name',
-                        'parentnode__parentnode__id'],
-                'subject': ['parentnode__parentnode__short_name',
-                        'parentnode__parentnode__long_name'], 
-                'pointfields': ['anonymous', 'must_pass', 'maxpoints',
-                    'attempts']}
-        searchfields = ['short_name', 'long_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+                                 period = ['parentnode__short_name',
+                                           'parentnode__long_name',
+                                           'parentnode__parentnode__id'],
+                                 subject = ['parentnode__parentnode__short_name',
+                                            'parentnode__parentnode__long_name'],
+                                 pointfields = ['anonymous', 'must_pass', 'maxpoints',
+                                                'attempts'])
+        searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod

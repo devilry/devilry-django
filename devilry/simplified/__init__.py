@@ -1,5 +1,6 @@
 from exceptions import PermissionDenied
 from qryresultwrapper import QryResultWrapper
+from fieldspec import FieldSpec
 import create as _create
 
 

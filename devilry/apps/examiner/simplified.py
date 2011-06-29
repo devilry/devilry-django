@@ -1,4 +1,5 @@
-from ...simplified import simplified_modelapi, PermissionDenied, QryResultWrapper
+from ...simplified import (simplified_modelapi, PermissionDenied,
+                           QryResultWrapper, FieldSpec)
 from ..core import models
 
 
@@ -17,8 +18,8 @@ class PublishedWhereIsExaminerMixin(object):
 class Subject(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Subject
-        resultfields = ['id', 'short_name', 'long_name']
-        searchfields = ['short_name', 'long_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name')
+        searchfields = FieldSpec('short_name', 'long_name')
         methods = ['search', 'read']
 
 
@@ -26,10 +27,9 @@ class Subject(PublishedWhereIsExaminerMixin):
 class Period(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Period
-        resultfields = {
-                '__BASE__': ['id', 'short_name', 'long_name', 'parentnode__id'],
-                'subject': ['parentnode__short_name', 'parentnode__long_name']}
-        searchfields = ['short_name', 'long_name', 'parentnode__short_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+                                 subject = ['parentnode__short_name', 'parentnode__long_name'])
+        searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name')
         methods = ['search', 'read']
 
 
@@ -37,15 +37,14 @@ class Period(PublishedWhereIsExaminerMixin):
 class Assignment(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Assignment
-        resultfields = {
-                    '__BASE__': ['id', 'short_name', 'long_name', 'parentnode__id'],
-                    'period': ['parentnode__short_name', 'parentnode__long_name',
-                        'parentnode__parentnode__id'],
-                    'subject': ['parentnode__parentnode__short_name',
-                        'parentnode__parentnode__long_name']}
-        searchfields = ['short_name', 'long_name',
-                'parentnode__short_name',
-                'parentnode__parentnode__short_name']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+                                 period = ['parentnode__short_name', 'parentnode__long_name',
+                                           'parentnode__parentnode__id'],
+                                 subject = ['parentnode__parentnode__short_name',
+                                            'parentnode__parentnode__long_name'])
+        searchfields = FieldSpec('short_name', 'long_name',
+                                 'parentnode__short_name',
+                                 'parentnode__parentnode__short_name')
         methods = ['search', 'read']
 
     @classmethod
@@ -66,8 +65,8 @@ class Assignment(PublishedWhereIsExaminerMixin):
 class AssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
-        resultfields = ['id', 'name'] #TODO add subject, period, assignment, candidates
-        searchfields = ['name', 'candidates__candidate_id']
+        resultfields = FieldSpec('id', 'name') #TODO add subject, period, assignment, candidates
+        searchfields = FieldSpec('name', 'candidates__candidate_id')
         methods = ['search', 'read']
 
     @classmethod
@@ -76,12 +75,13 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
             assignment = models.Assignment.objects.get(id=assignment)
         qryset = models.AssignmentGroup.published_where_is_examiner(user).filter(
                 parentnode = assignment)
-        if assignment.anonymous:
-            searchfields = cls._meta.searchfields
-        else:
-            searchfields = list(cls._meta.searchfields) # Important to copy this! If we do not, we append to the class variable.
+        fieldgroups = kwargs.pop('result_fieldgroups', None)
+        resultfields = cls._meta.resultfields.aslist(fieldgroups)
+        searchfields = cls._meta.searchfields.aslist(fieldgroups)
+        if not assignment.anonymous:
+            searchfields = list(searchfields)
             searchfields.append('candidates__student__username')
-        result = QryResultWrapper(cls._meta.resultfields, searchfields, qryset)
+        result = QryResultWrapper(resultfields, searchfields, qryset)
         return result
 
 
@@ -89,27 +89,26 @@ class AssignmentGroup(PublishedWhereIsExaminerMixin):
 class Delivery(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Delivery
-        resultfields = {
-                    '__BASE__': ['time_of_delivery', 'number', 'delivered_by', 'id'],
-                    'subject': ['assignment_group__parentnode__parentnode__parentnode__long_name',
-                        'assignment_group__parentnode__parentnode__parentnode__short_name',
-                        'assignment_group__parentnode__parentnode__parentnode__id'],
-                    'period': [ 'assignment_group__parentnode__parentnode__long_name',
-                        'assignment_group__parentnode__parentnode__short_name',
-                        'assignment_group__parentnode__parentnode__id'],
-                    'assignment':['assignment_group__parentnode__long_name', 
-                        'assignment_group__parentnode__short_name',
-                        'assignment_group__parentnode__id']
-                    }
-        searchfields = [
-                #'delivered_by',
-                'assignment_group__parentnode__short_name', # Name of assignment
-                'assignment_group__parentnode__long_name', # Name of assignment
-                'assignment_group__parentnode__parentnode__short_name', # Name of period
-                'assignment_group__parentnode__parentnode__long_name', # Name of period
-                'assignment_group__parentnode__parentnode__parentnode__short_name', # Name of subject
-                'assignment_group__parentnode__parentnode__parentnode__long_name' # Name of subject
-                ] # What should search() search from
+        resultfields = FieldSpec('time_of_delivery', 'number', 'delivered_by', 'id',
+                                 subject = ['assignment_group__parentnode__parentnode__parentnode__long_name',
+                                            'assignment_group__parentnode__parentnode__parentnode__short_name',
+                                            'assignment_group__parentnode__parentnode__parentnode__id'],
+                                 period = [ 'assignment_group__parentnode__parentnode__long_name',
+                                           'assignment_group__parentnode__parentnode__short_name',
+                                           'assignment_group__parentnode__parentnode__id'],
+                                 assignment =['assignment_group__parentnode__long_name', 
+                                              'assignment_group__parentnode__short_name',
+                                              'assignment_group__parentnode__id']
+                                )
+        searchfields = FieldSpec(
+                                 #'delivered_by',
+                                 'assignment_group__parentnode__short_name', # Name of assignment
+                                 'assignment_group__parentnode__long_name', # Name of assignment
+                                 'assignment_group__parentnode__parentnode__short_name', # Name of period
+                                 'assignment_group__parentnode__parentnode__long_name', # Name of period
+                                 'assignment_group__parentnode__parentnode__parentnode__short_name', # Name of subject
+                                 'assignment_group__parentnode__parentnode__parentnode__long_name' # Name of subject
+                                ) # What should search() search from
         methods = ['search', 'read']
 
 
@@ -118,26 +117,25 @@ class Delivery(PublishedWhereIsExaminerMixin):
 class Feedback(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Feedback
-        resultfields = {
-                    '__BASE__': ['delivery', 'text', 'format', 'id'],
-                    'subject': ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
-                        'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                        'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
-                    'period': [ 'delivery__assignment_group__parentnode__parentnode__long_name',
-                        'delivery__assignment_group__parentnode__parentnode__short_name',
-                        'delivery__assignment_group__parentnode__parentnode__id'],
-                    'assignment':['delivery__assignment_group__parentnode__long_name', 
-                        'delivery__assignment_group__parentnode__short_name',
-                        'delivery__assignment_group__parentnode__id']
-                    }
-        searchfields = [
-                #delivery__delivered_by
-                'delivery__assignment_group__parentnode__parentnode__parentnode__long_name', #subject
-                'delivery__assignment_group__parentnode__parentnode__parentnode__short_name', #subject
-                'delivery__assignment_group__parentnode__parentnode__long_name', #period
-                'delivery__assignment_group__parentnode__parentnode__short_name', #period
-                'delivery__assignment_group__parentnode__long_name', #assignment
-                'delivery__assignment_group__parentnode__short_name', #assignment
-                ]
+        resultfields = FieldSpec('delivery', 'text', 'format', 'id',
+                                 subject = ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
+                                            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                            'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
+                                 period = [ 'delivery__assignment_group__parentnode__parentnode__long_name',
+                                           'delivery__assignment_group__parentnode__parentnode__short_name',
+                                           'delivery__assignment_group__parentnode__parentnode__id'],
+                                 assignment = ['delivery__assignment_group__parentnode__long_name',
+                                               'delivery__assignment_group__parentnode__short_name',
+                                               'delivery__assignment_group__parentnode__id']
+                                )
+        searchfields = FieldSpec(
+                                 #delivery__delivered_by
+                                 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name', #subject
+                                 'delivery__assignment_group__parentnode__parentnode__parentnode__short_name', #subject
+                                 'delivery__assignment_group__parentnode__parentnode__long_name', #period
+                                 'delivery__assignment_group__parentnode__parentnode__short_name', #period
+                                 'delivery__assignment_group__parentnode__long_name', #assignment
+                                 'delivery__assignment_group__parentnode__short_name', #assignment
+                                )
         methods = ['search', 'read', 'create'] #TODO 'delete', 'update'
 
