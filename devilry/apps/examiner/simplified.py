@@ -38,9 +38,9 @@ class Assignment(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Assignment
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
-                                 period = ['parentnode__short_name', 'parentnode__long_name',
+                                 period     = ['parentnode__short_name', 'parentnode__long_name',
                                            'parentnode__parentnode__id'],
-                                 subject = ['parentnode__parentnode__short_name',
+                                 subject    = ['parentnode__parentnode__short_name',
                                             'parentnode__parentnode__long_name'])
         searchfields = FieldSpec('short_name', 'long_name',
                                  'parentnode__short_name',
@@ -65,8 +65,23 @@ class Assignment(PublishedWhereIsExaminerMixin):
 class AssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
-        resultfields = FieldSpec('id', 'name') #TODO add subject, period, assignment, candidates
-        searchfields = FieldSpec('name', 'candidates__candidate_id')
+        resultfields = FieldSpec('id', 'name',
+                                assignment  = ['parentnode__short_name',
+                                            'parentnode__long_name',
+                                            'parentnode__id',],
+                                period      = ['parentnode__parentnode__short_name',
+                                            'parentnode__parentnode__long_name',
+                                            'parentnode__parentnode__id'],
+                                subject     = ['parentnode__parentnode__parentnode__long_name',
+                                            'parentnode__parentnode__parentnode__short_name',
+                                            'parentnode__parentnode__parentnode__id'])        
+        searchfields = FieldSpec('name', 'candidates__candidate_id',
+                                'parentnode__short_name', #assignment
+                                'parentnode__long_name', #assignment
+                                'parentnode__parentnode__short_name', #period
+                                'parentnode__parentnode__long_name', #period
+                                'parentnode__parentnode__parentnode__short_name', #subject 
+                                'parentnode__parentnode__parentnode__long_name') #subject
         methods = ['search', 'read']
 
     @classmethod
@@ -90,10 +105,10 @@ class Delivery(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Delivery
         resultfields = FieldSpec('time_of_delivery', 'number', 'delivered_by', 'id',
-                                 subject = ['assignment_group__parentnode__parentnode__parentnode__long_name',
+                                 subject    = ['assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'assignment_group__parentnode__parentnode__parentnode__short_name',
                                             'assignment_group__parentnode__parentnode__parentnode__id'],
-                                 period = [ 'assignment_group__parentnode__parentnode__long_name',
+                                 period     = ['assignment_group__parentnode__parentnode__long_name',
                                            'assignment_group__parentnode__parentnode__short_name',
                                            'assignment_group__parentnode__parentnode__id'],
                                  assignment =['assignment_group__parentnode__long_name', 
@@ -118,10 +133,10 @@ class Feedback(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Feedback
         resultfields = FieldSpec('delivery', 'text', 'format', 'id',
-                                 subject = ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
+                                 subject    = ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
-                                 period = [ 'delivery__assignment_group__parentnode__parentnode__long_name',
+                                 period     = ['delivery__assignment_group__parentnode__parentnode__long_name',
                                            'delivery__assignment_group__parentnode__parentnode__short_name',
                                            'delivery__assignment_group__parentnode__parentnode__id'],
                                  assignment = ['delivery__assignment_group__parentnode__long_name',

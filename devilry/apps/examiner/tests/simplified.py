@@ -225,13 +225,27 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         qrywrap = result
         self.assertEquals(result.resultfields, ('id', 'name'))
         self.assertEquals(result.searchfields, ['name',
-            'candidates__candidate_id', 'candidates__student__username'])
+                        'candidates__candidate_id', 
+                        'parentnode__short_name', #assignment
+                        'parentnode__long_name', #assignment
+                        'parentnode__parentnode__short_name', #period
+                        'parentnode__parentnode__long_name', #period
+                        'parentnode__parentnode__parentnode__short_name', #subject 
+                        'parentnode__parentnode__parentnode__long_name',
+                        'candidates__student__username'])
 
         assignment.anonymous = True
         assignment.save()
         result = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id)
-        self.assertEquals(result.searchfields, ('name', 'candidates__candidate_id'))
+        self.assertEquals(result.searchfields, ('name', 
+                        'candidates__candidate_id',
+                        'parentnode__short_name', #assignment
+                        'parentnode__long_name', #assignment
+                        'parentnode__parentnode__short_name', #period
+                        'parentnode__parentnode__long_name', #period
+                        'parentnode__parentnode__parentnode__short_name', #subject 
+                        'parentnode__parentnode__parentnode__long_name'))
 
         qrywrap = AssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
@@ -239,11 +253,49 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         self.assertEquals(qrywrap.count(), 0)
 
     def test_read(self):
-        #TODO add tests for read with fieldgroups
-        group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
-        self.assertEquals(group, dict(
+        duck3580_group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
+        self.assertEquals(duck3580_group, dict(
                 id = self.group_core.id,
                 name = None))
+
+        #read with fieldgroup assignment
+        duck3580_group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id,
+                result_fieldgroups=['assignment'])
+        self.assertEquals(duck3580_group, dict(
+                id=self.group_core.id,
+                name = None,
+                parentnode__long_name=
+                self.group_core.parentnode.long_name,
+                parentnode__short_name=
+                self.group_core.parentnode.short_name,
+                parentnode__id=
+                self.group_core.parentnode.id))
+
+        #read with fieldgroup period
+        duck3580_group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id,
+                result_fieldgroups=['period'])
+        self.assertEquals(duck3580_group, dict(
+                id=self.group_core.id,
+                name = None,
+                parentnode__parentnode__long_name=
+                self.group_core.parentnode.parentnode.long_name,
+                parentnode__parentnode__short_name=
+                self.group_core.parentnode.parentnode.short_name,
+                parentnode__parentnode__id=
+                self.group_core.parentnode.parentnode.id))  
+
+        #read with fieldgroup subject
+        duck3580_group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id,
+                result_fieldgroups=['subject'])
+        self.assertEquals(duck3580_group, dict(
+                id=self.group_core.id,
+                name = None,
+                parentnode__parentnode__parentnode__long_name=
+                self.group_core.parentnode.parentnode.parentnode.long_name,
+                parentnode__parentnode__parentnode__short_name=
+                self.group_core.parentnode.parentnode.parentnode.short_name,
+                parentnode__parentnode__parentnode__id=
+                self.group_core.parentnode.parentnode.parentnode.id))            
 
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
@@ -258,9 +310,11 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
 
     def setUp(self):
         super(TestSimplifiedExaminerDelivery, self).setUp()
+        #assingment group
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
-                short_name='fall01').assignments.get(short_name='week1') #assingment group
-        self.delivery_duck3580 = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0]#single delivery 
+                short_name='fall01').assignments.get(short_name='week1')        
+        #single delivery
+        self.delivery_duck3580_core = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] 
 
     def test_search(self):
         examiner0 =  User.objects.get(username="examiner0")
@@ -269,9 +323,12 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
 
         #search for all deliveries where examiner0 is examiner
         qrywrap = Delivery.search(examiner0)
-        self.assertEquals(len(qrywrap), len(deliveries)) #number of deliveries
-        self.assertEquals(qrywrap[5]['number'], deliveries[5].number) #delivery number
-        self.assertEquals(qrywrap[2]['id'], deliveries[2].id) #compare deliveries
+        #number of deliveries
+        self.assertEquals(len(qrywrap), len(deliveries))         
+        #delivery number
+        self.assertEquals(qrywrap[5]['number'], deliveries[5].number) 
+        #compare deliveries
+        self.assertEquals(qrywrap[2]['id'], deliveries[2].id) 
 
         #search period
         qrywrap = Delivery.search(examiner0, query="fall01")
@@ -298,65 +355,65 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         self.assertEquals(len(result), 0)
 
     def test_read(self):
-        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id)
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580_core.id)
         self.assertEquals(duck3580_delivery, dict(
-            time_of_delivery = self.delivery_duck3580.time_of_delivery,
-            number = self.delivery_duck3580.number,
-            delivered_by = self.delivery_duck3580.delivered_by,
-            id=self.delivery_duck3580.id))
+            time_of_delivery = self.delivery_duck3580_core.time_of_delivery,
+            number = self.delivery_duck3580_core.number,
+            delivered_by = self.delivery_duck3580_core.delivered_by,
+            id=self.delivery_duck3580_core.id))
 
         #read with fieldgroup subject
-        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id,
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580_core.id,
                 result_fieldgroups=['subject'])
         self.assertEquals(duck3580_delivery, dict(
-            time_of_delivery=self.delivery_duck3580.time_of_delivery,
-            number=self.delivery_duck3580.number,
-            delivered_by=self.delivery_duck3580.delivered_by,
-            id=self.delivery_duck3580.id,
+            time_of_delivery=self.delivery_duck3580_core.time_of_delivery,
+            number=self.delivery_duck3580_core.number,
+            delivered_by=self.delivery_duck3580_core.delivered_by,
+            id=self.delivery_duck3580_core.id,
             assignment_group__parentnode__parentnode__parentnode__long_name=
-                self.delivery_duck3580.assignment_group.parentnode.parentnode.parentnode.long_name,
+                self.delivery_duck3580_core.assignment_group.parentnode.parentnode.parentnode.long_name,
             assignment_group__parentnode__parentnode__parentnode__short_name=
-                self.delivery_duck3580.assignment_group.parentnode.parentnode.parentnode.short_name,
+                self.delivery_duck3580_core.assignment_group.parentnode.parentnode.parentnode.short_name,
             assignment_group__parentnode__parentnode__parentnode__id=
-                self.delivery_duck3580.assignment_group.parentnode.parentnode.parentnode.id))
+                self.delivery_duck3580_core.assignment_group.parentnode.parentnode.parentnode.id))
 
         #read with fieldgroup period
-        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id,
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580_core.id,
                 result_fieldgroups=['period'])
         self.assertEquals(duck3580_delivery, dict(
-            time_of_delivery=self.delivery_duck3580.time_of_delivery,
-            number=self.delivery_duck3580.number,
-            delivered_by=self.delivery_duck3580.delivered_by,
-            id=self.delivery_duck3580.id,
+            time_of_delivery=self.delivery_duck3580_core.time_of_delivery,
+            number=self.delivery_duck3580_core.number,
+            delivered_by=self.delivery_duck3580_core.delivered_by,
+            id=self.delivery_duck3580_core.id,
             assignment_group__parentnode__parentnode__long_name=
-                self.delivery_duck3580.assignment_group.parentnode.parentnode.long_name,
+                self.delivery_duck3580_core.assignment_group.parentnode.parentnode.long_name,
             assignment_group__parentnode__parentnode__short_name=
-                self.delivery_duck3580.assignment_group.parentnode.parentnode.short_name,
+                self.delivery_duck3580_core.assignment_group.parentnode.parentnode.short_name,
             assignment_group__parentnode__parentnode__id=
-                self.delivery_duck3580.assignment_group.parentnode.parentnode.id))
+                self.delivery_duck3580_core.assignment_group.parentnode.parentnode.id))
 
         #read with fieldgroup assignment
-        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580.id,
+        duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580_core.id,
                 result_fieldgroups=['assignment'])
         self.assertEquals(duck3580_delivery, dict(
-            time_of_delivery=self.delivery_duck3580.time_of_delivery,
-            number=self.delivery_duck3580.number,
-            delivered_by=self.delivery_duck3580.delivered_by,
-            id=self.delivery_duck3580.id,
+            time_of_delivery=self.delivery_duck3580_core.time_of_delivery,
+            number=self.delivery_duck3580_core.number,
+            delivered_by=self.delivery_duck3580_core.delivered_by,
+            id=self.delivery_duck3580_core.id,
             assignment_group__parentnode__long_name=
-                self.delivery_duck3580.assignment_group.parentnode.long_name,
+                self.delivery_duck3580_core.assignment_group.parentnode.long_name,
             assignment_group__parentnode__short_name=
-                self.delivery_duck3580.assignment_group.parentnode.short_name,
+                self.delivery_duck3580_core.assignment_group.parentnode.short_name,
             assignment_group__parentnode__id=
-                self.delivery_duck3580.assignment_group.parentnode.id))
+                self.delivery_duck3580_core.assignment_group.parentnode.id))
             
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
-            delivery = Delivery.read(self.testexaminerNoPerm, self.delivery_duck3580.id)
+            delivery = Delivery.read(self.testexaminerNoPerm, self.delivery_duck3580_core.id)
         with self.assertRaises(PermissionDenied):
-            delivery = Delivery.read(self.duck1080examiner, self.delivery_duck3580.id)
+            delivery = Delivery.read(self.duck1080examiner, self.delivery_duck3580_core.id)
         with self.assertRaises(PermissionDenied):
-            delivery = Delivery.read(self.superadmin, self.delivery_duck3580.id)
+            delivery = Delivery.read(self.superadmin, self.delivery_duck3580_core.id)
 
 class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
 #TODO anonymous deliveries
