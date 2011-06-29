@@ -847,13 +847,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_candidate(cls, user_obj):
         return Q(assignmentgroups__candidates__student=user_obj)
 
-    def _get_maxpoints(self):
-        gradeplugincls = self.get_gradeplugin_registryitem().model_cls
-        if self.id == None:
-            return gradeplugincls.get_maxpoints()
-        else:
-            return gradeplugincls.get_maxpoints(self)
-
     def _update_scalepoints(self):
         for group in self.assignmentgroups.iterator():
             group.scaled_points = group._get_scaled_points()
@@ -862,7 +855,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def save(self, *args, **kwargs):
         """ Save and recalculate the value of :attr:`maxpoints` and
         :attr:`pointscale`. """
-        self.maxpoints = self._get_maxpoints()
         if self.autoscale:
             self.pointscale = self.maxpoints
         super(Assignment, self).save()
