@@ -9,7 +9,14 @@ def _recurse_getmodelattr(instance, path):
     else:
         return _recurse_getmodelattr(cur, path)
 
-def model_to_dict(instance, fields):
+def modelinstance_to_dict(instance, fields):
+    """ Convert the given django model instance into a dict where
+    each field in ``fields`` is a key.
+
+    :param instance: A django model instance.
+    :param fields: List of field names. Can also be foreign keys, such as
+        ``parentnode__parentnode__short_name``.
+    """
     dct = {}
     for field in fields:
         if "__" in field:

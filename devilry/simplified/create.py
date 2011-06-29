@@ -4,7 +4,7 @@ Functions used to add CRUD+S methods to simplified classes at module load time.
 from types import MethodType
 
 from qryresultwrapper import QryResultWrapper
-from utils import model_to_dict
+from utils import modelinstance_to_dict
 
 
 def _parse_fieldgroups(fieldlst, fieldgroups):
@@ -68,7 +68,7 @@ def create_read_method(cls):
                 result_fieldgroups)
         #if hasattr(cls, 'filter_read_resultfields'):
             #resultfields = cls.filter_read_resultfields(user, obj, resultfields)
-        return model_to_dict(obj, fields=resultfields)
+        return modelinstance_to_dict(obj, fields=resultfields)
     setattr(cls, read.__name__, MethodType(read, cls))
 
 def create_delete_method(cls):
