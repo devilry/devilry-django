@@ -16,7 +16,6 @@ INSTALLED_APPS = [
     'django.contrib.markup',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.admin',
     'django.contrib.webdesign',
     'django.contrib.auth',
     'django.contrib.contenttypes',
