@@ -1350,7 +1350,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
-        self.status = self._get_status_from_qry()
+        #self.status = self._get_status_from_qry() #TODO: Re-enable _update_status
 
     def get_number_of_deliveries(self):
         """ Get the number of deliveries by this assignment group. """
@@ -1384,7 +1384,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         Get the the deliveries by this assignment group which have
         published feedback.
         """
-        return self.deliveries.filter(feedback__published=True)
+        return self.deliveries.filter(feedbacks__published=True)
 
     def get_latest_delivery_with_published_feedback(self):
         """
@@ -1403,11 +1403,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         if self.parentnode.must_pass:
             is_passing_grade = False
             if d:
-                is_passing_grade = d.feedback.get_grade().is_passing_grade()
+                is_passing_grade = d.get_feedback().get_grade().is_passing_grade()
         else:
             is_passing_grade = True
         if d:
-            points = d.feedback.grade.get_points()
+            points = d.get_feedback().grade.get_points()
         return points, is_passing_grade
 
     def update_gradeplugin_cached_fields(self):
@@ -1643,7 +1643,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         self.successful = True
         self.save()
 
-    def get_feedback(self):
+    def get_feedback(self): # TODO: Rename to get_latest_feedback
         """ Get the feedback for this delivery. If the feedback does not
         exists, a new :class:`Feedback`-object is created but not saved.
 
@@ -1652,8 +1652,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             to this delivery.
         """
         try:
-            return self.feedback
-        except Feedback.DoesNotExist:
+            return self.feedbacks.order_by('last_modified')[0]
+        except IndexError:
             return Feedback(delivery=self)
 
     def get_status_number(self):
@@ -1803,7 +1803,7 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
             verbose_name = _('Published'),
             help_text = _(
                 'Check this to make the feedback visible to the student(s).'))
-    delivery = models.OneToOneField(Delivery)
+    delivery = models.ForeignKey(Delivery, related_name='feedbacks')
     last_modified = models.DateTimeField(auto_now=True, blank=False,
             null=False)
     last_modified_by = models.ForeignKey(User, blank=False, null=False)
