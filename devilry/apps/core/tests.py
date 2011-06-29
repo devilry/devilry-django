@@ -22,6 +22,8 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
     DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
+from testinitializer import TestInitializer
+
 import pluginloader
 
 pluginloader.autodiscover()
@@ -814,7 +816,7 @@ class TestTestHelpers(TestCase):
         subject = create_from_path('uio:inf1010')
         self.assertEquals(subject.short_name, 'inf1010')
         self.assertTrue(isinstance(subject, Subject))
-        period = create_from_path('uio:inf1010.spring11') 
+        period = create_from_path('uio:inf1010.spring11')
         self.assertEquals(period.short_name, 'spring11')
         self.assertTrue(isinstance(period, Period))
         assignment = create_from_path('uio:inf1010.spring11.oblig1')
@@ -842,6 +844,77 @@ class TestTestHelpers(TestCase):
                 'ifi:inf1100.spring10.oblig1.student1,student2')
         self.assertNotEquals(ag1.id, ag2.id)
 
+
+class TestTestInitializer(TestCase):
+
+    def setUp(self):
+        self.ti = TestInitializer()
+
+    def test_nodes(self):
+        self.ti.add(nodes='uio.ifi')
+
+        self.assertEquals(Node.objects.all().count(), 2)
+        uio = Node.objects.get(short_name='uio')
+        ifi = Node.objects.get(short_name='ifi')
+
+        # check relations between them
+        self.assertEquals(uio.parentnode, None)
+        self.assertEquals(ifi.parentnode, uio)
+        self.assertTrue(ifi in uio.child_nodes.all())
+
+    def test_single_nodes(self):
+        self.ti.add(nodes='uio')
+        self.ti.add(nodes='ifi')
+
+        self.assertEquals(Node.objects.all().count(), 2)
+        uio = Node.objects.get(short_name='uio')
+        ifi = Node.objects.get(short_name='ifi')
+
+        # check relations between them
+        self.assertEquals(uio.parentnode, None)
+        self.assertEquals(ifi.parentnode, None)
+        self.assertTrue(ifi not in uio.child_nodes.all())
+
+    def test_nodes_and_admins(self):
+
+        self.ti.add(nodes='uio:admin(rektor,mortend).ifi:admin(mortend)')
+
+        # Assert that all nodes and admins are created
+        self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
+        self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
+        self.assertEquals(User.objects.filter(username='rektor').count(), 1)
+        self.assertEquals(User.objects.filter(username='mortend').count(), 1)
+
+        rektor = User.objects.get(username='rektor')
+        mortend = User.objects.get(username='mortend')
+        uio = Node.objects.get(short_name='uio')
+        ifi = Node.objects.get(short_name='ifi')
+
+        # assert that they are both admins
+        self.assertTrue(rektor in uio.admins.all())
+        self.assertTrue(mortend in ifi.admins.all())
+
+        # assert that uio has ifi as a child node and ifi has uio as parent
+        self.assertTrue(ifi in uio.child_nodes.all())
+        self.assertEquals(ifi.parentnode, uio)
+        self.assertEquals(uio.parentnode, None)
+
+    def test_nodes_and_one_admin(self):
+        self.ti.add(nodes='uio.ifi:admin(mortend)')
+
+        self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
+        self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
+
+        mortend = User.objects.get(username='mortend')
+        ifi = Node.objects.get(short_name='ifi')
+        self.assertTrue(mortend in ifi.admins.all())
+
+    def test_subject(self):
+
+        self.ti.add(nodes='uio:admin(rektor).ifi:admin(mortend)',
+                    subjects='')
+
+        
 class TestFeedback(TestCase):
     fixtures = ['simplified/data.json']
 
