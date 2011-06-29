@@ -758,6 +758,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         
         Each student must get a passing grade on this assignment to get a
         passing grade on the period. Defaults to False.
+
+
+    .. attribute:: examiners_publish_feedbacks_directly
+
+       Should feedbacks published by examiners be made avalable to the
+       students immediately? If not, an administrator have to publish
+       feedbacks. See also :attr:`Deadline.feedbacks_published`.
     """
 
     class Meta:
@@ -822,6 +829,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 'Examiners can open closed groups, and they are notified '
                 'when a group is automatically closed. Leave this '
                 'empty if you do not want to use this feature.'))
+    examiners_publish_feedbacks_directly = models.BooleanField(default=True,
+                                                     verbose_name=_("Examiners publish directly?"),
+                                                     help_text=_('Should feedbacks published by examiners be made '
+                                                                 'avalable to the students immediately? If not, an '
+                                                                 'administrator have to publish feedbacks '
+                                                                 'manually.'))
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -1482,6 +1495,12 @@ class Deadline(models.Model):
             1. Has deliveries
             2. Corrected, not published
             3. Corrected and published
+
+    .. attribute:: feedbacks_published
+
+        If this boolean field is ``True``, the student can see all
+        :class:`Feedback` objects associated with this Deadline through a
+        :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
     """
     status = models.PositiveIntegerField(
             default = 0,
@@ -1493,6 +1512,7 @@ class Deadline(models.Model):
     text = models.TextField(blank=True, null=True)
     is_head = models.BooleanField(default=False)
     deliveries_available_before_deadline = models.BooleanField(default=False)
+    feedbacks_published = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Deadline')
@@ -1953,10 +1973,18 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         the given student is candidate.
         """
         return Q(delivery__assignment_group__examiners=user_obj)
+
+    def _publish_if_allowed(self):
+        assignment = self.delivery.assignment_group.parentnode
+        if assignment.examiners_publish_feedbacks_directly:
+            deadline = self.delivery.deadline_tag
+            deadline.feedbacks_published = True
+            deadline.save()
     
     def save(self, *args, **kwargs):
         super(Feedback, self).save(*args, **kwargs)
         self.delivery.assignment_group.update_gradeplugin_cached_fields()
+        self._publish_if_allowed()
 
     def __unicode__(self):
         return "Feedback on %s" % self.delivery
@@ -2082,6 +2110,7 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         if self.grade:
             self.validate_gradeobj()
         super(Feedback, self).clean(*args, **kwargs)
+
 
 
 class FileMeta(models.Model):

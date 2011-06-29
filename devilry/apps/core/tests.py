@@ -18,7 +18,7 @@ from django.core.exceptions import ValidationError
 from ..grade_approved.models import ApprovedGrade
 
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
-        Delivery, Candidate, Feedback, FileMeta)
+        Delivery, Candidate, Feedback, FileMeta, Deadline)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
     DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
@@ -737,7 +737,6 @@ class TestAssignmentGroup(TestCase):
         delivery1 = ag.deliveries.all()[1]
         delivery2 = ag.deliveries.all()[0]
 
-        from devilry.apps.core.models import Deadline
         deadline_min10 = Deadline.objects.get(deadline=time_min10)
         deadline_min5 = Deadline.objects.get(deadline=time_min5)
         deadline_plus5 = Deadline.objects.get(deadline=time_plus5)
@@ -857,6 +856,47 @@ class TestFeedback(TestCase):
         examiner0 = User.objects.get(username='examiner0')
         examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
         self.assertEquals(len(examiner0_feedbacks), 15)
+
+
+class TestFeedbackPublish(TestCase):
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
+
+    def create_feedback(self, delivery, text): # TODO: Simplify this when gradeplugin stuff is removed from Feedback
+        assignment = delivery.assignment_group.parentnode
+        feedback = delivery.get_feedback()
+        feedback.text = text
+        examiner = delivery.assignment_group.examiners.all()[0]
+        feedback.last_modified_by = examiner
+        gradeplugin = assignment.get_gradeplugin_registryitem().model_cls
+        examplegrade = gradeplugin.get_example_xmlrpcstring(assignment, 1)
+        feedback.set_grade_from_xmlrpcstring(examplegrade)
+        feedback.save()
+        return feedback
+
+    def setUp(self):
+        teacher1 = User.objects.get(username='teacher1')
+        delivery = Delivery.objects.all()[0]
+        delivery.assignment_group.examiners.add(teacher1)
+
+        self.feedback = self.create_feedback(delivery, "Test")
+        self.assignment = self.feedback.delivery.assignment_group.parentnode
+        self.deadline = self.feedback.delivery.deadline_tag
+        self.deadline.feedbacks_published = False
+        self.deadline.save()
+
+    def test_publish_feedbacks_directly(self):
+        self.assignment.examiners_publish_feedbacks_directly = True
+        self.assignment.save()
+        self.feedback.save()
+        self.assertTrue(Deadline.objects.get(id=self.deadline.id).feedbacks_published)
+
+    def test_dont_publish_feedbacks_directly(self):
+        self.assignment.examiners_publish_feedbacks_directly = False
+        self.assignment.save()
+        self.feedback.save()
+        self.assertFalse(Deadline.objects.get(id=self.deadline.id).feedbacks_published)
+
+
 
 class TestMemoryDeliveryStore(TestDeliveryStoreMixin, TestCase):
     def get_storageobj(self):
