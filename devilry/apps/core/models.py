@@ -7,7 +7,6 @@
 
 
 from datetime import datetime
-from datetime import timedelta
 import re
 
 from django.db import models
@@ -15,8 +14,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q, Max
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext as _
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.utils.formats import date_format
 
 from deliverystore import load_deliverystore_backend, FileNotFoundError
@@ -1499,7 +1496,7 @@ class Deadline(models.Model):
     .. attribute:: feedbacks_published
 
         If this boolean field is ``True``, the student can see all
-        :class:`Feedback` objects associated with this Deadline through a
+        :class:`StaticFeedback` objects associated with this Deadline through a
         :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
     """
     status = models.PositiveIntegerField(
@@ -1624,7 +1621,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     .. attribute:: feedback
 
-       A django.db.models.OneToOneField to Feedback.
+       A django.db.models.OneToOneField to StaticFeedback.
 
     """
     status_mapping = (
@@ -1762,16 +1759,16 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     def get_feedback(self): # TODO: Rename to get_latest_feedback
         """ Get the feedback for this delivery. If the feedback does not
-        exists, a new :class:`Feedback`-object is created but not saved.
+        exists, a new :class:`StaticFeedback`-object is created but not saved.
 
         :return:
-            A :class:`Feedback`-object with the delivery-attribute set
+            A :class:`StaticFeedback`-object with the delivery-attribute set
             to this delivery.
         """
         try:
             return self.feedbacks.order_by('-last_modified')[0]
         except IndexError:
-            return Feedback(delivery=self)
+            return StaticFeedback(delivery=self)
 
     def get_status_number(self):
         """ Get the numeric status for this delivery.
@@ -1831,21 +1828,21 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
-class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
+class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     """ Represents a feedback for a `Delivery`_.
 
-    Each delivery can have zero or more feedbacks. Each Feedback object stores
-    static data that an examiner has published on a delivery. Feedback is
+    Each delivery can have zero or more feedbacks. Each StaticFeedback object stores
+    static data that an examiner has published on a delivery. StaticFeedback is
     created and edited in a _grade+feedback editor_ in a _grade plugin_, and
     when an examiner chose to publish feedback, a static copy of the data
-    he/she created in the _grade+feedback editor_ is stored in a Feedback.
+    he/she created in the _grade+feedback editor_ is stored in a StaticFeedback.
 
     Feedbacks are only visible to students when
     :attr:`Deadline.feedbacks_published` on the related deadline is ``True``.
     Feedbacks are related to Deadlines through its :attr:`delivery`.
 
     Students are presented with the last feedback on a delivery, however they
-    can browse every Feedback on their deliveries. This history is to protect
+    can browse every StaticFeedback on their deliveries. This history is to protect
     the student from administrators or examiners that change published
     feedback to avoid that a student can make an issue out of a bad feedback.
 
@@ -1865,85 +1862,33 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
            ``"text"``
                Plain text - no text formatting.
 
-    .. attribute:: published
+    .. attribute:: saved_by
 
-       A django.db.models.BooleanField_ that tells if the feedback is
-       published or not. This allows editing and saving the feedback before
-       publishing it. Is useful for exams and other assignments when
-       feedback and grading is published simultaneously for all Deliveries.
+       The django.contrib.auth.models.User_ that created the StaticFeedback.
 
-    .. attribute:: last_modified_by
+    .. attribute:: save_timestamp
 
-       The django.contrib.auth.models.User_ that last modified the feedback.
-
-    .. attribute:: last_modified
-
-       Date/time of last modification.
+       Date/time when this feedback was created.
 
     .. attribute:: delivery
 
        A django.db.models.ForeignKey_ that points to the `Delivery`_ where this feedback belongs.
 
     .. attribute:: grade
-    
-       A generic relation
-       (django.contrib.contenttypes.generic.GenericForeignKey) to the
-       grade-plugin object storing the grade for this feedback. This will
-       always be a subclass of
-       :class:`devilry.core.gradeplugin.GradeModel`. The
-       :meth:`clean`-method checks that this points to a class of the type
-       defined in :attr:`Assignment.grade_plugin`.
     """
-
-    text_formats = (
-       ('rst', 'ReStructured Text'),
-       ('txt', 'Plain text'),
-    )
-    text = models.TextField(blank=True, null=True, default='',
-            verbose_name = _('Feedback text'))
-    format = models.CharField(max_length=20, choices=text_formats,
-            default = text_formats[0],
-            verbose_name = _('Feedback text format'),
-            help_text = _(
-                'Unless you have problems with "ReStructured Text", you '\
-                'should use it, as it allows you to mark up your ' \
-                'feedback and thus make it more readable by the student. ' \
-                'Only use "Plain text" as a fallback/last resort.')
-            )
-    published = models.BooleanField(blank=True, default=False,
-            verbose_name = _('Published'),
-            help_text = _(
-                'Check this to make the feedback visible to the student(s).'))
     delivery = models.ForeignKey(Delivery, related_name='feedbacks')
-    last_modified = models.DateTimeField(auto_now=True, blank=False,
-            null=False)
+    rendered_view = models.TextField()
+    grade = models.CharField(max_length=12)
+    points = models.PositiveIntegerField(help_text = _('Number of points given on this feedback.'))
+    is_passing_grade = models.BooleanField()
+    save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False)
     last_modified_by = models.ForeignKey(User, blank=False, null=False)
-
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    grade = generic.GenericForeignKey('content_type', 'object_id')
-
-    points = models.PositiveIntegerField(default=0,
-                                         help_text = _('Number of points given on this feedback.'))
 
 
     class Meta:
-        verbose_name = _('Feedback')
-        verbose_name_plural = _('Feedbacks')
-        ordering = ['-last_modified']
-
-    # @classmethod
-    # def published_where_is_candidate(cls, user_obj, old=True, active=True):
-    #     """ Returns a QuerySet matching all :ref:`published
-    #     <assignment-classifications>` feedbacks where the given user
-    #     is student.
-        
-    #     :param user_obj: A django.contrib.auth.models.User_ object.
-    #     :rtype: QuerySet
-    #     """
-    #     return Feedback.objects.filter(
-    #             cls.q_is_candidate(user_obj) &
-    #             cls.q_published(old=old, active=active))
+        verbose_name = _('Static feedback')
+        verbose_name_plural = _('Static feedbacks')
+        ordering = ['-save_timestamp']
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -1952,7 +1897,7 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         the given student is candidate.
         """
         return Q(delivery__assignment_group__candidates__student=user_obj)
-    
+
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
@@ -1966,7 +1911,7 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     @classmethod
     def q_is_examiner(cls, user_obj):
         """
-        Returns a django.models.Q object matching Deliveries where
+        Returns a django.models.Q object matching Feedbacks where
         the given student is candidate.
         """
         return Q(delivery__assignment_group__examiners=user_obj)
@@ -1977,137 +1922,14 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
             deadline = self.delivery.deadline_tag
             deadline.feedbacks_published = True
             deadline.save()
-    
+
     def save(self, *args, **kwargs):
-        super(Feedback, self).save(*args, **kwargs)
+        super(StaticFeedback, self).save(*args, **kwargs)
         self.delivery.assignment_group.update_gradeplugin_cached_fields()
         self._publish_if_allowed()
 
     def __unicode__(self):
-        return "Feedback on %s" % self.delivery
-
-    def get_grade_object_info(self):
-        """ Get information about the grade object as a string. """
-        return 'content_type: %s, object_id:%s, ' \
-                'grade: %s' % (self.content_type, self.object_id,
-                        self.grade)
-
-    def get_grade(self):
-        """ Get :attr:`grade`, but raise :exc:`ValueError` if the grade
-        object is not a subclass of
-        :class:`devilry.core.gradeplugin.GradeModel`. """
-        if self.grade:
-            self.validate_gradeobj()
-        return self.grade
-
-    def validate_gradeobj(self):
-        """ Validate the grade object integrity. When this fails, the
-        database integrity is corrupt. Raises one of the subclasses of
-        :exc:`devilry.core.gradeplugin.GradePluginError` on error. """
-        assignment = self.delivery.assignment_group.parentnode
-        try:
-            ri = self.get_assignment().get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise gradeplugin.GradePluginDoesNotExistError('Feedback with '\
-                    'id %s (%s) belongs in a assignment (%s) with a '\
-                    'invalid gradeplugin. ' % (
-                        self.id, self, assignment))
-        if not isinstance(self.grade, ri.model_cls):
-            correct_ct = ri.get_content_type()
-            raise gradeplugin.WrongContentTypeError(
-                'Grade-plugin on feedback with id "%s" (%s) must be "%s", as on the ' \
-                'assignment: %s. It is: %s. The content type on the feedback '\
-                'should be "%s (pk:%s)", not "%s (pk:%s)".' % (self.id, self, ri.get_key(), assignment,
-                    self.get_grade_object_info(),
-                    correct_ct, correct_ct.pk, 
-                    self.content_type, self.content_type.pk))
-
-    def get_grade_as_short_string(self):
-        """
-        Get the grade as a short string suitable for short one-line
-        display.
-        """
-        return self.grade.get_grade_as_short_string(self)
-
-
-    def get_grade_as_long_string(self):
-        """
-        Get the grade as a longer string formatted with restructured
-        text.
-
-        :return:
-            None if getting long string is not supported by the grade
-            plugin.
-        """
-        return self.grade.get_grade_as_long_string(self)
-
-    def set_grade_from_xmlrpcstring(self, grade):
-        """
-        Set the grade from string. This is primarly intended for xmlrpc, and
-        a grade-plugin is not required to support it.
-        
-        Raises :exc:`NotImplementedError` if the grade-plugin do not support
-        setting grades from string.
-
-        Raises :exc:`ValueError` if the grade-plugin given grade is invalid
-        for this grade-plugin. The error message in the exception is suited
-        for direct display to the user.
-        """
-        key = self.delivery.assignment_group.parentnode.grade_plugin
-        model_cls = gradeplugin.registry.getitem(key).model_cls
-        if self.grade:
-            ok_message = self.grade.set_grade_from_xmlrpcstring(grade, self)
-            self.grade.save(self)
-        else:
-            gradeobj = model_cls()
-            ok_message = gradeobj.set_grade_from_xmlrpcstring(grade, self)
-            gradeobj.save(self)
-            self.grade = gradeobj
-        return ok_message
-
-    def get_grade_as_xmlrpcstring(self):
-        """
-        Get the grade as a string compatible with
-        :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for xmlrpc,
-        and a grade-plugin is not required to support it.
-
-        If you need a simple string representation, use :meth:`get_grade_as_short_string`
-        instead.
-
-        Raises :exc:`NotImplementedError` if the grade-plugin do not support
-        getting grades as string.
-
-        :return:
-            None if getting grade as xmlrpcstring is not supported by
-            the grade plugin.
-        """
-        return self.grade.get_grade_as_xmlrpcstring(self)
-        
-    def get_assignment(self):
-        """
-        Shortcut for getting the assignment
-        (``delivery.assignment_group.parentnode``).
-        """
-        return self.delivery.assignment_group.parentnode
-
-    def clean(self, *args, **kwargs):
-        """Validate the Feedback, making sure it does not do something stupid.
-
-        Always call this before save()! Read about validation here:
-        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
-
-        Raises ValidationError if:
-
-            - :attr:`grade` is not a instance of the model-class
-              defined in
-              :attr:`devilry.core.gradeplugin.RegistryItem.model_cls`
-              referred by :attr:`Assignment.grade_plugin`.
-            - The node is the child of itself or one of its childnodes.
-        """
-        if self.grade:
-            self.validate_gradeobj()
-        super(Feedback, self).clean(*args, **kwargs)
-
+        return "StaticFeedback on %s" % self.delivery
 
 
 class FileMeta(models.Model):
@@ -2202,8 +2024,8 @@ def update_deadline_and_assignmentgroup_status(delivery):
 
 from django.db.models.signals import pre_delete, post_save
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
-pre_delete.connect(feedback_grade_delete_handler, sender=Feedback)
+pre_delete.connect(feedback_grade_delete_handler, sender=StaticFeedback)
 post_save.connect(feedback_update_assignmentgroup_status_handler,
-        sender=Feedback)
+        sender=StaticFeedback)
 post_save.connect(delivery_update_assignmentgroup_status_handler,
         sender=Delivery)
