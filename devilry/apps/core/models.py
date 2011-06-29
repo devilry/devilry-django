@@ -737,8 +737,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     .. attribute:: maxpoints
 
-        The maximum number of points possible without scaling. This is set
-        using :meth:`devilry.core.gradeplugin.GradeModel.get_maxpoints`.
+        The maximum number of points possible without scaling. This is set by
+        the grade plugin.
 
     .. attribute:: attempts
 
