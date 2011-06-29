@@ -1,17 +1,32 @@
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-# from django.conf import settings
+from models import Node, Subject, Period, Assignment, AssignmentGroup, Candidate
 
-from models import Node, Subject, Period, Assignment, AssignmentGroup, Delivery, FileMeta, Candidate
+
+# TODO:
+# raise error when trying to give roles to nodes that dont support it?
+#
+# Example:
+#
+# subjects don't have candidates, so trying to create a subject with
+# `add(subjects=['inf1010:candidates(bendiko)'])` doesn't fail, it
+# just doesn't add any users at all.
 
 
 class TestInitializer(object):
 
-    nodes = {}
-    subjects = {}
-    periods = {}
-    assignments = {}
-    deliveries = {}
-    feedbacks = {}
+    def _parse_user_list(self, text):
+        res = {'admin': [], 'examiner': [], 'candidate': []}
+        if not text:
+            return res
+
+        sections = text.split(':')
+        for section in sections:
+            key = section[:section.index('(')]
+            if key not in res:
+                raise Exception("{0} is not an allowed role.".format(key))
+            res[key] = section[section.index('(') + 1 : section.index(')')].split(',')
+        return res
 
     def _create_or_add_user(self, name):
         user = User(username=name)
@@ -20,8 +35,14 @@ class TestInitializer(object):
             user.save()
         except:
             user = User.objects.get(username=name)
+        vars(self)[user.username] = user
         return user
 
+#######
+##
+## Node specifics
+##
+#######
     def _create_or_add_node(self, name, users):
         node = Node(short_name=name, long_name=name.capitalize())
         try:
@@ -33,18 +54,9 @@ class TestInitializer(object):
         # allowed roles in node are:
         for admin in users['admin']:
             node.admins.add(self._create_or_add_user(admin))
+        vars(self)[node.short_name] = node
         return node
 
-    def _parse_user_list(self, text):
-        res = {'admin': [], 'examiner': [], 'candidate': []}
-        if not text:
-            return res
-        sections = text.split(':')
-        for section in sections:
-            res[section[:section.index('(')]] = section[section.index('(') + 1 : section.index(')')].split(',')
-        return res
-
-    # parse the node stuff!
     def _do_the_nodes(self, nodes):
         prev_node = None
         users_arg = None
@@ -59,28 +71,140 @@ class TestInitializer(object):
                 node_name = node
                 users_arg = None
 
-            roles_and_users = self._parse_user_list(users_arg)
-            new_node = self._create_or_add_node(node_name, roles_and_users)
+            users = self._parse_user_list(users_arg)
+            new_node = self._create_or_add_node(node_name, users)
 
             # set up the relation ship between the previous node
             if prev_node:
                 prev_node.child_nodes.add(new_node)
             prev_node = new_node
 
-    def add(self, nodes=None, subjects=None, periods=None, assignments=None, delivery=None, feedback=None):
+#######
+##
+## Subject specifics
+##
+#######
+    def _create_or_add_subject(self, subject_name, parentnode, users):
+        subject = Subject(parentnode=parentnode, short_name=subject_name, long_name=subject_name.capitalize())
+        try:
+            subject.clean()
+            subject.save()
+        except:
+            subject = Subject.objects.get(short_name=subject_name)
 
-        # do the nodes
+        # add the users (only admins allowed in subject)
+        for admin in users['admin']:
+            subject.admins.add(self._create_or_add_user(admin))
+        vars(self)[subject.short_name] = subject
+        return subject
+
+    def _do_the_subjects(self, subject_list):
+
+        nodes = Node.objects.all()
+        if not nodes:
+            raise Exception('No nodes created. Subjects needs node-parents')
+
+        for node in nodes:
+            for subject in subject_list:
+
+                try:
+                    subject_name, users_arg = subject.split(':', 1)
+                except ValueError:
+                    subject_name = subject
+                    users_arg = None
+
+                users = self._parse_user_list(users_arg)
+                self._create_or_add_subject(subject_name, node, users)
+
+#######
+##
+## Period specifics
+##
+#######
+    def _create_or_add_period(self, period_name, parentnode, users):
+        period = Period(parentnode=parentnode, short_name=period_name, long_name=period_name.capitalize(),
+                        start_time=datetime.now(), end_time=datetime.now() + timedelta(10))
+        try:
+            period.clean()
+            period.save()
+        except:
+            period = Period.objects.get(parentnode=parentnode, short_name=period_name)
+
+        # add the users (only admins allowed in subject)
+        for admin in users['admin']:
+            period.admins.add(self._create_or_add_user(admin))
+
+        vars(self)[parentnode.short_name + '_' + period.short_name] = period
+        return period
+
+    def _do_the_periods(self, periods_list):
+        subjects = Subject.objects.all()
+        if not subjects:
+            raise Exception("No subjects created. Periods needs subject-parents")
+
+        for subject in subjects:
+            for period in periods_list:
+
+                try:
+                    period_name, users_arg = period.split(':', 1)
+                except ValueError:
+                    period_name = period
+                    users_arg = None
+
+                users = self._parse_user_list(users_arg)
+                self._create_or_add_period(period_name, subject, users)
+
+#######
+##
+## Assignment specifics
+##
+#######
+    def _create_or_add_assignment(self, assignment_name, parentnode, users):
+        assignment = Assignment(parentnode=parentnode, short_name=assignment_name,
+                                long_name=assignment_name.capitalize(), publishing_time=datetime.now())
+        try:
+            assignment.clean()
+            assignment.save()
+        except:
+            assignment = Assignment.objects.get(parentnode=parentnode,
+                                                short_name=assignment_name)
+
+        # add the users (only admins allowed in subject)
+        for admin in users['admin']:
+            assignment.admins.add(self._create_or_add_user(admin))
+
+        vars(self)[parentnode.short_name + '_' + parentnode.short_name + '_' + assignment.short_name] = assignment
+        return assignment
+
+    def _do_the_assignments(self, assignments_list):
+        periods = Period.objects.all()
+        if not periods:
+            raise Exception("No periods created. Assignments needs a period-parent")
+
+        for period in periods:
+            for assignment in assignments_list:
+
+                try:
+                    assignment_name, users_arg = assignment.split(':', 1)
+                except ValueError:
+                    assignment_name = assignment
+                    users_arg = None
+
+                users = self._parse_user_list(users_arg)
+                self._create_or_add_assignment(assignment_name, period, users)
+
+    def add(self, nodes=None, subjects=None, periods=None, assignments=None, delivery=None, feedback=None):
         if nodes:
             self._do_the_nodes(nodes)
 
         if subjects:
-            pass
+            self._do_the_subjects(subjects)
 
         if periods:
-            pass
+            self._do_the_periods(periods)
 
         if assignments:
-            pass
+            self._do_the_assignments(assignments)
 
         if delivery:
             pass
@@ -90,17 +214,12 @@ class TestInitializer(object):
 
     @classmethod
     def example(self):
-        # "uio.ifi:inf000[1-3](admin{counter},otheradmin{counter}).h0[1-6].oblig[1-2].(student[0-2],otherstud[0-2])"
-
         self.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
                  subjects=["inf1000:admin(stein,steing)", "inf1100:admin(arne)"],
                  periods=["2009", "2010"],
                  assignments=["oblig1:student(student0,studen1):examiner(bendiko)", "oblig2"])
-        self.
 
         self.add(nodes="uio.ifi",
                  subjects=["inf1000"],
                  periods=["2009"],
                  assignments=["oblig1:student(stud3)"])
-
-
