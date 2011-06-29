@@ -1,1 +1,1 @@
-See http://github.org for documentation.
+See http://devilry.org for documentation.
