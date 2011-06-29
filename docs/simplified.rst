@@ -15,10 +15,10 @@ language and platform:
     - RESTful web services
     - javascript
     - serverside python
-    - client libraries utilizing the RESTful web API.
+    - client libraries using the RESTful web API.
 
 This means that a developer who has played around with the javascript in the
-Devilry templates, can use the same API it he or she wants to develop a
+Devilry templates, can use the same API if he or she wants to develop a
 serverside addon or a command-line script using the official devilry python
 bindings.
 
@@ -46,3 +46,28 @@ to use the core directly if you wish to make complex queries which is not needed
 by a common *task*. To put it simple: It is not an API for doing things that are
 not supported by the devilry web interface.
 
+
+
+
+Example
+#############
+
+TODO: Create simplified API usage example.
+
+
+Public API
+#################
+
+Every function and class in the public API is made available directly in
+``devilry.simplified.NAME``.
+
+
+.. automodule:: devilry.simplified
+    :members: simplified_modelapi
+    :no-members:
+
+.. autoclass:: devilry.simplified.fieldspec.FieldSpec
+
+.. autoclass:: devilry.simplified.exceptions.PermissionDenied
+
+.. autoclass:: devilry.simplified.qryresultwrapper.QryResultWrapper

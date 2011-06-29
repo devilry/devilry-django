@@ -15,6 +15,7 @@ def _require_attr(cls, attr):
             cls.__module__, cls.__name__, attr))
 
 def simplified_modelapi(cls):
+    """ Decorator.... """
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))
     meta = cls.Meta
