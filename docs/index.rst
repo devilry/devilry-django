@@ -23,7 +23,6 @@ Core
 ######################################################################
 
 * **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>` | :ref:`designdetails`
-* :ref:`devilry.apps.core.utils <devilry.apps.core.utils>`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
 
 
