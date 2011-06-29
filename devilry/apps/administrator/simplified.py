@@ -48,7 +48,7 @@ class Node(CanSaveAuthMixin):
         model = models.Node
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
         searchfields = FieldSpec('short_name', 'long_name')
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -65,7 +65,7 @@ class Subject(CanSaveAuthMixin):
         model = models.Subject
         resultfields = FieldSpec('id', 'short_name', 'long_name')
         searchfields = FieldSpec('short_name', 'long_name')
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -84,7 +84,7 @@ class Period(CanSaveAuthMixin):
                 'start_time', 'end_time')
         searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
                 'parentnode__long_name')
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -107,7 +107,7 @@ class Assignment(CanSaveAuthMixin):
                                  pointfields = ['anonymous', 'must_pass', 'maxpoints',
                                                 'attempts'])
         searchfields = FieldSpec('short_name', 'long_name')
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):

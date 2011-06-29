@@ -30,10 +30,10 @@ def simplified_modelapi(cls):
     cls._meta.methods = set(cls._meta.methods)
     if 'read' in cls._meta.methods:
         _require_attr(cls, 'read_authorize')
-    if cls._meta.methods.issubset(set(['create', 'read_model', 'update', 'delete'])):
+    if cls._meta.methods.issubset(set(['create', 'insecure_read_model', 'update', 'delete'])):
         _require_attr(cls, 'write_authorize')
 
-    # Dynamically create create(), read(), read_model(), update(), delete()
+    # Dynamically create create(), read(), insecure_read_model(), update(), delete()
     for method in cls._meta.methods:
         getattr(_create, 'create_%s_method' % method)(cls) # Calls create.create_[CRUD+S]_method(cls)
     return cls

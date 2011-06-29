@@ -49,11 +49,11 @@ def create_create_method(cls):
         return obj
     setattr(cls, create.__name__, MethodType(create, cls))
 
-def create_read_model_method(cls):
-    """ Adds the ``read_model()`` method as a classmethod on the given class. """
-    def read_model(cls, user, idorkw):
+def create_insecure_read_model_method(cls):
+    """ Adds the ``insecure_read_model()`` method as a classmethod on the given class. """
+    def insecure_read_model(cls, user, idorkw):
         return _writeauth_get(cls, user, idorkw)
-    setattr(cls, read_model.__name__, MethodType(read_model, cls))
+    setattr(cls, insecure_read_model.__name__, MethodType(insecure_read_model, cls))
     #cls.get.__func__.__doc__
 
 def create_read_method(cls):

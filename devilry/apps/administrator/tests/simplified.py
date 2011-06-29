@@ -55,17 +55,17 @@ class TestSimplifiedAdministratorNode(TestCase):
                     self.clarabelle, self.duckburgh.id,
                     short_name=None, long_name=None)
 
-    def test_read_model(self):
-        node = Node.read_model(self.clarabelle, idorkw=self.univ.id)
-        node = Node.read_model(self.grandma, self.univ.id) # superuser allowed
-        node = Node.read_model(self.grandma, dict(short_name=self.univ.short_name))
+    def test_insecure_read_model(self):
+        node = Node.insecure_read_model(self.clarabelle, idorkw=self.univ.id)
+        node = Node.insecure_read_model(self.grandma, self.univ.id) # superuser allowed
+        node = Node.insecure_read_model(self.grandma, dict(short_name=self.univ.short_name))
         self.assertEquals(node.short_name, 'univ')
-        node = Node.read_model(self.grandma, idorkw=self.univ.id)
+        node = Node.insecure_read_model(self.grandma, idorkw=self.univ.id)
         self.assertEquals(node.short_name, 'univ')
 
-    def test_read_model_security(self):
+    def test_insecure_read_model_security(self):
         with self.assertRaises(PermissionDenied):
-            node = Node.read_model(self.daisy, self.univ.id)
+            node = Node.insecure_read_model(self.daisy, self.univ.id)
 
     def test_update(self):
         self.assertEquals(self.duckburgh.short_name, 'duckburgh')
@@ -183,18 +183,18 @@ class TestSimplifiedAdministratorSubject(TestCase):
         self.assertEquals(0,
                 models.Node.where_is_admin_or_superadmin(self.daisy).count())
 
-    def test_read_model(self):
-        subject = Subject.read_model(self.clarabelle, idorkw=self.duck1100.id)
-        subject = Subject.read_model(self.clarabelle, self.duck1100.id)
+    def test_insecure_read_model(self):
+        subject = Subject.insecure_read_model(self.clarabelle, idorkw=self.duck1100.id)
+        subject = Subject.insecure_read_model(self.clarabelle, self.duck1100.id)
         self.assertEquals(subject.short_name, 'duck1100')
-        subject = Subject.read_model(self.clarabelle,
+        subject = Subject.insecure_read_model(self.clarabelle,
                 dict(short_name=self.duck1100.short_name))
         self.assertEquals(subject.short_name, 'duck1100')
 
-    def test_read_model_security(self):
-        subject = Subject.read_model(self.grandma, self.duck1100.id) # superuser allowed
+    def test_insecure_read_model_security(self):
+        subject = Subject.insecure_read_model(self.grandma, self.duck1100.id) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            node = Subject.read_model(self.daisy, self.duck1100.id)
+            node = Subject.insecure_read_model(self.daisy, self.duck1100.id)
 
     def test_read(self):
         subject = Subject.read(self.grandma, self.duck1100.id)
@@ -311,20 +311,20 @@ class TestSimplifiedAdministratorPeriod(TestCase):
         with self.assertRaises(PermissionDenied):
             period = Period.read(self.daisy, self.duck1100_h01_core.id)
 
-    def test_read_model(self):
-        period = Period.read_model(self.clarabelle,
+    def test_insecure_read_model(self):
+        period = Period.insecure_read_model(self.clarabelle,
                 idorkw=self.duck1100_h01_core.id)
         self.assertEquals(period.short_name, 'spring01')
-        period = Period.read_model(self.clarabelle,
+        period = Period.insecure_read_model(self.clarabelle,
                 dict(short_name=self.duck1100_h01_core.short_name,
                     parentnode__short_name = 'duck1100'))
         self.assertEquals(period.short_name, 'spring01')
 
-    def test_read_model_security(self):
-        period = Period.read_model(self.grandma, 
+    def test_insecure_read_model_security(self):
+        period = Period.insecure_read_model(self.grandma, 
                 self.duck1100_h01_core.id) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            period = Period.read_model(self.daisy,
+            period = Period.insecure_read_model(self.daisy,
                     self.duck1100_h01_core.id)
 
 
@@ -507,15 +507,15 @@ class TestSimplifiedAdministratorAssignment(TestCase):
                     self.duck1100_spring01_week1_core.id,
                     result_fieldgroups=['period', 'subject'])
     
-    def test_read_model(self):
-        assignment = Assignment.read_model(self.clarabelle, 
+    def test_insecure_read_model(self):
+        assignment = Assignment.insecure_read_model(self.clarabelle, 
                 idorkw=self.duck1100_spring01_week1_core.id)
 
         self.assertEquals(assignment, self.duck1100_spring01_week1_core)
 
-    def test_read_model_security(self):
+    def test_insecure_read_model_security(self):
         #test superuser allowed
-        Assignment.read_model(self.grandma,
+        Assignment.insecure_read_model(self.grandma,
                 self.duck1100_spring01_week1_core.id)
 
         #test user with no permissions

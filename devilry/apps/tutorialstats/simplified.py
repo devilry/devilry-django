@@ -8,7 +8,7 @@ class StatConfig(object):
         model = models.StatConfig
         resultfields = FieldSpec('id', 'name', 'period__id', 'user__id')
         searchfields = FieldSpec('name')
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
