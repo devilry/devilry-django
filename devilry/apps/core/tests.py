@@ -16,7 +16,7 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
-        Delivery, Candidate, Feedback, FileMeta, Deadline)
+        Delivery, Candidate, StaticFeedback, FileMeta, Deadline)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
     DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
@@ -678,7 +678,7 @@ class TestAssignmentGroup(TestCase):
         # Status not corrected
         self.assertEquals(delivery2.get_status_number(), Delivery.NOT_CORRECTED)
 
-        delivery2.feedback = Feedback(
+        delivery2.feedback = StaticFeedback(
                 format = 'rst',
                 text = 'test',
                 last_modified_by = teacher1)
@@ -834,7 +834,7 @@ class TestDelivery(TestCase):
         self.assertEquals(Delivery.published_where_is_candidate(student4).count(), 0)
 
 
-# TODO: Feedback tests
+# TODO: StaticFeedback tests
 class TestFeedback(TestCase):
 
     # fixtures = ['core/deprecated_users.json', 'core/core.json']
@@ -847,19 +847,19 @@ class TestFeedback(TestCase):
         self.candidate1 = User.objects.get(username='student1')
 
     def test_published_where_is_candidate(self):
-        self.assertEquals(Feedback.published_where_is_candidate(self.candidate0).count(), 8)
-        self.assertEquals(Feedback.published_where_is_candidate(self.candidate1).count(), 7)
+        self.assertEquals(StaticFeedback.published_where_is_candidate(self.candidate0).count(), 8)
+        self.assertEquals(StaticFeedback.published_where_is_candidate(self.candidate1).count(), 7)
         
     def test_published_where_is_examiner(self):
         examiner0 = User.objects.get(username='examiner0')
-        examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
+        examiner0_feedbacks = StaticFeedback.published_where_is_examiner(examiner0)
         self.assertEquals(len(examiner0_feedbacks), 15)
 
 
 class TestFeedbackPublish(TestCase):
     fixtures = ['core/deprecated_users.json', 'core/core.json']
 
-    def create_feedback(self, delivery, text): # TODO: Simplify this when gradeplugin stuff is removed from Feedback
+    def create_feedback(self, delivery, text): # TODO: Simplify this when gradeplugin stuff is removed from StaticFeedback
         assignment = delivery.assignment_group.parentnode
         feedback = delivery.get_feedback()
         feedback.text = text
