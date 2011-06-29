@@ -53,22 +53,22 @@ class TestSimplifiedDelivery(SimplifiedDeliveryTestCase):
 
         # check that:
         #   all deliveries are returned
-        self.assertEquals(Delivery.search(candidate0).qryset.count(), 9)
+        self.assertEquals(Delivery.search(candidate0).count(), 9)
 
         #   that a bogus search returns 0 hits
-        self.assertEquals(Delivery.search(candidate0, query='this_hopefully_does_not_return_anything').qryset.count(), 0)
+        self.assertEquals(Delivery.search(candidate0, query='this_hopefully_does_not_return_anything').count(), 0)
 
         #   all deliveries in subject duck1100 are returned
-        self.assertEquals(Delivery.search(candidate0, query='duck1100').qryset.count(), 4)
+        self.assertEquals(Delivery.search(candidate0, query='duck1100').count(), 4)
 
         #   all deliveries in subject duck3580 are returned
-        self.assertEquals(Delivery.search(candidate0, query='duck3580').qryset.count(), 2)
+        self.assertEquals(Delivery.search(candidate0, query='duck3580').count(), 2)
 
         #   all deliveries from period 'h01' are returned
-        self.assertEquals(Delivery.search(candidate0, query='fall01').qryset.count(), 5)
+        self.assertEquals(Delivery.search(candidate0, query='fall01').count(), 5)
 
         #   all deliveries from assignment 'week1' are returned
-        self.assertEquals(Delivery.search(candidate0, query='week1').qryset.count(), 3)
+        self.assertEquals(Delivery.search(candidate0, query='week1').count(), 3)
 
     def test_read(self):
 
@@ -165,22 +165,22 @@ class TestSimplifiedFeedback(SimplifiedDeliveryTestCase):
 
         # Check that:
         #    all feedbacks are returned
-        self.assertEquals(Feedback.search(candidate0).qryset.count(), 9)
+        self.assertEquals(Feedback.search(candidate0).count(), 9)
 
         #   that a bogus search returns 0 hits
-        self.assertEquals(Feedback.search(candidate0, query='this_hopefully_does_not_return_anything').qryset.count(), 0)
+        self.assertEquals(Feedback.search(candidate0, query='this_hopefully_does_not_return_anything').count(), 0)
 
         #   all feedbacks in subject duck1100 are returned
-        self.assertEquals(Feedback.search(candidate0, query='duck1100').qryset.count(), 4)
+        self.assertEquals(Feedback.search(candidate0, query='duck1100').count(), 4)
 
         #   all feedbacks in subject duck3580 are returned
-        self.assertEquals(Feedback.search(candidate0, query='duck3580').qryset.count(), 2)
+        self.assertEquals(Feedback.search(candidate0, query='duck3580').count(), 2)
 
         #   all feedbacks from period 'h01' are returned
-        self.assertEquals(Feedback.search(candidate0, query='fall01').qryset.count(), 5)
+        self.assertEquals(Feedback.search(candidate0, query='fall01').count(), 5)
 
         #   all feedbacks from assignment 'week1' are returned
-        self.assertEquals(Feedback.search(candidate0, query='week1').qryset.count(), 3)
+        self.assertEquals(Feedback.search(candidate0, query='week1').count(), 3)
 
     def test_read(self):
 
@@ -252,6 +252,6 @@ class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
 
     # def test_search(self):
 
-    #     print Assignment.search(self.candidate0).qryset
-    #     self.assertEquals(Assignment.search(self.candidate0).qryset.count(), 8)
+    #     print Assignment.search(self.candidate0)
+    #     self.assertEquals(Assignment.search(self.candidate0).count(), 8)
     pass

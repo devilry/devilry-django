@@ -138,34 +138,34 @@ class TestSimplifiedAdministratorNode(TestCase):
     def test_search(self):
         clarabelle = User.objects.get(username="clarabelle")
         nodes = models.Node.objects.all().order_by("short_name")
-        qryset = Node.search(self.clarabelle).qryset
-        self.assertEquals(len(qryset), len(nodes))
-        self.assertEquals(qryset[0].short_name, nodes[0].short_name)
+        qrywrap = Node.search(self.clarabelle)
+        self.assertEquals(len(qrywrap), len(nodes))
+        self.assertEquals(qrywrap[0]['short_name'], nodes[0].short_name)
 
         # query
-        qryset = Node.search(self.clarabelle, query="burgh").qryset
-        self.assertEquals(len(qryset), 1)
-        qryset = Node.search(self.clarabelle, query="univ").qryset
-        self.assertEquals(len(qryset), 1)
-        qryset = Node.search(self.clarabelle).qryset
-        self.assertEquals(len(qryset), 2)
-        qryset = Node.search(self.grandma).qryset
-        self.assertEquals(len(qryset), len(nodes))
+        qrywrap = Node.search(self.clarabelle, query="burgh")
+        self.assertEquals(len(qrywrap), 1)
+        qrywrap = Node.search(self.clarabelle, query="univ")
+        self.assertEquals(len(qrywrap), 1)
+        qrywrap = Node.search(self.clarabelle)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = Node.search(self.grandma)
+        self.assertEquals(len(qrywrap), len(nodes))
 
         self.univ.parentnode = self.duckburgh
         self.univ.save()
-        qryset = Node.search(self.grandma,
-                parentnode_id=self.duckburgh.id).qryset
-        self.assertEquals(len(qryset), 1)
-        self.assertEquals(qryset[0].short_name, 'univ')
+        qrywrap = Node.search(self.grandma,
+                parentnode_id=self.duckburgh.id)
+        self.assertEquals(len(qrywrap), 1)
+        self.assertEquals(qrywrap[0]['short_name'], 'univ')
 
     def test_search_security(self):
-        qryset = Node.search(self.daisy).qryset
-        self.assertEquals(len(qryset), 0)
+        qrywrap = Node.search(self.daisy)
+        self.assertEquals(len(qrywrap), 0)
 
         self.duckburgh.admins.add(self.daisy)
-        qryset = Node.search(self.daisy).qryset
-        self.assertEquals(len(qryset), 1)
+        qrywrap = Node.search(self.daisy)
+        self.assertEquals(len(qrywrap), 1)
 
 
 class TestSimplifiedAdministratorSubject(TestCase):
@@ -205,24 +205,24 @@ class TestSimplifiedAdministratorSubject(TestCase):
 
     def test_search(self):
         subjects = models.Subject.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
-        qryset = Subject.search(self.grandma).qryset
-        self.assertEquals(len(qryset), len(subjects))
-        self.assertEquals(qryset[0].short_name, subjects[0].short_name)
+        qrywrap = Subject.search(self.grandma)
+        self.assertEquals(len(qrywrap), len(subjects))
+        self.assertEquals(qrywrap[0]['short_name'], subjects[0].short_name)
 
         # query
-        qryset = Subject.search(self.grandma, query="duck1").qryset
-        self.assertEquals(len(qryset), 2)
-        qryset = Subject.search(self.grandma, query="duck").qryset
-        self.assertEquals(len(qryset), len(subjects))
-        qryset = Subject.search(self.grandma, query="1100").qryset
-        self.assertEquals(len(qryset), 1)
+        qrywrap = Subject.search(self.grandma, query="duck1")
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = Subject.search(self.grandma, query="duck")
+        self.assertEquals(len(qrywrap), len(subjects))
+        qrywrap = Subject.search(self.grandma, query="1100")
+        self.assertEquals(len(qrywrap), 1)
 
     def test_search_security(self):
-        qryset = Subject.search(self.daisy, query="1100").qryset
-        self.assertEquals(len(qryset), 0)
+        qrywrap = Subject.search(self.daisy, query="1100")
+        self.assertEquals(len(qrywrap), 0)
         self.duck1100.admins.add(self.daisy)
-        qryset = Subject.search(self.daisy, query="1100").qryset
-        self.assertEquals(len(qryset), 1)
+        qrywrap = Subject.search(self.daisy, query="1100")
+        self.assertEquals(len(qrywrap), 1)
 
 
     def test_create(self):
@@ -404,25 +404,25 @@ class TestSimplifiedAdministratorPeriod(TestCase):
 
     def test_search(self):
         periods = models.Period.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
-        qryset = Period.search(self.grandma).qryset
-        self.assertEquals(len(qryset), len(periods))
-        self.assertEquals(qryset[0].short_name, periods[0].short_name)
+        qrywrap = Period.search(self.grandma)
+        self.assertEquals(len(qrywrap), len(periods))
+        self.assertEquals(qrywrap[0]['short_name'], periods[0].short_name)
 
-        qryset = Period.search(self.grandma, query="spring0").qryset
-        self.assertEquals(len(qryset), 1)
-        qryset = Period.search(self.grandma, query="fall").qryset
-        self.assertEquals(len(qryset), 2)
-        qryset = Period.search(self.grandma, query="01").qryset
-        self.assertEquals(len(qryset), len(periods))
-        qryset = Period.search(self.grandma, query="1100").qryset
-        self.assertEquals(len(qryset), 1)
+        qrywrap = Period.search(self.grandma, query="spring0")
+        self.assertEquals(len(qrywrap), 1)
+        qrywrap = Period.search(self.grandma, query="fall")
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = Period.search(self.grandma, query="01")
+        self.assertEquals(len(qrywrap), len(periods))
+        qrywrap = Period.search(self.grandma, query="1100")
+        self.assertEquals(len(qrywrap), 1)
 
     def test_search_security(self):
-        qryset = Period.search(self.daisy, query="spring01").qryset
-        self.assertEquals(len(qryset), 0)
+        qrywrap = Period.search(self.daisy, query="spring01")
+        self.assertEquals(len(qrywrap), 0)
         self.duck1100_h01_core.admins.add(self.daisy)
-        qryset = Period.search(self.daisy, query="spring01").qryset
-        self.assertEquals(len(qryset), 1)
+        qrywrap = Period.search(self.daisy, query="spring01")
+        self.assertEquals(len(qrywrap), 1)
 
 class TestSimplifiedAdministratorAssignment(TestCase):
     fixtures = ["simplified/data.json"]
@@ -525,25 +525,25 @@ class TestSimplifiedAdministratorAssignment(TestCase):
 
     def test_search(self):
         assignments = models.Assignment.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
-        qryset = Assignment.search(self.grandma).qryset
-        self.assertEquals(len(qryset), len(assignments))
-        self.assertEquals(qryset[0].short_name, assignments[0].short_name)
+        qrywrap = Assignment.search(self.grandma)
+        self.assertEquals(len(qrywrap), len(assignments))
+        self.assertEquals(qrywrap[0]['short_name'], assignments[0].short_name)
 
         #duck3580, duck1100 and duck1080 have all got an assignment called 'week1'
-        qryset = Assignment.search(self.grandma, query="ek1").qryset
-        self.assertEquals(len(qryset), 3)
+        qrywrap = Assignment.search(self.grandma, query="ek1")
+        self.assertEquals(len(qrywrap), 3)
         #this should hit all 9 assignments with 'week' in its short_name
-        qryset = Assignment.search(self.grandma, query="week").qryset
-        self.assertEquals(len(qryset), 9)
+        qrywrap = Assignment.search(self.grandma, query="week")
+        self.assertEquals(len(qrywrap), 9)
         #no assignments has 'duck' in its short_name
-        qryset = Assignment.search(self.grandma, query="duck").qryset
-        self.assertEquals(len(qryset), 0)
+        qrywrap = Assignment.search(self.grandma, query="duck")
+        self.assertEquals(len(qrywrap), 0)
 
 
     def test_search_security(self):
         #test user with no permissions
-        qryset = Assignment.search(self.daisy, query="ek1").qryset
-        self.assertEquals(len(qryset), 0)
+        qrywrap = Assignment.search(self.daisy, query="ek1")
+        self.assertEquals(len(qrywrap), 0)
 
         #make daisy admin in subject 'duck1100'
         self.duck1100_h01_core = models.Period.objects.get(parentnode__short_name='duck1100', 
@@ -551,8 +551,8 @@ class TestSimplifiedAdministratorAssignment(TestCase):
         self.duck1100_h01_core.admins.add(self.daisy)
         
         #admin in subject 'duck1100' has access to 'week1' in 'duck1100'
-        qryset = Assignment.search(self.daisy, query="ek1").qryset
-        self.assertEquals(len(qryset), 1)
+        qrywrap = Assignment.search(self.daisy, query="ek1")
+        self.assertEquals(len(qrywrap), 1)
 
     def test_create(self):
         #TODO
