@@ -635,55 +635,132 @@ class TestAssignmentGroup(TestCase):
         deadline = assignment_group.deadlines.create(deadline=datetime(2011, 12, 24), text=None)
         self.assertRaises(ValidationError, deadline.clean)
 
-    def test_status(self):
+    def add_delivery(self, assignmentgroup, user):
+        delivery = Delivery.begin(assignmentgroup, user)
+        delivery.add_file('hello.txt', ['hello', 'world'])
+        delivery.add_file('example.py', ['print "hello world"'])
+        delivery.finish()
+
+    def test_status_one_deadline(self):
         teacher1 = User.objects.get(username='teacher1')
-        ag = AssignmentGroup(
-                parentnode = Assignment.objects.get(id=1))
+        student1 = User.objects.get(username='student1')
+        ag = AssignmentGroup(parentnode=Assignment.objects.get(id=1))
+
         ag.save()
-        self.assertEquals(ag.status,
-                AssignmentGroup.NO_DELIVERIES)
-        self.assertEquals(ag.get_localized_status(),
-                "No deliveries")
-        self.assertEquals(ag.get_localized_student_status(),
-                "No deliveries")
+        self.assertEquals(ag.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(), "No deliveries")
+        self.assertEquals(ag.get_localized_student_status(), "No deliveries")
 
-        ag = AssignmentGroup.objects.get(id=1)
-        d = ag.deliveries.all()[0]
-        d.save()
+        # 'cheat' by setting default deadline time to epoch
+        head_deadline = ag.deadlines.all()[0]
+        head_deadline.deadline = datetime(1970, 1, 1, 1, 0)
+        head_deadline.save()
+        
+        # Adding delivery on head deadline
+        self.add_delivery(ag, student1)
+        self.assertEquals(ag.status, AssignmentGroup.HAS_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(), "Has deliveries")
+        self.assertEquals(ag.get_localized_student_status(), "Has deliveries")
 
-        self.assertEquals(ag.status,
-                AssignmentGroup.AWAITING_CORRECTION)
-        self.assertEquals(ag.get_localized_status(),
-                "Awaiting correction")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Awaiting correction")
-        d.feedback = Feedback(
+        time_now = datetime.now()
+        deadline_5min = (time_now - timedelta(minutes=5))
+        ag.deadlines.create(deadline=deadline_5min, text=None)
+        # Adding delivery 5 minutes too late
+        self.add_delivery(ag, student1)
+
+        delivery1 = ag.deliveries.all()[1]
+        delivery2 = ag.deliveries.all()[0]
+
+        self.assertEquals(ag.deliveries.all().count(), 2)
+        # First delivery is not after deadline even though the deadline was set
+        # to 1970. That is because it's the head deadline.
+        self.assertFalse(delivery1.after_deadline)
+        # Second delivery delivered too late
+        self.assertTrue(delivery2.after_deadline)
+        # Status not corrected
+        self.assertEquals(delivery2.get_status_number(), Delivery.NOT_CORRECTED)
+
+        delivery2.feedback = Feedback(
                 format = 'rst',
                 text = 'test',
                 last_modified_by = teacher1)
-        d.feedback.set_grade_from_xmlrpcstring("+")
-        d.feedback.save()
-        d.save()
-        ag = AssignmentGroup.objects.get(id=1)
-        self.assertEquals(ag.status,
-                AssignmentGroup.CORRECTED_NOT_PUBLISHED)
-        self.assertEquals(ag.get_localized_status(),
-                "Corrected, not published")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Awaiting correction")
+        delivery2.feedback.set_grade_from_xmlrpcstring("+")
+        delivery2.feedback.save()
+        # Update cache on assignment group
+        ag = delivery2.assignment_group
+        delivery2.save()
 
-        d.feedback.published = True
-        d.feedback.save()
-        ag = AssignmentGroup.objects.get(id=1)
-        self.assertEquals(ag.status,
-                AssignmentGroup.CORRECTED_AND_PUBLISHED)
-        self.assertEquals(ag.get_localized_status(),
-                "Corrected and published")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Corrected")
+        self.assertEquals(delivery2.get_status_number(), Delivery.CORRECTED_NOT_PUBLISHED)
 
+        self.assertEquals(ag.status, AssignmentGroup.CORRECTED_NOT_PUBLISHED)
+        self.assertEquals(ag.get_localized_status(), "Corrected, not published")
+        self.assertEquals(ag.get_localized_student_status(), "Has deliveries")
 
+        # Test publishing feedback
+        delivery2.feedback.published = True
+        delivery2.feedback.save()
+        ag = delivery2.assignment_group
         
+        self.assertEquals(delivery2.get_status_number(), Delivery.CORRECTED_AND_PUBLISHED)
+        self.assertEquals(ag.status, AssignmentGroup.CORRECTED_AND_PUBLISHED)
+        self.assertEquals(ag.get_localized_status(), "Corrected and published")
+        self.assertEquals(ag.get_localized_student_status(), "Corrected")
+        
+    def test_status_multiple_deadlines(self):
+        teacher1 = User.objects.get(username='teacher1')
+        student1 = User.objects.get(username='student1')
+        ag = AssignmentGroup(parentnode=Assignment.objects.get(id=1))
+        ag.save()
+
+        self.assertEquals(ag.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(), "No deliveries")
+        self.assertEquals(ag.get_localized_student_status(), "No deliveries")
+
+        # 'cheat' by setting default deadline time to epoch
+        head_deadline = ag.deadlines.all()[0]
+        head_deadline.deadline = datetime(1970, 1, 1, 1, 0)
+        head_deadline.save()
+        
+        time_now = datetime.now()
+        time_min10 = (time_now - timedelta(minutes=10))
+        ag.deadlines.create(deadline=time_min10, text=None)
+        time_min5 = (time_now - timedelta(minutes=5))
+        ag.deadlines.create(deadline=time_min5, text=None)
+        time_plus5 = (time_now + timedelta(minutes=5))
+        ag.deadlines.create(deadline=time_plus5, text=None)
+        time_plus10 = (time_now + timedelta(minutes=10))
+        ag.deadlines.create(deadline=time_plus10, text=None)
+
+        # Adding delivery on deadline 
+        self.add_delivery(ag, student1)
+        self.add_delivery(ag, student1)
+        delivery1 = ag.deliveries.all()[1]
+        delivery2 = ag.deliveries.all()[0]
+
+        from devilry.apps.core.models import Deadline
+        deadline_min10 = Deadline.objects.get(deadline=time_min10)
+        deadline_min5 = Deadline.objects.get(deadline=time_min5)
+        deadline_plus5 = Deadline.objects.get(deadline=time_plus5)
+        deadline_plus10 = Deadline.objects.get(deadline=time_plus10)
+        
+        # Was assigned the correct deadline
+        self.assertEquals(delivery1.deadline_tag.id, deadline_plus5.id)
+        self.assertEquals(delivery2.deadline_tag.id, deadline_plus5.id)
+        
+        self.assertEquals(deadline_min10.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(deadline_min5.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(deadline_plus5.status, AssignmentGroup.HAS_DELIVERIES)
+        self.assertEquals(deadline_plus10.status, AssignmentGroup.NO_DELIVERIES)
+
+        deadline_plus5.deliveries_available_before_deadline = True
+        deadline_plus5.save()
+        ag = delivery1.assignment_group
+
+        self.add_delivery(ag, student1)
+        deadline_plus5 = Deadline.objects.get(deadline=time_plus5)
+        self.assertEquals(deadline_plus5.status, AssignmentGroup.HAS_DELIVERIES)
+
+
 class TestCandidate(TestCase):
     fixtures = ['core/deprecated_users.json', 'core/core.json']
     
@@ -758,7 +835,7 @@ class TestDelivery(TestCase):
         self.assertEquals(Delivery.published_where_is_candidate(student2).count(), 1)
         self.assertEquals(Delivery.published_where_is_candidate(student3).count(), 1)
         self.assertEquals(Delivery.published_where_is_candidate(student4).count(), 0)
-        
+
 
 # TODO: Feedback tests
 class TestFeedback(TestCase):

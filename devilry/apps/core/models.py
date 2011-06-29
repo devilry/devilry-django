@@ -1098,22 +1098,19 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     """
     status_mapping = (
         _("No deliveries"),
-        _("Deadline no expired"),
-        _("Awaiting correction"),
+        _("Has deliveries"),
         _("Corrected, not published"),
         _("Corrected and published"),
     )
     status_mapping_student = (
         status_mapping[0],
         status_mapping[1],
-        status_mapping[2],
-        status_mapping[2],
+        status_mapping[1],
         _("Corrected"),
     )
     status_mapping_cssclass = (
         _("status_no_deliveries"),
-        _("status_not_corrected"),
-        _("status_not_corrected"),
+        _("status_has_deliveries"),
         _("status_corrected_not_published"),
         _("status_corrected_and_published"),
     )
@@ -1121,16 +1118,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         status_mapping_cssclass[0],
         status_mapping_cssclass[1],
         status_mapping_cssclass[1],
-        status_mapping_cssclass[2],
         status_mapping_cssclass[3],
     )
 
     NO_DELIVERIES = 0
-    DEADLINE_NOT_EXPIRED = 1
-    AWAITING_CORRECTION = 2
-    CORRECTED_NOT_PUBLISHED = 3
-    CORRECTED_AND_PUBLISHED = 4
-
+    HAS_DELIVERIES = 1
+    CORRECTED_NOT_PUBLISHED = 2
+    CORRECTED_AND_PUBLISHED = 3
+    
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
     examiners = models.ManyToManyField(User, blank=True,
@@ -1422,7 +1417,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             return False
 
     def can_add_deliveries(self):
-        """ Returns true if a student can add deliveries on this assignmengroup
+        """ Returns true if a student can add deliveries on this assignmentgroup
         
         Both the assignmentgroups is_open attribute, and the periods start
         and end time is checked.
@@ -1457,10 +1452,9 @@ class Deadline(models.Model):
         instead, with the following values:
 
             0. No deliveries
-            1. Deadline not expired
-            2. Awaiting correction
-            3. Corrected, not published
-            4. Corrected and published
+            1. Has deliveries
+            2. Corrected, not published
+            3. Corrected and published
     """
     status = models.PositiveIntegerField(
             default = 0,
@@ -1472,7 +1466,7 @@ class Deadline(models.Model):
     text = models.TextField(blank=True, null=True)
     is_head = models.BooleanField(default=False)
     deliveries_available_before_deadline = models.BooleanField(default=False)
-    
+
     class Meta:
         verbose_name = _('Deadline')
         verbose_name_plural = _('Deadlines')
@@ -1480,24 +1474,19 @@ class Deadline(models.Model):
 
     def _get_status_from_qry(self):
         """Get status from active deadline"""
-        deliveries = self.deliveries.all()
-        # Deadline has not expired
-        if self.deadline > datetime.now() and not self.deliveries_available_before_deadline:
-            return AssignmentGroup.DEADLINE_NOT_EXPIRED
+        if self.deliveries.all().count == 0:
+            return AssignmentGroup.NO_DELIVERIES
         else:
-            if deliveries.count == 0:
-                return AssignmentGroup.NO_DELIVERIES
+            qry = self.deliveries.filter(
+                feedback__isnull=False)
+            if qry.count() == 0:
+                return AssignmentGroup.HAS_DELIVERIES
             else:
-                qry = self.deliveries.filter(
-                    feedback__isnull=False)
+                qry = qry.filter(feedback__published=True)
                 if qry.count() == 0:
-                    return AssignmentGroup.AWAITING_CORRECTION
+                    return AssignmentGroup.CORRECTED_NOT_PUBLISHED
                 else:
-                    qry = qry.filter(feedback__published=True)
-                    if qry.count() == 0:
-                        return AssignmentGroup.CORRECTED_NOT_PUBLISHED
-                    else:
-                        return AssignmentGroup.CORRECTED_AND_PUBLISHED
+                    return AssignmentGroup.CORRECTED_AND_PUBLISHED
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
@@ -1576,6 +1565,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         A django.db.models.BooleanField_ telling whether or not the Delivery
         was successfully uploaded.
 
+    .. attribute:: after_deadline
+
+        A django.db.models.BooleanField_ telling whether or not the Delivery
+        was delived after deadline..
+
     .. attribute:: filemetas
 
         A set of filemetas for this delivery.
@@ -1601,12 +1595,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     CORRECTED = 1
     CORRECTED_AND_PUBLISHED = 2
     CORRECTED_NOT_PUBLISHED = 3
-    
+
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     time_of_delivery = models.DateTimeField()
-    deadline_tag = models.ForeignKey(Deadline, blank=True, null=True, 
-                                     on_delete=models.SET_NULL, 
-                                     related_name='deliveries')
+    deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField()
     delivered_by = models.ForeignKey(User) # TODO: should be candidate!
     successful = models.BooleanField(blank=True, default=False)
@@ -1687,6 +1679,19 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         d.time_of_delivery = datetime.now()
         d.delivered_by = user_obj
         d.successful = False
+
+         # Find correct deadline and tag the delivery 
+        last_deadline = None
+        deadline_set = False
+        for deadline in assignment_group.deadlines.all().order_by('deadline'):
+            last_deadline = deadline
+            if d.time_of_delivery < deadline.deadline:
+                d.deadline_tag = deadline
+                deadline_set = True
+                break
+        # Delivered too late, so use the last deadline
+        if not deadline_set:
+            d.deadline_tag = last_deadline
         d.save()
         return d
 
@@ -1787,17 +1792,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                     assignment_group=self.assignment_group).aggregate(
                             Max('number'))
             self.number = (m['number__max'] or 0) + 1
-
-        # Find correct deadline and tag the delivery 
-        last_deadline = None
-        for deadline in self.assignment_group.deadlines.all().order_by('deadline'):
-            last_deadline = deadline
-            if self.time_of_delivery < deadline.deadline:
-                self.deadline_tag = deadline
-                break
-        # Delivered too late, so use the last deadline
-        if self.deadline_tag == None and not last_deadline == None:
-            self.deadline_tag = last_deadline
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -2160,13 +2154,13 @@ def feedback_grade_delete_handler(sender, **kwargs):
 
 def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']
-    update_deadline_and_assignmengroup_status(feedback.delivery)
+    update_deadline_and_assignmentgroup_status(feedback.delivery)
 
 def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
     delivery = kwargs['instance']
-    update_deadline_and_assignmengroup_status(delivery)
+    update_deadline_and_assignmentgroup_status(delivery)
 
-def update_deadline_and_assignmengroup_status(delivery):
+def update_deadline_and_assignmentgroup_status(delivery):
     delivery.deadline_tag._update_status()
     delivery.deadline_tag.save()
     delivery.assignment_group._update_status()
