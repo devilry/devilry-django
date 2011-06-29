@@ -3,7 +3,10 @@ proves useful outside this module, they should me moved to ``devilry.utils``. ""
 
 
 def _recurse_getmodelattr(instance, path):
-    cur = getattr(instance, path.pop(0))
+    try:
+        cur = getattr(instance, path.pop(0))
+    except AttributeError, e:
+        return None # If the foreign relationship we are following is null, we return None
     if not path:
         return cur
     else:
