@@ -1652,7 +1652,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             to this delivery.
         """
         try:
-            return self.feedbacks.order_by('last_modified')[0]
+            return self.feedbacks.order_by('-last_modified')[0]
         except IndexError:
             return Feedback(delivery=self)
 
@@ -1811,6 +1811,13 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     grade = generic.GenericForeignKey('content_type', 'object_id')
+
+
+
+    class Meta:
+        verbose_name = _('Feedback')
+        verbose_name_plural = _('Feedbacks')
+        ordering = ['-last_modified']
 
     # @classmethod
     # def published_where_is_candidate(cls, user_obj, old=True, active=True):
