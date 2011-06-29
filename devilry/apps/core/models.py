@@ -1362,7 +1362,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
-        #self.status = self._get_status_from_qry() #TODO: Re-enable _update_status
+        self.status = self._get_status_from_qry() #TODO: Re-enable _update_status
 
     def get_number_of_deliveries(self):
         """ Get the number of deliveries by this assignment group. """
@@ -1504,13 +1504,14 @@ class Deadline(models.Model):
         if self.deliveries.all().count == 0:
             return AssignmentGroup.NO_DELIVERIES
         else:
-            qry = self.deliveries.filter(
-                feedback__isnull=False)
-            if qry.count() == 0:
+            deliveries_with_feedback = [delivery for delivery in self.deliveries.all() \
+                                        if delivery.feedbacks.all().count() > 0]
+            if not deliveries_with_feedback:
                 return AssignmentGroup.HAS_DELIVERIES
             else:
-                qry = qry.filter(feedback__published=True)
-                if qry.count() == 0:
+                published = [delivery for delivery in deliveries_with_feedback \
+                        if delivery.feedbacks.filter(published=True).count() > 0]
+                if not published:
                     return AssignmentGroup.CORRECTED_NOT_PUBLISHED
                 else:
                     return AssignmentGroup.CORRECTED_AND_PUBLISHED
@@ -1760,14 +1761,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             :attr:`Delivery.CORRECTED_NOT_PUBLISHED` or
             :attr:`Delivery.CORRECTED_AND_PUBLISHED`.
         """
-        try:
-            if self.feedback.published:
-                return Delivery.CORRECTED_AND_PUBLISHED
-            else:
-                return Delivery.CORRECTED_NOT_PUBLISHED
-        except Feedback.DoesNotExist:
-            pass
-        return Delivery.NOT_CORRECTED
+        if self.feedbacks.all().count() > 0:
+            return Delivery.CORRECTED_AND_PUBLISHED
+        else:
+            #return Delivery.CORRECTED_NOT_PUBLISHED # TODO: Handle the fact that this info does not exist anymore.
+            return Delivery.NOT_CORRECTED
     
     def get_localized_status(self):
         """
