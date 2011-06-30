@@ -12,10 +12,8 @@ import re
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q, Max
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext as _
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.utils.formats import date_format
 
 from deliverystore import load_deliverystore_backend, FileNotFoundError
@@ -739,8 +737,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     .. attribute:: maxpoints
 
-        The maximum number of points possible without scaling. This is set
-        using :meth:`devilry.core.gradeplugin.GradeModel.get_maxpoints`.
+        The maximum number of points possible without scaling. This is set by
+        the grade plugin.
 
     .. attribute:: attempts
 
@@ -757,6 +755,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         
         Each student must get a passing grade on this assignment to get a
         passing grade on the period. Defaults to False.
+
+
+    .. attribute:: examiners_publish_feedbacks_directly
+
+       Should feedbacks published by examiners be made avalable to the
+       students immediately? If not, an administrator have to publish
+       feedbacks. See also :attr:`Deadline.feedbacks_published`.
     """
 
     class Meta:
@@ -821,6 +826,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 'Examiners can open closed groups, and they are notified '
                 'when a group is automatically closed. Leave this '
                 'empty if you do not want to use this feature.'))
+    examiners_publish_feedbacks_directly = models.BooleanField(default=True,
+                                                     verbose_name=_("Examiners publish directly?"),
+                                                     help_text=_('Should feedbacks published by examiners be made '
+                                                                 'avalable to the students immediately? If not, an '
+                                                                 'administrator have to publish feedbacks '
+                                                                 'manually.'))
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -836,13 +847,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_candidate(cls, user_obj):
         return Q(assignmentgroups__candidates__student=user_obj)
 
-    def _get_maxpoints(self):
-        gradeplugincls = self.get_gradeplugin_registryitem().model_cls
-        if self.id == None:
-            return gradeplugincls.get_maxpoints()
-        else:
-            return gradeplugincls.get_maxpoints(self)
-
     def _update_scalepoints(self):
         for group in self.assignmentgroups.iterator():
             group.scaled_points = group._get_scaled_points()
@@ -851,7 +855,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def save(self, *args, **kwargs):
         """ Save and recalculate the value of :attr:`maxpoints` and
         :attr:`pointscale`. """
-        self.maxpoints = self._get_maxpoints()
         if self.autoscale:
             self.pointscale = self.maxpoints
         super(Assignment, self).save()
@@ -861,20 +864,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
         for the current :attr:`grade_plugin`. """
         return gradeplugin.registry.getitem(self.grade_plugin)
-
-    def validate_gradeplugin(self):
-        """ Check if grade plugin is valid (exists). 
-        Raise :exc:`devilry.core.gradeplugin.GradePluginDoesNotExistError`
-        on error. """
-        try:
-            ri = self.get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise gradeplugin.GradePluginDoesNotExistError(
-                'Invalid grade plugin "%s" on assignment: %s. This is '\
-                'usually because a grade plugin has been removed from '\
-                'the INSTALLED_APPS setting. There is no easy fix for '\
-                'this except to re-enable the missing grade plugin.' % (
-                    self.grade_plugin, self))
 
     def get_filenames(self):
         """ Get the filenames as a list of strings. """
@@ -1069,15 +1058,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     .. attribute:: status
 
-        Stores data that can be deduces from other data in the database, but
-        since this requires complex queries, we store it as a integer
-        instead, with the following values:
-
-            0. No deliveries
-            1. Not corrected
-            2. Corrected, not published
-            3. Corrected and published
-                The group has at least one published feedback.
+        **Cached field**: This status is a cached value of the status on the last
+        deadline on this assignmentgroup.
 
     .. attribute:: status_mapping
 
@@ -1112,49 +1094,53 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
         The numberic value corresponding to :attr:`status` *no deliveries*.
 
-    .. attribute:: NOT_CORRECTED
+    .. attribute:: DEADLINE_NOT_EXPIRED
 
-        The numberic value corresponding to :attr:`status` *not corrected*.
+        The numberic value corresponding to :attr:`status` *deadline not expired*.
+
+    .. attribute:: AWAITING_CORRECTION
+
+        The numberic value corresponding to :attr:`status` *awaiting correction*.
 
     .. attribute:: CORRECTED_NOT_PUBLISHED
 
-        The numberic value corresponding to :attr:`status` *corrected, not
-        published*.
+        The numberic value corresponding to :attr:`status` *corrected, not published*.
 
     .. attribute:: CORRECTED_AND_PUBLISHED
 
-        The numberic value corresponding to :attr:`status` *corrected, and
-        published*.
+        The numberic value corresponding to :attr:`status` *corrected and published*.
+
     """
     status_mapping = (
         _("No deliveries"),
-        _("Not corrected"),
+        _("Has deliveries"),
         _("Corrected, not published"),
         _("Corrected and published"),
     )
     status_mapping_student = (
         status_mapping[0],
         status_mapping[1],
-        status_mapping[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping[1],
         _("Corrected"),
     )
     status_mapping_cssclass = (
         _("status_no_deliveries"),
-        _("status_not_corrected"),
+        _("status_has_deliveries"),
         _("status_corrected_not_published"),
         _("status_corrected_and_published"),
     )
     status_mapping_student_cssclass = (
         status_mapping_cssclass[0],
         status_mapping_cssclass[1],
-        status_mapping_cssclass[1], # "not published" means not "not corrected" is displayed to student
+        status_mapping_cssclass[1],
         status_mapping_cssclass[3],
     )
+
     NO_DELIVERIES = 0
-    NOT_CORRECTED = 1
+    HAS_DELIVERIES = 1
     CORRECTED_NOT_PUBLISHED = 2
     CORRECTED_AND_PUBLISHED = 3
-
+    
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True)
     examiners = models.ManyToManyField(User, blank=True,
@@ -1165,6 +1151,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             default = 0,
             choices = enumerate(status_mapping),
             verbose_name = _('Status'))
+
+    # Caches for fields in the last feedback
     points = models.PositiveIntegerField(default=0,
             help_text=_('Final number of points for this group. This '\
                 'number is controlled by the grade plugin, and should not '\
@@ -1172,10 +1160,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     scaled_points = models.FloatField(default=0.0)
     is_passing_grade = models.BooleanField(default=False)
 
-
     class Meta:
         ordering = ['id']
-
 
     def _get_scaled_points(self):
         scale = float(self.parentnode.pointscale)
@@ -1185,9 +1171,21 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         return (scale/maxpoints) * self.points
 
     def save(self, *args, **kwargs):
-        self.scaled_points = self._get_scaled_points()
+        create_default_deadline = False
+        # Only if object doesn't yet exist in the database
+        if not self.pk:
+            create_default_deadline = True
         super(AssignmentGroup, self).save(*args, **kwargs)
+        if create_default_deadline:
+            self.create_default_deadline()
 
+    def create_default_deadline(self):
+        # Create the head deadline for this assignmentgroup
+        head_deadline = Deadline()
+        head_deadline.deadline = datetime.now()
+        head_deadline.assignment_group = self
+        head_deadline.is_head = True
+        head_deadline.save()
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -1208,7 +1206,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     def where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
-        
+
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
@@ -1219,7 +1217,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Returns a QuerySet matching all :ref:`published
         <assignment-classifications>` assignment groups where the given user
         is student.
-        
+
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
@@ -1249,7 +1247,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """
         return cls.published_where_is_candidate(user_obj, active=False)
 
-
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
@@ -1267,7 +1264,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
                 self.get_candidates())
-    
+
     def get_students(self):
         """ Get a string containing all students in the group separated by
         comma and a space, like: ``superman, spiderman, batman``.
@@ -1278,8 +1275,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """
         return u', '.join(
                 [c.student.username for c in self.candidates.all()])
-    get_students.short_description = _('Students')
- 
+
     def get_candidates(self):
         """ Get a string containing all candiates in the group separated by
         comma and a space, like: ``superman, spiderman, batman`` for normal
@@ -1288,13 +1284,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """
         return u', '.join(
                 [c.get_identifier() for c in self.candidates.all()])
-    get_students.short_description = _('Students')
 
     def get_examiners(self):
         """ Get a string contaning all examiners in the group separated by
         comma (``','``). """
         return u', '.join([u.username for u in self.examiners.all()])
-    get_examiners.short_description = _('Examiners')
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
@@ -1306,121 +1300,47 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
-    def can_examine(self, user_obj):
-        """ Return True if the user has permission to examine (creeate
-        feedback and browse files) on this assignment group.
-        
-        Examiners, admins and superusers has this permission. """
-        return user_obj.is_superuser or self.is_admin(user_obj) \
-                or self.is_examiner(user_obj)
+    def get_active_deadline(self):
+        """ Get the active deadline.
+
+        :return:
+            Latest deadline, if no deadline has been created, the default deadline.
+        """
+        now = datetime.now()
+        deadlines = self.deadlines.filter(deadline__gt=now).order_by('deadline')
+        if len(deadlines) == 0:
+            # Return the latest deadline (this will be the closest one in the 
+            # past since the qry above failed)
+            deadlines = self.deadlines.order_by('-deadline')
+        return deadlines[0]
+
+    def _get_status_from_qry(self):
+        """Get status from active deadline"""
+        active_deadline = self.get_active_deadline()
+        return active_deadline.status
 
     def get_localized_status(self):
-        """ Returns the current status string from :attr:`status_mapping`. """
-        return self.status_mapping[self.status]
+        """ Returns the current status string from :attr:`AssignmentGroup.status_mapping`. """
+        return AssignmentGroup.status_mapping[self.status]
 
     def get_localized_student_status(self):
         """ Returns the current status string from
-        :attr:`status_mapping_student`. """
-        return self.status_mapping_student[self.status]
+        :attr:`AssignmentGroup.status_mapping_student`. """
+        return AssignmentGroup.status_mapping_student[self.status]
 
     def get_status_cssclass(self):
         """ Returns the current status string from
-        :attr:`status_mapping_cssclass`. """
-        return self.status_mapping_cssclass[self.status]
+        :attr:`AssignmentGroup.status_mapping_cssclass`. """
+        return AssignmentGroup.status_mapping_cssclass[self.status]
 
     def get_status_student_cssclass(self):
         """ Returns the current status string from
-        :attr:`status_mapping_student_cssclass`. """
-        return self.status_mapping_student_cssclass[self.status]
-
-    def _get_status_from_qry(self):
-        if self.deliveries.all().count() == 0:
-            return self.NO_DELIVERIES
-        else:
-            qry = self.deliveries.filter(
-                    feedback__isnull=False)
-            if qry.count() == 0:
-                return self.NOT_CORRECTED
-            else:
-                qry = qry.filter(feedback__published=True)
-                if qry.count() == 0:
-                    return self.CORRECTED_NOT_PUBLISHED
-                else:
-                    return self.CORRECTED_AND_PUBLISHED
+        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
+        return AssignmentGroup.status_mapping_student_cssclass[self.status]
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
-
-    def get_number_of_deliveries(self):
-        """ Get the number of deliveries by this assignment group. """
-        return self.deliveries.all().count()
-
-    def get_latest_delivery(self):
-        """ Get the latest delivery by this assignment group,
-        or ``None`` if there is no deliveries. """
-        qry = self.deliveries.all()
-        if qry.count() == 0:
-            return None
-        else:
-            return qry.annotate(
-                    models.Max('time_of_delivery'))[0]
-
-    def get_latest_delivery_with_feedback(self):
-        """ Get the latest delivery by this assignment group with feedback,
-        or ``None`` if there is no deliveries with feedback. """
-        if self.deliveries.all().count() == 0:
-            return None
-        else:
-            qry = self.deliveries.filter(feedback__isnull=False)
-            if qry.count() == 0:
-                return None
-            else:
-                return qry.annotate(
-                        models.Max('time_of_delivery'))[0]
-
-    def get_deliveries_with_published_feedback(self):
-        """
-        Get the the deliveries by this assignment group which have
-        published feedback.
-        """
-        return self.deliveries.filter(feedback__published=True)
-
-    def get_latest_delivery_with_published_feedback(self):
-        """
-        Get the latest delivery with published feedback.
-        """
-        q = self.get_deliveries_with_published_feedback().order_by(
-                '-time_of_delivery')
-        if q.count() == 0:
-            return None
-        else:
-            return q[0]
-
-    def _get_gradeplugin_cached_fields(self):
-        d = self.get_latest_delivery_with_published_feedback()
-        points = 0
-        if self.parentnode.must_pass:
-            is_passing_grade = False
-            if d:
-                is_passing_grade = d.feedback.get_grade().is_passing_grade()
-        else:
-            is_passing_grade = True
-        if d:
-            points = d.feedback.grade.get_points()
-        return points, is_passing_grade
-
-    def update_gradeplugin_cached_fields(self):
-        self.points, self.is_passing_grade = self._get_gradeplugin_cached_fields()
-        self.save()
-
-    def get_grade_as_short_string(self):
-        """ Get the grade as a "short string". """
-        d = self.get_latest_delivery_with_published_feedback()
-        if not d:
-            return None
-        else:
-            return d.feedback.get_grade_as_short_string()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup. """
@@ -1430,27 +1350,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             return self.parentnode.is_admin(user_obj)
         else:
             return False
-    
+
     def can_add_deliveries(self):
-        """ Returns true if a student can add deliveries on this assignmengroup
-        
+        """ Returns true if a student can add deliveries on this assignmentgroup
+
         Both the assignmentgroups is_open attribute, and the periods start
         and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
 
-
-    def get_active_deadline(self):
-        """ Get the active deadline.
-            
-        :return:
-            Latest deadline, or None if no deadline is set.
-        """
-        deadlines = self.deadlines.order_by('-deadline')
-        if len(deadlines) == 0:
-            return None
-        else:
-            return deadlines[0]
 
 
 class Deadline(models.Model):
@@ -1466,16 +1374,64 @@ class Deadline(models.Model):
     .. attribute:: text
 
         A optional deadline text.
+
+   .. attribute:: deliveries
+
+        A django ``RelatedManager`` that holds the :class:`deliveries
+        <Delivery>` on this group.
+
+   .. attribute:: status
+
+        The status of this deadline. The data can be deduces from other data in the database, but
+        since this requires complex queries, we store it as a integer
+        instead, with the following values:
+
+            0. No deliveries
+            1. Has deliveries
+            2. Corrected, not published
+            3. Corrected and published
+
+    .. attribute:: feedbacks_published
+
+        If this boolean field is ``True``, the student can see all
+        :class:`StaticFeedback` objects associated with this Deadline through a
+        :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
     """
+    status = models.PositiveIntegerField(
+            default = 0,
+            choices = enumerate(AssignmentGroup.status_mapping),
+            verbose_name = _('Status'))
     assignment_group = models.ForeignKey(AssignmentGroup,
             related_name='deadlines') 
     deadline = models.DateTimeField()
     text = models.TextField(blank=True, null=True)
+    is_head = models.BooleanField(default=False)
+    deliveries_available_before_deadline = models.BooleanField(default=False)
+    feedbacks_published = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Deadline')
         verbose_name_plural = _('Deadlines')
         ordering = ['-deadline']
+
+    def _get_status_from_qry(self):
+        """Get status for active deadline"""
+        if self.deliveries.all().count == 0:
+            return AssignmentGroup.NO_DELIVERIES
+        else:
+            deliveries_with_feedback = [delivery for delivery in self.deliveries.all() \
+                                        if delivery.feedbacks.all().count() > 0]
+            if deliveries_with_feedback:
+                if self.feedbacks_published:
+                    return AssignmentGroup.CORRECTED_AND_PUBLISHED
+                else:
+                    return AssignmentGroup.CORRECTED_NOT_PUBLISHED
+            else:
+                return AssignmentGroup.HAS_DELIVERIES
+
+    def _update_status(self):
+        """ Query for the correct status, and set :attr:`status`. """
+        self.status = self._get_status_from_qry()
     
     def clean(self, *args, **kwargs):
         """Validate the deadline.
@@ -1505,12 +1461,17 @@ class Deadline(models.Model):
         """ Return True if :attr:`deadline` expired. """
         return self.deadline < datetime.now()
 
+    def delete(self, *args, **kwargs):
+        """ Prevent deletion if this is the head deadline """
+        if self.is_head:
+            raise PermissionDenied()
+        super(Deadline, self).delete(*args, **kwargs)
+
 
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
-
 
     .. attribute:: assignment_group
 
@@ -1522,13 +1483,17 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
 
+    .. attribute:: deadline_tag
+
+       Adjango.db.models.ForeignKey_ pointing to the Deadline for this Delivery.
+
     .. attribute:: number
 
-        A django.db.models.PositiveIntegerField with the delivery-number
+        A django.db.models.PositiveIntegerField_ with the delivery-number
         within this assignment-group. This number is automatically
         incremented within each assignmentgroup, starting from 1. Must be
         unique within the assignment-group. Automatic incrementation is used
-        if number is None when calling :meth:`save` (or :meth:`begin`).
+        if number is None when calling :meth:`save`.
 
     .. attribute:: delivered_by
 
@@ -1540,21 +1505,55 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         A django.db.models.BooleanField_ telling whether or not the Delivery
         was successfully uploaded.
 
+    .. attribute:: after_deadline
+
+        A django.db.models.BooleanField_ telling whether or not the Delivery
+        was delived after deadline..
+
     .. attribute:: filemetas
 
         A set of filemetas for this delivery.
 
-    .. attribute:: feedback
+    .. attribute:: feedbacks
 
-       A django.db.models.OneToOneField to Feedback.
+       A set of :class:`StaticFeedback` on this delivery.
 
     """
-    
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
+    status_mapping = (
+        _("Not corrected"),
+        _("Corrected"),
+        _("Corrected, not published"),
+        _("Corrected and published"),
+    )
+    status_mapping_student = (
+        status_mapping[0],
+        status_mapping[1],
+        status_mapping[2],
+        status_mapping[3],
+    )
+    NOT_CORRECTED = 0
+    CORRECTED = 1
+    CORRECTED_AND_PUBLISHED = 2
+    CORRECTED_NOT_PUBLISHED = 3
+
+    # Fields automatically 
     time_of_delivery = models.DateTimeField()
+    deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField()
-    delivered_by = models.ForeignKey(User) # TODO: should be candidate!
+
+    # Fields set by user
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     successful = models.BooleanField(blank=True, default=False)
+    delivered_by = models.ForeignKey(User) # TODO: should be candidate!
+
+    def delivered_too_late(self):
+        """ Compares the deadline and time of delivery.
+        If time_of_delivery is greater than the deadline, return True.
+        """
+        if self.deadline_tag.is_head:
+            return False
+        return self.time_of_delivery > self.deadline_tag.deadline
+    after_deadline = property(delivered_too_late)
 
     class Meta:
         verbose_name = _('Delivery')
@@ -1592,30 +1591,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def q_is_examiner(cls, user_obj):
         return Q(assignment_group__examiners=user_obj)
 
-    @classmethod
-    def begin(cls, assignment_group, user_obj):
-        """ Begin delivery.
-
-        Creates a delivery with ``time_of_delivery`` set to current time,
-        ``delivered_by`` set to the given ``user_obj``, ``assignment_group``
-        set to the given ``assignment_group`` and successful set to
-        ``false``.
-
-        This should be followed up by one or more calls to :meth:`add_file`
-        on the returned FileMeta-object, and completed by calling
-        :meth:`finish`.
-        """
-        d = Delivery()
-        d.assignment_group = assignment_group
-        d.time_of_delivery = datetime.now()
-        d.delivered_by = user_obj
-        d.successful = False
-        d.save()
-        return d
-
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
-        
+
         :param filename:
             A filename as defined in :class:`FileMeta`.
         :param iterable_data:
@@ -1636,80 +1614,60 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         filemeta.save()
         return filemeta
 
-    def finish(self):
-        """ Finish the delivery by updating the time of delivery, marking it
-        as successful and saving. """
-        self.time_of_delivery = datetime.now()
-        self.successful = True
-        self.save()
-
-    def get_feedback(self):
-        """ Get the feedback for this delivery. If the feedback does not
-        exists, a new :class:`Feedback`-object is created but not saved.
-
-        :return:
-            A :class:`Feedback`-object with the delivery-attribute set
-            to this delivery.
-        """
-        try:
-            return self.feedback
-        except Feedback.DoesNotExist:
-            return Feedback(delivery=self)
-
     def get_status_number(self):
         """ Get the numeric status for this delivery.
 
         :return: The numeric status:
-            :attr:`AssignmentGroup.NOT_CORRECTED`,
-            :attr:`AssignmentGroup.CORRECTED_NOT_PUBLISHED` or
-            :attr:`AssignmentGroup.CORRECTED_AND_PUBLISHED`.
+            :attr:`Delivery.NOT_CORRECTED`,
+            :attr:`Delivery.CORRECTED_NOT_PUBLISHED` or
+            :attr:`Delivery.CORRECTED_AND_PUBLISHED`.
         """
-        try:
-            if self.feedback.published:
-                return AssignmentGroup.CORRECTED_AND_PUBLISHED
-            else:
-                return AssignmentGroup.CORRECTED_NOT_PUBLISHED
-        except Feedback.DoesNotExist:
-            pass
-        return AssignmentGroup.NOT_CORRECTED
-
+        if self.feedbacks.all().count() > 0:
+            return Delivery.CORRECTED_AND_PUBLISHED
+        else:
+            #return Delivery.CORRECTED_NOT_PUBLISHED # TODO: Handle the fact that this info does not exist anymore.
+            return Delivery.NOT_CORRECTED
+    
     def get_localized_status(self):
         """
         Returns the current status string from
         :attr:`AssignmentGroup.status_mapping`.
         """
         status = self.get_status_number()
-        return AssignmentGroup.status_mapping[status]
+        return status_mapping[status]
 
     def get_localized_student_status(self):
         """
         Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping_student`.
+        :attr:`status_mapping_student`.
         """
         status = self.get_status_number()
-        return AssignmentGroup.status_mapping_student[status]
+        return status_mapping_student[status]
 
     def get_status_cssclass(self):
         """ Returns the css class for the current status from
-        :attr:`AssignmentGroup.status_mapping_cssclass`. """
-        return AssignmentGroup.status_mapping_cssclass[self.get_status_number()]
+        :attr:`status_mapping_cssclass`. """
+        return status_mapping_cssclass[self.get_status_number()]
 
     def get_status_student_cssclass(self):
         """ Returns the css class for the current status from
-        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
-        return AssignmentGroup.status_mapping_student_cssclass[
+        :attr:`status_mapping_student_cssclass`. """
+        return status_mapping_student_cssclass[
                 self.get_status_number()]
-            
+
+    def _set_number(self):
+        m = Delivery.objects.filter(assignment_group=self.assignment_group).aggregate(Max('number'))
+        self.number = (m['number__max'] or 0) + 1
+
     def save(self, *args, **kwargs):
         """
         Set :attr:`number` automatically to one greater than what is was
         last.
         """
-        if not self.number:
-            m = Delivery.objects.filter(
-                    assignment_group=self.assignment_group).aggregate(
-                            Max('number'))
-            self.number = (m['number__max'] or 0) + 1
+        self.time_of_delivery = datetime.now()
+        if self.id == None:
+            self.deadline_tag = self.assignment_group.deadlines.all().order_by('-deadline')[0]
+            self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -1717,113 +1675,65 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
-class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
-    """
-    Represents the feedback for a given `Delivery`_.
+class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
+    """ Represents a feedback for a `Delivery`_.
 
-    Typical usage for manual manipulation of feedbacks (in tests and xmlrpc)::
+    Each delivery can have zero or more feedbacks. Each StaticFeedback object stores
+    static data that an examiner has published on a delivery. StaticFeedback is
+    created and edited in a _grade+feedback editor_ in a _grade plugin_, and
+    when an examiner chose to publish feedback, a static copy of the data
+    he/she created in the _grade+feedback editor_ is stored in a StaticFeedback.
 
-        test = Assignment(
-                parentnode = Period.objects.get(pk=1),
-                publishing_time = datetime.now(),
-                anonymous = False,
-                grade_plugin = "grade_approved:approvedgrade")
-        group = test.assignmentgroups.create(name="My group")
-        delivery = Delivery.begin(group, User.objects.get(username="student1"))
-        delivery.add_file("test.txt", ["test"])
-        delivery.finish()
-        feedback = delivery.get_feedback()
-        feedback.last_modified_by = User.objects.get(username="examiner1")
-        feedback.set_grade_from_xmlrpcstring("approved")
-        feedback.save()
+    Feedbacks are only visible to students when
+    :attr:`Deadline.feedbacks_published` on the related deadline is ``True``.
+    Feedbacks are related to Deadlines through its :attr:`delivery`.
 
-    .. attribute:: text
+    Students are presented with the last feedback on a delivery, however they
+    can browse every StaticFeedback on their deliveries. This history is to protect
+    the student from administrators or examiners that change published
+    feedback to avoid that a student can make an issue out of a bad feedback.
 
-       A django.db.models.TextField_ that holds the feedback text given by
-       the examiner.
+    .. attribute:: rendered_view
 
-    .. attribute:: format
+        The rendered HTML view.
 
-       A django.db.models.CharField_ that holds the format of the feedback
-       text. Valid values are:
+    .. attribute:: saved_by
 
-           ``"rst"``
-               Format feedback using restructured text.
+       The django.contrib.auth.models.User_ that created the StaticFeedback.
 
-           ``"text"``
-               Plain text - no text formatting.
+    .. attribute:: save_timestamp
 
-    .. attribute:: published
-
-       A django.db.models.BooleanField_ that tells if the feedback is
-       published or not. This allows editing and saving the feedback before
-       publishing it. Is useful for exams and other assignments when
-       feedback and grading is published simultaneously for all Deliveries.
-
-    .. attribute:: last_modified_by
-
-       The django.contrib.auth.models.User_ that last modified the feedback.
-
-    .. attribute:: last_modified
-
-       Date/time of last modification.
+       Date/time when this feedback was created.
 
     .. attribute:: delivery
 
-       A django.db.models.OneToOneField_ that points to the `Delivery`_ to
-       be given feedback.
+       A django.db.models.ForeignKey_ that points to the `Delivery`_ where this feedback belongs.
 
     .. attribute:: grade
-    
-       A generic relation
-       (django.contrib.contenttypes.generic.GenericForeignKey) to the
-       grade-plugin object storing the grade for this feedback. This will
-       always be a subclass of
-       :class:`devilry.core.gradeplugin.GradeModel`. The
-       :meth:`clean`-method checks that this points to a class of the type
-       defined in :attr:`Assignment.grade_plugin`.
+
+        The grade as a short string (max 12 chars).
+
+    .. attribute:: points
+
+        The number of points (integer).
+
+    .. attribute:: is_passing_grade
+
+        Boolean is passing grade?
     """
+    delivery = models.ForeignKey(Delivery, related_name='feedbacks')
+    rendered_view = models.TextField()
+    grade = models.CharField(max_length=12)
+    points = models.PositiveIntegerField(help_text = _('Number of points given on this feedback.'))
+    is_passing_grade = models.BooleanField()
+    save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False)
+    saved_by = models.ForeignKey(User, blank=False, null=False)
 
-    text_formats = (
-       ('rst', 'ReStructured Text'),
-       ('txt', 'Plain text'),
-    )
-    text = models.TextField(blank=True, null=True, default='',
-            verbose_name = _('Feedback text'))
-    format = models.CharField(max_length=20, choices=text_formats,
-            default = text_formats[0],
-            verbose_name = _('Feedback text format'),
-            help_text = _(
-                'Unless you have problems with "ReStructured Text", you '\
-                'should use it, as it allows you to mark up your ' \
-                'feedback and thus make it more readable by the student. ' \
-                'Only use "Plain text" as a fallback/last resort.')
-            )
-    published = models.BooleanField(blank=True, default=False,
-            verbose_name = _('Published'),
-            help_text = _(
-                'Check this to make the feedback visible to the student(s).'))
-    delivery = models.OneToOneField(Delivery)
-    last_modified = models.DateTimeField(auto_now=True, blank=False,
-            null=False)
-    last_modified_by = models.ForeignKey(User, blank=False, null=False)
 
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    grade = generic.GenericForeignKey('content_type', 'object_id')
-
-    # @classmethod
-    # def published_where_is_candidate(cls, user_obj, old=True, active=True):
-    #     """ Returns a QuerySet matching all :ref:`published
-    #     <assignment-classifications>` feedbacks where the given user
-    #     is student.
-        
-    #     :param user_obj: A django.contrib.auth.models.User_ object.
-    #     :rtype: QuerySet
-    #     """
-    #     return Feedback.objects.filter(
-    #             cls.q_is_candidate(user_obj) &
-    #             cls.q_published(old=old, active=active))
+    class Meta:
+        verbose_name = _('Static feedback')
+        verbose_name_plural = _('Static feedbacks')
+        ordering = ['-save_timestamp']
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -1832,7 +1742,7 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         the given student is candidate.
         """
         return Q(delivery__assignment_group__candidates__student=user_obj)
-    
+
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
@@ -1846,139 +1756,24 @@ class Feedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     @classmethod
     def q_is_examiner(cls, user_obj):
         """
-        Returns a django.models.Q object matching Deliveries where
+        Returns a django.models.Q object matching Feedbacks where
         the given student is candidate.
         """
         return Q(delivery__assignment_group__examiners=user_obj)
-    
+
+    def _publish_if_allowed(self):
+        assignment = self.delivery.assignment_group.parentnode
+        if assignment.examiners_publish_feedbacks_directly:
+            deadline = self.delivery.deadline_tag
+            deadline.feedbacks_published = True
+            deadline.save()
+
     def save(self, *args, **kwargs):
-        super(Feedback, self).save(*args, **kwargs)
-        self.delivery.assignment_group.update_gradeplugin_cached_fields()
+        super(StaticFeedback, self).save(*args, **kwargs)
+        self._publish_if_allowed()
 
     def __unicode__(self):
-        return "Feedback on %s" % self.delivery
-
-    def get_grade_object_info(self):
-        """ Get information about the grade object as a string. """
-        return 'content_type: %s, object_id:%s, ' \
-                'grade: %s' % (self.content_type, self.object_id,
-                        self.grade)
-
-    def get_grade(self):
-        """ Get :attr:`grade`, but raise :exc:`ValueError` if the grade
-        object is not a subclass of
-        :class:`devilry.core.gradeplugin.GradeModel`. """
-        if self.grade:
-            self.validate_gradeobj()
-        return self.grade
-
-    def validate_gradeobj(self):
-        """ Validate the grade object integrity. When this fails, the
-        database integrity is corrupt. Raises one of the subclasses of
-        :exc:`devilry.core.gradeplugin.GradePluginError` on error. """
-        assignment = self.delivery.assignment_group.parentnode
-        try:
-            ri = self.get_assignment().get_gradeplugin_registryitem()
-        except KeyError, e:
-            raise gradeplugin.GradePluginDoesNotExistError('Feedback with '\
-                    'id %s (%s) belongs in a assignment (%s) with a '\
-                    'invalid gradeplugin. ' % (
-                        self.id, self, assignment))
-        if not isinstance(self.grade, ri.model_cls):
-            correct_ct = ri.get_content_type()
-            raise gradeplugin.WrongContentTypeError(
-                'Grade-plugin on feedback with id "%s" (%s) must be "%s", as on the ' \
-                'assignment: %s. It is: %s. The content type on the feedback '\
-                'should be "%s (pk:%s)", not "%s (pk:%s)".' % (self.id, self, ri.get_key(), assignment,
-                    self.get_grade_object_info(),
-                    correct_ct, correct_ct.pk, 
-                    self.content_type, self.content_type.pk))
-
-    def get_grade_as_short_string(self):
-        """
-        Get the grade as a short string suitable for short one-line
-        display.
-        """
-        return self.grade.get_grade_as_short_string(self)
-
-
-    def get_grade_as_long_string(self):
-        """
-        Get the grade as a longer string formatted with restructured
-        text.
-
-        :return:
-            None if getting long string is not supported by the grade
-            plugin.
-        """
-        return self.grade.get_grade_as_long_string(self)
-
-    def set_grade_from_xmlrpcstring(self, grade):
-        """
-        Set the grade from string. This is primarly intended for xmlrpc, and
-        a grade-plugin is not required to support it.
-        
-        Raises :exc:`NotImplementedError` if the grade-plugin do not support
-        setting grades from string.
-
-        Raises :exc:`ValueError` if the grade-plugin given grade is invalid
-        for this grade-plugin. The error message in the exception is suited
-        for direct display to the user.
-        """
-        key = self.delivery.assignment_group.parentnode.grade_plugin
-        model_cls = gradeplugin.registry.getitem(key).model_cls
-        if self.grade:
-            ok_message = self.grade.set_grade_from_xmlrpcstring(grade, self)
-            self.grade.save(self)
-        else:
-            gradeobj = model_cls()
-            ok_message = gradeobj.set_grade_from_xmlrpcstring(grade, self)
-            gradeobj.save(self)
-            self.grade = gradeobj
-        return ok_message
-
-    def get_grade_as_xmlrpcstring(self):
-        """
-        Get the grade as a string compatible with
-        :meth:`set_grade_from_xmlrpcstring`. This is primarly intended for xmlrpc,
-        and a grade-plugin is not required to support it.
-
-        If you need a simple string representation, use :meth:`get_grade_as_short_string`
-        instead.
-
-        Raises :exc:`NotImplementedError` if the grade-plugin do not support
-        getting grades as string.
-
-        :return:
-            None if getting grade as xmlrpcstring is not supported by
-            the grade plugin.
-        """
-        return self.grade.get_grade_as_xmlrpcstring(self)
-        
-    def get_assignment(self):
-        """
-        Shortcut for getting the assignment
-        (``delivery.assignment_group.parentnode``).
-        """
-        return self.delivery.assignment_group.parentnode
-
-    def clean(self, *args, **kwargs):
-        """Validate the Feedback, making sure it does not do something stupid.
-
-        Always call this before save()! Read about validation here:
-        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
-
-        Raises ValidationError if:
-
-            - :attr:`grade` is not a instance of the model-class
-              defined in
-              :attr:`devilry.core.gradeplugin.RegistryItem.model_cls`
-              referred by :attr:`Assignment.grade_plugin`.
-            - The node is the child of itself or one of its childnodes.
-        """
-        if self.grade:
-            self.validate_gradeobj()
-        super(Feedback, self).clean(*args, **kwargs)
+        return "StaticFeedback on %s" % self.delivery
 
 
 class FileMeta(models.Model):
@@ -2057,21 +1852,24 @@ def feedback_grade_delete_handler(sender, **kwargs):
     if feedback.grade != None:
         feedback.grade.delete()
 
-
 def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']
-    feedback.delivery.assignment_group._update_status()
-    feedback.delivery.assignment_group.save()
+    update_deadline_and_assignmentgroup_status(feedback.delivery)
 
 def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
     delivery = kwargs['instance']
+    update_deadline_and_assignmentgroup_status(delivery)
+
+def update_deadline_and_assignmentgroup_status(delivery):
+    delivery.deadline_tag._update_status()
+    delivery.deadline_tag.save()
     delivery.assignment_group._update_status()
     delivery.assignment_group.save()
 
 from django.db.models.signals import pre_delete, post_save
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)
-pre_delete.connect(feedback_grade_delete_handler, sender=Feedback)
+pre_delete.connect(feedback_grade_delete_handler, sender=StaticFeedback)
 post_save.connect(feedback_update_assignmentgroup_status_handler,
-        sender=Feedback)
+        sender=StaticFeedback)
 post_save.connect(delivery_update_assignmentgroup_status_handler,
         sender=Delivery)

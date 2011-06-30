@@ -12,32 +12,23 @@ ADMIN_MEDIA_PREFIX = '/media/'
 DATETIME_FORMAT = "N j, Y, H:i"
 LOGIN_URL = '/ui/login'
 
-INSTALLED_APPS = [
-    'django.contrib.markup',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.admin',
-    'django.contrib.webdesign',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
+INSTALLED_APPS = ['django.contrib.markup',
+                  'django.contrib.sessions',
+                  'django.contrib.sites',
+                  'django.contrib.auth',
+                  'django.contrib.contenttypes',
 
-    'devilry.apps.core',
-    'devilry.apps.ui',
-    'devilry.apps.theme',
-    'devilry.apps.extjshelpers',
+                  'devilry.apps.core',
+                  'devilry.apps.ui',
+                  'devilry.apps.theme',
+                  'devilry.apps.extjshelpers',
 
-    'devilry.apps.student',
-    'devilry.apps.examiner',
-    'devilry.apps.administrator',
-    'devilry.apps.grade_approved',
-    'devilry.apps.grade_default',
-    'devilry.apps.grade_rstschema',
-    'devilry.apps.quickdash',
-    'devilry.apps.gradestats',
+                  'devilry.apps.student',
+                  'devilry.apps.examiner',
+                  'devilry.apps.administrator',
 
-    # Not apps, but here for django to discover them:
-    'devilry.simplified'
-]
+                  # Not apps, but here for django to discover them:
+                  'devilry.simplified']
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
