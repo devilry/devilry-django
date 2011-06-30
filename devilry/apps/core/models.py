@@ -1151,6 +1151,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
             default = 0,
             choices = enumerate(status_mapping),
             verbose_name = _('Status'))
+
+    # Caches for fields in the last feedback
     points = models.PositiveIntegerField(default=0,
             help_text=_('Final number of points for this group. This '\
                 'number is controlled by the grade plugin, and should not '\
@@ -1173,11 +1175,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         # Only if object doesn't yet exist in the database
         if not self.pk:
             create_default_deadline = True
-        self.scaled_points = self._get_scaled_points()
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_default_deadline:
             self.create_default_deadline()
-        
+
     def create_default_deadline(self):
         # Create the head deadline for this assignmentgroup
         head_deadline = Deadline()
@@ -1205,7 +1206,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     def where_is_candidate(cls, user_obj):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
-        
+
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
@@ -1216,7 +1217,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Returns a QuerySet matching all :ref:`published
         <assignment-classifications>` assignment groups where the given user
         is student.
-        
+
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: QuerySet
         """
@@ -1263,7 +1264,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
                 self.get_candidates())
-    
+
     def get_students(self):
         """ Get a string containing all students in the group separated by
         comma and a space, like: ``superman, spiderman, batman``.
@@ -1274,8 +1275,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """
         return u', '.join(
                 [c.student.username for c in self.candidates.all()])
-    get_students.short_description = _('Students')
- 
+
     def get_candidates(self):
         """ Get a string containing all candiates in the group separated by
         comma and a space, like: ``superman, spiderman, batman`` for normal
@@ -1284,13 +1284,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """
         return u', '.join(
                 [c.get_identifier() for c in self.candidates.all()])
-    get_students.short_description = _('Students')
 
     def get_examiners(self):
         """ Get a string contaning all examiners in the group separated by
         comma (``','``). """
         return u', '.join([u.username for u in self.examiners.all()])
-    get_examiners.short_description = _('Examiners')
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
@@ -1302,17 +1300,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
-    def can_examine(self, user_obj):
-        """ Return True if the user has permission to examine (creeate
-        feedback and browse files) on this assignment group.
-        
-        Examiners, admins and superusers has this permission. """
-        return user_obj.is_superuser or self.is_admin(user_obj) \
-                or self.is_examiner(user_obj)
-
     def get_active_deadline(self):
         """ Get the active deadline.
-            
+
         :return:
             Latest deadline, if no deadline has been created, the default deadline.
         """
@@ -1350,77 +1340,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
-        self.status = self._get_status_from_qry() #TODO: Re-enable _update_status
-
-    def get_number_of_deliveries(self):
-        """ Get the number of deliveries by this assignment group. """
-        return self.deliveries.all().count()
-
-    def get_latest_delivery(self):
-        """ Get the latest delivery by this assignment group,
-        or ``None`` if there is no deliveries. """
-        qry = self.deliveries.all()
-        if qry.count() == 0:
-            return None
-        else:
-            return qry.annotate(
-                    models.Max('time_of_delivery'))[0]
-
-    def get_latest_delivery_with_feedback(self):
-        """ Get the latest delivery by this assignment group with feedback,
-        or ``None`` if there is no deliveries with feedback. """
-        if self.deliveries.all().count() == 0:
-            return None
-        else:
-            qry = self.deliveries.filter(feedback__isnull=False)
-            if qry.count() == 0:
-                return None
-            else:
-                return qry.annotate(
-                        models.Max('time_of_delivery'))[0]
-
-    def get_deliveries_with_published_feedback(self):
-        """
-        Get the the deliveries by this assignment group which have
-        published feedback.
-        """
-        return self.deliveries.filter(feedbacks__published=True)
-
-    def get_latest_delivery_with_published_feedback(self):
-        """
-        Get the latest delivery with published feedback.
-        """
-        q = self.get_deliveries_with_published_feedback().order_by(
-                '-time_of_delivery')
-        if q.count() == 0:
-            return None
-        else:
-            return q[0]
-
-    def _get_gradeplugin_cached_fields(self):
-        d = self.get_latest_delivery_with_published_feedback()
-        points = 0
-        if self.parentnode.must_pass:
-            is_passing_grade = False
-            if d:
-                is_passing_grade = d.get_feedback().get_grade().is_passing_grade()
-        else:
-            is_passing_grade = True
-        if d:
-            points = d.get_feedback().grade.get_points()
-        return points, is_passing_grade
-
-    def update_gradeplugin_cached_fields(self):
-        self.points, self.is_passing_grade = self._get_gradeplugin_cached_fields()
-        self.save()
-
-    def get_grade_as_short_string(self):
-        """ Get the grade as a "short string". """
-        d = self.get_latest_delivery_with_published_feedback()
-        if not d:
-            return None
-        else:
-            return d.feedback.get_grade_as_short_string()
+        self.status = self._get_status_from_qry()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup. """
@@ -1433,13 +1353,13 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
 
     def can_add_deliveries(self):
         """ Returns true if a student can add deliveries on this assignmentgroup
-        
+
         Both the assignmentgroups is_open attribute, and the periods start
         and end time is checked.
         """
         return self.is_open and self.parentnode.parentnode.is_active()
 
-    
+
 
 class Deadline(models.Model):
     """
@@ -1901,7 +1821,6 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
 
     def save(self, *args, **kwargs):
         super(StaticFeedback, self).save(*args, **kwargs)
-        self.delivery.assignment_group.update_gradeplugin_cached_fields()
         self._publish_if_allowed()
 
     def __unicode__(self):
