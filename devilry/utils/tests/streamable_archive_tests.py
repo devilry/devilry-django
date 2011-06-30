@@ -95,8 +95,6 @@ class TestStreamableArchive(TestCase):
         """
         Test adding files to a StreamableTar.
         """
-        print "Test tar add file"
-
         archive = StreamableTar()
         self.add_files_to_archive(archive)
         archive.close()
@@ -184,8 +182,8 @@ class TestStreamableArchive(TestCase):
         zfile = ZipFile(open(self.testfile, "r"), "r")
         read_from_zip2 = zfile.read(zipped_file_name)
 
-        print "zip2_content:", len(zip1_content)
-        print "read_from_zip2:", len(read_from_zip2)
+        #print "zip2_content:", len(zip1_content)
+        #print "read_from_zip2:", len(read_from_zip2)
         self.assertEquals(read_from_zip2, zip1_content)
         
         #zfile = ZipFile(open(self.testfile, "r"), "r")

@@ -1,5 +1,5 @@
 from models import (Node, Subject, Period, Assignment,
-        AssignmentGroup, Candidate, Delivery, FileMeta, Feedback, Deadline)
+        AssignmentGroup, Candidate, Delivery, FileMeta, StaticFeedback, Deadline)
 from django.contrib import admin
 
 
@@ -81,7 +81,7 @@ class AssignmentGroupAdmin(BaseNodeAdmin):
 
 
 class FeedbackInline(admin.StackedInline):
-    model = Feedback
+    model = StaticFeedback
     extra = 0
 
 
