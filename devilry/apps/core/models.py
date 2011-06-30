@@ -1614,19 +1614,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         filemeta.save()
         return filemeta
 
-    def get_feedback(self): # TODO: Rename to get_latest_feedback
-        """ Get the feedback for this delivery. If the feedback does not
-        exists, a new :class:`StaticFeedback`-object is created but not saved.
-
-        :return:
-            A :class:`StaticFeedback`-object with the delivery-attribute set
-            to this delivery.
-        """
-        try:
-            return self.feedbacks.order_by('-last_modified')[0]
-        except IndexError:
-            return StaticFeedback(delivery=self)
-
     def get_status_number(self):
         """ Get the numeric status for this delivery.
 
