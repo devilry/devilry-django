@@ -19,6 +19,17 @@ class StuffError(Exception):
 
 class TestInitializer(object):
 
+    objects_created = 0
+
+    def add_deadline(self, path, deadline=datetime.now()):
+        pass
+
+    def add_delivery(self, path, ):
+        pass
+
+    def add_feedback(self, path, text='Good job!'):
+        pass
+
     def _parse_user_list(self, text):
         res = {'admin': [], 'examiner': [], 'candidate': []}
         if not text:
@@ -40,6 +51,7 @@ class TestInitializer(object):
         except:
             user = User.objects.get(username=name)
         vars(self)[user.username] = user
+        self.objects_created += 1
         return user
 
 #######
@@ -58,23 +70,25 @@ class TestInitializer(object):
         # allowed roles in node are:
         for admin in users['admin']:
             node.admins.add(self._create_or_add_user(admin))
+
         vars(self)[node.short_name] = node
+        self.objects_created += 1
         return node
 
     def _do_the_nodes(self, nodes):
-        prev_node = None
-        users_arg = None
-
+        if not nodes:
+            return None
+        new_node = None
         # separate the nodes
-        for node in nodes.split('.'):
 
+        prev_node = None
+        for n in nodes.split('.'):
             # initialize the admin-argument
             try:
-                node_name, users_arg = node.split(':', 1)
+                node_name, users_arg = n.split(':', 1)
             except ValueError:
-                node_name = node
+                node_name = n
                 users_arg = None
-
             users = self._parse_user_list(users_arg)
             new_node = self._create_or_add_node(node_name, users)
 
@@ -82,6 +96,7 @@ class TestInitializer(object):
             if prev_node:
                 prev_node.child_nodes.add(new_node)
             prev_node = new_node
+        return new_node
 
 #######
 ##
@@ -100,25 +115,27 @@ class TestInitializer(object):
         for admin in users['admin']:
             subject.admins.add(self._create_or_add_user(admin))
         vars(self)[subject.short_name] = subject
+        self.objects_created += 1
         return subject
 
-    def _do_the_subjects(self, subject_list):
+    def _do_the_subjects(self, node, subject_list):
 
-        nodes = Node.objects.all()
-        if not nodes:
-            raise Exception('No nodes created. Subjects needs node-parents')
+        if not node:
+            raise ValueError('No nodes created. Subjects needs node-parents')
 
-        for node in nodes:
-            for subject in subject_list:
+        created_subjects = []
+        for subject in subject_list:
 
-                try:
-                    subject_name, users_arg = subject.split(':', 1)
-                except ValueError:
-                    subject_name = subject
-                    users_arg = None
+            try:
+                subject_name, users_arg = subject.split(':', 1)
+            except ValueError:
+                subject_name = subject
+                users_arg = None
 
-                users = self._parse_user_list(users_arg)
-                self._create_or_add_subject(subject_name, node, users)
+            users = self._parse_user_list(users_arg)
+            new_subject = self._create_or_add_subject(subject_name, node, users)
+            created_subjects.append(new_subject)
+        return created_subjects
 
 #######
 ##
@@ -139,13 +156,17 @@ class TestInitializer(object):
             period.admins.add(self._create_or_add_user(admin))
 
         vars(self)[parentnode.short_name + '_' + period.short_name] = period
+        self.objects_created += 1
         return period
 
-    def _do_the_periods(self, periods_list):
-        subjects = Subject.objects.all()
-        if not subjects:
-            raise Exception("No subjects created. Periods needs subject-parents")
+    def _do_the_periods(self, subjects, periods_list):
 
+        if not subjects:
+            subjects = Subject.objects.all()
+            if not subjects:
+                raise ValueError("No subjects created. Periods needs subject-parents")
+
+        created_periods = []
         for subject in subjects:
             for period in periods_list:
 
@@ -156,7 +177,9 @@ class TestInitializer(object):
                     users_arg = None
 
                 users = self._parse_user_list(users_arg)
-                self._create_or_add_period(period_name, subject, users)
+                new_period = self._create_or_add_period(period_name, subject, users)
+                created_periods.append(new_period)
+        return created_periods
 
 #######
 ##
@@ -181,13 +204,17 @@ class TestInitializer(object):
             assignment.examiners.add(self._create_or_add_user(examiner))
 
         vars(self)[parentnode.parentnode.short_name + '_' + parentnode.short_name + '_' + assignment.short_name] = assignment
+        self.objects_created += 1
         return assignment
 
-    def _do_the_assignments(self, assignments_list):
-        periods = Period.objects.all()
-        if not periods:
-            raise Exception("No periods created. Assignments needs a period-parent")
+    def _do_the_assignments(self, periods, assignments_list):
 
+        if not periods:
+            periods = Period.objects.all()
+            if not periods:
+                raise ValueError("No periods created. Assignments needs a period-parent")
+
+        created_assignments = []
         for period in periods:
             for assignment in assignments_list:
 
@@ -198,7 +225,9 @@ class TestInitializer(object):
                     users_arg = None
 
                 users = self._parse_user_list(users_arg)
-                self._create_or_add_assignment(assignment_name, period, users)
+                new_assignment = self._create_or_add_assignment(assignment_name, period, users)
+                created_assignments.append(new_assignment)
+        return created_assignments
 
 #######
 ##
@@ -227,13 +256,17 @@ class TestInitializer(object):
                    parentnode.parentnode.short_name + '_' +             # period_
                    parentnode.short_name + '_' +                        # assignment_
                    group_name] = group
+        self.objects_created += 1
         return group
 
-    def _do_the_assignmentgroups(self, assignmentgroups_list):
-        assignments = Assignment.objects.all()
-        if not assignments:
-            raise ValueError("No periods created. Assignments needs a period-parent")
+    def _do_the_assignmentgroups(self, assignments, assignmentgroups_list):
 
+        if not assignments:
+            assignments = Assignment.objects.all()
+            if not assignments:
+                raise ValueError("No periods created. Assignments needs a period-parent")
+
+        created_groups = []
         for assignment in assignments:
             for group in assignmentgroups_list:
 
@@ -244,43 +277,49 @@ class TestInitializer(object):
                     users_arg = None
 
                 users = self._parse_user_list(users_arg)
-                self._create_or_add_assignmentgroup(group_name, assignment, users)
+                new_group = self._create_or_add_assignmentgroup(group_name, assignment, users)
+                created_groups.append(new_group)
+        return created_groups
 
     def add(self, nodes=None, subjects=None, periods=None, assignments=None, assignmentgroups=None,
             delivery=None, feedback=None):
 
         if nodes:
-            self._do_the_nodes(nodes)
+            nodes = self._do_the_nodes(nodes)
+        else:
+            return
 
         if subjects:
-            self._do_the_subjects(subjects)
+            subjects = self._do_the_subjects(nodes, subjects)
+        else:
+            return
 
         if periods:
-            self._do_the_periods(periods)
+            periods = self._do_the_periods(subjects, periods)
+        else:
+            return
 
         if assignments:
-            self._do_the_assignments(assignments)
+            assignments = self._do_the_assignments(periods, assignments)
+        else:
+            return
 
         if assignmentgroups:
-            self._do_the_assignmentgroups(assignmentgroups)
+            assignmentgroups = self._do_the_assignmentgroups(assignments, assignmentgroups)
 
-        if delivery:
-            pass
-
-        if feedback:
-            pass
-
-    @classmethod
     def example(self):
         self.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
                  subjects=["inf1000:admin(stein,steing)", "inf1100:admin(arne)"],
-                 periods=["2009", "2010"],
+                 periods=["fall01", "spring01"],
                  assignments=["oblig1:admin(jose)", "oblig2:admin(jose)"],
                  assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
-                                   'g2:candidate(nataliib):examiner(jose)'],
-                 )
+                                   'g2:candidate(nataliib):examiner(jose)'])
 
         self.add(nodes="uio.ifi",
                  subjects=["inf1000"],
-                 periods=["2009"],
+                 periods=["fall01"],
                  assignments=["oblig1:student(stud3)"])
+
+        self.add_deadline(path='uio.ifi.inf1000.fall01.oblig1', deadline=datetime.now())
+        self.add_delivery()
+        self.add_feedback()

@@ -942,10 +942,16 @@ class TestTestInitializer(TestCase):
 
     def test_nodes(self):
         self.ti.add(nodes='uio.ifi')
-
         self.assertEquals(Node.objects.all().count(), 2)
-        # uio = Node.objects.get(short_name='uio')
-        # ifi = Node.objects.get(short_name='ifi')
+
+        # check relations between them
+        self.assertEquals(self.ti.uio.parentnode, None)
+        self.assertEquals(self.ti.ifi.parentnode, self.ti.uio)
+        self.assertTrue(self.ti.ifi in self.ti.uio.child_nodes.all())
+
+    def test_many_root_nodes(self):
+        self.ti.add(nodes='uio.ifi')
+        self.assertEquals(Node.objects.all().count(), 2)
 
         # check relations between them
         self.assertEquals(self.ti.uio.parentnode, None)
@@ -966,18 +972,13 @@ class TestTestInitializer(TestCase):
         self.assertTrue(self.ti.ifi not in self.ti.uio.child_nodes.all())
 
     def test_nodes_and_admins(self):
-        self.ti.add(nodes='uio:admin(rektor,mortend).ifi:admin(mortend)')
+        self.ti.add(nodes='uio:admin(rektor).ifi:admin(mortend)')
 
         # Assert that all nodes and admins are created
         self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
         self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
         self.assertEquals(User.objects.filter(username='rektor').count(), 1)
         self.assertEquals(User.objects.filter(username='mortend').count(), 1)
-
-        # rektor = User.objects.get(username='rektor')
-        # mortend = User.objects.get(username='mortend')
-        # uio = Node.objects.get(short_name='uio')
-        # ifi = Node.objects.get(short_name='ifi')
 
         # assert that they are both admins
         self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
@@ -999,16 +1000,12 @@ class TestTestInitializer(TestCase):
         self.assertTrue(self.ti.mortend in self.ti.ifi.admins.all())
 
     def test_subject(self):
-        self.ti.add(nodes='uio:admin(rektor).ifi:admin(mortend)',
+        self.ti.add(nodes='ifi:admin(mortend)',
                     subjects=['inf1000', 'inf1010'])
 
         # assert that the subjects are there
         self.assertEquals(Subject.objects.filter(short_name='inf1000').count(), 1)
         self.assertEquals(Subject.objects.filter(short_name='inf1010').count(), 1)
-
-        # inf1000 = Subject.objects.get(short_name='inf1000')
-        # inf1010 = Subject.objects.get(short_name='inf1010')
-        # ifi = Node.objects.get(short_name='ifi')
 
         # assert that the parentnode is ifi
         self.assertEquals(self.ti.ifi, self.ti.inf1000.parentnode)
@@ -1035,18 +1032,8 @@ class TestTestInitializer(TestCase):
         self.assertTrue(self.ti.steinm in self.ti.inf1010.admins.all())
         self.assertTrue(self.ti.steingj in self.ti.inf1010.admins.all())
 
-    def test_subject_without_parents(self):
-        # make sure you cant created subjects if there are no nodes
-        with self.assertRaises(Exception):
-            self.ti.add(subjects=['inf1000:admin(arnem)', 'inf1010:admin(steinm,steingj)'])
-
-        # check if seperately creating the nodes and subjects works
-        self.ti.add(nodes='uio')
-        self.ti.add(subjects=['inf1000:admin(arnem)', 'inf1010:admin(steinm,steingj)'])
-        self.assertEquals(Subject.objects.all().count(), 2)
-
     def test_period(self):
-        self.ti.add(nodes='uio:admin(rektor).ifi:admin(mortend)',
+        self.ti.add(nodes='ifi:admin(mortend)',
                     subjects=['inf1000', 'inf1010'],
                     periods=['fall01', 'spring01'])
 
@@ -1072,20 +1059,8 @@ class TestTestInitializer(TestCase):
         self.assertTrue(self.ti.steingj in self.ti.inf1000_fall01.admins.all())
         self.assertTrue(self.ti.steinm in self.ti.inf1000_spring01.admins.all())
 
-    def test_period_without_parents(self):
-
-        with self.assertRaises(Exception):
-            self.ti.add(periods=['fall01:admin(steingj)', 'spring01:admin(steinm)'])
-
-        # check if seperately creating the nodes and subjects and
-        # periods works
-        self.ti.add(nodes='uio')
-        self.ti.add(subjects=['inf1000'])
-        self.ti.add(periods=['fall01'])
-        self.assertEquals(Period.objects.all().count(), 1)
-
     def test_assignment(self):
-        self.ti.add(nodes='uio:admin(rektor).ifi:admin(mortend)',
+        self.ti.add(nodes='ifi:admin(mortend)',
                     subjects=['inf1000', 'inf1010'],
                     periods=['fall01', 'spring01'],
                     assignments=['oblig1', 'oblig2'])
@@ -1100,7 +1075,7 @@ class TestTestInitializer(TestCase):
         self.assertEquals(self.ti.inf1010_spring01.parentnode, self.ti.inf1010)
 
     def test_assignment_with_admin(self):
-        self.ti.add(nodes='uio.ifi',
+        self.ti.add(nodes='ifi',
                     subjects=['inf1000:admin(arnem)'],
                     periods=['fall01'],
                     assignments=['oblig1:admin(jose)', 'oblig2:admin(jose)'])
@@ -1118,7 +1093,7 @@ class TestTestInitializer(TestCase):
         self.assertTrue(self.ti.inf1000_fall01_oblig2 in Assignment.where_is_admin(self.ti.arnem).all())
 
     def test_assignmentgroups(self):
-        self.ti.add(nodes="uio.ifi",
+        self.ti.add(nodes="ifi",
                  subjects=["inf1000", "inf1100"],
                  periods=["fall01", "spring01"],
                  assignments=["oblig1", "oblig2"],
@@ -1141,6 +1116,50 @@ class TestTestInitializer(TestCase):
         # assert that the examiners are examiners in the assignment
         self.assertTrue(self.ti.inf1100_fall01_oblig1_g1 in AssignmentGroup.where_is_examiner(self.ti.cotryti))
         self.assertTrue(self.ti.inf1100_fall01_oblig1_g2 in AssignmentGroup.where_is_examiner(self.ti.jose))
+
+    def test_updating_paths(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['fall01', 'spring01'],
+                    assignments=['oblig1'])
+
+        self.ti.add(nodes='ifi',
+                    subjects=['inf1000', 'inf1010'],
+                    periods=['spring01'],
+                    assignments=['oblig2'])
+
+        # assert that spring01 has oblig2
+        self.assertEquals(self.ti.inf1000_spring01.assignments.filter(short_name='oblig2').count(), 1)
+        # assert that fall01 doesn't have oblig2
+        self.assertEquals(self.ti.inf1000_fall01.assignments.filter(short_name='oblig2').count(), 0)
+        # assert that uio doesn't have any subjects and stuff
+        self.assertEquals(self.ti.uio.subjects.all().count(), 0)
+
+        self.ti.add(nodes='ifi', subjects=['inf2220'], periods=['fall01', 'spring01'], assignments=['oblig1', 'oblig2'])
+
+        # assert that inf2220 has 2 assignments
+        self.assertEquals(self.ti.inf2220_fall01.assignments.all().count(), 2)
+        # and that inf1010 is the same as before
+        self.assertEquals(self.ti.inf1000_spring01.assignments.filter(short_name='oblig2').count(), 1)
+        self.assertEquals(self.ti.inf1000_fall01.assignments.filter(short_name='oblig2').count(), 0)
+
+    def test_wrong_input(self):
+        self.ti.add()
+
+        # assert that nothing was created
+        self.assertEquals(self.ti.objects_created, 0)
+
+        self.ti.add(subjects=['inf1010'])
+        # assert that nothing was created
+        self.assertEquals(self.ti.objects_created, 0)
+
+    def test_huge_test(self):
+        self.ti.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
+                    subjects=["inf1000:admin(arnem)", "inf1010:admin(steingj,steinm)"],
+                    periods=["fall01:admin(jose)", "spring01:admin(espeak)"],
+                    assignments=["oblig1:admin(cotryti)", "oblig2:admin(bendiko)"],
+                    assignmentgroups=['g1:candidate(zakia,mariherr,jensp):examiner(cotryti)',
+                                      'g2:candidate(nataliib,runeama,trygv,stiansma):examiner(bendiko)'])
 
 
 class TestFeedback(TestCase):
