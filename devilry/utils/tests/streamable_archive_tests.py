@@ -162,41 +162,6 @@ class TestStreamableArchive(TestCase):
         self.assertEquals(self.file3_content, content3)        
         os.remove(self.testfile)
 
-    def test_zip_archive_in_zip_archive(self):
-        """
-        Test adding files to a StreamableZip archive.
-        """
-        zip1 = StreamableZip()
-        self.add_files_to_archive(zip1)
-        zip1.close()
-        #self.to_file(self.testfile, archive.read())
-        zip1_content = zip1.read()
-
-        zip2 = StreamableZip()
-        zipped_file_name = "zipped_file_name"
-        zip2.add_file(zipped_file_name, zip1_content)
-        zip2.close()
-        zip2_content = zip2.read()
-
-        # Writing nested zip to disk
-        self.to_file(self.testfile, zip2_content)
-        
-        zfile = ZipFile(open(self.testfile, "r"), "r")
-        read_from_zip2 = zfile.read(zipped_file_name)
-
-        print "zip2_content:", len(zip1_content)
-        print "read_from_zip2:", len(read_from_zip2)
-        self.assertEquals(read_from_zip2, zip1_content)
-        
-        #zfile = ZipFile(open(self.testfile, "r"), "r")
-        #content1 = zfile.read(self.file1_name)
-        #content2 = zfile.read(self.file2_name)
-        #content3 = zfile.read(self.file3_name)
-        #self.assertEquals(self.file1_content, content1)
-        #self.assertEquals(self.file2_content, content2)
-        #self.assertEquals(self.file3_content, content3)        
-        os.remove(self.testfile)
-
     
 if __name__ == '__main__':
 
