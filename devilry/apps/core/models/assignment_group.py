@@ -286,18 +286,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         return self.examiners.filter(pk=user_obj.pk).count() > 0
 
     def get_active_deadline(self):
-        """ Get the active deadline.
+        """ Get the active :class:`Deadline`.
+
+        This is always the last deadline on this group.
 
         :return:
-            Latest deadline, if no deadline has been created, the default deadline.
+            The latest deadline.
         """
-        now = datetime.now()
-        deadlines = self.deadlines.filter(deadline__gt=now).order_by('deadline')
-        if len(deadlines) == 0:
-            # Return the latest deadline (this will be the closest one in the 
-            # past since the qry above failed)
-            deadlines = self.deadlines.order_by('-deadline')
-        return deadlines[0]
+        return self.deadlines.all().order_by('-deadline')[0]
 
     def _get_status_from_qry(self):
         """Get status from active deadline"""
