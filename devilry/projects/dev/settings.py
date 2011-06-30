@@ -15,11 +15,8 @@ DATABASES = {
 }
 
 INSTALLED_APPS = INSTALLED_APPS + [
-    'devilry.apps.guiexamples',
     'devilry.apps.tutorialstats',
-    'devilry.apps.restful_examples',
-    'devilry.utils',
-    ]
+    'devilry.utils']
 
 
 INTERNAL_IPS = ["127.0.0.1"]
