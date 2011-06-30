@@ -472,13 +472,11 @@ class TestAssignment(TestCase):
         a = test.assignmentgroups.create(name="a")
         b = test.assignmentgroups.create(name="b")
         c = test.assignmentgroups.create(name="c")
-        for g, points in ((a, 1), (b, 1), (c, 0)):
-            d = Delivery.begin(g, student1)
-            #d.add_file("test.txt", ["test"])
-            d.finish()
-            d.feedbacks.create(rendered_view="", grade="ok", points=points,
-                               is_passing_grade=bool(points),
-                               last_modified_by=teacher1)
+        for assignmentgroup, points in ((a, 1), (b, 1), (c, 0)):
+            delivery = assignmentgroup.deliveries.create(delivered_by=student1, successful=True)
+            delivery.feedbacks.create(rendered_view="", grade="ok", points=points,
+                                      is_passing_grade=bool(points),
+                                      last_modified_by=teacher1)
 
         # With autoscale
         points = [g.points for g in test.assignmentgroups.all()]
@@ -632,10 +630,8 @@ class TestAssignmentGroup(TestCase):
         self.assertRaises(ValidationError, deadline.clean)
 
     def add_delivery(self, assignmentgroup, user):
-        delivery = Delivery.begin(assignmentgroup, user)
-        delivery.add_file('hello.txt', ['hello', 'world'])
-        delivery.add_file('example.py', ['print "hello world"'])
-        delivery.finish()
+        assignmentgroup.deliveries.create(delivered_by=user,
+                                          successful=True)
 
     def test_status_one_deadline(self):
         teacher1 = User.objects.get(username='teacher1')
@@ -676,12 +672,8 @@ class TestAssignmentGroup(TestCase):
         # Status not corrected
         self.assertEquals(delivery2.get_status_number(), Delivery.NOT_CORRECTED)
 
-        delivery2.feedback = StaticFeedback(
-                format = 'rst',
-                text = 'test',
-                last_modified_by = teacher1)
-        delivery2.feedback.set_grade_from_xmlrpcstring("+")
-        delivery2.feedback.save()
+        delivery2.feedbacks.create(rendered_view="", grade="ok", points=1,
+                                   is_passing_grade=True, saved_by=teacher1)
         # Update cache on assignment group
         ag = delivery2.assignment_group
         delivery2.save()
@@ -783,16 +775,18 @@ class TestDelivery(TestCase):
     def test_delivery(self):
         student1 = User.objects.get(username='student1')
         assignmentgroup = AssignmentGroup.objects.get(id=1)
-        d = Delivery.begin(assignmentgroup, student1)
+        d = assignmentgroup.deliveries.create(delivered_by=student1,
+                                              successful=False)
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertFalse(d.successful)
-        d.finish()
+        d.successful = True
+        d.save()
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 3)
 
-        d2 = Delivery.begin(assignmentgroup, student1)
-        d2.finish()
+        d2 = assignmentgroup.deliveries.create(delivered_by=student1,
+                                               successful=True)
         self.assertTrue(d2.successful)
         self.assertEquals(d2.number, 4)
         d2.save()
@@ -801,21 +795,6 @@ class TestDelivery(TestCase):
         d2.number = 3
         self.assertRaises(IntegrityError, d2.save)
 
-    def test_feedback_delete(self):
-        student1 = User.objects.get(username='student1')
-        examiner1 = User.objects.get(username='examiner1')
-        assignmentgroup = AssignmentGroup.objects.get(id=1)
-        d = Delivery.begin(assignmentgroup, student1)
-        d.finish()
-        self.assertEquals(ApprovedGrade.objects.all().count(), 0)
-        feedback = d.get_feedback()
-        feedback.set_grade_from_xmlrpcstring('+')
-        feedback.last_modified_by = examiner1
-        feedback.save()
-        self.assertEquals(ApprovedGrade.objects.all().count(), 1)
-        feedback.delete()
-        self.assertEquals(ApprovedGrade.objects.all().count(), 0)
-        
     def test_published_where_is_candidate(self):
         student1 = User.objects.get(username='student1')
         student2 = User.objects.get(username='student2')

@@ -1473,7 +1473,6 @@ class Deadline(models.Model):
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
-
     .. attribute:: assignment_group
 
         A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
@@ -1494,7 +1493,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         within this assignment-group. This number is automatically
         incremented within each assignmentgroup, starting from 1. Must be
         unique within the assignment-group. Automatic incrementation is used
-        if number is None when calling :meth:`save` (or :meth:`begin`).
+        if number is None when calling :meth:`save`.
 
     .. attribute:: delivered_by
 
@@ -1537,12 +1536,15 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     CORRECTED_AND_PUBLISHED = 2
     CORRECTED_NOT_PUBLISHED = 3
 
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
+    # Fields automatically 
     time_of_delivery = models.DateTimeField()
     deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField()
-    delivered_by = models.ForeignKey(User) # TODO: should be candidate!
+
+    # Fields set by user
+    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     successful = models.BooleanField(blank=True, default=False)
+    delivered_by = models.ForeignKey(User) # TODO: should be candidate!
 
     def delivered_too_late(self):
         """ Compares the deadline and time of delivery.
@@ -1589,43 +1591,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def q_is_examiner(cls, user_obj):
         return Q(assignment_group__examiners=user_obj)
 
-    @classmethod
-    def begin(cls, assignment_group, user_obj):
-        """ Begin delivery.
-
-        Creates a delivery with ``time_of_delivery`` set to current time,
-        ``delivered_by`` set to the given ``user_obj``, ``assignment_group``
-        set to the given ``assignment_group`` and successful set to
-        ``false``.
-
-        This should be followed up by one or more calls to :meth:`add_file`
-        on the returned FileMeta-object, and completed by calling
-        :meth:`finish`.
-        """
-        d = Delivery()
-        d.assignment_group = assignment_group
-        d.time_of_delivery = datetime.now()
-        d.delivered_by = user_obj
-        d.successful = False
-
-         # Find correct deadline and tag the delivery 
-        last_deadline = None
-        deadline_set = False
-        for deadline in assignment_group.deadlines.all().order_by('deadline'):
-            last_deadline = deadline
-            if d.time_of_delivery < deadline.deadline:
-                d.deadline_tag = deadline
-                deadline_set = True
-                break
-        # Delivered too late, so use the last deadline
-        if not deadline_set:
-            d.deadline_tag = last_deadline
-        d.save()
-        return d
-
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
-        
+
         :param filename:
             A filename as defined in :class:`FileMeta`.
         :param iterable_data:
@@ -1645,13 +1613,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         f.close()
         filemeta.save()
         return filemeta
-
-    def finish(self):
-        """ Finish the delivery by updating the time of delivery, marking it
-        as successful and saving. """
-        self.time_of_delivery = datetime.now()
-        self.successful = True
-        self.save()
 
     def get_feedback(self): # TODO: Rename to get_latest_feedback
         """ Get the feedback for this delivery. If the feedback does not
@@ -1706,17 +1667,20 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         :attr:`status_mapping_student_cssclass`. """
         return status_mapping_student_cssclass[
                 self.get_status_number()]
-            
+
+    def _set_number(self):
+        m = Delivery.objects.filter(assignment_group=self.assignment_group).aggregate(Max('number'))
+        self.number = (m['number__max'] or 0) + 1
+
     def save(self, *args, **kwargs):
         """
         Set :attr:`number` automatically to one greater than what is was
         last.
         """
-        if not self.number:
-            m = Delivery.objects.filter(
-                    assignment_group=self.assignment_group).aggregate(
-                            Max('number'))
-            self.number = (m['number__max'] or 0) + 1
+        self.time_of_delivery = datetime.now()
+        if self.id == None:
+            self.deadline_tag = self.assignment_group.deadlines.all().order_by('-deadline')[0]
+            self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -1778,7 +1742,7 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     points = models.PositiveIntegerField(help_text = _('Number of points given on this feedback.'))
     is_passing_grade = models.BooleanField()
     save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False)
-    last_modified_by = models.ForeignKey(User, blank=False, null=False)
+    saved_by = models.ForeignKey(User, blank=False, null=False)
 
 
     class Meta:
