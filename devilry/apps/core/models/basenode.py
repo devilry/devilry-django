@@ -2,7 +2,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
 from abstract_is_admin import AbstractIsAdmin
-from saveinterface import SaveInterface
+from save_interface import SaveInterface
 
 class BaseNode(AbstractIsAdmin, SaveInterface):
     """
