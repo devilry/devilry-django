@@ -857,16 +857,11 @@ class TestFeedback(TestCase):
 class TestFeedbackPublish(TestCase):
     fixtures = ['core/deprecated_users.json', 'core/core.json']
 
-    def create_feedback(self, delivery, text): # TODO: Simplify this when gradeplugin stuff is removed from StaticFeedback
-        assignment = delivery.assignment_group.parentnode
-        feedback = delivery.get_feedback()
-        feedback.text = text
+    def create_feedback(self, delivery, text):
         examiner = delivery.assignment_group.examiners.all()[0]
-        feedback.last_modified_by = examiner
-        gradeplugin = assignment.get_gradeplugin_registryitem().model_cls
-        examplegrade = gradeplugin.get_example_xmlrpcstring(assignment, 1)
-        feedback.set_grade_from_xmlrpcstring(examplegrade)
-        feedback.save()
+        feedback = delivery.feedbacks.create(rendered_view=text, grade="ok", points=1,
+                                             is_passing_grade=True,
+                                             last_modified_by=examiner)
         return feedback
 
     def setUp(self):
