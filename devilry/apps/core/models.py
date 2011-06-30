@@ -1706,21 +1706,9 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     the student from administrators or examiners that change published
     feedback to avoid that a student can make an issue out of a bad feedback.
 
-    .. attribute:: text
+    .. attribute:: rendered_view
 
-       A django.db.models.TextField_ that holds the feedback text given by
-       the examiner.
-
-    .. attribute:: format
-
-       A django.db.models.CharField_ that holds the format of the feedback
-       text. Valid values are:
-
-           ``"rst"``
-               Format feedback using restructured text.
-
-           ``"text"``
-               Plain text - no text formatting.
+        The rendered HTML view.
 
     .. attribute:: saved_by
 
@@ -1735,6 +1723,16 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
        A django.db.models.ForeignKey_ that points to the `Delivery`_ where this feedback belongs.
 
     .. attribute:: grade
+
+        The grade as a short string (max 12 chars).
+
+    .. attribute:: points
+
+        The number of points (integer).
+
+    .. attribute:: is_passing_grade
+
+        Boolean is passing grade?
     """
     delivery = models.ForeignKey(Delivery, related_name='feedbacks')
     rendered_view = models.TextField()

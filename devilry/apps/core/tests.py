@@ -476,7 +476,7 @@ class TestAssignment(TestCase):
             delivery = assignmentgroup.deliveries.create(delivered_by=student1, successful=True)
             delivery.feedbacks.create(rendered_view="", grade="ok", points=points,
                                       is_passing_grade=bool(points),
-                                      last_modified_by=teacher1)
+                                      saved_by=teacher1)
 
         # With autoscale
         points = [g.points for g in test.assignmentgroups.all()]
@@ -840,7 +840,7 @@ class TestFeedbackPublish(TestCase):
         examiner = delivery.assignment_group.examiners.all()[0]
         feedback = delivery.feedbacks.create(rendered_view=text, grade="ok", points=1,
                                              is_passing_grade=True,
-                                             last_modified_by=examiner)
+                                             saved_by=examiner)
         return feedback
 
     def setUp(self):
