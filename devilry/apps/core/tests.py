@@ -15,10 +15,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from ..grade_approved.models import ApprovedGrade
-
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
-        Delivery, Candidate, Feedback, FileMeta)
+        Delivery, Candidate, StaticFeedback, FileMeta, Deadline)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
     DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
@@ -463,12 +461,12 @@ class TestAssignment(TestCase):
     def test_pointscale(self):
         student1 = User.objects.get(username='student1')
         teacher1 = User.objects.get(username='teacher1')
-        test = Assignment(
-                parentnode = Period.objects.get(pk=1),
-                publishing_time = datetime.now(),
-                anonymous = False,
-                autoscale = True,
-                grade_plugin = "grade_approved:approvedgrade")
+        test = Assignment(parentnode = Period.objects.get(pk=1),
+                          publishing_time = datetime.now(),
+                          anonymous = False,
+                          autoscale = True,
+                          maxpoints = 1,
+                          grade_plugin = "grade_approved:approvedgrade")
         test.save()
         self.assertEquals(test.pointscale, 1)
         self.assertEquals(test.maxpoints, 1)
@@ -476,15 +474,11 @@ class TestAssignment(TestCase):
         a = test.assignmentgroups.create(name="a")
         b = test.assignmentgroups.create(name="b")
         c = test.assignmentgroups.create(name="c")
-        for g, grade in ((a, "+"), (b, "+"), (c, "-")):
-            d = Delivery.begin(g, student1)
-            d.add_file("test.txt", ["test"])
-            d.finish()
-            f = d.get_feedback()
-            f.last_modified_by = teacher1
-            f.published = True
-            f.set_grade_from_xmlrpcstring(grade)
-            f.save()
+        for assignmentgroup, points in ((a, 1), (b, 1), (c, 0)):
+            delivery = assignmentgroup.deliveries.create(delivered_by=student1, successful=True)
+            delivery.feedbacks.create(rendered_view="", grade="ok", points=points,
+                                      is_passing_grade=bool(points),
+                                      saved_by=teacher1)
 
         # With autoscale
         points = [g.points for g in test.assignmentgroups.all()]
@@ -637,55 +631,125 @@ class TestAssignmentGroup(TestCase):
         deadline = assignment_group.deadlines.create(deadline=datetime(2011, 12, 24), text=None)
         self.assertRaises(ValidationError, deadline.clean)
 
-    def test_status(self):
+    def add_delivery(self, assignmentgroup, user):
+        assignmentgroup.deliveries.create(delivered_by=user,
+                                          successful=True)
+
+    def test_status_one_deadline(self):
         teacher1 = User.objects.get(username='teacher1')
-        ag = AssignmentGroup(
-                parentnode = Assignment.objects.get(id=1))
+        student1 = User.objects.get(username='student1')
+        ag = AssignmentGroup(parentnode=Assignment.objects.get(id=1))
+
         ag.save()
-        self.assertEquals(ag.status,
-                AssignmentGroup.NO_DELIVERIES)
-        self.assertEquals(ag.get_localized_status(),
-                "No deliveries")
-        self.assertEquals(ag.get_localized_student_status(),
-                "No deliveries")
+        self.assertEquals(ag.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(), "No deliveries")
+        self.assertEquals(ag.get_localized_student_status(), "No deliveries")
 
-        ag = AssignmentGroup.objects.get(id=1)
-        d = ag.deliveries.all()[0]
-        d.save()
-        self.assertEquals(ag.status,
-                AssignmentGroup.NOT_CORRECTED)
-        self.assertEquals(ag.get_localized_status(),
-                "Not corrected")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Not corrected")
-
-        d.feedback = Feedback(
-                format = 'rst',
-                text = 'test',
-                last_modified_by = teacher1)
-        d.feedback.set_grade_from_xmlrpcstring("+")
-        d.feedback.save()
-        d.save()
-        ag = AssignmentGroup.objects.get(id=1)
-        self.assertEquals(ag.status,
-                AssignmentGroup.CORRECTED_NOT_PUBLISHED)
-        self.assertEquals(ag.get_localized_status(),
-                "Corrected, not published")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Not corrected")
-
-        d.feedback.published = True
-        d.feedback.save()
-        ag = AssignmentGroup.objects.get(id=1)
-        self.assertEquals(ag.status,
-                AssignmentGroup.CORRECTED_AND_PUBLISHED)
-        self.assertEquals(ag.get_localized_status(),
-                "Corrected and published")
-        self.assertEquals(ag.get_localized_student_status(),
-                "Corrected")
-
-
+        # 'cheat' by setting default deadline time to epoch
+        head_deadline = ag.deadlines.all()[0]
+        head_deadline.deadline = datetime(1970, 1, 1, 1, 0)
+        head_deadline.save()
         
+        # Adding delivery on head deadline
+        self.add_delivery(ag, student1)
+        self.assertEquals(ag.status, AssignmentGroup.HAS_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(), "Has deliveries")
+        self.assertEquals(ag.get_localized_student_status(), "Has deliveries")
+
+        time_now = datetime.now()
+        deadline_5min = (time_now - timedelta(minutes=5))
+        ag.deadlines.create(deadline=deadline_5min, text=None)
+        # Adding delivery 5 minutes too late
+        self.add_delivery(ag, student1)
+
+        delivery1 = ag.deliveries.all()[1]
+        delivery2 = ag.deliveries.all()[0]
+
+        self.assertEquals(ag.deliveries.all().count(), 2)
+        # First delivery is not after deadline even though the deadline was set
+        # to 1970. That is because it's the head deadline.
+        self.assertFalse(delivery1.after_deadline)
+        # Second delivery delivered too late
+        self.assertTrue(delivery2.after_deadline)
+        # Status not corrected
+        self.assertEquals(delivery2.get_status_number(), Delivery.NOT_CORRECTED)
+
+        delivery2.feedbacks.create(rendered_view="", grade="ok", points=1,
+                                   is_passing_grade=True, saved_by=teacher1)
+        # Update cache on assignment group
+        ag = delivery2.assignment_group
+        delivery2.save()
+
+        self.assertEquals(delivery2.get_status_number(), Delivery.CORRECTED_NOT_PUBLISHED)
+
+        self.assertEquals(ag.status, AssignmentGroup.CORRECTED_NOT_PUBLISHED)
+        self.assertEquals(ag.get_localized_status(), "Corrected, not published")
+        self.assertEquals(ag.get_localized_student_status(), "Has deliveries")
+
+        # Test publishing feedback
+        delivery2.feedback.published = True
+        delivery2.feedback.save()
+        ag = delivery2.assignment_group
+        
+        self.assertEquals(delivery2.get_status_number(), Delivery.CORRECTED_AND_PUBLISHED)
+        self.assertEquals(ag.status, AssignmentGroup.CORRECTED_AND_PUBLISHED)
+        self.assertEquals(ag.get_localized_status(), "Corrected and published")
+        self.assertEquals(ag.get_localized_student_status(), "Corrected")
+        
+    def test_status_multiple_deadlines(self):
+        teacher1 = User.objects.get(username='teacher1')
+        student1 = User.objects.get(username='student1')
+        ag = AssignmentGroup(parentnode=Assignment.objects.get(id=1))
+        ag.save()
+
+        self.assertEquals(ag.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(ag.get_localized_status(), "No deliveries")
+        self.assertEquals(ag.get_localized_student_status(), "No deliveries")
+
+        # 'cheat' by setting default deadline time to epoch
+        head_deadline = ag.deadlines.all()[0]
+        head_deadline.deadline = datetime(1970, 1, 1, 1, 0)
+        head_deadline.save()
+        
+        time_now = datetime.now()
+        time_min10 = (time_now - timedelta(minutes=10))
+        ag.deadlines.create(deadline=time_min10, text=None)
+        time_min5 = (time_now - timedelta(minutes=5))
+        ag.deadlines.create(deadline=time_min5, text=None)
+        time_plus5 = (time_now + timedelta(minutes=5))
+        ag.deadlines.create(deadline=time_plus5, text=None)
+        time_plus10 = (time_now + timedelta(minutes=10))
+        ag.deadlines.create(deadline=time_plus10, text=None)
+
+        # Adding delivery on deadline 
+        self.add_delivery(ag, student1)
+        self.add_delivery(ag, student1)
+        delivery1 = ag.deliveries.all()[1]
+        delivery2 = ag.deliveries.all()[0]
+
+        deadline_min10 = Deadline.objects.get(deadline=time_min10)
+        deadline_min5 = Deadline.objects.get(deadline=time_min5)
+        deadline_plus5 = Deadline.objects.get(deadline=time_plus5)
+        deadline_plus10 = Deadline.objects.get(deadline=time_plus10)
+        
+        # Was assigned the correct deadline
+        self.assertEquals(delivery1.deadline_tag.id, deadline_plus5.id)
+        self.assertEquals(delivery2.deadline_tag.id, deadline_plus5.id)
+        
+        self.assertEquals(deadline_min10.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(deadline_min5.status, AssignmentGroup.NO_DELIVERIES)
+        self.assertEquals(deadline_plus5.status, AssignmentGroup.HAS_DELIVERIES)
+        self.assertEquals(deadline_plus10.status, AssignmentGroup.NO_DELIVERIES)
+
+        deadline_plus5.deliveries_available_before_deadline = True
+        deadline_plus5.save()
+        ag = delivery1.assignment_group
+
+        self.add_delivery(ag, student1)
+        deadline_plus5 = Deadline.objects.get(deadline=time_plus5)
+        self.assertEquals(deadline_plus5.status, AssignmentGroup.HAS_DELIVERIES)
+
+
 class TestCandidate(TestCase):
     fixtures = ['core/deprecated_users.json', 'core/core.json']
     
@@ -713,16 +777,18 @@ class TestDelivery(TestCase):
     def test_delivery(self):
         student1 = User.objects.get(username='student1')
         assignmentgroup = AssignmentGroup.objects.get(id=1)
-        d = Delivery.begin(assignmentgroup, student1)
+        d = assignmentgroup.deliveries.create(delivered_by=student1,
+                                              successful=False)
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertFalse(d.successful)
-        d.finish()
+        d.successful = True
+        d.save()
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 3)
 
-        d2 = Delivery.begin(assignmentgroup, student1)
-        d2.finish()
+        d2 = assignmentgroup.deliveries.create(delivered_by=student1,
+                                               successful=True)
         self.assertTrue(d2.successful)
         self.assertEquals(d2.number, 4)
         d2.save()
@@ -731,21 +797,6 @@ class TestDelivery(TestCase):
         d2.number = 3
         self.assertRaises(IntegrityError, d2.save)
 
-    def test_feedback_delete(self):
-        student1 = User.objects.get(username='student1')
-        examiner1 = User.objects.get(username='examiner1')
-        assignmentgroup = AssignmentGroup.objects.get(id=1)
-        d = Delivery.begin(assignmentgroup, student1)
-        d.finish()
-        self.assertEquals(ApprovedGrade.objects.all().count(), 0)
-        feedback = d.get_feedback()
-        feedback.set_grade_from_xmlrpcstring('+')
-        feedback.last_modified_by = examiner1
-        feedback.save()
-        self.assertEquals(ApprovedGrade.objects.all().count(), 1)
-        feedback.delete()
-        self.assertEquals(ApprovedGrade.objects.all().count(), 0)
-        
     def test_published_where_is_candidate(self):
         student1 = User.objects.get(username='student1')
         student2 = User.objects.get(username='student2')
@@ -762,7 +813,7 @@ class TestDelivery(TestCase):
         self.assertEquals(Delivery.published_where_is_candidate(student4).count(), 0)
 
 
-# TODO: Feedback tests
+# TODO: StaticFeedback tests
 class TestFeedback(TestCase):
 
     # fixtures = ['core/deprecated_users.json', 'core/core.json']
@@ -775,9 +826,48 @@ class TestFeedback(TestCase):
         self.candidate1 = User.objects.get(username='student1')
 
     def test_published_where_is_candidate(self):
+        self.assertEquals(StaticFeedback.published_where_is_candidate(self.candidate0).count(), 8)
+        self.assertEquals(StaticFeedback.published_where_is_candidate(self.candidate1).count(), 7)
+        
+    def test_published_where_is_examiner(self):
+        examiner0 = User.objects.get(username='examiner0')
+        examiner0_feedbacks = StaticFeedback.published_where_is_examiner(examiner0)
+        self.assertEquals(len(examiner0_feedbacks), 15)
 
-        self.assertEquals(Feedback.published_where_is_candidate(self.candidate0).count(), 8)
-        self.assertEquals(Feedback.published_where_is_candidate(self.candidate1).count(), 7)
+
+class TestFeedbackPublish(TestCase):
+    fixtures = ['core/deprecated_users.json', 'core/core.json']
+
+    def create_feedback(self, delivery, text):
+        examiner = delivery.assignment_group.examiners.all()[0]
+        feedback = delivery.feedbacks.create(rendered_view=text, grade="ok", points=1,
+                                             is_passing_grade=True,
+                                             saved_by=examiner)
+        return feedback
+
+    def setUp(self):
+        teacher1 = User.objects.get(username='teacher1')
+        delivery = Delivery.objects.all()[0]
+        delivery.assignment_group.examiners.add(teacher1)
+
+        self.feedback = self.create_feedback(delivery, "Test")
+        self.assignment = self.feedback.delivery.assignment_group.parentnode
+        self.deadline = self.feedback.delivery.deadline_tag
+        self.deadline.feedbacks_published = False
+        self.deadline.save()
+
+    def test_publish_feedbacks_directly(self):
+        self.assignment.examiners_publish_feedbacks_directly = True
+        self.assignment.save()
+        self.feedback.save()
+        self.assertTrue(Deadline.objects.get(id=self.deadline.id).feedbacks_published)
+
+    def test_dont_publish_feedbacks_directly(self):
+        self.assignment.examiners_publish_feedbacks_directly = False
+        self.assignment.save()
+        self.feedback.save()
+        self.assertFalse(Deadline.objects.get(id=self.deadline.id).feedbacks_published)
+
 
 
 class TestMemoryDeliveryStore(TestDeliveryStoreMixin, TestCase):
@@ -1060,3 +1150,4 @@ class TestFeedback(TestCase):
         examiner0 = User.objects.get(username='examiner0')
         examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
         self.assertEquals(len(examiner0_feedbacks), 15)
+

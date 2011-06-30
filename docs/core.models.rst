@@ -123,25 +123,41 @@ Each :class:`AssignmentGroup` have zero or more deadlines.
 Delivery
 #########################################################
 
-You will normally not create Delivery-objects manually, but rather
-use :meth:`Delivery.begin`, :meth:`~Delivery.add_file` and
-:meth:`~Delivery.finish` like this::
 
-    delivery = Delivery.begin(myassignmentgroup, currentuser)
-    delivery.add_file('hello.txt', ['hello', 'world'])
-    delivery.add_file('example.py', ['print "hello world"'])
-    delivery.finish()
+Examples
+========
+
+Simple example::
+
+    assignmentgroup = AssignmentGroup.objects.get(id=1)
+    assignmentgroup.deliveries.create(delivered_by=student1,
+                                      successful=True)
+
+
+More advanced example::
+
+    assignmentgroup = AssignmentGroup.objects.get(id=1)
+    delivery = assignmentgroup.deliveries.create(delivered_by=student1,
+                                                 successful=False)
+    delivery.add_file('test.py', ['print', 'hello world'])
+    delivery.add_file('test2.py', ['print "hi"'])
+    delivery.successful = True
+    delivery.save()
 
 The input to :meth:`add_file` will normally be a file-like object,
 but as shown above it can be anything you want.
 
+
+Delivery API
+============
+
 .. autoclass:: devilry.apps.core.models.Delivery
 
 
-Feedback
+StaticFeedback
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.Feedback
+.. autoclass:: devilry.apps.core.models.StaticFeedback
 
 
 FileMeta

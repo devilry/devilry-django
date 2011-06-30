@@ -35,5 +35,5 @@ def simplified_modelapi(cls):
 
     # Dynamically create create(), read(), insecure_read_model(), update(), delete()
     for method in cls._meta.methods:
-        getattr(_create, 'create_%s_method' % method)(cls) # Calls create.create_[CRUD+S]_method(cls)
+        getattr(_create, 'create_{methodname}_method'.format(methodname=method))(cls) # Calls create.create_[CRUD+S]_method(cls)
     return cls

@@ -1,9 +1,0 @@
-[
-    {
-        "pk": 5, 
-        "model": "grade_approved.approvedgrade", 
-        "fields": {
-            "approved": true
-        }
-    }
-]
