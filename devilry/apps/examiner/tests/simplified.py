@@ -183,7 +183,7 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
 
 
 class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
-
+#TODO fix handling of anonymous assignments
     def setUp(self):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
@@ -233,6 +233,11 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
                         'parentnode__parentnode__parentnode__short_name', #subject 
                         'parentnode__parentnode__parentnode__long_name',
                         'candidates__student__username'])
+
+        qrywrap = AssignmentGroup.search(self.duck3580examiner,
+                assignment=assignment.id,
+                query="student0") #assignment is not anonymous so can search for username
+        self.assertEquals(qrywrap.count(), 1)
 
         assignment.anonymous = True
         assignment.save()
@@ -305,16 +310,28 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
         with self.assertRaises(PermissionDenied):
             group = AssignmentGroup.read(self.superadmin, self.group_core.id)
 
+        group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
+        #print group.keys()
+        #TODO get help with this
+"""
+        assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
+        group = AssignmentGroup.read(self.duck3580examiner,assignment.id)
+        print group
+        assignment.anonymous = True
+        assignment.save()
+        group = AssignmentGroup.read(self.duck3580examiner,assignment.id)
+        print group
+"""
 class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
 #TODO anonymous deliveries
 
     def setUp(self):
         super(TestSimplifiedExaminerDelivery, self).setUp()
-        #assingment group
-        duck3580_fall01_week1_core = self.duck3580_core.periods.get(
-                short_name='fall01').assignments.get(short_name='week1')        
+        #assingment
+        self.duck3580_fall01_week1_core = self.duck3580_core.periods.get(
+                short_name='fall01').assignments.get(short_name='week1')
         #single delivery
-        self.delivery_duck3580_core = duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] 
+        self.delivery_duck3580_core = self.duck3580_fall01_week1_core.assignmentgroups.all()[0].deliveries.all()[0] 
 
     def test_search(self):
         examiner0 =  User.objects.get(username="examiner0")
@@ -353,6 +370,20 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
         #duck3580examiner searching for duck1100 returns no hits
         result = Delivery.search(self.duck3580examiner, query="duck1100")
         self.assertEquals(len(result), 0)
+
+        #anonymous assignment
+        self.duck3580_fall01_week1_core.anonymous = True
+        self.duck3580_fall01_week1_core.save()
+        result = Delivery.search(self.duck3580examiner, query=("fall01"), result_fieldgroups=["assignment"])
+
+        #TODO fix handling of anonymous assignments
+        #print len(result)
+        #print result[1].assignment_group.parentnode.anonymous
+        #print result[0]["assignment_group__parentnode__short_name"]
+        #print result[0]["assignment_group__parentnode__anonymous"]
+        #delivery = result[0]["delivered_by"]
+        #print delivery
+        #print result
 
     def test_read(self):
         duck3580_delivery = Delivery.read(self.duck3580examiner, self.delivery_duck3580_core.id)
@@ -416,8 +447,7 @@ class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
             delivery = Delivery.read(self.superadmin, self.delivery_duck3580_core.id)
 
 class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestCase):
-#TODO anonymous deliveries
-
+#TODO fix handling of anonymous assignments
     def setUp(self):
         super(TestSimplifiedExaminerFeedback, self).setUp()
         self.duck1100_feedback_core = self.duck1100_core.periods.get(

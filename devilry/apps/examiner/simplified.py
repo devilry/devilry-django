@@ -113,7 +113,8 @@ class Delivery(PublishedWhereIsExaminerMixin):
                                            'assignment_group__parentnode__parentnode__id'],
                                  assignment =['assignment_group__parentnode__long_name', 
                                               'assignment_group__parentnode__short_name',
-                                              'assignment_group__parentnode__id']
+                                              'assignment_group__parentnode__id',
+                                              "assignment_group__parentnode__anonymous"]
                                 )
         searchfields = FieldSpec(
                                  #'delivered_by',
