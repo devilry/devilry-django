@@ -15,7 +15,6 @@ urlpatterns = patterns('',
 
     # Django admin interface and login page. The admin interface is only
     # needed for user administration.
-    (r'^superadmin/', include(admin.site.urls)),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
 
     # Include the url to serve static files (../../static) at /static/

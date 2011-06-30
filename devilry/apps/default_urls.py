@@ -4,7 +4,7 @@ from django.conf import settings
 devilry_urls = [
     #(r'^student/', include('devilry.apps.student.urls')),
     #(r'^examiner/', include('devilry.apps.examiner.urls')),
-    #(r'^administrator/', include('devilry.apps.administrator.urls')),
+    (r'^administrator/', include('devilry.apps.administrator.urls')),
     #(r'^', include('devilry.apps.quickdash.urls')),
 ]
 
