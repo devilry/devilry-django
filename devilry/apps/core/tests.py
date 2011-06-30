@@ -459,12 +459,12 @@ class TestAssignment(TestCase):
     def test_pointscale(self):
         student1 = User.objects.get(username='student1')
         teacher1 = User.objects.get(username='teacher1')
-        test = Assignment(
-                parentnode = Period.objects.get(pk=1),
-                publishing_time = datetime.now(),
-                anonymous = False,
-                autoscale = True,
-                grade_plugin = "grade_approved:approvedgrade")
+        test = Assignment(parentnode = Period.objects.get(pk=1),
+                          publishing_time = datetime.now(),
+                          anonymous = False,
+                          autoscale = True,
+                          maxpoints = 1,
+                          grade_plugin = "grade_approved:approvedgrade")
         test.save()
         self.assertEquals(test.pointscale, 1)
         self.assertEquals(test.maxpoints, 1)
@@ -472,15 +472,13 @@ class TestAssignment(TestCase):
         a = test.assignmentgroups.create(name="a")
         b = test.assignmentgroups.create(name="b")
         c = test.assignmentgroups.create(name="c")
-        for g, grade in ((a, "+"), (b, "+"), (c, "-")):
+        for g, points in ((a, 1), (b, 1), (c, 0)):
             d = Delivery.begin(g, student1)
-            d.add_file("test.txt", ["test"])
+            #d.add_file("test.txt", ["test"])
             d.finish()
-            f = d.get_feedback()
-            f.last_modified_by = teacher1
-            f.published = True
-            f.set_grade_from_xmlrpcstring(grade)
-            f.save()
+            d.feedbacks.create(rendered_view="", grade="ok", points=points,
+                               is_passing_grade=bool(points),
+                               last_modified_by=teacher1)
 
         # With autoscale
         points = [g.points for g in test.assignmentgroups.all()]

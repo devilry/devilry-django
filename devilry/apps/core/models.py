@@ -1495,21 +1495,19 @@ class Deadline(models.Model):
         ordering = ['-deadline']
 
     def _get_status_from_qry(self):
-        """Get status from active deadline"""
+        """Get status for active deadline"""
         if self.deliveries.all().count == 0:
             return AssignmentGroup.NO_DELIVERIES
         else:
             deliveries_with_feedback = [delivery for delivery in self.deliveries.all() \
                                         if delivery.feedbacks.all().count() > 0]
-            if not deliveries_with_feedback:
-                return AssignmentGroup.HAS_DELIVERIES
-            else:
-                published = [delivery for delivery in deliveries_with_feedback \
-                        if delivery.feedbacks.filter(published=True).count() > 0]
-                if not published:
-                    return AssignmentGroup.CORRECTED_NOT_PUBLISHED
-                else:
+            if deliveries_with_feedback:
+                if self.feedbacks_published:
                     return AssignmentGroup.CORRECTED_AND_PUBLISHED
+                else:
+                    return AssignmentGroup.CORRECTED_NOT_PUBLISHED
+            else:
+                return AssignmentGroup.HAS_DELIVERIES
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
