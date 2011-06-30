@@ -159,14 +159,14 @@ class ModelRestView(RestView):
 
     def crud_search(self, request, **kwargs):
         """ Maps to the ``search`` method of the simplified class. """
-        if 'data_in_qrystring' in self.request.GET:
+        if 'getdata_in_qrystring' in self.request.GET:
             data = self.request.GET
         else:
             try:
                 data = _serializers.deserialize(self.comformat, self.request.raw_post_data)
             except ValueError, e:
                 return RestResult(
-                        result=dict(error="Bad request data: %s" % e),
+                        result=dict(error="Bad request data: {0}".format(e)),
                         httpresponsecls=HttpResponseBadRequest)
         try:
             form = self.__class__._searchform_to_kwargs(data)
