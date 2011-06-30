@@ -1514,9 +1514,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
         A set of filemetas for this delivery.
 
-    .. attribute:: feedback
+    .. attribute:: feedbacks
 
-       A django.db.models.OneToOneField to StaticFeedback.
+       A set of :class:`StaticFeedback` on this delivery.
 
     """
     status_mapping = (
