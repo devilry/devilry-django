@@ -1009,6 +1009,49 @@ class TestTestInitializer(TestCase):
         self.assertEquals(self.ti.inf1010_fall01.parentnode, self.ti.inf1010)
         self.assertEquals(self.ti.inf1010_spring01.parentnode, self.ti.inf1010)
 
+    def test_assignment_with_admin(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000:admin(arnem)'],
+                    periods=['fall01'],
+                    assignments=['oblig1:admin(jose)', 'oblig2:admin(jose)'])
+
+        # Assert that the admins are created
+        self.assertEquals(User.objects.filter(username='arnem').count(), 1)
+        self.assertEquals(User.objects.filter(username='jose').count(), 1)
+
+        # check that jose is an admin for the assignment
+        self.assertTrue(self.ti.jose in self.ti.inf1000_fall01_oblig1.admins.all())
+        self.assertTrue(self.ti.jose in self.ti.inf1000_fall01_oblig2.admins.all())
+
+        # check that arnem also has admin rights in the assignments
+        self.assertTrue(self.ti.inf1000_fall01_oblig1 in Assignment.where_is_admin(self.ti.arnem).all())
+        self.assertTrue(self.ti.inf1000_fall01_oblig2 in Assignment.where_is_admin(self.ti.arnem).all())
+
+    def test_assignmentgroups(self):
+        self.ti.add(nodes="uio.ifi",
+                 subjects=["inf1000", "inf1100"],
+                 periods=["fall01", "spring01"],
+                 assignments=["oblig1", "oblig2"],
+                 assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                   'g2:candidate(nataliib):examiner(jose)'])
+
+        # assert that the assignmentgroups are there. There should be 8 of
+        # each, since there are (should!) 2 assignments.
+        self.assertEquals(AssignmentGroup.objects.filter(name='g1').count(), 8)
+        self.assertEquals(AssignmentGroup.objects.filter(name='g2').count(), 8)
+
+        # assert that the parentnodes are correct
+        self.assertEquals(self.ti.inf1100_fall01_oblig1_g1.parentnode, self.ti.inf1100_fall01_oblig1)
+        self.assertEquals(self.ti.inf1100_spring01_oblig1_g2.parentnode, self.ti.inf1100_spring01_oblig1)
+
+        # assert that the candidates are candidates in the assignment
+        self.assertTrue(self.ti.inf1100_fall01_oblig1 in Assignment.where_is_candidate(self.ti.zakia))
+        self.assertTrue(self.ti.inf1100_fall01_oblig1 in Assignment.where_is_candidate(self.ti.nataliib))
+
+        # assert that the examiners are examiners in the assignment
+        self.assertTrue(self.ti.inf1100_fall01_oblig1_g1 in AssignmentGroup.where_is_examiner(self.ti.cotryti))
+        self.assertTrue(self.ti.inf1100_fall01_oblig1_g2 in AssignmentGroup.where_is_examiner(self.ti.jose))
+
 
 class TestFeedback(TestCase):
     fixtures = ['simplified/data.json']

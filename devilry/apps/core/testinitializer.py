@@ -13,6 +13,10 @@ from models import Node, Subject, Period, Assignment, AssignmentGroup, Candidate
 # just doesn't add any users at all.
 
 
+class StuffError(Exception):
+    """ This is stuff """
+
+
 class TestInitializer(object):
 
     def _parse_user_list(self, text):
@@ -24,7 +28,7 @@ class TestInitializer(object):
         for section in sections:
             key = section[:section.index('(')]
             if key not in res:
-                raise Exception("{0} is not an allowed role.".format(key))
+                raise ValueError("{0} is not an allowed role.".format(key))
             res[key] = section[section.index('(') + 1 : section.index(')')].split(',')
         return res
 
@@ -173,7 +177,10 @@ class TestInitializer(object):
         for admin in users['admin']:
             assignment.admins.add(self._create_or_add_user(admin))
 
-        vars(self)[parentnode.short_name + '_' + parentnode.short_name + '_' + assignment.short_name] = assignment
+        for examiner in users['examiner']:
+            assignment.examiners.add(self._create_or_add_user(examiner))
+
+        vars(self)[parentnode.parentnode.short_name + '_' + parentnode.short_name + '_' + assignment.short_name] = assignment
         return assignment
 
     def _do_the_assignments(self, assignments_list):
@@ -193,7 +200,55 @@ class TestInitializer(object):
                 users = self._parse_user_list(users_arg)
                 self._create_or_add_assignment(assignment_name, period, users)
 
-    def add(self, nodes=None, subjects=None, periods=None, assignments=None, delivery=None, feedback=None):
+#######
+##
+## Assignment group specifics
+##
+#######
+    def _create_or_add_assignmentgroup(self, group_name, parentnode, users):
+        if AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name) == 1:
+            group = AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name)
+        else:
+            group = AssignmentGroup(parentnode=parentnode, name=group_name)
+            try:
+                group.clean()
+                group.save()
+            except:
+                raise ValueError("Assignmentgroup not created!")
+
+        # add the users (only admins allowed in subject)
+        for candidate in users['candidate']:
+            group.candidates.add(Candidate(student=self._create_or_add_user(candidate)))
+
+        for examiner in users['examiner']:
+            group.examiners.add(self._create_or_add_user(examiner))
+
+        vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   parentnode.parentnode.short_name + '_' +             # period_
+                   parentnode.short_name + '_' +                        # assignment_
+                   group_name] = group
+        return group
+
+    def _do_the_assignmentgroups(self, assignmentgroups_list):
+        assignments = Assignment.objects.all()
+        if not assignments:
+            raise ValueError("No periods created. Assignments needs a period-parent")
+
+        for assignment in assignments:
+            for group in assignmentgroups_list:
+
+                try:
+                    group_name, users_arg = group.split(':', 1)
+                except ValueError:
+                    group_name = group
+                    users_arg = None
+
+                users = self._parse_user_list(users_arg)
+                self._create_or_add_assignmentgroup(group_name, assignment, users)
+
+    def add(self, nodes=None, subjects=None, periods=None, assignments=None, assignmentgroups=None,
+            delivery=None, feedback=None):
+
         if nodes:
             self._do_the_nodes(nodes)
 
@@ -206,6 +261,9 @@ class TestInitializer(object):
         if assignments:
             self._do_the_assignments(assignments)
 
+        if assignmentgroups:
+            self._do_the_assignmentgroups(assignmentgroups)
+
         if delivery:
             pass
 
@@ -217,7 +275,10 @@ class TestInitializer(object):
         self.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
                  subjects=["inf1000:admin(stein,steing)", "inf1100:admin(arne)"],
                  periods=["2009", "2010"],
-                 assignments=["oblig1:student(student0,studen1):examiner(bendiko)", "oblig2"])
+                 assignments=["oblig1:admin(jose)", "oblig2:admin(jose)"],
+                 assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                   'g2:candidate(nataliib):examiner(jose)'],
+                 )
 
         self.add(nodes="uio.ifi",
                  subjects=["inf1000"],
