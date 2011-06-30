@@ -35,7 +35,7 @@ class Feedback(PublishedWhereIsCandidateMixin):
         _delivery_number  = 'delivery__number'
         _delivery_success = 'delivery__successful'
 
-        model = models.Feedback
+        model = models.StaticFeedback
         resultfields = FieldSpec('id', 'format', 'text',
                                  period = [_period_short, _period_long, _period_id],
                                  subject = [_subject_long, _subject_short, _subject_id],

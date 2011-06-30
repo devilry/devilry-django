@@ -1,6 +1,7 @@
 from django.conf import settings
 
-from ..core.models import AssignmentGroup
+from ..core.models.assignment_group import AssignmentGroup
+from ..core.models.delivery import Delivery
 
 
 def template_variables(request):
