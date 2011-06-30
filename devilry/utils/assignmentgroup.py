@@ -1,32 +1,15 @@
 class GroupDeliveriesByDeadline():
     """
-    Takes a list of assignmentgroups and places them in three lists/categories; 
-    after_last_deadline, self.within_a_deadline and self.ungrouped_deliveries.
+    Deliveries on an assignmentgroup is returned in a list of tuples, where
+    each tuple contains the deadline, and all the deliveries on that deadline.
+    If the default deadline (head) contains no deliveries, it is ignored.
     """
     def __init__(self, group):
-        self.after_last_deadline = []
-        self.within_a_deadline = []
-        self.ungrouped_deliveries = []
+        self.groups = []
         deadlines = group.deadlines.all().order_by('deadline')
-        numdeadlines = len(deadlines)
-        if numdeadlines > 0:
-            deliveries = group.deliveries.filter(
-                    time_of_delivery__lte = deadlines[0].deadline)
-
-            # Within a deadline
-            self.within_a_deadline.append((deadlines[0], deliveries))
-            previous = deadlines[0].deadline
-            for d in deadlines[1:]:
-                deliveries = group.deliveries.filter(
-                        time_of_delivery__lte = d.deadline,
-                        time_of_delivery__gt = previous).order_by(
-                                "-time_of_delivery")
-                self.within_a_deadline.insert(0, (d, deliveries))
-                previous = d.deadline
-
-            # After last deadline
-            self.after_last_deadline = group.deliveries.filter(
-                    time_of_delivery__gt=deadlines[numdeadlines - 1].deadline)
-        else:
-            self.ungrouped_deliveries = group.deliveries.order_by(
-                    'time_of_delivery')
+        for dl in deadlines:
+            deliveries = dl.deliveries.order_by("-time_of_delivery")
+            if dl.is_head and len(deliveries) == 0:
+                continue
+            self.groups.insert(0, (dl, deliveries))
+            

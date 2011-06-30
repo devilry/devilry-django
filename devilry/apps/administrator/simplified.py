@@ -1,4 +1,4 @@
-from ...simplified import simplified_api, PermissionDenied
+from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
 from ..core import models
 
 
@@ -15,7 +15,7 @@ class CanSaveAuthMixin(object):
             raise PermissionDenied()
 
 
-@simplified_api
+@simplified_modelapi
 class Node(CanSaveAuthMixin):
     """ Facade to simplify administrator actions on
     :class:`devilry.apps.core.models.Node`.
@@ -46,9 +46,9 @@ class Node(CanSaveAuthMixin):
 
     class Meta:
         model = models.Node
-        resultfields = ['id', 'short_name', 'long_name', 'parentnode__id']
-        searchfields = ['short_name', 'long_name']
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
+        searchfields = FieldSpec('short_name', 'long_name')
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -59,13 +59,13 @@ class Node(CanSaveAuthMixin):
         return qryset
 
 
-@simplified_api
+@simplified_modelapi
 class Subject(CanSaveAuthMixin):
     class Meta:
         model = models.Subject
-        resultfields = ['id', 'short_name', 'long_name']
-        searchfields = ['short_name', 'long_name']
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec('id', 'short_name', 'long_name')
+        searchfields = FieldSpec('short_name', 'long_name')
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -76,19 +76,42 @@ class Subject(CanSaveAuthMixin):
         return qryset
 
 
-@simplified_api
+@simplified_modelapi
 class Period(CanSaveAuthMixin):
     class Meta:
         model = models.Period
-        resultfields = ['id', 'short_name', 'long_name', 'parentnode__id',
-                'start_time', 'end_time']
-        searchfields = ['short_name', 'long_name', 'parentnode__short_name',
-                'parentnode__long_name']
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+                'start_time', 'end_time')
+        searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
+                'parentnode__long_name')
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         qryset = models.Period.where_is_admin_or_superadmin(user)
+        parentnode__id = kwargs.pop('parentnode__id', None)
+        if parentnode__id != None:
+            qryset = qryset.filter(parentnode__id = parentnode__id)
+        return qryset
+
+@simplified_modelapi
+class Assignment(CanSaveAuthMixin):
+    class Meta:
+        model = models.Assignment
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+                                 period = ['parentnode__short_name',
+                                           'parentnode__long_name',
+                                           'parentnode__parentnode__id'],
+                                 subject = ['parentnode__parentnode__short_name',
+                                            'parentnode__parentnode__long_name'],
+                                 pointfields = ['anonymous', 'must_pass', 'maxpoints',
+                                                'attempts'])
+        searchfields = FieldSpec('short_name', 'long_name')
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        qryset = models.Assignment.where_is_admin_or_superadmin(user)
         parentnode__id = kwargs.pop('parentnode__id', None)
         if parentnode__id != None:
             qryset = qryset.filter(parentnode__id = parentnode__id)

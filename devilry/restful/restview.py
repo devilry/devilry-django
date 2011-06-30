@@ -138,9 +138,9 @@ class ModelRestView(RestView):
     def filter_resultitem(cls, itemdct):
         return cls.filter_urlmap(itemdct)
 
-    def restultqry_to_list(self, resultQry):
+    def restultqry_to_list(self, qryresultwrapper):
         return [self.__class__.filter_resultitem(itemdct) \
-                for itemdct in resultQry]
+                for itemdct in qryresultwrapper]
 
     def _create_or_replace(self, instance=None):
         data = _serializers.deserialize(self.comformat, self.request.raw_post_data)
@@ -176,8 +176,8 @@ class ModelRestView(RestView):
                     httpresponsecls=HttpResponseBadRequest)
 
         form.update(**kwargs) # add variables from url PATH
-        getqryresult = self._meta.simplified.search(self.request.user, **form)
-        resultList = self.restultqry_to_list(getqryresult.valuesQryset())
+        qryresultwrapper = self._meta.simplified.search(self.request.user, **form)
+        resultList = self.restultqry_to_list(qryresultwrapper)
         result = dict(total=len(resultList), success=True, items=resultList)
         return RestResult(result)
 

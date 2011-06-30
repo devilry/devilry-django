@@ -69,6 +69,9 @@ if __name__ == "__main__":
             default=None, type='int',
             help="The pointscale of the assignment. Default is "\
                     "no pointscale.")
+    p.add_option("--always-one-delivery", default=False,
+                 action='store_true', dest='always_one_delivery',
+                 help="Always create a single delivery (no randon number of deliveries)")
     p.add_option("--grade-plugin", dest="gradeplugin",
             default=None, help="Grade plugin key.")
     p.add_option("-p", "--deadline-profile", dest="deadline_profile",
@@ -202,7 +205,7 @@ if __name__ == "__main__":
         return group
 
     def create_example_deliveries_and_feedback(group, quality_percents,
-            group_quality_percent, grade_maxpoints):
+            group_quality_percent, grade_maxpoints, always_one_delivery):
         deadline = group.get_active_deadline().deadline
         now = datetime.now()
         two_weeks_ago = now - timedelta(days=14)
@@ -224,7 +227,7 @@ if __name__ == "__main__":
                 return
 
         numdeliveries = 1
-        if randint(0, 100) <= 20:
+        if not always_one_delivery and randint(0, 100) <= 20:
             # 20% chance of delivering more than one time
             numdeliveries = randint(2, 5)
         deliveries = autocreate_deliveries(group, numdeliveries)
@@ -297,6 +300,8 @@ if __name__ == "__main__":
     num_examiners = opt.num_examiners
     examiners_per_group = opt.examiners_per_group
     grade_maxpoints = opt.grade_maxpoints
+    always_one_delivery = opt.always_one_delivery
+    print always_one_delivery
 
     if not opt.gradeplugin:
         raise SystemExit("--grade-plugin is required. Possible values: %s" %
@@ -390,4 +395,4 @@ if __name__ == "__main__":
         group_quality_percent = round(group_quality_percent)
         logging.debug("Group quality percent: %s" % group_quality_percent)
         create_example_deliveries_and_feedback(group, quality_percents,
-                group_quality_percent, grade_maxpoints)
+                group_quality_percent, grade_maxpoints, always_one_delivery)

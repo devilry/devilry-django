@@ -1,14 +1,14 @@
-from ...simplified import PermissionDenied, simplified_api
+from ...simplified import PermissionDenied, simplified_modelapi, FieldSpec
 import models
 
 
-@simplified_api
+@simplified_modelapi
 class StatConfig(object):
     class Meta:
         model = models.StatConfig
-        resultfields = ['id', 'name', 'period__id', 'user__id']
-        searchfields = ['name']
-        methods = ['create', 'read_model', 'read', 'update', 'delete', 'search']
+        resultfields = FieldSpec('id', 'name', 'period__id', 'user__id')
+        searchfields = FieldSpec('name')
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):

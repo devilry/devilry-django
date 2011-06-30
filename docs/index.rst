@@ -6,9 +6,6 @@
 
     plugins
     grade-plugins
-    xmlrpc
-
-    commandline
 
     simplified
     restful
@@ -26,7 +23,6 @@ Core
 ######################################################################
 
 * **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>` | :ref:`designdetails`
-* :ref:`devilry.apps.core.utils <devilry.apps.core.utils>`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
 
 
@@ -35,13 +31,7 @@ Plugin development
 
 * **The basics:** :ref:`plugins`
 * **Grade plugins:** :ref:`Overview <grade-plugins>`
-* **XMLRPC:** :ref:`Overview <xmlrpc>`
 
-
-Developing devilry
-######################################################################
-
-* :ref:`developer-commandline`
 
 
 Simplified API
