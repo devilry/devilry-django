@@ -202,16 +202,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         #""" Get the filenames as a list of strings. """
         #return self.filenames.split()
 
-    def validate_filenames(self, filenames):
-        """ Raise ValueError unless each filename in the iterable
-        ``filenames`` is one of the filenames on this assignment. Nothing is
-        done if :attr:`filenames` is not set, or set to a empty string. """
-        if self.filenames:
-            valid = self.get_filenames()
-            for filename in filenames:
-                if not filename in valid:
-                    raise ValueError(_("Invalid filename: %(filename)s" %
-                        dict(filename=filename)))
+    #TODO delete this?
+    #def validate_filenames(self, filenames):
+        #""" Raise ValueError unless each filename in the iterable
+        #``filenames`` is one of the filenames on this assignment. Nothing is
+        #done if :attr:`filenames` is not set, or set to a empty string. """
+        #if self.filenames:
+            #valid = self.get_filenames()
+            #for filename in filenames:
+                #if not filename in valid:
+                    #raise ValueError(_("Invalid filename: %(filename)s" %
+                        #dict(filename=filename)))
 
     @classmethod
     def q_is_admin(cls, user_obj):
