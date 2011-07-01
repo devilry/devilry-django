@@ -89,13 +89,14 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
             q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
         return q
 
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        """
-        Returns a django.models.Q object matching Feedbacks where
-        the given student is candidate.
-        """
-        return Q(delivery__assignment_group__examiners=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_examiner(cls, user_obj):
+    #    """
+    #    Returns a django.models.Q object matching Feedbacks where
+    #    the given student is candidate.
+    #    """
+    #    return Q(delivery__assignment_group__examiners=user_obj)
 
     def _publish_if_allowed(self):
         assignment = self.delivery.assignment_group.parentnode
