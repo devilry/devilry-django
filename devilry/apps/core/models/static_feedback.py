@@ -70,13 +70,14 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         verbose_name_plural = _('Static feedbacks')
         ordering = ['-save_timestamp']
 
-    @classmethod
-    def q_is_candidate(cls, user_obj):
-        """
-        Returns a django.models.Q object matching Deliveries where
-        the given student is candidate.
-        """
-        return Q(delivery__assignment_group__candidates__student=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_candidate(cls, user_obj):
+    #    """
+    #    Returns a django.models.Q object matching Deliveries where
+    #    the given student is candidate.
+    #    """
+    #    return Q(delivery__assignment_group__candidates__student=user_obj)
 
     @classmethod
     def q_published(cls, old=True, active=True):
