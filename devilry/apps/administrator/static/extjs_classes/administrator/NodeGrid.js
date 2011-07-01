@@ -4,7 +4,7 @@ Ext.define('devilry.administrator.NodeGrid', {
 
     initComponent: function() {
         Ext.apply(this, {
-            width: 600,
+            width: 400,
             //height: 150,
             frame: false,
             //title: false,
@@ -23,7 +23,7 @@ Ext.define('devilry.administrator.NodeGrid', {
      */
     formatRow: function(value, p, record) {
         return Ext.String.format(
-            '<div class="long_name">{0}</div><div class="short_name">{1}</div>',
+            '<div class="long_name">{0}</div><div class="short_name unimportant">{1}</div>',
             record.get('long_name'), record.get('short_name'));
     }
 });

@@ -1,4 +1,3 @@
-from django.db.models import fields
 import json
 
 
@@ -19,14 +18,6 @@ def _iter_fields(simplifiedcls):
         else:
             yield fieldname, meta.model._meta.get_field(fieldname)
 
-def _field_to_extjs_type(field, fieldname):
-    """ Convert django field to extjs  field type. """
-    if isinstance(field, fields.IntegerField):
-        return 'int'
-    elif isinstance(field, fields.AutoField):
-        return 'int'
-    else:
-        return 'string'
 
 
 def get_extjs_modelname(restfulmodelcls):
@@ -37,7 +28,7 @@ def get_extjs_modelname(restfulmodelcls):
 def restfulmodelcls_to_extjsmodel(restfulmodelcls):
     modelfields = []
     for fieldname, field in _iter_fields(restfulmodelcls._meta.simplified):
-        exttype = _field_to_extjs_type(field, fieldname)
+        exttype = field_to_extjstype(field, fieldname)
         modelfields.append(dict(name=fieldname, type=exttype))
     for fieldname in restfulmodelcls._meta.urlmap:
         modelfields.append(dict(name=fieldname, type='string'))
