@@ -201,11 +201,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         #:attr:`status_mapping_cssclass`. """
         #return status_mapping_cssclass[self.get_status_number()]
 
-    def get_status_student_cssclass(self):
-        """ Returns the css class for the current status from
-        :attr:`status_mapping_student_cssclass`. """
-        return status_mapping_student_cssclass[
-                self.get_status_number()]
+    #TODO delete this?
+    #def get_status_student_cssclass(self):
+        #""" Returns the css class for the current status from
+        #:attr:`status_mapping_student_cssclass`. """
+        #return status_mapping_student_cssclass[
+                #self.get_status_number()]
 
     def _set_number(self):
         m = Delivery.objects.filter(assignment_group=self.assignment_group).aggregate(Max('number'))
