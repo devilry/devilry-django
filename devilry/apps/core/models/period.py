@@ -118,18 +118,19 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
         #"""
         #return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
 
-    @classmethod
-    def not_ended_where_is_admin_or_superadmin(cls, user_obj):
-        """ Returns a QuerySet matching all Periods where the given user is
-        admin or superadmin and end_time is in the future.
+    #TODO delete this?
+    #@classmethod
+    #def not_ended_where_is_admin_or_superadmin(cls, user_obj):
+        #""" Returns a QuerySet matching all Periods where the given user is
+        #admin or superadmin and end_time is in the future.
         
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        if user_obj.is_superuser:
-            return cls.objects.filter(end_time__gt=datetime.now())
-        else:
-            return cls.not_ended_where_is_admin(user_obj)
+        #:param user_obj: A django.contrib.auth.models.User_ object.
+        #:rtype: QuerySet
+        #"""
+        #if user_obj.is_superuser:
+            #return cls.objects.filter(end_time__gt=datetime.now())
+        #else:
+            #return cls.not_ended_where_is_admin(user_obj)
 
     @classmethod
     def get_by_path(self, path):
