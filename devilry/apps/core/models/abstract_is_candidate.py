@@ -7,9 +7,10 @@ class AbstractIsCandidate(object):
     #def q_is_candidate(cls, user_obj):
         #raise NotImplementedError()
 
-    @classmethod
-    def q_published(cls, old, active):
-        raise NotImplementedError()
+    #TODO delete this?
+    #@classmethod
+    #def q_published(cls, old, active):
+        #raise NotImplementedError()
 
     @classmethod
     def where_is_candidate(cls, user_obj):
