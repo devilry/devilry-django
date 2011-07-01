@@ -15,7 +15,7 @@ DATABASES = {
 }
 
 INSTALLED_APPS = INSTALLED_APPS + [
-    'devilry.apps.tutorialstats',
+    'devilry.projects.dev.tutorialstats',
     'devilry.utils']
 
 
