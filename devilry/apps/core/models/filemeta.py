@@ -37,13 +37,14 @@ class FileMeta(models.Model):
         unique_together = ('delivery', 'filename')
         ordering = ['filename']
 
-    def remove_file(self):
-        """
-        Remove the file using the
-        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method
-        of the :attr:`deliverystore`.
-        """
-        return self.deliverystore.remove(self)
+    #TODO delete this?
+    #def remove_file(self):
+        #"""
+        #Remove the file using the
+        #:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method
+        #of the :attr:`deliverystore`.
+        #"""
+        #return self.deliverystore.remove(self)
 
     def file_exists(self):
         """
