@@ -107,15 +107,16 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
                 Q(parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
-    @classmethod
-    def not_ended_where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Periods where the given user is
-        admin and end_time is in the future.
+    #TODO delete this?
+    #@classmethod
+    #def not_ended_where_is_admin(cls, user_obj):
+        #""" Returns a QuerySet matching all Periods where the given user is
+        #admin and end_time is in the future.
         
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
+        #:param user_obj: A django.contrib.auth.models.User_ object.
+        #:rtype: QuerySet
+        #"""
+        #return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
 
     @classmethod
     def not_ended_where_is_admin_or_superadmin(cls, user_obj):
