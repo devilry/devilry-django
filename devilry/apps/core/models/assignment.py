@@ -197,9 +197,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         #for the current :attr:`grade_plugin`. """
         #return gradeplugin.registry.getitem(self.grade_plugin)
 
-    def get_filenames(self):
-        """ Get the filenames as a list of strings. """
-        return self.filenames.split()
+    #TODO delete this?
+    #def get_filenames(self):
+        #""" Get the filenames as a list of strings. """
+        #return self.filenames.split()
 
     def validate_filenames(self, filenames):
         """ Raise ValueError unless each filename in the iterable
