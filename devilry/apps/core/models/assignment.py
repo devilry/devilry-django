@@ -191,10 +191,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         #super(Assignment, self).save()
         #self._update_scalepoints()
 
-    def get_gradeplugin_registryitem(self):
-        """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
-        for the current :attr:`grade_plugin`. """
-        return gradeplugin.registry.getitem(self.grade_plugin)
+    #TODO delete this?
+    #def get_gradeplugin_registryitem(self):
+        #""" Get the :class:`devilry.core.gradeplugin.RegistryItem`
+        #for the current :attr:`grade_plugin`. """
+        #return gradeplugin.registry.getitem(self.grade_plugin)
 
     def get_filenames(self):
         """ Get the filenames as a list of strings. """
