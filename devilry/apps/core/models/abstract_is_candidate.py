@@ -26,9 +26,10 @@ class AbstractIsCandidate(object):
                 cls.q_is_candidate(user_obj)
                 ).distinct()
 
-    @classmethod
-    def active_where_is_candidate(cls, user_obj):
-        return cls.published_where_is_candidate(user_obj, old=False, active=True)
+    #TODO delete this?
+    #@classmethod
+    #def active_where_is_candidate(cls, user_obj):
+        #return cls.published_where_is_candidate(user_obj, old=False, active=True)
 
     @classmethod
     def old_where_is_candidate(cls, user_obj):
