@@ -106,8 +106,9 @@ class Deadline(models.Model):
         #""" Return True if :attr:`deadline` expired. """
         #return self.deadline < datetime.now()
 
-    def delete(self, *args, **kwargs):
-        """ Prevent deletion if this is the head deadline """
-        if self.is_head:
-            raise PermissionDenied()
-        super(Deadline, self).delete(*args, **kwargs)
+    #TODO delete this?
+    #def delete(self, *args, **kwargs):
+        #""" Prevent deletion if this is the head deadline """
+        #if self.is_head:
+            #raise PermissionDenied()
+        #super(Deadline, self).delete(*args, **kwargs)
