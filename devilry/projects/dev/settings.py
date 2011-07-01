@@ -1,5 +1,5 @@
 from os.path import abspath, dirname, join
-from devilry.apps.default_settings import *
+from devilry.defaults.settings import *
 
 this_dir = dirname(abspath(__file__))
 
