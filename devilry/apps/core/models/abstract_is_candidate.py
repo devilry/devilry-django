@@ -2,9 +2,10 @@ class AbstractIsCandidate(object):
 
     # TODO: document this shit
 
-    @classmethod
-    def q_is_candidate(cls, user_obj):
-        raise NotImplementedError()
+    #TODO delete this?
+    #@classmethod
+    #def q_is_candidate(cls, user_obj):
+        #raise NotImplementedError()
 
     @classmethod
     def q_published(cls, old, active):
