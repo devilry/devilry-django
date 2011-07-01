@@ -17,10 +17,6 @@ Ext.define('devilry.administrator.NodeGrid', {
         this.callParent(arguments);
     },
 
-    /**
-     * Title renderer
-     * @private
-     */
     formatRow: function(value, p, record) {
         return Ext.String.format(
             '<div class="long_name">{0}</div><div class="short_name unimportant">{1}</div>',

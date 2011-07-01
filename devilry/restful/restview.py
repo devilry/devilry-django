@@ -38,7 +38,7 @@ class SerializerRegistry(dict):
 
 
 def json_serialize_handler(obj):
-    print type(obj)
+    #print type(obj)
     if isinstance(obj, ValuesQuerySet):
         return list(obj)
     if hasattr(obj, 'isoformat'):

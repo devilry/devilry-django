@@ -1,4 +1,5 @@
 import json
+from fieldintegration import field_to_extjstype
 
 
 def _recurse_get_fkfield(modelcls, path):
