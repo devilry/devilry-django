@@ -182,13 +182,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             group.scaled_points = group._get_scaled_points()
             group.save()
 
-    def save(self, *args, **kwargs):
-        """ Save and recalculate the value of :attr:`maxpoints` and
-        :attr:`pointscale`. """
-        if self.autoscale:
-            self.pointscale = self.maxpoints
-        super(Assignment, self).save()
-        self._update_scalepoints()
+    #TODO delete this?
+    #def save(self, *args, **kwargs):
+        #""" Save and recalculate the value of :attr:`maxpoints` and
+        #:attr:`pointscale`. """
+        #if self.autoscale:
+            #self.pointscale = self.maxpoints
+        #super(Assignment, self).save()
+        #self._update_scalepoints()
 
     def get_gradeplugin_registryitem(self):
         """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
