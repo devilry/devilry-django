@@ -186,13 +186,14 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         #status = self.get_status_number()
         #return status_mapping[status]
 
-    def get_localized_student_status(self):
-        """
-        Returns the current status string from
-        :attr:`status_mapping_student`.
-        """
-        status = self.get_status_number()
-        return status_mapping_student[status]
+    #TODO delete this?
+    #def get_localized_student_status(self):
+        #"""
+        #Returns the current status string from
+        #:attr:`status_mapping_student`.
+        #"""
+        #status = self.get_status_number()
+        #return status_mapping_student[status]
 
     def get_status_cssclass(self):
         """ Returns the css class for the current status from
