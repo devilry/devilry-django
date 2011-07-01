@@ -55,13 +55,14 @@ class FileMeta(models.Model):
         #"""
         #return self.deliverystore.exists(self)
 
-    def read_open(self):
-        """
-        Open file for reading using the
-        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method
-        of the :attr:`deliverystore`.
-        """
-        return self.deliverystore.read_open(self)
+    #TODO delete this?
+    #def read_open(self):
+        #"""
+        #Open file for reading using the
+        #:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method
+        #of the :attr:`deliverystore`.
+        #"""
+        #return self.deliverystore.read_open(self)
 
     def __unicode__(self):
         return self.filename
