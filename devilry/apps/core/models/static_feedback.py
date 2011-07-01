@@ -14,9 +14,9 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
 
     Each delivery can have zero or more feedbacks. Each StaticFeedback object stores
     static data that an examiner has published on a delivery. StaticFeedback is
-    created and edited in a _grade+feedback editor_ in a _grade plugin_, and
+    created and edited in a *grade+feedback editor* in a *grade plugin*, and
     when an examiner chose to publish feedback, a static copy of the data
-    he/she created in the _grade+feedback editor_ is stored in a StaticFeedback.
+    he/she created in the *grade+feedback editor* is stored in a StaticFeedback.
 
     Feedbacks are only visible to students when
     :attr:`Deadline.feedbacks_published` on the related deadline is ``True``.
