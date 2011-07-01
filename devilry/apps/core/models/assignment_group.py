@@ -315,10 +315,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         #:attr:`AssignmentGroup.status_mapping_cssclass`. """
         #return AssignmentGroup.status_mapping_cssclass[self.status]
 
-    def get_status_student_cssclass(self):
-        """ Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
-        return AssignmentGroup.status_mapping_student_cssclass[self.status]
+    #TODO delete this?
+    #def get_status_student_cssclass(self):
+        #""" Returns the current status string from
+        #:attr:`AssignmentGroup.status_mapping_student_cssclass`. """
+        #return AssignmentGroup.status_mapping_student_cssclass[self.status]
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
