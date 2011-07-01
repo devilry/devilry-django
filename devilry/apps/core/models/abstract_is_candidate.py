@@ -12,11 +12,12 @@ class AbstractIsCandidate(object):
     #def q_published(cls, old, active):
         #raise NotImplementedError()
 
-    @classmethod
-    def where_is_candidate(cls, user_obj):
-        return cls.objects.filter(
-                cls.q_is_candidate(user_obj)
-            ).distinct()
+    #TODO delete this?
+    #@classmethod
+    #def where_is_candidate(cls, user_obj):
+        #return cls.objects.filter(
+                #cls.q_is_candidate(user_obj)
+            #).distinct()
 
     @classmethod
     def published_where_is_candidate(cls, user_obj, old=True, active=True):
