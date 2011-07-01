@@ -134,9 +134,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
 
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        return Q(assignment_group__examiners=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_examiner(cls, user_obj):
+        #return Q(assignment_group__examiners=user_obj)
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
