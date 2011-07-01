@@ -335,10 +335,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         #else:
             #return False
 
-    def can_add_deliveries(self):
-        """ Returns true if a student can add deliveries on this assignmentgroup
+    #TODO delete this?
+    #def can_add_deliveries(self):
+        #""" Returns true if a student can add deliveries on this assignmentgroup
 
-        Both the assignmentgroups is_open attribute, and the periods start
-        and end time is checked.
-        """
-        return self.is_open and self.parentnode.parentnode.is_active()
+        #Both the assignmentgroups is_open attribute, and the periods start
+        #and end time is checked.
+        #"""
+        #return self.is_open and self.parentnode.parentnode.is_active()
