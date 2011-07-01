@@ -73,8 +73,9 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
         guaranteed to be unique. """
         return self.short_name
 
-    def clean(self, *args, **kwargs):
-        super(Subject, self).clean(*args, **kwargs)
+    #TODO delete this?
+    #def clean(self, *args, **kwargs):
+        #super(Subject, self).clean(*args, **kwargs)
 
     @classmethod
     def q_published(cls, old=True, active=True):
