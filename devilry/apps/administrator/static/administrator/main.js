@@ -1,29 +1,27 @@
 Ext.require('devilry.administrator.NodeGrid');
 Ext.require('devilry.administrator.MultiNodeGridSearchField');
+Ext.require('devilry.administrator.MultiNodeGrid');
 Ext.onReady(function() {
-
-
-    var searchfield = Ext.create('devilry.administrator.MultiNodeGridSearchField', {
-        resultgrids: [
-            Ext.create('devilry.administrator.NodeGrid', {
-                renderTo: 'nodegrid',
-                title: 'Nodes',
-                store: nodestore
-            }),
-
-            Ext.create('devilry.administrator.NodeGrid', {
-                renderTo: 'subjectgrid',
-                title: 'Subjects',
-                store: subjectstore
-            }),
-
-            Ext.create('devilry.administrator.NodeGrid', {
-                renderTo: 'periodgrid',
-                store: periodstore,
-                title: 'Periods'
-            })
-        ]
+    var searchresults = Ext.create('devilry.administrator.MultiNodeGrid', {
+        renderTo: 'searchresults',
+        items: [{
+            xtype: 'administrator-nodegrid',
+            title: 'Nodes',
+            store: nodestore
+        }, {
+            xtype: 'administrator-nodegrid',
+            title: 'Subjects',
+            store: subjectstore
+        }, {
+            xtype: 'administrator-nodegrid',
+            title: 'Periods',
+            store: periodstore
+        }]
     });
 
+    var searchfield = Ext.create('devilry.administrator.MultiNodeGridSearchField', {
+        resultContainer: searchresults
+    });
     searchfield.focus();
+
 });
