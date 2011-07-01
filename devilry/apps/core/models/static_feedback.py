@@ -79,15 +79,16 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     #    """
     #    return Q(delivery__assignment_group__candidates__student=user_obj)
 
-    @classmethod
-    def q_published(cls, old=True, active=True):
-        now = datetime.now()
-        q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
-        if not active:
-            q &= ~Q(deliver__assignment_group__parentnode__parentnode__end_time__gte = now)
-        if not old:
-            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
-        return q
+    #TODO delete this?
+    #@classmethod
+    #def q_published(cls, old=True, active=True):
+        #now = datetime.now()
+        #q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
+        #if not active:
+            #q &= ~Q(deliver__assignment_group__parentnode__parentnode__end_time__gte = now)
+        #if not old:
+            #q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
+        #return q
 
     #TODO delete this?
     #@classmethod
