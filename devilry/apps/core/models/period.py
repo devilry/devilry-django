@@ -76,9 +76,10 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
             q &= ~Q(end_time__lt=now)
         return q
 
-    @classmethod
-    def q_is_candidate(cls, user_obj):
-        return Q(assignmentgroups__candidates__student=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_candidate(cls, user_obj):
+        #return Q(assignmentgroups__candidates__student=user_obj)
 
     def student_sum_scaled_points(self, user):
         groups = AssignmentGroup.published_where_is_candidate(user).filter(
