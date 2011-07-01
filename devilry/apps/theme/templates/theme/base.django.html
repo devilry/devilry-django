@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>
-      {% block title %}{{ page_title }}{% endblock %}
+      {% block title %}{{ page_title|default:"Devilry" }}{% endblock %}
     </title>
 
     <link rel="stylesheet" href="{{ DEVILRY_THEME_URL }}/reset.css"
