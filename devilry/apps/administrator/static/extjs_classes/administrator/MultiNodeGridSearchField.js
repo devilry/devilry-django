@@ -22,5 +22,5 @@ Ext.define('devilry.administrator.MultiNodeGridSearchField', {
             }
         });
         this.callParent(arguments);
-    },
+    }
 });

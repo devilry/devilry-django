@@ -26,8 +26,13 @@ Ext.define('devilry.administrator.NodeGrid', {
 
     listeners: {
         selectionchange: function(view, selections, options) {
-            console.log('selected');
-            console.log(selections[0]);
+            //this.deselectAll();
         }
+    },
+
+    deselectAll: function() {
+        Ext.each(this.ownerCt.items.items, function(grid, index, resultgrids) {
+            grid.getSelectionModel().deselectAll();
+        });
     }
 });
