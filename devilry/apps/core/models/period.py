@@ -161,11 +161,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
                 raise ValidationError(_('Start time must be before end time.'))
         super(Period, self).clean(*args, **kwargs)
 
-    def is_active(self):
-        """ Returns true if the period is active
-        """
-        now = datetime.now()
-        return self.start_time < now and self.end_time > now
+    #TODO delete this?
+    #def is_active(self):
+        #""" Returns true if the period is active
+        #"""
+        #now = datetime.now()
+        #return self.start_time < now and self.end_time > now
 
     @classmethod
     def q_is_examiner(cls, user_obj):
