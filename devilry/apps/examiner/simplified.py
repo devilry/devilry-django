@@ -116,7 +116,7 @@ class Delivery(PublishedWhereIsExaminerMixin):
 @simplified_modelapi
 class Feedback(PublishedWhereIsExaminerMixin):
     class Meta:
-        model = models.Feedback
+        model = models.StaticFeedback
         resultfields = FieldSpec('delivery', 'text', 'format', 'id',
                                  subject = ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',

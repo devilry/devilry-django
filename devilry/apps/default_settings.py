@@ -7,25 +7,25 @@ TIME_ZONE = 'Europe/Oslo'
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = True
-MEDIA_URL = ''
-ADMIN_MEDIA_PREFIX = '/media/'
 DATETIME_FORMAT = "N j, Y, H:i"
-LOGIN_URL = '/ui/login'
+LOGIN_URL = '/authenticate/login'
+STATIC_URL = '/static/'
 
 INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
                   'django.contrib.sites',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
+                  'django.contrib.staticfiles',
 
                   'devilry.apps.core',
-                  'devilry.apps.ui',
                   'devilry.apps.theme',
                   'devilry.apps.extjshelpers',
 
                   'devilry.apps.student',
                   'devilry.apps.examiner',
                   'devilry.apps.administrator',
+                  'devilry.apps.authenticate',
 
                   # Not apps, but here for django to discover them:
                   'devilry.simplified']
@@ -36,5 +36,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django.core.context_processors.debug",
-    'devilry.apps.ui.templatecontext.template_variables',
+    'devilry.apps.theme.templatecontext.template_variables',
 )

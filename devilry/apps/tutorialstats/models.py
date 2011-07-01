@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from ..core.models import Period
+from ..core.models.period import Period
 
 
 class StatConfig(models.Model):
