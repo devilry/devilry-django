@@ -2,6 +2,9 @@ from ...restful import restful_modelapi, ModelRestView
 from simplified import Node, Subject, Period
 
 
+__all__ = ('RestNode', 'RestSubject', 'RestPeriod')
+
+
 @restful_modelapi
 class RestNode(ModelRestView):
     class Meta:

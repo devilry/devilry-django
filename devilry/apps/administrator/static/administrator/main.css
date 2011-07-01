@@ -1,0 +1,8 @@
+.searchresults .long_name {
+    font-size: 1.6em;
+    font-weight: bold;
+}
+
+.searchresults .short_name {
+    color: #333;
+}
