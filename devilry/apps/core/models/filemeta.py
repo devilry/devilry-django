@@ -46,13 +46,14 @@ class FileMeta(models.Model):
         #"""
         #return self.deliverystore.remove(self)
 
-    def file_exists(self):
-        """
-        Check if the file exists using the
-        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method
-        of the :attr:`deliverystore`.
-        """
-        return self.deliverystore.exists(self)
+    #TODO delete this?
+    #def file_exists(self):
+        #"""
+        #Check if the file exists using the
+        #:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method
+        #of the :attr:`deliverystore`.
+        #"""
+        #return self.deliverystore.exists(self)
 
     def read_open(self):
         """
