@@ -7,7 +7,7 @@ from devilry.apps.default_urls import devilry_urls
 
 urlpatterns = patterns('',
                        # Custom urls for this project
-                       (r'^tutorialstats/', include('devilry.projects.dev.tutorialstats.urls')),
+                       (r'^tutorialstats/', include('devilry.projects.dev.apps.tutorialstats.urls')),
                        *devilry_urls
 ) + staticfiles_urlpatterns()
 

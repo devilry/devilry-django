@@ -48,7 +48,7 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls):
             proxy: {{
                 type: 'rest',
                 url: '{resturl}',
-                extraParams: {{data_in_qrystring: true}},
+                extraParams: {{getdata_in_qrystring: true}},
                 reader: {{
                     type: 'json',
                     root: 'items'

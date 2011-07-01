@@ -7,7 +7,7 @@ from restful import RestStatConfig, RestPeriodPoints
 @login_required
 def main(request):
     return render(request,
-        'devilry/tutorialstats/main.html', {
+        'tutorialstats/main.django.html', {
             'RestStatConfig': RestStatConfig,
             'RestPeriodPoints': RestPeriodPoints
         })
