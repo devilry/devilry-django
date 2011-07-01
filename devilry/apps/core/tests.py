@@ -1049,7 +1049,7 @@ class TestTestInitializer(TestCase):
     def test_period_with_admins(self):
         self.ti.add(nodes='uio:admin(rektor).ifi:admin(mortend)',
                     subjects=['inf1000', 'inf1010'],
-                    periods=['fall01:admin(steingj):examiner(sldkjf)', 'spring01:admin(steinm)'])
+                    periods=['fall01:admin(steingj)', 'spring01:admin(steinm)'])
 
         # assert that the users are created
         self.assertEquals(User.objects.filter(username='steingj').count(), 1)
@@ -1153,20 +1153,95 @@ class TestTestInitializer(TestCase):
         # assert that nothing was created
         self.assertEquals(self.ti.objects_created, 0)
 
-    def test_huge_test(self):
-        self.ti.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
-                    subjects=["inf1000:admin(arnem)", "inf1010:admin(steingj,steinm)"],
-                    periods=["fall01:admin(jose)", "spring01:admin(espeak)"],
-                    assignments=["oblig1:admin(cotryti)", "oblig2:admin(bendiko)"],
-                    assignmentgroups=['g1:candidate(zakia,mariherr,jensp):examiner(cotryti)',
-                                      'g2:candidate(nataliib,runeama,trygv,stiansma):examiner(bendiko)'])
+    # def test_huge_test(self):
+    #     self.ti.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
+    #                 subjects=["inf1000:admin(arnem)", "inf1010:admin(steingj,steinm)"],
+    #                 periods=["fall01:admin(jose)", "spring01:admin(espeak)"],
+    #                 assignments=["oblig1:admin(cotryti)", "oblig2:admin(bendiko)"],
+    #                 assignmentgroups=['g1:candidate(zakia,mariherr,jensp):examiner(cotryti)',
+    #                                   'g2:candidate(nataliib,runeama,trygv,stiansma):examiner(bendiko)'])
 
+    def test_deadlines(self):
+        self.ti.add(nodes="ifi",
+                    subjects=["inf1000", "inf1100"],
+                    periods=["fall01", "spring01"],
+                    assignments=["oblig1", "oblig2"],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=[])
 
-class TestFeedback(TestCase):
-    fixtures = ['simplified/data.json']
+    def test_period_times(self):
 
-    def test_published_where_is_examiner(self):
-        examiner0 = User.objects.get(username='examiner0')
-        examiner0_feedbacks = Feedback.published_where_is_examiner(examiner0)
-        self.assertEquals(len(examiner0_feedbacks), 15)
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2'])
 
+        today = datetime.today().date()
+        sixIshMonthsFromToday = (datetime.today() + timedelta(days=6 * 30)).date()
+
+        # assert that first period starts today
+        self.assertEquals(self.ti.inf1000_first.start_time.date(), today)
+
+        # assert that the second semester begins in about 6 months
+        # and that it ends about 1 month from then
+        self.assertEquals(self.ti.inf1000_second.start_time.date(), sixIshMonthsFromToday)
+        self.assertEquals(self.ti.inf1000_second.end_time.date(), sixIshMonthsFromToday + timedelta(days=30))
+
+        # assert that first is active, while the second isnt
+        self.assertTrue(self.ti.inf1000_first.is_active())
+        self.assertFalse(self.ti.inf1000_second.is_active())
+
+        # add an old period
+        self.ti.add(nodes='ifi', subjects=['inf1000'], periods=['old:begins(-2):ends(1)'])
+
+        # assert that old began 2 months ago, and that it ended 1 month ago.
+        self.assertEquals(self.ti.inf1000_old.start_time.date(), today + timedelta(days=-60))
+        # And that it isnt active
+        self.assertEquals(self.ti.inf1000_old.end_time.date(), today + timedelta(days=-30))
+        self.assertFalse(self.ti.inf1000_old.is_active())
+
+    def test_assignments_times(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)', 'oblig3:pub(20)'])
+
+        today = datetime.today().date()
+        self.assertEquals(self.ti.inf1000_first_oblig1.publishing_time.date(), today)
+        self.assertEquals(self.ti.inf1000_first_oblig2.publishing_time.date(), today + timedelta(days=10))
+        self.assertEquals(self.ti.inf1000_first_oblig3.publishing_time.date(), today + timedelta(days=20))
+
+    def test_add_to_path(self):
+
+        self.ti.add_to_path('uio:admin(rektor).ifi:admin(mortend);inf1000:admin(stein,steing).fall01')
+        self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
+        self.assertTrue(self.ti.mortend in self.ti.ifi.admins.all())
+        self.assertTrue(self.ti.stein in self.ti.inf1000.admins.all())
+        self.assertTrue(self.ti.steing in self.ti.inf1000.admins.all())
+
+    def test_deadliness(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text("heihei")', 'd2:ends(20)'])
+
+        today = datetime.today().date()
+
+        # assert that the deadlines are created correctly
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.deadline.date(), today + timedelta(days=10))
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d2.deadline.date(), today + timedelta(days=20))
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, '"heihei"')
+
+        self.assertEquals(Deadline.objects.all().count(), 2)
+
+        # add a new deadline for g1. This should overwrite the
+        # previous d1 deadline
+        self.ti.add_to_path('ifi;inf1000.first.oblig1.g1.d1:text("heeellllooo")')
+
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, '"heeellllooo""')
+        self.assertEquals(Deadline.objects.all(), 3)
+        # assert that the texts are set correctly
