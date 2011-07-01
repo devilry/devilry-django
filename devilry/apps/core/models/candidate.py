@@ -49,21 +49,22 @@ class Candidate(models.Model):
     def __unicode__(self):
         return self.get_identifier()
 
-    def clean(self, *args, **kwargs):
-        """Validate the assignment.
+    #TODO delete this?
+    #def clean(self, *args, **kwargs):
+        #"""Validate the assignment.
 
-        Always call this before save()! Read about validation here:
-        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
+        #Always call this before save()! Read about validation here:
+        #http://docs.djangoproject.com/en/dev/ref/models/instances/#id1
 
-        Raises ValidationError if:
+        #Raises ValidationError if:
 
-            - candidate id is empty on anonymous assignment.
+            #- candidate id is empty on anonymous assignment.
         
-        """
-        if self.assignment_group.parentnode.anonymous:
-            if not self.candidate_id:
-                raise ValidationError(
-                    _("Candidate id cannot be empty when assignment is anonymous.)"))
+        #"""
+        #if self.assignment_group.parentnode.anonymous:
+            #if not self.candidate_id:
+                #raise ValidationError(
+                    #_("Candidate id cannot be empty when assignment is anonymous.)"))
         
-        super(Candidate, self).clean(*args, **kwargs)
+        #super(Candidate, self).clean(*args, **kwargs)
 
