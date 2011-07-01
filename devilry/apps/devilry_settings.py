@@ -12,8 +12,8 @@ DEVILRY_MAIN_PAGE = ''
 DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
 
 DEVILRY_STATIC_URL = '/static'
-DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/apps/theme/themes/devilry'
-DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/jslibs/extjs'
+DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
+DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 
 #Set max file size to 5MB. Files greater than this size are split into chunks of this size.

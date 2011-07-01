@@ -9,12 +9,14 @@ SITE_ID = 1
 USE_I18N = True
 DATETIME_FORMAT = "N j, Y, H:i"
 LOGIN_URL = '/authenticate/login'
+STATIC_URL = '/static/'
 
 INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
                   'django.contrib.sites',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
+                  'django.contrib.staticfiles',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
