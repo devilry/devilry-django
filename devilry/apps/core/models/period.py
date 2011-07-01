@@ -81,10 +81,11 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     #def q_is_candidate(cls, user_obj):
         #return Q(assignmentgroups__candidates__student=user_obj)
 
-    def student_sum_scaled_points(self, user):
-        groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                parentnode__parentnode=self)
-        return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
+    #TODO delete this?
+    #def student_sum_scaled_points(self, user):
+        #groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                #parentnode__parentnode=self)
+        #return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
 
     def student_passes_period(self, user):
         groups = AssignmentGroup.published_where_is_candidate(user).filter(
