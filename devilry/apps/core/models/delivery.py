@@ -176,14 +176,15 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         else:
             #return Delivery.CORRECTED_NOT_PUBLISHED # TODO: Handle the fact that this info does not exist anymore.
             return Delivery.NOT_CORRECTED
-    
-    def get_localized_status(self):
-        """
-        Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping`.
-        """
-        status = self.get_status_number()
-        return status_mapping[status]
+
+    #TODO delete this?
+    #def get_localized_status(self):
+        #"""
+        #Returns the current status string from
+        #:attr:`AssignmentGroup.status_mapping`.
+        #"""
+        #status = self.get_status_number()
+        #return status_mapping[status]
 
     def get_localized_student_status(self):
         """
