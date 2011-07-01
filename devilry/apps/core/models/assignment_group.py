@@ -325,14 +325,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
 
-    def can_save(self, user_obj):
-        """ Check if the user has permission to save this AssignmentGroup. """
-        if user_obj.is_superuser:
-            return True
-        elif self.parentnode:
-            return self.parentnode.is_admin(user_obj)
-        else:
-            return False
+    #TODO delete this?
+    #def can_save(self, user_obj):
+        #""" Check if the user has permission to save this AssignmentGroup. """
+        #if user_obj.is_superuser:
+            #return True
+        #elif self.parentnode:
+            #return self.parentnode.is_admin(user_obj)
+        #else:
+            #return False
 
     def can_add_deliveries(self):
         """ Returns true if a student can add deliveries on this assignmentgroup
