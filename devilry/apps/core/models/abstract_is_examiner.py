@@ -17,13 +17,14 @@ class AbstractIsExaminer(object):
         #raise NotImplementedError()
 
 
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        """
-        Return a django.models.Q object which matches items
-        where the given user is examiner.
-        """
-        raise NotImplementedError()
+    #TODO delete this?
+    #@classmethod
+    #def q_is_examiner(cls, user_obj):
+        #"""
+        #Return a django.models.Q object which matches items
+        #where the given user is examiner.
+        #"""
+        #raise NotImplementedError()
 
 
     @classmethod
