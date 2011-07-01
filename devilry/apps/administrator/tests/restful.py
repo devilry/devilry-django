@@ -28,7 +28,7 @@ class TestAdministratorRestNode(TestCase):
 
     def test_search(self):
         url = RestNode.get_rest_url()
-        r = self.client.get(url, data={'data_in_qrystring': True},
+        r = self.client.get(url, data={'getdata_in_qrystring': True},
                 content_type='application/json')
         data = json.loads(r.content)['items']
         first = data[0]

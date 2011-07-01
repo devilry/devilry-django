@@ -81,7 +81,8 @@ class Period(CanSaveAuthMixin):
     class Meta:
         model = models.Period
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
-                'start_time', 'end_time')
+                'start_time', 'end_time',
+                subject = ['parentnode__short_name', 'parentnode__long_name'])
         searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
                 'parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
