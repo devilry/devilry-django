@@ -97,8 +97,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
         totalpoints = self.student_sum_scaled_points(user)
         return totalpoints >= self.minimum_points
 
-    def get_must_pass_assignments(self):
-        return self.assignments.filter(must_pass=True)
+    #TODO delete this?
+    #def get_must_pass_assignments(self):
+        #return self.assignments.filter(must_pass=True)
 
     @classmethod
     def q_is_admin(cls, user_obj):
