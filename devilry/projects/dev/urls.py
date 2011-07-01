@@ -11,10 +11,6 @@ urlpatterns = patterns('',
     # Custom urls for this project
     (r'^tutorialstats/', include('devilry.apps.tutorialstats.urls')),
 
-    # Django admin interface and login page. The admin interface is only
-    # needed for user administration.
-    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-
     # Include the url to serve static files (../../static) at /static/
     fileserve_url,
 
