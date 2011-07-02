@@ -16,7 +16,6 @@ Ext.onReady(function() {
             xtype: 'administratorsearchresults',
             title: 'Periods',
             store: periodstore,
-            //result_fieldgroups: 'subject',
             formatRow: function(record) {
                 return this.getFormattedRow(
                     record.get('long_name'),
