@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Generate javascript docs in REPOROOT/docs/javascript/. Run the command for more help.
+# Generate javascript docs in REPOROOT/docs/javascript/.
 """
 Requires JSDuck: https://github.com/nene/jsduck
 """
@@ -39,7 +39,6 @@ def build(outdir):
 
 def serve(outdir):
     chdir(outdir)
-
     addr = ("localhost", 9191)
     Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
     class CustTCPServer(SocketServer.TCPServer):

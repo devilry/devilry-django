@@ -110,6 +110,10 @@ def gethelp(commandname):
     f.close()
     return hlp
 
+def getcurrenthelp():
+    """ Get help for current command. """
+    return gethelp(getcurrentcommandname())
+
 def execcommand(commandname):
     """ Execute the given command. """
     commandpath = join(getthisdir(), cmdname_to_filename(commandname))
@@ -133,7 +137,8 @@ def require_djangoproject():
 
 class DevilryAdmArgumentParser(ArgumentParser):
     """ Extends ArgumentParser and overrides ``__init__`` to set ``prog`` to
-    :func:`getprogname`. """
+    :func:`getprogname` and description to :func:`getcurrenthelp`. """
     def __init__(self, *args, **kwargs):
         kwargs['prog'] = getprogname()
+        kwargs['description'] = getcurrenthelp()
         super(DevilryAdmArgumentParser, self).__init__(*args, **kwargs)
