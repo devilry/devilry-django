@@ -24,6 +24,11 @@
 Ext.define('devilry.administrator.SearchWidget', {
     extend: 'Ext.container.Container',
     alias: 'widget.administratorsearchwidget',
+    requires: [
+        'devilry.administrator.SearchResults',
+        'devilry.administrator.MultiSearchField',
+        'devilry.administrator.MultiSearchResults'
+    ],
 
     initComponent: function() {
         Ext.apply(this, {

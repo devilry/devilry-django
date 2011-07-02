@@ -1,6 +1,4 @@
-Ext.require('devilry.administrator.SearchResults');
-Ext.require('devilry.administrator.MultiSearchField');
-Ext.require('devilry.administrator.MultiSearchResults');
+Ext.require('devilry.administrator.SearchWidget');
 Ext.onReady(function() {
     var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
         renderTo: 'searchwidget',
