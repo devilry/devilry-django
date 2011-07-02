@@ -6,12 +6,5 @@
  * */
 Ext.define('devilry.administrator.MultiSearchResults', {
     extend: 'Ext.container.Container',
-    alias: 'widget.administrator-multisearchresults',
-
-    //initComponent: function() {
-        //Ext.apply(this, {
-            
-        //});
-        //this.callParent(arguments);
-    //}
+    alias: 'widget.administratormultisearchresults'
 });

@@ -1,7 +1,7 @@
 /** A grid containing search results. */
 Ext.define('devilry.administrator.SearchResults', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.administrator-searchresults',
+    alias: 'widget.administratorsearchresults',
 
     initComponent: function() {
         Ext.apply(this, {

@@ -2,26 +2,22 @@ Ext.require('devilry.administrator.SearchResults');
 Ext.require('devilry.administrator.MultiSearchField');
 Ext.require('devilry.administrator.MultiSearchResults');
 Ext.onReady(function() {
-    var searchresults = Ext.create('devilry.administrator.MultiSearchResults', {
+    var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
         renderTo: 'searchresults',
-        items: [{
-            xtype: 'administrator-searchresults',
+        searchResultItems: [{
+            xtype: 'administratorsearchresults',
             title: 'Nodes',
             store: nodestore
         }, {
-            xtype: 'administrator-searchresults',
+            xtype: 'administratorsearchresults',
             title: 'Subjects',
             store: subjectstore
         }, {
-            xtype: 'administrator-searchresults',
+            xtype: 'administratorsearchresults',
             title: 'Periods',
             store: periodstore
         }]
     });
 
-    var searchfield = Ext.create('devilry.administrator.MultiSearchField', {
-        resultContainer: searchresults
-    });
-    searchfield.focus();
-
+    searchwidget.focusOnSearchfield();
 });

@@ -1,8 +1,10 @@
-/**
- * A textfield for searching and reloading multiple stores. */
+/** A textfield for searching and reloading multiple stores.
+ *
+ * @xtype administratormultisearchfield
+ * */
 Ext.define('devilry.administrator.MultiSearchField', {
     extend: 'Ext.form.field.Text',
-    alias: 'widget.administrator-multisearchfield',
+    alias: 'widget.administratormultisearchfield',
 
     initComponent: function() {
         var me = this;
@@ -28,11 +30,18 @@ Ext.define('devilry.administrator.MultiSearchField', {
         this.callParent(arguments);
     },
 
+    /** Get the result container, which we expect to be the second item in the
+     * ownerCt. */
+    getResultContainer: function() {
+        return this.ownerCt.items.items[1];
+    },
+
     
-    /** Search in the stores in all items in the ``resultContainer``. */
+    /** Search for the current value in the stores in all items in the
+     * container returned by getResultContainer(). */
     search: function() {
         var me = this;
-        Ext.each(this.resultContainer.items.items, function(grid, index, resultgrids) {
+        Ext.each(this.getResultContainer().items.items, function(grid, index, resultgrids) {
             var store = grid.store;
             store.proxy.extraParams.query = me.getValue();
             store.load();
