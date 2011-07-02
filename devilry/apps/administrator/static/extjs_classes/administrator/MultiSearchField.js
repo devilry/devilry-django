@@ -1,3 +1,5 @@
+/**
+ * A textfield for searching and reloading multiple stores. */
 Ext.define('devilry.administrator.MultiSearchField', {
     extend: 'Ext.form.field.Text',
     alias: 'widget.administrator-multisearchfield',

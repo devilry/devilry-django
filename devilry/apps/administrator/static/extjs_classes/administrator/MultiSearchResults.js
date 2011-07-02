@@ -1,8 +1,8 @@
 /**
  * Search results for many results, each result shown in a
- * devilry.administrator.SearchResults.
+ * {@link devilry.administrator.SearchResults}.
  *
- * Integrates with devilry.administrator.MultiSearchField.
+ * Integrates with {@link devilry.administrator.MultiSearchField}.
  * */
 Ext.define('devilry.administrator.MultiSearchResults', {
     extend: 'Ext.container.Container',
