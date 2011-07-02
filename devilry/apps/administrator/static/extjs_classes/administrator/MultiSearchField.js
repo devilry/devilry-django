@@ -5,6 +5,7 @@ Ext.define('devilry.administrator.MultiSearchField', {
     alias: 'widget.administrator-multisearchfield',
 
     initComponent: function() {
+        var me = this;
         Ext.apply(this, {
             fieldLabel: 'Search',
             renderTo: 'searchfield',
@@ -14,15 +15,27 @@ Ext.define('devilry.administrator.MultiSearchField', {
             listeners: {
                 specialKey: function(field, e) {
                     if(e.getKey() == e.ENTER) {
-                        Ext.each(this.resultContainer.items.items, function(grid, index, resultgrids) {
-                            var store = grid.store;
-                            store.proxy.extraParams.query = field.getValue();
-                            store.load();
-                        });
+                        me.search();
                     }
+                },
+
+                /* TODO: Wait for 0.2 sec or something before searhing on change. */
+                change: function(field, newValue, oldValue) {
+                    me.search();
                 }
             }
         });
         this.callParent(arguments);
+    },
+
+    
+    /** Search in the stores in all items in the ``resultContainer``. */
+    search: function() {
+        var me = this;
+        Ext.each(this.resultContainer.items.items, function(grid, index, resultgrids) {
+            var store = grid.store;
+            store.proxy.extraParams.query = me.getValue();
+            store.load();
+        });
     }
 });
