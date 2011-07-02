@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import patterns
+from django.contrib.auth.decorators import login_required
 
 import restful
 from views import MainView
@@ -7,4 +8,4 @@ urlpatterns = patterns('devilry.apps.administrator',
                       restful.RestNode.create_rest_url(),
                       restful.RestSubject.create_rest_url(),
                       restful.RestPeriod.create_rest_url(),
-                      (r'^$', MainView.as_view()))
+                      (r'^$', login_required(MainView.as_view())))
