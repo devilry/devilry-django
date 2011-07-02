@@ -1,6 +1,6 @@
-Ext.define('devilry.administrator.MultiNodeGridSearchField', {
+Ext.define('devilry.administrator.MultiSearchField', {
     extend: 'Ext.form.field.Text',
-    alias: 'widget.administrator-multistoresearchfield',
+    alias: 'widget.administrator-multisearchfield',
 
     initComponent: function() {
         Ext.apply(this, {

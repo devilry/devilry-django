@@ -1,6 +1,6 @@
-Ext.define('devilry.administrator.NodeGrid', {
+Ext.define('devilry.administrator.SearchResults', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.administrator-nodegrid',
+    alias: 'widget.administrator-searchresults',
 
     initComponent: function() {
         Ext.apply(this, {
