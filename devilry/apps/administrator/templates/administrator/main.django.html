@@ -15,7 +15,7 @@
     {{ RestSubject|extjs_model }}
     var subjectstore = {{ RestSubject|extjs_store }}
 
-    {{ RestPeriod|extjs_model }}
+    {{ RestPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestPeriod|extjs_store }}
 </script>
 
@@ -24,8 +24,5 @@
 
 
 {% block main %}
-<div id='searcharea'>
-    <div id='searchfield'></div>
-</div>
-<div id='searchresults' class='searchresults'></div>
+<div id='searchwidget'></div>
 {% endblock %}

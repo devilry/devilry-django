@@ -10,7 +10,6 @@ Ext.define('devilry.administrator.MultiSearchField', {
         var me = this;
         Ext.apply(this, {
             fieldLabel: 'Search',
-            renderTo: 'searchfield',
             width: 600,
             //triggerAfterChars: 1,
 
@@ -41,9 +40,13 @@ Ext.define('devilry.administrator.MultiSearchField', {
      * container returned by getResultContainer(). */
     search: function() {
         var me = this;
-        Ext.each(this.getResultContainer().items.items, function(grid, index, resultgrids) {
-            var store = grid.store;
+        Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
+            var store = searchresults.store;
             store.proxy.extraParams.query = me.getValue();
+            //if(searchresults.result_fieldgroups) {
+                //console.log(searchresults);
+                //store.proxy.extraParams.result_fieldgroups = searchresults.result_fieldgroups;
+            //}
             store.load();
         });
     }

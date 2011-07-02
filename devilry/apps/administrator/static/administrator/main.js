@@ -3,7 +3,7 @@ Ext.require('devilry.administrator.MultiSearchField');
 Ext.require('devilry.administrator.MultiSearchResults');
 Ext.onReady(function() {
     var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
-        renderTo: 'searchresults',
+        renderTo: 'searchwidget',
         searchResultItems: [{
             xtype: 'administratorsearchresults',
             title: 'Nodes',
@@ -15,7 +15,15 @@ Ext.onReady(function() {
         }, {
             xtype: 'administratorsearchresults',
             title: 'Periods',
-            store: periodstore
+            store: periodstore,
+            //result_fieldgroups: 'subject',
+            formatRow: function(record) {
+                return this.getFormattedRow(
+                    record.get('long_name'),
+                    Ext.String.format('{0}.{1}',
+                        record.get('parentnode__short_name'),
+                        record.get('short_name')));
+            }
         }]
     });
 

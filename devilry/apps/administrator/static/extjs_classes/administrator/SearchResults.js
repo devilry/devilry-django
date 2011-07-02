@@ -13,16 +13,26 @@ Ext.define('devilry.administrator.SearchResults', {
             hideHeaders: true,
             columns: [{
                 header: 'Nodes', dataIndex: 'long_name', flex: 1,
-                renderer: this.formatRow
+                renderer: this.formatRowWrapper
             }]
         });
         this.callParent(arguments);
     },
 
-    formatRow: function(value, p, record) {
+    formatRowWrapper: function(value, p, record) {
+        return this.formatRow(record);
+    },
+
+    formatRow: function(record) {
+        return this.getFormattedRow(
+            record.get('long_name'),
+            record.get('short_name'));
+    },
+
+    getFormattedRow: function(title, subtitle) {
         return Ext.String.format(
             '<div class="long_name">{0}</div><div class="short_name unimportant">{1}</div>',
-            record.get('long_name'), record.get('short_name'));
+            title, subtitle);
     },
 
     listeners: {
