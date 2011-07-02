@@ -11,6 +11,8 @@ class User(models.Model):
     last = models.CharField(max_length=20, db_index=True)
     email = models.EmailField(db_index=True)
     score = models.IntegerField()
+    introtext = models.TextField()
+    text = models.TextField()
 
 
 @simplified_modelapi
@@ -21,7 +23,8 @@ class SimplifiedUser(object):
 
     class Meta:
         model = User
-        resultfields = FieldSpec('id', 'first', 'last', 'email', 'score')
+        resultfields = FieldSpec('id', 'first', 'last', 'email', 'score',
+                                 textfields=['introtext', 'text'])
         searchfields = FieldSpec('short_name', 'long_name')
         methods = []
 
@@ -47,7 +50,10 @@ class TestModelIntegration(TestCase):
             proxy: {
                 type: 'rest',
                 url: '/restuser',
-                extraParams: {getdata_in_qrystring: true},
+                extraParams: {
+                    getdata_in_qrystring: true,
+                    result_fieldgroups: ''
+                },
                 reader: {
                     type: 'json',
                     root: 'items'
@@ -58,6 +64,12 @@ class TestModelIntegration(TestCase):
             }
         });"""
         self.assertEquals(js, expected)
+
+    def test_to_extjsmodel_fieldgroups(self):
+        js = restfulmodelcls_to_extjsmodel(RestUser)
+        self.assertFalse('textfields' in js)
+        js = restfulmodelcls_to_extjsmodel(RestUser, ['textfields'])
+        self.assertTrue('textfields' in js)
 
 
 class TestStoreIntegration(TestCase):

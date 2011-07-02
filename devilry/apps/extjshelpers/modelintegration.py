@@ -10,9 +10,9 @@ def _recurse_get_fkfield(modelcls, path):
         return _recurse_get_fkfield(cur.related.model, path)
 
 
-def _iter_fields(simplifiedcls):
+def _iter_fields(simplifiedcls, result_fieldgroups):
     meta = simplifiedcls._meta
-    for fieldname in meta.resultfields.always_available_fields:
+    for fieldname in meta.resultfields.aslist(result_fieldgroups):
         if "__" in fieldname:
             path = fieldname.split('__')
             yield fieldname, _recurse_get_fkfield(meta.model, path)
@@ -26,13 +26,15 @@ def get_extjs_modelname(restfulmodelcls):
     return '{module}.{name}'.format(module=simplified.__module__, name=simplified.__name__)
 
 
-def restfulmodelcls_to_extjsmodel(restfulmodelcls):
+def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
     modelfields = []
-    for fieldname, field in _iter_fields(restfulmodelcls._meta.simplified):
+    for fieldname, field in _iter_fields(restfulmodelcls._meta.simplified,
+                                         result_fieldgroups):
         exttype = field_to_extjstype(field, fieldname)
         modelfields.append(dict(name=fieldname, type=exttype))
     for fieldname in restfulmodelcls._meta.urlmap:
         modelfields.append(dict(name=fieldname, type='string'))
+
     return """Ext.define('{modelname}', {{
             extend: 'Ext.data.Model',
             fields: {modelfields},
@@ -40,7 +42,10 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls):
             proxy: {{
                 type: 'rest',
                 url: '{resturl}',
-                extraParams: {{getdata_in_qrystring: true}},
+                extraParams: {{
+                    getdata_in_qrystring: true,
+                    result_fieldgroups: '{result_fieldgroups}'
+                }},
                 reader: {{
                     type: 'json',
                     root: 'items'
@@ -52,4 +57,5 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls):
         }});""".format(modelname = get_extjs_modelname(restfulmodelcls),
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
-                      resturl = restfulmodelcls.get_rest_url())
+                      resturl = restfulmodelcls.get_rest_url(),
+                      result_fieldgroups=','.join(result_fieldgroups))

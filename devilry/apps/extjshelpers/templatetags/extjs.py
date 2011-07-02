@@ -7,8 +7,12 @@ register = template.Library()
 
 
 @register.filter
-def extjs_model(restfulmodelcls):
-    js = restfulmodelcls_to_extjsmodel(restfulmodelcls)
+def extjs_model(restfulmodelcls, result_fieldgroups=None):
+    if result_fieldgroups:
+        result_fieldgroups = result_fieldgroups.split(',')
+    else:
+        result_fieldgroups = []
+    js = restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups)
     return mark_safe(js)
 
 
