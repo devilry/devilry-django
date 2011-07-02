@@ -59,6 +59,7 @@ def clean(outdir):
 
 if __name__ == '__main__':
     from os.path import join
+    from sys import exit
 
     from common import (get_docs_javascriptbuild_dir, DevilryAdmArgumentParser,
                         getprogname)
@@ -72,7 +73,12 @@ if __name__ == '__main__':
                        help='Serve generated javascript docs on http://localhost:9191')
     parser.add_argument('-c', '--clean', action='store_true',
                        help='Remove the generated javascript docs.')
+    parser.add_argument('--completionlist', action='store_true',
+                       help='Print completionlist for bash completion.')
     args = parser.parse_args()
+    if args.completionlist:
+        print "--build --serve --clean"
+        exit(0)
     if not (args.build or args.serve or args.clean):
         parser.print_help()
         print
