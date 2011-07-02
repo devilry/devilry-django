@@ -43,7 +43,13 @@ Ext.define('devilry.administrator.MultiSearchField', {
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
             var store = searchresults.store;
             store.proxy.extraParams.query = me.getValue();
-            store.load();
+            store.load(function(records, operation, success) {
+                if(store.data.items.length == 0) {
+                    searchresults.hide();
+                } else {
+                    searchresults.show();
+                }
+            });
         });
     }
 });
