@@ -17,9 +17,6 @@ def find_javascriptfiles():
     jsfiles = []
     for root, dirs, files in walk(getappsdir()):
         is_devilry_doc = 'extjs_classes' in root
-        #is_extjs_doc = 'extjs' in root and not ('locale' in root or
-                                                #'test' in root or
-                                                #'adapter' in root)
         if is_devilry_doc:
             for filename in files:
                 if filename.endswith('.js'):
@@ -29,8 +26,6 @@ def find_javascriptfiles():
 
 def build(outdir):
     infiles = find_javascriptfiles()
-    extdev = join(getappsdir(), 'extjshelpers/static/extjshelpers/extjs/ext-dev.js')
-    infiles.insert(0, extdev)
     retcode = call(['jsduck', '--verbose', '--output', outdir] + infiles)
 
     print
