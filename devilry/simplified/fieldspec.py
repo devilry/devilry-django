@@ -1,4 +1,7 @@
 class FieldSpec(object):
+    """
+    Specifies and groups fields for search and read results.
+    """
     def __init__(self, *always_available_fields, **additional_fieldgroups):
         """
         :param always_available_fields:

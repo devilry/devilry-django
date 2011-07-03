@@ -5,6 +5,8 @@
 Simplified API
 ==========================================
 
+.. currentmodule:: devilry.simplified
+
 *The simplified API is under development.*
 
 This API was first introduced in this `github issue <https://github.com/devilry/devilry-django/issues/90>`_
@@ -160,11 +162,3 @@ Every function and class in the public API is made available directly in
 
 
 .. automodule:: devilry.simplified
-    :members: simplified_modelapi
-    :no-members:
-
-.. autoclass:: devilry.simplified.fieldspec.FieldSpec
-
-.. autoclass:: devilry.simplified.exceptions.PermissionDenied
-
-.. autoclass:: devilry.simplified.qryresultwrapper.QryResultWrapper

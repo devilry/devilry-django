@@ -4,6 +4,9 @@ from fieldspec import FieldSpec
 import create as _create
 
 
+__all__ = ('PermissionDenied', 'QryResultWrapper', 'FieldSpec', 'simplified_modelapi')
+
+
 def _require_metaattr(cls, attr):
     """ Note that this method is also used in ``devilry.restful``. """
     if not hasattr(cls._meta, attr):
@@ -15,7 +18,39 @@ def _require_attr(cls, attr):
             cls.__module__, cls.__name__, attr))
 
 def simplified_modelapi(cls):
-    """ Decorator.... """
+    """ Decorator which creates a simplified API for a Django model.
+
+    The ``cls`` must have an inner class named ``Meta`` with
+    the following required attributes:
+
+        model
+            Then Django model.
+        methods
+            A list of supported CRUD+S methods. Legal values are:
+
+                - create
+                - read
+                - insecure_read_model
+                - update
+                - delete
+        resultfields
+            A :class:`FieldSpec` which defines what fields to
+            return from ``read()`` and ``search()``.
+        searchfields
+            A :class:`FieldSpec` which defines what fields to
+            search in ``search()``.
+
+    The ``cls`` must have the following methods for handling permissions:
+
+        read_authorize
+            Authorization method used for each call to ``read()``.
+        write_authorize
+            Authorization method used for each call to any CRUD+S
+            method except for ``read()``.
+        create_searchqryset
+            Method used to create the queryset filtered in search().
+            Required if ``"search"`` is in ``Meta.methods``.
+    """
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))
     meta = cls.Meta
