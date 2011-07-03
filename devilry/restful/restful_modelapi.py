@@ -34,7 +34,7 @@ def _create_editform(cls):
 
 def restful_modelapi(cls):
     """
-    :class:`ModelRestView` is used in conjunction with the
+    :class:`ModelRestfulView` is used in conjunction with the
     :class:`restful_modelapi`-decorator to autogenerate a RESTful
     interface for a simplified class (see :ref:`simplified`).
 

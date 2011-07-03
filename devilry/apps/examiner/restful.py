@@ -4,7 +4,7 @@
 #from ...restful import fields, SearchFormBase
 
 
-#class RestfulSimplifiedSubject(RestView):
+#class RestfulSimplifiedSubject(RestfulView):
     #SIMPCLASS = SimplifiedSubject
 
     #def restultqry_to_list(self, resultQry):
@@ -20,7 +20,7 @@
                 #fallbackvalue=SimplifiedSubject._meta.ordering)
 
 
-#class RestfulSimplifiedPeriod(RestView):
+#class RestfulSimplifiedPeriod(RestfulView):
     #SIMPCLASS = SimplifiedPeriod
 
     #def restultqry_to_list(self, resultQry):
@@ -37,7 +37,7 @@
         #subject_short_name = forms.CharField(required=False)
 
 
-#class RestfulSimplifiedAssignment(RestView):
+#class RestfulSimplifiedAssignment(RestfulView):
     #SIMPCLASS = SimplifiedAssignment
 
     #def restultqry_to_list(self, resultQry):
@@ -60,7 +60,7 @@
         #period_short_name = forms.CharField(required=False)
 
 
-#class RestfulSimplifiedAssignmentGroup(RestView):
+#class RestfulSimplifiedAssignmentGroup(RestfulView):
     #SIMPCLASS = SimplifiedAssignmentGroup
     #class SearchForm(SearchFormBase):
         #orderby = fields.CharListWithFallbackField(

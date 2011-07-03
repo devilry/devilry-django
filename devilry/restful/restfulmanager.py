@@ -5,7 +5,7 @@ class RestfulManager(object):
 
     Basically, you create a ``RestfulManager``-object, lets call it
     ``myrestapi``, in you restful api, and decorate all your
-    :class:`devilry.restful.RestView` classes with ``@myrestapi.register``.
+    :class:`devilry.restful.RestfulView` classes with ``@myrestapi.register``.
 
     You can then add the urls by adding them to a
     ``django.conf.urls.defaults.patterns``-object like so::
@@ -23,7 +23,7 @@ class RestfulManager(object):
         """
         Register the given ``restapi`` with the manager.
 
-        :param restapi: A subclass of :class:`devilry.restful.RestView`.
+        :param restapi: A subclass of :class:`devilry.restful.RestfulView`.
         """
         if not hasattr(restapi, 'create_rest_url'):
             raise ValueError('Requires the create_rest_url method on any class that can be decorated with RestfulManager.register')

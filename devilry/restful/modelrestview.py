@@ -1,14 +1,14 @@
 from django.shortcuts import get_object_or_404
 
 from errors import InvalidRequestDataError
-from restview import RestView
+from restview import RestfulView
 from serializers import serializers, SerializableResult
 from django.http import HttpResponseBadRequest
 
 
-class ModelRestView(RestView):
+class ModelRestfulView(RestfulView):
     """
-    :class:`ModelRestView` is used in conjunction with the
+    :class:`ModelRestfulView` is used in conjunction with the
     :class:`restful_modelapi`-decorator to autogenerate a RESTful
     interface for a simplified class (see :ref:`simplified`).
     """

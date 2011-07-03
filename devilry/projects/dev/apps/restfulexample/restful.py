@@ -1,10 +1,10 @@
-from devilry.restful import RestfulManager, RestView, SerializableResult, restful_api
+from devilry.restful import RestfulManager, RestfulView, SerializableResult, restful_api
 
 example_restful = RestfulManager()
 
 @example_restful.register
 @restful_api
-class RestfulExample(RestView):
+class RestfulExample(RestfulView):
 
     def crud_create(self, request, id):
         # Create something here...

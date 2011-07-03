@@ -7,9 +7,9 @@ from django.contrib.auth.decorators import login_required
 from serializers import serialize, SerializableResult
 
 
-class RestView(View):
+class RestfulView(View):
     """
-    :class:`RestView` and the :func:`restful_api`-decorator is use in
+    :class:`RestfulView` and the :func:`restful_api`-decorator is use in
     conjunction to create a RESTful web service with a CRUD+S interface.
     """
 

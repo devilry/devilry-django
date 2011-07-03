@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.db import models
 
 from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
-from ...restful import restful_modelapi, ModelRestView
+from ...restful import restful_modelapi, ModelRestfulView
 from modelintegration import restfulmodelcls_to_extjsmodel
 from storeintegration import restfulmodelcls_to_extjsstore
 
@@ -30,7 +30,7 @@ class SimplifiedUser(object):
 
 
 @restful_modelapi
-class RestUser(ModelRestView):
+class RestUser(ModelRestfulView):
     class Meta:
         simplified = SimplifiedUser
 
