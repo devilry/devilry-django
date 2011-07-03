@@ -6,7 +6,7 @@ Requires JSDuck: https://github.com/nene/jsduck
 from subprocess import call
 import SimpleHTTPServer
 import SocketServer
-from os import chdir, walk
+from os import chdir, walk, makedirs
 from os.path import exists
 from shutil import rmtree
 
@@ -27,6 +27,8 @@ def find_javascriptfiles():
 def build(outdir):
     infiles = find_javascriptfiles()
     retcode = call(['jsduck', '--verbose', '--output', outdir] + infiles)
+    if not exists(outdir):
+        makedirs(outdir)
 
     print
     if retcode == 0:
