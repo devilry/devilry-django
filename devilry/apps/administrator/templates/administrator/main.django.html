@@ -14,13 +14,27 @@
 
     {{ RestfulSimplifiedSubject|extjs_model }}
     var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
-    var nodeform = {{ RestNode|extjs_forms}}
 
-    {{ RestSubject|extjs_model }}
-    var subjectstore = {{ RestSubject|extjs_store }}
+    {{ RestfulSimplifiedSubject|extjs_model }}
+    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
 
     {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
+
+    Ext.onReady(function() {
+        var nodeform = Ext.create('Ext.form.Panel', {
+            renderTo: 'form-example',
+            title: 'This is a shitty form',
+            defaultType: 'textfield',
+            {{ RestfulSimplifiedNode|extjs_forms}}
+        });
+
+        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load(1, {
+            success: function(node) {
+                nodeform.loadRecord(node);
+            }
+        });
+    });
 </script>
 
 <script src="{{ DEVILRY_STATIC_URL }}/administrator/main.js"></script>
@@ -29,4 +43,5 @@
 
 {% block main %}
 <div id='searchwidget'></div>
+<div id='form-example'></div>
 {% endblock %}

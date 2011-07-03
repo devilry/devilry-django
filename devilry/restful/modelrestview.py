@@ -61,7 +61,7 @@ class ModelRestfulView(RestfulView):
 
     def crud_search(self, request, **kwargs):
         """ Maps to the ``search`` method of the simplified class. """
-        if 'getdata_in_qrystring' in self.request.GET:
+        if 'getdata_in_qrystring' in self.request.GET: # NOTE: For easier ExtJS integration
             data = self.request.GET
         else:
             try:
@@ -89,7 +89,7 @@ class ModelRestfulView(RestfulView):
     def crud_read(self, request, id):
         """ Maps to the ``read`` method of the simplified class. """
         data = self._meta.simplified.read(self.request.user, id)
-        if 'wrap_in_items' in self.request.GET:
+        if 'wrap_in_items' in self.request.GET: # NOTE: For easier ExtJS integration
             data = dict(items=data, total=1, success=True)
         return SerializableResult(data)
 
