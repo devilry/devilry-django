@@ -53,7 +53,7 @@ search) interface. ``restfulexample/restful.py``:
 is only used to simplify setting up URLs for big restful APIs.
 
 Read, update and delete requires an identifier (``id``), because it makes no sense
-to manipulate an object that we can not identify. Each method returns a :class:`RestfulResult`,
+to manipulate an object that we can not identify. Each method returns a :class:`SerializableResult`,
 whose first argument is a serializable python object. The default serializer is
 JSON, which means that our class returns JSON unless the HTTP request contains a
 *HTTP Accept header* specifying another content type.

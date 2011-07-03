@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db.models import Sum
 
-from devilry.restful import (ModelRestView, RestView, RestfulResult, restful_api,
+from devilry.restful import (ModelRestView, RestView, SerializableResult, restful_api,
                              restful_modelapi)
 from simplified import StatConfig
 
@@ -17,7 +17,7 @@ class RestPeriodPoints(RestView):
         dataset = dataset.annotate(
                 sumperiod=Sum('candidate__assignment_group__scaled_points'))
         data = dataset.values('username', 'sumperiod')
-        return RestfulResult(dict(items=data))
+        return SerializableResult(dict(items=data))
 
 
 @restful_modelapi

@@ -5,7 +5,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 
 
 # TODO: Rename to SerializableResult
-class RestfulResult(object):
+class SerializableResult(object):
     """ Stores Python objects for serialization with :class:`SerializerRegistry`. """
     def __init__(self, result, httpresponsecls=HttpResponse, encoding='utf-8'):
         self.result = result
@@ -56,6 +56,6 @@ def serialize(f):
                 "Bad request: %s" % comformat,
                 format='text/plain; encoding=utf-8')
         self.comformat = comformat
-        result = f(self, request, *args, **kwargs) # returns a RestfulResult object
+        result = f(self, request, *args, **kwargs) # returns a SerializableResult object
         return serializers.create_response(result, comformat)
     return wrapper

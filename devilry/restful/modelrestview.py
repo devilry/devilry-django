@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from errors import InvalidRequestDataError
 from restview import RestView
-from serializers import serializers, RestfulResult
+from serializers import serializers, SerializableResult
 from django.http import HttpResponseBadRequest
 
 
@@ -53,7 +53,7 @@ class ModelRestView(RestView):
             fielderrors = dict(form.errors)
             non_field_errors = list(form.non_field_errors())
             result = dict(success=False, fielderrors=fielderrors, non_field_errors=non_field_errors)
-        return RestfulResult(result)
+        return SerializableResult(result)
 
 
 
@@ -65,7 +65,7 @@ class ModelRestView(RestView):
             try:
                 data = serializers.deserialize(self.comformat, self.request.raw_post_data)
             except ValueError, e:
-                return RestfulResult(
+                return SerializableResult(
                         result=dict(error='Bad request data: {0}. Perhaps you ment to'\
                                 'send GET data as a querystring? In that case, add ' \
                                 'getdata_in_qrystring=1 to your querystring.'.format(e)),
@@ -73,7 +73,7 @@ class ModelRestView(RestView):
         try:
             form = self.__class__._searchform_to_kwargs(data)
         except InvalidRequestDataError, e:
-            return RestfulResult(
+            return SerializableResult(
                     result=dict(error="Bad request: %s" % e),
                     httpresponsecls=HttpResponseBadRequest)
 
@@ -81,7 +81,7 @@ class ModelRestView(RestView):
         qryresultwrapper = self._meta.simplified.search(self.request.user, **form)
         resultList = self.restultqry_to_list(qryresultwrapper)
         result = dict(total=len(resultList), success=True, items=resultList)
-        return RestfulResult(result)
+        return SerializableResult(result)
 
 
     def crud_read(self, request, id):
@@ -89,7 +89,7 @@ class ModelRestView(RestView):
         data = self._meta.simplified.read(self.request.user, id)
         if 'wrap_in_items' in self.request.GET:
             data = dict(items=data, total=1, success=True)
-        return RestfulResult(data)
+        return SerializableResult(data)
 
 
     def crud_create(self, request):
@@ -105,4 +105,4 @@ class ModelRestView(RestView):
     def crud_delete(self, request, id):
         """ Maps to the ``delete`` method of the simplified class. """
         self._meta.simplified.delete(request.user, id)
-        return RestfulResult(dict(pk=id))
+        return SerializableResult(dict(pk=id))

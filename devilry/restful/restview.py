@@ -4,7 +4,7 @@ from django.http import HttpResponseBadRequest
 from django.conf.urls.defaults import url
 from django.contrib.auth.decorators import login_required
 
-from serializers import serialize, RestfulResult
+from serializers import serialize, SerializableResult
 
 
 class RestView(View):
@@ -37,13 +37,13 @@ class RestView(View):
         if kwargs['id'] == None:
             del kwargs['id']
             if not hasattr(self, 'crud_search'):
-                return RestfulResult(dict(
+                return SerializableResult(dict(
                     error='GET method with no identifier (search) is not supported.'),
                     httpresponsecls=HttpResponseBadRequest)
             return self.crud_search(request, **kwargs)
         else:
             if not hasattr(self, 'crud_read'):
-                return RestfulResult(dict(
+                return SerializableResult(dict(
                     error='GET method with identifier (read) is not supported.'),
                     httpresponsecls=HttpResponseBadRequest)
             return self.crud_read(request, **kwargs)
