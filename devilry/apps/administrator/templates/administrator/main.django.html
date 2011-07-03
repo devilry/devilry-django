@@ -9,14 +9,14 @@
     href="{{ DEVILRY_STATIC_URL }}/administrator/main.css" />
 
 <script>
-    {{ RestNode|extjs_model }}
-    var nodestore = {{ RestNode|extjs_store }}
+    {{ RestfulSimplifiedNode|extjs_model }}
+    var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
 
-    {{ RestSubject|extjs_model }}
-    var subjectstore = {{ RestSubject|extjs_store }}
+    {{ RestfulSimplifiedSubject|extjs_model }}
+    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
 
-    {{ RestPeriod|extjs_model:"subject" }}
-    var periodstore = {{ RestPeriod|extjs_store }}
+    {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
+    var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
 </script>
 
 <script src="{{ DEVILRY_STATIC_URL }}/administrator/main.js"></script>

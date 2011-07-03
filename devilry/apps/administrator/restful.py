@@ -1,23 +1,23 @@
 from ...restful import restful_modelapi, ModelRestView
-from simplified import Node, Subject, Period
+from simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod
 
 
-__all__ = ('RestNode', 'RestSubject', 'RestPeriod')
-
-
-@restful_modelapi
-class RestNode(ModelRestView):
-    class Meta:
-        simplified = Node
+__all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject', 'RestfulSimplifiedPeriod')
 
 
 @restful_modelapi
-class RestSubject(ModelRestView):
+class RestfulSimplifiedNode(ModelRestView):
     class Meta:
-        simplified = Subject
+        simplified = SimplifiedNode
 
 
 @restful_modelapi
-class RestPeriod(ModelRestView):
+class RestfulSimplifiedSubject(ModelRestView):
     class Meta:
-        simplified = Period
+        simplified = SimplifiedSubject
+
+
+@restful_modelapi
+class RestfulSimplifiedPeriod(ModelRestView):
+    class Meta:
+        simplified = SimplifiedPeriod
