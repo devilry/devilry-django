@@ -45,7 +45,8 @@ def restful_api(cls):
             """ Fake meta class """
         meta = Meta
     cls._meta = meta
-    cls._meta.urlprefix = cls.__name__.lower()
+    if not hasattr(cls._meta, 'urlprefix'):
+        cls._meta.urlprefix = cls.__name__.lower()
     if not hasattr(cls._meta, 'urlmap'):
         cls._meta.urlmap = {}
     urlname = '%s-%s' % (cls.__module__, cls.__name__)
@@ -56,7 +57,6 @@ def restful_api(cls):
 def restful_modelapi(cls):
     cls = restful_api(cls)
     _require_metaattr(cls, 'simplified')
-    model = cls._meta.simplified._meta.model
     _create_seachform(cls)
     _create_editform(cls)
     return cls

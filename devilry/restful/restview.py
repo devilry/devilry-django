@@ -73,7 +73,7 @@ def serialize(f):
 class RestView(View):
     @classmethod
     def create_rest_url(cls):
-        return url(r'^%s/(?P<id>[a-zA-Z0-9]+)?$' % cls._meta.urlprefix,
+        return url(r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$'.format(urlprefix=cls._meta.urlprefix),
             login_required(cls.as_view()),
             name=cls._meta.urlname)
 

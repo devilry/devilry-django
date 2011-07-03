@@ -1,5 +1,3 @@
-from django import forms
-
 from ...restful import restful_modelapi, ModelRestView
 from simplified import Node, Subject, Period
 
@@ -23,7 +21,3 @@ class RestSubject(ModelRestView):
 class RestPeriod(ModelRestView):
     class Meta:
         simplified = Period
-
-    class EditForm(forms.ModelForm):
-        model = Period._meta.model
-        fields = Period._meta.resultfields.aslist('subject')
