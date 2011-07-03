@@ -29,7 +29,7 @@
                 xtype: 'administratorsearchresults',
                 title: 'Nodes',
                 store: nodestore,
-                editorurl: '{% url administrator-editors-node %}'
+                editorurlprefix: '{% url administrator-editors-node %}'
             }, {
                 xtype: 'administratorsearchresults',
                 title: 'Subjects',
@@ -48,6 +48,7 @@
             }]
         });
 
+        searchwidget.loadInitialValues();
         searchwidget.focusOnSearchfield();
     });
 </script>

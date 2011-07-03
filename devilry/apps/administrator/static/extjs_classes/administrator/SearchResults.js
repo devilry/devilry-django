@@ -1,7 +1,19 @@
-/** A grid containing search results. */
+/** A grid containing search results.
+ *
+ * @xtype administratorsearchresults
+ * */
 Ext.define('devilry.administrator.SearchResults', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.administratorsearchresults',
+    config: {
+        /**
+         * @cfg
+         * Editor url prefix (__Required__). The editor url for a specific
+         * item is ``editorurlprefix+id``. Note that this means that editorurlprefix _must_
+         * end with ``/``.
+         */
+        editorurlprefix: ''
+    },
 
     initComponent: function() {
         Ext.apply(this, {
@@ -38,7 +50,7 @@ Ext.define('devilry.administrator.SearchResults', {
     listeners: {
         selectionchange: function(view, selections, options) {
             var record = selections[0].data;
-            window.location = Ext.String.format('{0}{1}',  this.editorurl, record.id);
+            window.location = Ext.String.format('{0}{1}',  this.editorurlprefix, record.id);
         }
     },
 
