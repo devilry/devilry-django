@@ -1,0 +1,203 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.core.models.deadline &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.core.models.deadline</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">PermissionDenied</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="kn">from</span> <span class="nn">assignment_group</span> <span class="kn">import</span> <span class="n">AssignmentGroup</span>
+
+<div class="viewcode-block" id="Deadline"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline">[docs]</a><span class="k">class</span> <span class="nc">Deadline</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. attribute:: assignment_group</span>
+
+<span class="sd">        The assignment group where the deadline is registered.</span>
+
+<span class="sd">    .. attribute:: deadline</span>
+
+<span class="sd">        The deadline a DateTimeField.</span>
+
+<span class="sd">    .. attribute:: text</span>
+
+<span class="sd">        A optional deadline text.</span>
+
+<span class="sd">   .. attribute:: deliveries</span>
+
+<span class="sd">        A django ``RelatedManager`` that holds the :class:`deliveries</span>
+<span class="sd">        &lt;Delivery&gt;` on this group.</span>
+
+<span class="sd">   .. attribute:: status</span>
+
+<span class="sd">        The status of this deadline. The data can be deduces from other data in the database, but</span>
+<span class="sd">        since this requires complex queries, we store it as a integer</span>
+<span class="sd">        instead, with the following values:</span>
+
+<span class="sd">            0. No deliveries</span>
+<span class="sd">            1. Has deliveries</span>
+<span class="sd">            2. Corrected, not published</span>
+<span class="sd">            3. Corrected and published</span>
+
+<span class="sd">    .. attribute:: feedbacks_published</span>
+
+<span class="sd">        If this boolean field is ``True``, the student can see all</span>
+<span class="sd">        :class:`StaticFeedback` objects associated with this Deadline through a</span>
+<span class="sd">        :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping</span><span class="p">),</span>
+            <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Status&#39;</span><span class="p">))</span>
+    <span class="n">assignment_group</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">AssignmentGroup</span><span class="p">,</span>
+            <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;deadlines&#39;</span><span class="p">)</span> 
+    <span class="n">deadline</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">is_head</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">deliveries_available_before_deadline</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">feedbacks_published</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">app_label</span> <span class="o">=</span> <span class="s">&#39;core&#39;</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Deadline&#39;</span><span class="p">)</span>
+        <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Deadlines&#39;</span><span class="p">)</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;-deadline&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_status_from_qry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get status for active deadline&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">NO_DELIVERIES</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">deliveries_with_feedback</span> <span class="o">=</span> <span class="p">[</span><span class="n">delivery</span> <span class="k">for</span> <span class="n">delivery</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> \
+                                        <span class="k">if</span> <span class="n">delivery</span><span class="o">.</span><span class="n">feedbacks</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">deliveries_with_feedback</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feedbacks_published</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">CORRECTED_AND_PUBLISHED</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">CORRECTED_NOT_PUBLISHED</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">HAS_DELIVERIES</span>
+
+    <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Query for the correct status, and set :attr:`status`. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_status_from_qry</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="Deadline.clean"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate the deadline.</span>
+
+<span class="sd">        Always call this before save()! Read about validation here:</span>
+<span class="sd">        http://docs.djangoproject.com/en/dev/ref/models/instances/#id1</span>
+
+<span class="sd">        Raises ValidationError if:</span>
+
+<span class="sd">            - ``deadline`` is before ``Assignment.publishing_time``. </span>
+<span class="sd">            - ``deadline`` is not before ``Period.end_time``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadline</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadline</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">publishing_time</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Deadline cannot be before publishing time.&#39;</span><span class="p">))</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadline</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="n">_</span><span class="p">(</span><span class="s">&quot;Deadline must be within it&#39;s period (</span><span class="si">%(period)s</span><span class="s">).&quot;</span>
+                      <span class="o">%</span> <span class="nb">dict</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">parentnode</span><span class="p">))))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Deadline</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deadline</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Deadline.is_old"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline.is_old">[docs]</a>    <span class="k">def</span> <span class="nf">is_old</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return True if :attr:`deadline` expired. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadline</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Deadline.delete"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Prevent deletion if this is the head deadline &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Deadline</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,171 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.core.models.filemeta &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.core.models.filemeta</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
+
+<span class="kn">from</span> <span class="nn">..deliverystore</span> <span class="kn">import</span> <span class="n">load_deliverystore_backend</span><span class="p">,</span> <span class="n">FileNotFoundError</span>
+
+<div class="viewcode-block" id="FileMeta"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.filemeta.FileMeta">[docs]</a><span class="k">class</span> <span class="nc">FileMeta</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the metadata for a file belonging to a `Delivery`_.</span>
+
+<span class="sd">    .. attribute:: delivery</span>
+
+<span class="sd">        A django.db.models.OneToOneField_ that points to the `Delivery`_ to</span>
+<span class="sd">        be given feedback.</span>
+
+<span class="sd">    .. attribute:: filename</span>
+
+<span class="sd">        Name of the file.</span>
+
+<span class="sd">    .. attribute:: size</span>
+
+<span class="sd">        Size of the file in bytes.</span>
+
+<span class="sd">    .. attribute:: deliverystore</span>
+
+<span class="sd">        The current :ref:`DeliveryStore &lt;devilry.apps.core.deliverystore&gt;`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delivery</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&quot;Delivery&quot;</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;filemetas&#39;</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+
+    <span class="n">deliverystore</span> <span class="o">=</span> <span class="n">load_deliverystore_backend</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">app_label</span> <span class="o">=</span> <span class="s">&#39;core&#39;</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;FileMeta&#39;</span><span class="p">)</span>
+        <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;FileMetas&#39;</span><span class="p">)</span>
+        <span class="n">unique_together</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;delivery&#39;</span><span class="p">,</span> <span class="s">&#39;filename&#39;</span><span class="p">)</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="FileMeta.remove_file"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.filemeta.FileMeta.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the file using the</span>
+<span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method</span>
+<span class="sd">        of the :attr:`deliverystore`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="FileMeta.file_exists"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.filemeta.FileMeta.file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the file exists using the</span>
+<span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method</span>
+<span class="sd">        of the :attr:`deliverystore`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="FileMeta.read_open"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.filemeta.FileMeta.read_open">[docs]</a>    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open file for reading using the</span>
+<span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method</span>
+<span class="sd">        of the :attr:`deliverystore`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+
+</div>
+<span class="k">def</span> <span class="nf">filemeta_deleted_handler</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">filemeta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;instance&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">filemeta</span><span class="o">.</span><span class="n">remove_file</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">FileNotFoundError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c"># TODO: We should have some way of cleaning files which have no</span>
+        <span class="c"># corresponding FileMeta from DeliveryStores (could happen if the</span>
+        <span class="c"># disk is not mounted when this kicks in..</span>
+        <span class="k">pass</span>
+
+
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">pre_delete</span><span class="p">,</span> <span class="n">post_save</span>
+<span class="n">pre_delete</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">filemeta_deleted_handler</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">FileMeta</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

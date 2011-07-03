@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.core.models.assignment_group &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.core.models.assignment_group</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="kn">from</span> <span class="nn">node</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">abstract_is_admin</span> <span class="kn">import</span> <span class="n">AbstractIsAdmin</span>
+<span class="kn">from</span> <span class="nn">abstract_is_examiner</span> <span class="kn">import</span> <span class="n">AbstractIsExaminer</span>
+<span class="kn">from</span> <span class="nn">assignment</span> <span class="kn">import</span> <span class="n">Assignment</span>
+
+<span class="c"># TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.</span>
+<div class="viewcode-block" id="AssignmentGroup"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup">[docs]</a><span class="k">class</span> <span class="nc">AssignmentGroup</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a student or a group of students. </span>
+
+
+<span class="sd">    .. attribute:: parentnode</span>
+
+<span class="sd">        A django.db.models.ForeignKey_ that points to the parent node,</span>
+<span class="sd">        which is always an `Assignment`_.</span>
+
+<span class="sd">    .. attribute:: name</span>
+
+<span class="sd">        A optional name for the group.</span>
+
+<span class="sd">    .. attribute:: candidates</span>
+
+<span class="sd">        A django ``RelatedManager`` that holds the :class:`candidates</span>
+<span class="sd">        &lt;Candidate&gt;` on this group.</span>
+
+<span class="sd">    .. attribute:: examiners</span>
+
+<span class="sd">        A django.db.models.ManyToManyField_ that holds the examiner(s) that are</span>
+<span class="sd">        to correct and grade the assignment.</span>
+
+<span class="sd">    .. attribute:: is_open</span>
+
+<span class="sd">        A django.db.models.BooleanField_ that tells you if the group can add</span>
+<span class="sd">        deliveries or not.</span>
+
+<span class="sd">    .. attribute:: deliveries</span>
+
+<span class="sd">        A set of deliveries for this assignmentgroup </span>
+
+<span class="sd">    .. attribute:: deadlines</span>
+
+<span class="sd">        A set of deadlines for this assignmentgroup </span>
+
+<span class="sd">    .. attribute:: status</span>
+
+<span class="sd">        **Cached field**: This status is a cached value of the status on the last</span>
+<span class="sd">        deadline on this assignmentgroup.</span>
+
+<span class="sd">    .. attribute:: status_mapping</span>
+
+<span class="sd">        Maps :attr:`status` to a translated string for examiners and</span>
+<span class="sd">        admins. ``status_mapping[0]`` contains a localized version of ``&quot;No</span>
+<span class="sd">        deliveries&quot;``, and so on.</span>
+
+<span class="sd">    .. attribute:: status_mapping_student</span>
+
+<span class="sd">        Maps :attr:`status` to a translated string for students. The same as</span>
+<span class="sd">        :attr:`status_mapping` except that ``status_mapping_student[2]``</span>
+<span class="sd">        contains ``&quot;Not corrected&quot;``, and ``status_mapping_student[3]``</span>
+<span class="sd">        contains ``&quot;Corrected&quot;``. This is because the student should never</span>
+<span class="sd">        know about unpublished feedback.</span>
+
+<span class="sd">    .. attribute:: points</span>
+
+<span class="sd">        The number of points this group got on their latest published</span>
+<span class="sd">        delivery. This fields is only updated when a published feedback</span>
+<span class="sd">        is saved.</span>
+
+<span class="sd">    .. attribute:: scaled_points</span>
+
+<span class="sd">        The :attr:`points` of this group scaled according to</span>
+<span class="sd">        :attr:`Assignment.pointscale` and :attr:`Assignment.maxpoints`.</span>
+
+<span class="sd">        Calculated as: `float(pointscale)/maxpoints * points`.</span>
+
+<span class="sd">        **Note:** This field is a cache for the calculation above.</span>
+
+<span class="sd">    .. attribute:: NO_DELIVERIES</span>
+
+<span class="sd">        The numberic value corresponding to :attr:`status` *no deliveries*.</span>
+
+<span class="sd">    .. attribute:: DEADLINE_NOT_EXPIRED</span>
+
+<span class="sd">        The numberic value corresponding to :attr:`status` *deadline not expired*.</span>
+
+<span class="sd">    .. attribute:: AWAITING_CORRECTION</span>
+
+<span class="sd">        The numberic value corresponding to :attr:`status` *awaiting correction*.</span>
+
+<span class="sd">    .. attribute:: CORRECTED_NOT_PUBLISHED</span>
+
+<span class="sd">        The numberic value corresponding to :attr:`status` *corrected, not published*.</span>
+
+<span class="sd">    .. attribute:: CORRECTED_AND_PUBLISHED</span>
+
+<span class="sd">        The numberic value corresponding to :attr:`status` *corrected and published*.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">status_mapping</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;No deliveries&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;Has deliveries&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;Corrected, not published&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;Corrected and published&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">status_mapping_student</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">status_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">status_mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">status_mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;Corrected&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">status_mapping_cssclass</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;status_no_deliveries&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;status_has_deliveries&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;status_corrected_not_published&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s">&quot;status_corrected_and_published&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">status_mapping_student_cssclass</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">NO_DELIVERIES</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">HAS_DELIVERIES</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CORRECTED_NOT_PUBLISHED</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">CORRECTED_AND_PUBLISHED</span> <span class="o">=</span> <span class="mi">3</span>
+    
+    <span class="n">parentnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Assignment</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;assignmentgroups&#39;</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">examiners</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">related_name</span><span class="o">=</span><span class="s">&quot;examiners&quot;</span><span class="p">)</span>
+    <span class="n">is_open</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">help_text</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;If this is checked, the group can add deliveries.&#39;</span><span class="p">))</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">status_mapping</span><span class="p">),</span>
+            <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Status&#39;</span><span class="p">))</span>
+
+    <span class="c"># Caches for fields in the last feedback</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">help_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Final number of points for this group. This &#39;</span>\
+                <span class="s">&#39;number is controlled by the grade plugin, and should not &#39;</span>\
+                <span class="s">&#39;be changed manually.&#39;</span><span class="p">))</span>
+    <span class="n">scaled_points</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FloatField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">is_passing_grade</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">app_label</span> <span class="o">=</span> <span class="s">&#39;core&#39;</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_scaled_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">pointscale</span><span class="p">)</span>
+        <span class="n">maxpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">maxpoints</span>
+        <span class="k">if</span> <span class="n">maxpoints</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">scale</span><span class="o">/</span><span class="n">maxpoints</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">create_default_deadline</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="c"># Only if object doesn&#39;t yet exist in the database</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">:</span>
+            <span class="n">create_default_deadline</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AssignmentGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">create_default_deadline</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deadlines</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">deadline</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">assignment_group</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_head</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
+                <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
+                <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
+                <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AssignmentGroup.q_is_candidate"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.q_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a django.models.Q object matching AssignmentGroups where</span>
+<span class="sd">        the given student is candidate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AssignmentGroup.where_is_candidate"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all AssignmentGroups where the</span>
+<span class="sd">        given user is student.</span>
+
+<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
+<span class="sd">        :rtype: QuerySet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">q_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AssignmentGroup.published_where_is_candidate"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.published_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">published_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all :ref:`published</span>
+<span class="sd">        &lt;assignment-classifications&gt;` assignment groups where the given user</span>
+<span class="sd">        is student.</span>
+
+<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
+<span class="sd">        :rtype: QuerySet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">q_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">&amp;</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">q_published</span><span class="p">(</span><span class="n">old</span><span class="o">=</span><span class="n">old</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="n">active</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AssignmentGroup.active_where_is_candidate"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.active_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">active_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all :ref:`active</span>
+<span class="sd">        &lt;assignment-classifications&gt;` assignment groups where the given user</span>
+<span class="sd">        is student.</span>
+
+<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
+<span class="sd">        :rtype: QuerySet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AssignmentGroup.old_where_is_candidate"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.old_where_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">old_where_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all :ref:`old</span>
+<span class="sd">        &lt;assignment-classifications&gt;` assignment groups where the given user</span>
+<span class="sd">        is student.</span>
+
+<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
+<span class="sd">        :rtype: QuerySet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">u&#39;</span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_candidates</span><span class="p">())</span>
+
+<div class="viewcode-block" id="AssignmentGroup.get_students"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_students">[docs]</a>    <span class="k">def</span> <span class="nf">get_students</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a string containing all students in the group separated by</span>
+<span class="sd">        comma and a space, like: ``superman, spiderman, batman``.</span>
+
+<span class="sd">        **WARNING:** You should never use this method when the user is not</span>
+<span class="sd">        an administrator. Use :meth:`get_candidates`</span>
+<span class="sd">        instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">u&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.get_candidates"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_candidates">[docs]</a>    <span class="k">def</span> <span class="nf">get_candidates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a string containing all candiates in the group separated by</span>
+<span class="sd">        comma and a space, like: ``superman, spiderman, batman`` for normal</span>
+<span class="sd">        assignments, and something like: ``321, 1533, 111`` for anonymous</span>
+<span class="sd">        assignments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">u&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.get_examiners"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_examiners">[docs]</a>    <span class="k">def</span> <span class="nf">get_examiners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a string contaning all examiners in the group separated by</span>
+<span class="sd">        comma (``&#39;,&#39;``). &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">u&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">examiners</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+</div>
+    <span class="k">def</span> <span class="nf">is_admin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_candidate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="AssignmentGroup.is_examiner"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">is_examiner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return True if user is examiner on this assignment group &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">examiners</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">user_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.get_active_deadline"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_active_deadline">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_deadline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the active :class:`Deadline`.</span>
+
+<span class="sd">        This is always the last deadline on this group.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            The latest deadline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadlines</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-deadline&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_status_from_qry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get status from active deadline&quot;&quot;&quot;</span>
+        <span class="n">active_deadline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_deadline</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">active_deadline</span><span class="o">.</span><span class="n">status</span>
+
+<div class="viewcode-block" id="AssignmentGroup.get_localized_status"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_localized_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the current status string from :attr:`AssignmentGroup.status_mapping`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.get_localized_student_status"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_localized_student_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_localized_student_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
+<span class="sd">        :attr:`AssignmentGroup.status_mapping_student`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_student</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.get_status_cssclass"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
+<span class="sd">        :attr:`AssignmentGroup.status_mapping_cssclass`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.get_status_student_cssclass"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_student_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_student_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
+<span class="sd">        :attr:`AssignmentGroup.status_mapping_student_cssclass`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_student_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
+</div>
+    <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Query for the correct status, and set :attr:`status`. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_status_from_qry</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AssignmentGroup.can_save"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.can_save">[docs]</a>    <span class="k">def</span> <span class="nf">can_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the user has permission to save this AssignmentGroup. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="AssignmentGroup.can_add_deliveries"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.can_add_deliveries">[docs]</a>    <span class="k">def</span> <span class="nf">can_add_deliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns true if a student can add deliveries on this assignmentgroup</span>
+
+<span class="sd">        Both the assignmentgroups is_open attribute, and the periods start</span>
+<span class="sd">        and end time is checked.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_active</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

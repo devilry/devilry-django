@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.core.models.basenode &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.core.models.basenode</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="kn">from</span> <span class="nn">abstract_is_admin</span> <span class="kn">import</span> <span class="n">AbstractIsAdmin</span>
+<span class="kn">from</span> <span class="nn">save_interface</span> <span class="kn">import</span> <span class="n">SaveInterface</span>
+
+<div class="viewcode-block" id="BaseNode"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.basenode.BaseNode">[docs]</a><span class="k">class</span> <span class="nc">BaseNode</span><span class="p">(</span><span class="n">AbstractIsAdmin</span><span class="p">,</span> <span class="n">SaveInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The base class of the Devilry hierarchy. Implements basic functionality</span>
+<span class="sd">    used by the other Node classes. This is an abstract datamodel, so it</span>
+<span class="sd">    is never used directly.</span>
+
+
+<span class="sd">    .. attribute:: short_name</span>
+
+<span class="sd">        A django.db.models.SlugField_ with max 20 characters. Only numbers,</span>
+<span class="sd">        letters, &#39;_&#39; and &#39;-&#39;.</span>
+
+<span class="sd">    .. attribute:: long_name</span>
+
+<span class="sd">        A django.db.models.CharField_ with max 100 characters. Gives a longer </span>
+<span class="sd">        description than :attr:`short_name`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_name</span>
+    <span class="n">get_path</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Path&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">get_full_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">get_full_path</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_name</span>
+    <span class="n">get_full_path</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Unique Path&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">get_admins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a string with the username of all administrators on this node</span>
+<span class="sd">        separated by comma and a space like: ``&quot;uioadmin, superuser&quot;``.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that admins on parentnode(s) is not included.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">u&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">admins</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+    <span class="n">get_admins</span><span class="o">.</span><span class="n">short_description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Administrators&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_admin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given user is admin on this node or any parentnode.</span>
+<span class="sd">        </span>
+<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">admins</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">user_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">_can_save_id_none</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used by all except Node, which overrides. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">can_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_can_save_id_none</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

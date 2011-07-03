@@ -53,13 +53,13 @@
             
   <div class="section" id="restful-web-service-api">
 <span id="restful"></span><h1>RESTful web service API<a class="headerlink" href="#restful-web-service-api" title="Permalink to this headline">¶</a></h1>
-<p><em>Under development</em></p>
 <p><a class="reference external" href="http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services">http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services</a></p>
+<p>This API was first introduced in this <a class="reference external" href="https://github.com/devilry/devilry-django/issues/93">github issue</a></p>
 <div class="section" id="http-status-codes">
 <h2>HTTP status codes<a class="headerlink" href="#http-status-codes" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>200 OK</dt>
-<dd>The request was succesful. The requested data is returned.</dd>
+<dd>The request was successful. The requested data is returned.</dd>
 <dt>400 Bad Request</dt>
 <dd>A parameter is invalid. The data contains an error message.</dd>
 <dt>401 Unauthorized</dt>
@@ -70,176 +70,245 @@
 <dd>Resource not found at the given url.</dd>
 </dl>
 </div>
-<div class="section" id="examiner">
-<h2>/examiner/<a class="headerlink" href="#examiner" title="Permalink to this headline">¶</a></h2>
-<p>All urls in the /examiner/ path work on data where the authenticated user is
-examiner.</p>
-<div class="section" id="assignments">
-<h3>assignments/<a class="headerlink" href="#assignments" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tutorial">
+<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
+<p>For this tutorial, create the <em>myexample</em> django application. You can see the
+result of everything we explain here in
+<tt class="docutils literal"><span class="pre">devilry/projects/dev/apps/restfulexample/</span></tt>.</p>
+<div class="section" id="a-simple-restful-example">
+<h3>A simple RESTful example<a class="headerlink" href="#a-simple-restful-example" title="Permalink to this headline">¶</a></h3>
+<p>We will start with a creating a CRUD+s (create, read, update, delete and
+search) interface. <tt class="docutils literal"><span class="pre">restfulexample/restful.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">devilry.restful</span> <span class="kn">import</span> <span class="n">RestfulManager</span><span class="p">,</span> <span class="n">RestfulView</span><span class="p">,</span> <span class="n">SerializableResult</span><span class="p">,</span> <span class="n">restful_api</span>
+
+<span class="n">example_restful</span> <span class="o">=</span> <span class="n">RestfulManager</span><span class="p">()</span>
+
+<span class="nd">@example_restful.register</span>
+<span class="nd">@restful_api</span>
+<span class="k">class</span> <span class="nc">RestfulExample</span><span class="p">(</span><span class="n">RestfulView</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">crud_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="c"># Create something here...</span>
+        <span class="k">return</span> <span class="n">SerializableResult</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">&quot;Successfully created something&quot;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">crud_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="c"># A real application would probably get data from the database</span>
+        <span class="c"># using the given ``id`` here</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s">&quot;Hello world&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SerializableResult</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">crud_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SerializableResult</span><span class="p">(</span><span class="s">&#39;Updating&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">crud_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SerializableResult</span><span class="p">(</span><span class="s">&#39;Deleting&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">crud_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SerializableResult</span><span class="p">([</span><span class="s">&#39;Hello&#39;</span><span class="p">,</span> <span class="s">&#39;Cruel&#39;</span><span class="p">,</span> <span class="s">&#39;World&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">&#64;example_restful</span></tt> is a <a class="reference internal" href="#devilry.restful.RestfulManager" title="devilry.restful.RestfulManager"><tt class="xref py py-class docutils literal"><span class="pre">RestfulManager</span></tt></a> where we register our <tt class="docutils literal"><span class="pre">RestfulExample</span></tt>. The RestfulManager
+is only used to simplify setting up URLs for big restful APIs.</p>
+<p>Read, update and delete requires an identifier (<tt class="docutils literal"><span class="pre">id</span></tt>), because it makes no sense
+to manipulate an object that we can not identify. Each method returns a <a class="reference internal" href="#devilry.restful.SerializableResult" title="devilry.restful.SerializableResult"><tt class="xref py py-class docutils literal"><span class="pre">SerializableResult</span></tt></a>,
+whose first argument is a serializable python object. The default serializer is
+JSON, which means that our class returns JSON unless the HTTP request contains a
+<em>HTTP Accept header</em> specifying another content type.</p>
+</div>
+<div class="section" id="registering-urls-for-restfulexample">
+<h3>Registering urls for RestfulExample<a class="headerlink" href="#registering-urls-for-restfulexample" title="Permalink to this headline">¶</a></h3>
+<p>Since we use a <a class="reference internal" href="#devilry.restful.RestfulManager" title="devilry.restful.RestfulManager"><tt class="xref py py-class docutils literal"><span class="pre">RestfulManager</span></tt></a>, URL generation is very simple. <tt class="docutils literal"><span class="pre">restfulexample/urls.py</span></tt> looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.conf.urls.defaults</span> <span class="kn">import</span> <span class="n">patterns</span>
+<span class="kn">from</span> <span class="nn">restful</span> <span class="kn">import</span> <span class="n">example_restful</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;devilry.apps.restfulexample&#39;</span><span class="p">)</span>
+<span class="n">urlpatterns</span> <span class="o">+=</span> <span class="n">example_restful</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="module-devilry.restful">
+<span id="api"></span><h2>API<a class="headerlink" href="#module-devilry.restful" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="GET">
-<tt class="descname">GET</tt><big>(</big><em>count=50</em>, <em>start=0</em>, <em>orderby=&quot;short_name&quot;</em>, <em>old=0</em>, <em>active=1</em>, <em>search=&quot;&quot;</em>, <em>longnamefields=0</em>, <em>pointhandlingfields=0</em><big>)</big><a class="headerlink" href="#GET" title="Permalink to this definition">¶</a></dt>
-<dd><p>List all old and active assignments. Should provide the following
-information (fields) for each listed assignment by default:</p>
+<dt id="devilry.restful.restful_modelapi">
+<tt class="descclassname">devilry.restful.</tt><tt class="descname">restful_modelapi</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#devilry.restful.restful_modelapi" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#devilry.restful.ModelRestfulView" title="devilry.restful.ModelRestfulView"><tt class="xref py py-class docutils literal"><span class="pre">ModelRestfulView</span></tt></a> is used in conjunction with the
+<a class="reference internal" href="#devilry.restful.restful_modelapi" title="devilry.restful.restful_modelapi"><tt class="xref py py-class docutils literal"><span class="pre">restful_modelapi</span></tt></a>-decorator to autogenerate a RESTful
+interface for a simplified class (see <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a>).</p>
+<p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have an inner class named <tt class="docutils literal"><span class="pre">Meta</span></tt> with
+the following required attributes:</p>
 <blockquote>
-<div><ul class="simple">
-<li>id</li>
-<li>short_name</li>
-<li>period__short_name (parentnode.short_name)</li>
-<li>assignment__short_name (parentnode.parentnode.short_name)</li>
-</ul>
-</div></blockquote>
-<p>For documentation on the fields, see <a class="reference internal" href="core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>count</strong> &#8211; Number of results.</li>
-<li><strong>start</strong> &#8211; Offset where the result should start (If start is 10 and
-count is 30, results 10 to 40 is returned, including both ends).</li>
-<li><strong>old</strong> &#8211; Include assignments from old (not active) periods?</li>
-<li><strong>active</strong> &#8211; Include assignments from old (not active) periods?</li>
-<li><strong>orderby</strong> &#8211; Sort the result by this field. Must be one of:
-<em>id</em>, <em>short_name</em>, <em>long_name</em>, <em>id</em>, <em>publishing_time</em>, <em>pointscale</em>,
-<em>autoscale</em>, <em>maxpoints</em>, <em>attempts</em> or <em>must_pass</em>. See
-<a class="reference internal" href="core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a> for documentation on each of
-these fields.</li>
-<li><strong>search</strong> &#8211; A query to limit the results.</li>
-<li><strong>longnamefields</strong> &#8211; Include the <em>long_name</em> field of assignment, period and
-subject for each assignment in the result?</li>
-<li><strong>pointhandlingfields</strong> &#8211; Include the <em>grade_plugin</em>, <em>pointscale</em>, <em>autoscale</em>,
-<em>maxpoints</em>, <em>attempts</em>, and <em>must_pass</em> fields for each assignment in
-the result? The <em>grade_plugin</em> field contains the (human readable and
-translated) label instead of the grade plugin key.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The requested assignments if all is OK.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="groups-assignment-id">
-<h3>groups/{assignment-id}/<a class="headerlink" href="#groups-assignment-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><em>count=50</em>, <em>start=0</em>, <em>orderby=&quot;id&quot;</em>, <em>details=0</em>, <em>search=&quot;&quot;</em><big>)</big></dt>
-<dd><p>List all groups in the given assignment.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>count</strong> &#8211; Number of results.</li>
-<li><strong>start</strong> &#8211; Offset where the result should start (If start is 10 and
-count is 30, results 10 to 40 is returned, including both ends).</li>
-<li><strong>orderby</strong> &#8211; Sort the result by this field. Must be one of:
-<em>id</em>, <em>is_open</em>, <em>status</em>, <em>points</em>, <em>scaled_points</em> or
-<em>active_deadline</em> (only if details is 1).
-See <a class="reference internal" href="core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a> for documentation on
-each of these fields.</li>
-<li><strong>details</strong> &#8211; <p>Add details? If 1, the result will contain the following
-additional fields:</p>
-<dl class="docutils">
-<dt>deadlines</dt>
-<dd>A list of deadlines for this group.</dd>
-<dt>active_deadline</dt>
-<dd>The active deadline for this group.</dd>
+<div><dl class="docutils">
+<dt>simplified</dt>
+<dd>A <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> class.</dd>
 </dl>
-</li>
-<li><strong>search</strong> &#8211; A query to limit the results.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The requested groups if all is OK.</p>
-</td>
+</div></blockquote>
+<p>Furthermore, this decorator automatically decorates <tt class="docutils literal"><span class="pre">cls</span></tt> with
+<a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devilry.restful.restful_api">
+<tt class="descclassname">devilry.restful.</tt><tt class="descname">restful_api</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#devilry.restful.restful_api" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">RestfulView</span></tt></a> and the <a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>-decorator is use in
+conjunction to create a RESTful web service with a CRUD+S interface.</p>
+<p>Adds the <tt class="docutils literal"><span class="pre">_meta</span></tt> attribute to the decorated class. The <tt class="docutils literal"><span class="pre">_meta</span></tt>
+attribute has the following attributes:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>urlprefix</dt>
+<dd>The url prefix used for the url created by
+<a class="reference internal" href="#devilry.restful.RestfulView.create_rest_url" title="devilry.restful.RestfulView.create_rest_url"><tt class="xref py py-meth docutils literal"><span class="pre">RestfulView.create_rest_url()</span></tt></a>.  This is always:
+<tt class="docutils literal"><span class="pre">cls.__name__.lower()</span></tt></dd>
+<dt>urlname</dt>
+<dd>The name of the url created by
+<a class="reference internal" href="#devilry.restful.RestfulView.create_rest_url" title="devilry.restful.RestfulView.create_rest_url"><tt class="xref py py-meth docutils literal"><span class="pre">RestfulView.create_rest_url()</span></tt></a>. This is the full python
+dot-path to <tt class="docutils literal"><span class="pre">cls</span></tt> with <tt class="docutils literal"><span class="pre">.</span></tt> replaced by <tt class="docutils literal"><span class="pre">-</span></tt>.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.restful.RestfulView">
+<em class="property">class </em><tt class="descclassname">devilry.restful.</tt><tt class="descname">RestfulView</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.views.generic.base.View</span></tt></p>
+<p><a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">RestfulView</span></tt></a> and the <a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>-decorator is use in
+conjunction to create a RESTful web service with a CRUD+S interface.</p>
+<p>Constructor. Called in the URLconf; can contain helpful extra
+keyword arguments, and other things.</p>
+<dl class="classmethod">
+<dt id="devilry.restful.RestfulView.create_rest_url">
+<em class="property">classmethod </em><tt class="descname">create_rest_url</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView.create_rest_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <tt class="docutils literal"><span class="pre">django.conf.urls.defaults.url</span></tt>-object for this view:</p>
+<div class="highlight-python"><pre>r'^{urlprefix}/(?P&lt;id&gt;[a-zA-Z0-9]+)?$</pre>
+</div>
+<p>Where <tt class="docutils literal"><span class="pre">urlprefix</span></tt> is <tt class="docutils literal"><span class="pre">cls._meta.urlprefix</span></tt> documented in
+<a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
+<p>The name of the url is the <tt class="docutils literal"><span class="pre">cls._meta.urlname</span></tt>, documented in
+<a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
+<p>The view is wrapped by <tt class="xref py py-func docutils literal"><span class="pre">django.contrib.auth.decorators.login_required()</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.RestfulView.delete">
+<tt class="descname">delete</tt><big>(</big><em>request</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps HTTP DELETE requests to the <tt class="docutils literal"><span class="pre">crud_delete</span></tt> method, which subclasses
+can implement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.RestfulView.get">
+<tt class="descname">get</tt><big>(</big><em>request</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps HTTP POST requests to the <tt class="docutils literal"><span class="pre">crud_read</span></tt> and <tt class="docutils literal"><span class="pre">crud_search</span></tt>
+methods, which subclasses can implement. <tt class="docutils literal"><span class="pre">crud_read</span></tt> is called when
+<tt class="docutils literal"><span class="pre">id</span></tt> is in <tt class="docutils literal"><span class="pre">kwargs</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.RestfulView.post">
+<tt class="descname">post</tt><big>(</big><em>request</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps HTTP POST requests to the <tt class="docutils literal"><span class="pre">crud_create</span></tt> method, which subclasses
+can implement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.RestfulView.put">
+<tt class="descname">put</tt><big>(</big><em>request</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulView.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps HTTP PUT requests to the <tt class="docutils literal"><span class="pre">crud_update</span></tt> method, which subclasses
+can implement.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.restful.ModelRestfulView">
+<em class="property">class </em><tt class="descclassname">devilry.restful.</tt><tt class="descname">ModelRestfulView</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.restview.RestfulView</span></tt></p>
+<p><a class="reference internal" href="#devilry.restful.ModelRestfulView" title="devilry.restful.ModelRestfulView"><tt class="xref py py-class docutils literal"><span class="pre">ModelRestfulView</span></tt></a> is used in conjunction with the
+<a class="reference internal" href="#devilry.restful.restful_modelapi" title="devilry.restful.restful_modelapi"><tt class="xref py py-class docutils literal"><span class="pre">restful_modelapi</span></tt></a>-decorator to autogenerate a RESTful
+interface for a simplified class (see <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a>).</p>
+<p>Constructor. Called in the URLconf; can contain helpful extra
+keyword arguments, and other things.</p>
+<dl class="method">
+<dt id="devilry.restful.ModelRestfulView.crud_create">
+<tt class="descname">crud_create</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps to the <tt class="docutils literal"><span class="pre">create</span></tt> method of the simplified class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.ModelRestfulView.crud_delete">
+<tt class="descname">crud_delete</tt><big>(</big><em>request</em>, <em>id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps to the <tt class="docutils literal"><span class="pre">delete</span></tt> method of the simplified class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.ModelRestfulView.crud_read">
+<tt class="descname">crud_read</tt><big>(</big><em>request</em>, <em>id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps to the <tt class="docutils literal"><span class="pre">read</span></tt> method of the simplified class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.ModelRestfulView.crud_search">
+<tt class="descname">crud_search</tt><big>(</big><em>request</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps to the <tt class="docutils literal"><span class="pre">search</span></tt> method of the simplified class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.ModelRestfulView.crud_update">
+<tt class="descname">crud_update</tt><big>(</big><em>request</em>, <em>id</em><big>)</big><a class="headerlink" href="#devilry.restful.ModelRestfulView.crud_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps to the <tt class="docutils literal"><span class="pre">update</span></tt> method of the simplified class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.restful.SerializableResult">
+<em class="property">class </em><tt class="descclassname">devilry.restful.</tt><tt class="descname">SerializableResult</tt><big>(</big><em>result</em>, <em>httpresponsecls=&lt;class 'django.http.HttpResponse'&gt;</em>, <em>encoding='utf-8'</em><big>)</big><a class="headerlink" href="#devilry.restful.SerializableResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Stores Python objects for serialization with <tt class="xref py py-class docutils literal"><span class="pre">SerializerRegistry</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.restful.RestfulManager">
+<em class="property">class </em><tt class="descclassname">devilry.restful.</tt><tt class="descname">RestfulManager</tt><a class="headerlink" href="#devilry.restful.RestfulManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>The RestfulManager is used to simplify setting up URLs for (big) restful
+APIs.</p>
+<p>Basically, you create a <tt class="docutils literal"><span class="pre">RestfulManager</span></tt>-object, lets call it
+<tt class="docutils literal"><span class="pre">myrestapi</span></tt>, in you restful api, and decorate all your
+<a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.RestfulView</span></tt></a> classes with <tt class="docutils literal"><span class="pre">&#64;myrestapi.register</span></tt>.</p>
+<p>You can then add the urls by adding them to a
+<tt class="docutils literal"><span class="pre">django.conf.urls.defaults.patterns</span></tt>-object like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;devilry.apps.myexample&#39;</span><span class="p">)</span>
+<span class="n">urlpatterns</span> <span class="o">+=</span> <span class="n">myrestapi</span>
+</pre></div>
+</div>
+<p>An alternative would be to not decorate your views using this class,
+and rather use <tt class="xref py py-class docutils literal"><span class="pre">devilry.</span></tt></p>
+<dl class="method">
+<dt id="devilry.restful.RestfulManager.create_rest_urls">
+<tt class="descname">create_rest_urls</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.restful.RestfulManager.create_rest_urls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a list of django url objects for the restful apis registered
+with this manager.</p>
+<p>Typical usage in urls.py:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.restful.RestfulManager.register">
+<tt class="descname">register</tt><big>(</big><em>restapi</em><big>)</big><a class="headerlink" href="#devilry.restful.RestfulManager.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register the given <tt class="docutils literal"><span class="pre">restapi</span></tt> with the manager.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restapi</strong> &#8211; A subclass of <a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.RestfulView</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
-<div class="section" id="group-group-id">
-<h3>group/{group-id}<a class="headerlink" href="#group-group-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>Get all available information about the given group (not about any deliveries).</p>
 </dd></dl>
 
-</div>
-<div class="section" id="deliveries-group-id">
-<h3>deliveries/{group-id}/<a class="headerlink" href="#deliveries-group-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>List all deliveries by this group.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="delivery-delivery-id">
-<h3>delivery/{delivery-id}<a class="headerlink" href="#delivery-delivery-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>Get all information about the delivery with the given delivery-id,
-including feedback. This view might choose between embedding and linking/referencing
-<em>files/</em>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PUT">
-<tt class="descname">PUT</tt><big>(</big><big>)</big><a class="headerlink" href="#PUT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create or update feedback on the delivery.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="DELETE">
-<tt class="descname">DELETE</tt><big>(</big><big>)</big><a class="headerlink" href="#DELETE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear the feedback on the delivery.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="files-delivery-id">
-<h3>files/{delivery-id}/<a class="headerlink" href="#files-delivery-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>List all files in a delivery.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="download-file-file-id">
-<h3>download-file/{file-id}<a class="headerlink" href="#download-file-file-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>Download the requested file.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="list-filearchive-file-id">
-<h3>list-filearchive/{file-id}<a class="headerlink" href="#list-filearchive-file-id" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>List the contents of the file, if it is a supported archive format.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="download-filearchive-file-file-id-path">
-<h3>download-filearchive-file/{file-id}/path<a class="headerlink" href="#download-filearchive-file-file-id-path" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt>
-<tt class="descname">GET</tt><big>(</big><big>)</big></dt>
-<dd><p>Download a single file from within a supported archive format.</p>
-</dd></dl>
-
-</div>
 </div>
 </div>
 
@@ -253,18 +322,12 @@ including feedback. This view might choose between embedding and linking/referen
   <ul>
 <li><a class="reference internal" href="#">RESTful web service API</a><ul>
 <li><a class="reference internal" href="#http-status-codes">HTTP status codes</a></li>
-<li><a class="reference internal" href="#examiner">/examiner/</a><ul>
-<li><a class="reference internal" href="#assignments">assignments/</a></li>
-<li><a class="reference internal" href="#groups-assignment-id">groups/{assignment-id}/</a></li>
-<li><a class="reference internal" href="#group-group-id">group/{group-id}</a></li>
-<li><a class="reference internal" href="#deliveries-group-id">deliveries/{group-id}/</a></li>
-<li><a class="reference internal" href="#delivery-delivery-id">delivery/{delivery-id}</a></li>
-<li><a class="reference internal" href="#files-delivery-id">files/{delivery-id}/</a></li>
-<li><a class="reference internal" href="#download-file-file-id">download-file/{file-id}</a></li>
-<li><a class="reference internal" href="#list-filearchive-file-id">list-filearchive/{file-id}</a></li>
-<li><a class="reference internal" href="#download-filearchive-file-file-id-path">download-filearchive-file/{file-id}/path</a></li>
+<li><a class="reference internal" href="#tutorial">Tutorial</a><ul>
+<li><a class="reference internal" href="#a-simple-restful-example">A simple RESTful example</a></li>
+<li><a class="reference internal" href="#registering-urls-for-restfulexample">Registering urls for RestfulExample</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-devilry.restful">API</a></li>
 </ul>
 </li>
 </ul>

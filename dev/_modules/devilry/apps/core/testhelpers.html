@@ -131,8 +131,6 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="n">assignment</span> <span class="o">=</span> <span class="n">Assignment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
                     <span class="n">short_name</span><span class="o">=</span><span class="n">assignmentname</span><span class="p">)</span>
-        <span class="n">assignment</span><span class="o">.</span><span class="n">get_gradeplugin_registryitem</span><span class="p">()</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="n">init_example</span><span class="p">(</span>
-                <span class="n">assignment</span><span class="p">,</span> <span class="n">gradeplugin_maxpoints</span><span class="p">)</span>
         <span class="n">last</span> <span class="o">=</span> <span class="n">assignment</span>
 
     <span class="c"># Candidates</span>

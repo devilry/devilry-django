@@ -46,38 +46,21 @@
           <div class="body">
             
   <h1>Source code for devilry.utils.assignmentgroup</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="GroupDeliveriesByDeadline"><a class="viewcode-back" href="../../../utils.assignmengroup.html#devilry.utils.assignmentgroup.GroupDeliveriesByDeadline">[docs]</a><span class="k">class</span> <span class="nc">GroupDeliveriesByDeadline</span><span class="p">():</span>
+<div class="viewcode-block" id="GroupDeliveriesByDeadline"><a class="viewcode-back" href="../../../utils.assignmentgroup.html#devilry.utils.assignmentgroup.GroupDeliveriesByDeadline">[docs]</a><span class="k">class</span> <span class="nc">GroupDeliveriesByDeadline</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Takes a list of assignmentgroups and places them in three lists/categories; </span>
-<span class="sd">    after_last_deadline, self.within_a_deadline and self.ungrouped_deliveries.</span>
+<span class="sd">    Deliveries on an assignmentgroup is returned in a list of tuples, where</span>
+<span class="sd">    each tuple contains the deadline, and all the deliveries on that deadline.</span>
+<span class="sd">    If the default deadline (head) contains no deliveries, it is ignored.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">after_last_deadline</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">within_a_deadline</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ungrouped_deliveries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">deadlines</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">deadlines</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">)</span>
-        <span class="n">numdeadlines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">deadlines</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">numdeadlines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">deliveries</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-                    <span class="n">time_of_delivery__lte</span> <span class="o">=</span> <span class="n">deadlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">deadline</span><span class="p">)</span>
-
-            <span class="c"># Within a deadline</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">within_a_deadline</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">deadlines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">deliveries</span><span class="p">))</span>
-            <span class="n">previous</span> <span class="o">=</span> <span class="n">deadlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">deadline</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">deadlines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                <span class="n">deliveries</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-                        <span class="n">time_of_delivery__lte</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">deadline</span><span class="p">,</span>
-                        <span class="n">time_of_delivery__gt</span> <span class="o">=</span> <span class="n">previous</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
-                                <span class="s">&quot;-time_of_delivery&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">within_a_deadline</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">deliveries</span><span class="p">))</span>
-                <span class="n">previous</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">deadline</span>
-
-            <span class="c"># After last deadline</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">after_last_deadline</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-                    <span class="n">time_of_delivery__gt</span><span class="o">=</span><span class="n">deadlines</span><span class="p">[</span><span class="n">numdeadlines</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">deadline</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ungrouped_deliveries</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
-                    <span class="s">&#39;time_of_delivery&#39;</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">dl</span> <span class="ow">in</span> <span class="n">deadlines</span><span class="p">:</span>
+            <span class="n">deliveries</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&quot;-time_of_delivery&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dl</span><span class="o">.</span><span class="n">is_head</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">deliveries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">deliveries</span><span class="p">))</span>
+            </div>
 </pre></div>
 
           </div>

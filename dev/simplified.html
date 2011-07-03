@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
     <link rel="next" title="RESTful web service API" href="restful.html" />
-    <link rel="prev" title="Grade plugins" href="grade-plugins.html" /> 
+    <link rel="prev" title="How to write a plugin" href="plugins.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="restful.html" title="RESTful web service API"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="grade-plugins.html" title="Grade plugins"
+          <a href="plugins.html" title="How to write a plugin"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -54,6 +54,7 @@
   <div class="section" id="simplified-api">
 <span id="simplified"></span><h1>Simplified API<a class="headerlink" href="#simplified-api" title="Permalink to this headline">¶</a></h1>
 <p><em>The simplified API is under development.</em></p>
+<p>This API was first introduced in this <a class="reference external" href="https://github.com/devilry/devilry-django/issues/90">github issue</a></p>
 <p>The simplified API is a simple task oriented API which simplifies the most
 common needs. It is a API which lends itself naturally to be exposed
 as a RESTful web service API. This API is the public interface for devilry in any
@@ -93,7 +94,94 @@ not supported by the devilry web interface.</p>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>TODO: Create simplified API usage example.</p>
+<p>The code for a simplified class might look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@simplified_modelapi</span>
+<span class="k">class</span> <span class="nc">Subject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Subject</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">read_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is the API an examiner would use to access a subject in Devilry. Every Simplified API class
+has to have the fields <em>model, resultfields, searchfields</em> and <em>methods</em>. Depending on what methods you define
+you will also need to implement some &#64;classmethods in your Simplified class. Lets run through the details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>This class contains all the required fields. Lets look at what thiese fields do.</p>
+<p><em>model</em> defines the database model to be used:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Subject</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p><em>resultfields</em> defines the fields you will get access to when you search/read from the model using this API:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+    <span class="o">...</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p><em>searchfields</em> defines what fields in the model will be used when searching for this object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+    <span class="o">...</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>And <em>methods</em> define what methods will be created for this class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+    <span class="o">...</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now let look at the required methods for class Subject.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>runs a query in the database for the information <em>user</em> has access to with the parameters
+given in <em>kwargs</em> and returns this queryset. This is needed for all database-lookups.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">read_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>simply checkes that <em>user</em> has access to the information he/she/it tries to access. This is needed for
+the <em>read</em> method we defined in <em>methods</em>.</p>
+<p>Now its time to start using this API. If you look at the <em>methods</em> field you will se that the defined methods are
+<em>read</em> and <em>search</em>, and if we look at the <em>searchfields</em> we can search based on <em>short_name</em> and <em>long_name</em>.
+Say we have a subject with short_name = &#8216;dev10&#8217; and another subject with short_name = &#8216;dev11&#8217;. And we have a user
+with username = &#8216;bob&#8217; as an examiner in both subjects.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">simplified</span> <span class="kn">import</span> <span class="n">Subject</span>
+
+<span class="n">examinerbob</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&quot;bob&quot;</span><span class="p">)</span>
+<span class="n">qrywrap</span> <span class="o">=</span> <span class="n">Subject</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">examinerbob</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s">&quot;dev1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then <em>qrywrap</em> would contain the two subjects dev10 and dev11, since both short_name&#8217;s match our query.
+However, of we run:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">simplified</span> <span class="kn">import</span> <span class="n">Subject</span>
+
+<span class="n">examinerbob</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&quot;bob&quot;</span><span class="p">)</span>
+<span class="n">qrywrap</span> <span class="o">=</span> <span class="n">Subject</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">examinerbob</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s">&quot;10&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>our query will only match dev10, and <em>qrywrap</em> will only contain the subject dev10.</p>
 </div>
 <div class="section" id="public-api">
 <h2>Public API<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
@@ -102,55 +190,59 @@ not supported by the devilry web interface.</p>
 <span class="target" id="module-devilry.simplified"></span><dl class="function">
 <dt id="devilry.simplified.simplified_modelapi">
 <tt class="descclassname">devilry.simplified.</tt><tt class="descname">simplified_modelapi</tt><big>(</big><em>cls</em><big>)</big><a class="reference internal" href="_modules/devilry/simplified.html#simplified_modelapi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.simplified_modelapi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator....</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="devilry.simplified.fieldspec.FieldSpec">
-<em class="property">class </em><tt class="descclassname">devilry.simplified.fieldspec.</tt><tt class="descname">FieldSpec</tt><big>(</big><em>*always_available_fields</em>, <em>**additional_fieldgroups</em><big>)</big><a class="reference internal" href="_modules/devilry/simplified/fieldspec.html#FieldSpec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.fieldspec.FieldSpec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>always_available_fields</strong> &#8211; Fields that is always available.</li>
-<li><strong>additional_fieldgroups</strong> &#8211; Each key is the name of a fieldgroup, and the value is
-a list/tuple/iterable of field names.</li>
+<dd><p>Decorator which creates a simplified API for a Django model.</p>
+<p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have an inner class named <tt class="docutils literal"><span class="pre">Meta</span></tt> with
+the following required attributes:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>model</dt>
+<dd>Then Django model.</dd>
+<dt>methods</dt>
+<dd><p class="first">A list of supported CRUD+S methods. Legal values are:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>create</li>
+<li>read</li>
+<li>insecure_read_model</li>
+<li>update</li>
+<li>delete</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="devilry.simplified.fieldspec.FieldSpec.aslist">
-<tt class="descname">aslist</tt><big>(</big><em>fieldgroups=None</em><big>)</big><a class="reference internal" href="_modules/devilry/simplified/fieldspec.html#FieldSpec.aslist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.fieldspec.FieldSpec.aslist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the fields in <tt class="docutils literal"><span class="pre">always_available_fields</span></tt> and all
-fields in any of the <tt class="docutils literal"><span class="pre">fieldgroups</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fieldgroups</strong> &#8211; Tuple/list of fieldgroups. Fieldgroups are keys in
-<tt class="docutils literal"><span class="pre">additional_fieldgroups</span></tt> (see __init__).</td>
-</tr>
-</tbody>
-</table>
+</div></blockquote>
+</dd>
+<dt>resultfields</dt>
+<dd>A <a class="reference internal" href="#devilry.simplified.FieldSpec" title="devilry.simplified.FieldSpec"><tt class="xref py py-class docutils literal"><span class="pre">FieldSpec</span></tt></a> which defines what fields to
+return from <tt class="docutils literal"><span class="pre">read()</span></tt> and <tt class="docutils literal"><span class="pre">search()</span></tt>.</dd>
+<dt>searchfields</dt>
+<dd>A <a class="reference internal" href="#devilry.simplified.FieldSpec" title="devilry.simplified.FieldSpec"><tt class="xref py py-class docutils literal"><span class="pre">FieldSpec</span></tt></a> which defines what fields to
+search in <tt class="docutils literal"><span class="pre">search()</span></tt>.</dd>
+</dl>
+</div></blockquote>
+<p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have the following methods for handling permissions:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>read_authorize</dt>
+<dd>Authorization method used for each call to <tt class="docutils literal"><span class="pre">read()</span></tt>.</dd>
+<dt>write_authorize</dt>
+<dd>Authorization method used for each call to any CRUD+S
+method except for <tt class="docutils literal"><span class="pre">read()</span></tt>.</dd>
+<dt>create_searchqryset</dt>
+<dd>Method used to create the queryset filtered in search().
+Required if <tt class="docutils literal"><span class="pre">&quot;search&quot;</span></tt> is in <tt class="docutils literal"><span class="pre">Meta.methods</span></tt>.</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="devilry.simplified.exceptions.PermissionDenied">
-<em class="property">class </em><tt class="descclassname">devilry.simplified.exceptions.</tt><tt class="descname">PermissionDenied</tt><a class="reference internal" href="_modules/devilry/simplified/exceptions.html#PermissionDenied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.exceptions.PermissionDenied" title="Permalink to this definition">¶</a></dt>
+<dl class="exception">
+<dt id="devilry.simplified.PermissionDenied">
+<em class="property">exception </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">PermissionDenied</tt><a class="headerlink" href="#devilry.simplified.PermissionDenied" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
 <p>Signals that a user tries to access something they are not permitted
 to access.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="devilry.simplified.qryresultwrapper.QryResultWrapper">
-<em class="property">class </em><tt class="descclassname">devilry.simplified.qryresultwrapper.</tt><tt class="descname">QryResultWrapper</tt><big>(</big><em>resultfields</em>, <em>searchfields</em>, <em>django_qryset</em><big>)</big><a class="reference internal" href="_modules/devilry/simplified/qryresultwrapper.html#QryResultWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.qryresultwrapper.QryResultWrapper" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.simplified.QryResultWrapper">
+<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">QryResultWrapper</tt><big>(</big><em>resultfields</em>, <em>searchfields</em>, <em>django_qryset</em><big>)</big><a class="headerlink" href="#devilry.simplified.QryResultWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Wrapper around a django QuerySet.</p>
 <dl class="attribute">
@@ -178,9 +270,45 @@ is considered a security risc.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.simplified.qryresultwrapper.QryResultWrapper.count">
-<tt class="descname">count</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/simplified/qryresultwrapper.html#QryResultWrapper.count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.qryresultwrapper.QryResultWrapper.count" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.simplified.QryResultWrapper.count">
+<tt class="descname">count</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.simplified.QryResultWrapper.count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shortcut for <tt class="docutils literal"><span class="pre">_insecure_django_qryset.count()</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.simplified.FieldSpec">
+<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FieldSpec</tt><big>(</big><em>*always_available_fields</em>, <em>**additional_fieldgroups</em><big>)</big><a class="headerlink" href="#devilry.simplified.FieldSpec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Specifies and groups fields for search and read results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>always_available_fields</strong> &#8211; Fields that is always available.</li>
+<li><strong>additional_fieldgroups</strong> &#8211; Each key is the name of a fieldgroup, and the value is
+a list/tuple/iterable of field names.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="devilry.simplified.FieldSpec.aslist">
+<tt class="descname">aslist</tt><big>(</big><em>fieldgroups=None</em><big>)</big><a class="headerlink" href="#devilry.simplified.FieldSpec.aslist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the fields in <tt class="docutils literal"><span class="pre">always_available_fields</span></tt> and all
+fields in any of the <tt class="docutils literal"><span class="pre">fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fieldgroups</strong> &#8211; Tuple/list of fieldgroups. Fieldgroups are keys in
+<tt class="docutils literal"><span class="pre">additional_fieldgroups</span></tt> (see __init__).</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -206,8 +334,8 @@ is considered a security risc.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="grade-plugins.html"
-                        title="previous chapter">Grade plugins</a></p>
+  <p class="topless"><a href="plugins.html"
+                        title="previous chapter">How to write a plugin</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="restful.html"
                         title="next chapter">RESTful web service API</a></p>
@@ -246,7 +374,7 @@ is considered a security risc.</p>
           <a href="restful.html" title="RESTful web service API"
              >next</a> |</li>
         <li class="right" >
-          <a href="grade-plugins.html" title="Grade plugins"
+          <a href="plugins.html" title="How to write a plugin"
              >previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>

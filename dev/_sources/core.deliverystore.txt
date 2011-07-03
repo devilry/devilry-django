@@ -47,7 +47,7 @@ We provide a mixing-class,
 when writing unit-tests for your DeliveryStore. Here is how we test
 :class:`FsDeliveryStore`:
 
-    .. literalinclude:: /../devilry/apps/core/tests.py
+    .. literalinclude:: /../devilry/apps/core/tests/fsdeliverystore.py
         :pyobject: TestFsDeliveryStore
 
 .. currentmodule:: devilry.apps.core.testhelpers
