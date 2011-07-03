@@ -20,3 +20,8 @@ def extjs_model(restfulmodelcls, result_fieldgroups=None):
 def extjs_store(restfulmodelcls):
     js = restfulmodelcls_to_extjsstore(restfulmodelcls)
     return mark_safe(js)
+
+@register.filter
+def extjs_forms(restfulmodelcls):
+    js = restfulmodelcls_to_extjsforms(restfulmodelcls)
+    return mark_safe(js)
