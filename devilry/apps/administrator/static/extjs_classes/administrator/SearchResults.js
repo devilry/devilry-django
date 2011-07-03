@@ -37,7 +37,8 @@ Ext.define('devilry.administrator.SearchResults', {
 
     listeners: {
         selectionchange: function(view, selections, options) {
-            //this.deselectAll();
+            var record = selections[0].data;
+            window.location = Ext.String.format('{0}{1}',  this.editorurl, record.id);
         }
     },
 

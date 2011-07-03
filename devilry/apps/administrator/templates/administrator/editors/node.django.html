@@ -1,0 +1,32 @@
+{% extends "theme/base.django.html" %}
+{% load extjs %}
+
+{% block title %}Devilry node editor{% endblock %}
+
+{% block headextra %}
+
+<script>
+    {{ RestfulSimplifiedNode|extjs_model }}
+    var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
+
+    Ext.onReady(function() {
+        var nodeform = Ext.create('Ext.form.Panel', {
+            renderTo: 'form',
+            title: 'This is a shitty form',
+            defaultType: 'textfield',
+            {{ RestfulSimplifiedNode|extjs_forms}}
+        });
+
+        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load({{ id }}, {
+            success: function(node) {
+                nodeform.loadRecord(node);
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block main %}
+<div id='form'></div>
+{% endblock %}

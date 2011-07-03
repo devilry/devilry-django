@@ -21,23 +21,37 @@
     {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
 
+    Ext.require('devilry.administrator.SearchWidget');
     Ext.onReady(function() {
-        var nodeform = Ext.create('Ext.form.Panel', {
-            renderTo: 'form-example',
-            title: 'This is a shitty form',
-            defaultType: 'textfield',
-            {{ RestfulSimplifiedNode|extjs_forms}}
+        var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
+            renderTo: 'searchwidget',
+            searchResultItems: [{
+                xtype: 'administratorsearchresults',
+                title: 'Nodes',
+                store: nodestore,
+                editorurl: '{% url administrator-editors-node %}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Subjects',
+                store: subjectstore
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Periods',
+                store: periodstore,
+                formatRow: function(record) {
+                    return this.getFormattedRow(
+                        record.get('long_name'),
+                        Ext.String.format('{0}.{1}',
+                            record.get('parentnode__short_name'),
+                            record.get('short_name')));
+                }
+            }]
         });
 
-        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load(1, {
-            success: function(node) {
-                nodeform.loadRecord(node);
-            }
-        });
+        searchwidget.focusOnSearchfield();
     });
 </script>
 
-<script src="{{ DEVILRY_STATIC_URL }}/administrator/main.js"></script>
 {% endblock %}
 
 
