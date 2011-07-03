@@ -18,7 +18,7 @@ A grade plugin is simply a one-to-one relationship between
 :class:`devilry.apps.core.models.Feedback` and a custom django-model defined by the
 grade-plugin. This is the contents of *models.py*:
 
-.. literalinclude:: /../devilry/apps/grade_default/models.py
+.. .. literalinclude:: /../devilry/apps/grade_default/models.py
 
 As you can see, the model is a subclass of
 :class:`devilry.gradeplugin.GradeModel`, which in turn is a subclass of

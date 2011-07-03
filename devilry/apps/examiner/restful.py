@@ -1,7 +1,7 @@
-from django import forms
+#from django import forms
 
-from ...simplified import (SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup)
-from ...restful import fields, SearchFormBase
+#from ...simplified import (SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup)
+#from ...restful import fields, SearchFormBase
 
 
 #class RestfulSimplifiedSubject(RestView):

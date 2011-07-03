@@ -5,8 +5,6 @@
 RESTful web service API
 ==========================================
 
-*Under development*
-
 http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services
 
 This API was first introduced in this `github issue <https://github.com/devilry/devilry-django/issues/93>`_
@@ -15,7 +13,7 @@ HTTP status codes
 #####################################################################
 
 200 OK
-    The request was succesful. The requested data is returned.
+    The request was successful. The requested data is returned.
 400 Bad Request
     A parameter is invalid. The data contains an error message.
 401 Unauthorized
@@ -26,143 +24,51 @@ HTTP status codes
     Resource not found at the given url.
 
 
-/examiner/
-#####################################################################
 
-All urls in the /examiner/ path work on data where the authenticated user is
-examiner.
+RestView and @restful_api
+#########################
 
-
-assignments/
-=====================================================================
-
-.. function:: GET(count=50, start=0, orderby="short_name", old=0, active=1, search="", longnamefields=0, pointhandlingfields=0)
-
-    List all old and active assignments. Should provide the following
-    information (fields) for each listed assignment by default:
-
-        - id
-        - short_name
-        - period__short_name (parentnode.short_name)
-        - assignment__short_name (parentnode.parentnode.short_name)
-
-    For documentation on the fields, see :class:`devilry.apps.core.models.Assignment`.
-
-    :param count:
-        Number of results.
-    :param start:
-        Offset where the result should start (If start is 10 and
-        count is 30, results 10 to 40 is returned, including both ends).
-    :param old:
-        Include assignments from old (not active) periods?
-    :param active:
-        Include assignments from old (not active) periods?
-    :param orderby:
-        Sort the result by this field. Must be one of:
-        *id*, *short_name*, *long_name*, *id*, *publishing_time*, *pointscale*,
-        *autoscale*, *maxpoints*, *attempts* or *must_pass*. See
-        :class:`devilry.apps.core.models.Assignment` for documentation on each of
-        these fields.
-    :param search: A query to limit the results.
-    :param longnamefields: Include the *long_name* field of assignment, period and
-        subject for each assignment in the result?
-    :param pointhandlingfields:
-        Include the *grade_plugin*, *pointscale*, *autoscale*,
-        *maxpoints*, *attempts*, and *must_pass* fields for each assignment in
-        the result? The *grade_plugin* field contains the (human readable and
-        translated) label instead of the grade plugin key.
-
-    :return: The requested assignments if all is OK.
+:class:`devilry.restful.RestView` and the decorator
+:func:`devilry.restful.restful_api` is use in conjunction to create a RESTful
+web service.
 
 
-groups/{assignment-id}/
-=====================================================================
+Tutorial
+########
 
-.. function:: GET(count=50, start=0, orderby="id", details=0, search="")
-
-    List all groups in the given assignment.
-
-    :param count: Number of results.
-    :param start: Offset where the result should start (If start is 10 and
-        count is 30, results 10 to 40 is returned, including both ends).
-    :param orderby: Sort the result by this field. Must be one of:
-        *id*, *is_open*, *status*, *points*, *scaled_points* or
-        *active_deadline* (only if details is 1).
-        See :class:`devilry.apps.core.models.AssignmentGroup` for documentation on
-        each of these fields.
-    :param details: Add details? If 1, the result will contain the following
-        additional fields:
-    
-        deadlines
-            A list of deadlines for this group.
-        active_deadline
-            The active deadline for this group.
-    :param search: A query to limit the results.
-
-    :return: The requested groups if all is OK.
+For this tutorial, create the *myexample* django application. You can see the
+result of everything we explain here in
+``devilry/projects/dev/apps/restfulexample/``.
 
 
-group/{group-id}
-=====================================================================
+A simple RESTful example
+------------------------
 
-.. function:: GET()
+We will start with a creating a CRUD+s (create, read, update, delete and
+search) interface. ``restfulexample/restful.py``:
 
-    Get all available information about the given group (not about any deliveries).
+.. literalinclude:: /../devilry/projects/dev/apps/restfulexample/restful.py
 
+``@example_restful`` is a :class:`RestfulManager` where we register our ``RestfulExample``. The RestfulManager
+is only used to simplify setting up URLs for big restful APIs.
 
-deliveries/{group-id}/
-=========================================================================
-
-.. function:: GET()
-
-    List all deliveries by this group.
-
-
-delivery/{delivery-id}
-==========================================================================
-
-.. function:: GET()
-
-    Get all information about the delivery with the given delivery-id,
-    including feedback. This view might choose between embedding and linking/referencing
-    *files/*.
-
-.. function:: PUT()
-
-    Create or update feedback on the delivery.
-
-.. function:: DELETE()
-
-    Clear the feedback on the delivery.
+Read, update and delete requires an identifier (``id``), because it makes no sense
+to manipulate an object that we can not identify. Each method returns a :class:`RestfulResult`,
+whose first argument is a serializable python object. The default serializer is
+JSON, which means that our class returns JSON unless the HTTP request contains a
+*HTTP Accept header* specifying another content type.
 
 
-files/{delivery-id}/
-================================================================================
+Registering urls for RestfulExample
+-----------------------------------
 
-.. function:: GET()
+Since we use a :class:`RestfulManager`, URL generation is very simple. ``restfulexample/urls.py`` looks like this:
 
-    List all files in a delivery.
-
-
-download-file/{file-id}
-===================================================================================================
-
-.. function:: GET()
-
-    Download the requested file.
+.. literalinclude:: /../devilry/projects/dev/apps/restfulexample/urls.py
 
 
-list-filearchive/{file-id}
-=================================================================================================
 
-.. function:: GET()
+API
+###
 
-    List the contents of the file, if it is a supported archive format.
-
-
-download-filearchive-file/{file-id}/path
-=================================================================================================
-
-.. function:: GET()
-
-    Download a single file from within a supported archive format.
+.. automodule:: devilry.restful
