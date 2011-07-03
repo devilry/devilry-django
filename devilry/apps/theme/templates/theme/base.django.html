@@ -33,12 +33,11 @@
         }
       });
 
-      {% comment %}
       Ext.Ajax.defaultHeaders = {
-          'Accept': 'application/json'
+          'X_DEVILRY_USE_EXTJS': true
       };
-      {% endcomment %}
     </script>
+    <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/restoverrides.js"></script>
 
 
 

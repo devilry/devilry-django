@@ -14,7 +14,19 @@
             renderTo: 'form',
             title: 'This is a shitty form',
             defaultType: 'textfield',
-            {{ RestfulSimplifiedNode|extjs_forms}}
+
+            {{ RestfulSimplifiedNode|extjs_forms}},
+
+            buttons: [{
+                text: 'Submit',
+
+                handler: function() {
+                    this.up('form').getForm().submit({
+                        submitEmptyText: true,
+                        waitMsg: 'Saving Data...'
+                    });
+                }
+            }]
         });
 
         Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load({{ id }}, {

@@ -50,7 +50,8 @@ class ModelRestfulView(RestfulView):
         result = None
         if form.is_valid():
             form.save()
-            result = dict(success=True, id=form.instance.id)
+            data['id'] = form.instance.id
+            result = dict(items=data, success=True)
         else:
             fielderrors = dict(form.errors)
             non_field_errors = list(form.non_field_errors())
@@ -89,7 +90,7 @@ class ModelRestfulView(RestfulView):
     def crud_read(self, request, id):
         """ Maps to the ``read`` method of the simplified class. """
         data = self._meta.simplified.read(self.request.user, id)
-        if 'wrap_in_items' in self.request.GET: # NOTE: For easier ExtJS integration
+        if self.use_extjshacks:
             data = dict(items=data, total=1, success=True)
         return SerializableResult(data)
 
