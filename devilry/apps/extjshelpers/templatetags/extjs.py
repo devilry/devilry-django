@@ -2,6 +2,7 @@ from django import template
 from django.utils.safestring import mark_safe
 from ..modelintegration import restfulmodelcls_to_extjsmodel
 from ..storeintegration import restfulmodelcls_to_extjsstore
+from ..formintegration import restfulmodelcls_to_extjsforms
 
 register = template.Library()
 

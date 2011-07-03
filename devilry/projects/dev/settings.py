@@ -46,4 +46,4 @@ DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 
 
 # Enable profiling. Just add ?prof=yes to any url to see a profile report
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.utils.profile.ProfilerMiddleware']
+#MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.utils.profile.ProfilerMiddleware']
