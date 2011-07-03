@@ -9,9 +9,8 @@ from serializers import serialize, SerializableResult
 
 class RestView(View):
     """
-    Extends a django generic View with CRUD+s methods that serializes
-    the return values automatically. You must decorate classes using
-    this model with :func:`devilry.restful.restful_api`.
+    :class:`RestView` and the :func:`restful_api`-decorator is use in
+    conjunction to create a RESTful web service with a CRUD+S interface.
     """
 
     @classmethod

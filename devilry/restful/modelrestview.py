@@ -8,7 +8,9 @@ from django.http import HttpResponseBadRequest
 
 class ModelRestView(RestView):
     """
-    Autogenerate RESTful interfaces for simplified classes.
+    :class:`ModelRestView` is used in conjunction with the
+    :class:`restful_modelapi`-decorator to autogenerate a RESTful
+    interface for a simplified class (see :ref:`simplified`).
     """
 
     @classmethod

@@ -5,6 +5,8 @@
 RESTful web service API
 ==========================================
 
+.. currentmodule:: devilry.restful
+
 http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services
 
 This API was first introduced in this `github issue <https://github.com/devilry/devilry-django/issues/93>`_
@@ -28,9 +30,6 @@ HTTP status codes
 RestView and @restful_api
 #########################
 
-:class:`devilry.restful.RestView` and the decorator
-:func:`devilry.restful.restful_api` is use in conjunction to create a RESTful
-web service.
 
 
 Tutorial
