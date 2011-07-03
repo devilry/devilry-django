@@ -1,6 +1,20 @@
 class RestfulManager(object):
     """
-    The RestfulManager used to simplify setting up URLs for (big) restful APIs.
+    The RestfulManager is used to simplify setting up URLs for (big) restful
+    APIs.
+
+    Basically, you create a ``RestfulManager``-object, lets call it
+    ``myrestapi``, in you restful api, and decorate all your
+    :class:`devilry.restful.RestView` classes with ``@myrestapi.register``.
+
+    You can then add the urls by adding them to a
+    ``django.conf.urls.defaults.patterns``-object like so::
+
+        urlpatterns = patterns('devilry.apps.myexample')
+        urlpatterns += myrestapi
+
+    An alternative would be to not decorate your views using this class,
+    and rather use :class:`devilry.`
     """
     def __init__(self):
         self.restapis = []

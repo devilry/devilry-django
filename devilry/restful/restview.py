@@ -10,11 +10,17 @@ from serializers import serialize, RestfulResult
 class RestView(View):
     """
     Extends a django generic View with CRUD+s methods that serializes
-    the return values autormatically.
+    the return values automatically. You must decorate classes using
+    this model with :func:`devilry.restful.restful_api`.
     """
 
     @classmethod
     def create_rest_url(cls):
+        """
+        Create a ``django.conf.urls.defaults.url``-object for this view.
+
+        It defaults
+        """
         return url(r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$'.format(urlprefix=cls._meta.urlprefix),
             login_required(cls.as_view()),
             name=cls._meta.urlname)

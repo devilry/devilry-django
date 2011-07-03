@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 
 from devilry.restful import (ModelRestView, RestView, RestfulResult, restful_api,
-        restful_modelapi, UrlMapping)
+                             restful_modelapi)
 from simplified import StatConfig
 
 
@@ -24,4 +24,4 @@ class RestPeriodPoints(RestView):
 class RestStatConfig(ModelRestView):
     class Meta:
         simplified = StatConfig
-        urlmap = {'periodpoints_url': UrlMapping(RestPeriodPoints, 'period__id')}
+        #urlmap = {'periodpoints_url': UrlMapping(RestPeriodPoints, 'period__id')}

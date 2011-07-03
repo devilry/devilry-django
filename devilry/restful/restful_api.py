@@ -4,10 +4,10 @@ from ..simplified import _require_metaattr
 import fields
 
 
-class UrlMapping(object):
-    def __init__(self, restfulcls, idfield):
-        self.restfulcls = restfulcls
-        self.idfield = idfield
+#class UrlMapping(object):
+    #def __init__(self, restfulcls, idfield):
+        #self.restfulcls = restfulcls
+        #self.idfield = idfield
 
 
 def _create_seachform(cls):
@@ -38,6 +38,10 @@ def _create_editform(cls):
 
 
 def restful_api(cls):
+    """
+    Create RESTful interfaces in conjunction with
+    :class:`devilry.restful.RestView`.
+    """
     try:
         meta = cls.Meta
     except AttributeError:
@@ -55,6 +59,10 @@ def restful_api(cls):
 
 
 def restful_modelapi(cls):
+    """
+    Autogenerate RESTful interface for a simplified class in conjunction with
+    :class:`devilry.restful.ModelRestView`.
+    """
     cls = restful_api(cls)
     _require_metaattr(cls, 'simplified')
     _create_seachform(cls)

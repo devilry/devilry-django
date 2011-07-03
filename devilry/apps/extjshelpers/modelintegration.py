@@ -32,8 +32,8 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
                                          result_fieldgroups):
         exttype = field_to_extjstype(field, fieldname)
         modelfields.append(dict(name=fieldname, type=exttype))
-    for fieldname in restfulmodelcls._meta.urlmap:
-        modelfields.append(dict(name=fieldname, type='string'))
+    #for fieldname in restfulmodelcls._meta.urlmap:
+        #modelfields.append(dict(name=fieldname, type='string'))
 
     return """Ext.define('{modelname}', {{
             extend: 'Ext.data.Model',
