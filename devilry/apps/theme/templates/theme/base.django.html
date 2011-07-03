@@ -49,12 +49,16 @@
       <h1>
         {% trans "Devilry" %}
       </h1>
-      <a href="http://devilry.github.com" id="projectlink">http://devilry.github.com</a>
+      <div id="version">
+          <span id="number">1.0-beta</span>
+          <span id="codename">Miss piggy</span>
+      </div>
+      <a href="http://github.org" id="projectlink">http://devilry.org</a>
       <nav>
         <ul>
-          <li><a href="#">Student</a></li>
-          <li><a href="#">Examiner</a></li>
-          <li><a href="#">Admin</a></li>
+          <li><a href="#">{% trans "Student" %}</a></li>
+          <li><a href="#">{% trans "Examiner" %}</a></li>
+          <li><a href="{% url administrator %}">{% trans "Administrator" %}</a></li>
         </ul>
       </nav>
     </header>

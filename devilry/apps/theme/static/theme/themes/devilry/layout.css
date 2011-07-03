@@ -16,9 +16,17 @@ body>header a#projectlink {
 	font-size: 0.8em;
 	text-align: right;
 }
-
-body>#main {
-	padding: 20px;
+body>header>#version {
+	margin: 0 20px 5px 20px;
+	text-decoration: none;
+	font-size: 0.8em;
+	text-align: right;
+}
+body>header>#version>span#number {
+    font-weight: bold;
+}
+body>header>#version span#codename {
+    font-style: italic;
 }
 
 
@@ -32,6 +40,12 @@ body>header>nav a {
 	margin-right: 10px;
 	padding: 10px 20px;
 }
+
+body>#main {
+	padding: 20px;
+}
+
+
 
 body>footer {
 	text-align: right;
