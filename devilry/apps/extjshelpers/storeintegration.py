@@ -5,6 +5,5 @@ def restfulmodelcls_to_extjsstore(restfulmodelcls):
             model: '{modelname}',
             remoteFilter: true,
             remoteSort: true,
-            autoLoad: true,
             autoSync: true
         }});""".format(modelname=get_extjs_modelname(restfulmodelcls))                   
