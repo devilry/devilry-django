@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
-from ..simplified import Delivery, Feedback, Assignment, Period, Subject
+from ..simplified import Delivery, Feedback, SimplifiedAssignment, SimplifiedPeriod, SimplifiedSubject
 
 import datetime
 
@@ -236,7 +236,7 @@ class TestSimplifiedFeedback(SimplifiedDeliveryTestCase):
             Feedback.read(superadmin, self.feedback.id)
 
 
-class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
+class TestSimplifiedSimplifiedAssignment(SimplifiedDeliveryTestCase):
     
     # def setUp(self):
     #     self._subject_long     = 'parentnode__parentnode__parentnode__long_name'
@@ -252,6 +252,6 @@ class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
 
     # def test_search(self):
 
-    #     print Assignment.search(self.candidate0)
-    #     self.assertEquals(Assignment.search(self.candidate0).count(), 8)
+    #     print SimplifiedAssignment.search(self.candidate0)
+    #     self.assertEquals(SimplifiedAssignment.search(self.candidate0).count(), 8)
     pass
