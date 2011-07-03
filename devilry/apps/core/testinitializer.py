@@ -21,11 +21,46 @@ class TestInitializer(object):
 
     objects_created = 0
 
-    def add_deadline(self, path, deadline=datetime.now()):
-        pass
+    def add_delivery(self, assignmentgroup=None, files={}, after_last_deadline=False):
+        """assignmentgroup is either an AssignmentGroup object, or a
+        path to one. Either way, get the group, creates a delivery,
+        sets the delivery_time to either before of after the deadline
+        depending on after_last_deadline
+        """
 
-    def add_delivery(self, path, ):
-        pass
+        if assignmentgroup == None:
+            return
+
+        # Check if we're given a group, or fetch from a path
+        if type(assignmentgroup) == AssignmentGroup:
+            group = assignmentgroup
+        elif type(assignmentgroup) == str:
+            group = self.get_object_from_path(assignmentgroup)
+
+        # Fetch the first User of the candidates
+        delivery = group.deliveries.create(delivered_by=group.candidates.all()[0].student, successful=False)
+
+        # add files if there are any
+        for filename in files.keys():
+            delivery.add_file(filename, files[filename])
+
+        if after_last_deadline:
+            # set the deliverytime to after the deadline
+            delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
+
+        delivery.successful = True
+
+        # add it to the groups delivery list
+        varname = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   group.parentnode.parentnode.short_name + '_' +             # period_
+                   group.parentnode.short_name + '_' +                        # assignment_
+                   group.name + '_deliveries')
+        if varname in vars(self).keys():
+            vars(self)[varname].append(delivery)
+        else:
+            vars(self)[varname] = [delivery]
+
+        return delivery
 
     def add_feedback(self, path, text='Good job!'):
         pass
@@ -248,8 +283,8 @@ class TestInitializer(object):
 ##
 #######
     def _create_or_add_assignmentgroup(self, group_name, parentnode, extras):
-        if AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name) == 1:
-            group = AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name)
+        if AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name).count() == 1:
+            group = AssignmentGroup.objects.get(parentnode=parentnode, name=group_name)
         else:
             group = AssignmentGroup(parentnode=parentnode, name=group_name)
             try:
@@ -305,32 +340,50 @@ class TestInitializer(object):
             deadline.clean()
             deadline.save()
         except:
-            raise ValueError("something impossible happend when creating deadline")
+            raise  ValueError("something impossible happened when creating deadline")
 
         if extras['ends']:
             deadline.deadline = parentnode.parentnode.publishing_time + timedelta(int(extras['ends'][0]))
         if extras['text']:
             deadline.text = extras['text'][0]
 
-        vars(self)[
-            parentnode.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-            parentnode.parentnode.parentnode.short_name + '_' +             # period_
-            parentnode.parentnode.short_name + '_' +                        # assignment_
-            parentnode.name + '_' + deadline_name] = deadline
+        # create the variable ref'ing directly to the deadline
+        prefix = (parentnode.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                  parentnode.parentnode.parentnode.short_name + '_' +             # period_
+                  parentnode.parentnode.short_name + '_' +                        # assignment_
+                  parentnode.name + '_')
+
+        # only create this variable if a name is given
+        if deadline_name:
+            varname = prefix + deadline_name
+            vars(self)[varname] = deadline
+
+        # Add or append to the deadlines list. Last element will be
+        # the same as the most recently created deadline, stored in
+        # prefix+deadline_name
+        vardict = prefix + 'deadlines'
+        if vardict in vars(self).keys():
+            vars(self)[vardict].append(deadline)
+        else:
+            vars(self)[vardict] = [deadline]
+
+        self.objects_created += 1
+        return deadline
 
     def _do_the_deadlines(self, assignmentgroups, deadlines_list):
         created_deadlines = []
-        for assignment in assignmentgroups:
-            for deadline in deadlines_list:
+        for assignmentgroup in assignmentgroups:
+            for deadline_ in deadlines_list:
                 try:
-                    deadline_name, extras_arg = deadline.split(':', 1)
+                    deadline_name, extras_arg = deadline_.split(':', 1)
                 except ValueError:
-                    deadline_name = deadline
+                    deadline_name = deadline_
                     extras_arg = None
 
                 extras = self._parse_extras(extras_arg, ['ends', 'text'])
-                new_deadline = self._create_or_add_deadline(deadline_name, assignment, extras)
+                new_deadline = self._create_or_add_deadline(deadline_name, assignmentgroup, extras)
                 created_deadlines.append(new_deadline)
+        return created_deadlines
 
     def add(self, nodes=None, subjects=None, periods=None, assignments=None, assignmentgroups=None,
             delivery=None, feedback=None, deadlines=None):
@@ -360,8 +413,9 @@ class TestInitializer(object):
             return
         deadlines = self._do_the_deadlines(assignmentgroups, deadlines)
 
+    # splits up a dot separated path, and calls add() with those
+    # pieces as arguments
     def add_to_path(self, path):
-
         nodes = None
         subjects = None
         periods = None
@@ -391,6 +445,14 @@ class TestInitializer(object):
         self.add(nodes=nodes, subjects=subjects, periods=periods, assignments=assignments,
                  assignmentgroups=assignmentgroups, deadlines=deadlines)
 
+    def get_object_from_path(self, path):
+        try:
+            nodes, rest = path.split(';', 1)
+        except ValueError:
+            rest = path
+        varname = rest.replace('.', '_')
+        return vars(self)[varname]
+
     def example(self):
         self.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
                  subjects=["inf1000:admin(stein,steing)", "inf1100:admin(arne)"],
@@ -399,8 +461,6 @@ class TestInitializer(object):
                  assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
                                    'g2:candidate(nataliib):examiner(jose)'],
                  deadlines=['dl1:ends(10)'])
-
-        
 
         self.add(nodes="uio.ifi",
                  subjects=["inf1000"],

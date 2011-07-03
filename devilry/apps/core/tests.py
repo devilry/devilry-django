@@ -16,9 +16,9 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
-        Delivery, Candidate, StaticFeedback, FileMeta, Deadline)
+                    Delivery, Candidate, StaticFeedback, FileMeta, Deadline)
 from deliverystore import (MemoryDeliveryStore, FsDeliveryStore,
-    DbmDeliveryStore)
+                           DbmDeliveryStore)
 from testhelpers import TestDeliveryStoreMixin, create_from_path
 from testinitializer import TestInitializer
 
@@ -51,7 +51,7 @@ class TestBaseNode(TestCase):
             return ', '.join(l)
         self.assertEquals(self.uio.get_admins(), 'uioadmin')
         self.assertEquals(split_and_sort(self.ifi.get_admins()),
-                'ifiadmin, ifitechsupport')
+                          'ifiadmin, ifitechsupport')
 
     def test_can_save(self):
         self.assertTrue(self.uio.can_save(self.uioadmin))
@@ -114,22 +114,22 @@ class TestNode(TestCase):
 
     def test_unicode(self):
         self.assertEquals(unicode(self.deepdummy3),
-                'uio.deepdummy1.deepdummy2.deepdummy3')
+                          'uio.deepdummy1.deepdummy2.deepdummy3')
 
     def test_get_path(self):
         self.assertEquals(self.uio.get_path(), 'uio')
         self.assertEquals(self.ifi.get_path(), 'uio.ifi')
         self.assertEquals(self.deepdummy3.get_path(),
-                'uio.deepdummy1.deepdummy2.deepdummy3')
+                          'uio.deepdummy1.deepdummy2.deepdummy3')
 
     def test_iter_childnodes(self):
         self.assertEquals(
-                [n.short_name for n in self.deepdummy1.iter_childnodes()],
-                [u'deepdummy2', u'deepdummy3'])
+            [n.short_name for n in self.deepdummy1.iter_childnodes()],
+            [u'deepdummy2', u'deepdummy3'])
 
         s = set([n.short_name for n in self.uio.iter_childnodes()])
         self.assertEquals(s,
-                set([u'deepdummy1', u'deepdummy2', u'deepdummy3', u'fys', u'ifi']))
+                          set([u'deepdummy1', u'deepdummy2', u'deepdummy3', u'fys', u'ifi']))
 
     def test_clean_parent_is_child(self):
         """ Can not be child of it's own child. """
@@ -158,23 +158,23 @@ class TestNode(TestCase):
 
     def test_get_pathlist_kw(self):
         expected = {
-                'short_name': 'deepdummy3',
-                'parentnode__short_name': 'deepdummy2',
-                'parentnode__parentnode__short_name': 'deepdummy1',
-                'parentnode__parentnode__parentnode__short_name': 'uio'
-                }
+            'short_name': 'deepdummy3',
+            'parentnode__short_name': 'deepdummy2',
+            'parentnode__parentnode__short_name': 'deepdummy1',
+            'parentnode__parentnode__parentnode__short_name': 'uio'
+            }
         self.assertEquals(expected,
-                Node.get_by_path_kw(
-                    ['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']))
+                          Node.get_by_path_kw(
+                ['uio', 'deepdummy1', 'deepdummy2', 'deepdummy3']))
 
     def test_get_by_path(self):
         self.assertEquals(
-                Node.get_by_path('uio.deepdummy1.deepdummy2').short_name,
-                'deepdummy2')
+            Node.get_by_path('uio.deepdummy1.deepdummy2').short_name,
+            'deepdummy2')
         self.assertRaises(Node.DoesNotExist, Node.get_by_path,
-                'uio.deepdummy1.nonode')
+                          'uio.deepdummy1.nonode')
         self.assertRaises(Node.DoesNotExist, Node.get_by_path,
-                'does.not.exist')
+                          'does.not.exist')
 
     def test_get_nodepks_where_isadmin(self):
         uioadmin = User.objects.get(username='uioadmin')
@@ -188,12 +188,12 @@ class TestSubject(TestCase):
 
     def test_unique(self):
         s = Subject(parentnode=Node.objects.get(short_name='ifi'),
-                short_name='inf1060', long_name='INF1060')
+                    short_name='inf1060', long_name='INF1060')
         self.assertRaises(IntegrityError, s.save)
 
     def test_unique2(self):
         s = Subject(parentnode=Node.objects.get(short_name='uio'),
-                short_name='inf1060', long_name='INF1060')
+                    short_name='inf1060', long_name='INF1060')
         self.assertRaises(IntegrityError, s.save)
 
     def test_where_is_admin(self):
@@ -212,9 +212,9 @@ class TestSubject(TestCase):
 
     def test_get_by_path(self):
         self.assertEquals(Subject.get_by_path('inf1100').short_name,
-                'inf1100')
+                          'inf1100')
         self.assertRaises(Subject.DoesNotExist, Subject.get_by_path,
-                'doesnotexist')
+                          'doesnotexist')
 
     def test_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
@@ -223,7 +223,7 @@ class TestSubject(TestCase):
         self.assertEquals(q[0].short_name, 'inf1100')
 
         ag = create_from_path(
-                'ifi:inf1010.spring10.oblig1.student1')
+            'ifi:inf1010.spring10.oblig1.student1')
         ag.examiners.add(examiner1)
         ag.save()
         q = Subject.where_is_examiner(examiner1).order_by('short_name')
@@ -238,7 +238,7 @@ class TestSubject(TestCase):
         self.assertEquals(q[0].short_name, 'inf1100')
 
         ag = create_from_path(
-                'ifi:inf1010.spring10.oblig1.student1')
+            'ifi:inf1010.spring10.oblig1.student1')
         ag.examiners.add(examiner1)
         ag.save()
         q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
@@ -258,9 +258,9 @@ class TestPeriod(TestCase):
 
     def test_unique(self):
         n = Period(parentnode=Subject.objects.get(short_name='inf1100'),
-                short_name='old', long_name='Old',
-                start_time=datetime.now(),
-                end_time=datetime.now())
+                   short_name='old', long_name='Old',
+                   start_time=datetime.now(),
+                   end_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
 
     def test_where_is_admin(self):
@@ -277,11 +277,11 @@ class TestPeriod(TestCase):
 
     def test_get_by_path(self):
         self.assertEquals(Period.get_by_path('inf1100.old').short_name,
-                'old')
+                          'old')
         self.assertRaises(Period.DoesNotExist, Period.get_by_path,
-                'does.notexist')
+                          'does.notexist')
         self.assertRaises(ValueError, Period.get_by_path,
-                'does.not.exist')
+                          'does.not.exist')
 
     def test_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
@@ -290,7 +290,7 @@ class TestPeriod(TestCase):
         self.assertEquals(q[0].short_name, 'looong')
 
         ag = create_from_path(
-                'ifi:inf1010.spring10.oblig1.student1')
+            'ifi:inf1010.spring10.oblig1.student1')
         ag.examiners.add(examiner1)
         ag.save()
         q = Period.where_is_examiner(examiner1).order_by('short_name')
@@ -301,7 +301,7 @@ class TestPeriod(TestCase):
     def test_published_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         ag = create_from_path(
-                'ifi:inf1010.spring10.oblig1.student1')
+            'ifi:inf1010.spring10.oblig1.student1')
         ag.examiners.add(examiner1)
         ag.save()
         q = Period.where_is_examiner(examiner1).order_by('short_name')
@@ -319,8 +319,8 @@ class TestAssignment(TestCase):
 
     def test_unique(self):
         n = Assignment(parentnode=Period.objects.get(short_name='looong'),
-                short_name='oblig1', long_name='O1',
-                publishing_time=datetime.now())
+                       short_name='oblig1', long_name='O1',
+                       publishing_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
 
     def test_where_is_admin(self):
@@ -342,7 +342,7 @@ class TestAssignment(TestCase):
         examiner1 = User.objects.get(username='examiner1')
 
         q = Assignment.published_where_is_examiner(examiner1, old=False,
-                active=False)
+                                                   active=False)
         self.assertEquals(q.count(), 0)
 
         q = Assignment.published_where_is_examiner(examiner1)
@@ -403,9 +403,9 @@ class TestAssignment(TestCase):
         examiner2 = User.objects.get(username='examiner2')
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(3,
-                oblig1.assignment_groups_where_is_examiner(examiner2)[0].id)
+                          oblig1.assignment_groups_where_is_examiner(examiner2)[0].id)
         self.assertEquals(2,
-                oblig1.assignment_groups_where_is_examiner(examiner1).count())
+                          oblig1.assignment_groups_where_is_examiner(examiner1).count())
 
     def test_assignmentgroups_where_is_examiner_or_admin(self):
         examiner1 = User.objects.get(username='examiner1')
@@ -413,14 +413,14 @@ class TestAssignment(TestCase):
 
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(1,
-                oblig1.assignment_groups_where_can_examine(examiner1)[0].id)
+                          oblig1.assignment_groups_where_can_examine(examiner1)[0].id)
         self.assertEquals(2,
-                oblig1.assignment_groups_where_can_examine(examiner1).count())
+                          oblig1.assignment_groups_where_can_examine(examiner1).count())
 
         self.assertEquals(1,
-                oblig1.assignment_groups_where_can_examine(ifiadmin)[0].id)
+                          oblig1.assignment_groups_where_can_examine(ifiadmin)[0].id)
         self.assertEquals(4,
-                oblig1.assignment_groups_where_can_examine(ifiadmin).count())
+                          oblig1.assignment_groups_where_can_examine(ifiadmin).count())
 
     def test_clean_publishing_time_before(self):
         oblig1 = Assignment.objects.get(id=1)
@@ -439,7 +439,7 @@ class TestAssignment(TestCase):
         oblig1.clean()
         oblig1.publishing_time = datetime(2012, 1, 1)
         self.assertRaises(ValidationError, oblig1.clean)
-        
+
     def test_get_path(self):
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(oblig1.get_path(), 'inf1100.looong.oblig1')
@@ -447,14 +447,14 @@ class TestAssignment(TestCase):
     def test_get_full_path(self):
         oblig1 = Assignment.objects.get(id=1)
         self.assertEquals(oblig1.get_full_path(),
-                'uio.ifi.inf1100.looong.oblig1')
+                          'uio.ifi.inf1100.looong.oblig1')
 
     def test_get_by_path(self):
         self.assertEquals(
-                Assignment.get_by_path('inf1100.looong.oblig1').short_name,
-                'oblig1')
+            Assignment.get_by_path('inf1100.looong.oblig1').short_name,
+            'oblig1')
         self.assertRaises(Assignment.DoesNotExist, Assignment.get_by_path,
-                'does.not.exist')
+                          'does.not.exist')
         self.assertRaises(ValueError, Assignment.get_by_path, 'does.not')
 
 
@@ -494,7 +494,7 @@ class TestAssignment(TestCase):
         self.assertEquals(points, [1, 1, 0])
         scaled_points = [g.scaled_points for g in test.assignmentgroups.all()]
         self.assertEquals(scaled_points, [20.0, 20.0, 0.0])
-        
+
 
 
 class TestAssignmentGroup(TestCase):
@@ -514,61 +514,61 @@ class TestAssignmentGroup(TestCase):
         student2 = User.objects.get(username='student2')
         student3 = User.objects.get(username='student3')
         self.assertEquals(1,
-                AssignmentGroup.published_where_is_candidate(student2).count())
+                          AssignmentGroup.published_where_is_candidate(student2).count())
         self.assertEquals(2,
-                AssignmentGroup.published_where_is_candidate(student3).count())
+                          AssignmentGroup.published_where_is_candidate(student3).count())
 
     def test_active_where_is_candidate(self):
         student2 = User.objects.get(username='student2')
         student3 = User.objects.get(username='student3')
         self.assertEquals(1,
-                AssignmentGroup.active_where_is_candidate(student2).count())
+                          AssignmentGroup.active_where_is_candidate(student2).count())
         self.assertEquals(2,
-                AssignmentGroup.active_where_is_candidate(student3).count())
+                          AssignmentGroup.active_where_is_candidate(student3).count())
 
     def test_old_where_is_candidate(self):
         student1 = User.objects.get(username='student1')
         student4 = User.objects.get(username='student4')
         self.assertEquals(2,
-                AssignmentGroup.old_where_is_candidate(student1).count())
+                          AssignmentGroup.old_where_is_candidate(student1).count())
         self.assertEquals(1,
-                AssignmentGroup.old_where_is_candidate(student4).count())
+                          AssignmentGroup.old_where_is_candidate(student4).count())
 
 
     def test_where_is_examiner(self):
         examiner2 = User.objects.get(username='examiner2')
         examiner4 = User.objects.get(username='examiner4')
         self.assertEquals(1,
-                AssignmentGroup.where_is_examiner(examiner2).count())
+                          AssignmentGroup.where_is_examiner(examiner2).count())
         self.assertEquals(2,
-                AssignmentGroup.where_is_examiner(examiner4).count())
+                          AssignmentGroup.where_is_examiner(examiner4).count())
 
     def test_published_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         examiner2 = User.objects.get(username='examiner2')
         self.assertEquals(1,
-                AssignmentGroup.published_where_is_examiner(examiner2).count())
+                          AssignmentGroup.published_where_is_examiner(examiner2).count())
         self.assertEquals(2,
-                AssignmentGroup.published_where_is_examiner(examiner1).count())
+                          AssignmentGroup.published_where_is_examiner(examiner1).count())
         self.assertEquals(0,
-                AssignmentGroup.published_where_is_examiner(examiner1,
-                    old=False, active=False).count())
+                          AssignmentGroup.published_where_is_examiner(examiner1,
+                                                                      old=False, active=False).count())
 
     def test_active_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         examiner2 = User.objects.get(username='examiner2')
         self.assertEquals(1,
-                AssignmentGroup.active_where_is_examiner(examiner2).count())
+                          AssignmentGroup.active_where_is_examiner(examiner2).count())
         self.assertEquals(2,
-                AssignmentGroup.active_where_is_examiner(examiner1).count())
+                          AssignmentGroup.active_where_is_examiner(examiner1).count())
 
     def test_old_where_is_examiner(self):
         examiner3 = User.objects.get(username='examiner3')
         examiner4 = User.objects.get(username='examiner4')
         self.assertEquals(1,
-                AssignmentGroup.old_where_is_examiner(examiner4).count())
+                          AssignmentGroup.old_where_is_examiner(examiner4).count())
         self.assertEquals(2,
-                AssignmentGroup.old_where_is_examiner(examiner3).count())
+                          AssignmentGroup.old_where_is_examiner(examiner3).count())
 
     def test_get_students(self):
         g = AssignmentGroup.objects.get(id=5)
@@ -649,7 +649,7 @@ class TestAssignmentGroup(TestCase):
         head_deadline = ag.deadlines.all()[0]
         head_deadline.deadline = datetime(1970, 1, 1, 1, 0)
         head_deadline.save()
-        
+
         # Adding delivery on head deadline
         self.add_delivery(ag, student1)
         self.assertEquals(ag.status, AssignmentGroup.HAS_DELIVERIES)
@@ -690,12 +690,12 @@ class TestAssignmentGroup(TestCase):
         delivery2.feedback.published = True
         delivery2.feedback.save()
         ag = delivery2.assignment_group
-        
+
         self.assertEquals(delivery2.get_status_number(), Delivery.CORRECTED_AND_PUBLISHED)
         self.assertEquals(ag.status, AssignmentGroup.CORRECTED_AND_PUBLISHED)
         self.assertEquals(ag.get_localized_status(), "Corrected and published")
         self.assertEquals(ag.get_localized_student_status(), "Corrected")
-        
+
     def test_status_multiple_deadlines(self):
         teacher1 = User.objects.get(username='teacher1')
         student1 = User.objects.get(username='student1')
@@ -710,7 +710,7 @@ class TestAssignmentGroup(TestCase):
         head_deadline = ag.deadlines.all()[0]
         head_deadline.deadline = datetime(1970, 1, 1, 1, 0)
         head_deadline.save()
-        
+
         time_now = datetime.now()
         time_min10 = (time_now - timedelta(minutes=10))
         ag.deadlines.create(deadline=time_min10, text=None)
@@ -721,7 +721,7 @@ class TestAssignmentGroup(TestCase):
         time_plus10 = (time_now + timedelta(minutes=10))
         ag.deadlines.create(deadline=time_plus10, text=None)
 
-        # Adding delivery on deadline 
+        # Adding delivery on deadline
         self.add_delivery(ag, student1)
         self.add_delivery(ag, student1)
         delivery1 = ag.deliveries.all()[1]
@@ -731,11 +731,11 @@ class TestAssignmentGroup(TestCase):
         deadline_min5 = Deadline.objects.get(deadline=time_min5)
         deadline_plus5 = Deadline.objects.get(deadline=time_plus5)
         deadline_plus10 = Deadline.objects.get(deadline=time_plus10)
-        
+
         # Was assigned the correct deadline
         self.assertEquals(delivery1.deadline_tag.id, deadline_plus5.id)
         self.assertEquals(delivery2.deadline_tag.id, deadline_plus5.id)
-        
+
         self.assertEquals(deadline_min10.status, AssignmentGroup.NO_DELIVERIES)
         self.assertEquals(deadline_min5.status, AssignmentGroup.NO_DELIVERIES)
         self.assertEquals(deadline_plus5.status, AssignmentGroup.HAS_DELIVERIES)
@@ -752,12 +752,12 @@ class TestAssignmentGroup(TestCase):
 
 class TestCandidate(TestCase):
     fixtures = ['core/deprecated_users.json', 'core/core.json']
-    
+
     def test_non_anonymous(self):
         assignmentgroup1 = AssignmentGroup.objects.get(id=1)
         student1_candidate = Candidate.objects.get(id=1)
         self.assertEquals(student1_candidate.get_identifier(), "student1")
-        
+
     def test_anonymous(self):
         oblig1 = Assignment.objects.get(id=1)
         # Set anonymous
@@ -765,7 +765,7 @@ class TestCandidate(TestCase):
         oblig1.save()
         student1_candidate = Candidate.objects.get(id=1)
         self.assertEquals(student1_candidate.get_identifier(), "1")
-        
+
 
 class TestDelivery(TestCase):
     fixtures = ['core/deprecated_users.json', 'core/core.json']
@@ -828,7 +828,7 @@ class TestFeedback(TestCase):
     def test_published_where_is_candidate(self):
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.candidate0).count(), 8)
         self.assertEquals(StaticFeedback.published_where_is_candidate(self.candidate1).count(), 7)
-        
+
     def test_published_where_is_examiner(self):
         examiner0 = User.objects.get(username='examiner0')
         examiner0_feedbacks = StaticFeedback.published_where_is_examiner(examiner0)
@@ -914,24 +914,24 @@ class TestTestHelpers(TestCase):
         self.assertTrue(isinstance(assignment, Assignment))
 
         self.assertRaises(User.DoesNotExist,
-                User.objects.get, username='student1')
+                          User.objects.get, username='student1')
         ag = create_from_path(
-                'ifi:inf1100.spring10.oblig1.student1')
+            'ifi:inf1100.spring10.oblig1.student1')
         students = [c.student.username for c in ag.candidates.all()]
         self.assertEquals(students, ['student1'])
         User.objects.get(username='student1')
         self.assertEquals(ag.parentnode.short_name, 'oblig1')
         self.assertEquals(ag.parentnode.parentnode.short_name, 'spring10')
         self.assertEquals(ag.parentnode.parentnode.parentnode.short_name,
-                'inf1100')
+                          'inf1100')
         self.assertEquals(
-                ag.parentnode.parentnode.parentnode.parentnode.short_name,
-                'ifi')
+            ag.parentnode.parentnode.parentnode.parentnode.short_name,
+            'ifi')
 
         ag1 = create_from_path(
-                'ifi:inf1100.spring10.oblig1.student1,student2')
+            'ifi:inf1100.spring10.oblig1.student1,student2')
         ag2 = create_from_path(
-                'ifi:inf1100.spring10.oblig1.student1,student2')
+            'ifi:inf1100.spring10.oblig1.student1,student2')
         self.assertNotEquals(ag1.id, ag2.id)
 
 
@@ -1094,11 +1094,11 @@ class TestTestInitializer(TestCase):
 
     def test_assignmentgroups(self):
         self.ti.add(nodes="ifi",
-                 subjects=["inf1000", "inf1100"],
-                 periods=["fall01", "spring01"],
-                 assignments=["oblig1", "oblig2"],
-                 assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
-                                   'g2:candidate(nataliib):examiner(jose)'])
+                    subjects=["inf1000", "inf1100"],
+                    periods=["fall01", "spring01"],
+                    assignments=["oblig1", "oblig2"],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'])
 
         # assert that the assignmentgroups are there. There should be 8 of
         # each, since there are (should!) 2 assignments.
@@ -1152,14 +1152,6 @@ class TestTestInitializer(TestCase):
         self.ti.add(subjects=['inf1010'])
         # assert that nothing was created
         self.assertEquals(self.ti.objects_created, 0)
-
-    # def test_huge_test(self):
-    #     self.ti.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
-    #                 subjects=["inf1000:admin(arnem)", "inf1010:admin(steingj,steinm)"],
-    #                 periods=["fall01:admin(jose)", "spring01:admin(espeak)"],
-    #                 assignments=["oblig1:admin(cotryti)", "oblig2:admin(bendiko)"],
-    #                 assignmentgroups=['g1:candidate(zakia,mariherr,jensp):examiner(cotryti)',
-    #                                   'g2:candidate(nataliib,runeama,trygv,stiansma):examiner(bendiko)'])
 
     def test_deadlines(self):
         self.ti.add(nodes="ifi",
@@ -1227,21 +1219,105 @@ class TestTestInitializer(TestCase):
                     assignments=['oblig1', 'oblig2:pub(10)'],
                     assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
                                       'g2:candidate(nataliib):examiner(jose)'],
-                    deadlines=['d1:ends(10):text("heihei")', 'd2:ends(20)'])
+                    deadlines=['d1:ends(10):text(First deadline)'])
 
         today = datetime.today().date()
 
         # assert that the deadlines are created correctly
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.deadline.date(), today + timedelta(days=10))
-        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d2.deadline.date(), today + timedelta(days=20))
-        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, '"heihei"')
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, 'First deadline')
 
-        self.assertEquals(Deadline.objects.all().count(), 2)
+        # and that there as many deadlines as there are groups, + the
+        # default deadlines. There should be 8 assignment groups
+        # created by having 1 subject, 2 periods, 2 assignments and 2
+        # groups in each, and we create 8 more deadlines that end in
+        # 10 days
+        self.assertEquals(Deadline.objects.all().count(), 16)
 
         # add a new deadline for g1. This should overwrite the
         # previous d1 deadline
-        self.ti.add_to_path('ifi;inf1000.first.oblig1.g1.d1:text("heeellllooo")')
-
-        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, '"heeellllooo""')
-        self.assertEquals(Deadline.objects.all(), 3)
+        self.ti.add_to_path('ifi;inf1000.first.oblig1.g1.d1:text(Third deadline)')
         # assert that the texts are set correctly
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, 'Third deadline')
+        self.assertEquals(Deadline.objects.all().count(), 17)
+
+        # check the deadlines list of g1
+        self.assertEquals(len(self.ti.inf1000_first_oblig1_g1_deadlines), 2)
+        # and that the last element in that list is the same as d1
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1, self.ti.inf1000_first_oblig1_g1_deadlines[-1])
+
+    def test_get_object_from_path(self):
+
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        # assert that you get the correct type from different paths
+        self.assertEquals(type(self.ti.get_object_from_path('uio.ifi;inf1000')), Subject)
+        self.assertEquals(type(self.ti.get_object_from_path('uio.ifi;inf1000.first')), Period)
+        self.assertEquals(type(self.ti.get_object_from_path('uio.ifi;inf1000.second')), Period)
+        self.assertEquals(type(self.ti.get_object_from_path('uio.ifi;inf1000.first.oblig1')), Assignment)
+        self.assertEquals(type(self.ti.get_object_from_path('uio.ifi;inf1000.first.oblig1.g1')), AssignmentGroup)
+
+        # assert that excluding the top nodes still gives the correct
+        # type. This should be possible because subjects are unique
+        self.assertEquals(type(self.ti.get_object_from_path('inf1000')), Subject)
+        self.assertEquals(type(self.ti.get_object_from_path('inf1000.first')), Period)
+
+        # assert that wrong paths gives a keyerror
+        with self.assertRaises(KeyError):
+            self.ti.get_object_from_path('lskdfj;lskjdf.lksjdf')
+
+    def test_deliveries(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        file1 = {'test.py': ['print', 'hello world']}
+        file2 = {'test2.py': ['print "hi"']}
+        files = {'test.py': ['print', 'hello world'],
+                 'test2.py': ['print "hi"'] }
+
+        # deliver with path
+        d1 = self.ti.add_delivery('inf1000.first.oblig1.g1', file1)
+        d2 = self.ti.add_delivery('inf1000.first.oblig1.g2', file2)
+        d3 = self.ti.add_delivery('inf1000.first.oblig2.g1', files)
+
+        # assert that the deliveries are deliveries are correct
+        self.assertEquals(Delivery.objects.all().count(), 3)
+        self.assertEquals(d1.time_of_delivery.date(), datetime.today().date())
+        self.assertEquals(d1.number, 1)
+        self.assertEquals(d1.delivered_by, self.ti.zakia)
+        self.assertFalse(d1.after_deadline)
+
+        # test the variable creation by testinitializer
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[0], d1)
+        with self.assertRaises(IndexError):
+            self.ti.inf1000_first_oblig1_g1_deliveries[1]
+        # add a delivery to g1, and check that there are now 2
+        # deliveries in the list
+        d4 = self.ti.add_delivery('inf1000.first.oblig1.g1', file1)
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[1], d4)
+
+
+        print ""
+        print d1
+        print d2
+        print d3
+
+        d4 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g1, file1)
+        d5 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g2, file2, after_last_deadline=True)
+        d6 = self.ti.add_delivery(self.ti.inf1000_second_oblig2_g1, files)
+
+        print ""
+        print d4
+        print d5
+        print d6
