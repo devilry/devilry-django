@@ -16,9 +16,17 @@ class RestView(View):
     @classmethod
     def create_rest_url(cls):
         """
-        Create a ``django.conf.urls.defaults.url``-object for this view.
+        Create a ``django.conf.urls.defaults.url``-object for this view::
 
-        It defaults
+            r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$
+
+        Where ``urlprefix`` is ``cls._meta.urlprefix`` documented in
+        :func:`restful_api`.
+
+        The name of the url is the ``cls._meta.urlname``, documented in
+        :func:`restful_api`.
+
+        The view is wrapped by :func:`django.contrib.auth.decorators.login_required`.
         """
         return url(r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$'.format(urlprefix=cls._meta.urlprefix),
             login_required(cls.as_view()),

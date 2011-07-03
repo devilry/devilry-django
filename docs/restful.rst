@@ -27,11 +27,6 @@ HTTP status codes
 
 
 
-RestView and @restful_api
-#########################
-
-
-
 Tutorial
 ########
 

@@ -37,6 +37,15 @@ def restful_modelapi(cls):
     :class:`ModelRestView` is used in conjunction with the
     :class:`restful_modelapi`-decorator to autogenerate a RESTful
     interface for a simplified class (see :ref:`simplified`).
+
+    The ``cls`` must have an inner class named ``Meta`` with
+    the following required attributes:
+
+        simplified
+            A :ref:`simplified` class.
+
+    Furthermore, this decorator automatically decorates ``cls`` with
+    :func:`restful_api`.
     """
     cls = restful_api(cls)
     _require_metaattr(cls, 'simplified')
