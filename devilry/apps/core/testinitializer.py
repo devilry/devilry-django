@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-from models import Node, Subject, Period, Assignment, AssignmentGroup, Candidate, Deadline
+from models import Node, Subject, Period, Assignment, AssignmentGroup, Candidate, Deadline, Delivery, StaticFeedback
 
 
 # TODO:
@@ -62,8 +62,61 @@ class TestInitializer(object):
 
         return delivery
 
-    def add_feedback(self, path, text='Good job!'):
-        pass
+    def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
+        """
+        :param delivery: either a Delivery object or a string path to
+        an assignmentgroup, where we take the last delivery made. This
+        is the only mandatory parameter
+
+        :param verdict: a dict containing grade, score and passing
+        grade. Defaults to grade='A', points=100,
+        is_passing_grade=True
+
+        :param examiner: A User object. Defaults to the first examiner
+        for the delivery's assignment group.
+
+        :param timestamp: A datetime object for when the feedback was
+        saved. Defaults to same time the delivery was made
+        """
+
+        # get the delivery object
+        if type(delivery) == str:
+            # since we cant create a path directly to a delivery,
+            # expect an assignmentgroup path
+            delivery = self.get_object_from_path(delivery)
+
+        # if the path led to an AssignmentGroup, get that groups
+        # latest delivery
+        if type(delivery) == AssignmentGroup:
+            delivery = delivery.deliveries.all().order_by('time_of_delivery')[0]
+
+        # if none of the above, expect we were given a Delivery
+        if not type(delivery) == Delivery:
+            raise ValueError('Invalid delivery given. Got ' + delivery)
+
+        # get the verdict
+        if not verdict:
+            verdict = {'grade': 'A', 'points': 100, 'is_passing_grade': True}
+
+        # get the examiner
+        if not examiner:
+            examiner = delivery.assignment_group.examiners.all()[0]
+
+        # get the timestamp
+        if not timestamp:
+            timestamp = delivery.assignment_group.get_active_deadline().deadline
+
+        # create the feedback
+        feedback = StaticFeedback(saved_by=examiner, delivery=delivery, grade=verdict['grade'],
+                                  points=verdict['points'], is_passing_grade=verdict['is_passing_grade'])
+        # and finally, save it!
+        try:
+            feedback.clean()
+            feedback.save()
+        except:
+            raise
+
+        return feedback
 
     def _parse_extras(self, text, allowed_extras=[]):
 
@@ -115,8 +168,10 @@ class TestInitializer(object):
         return node
 
     def _do_the_nodes(self, nodes):
+
         if not nodes:
             return None
+
         new_node = None
         # separate the nodes
 

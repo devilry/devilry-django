@@ -1204,13 +1204,18 @@ class TestTestInitializer(TestCase):
         self.assertEquals(self.ti.inf1000_first_oblig2.publishing_time.date(), today + timedelta(days=10))
         self.assertEquals(self.ti.inf1000_first_oblig3.publishing_time.date(), today + timedelta(days=20))
 
-    def test_add_to_path(self):
-
+    def test_add_as_path(self):
         self.ti.add_to_path('uio:admin(rektor).ifi:admin(mortend);inf1000:admin(stein,steing).fall01')
+
+        # assert that all the expected nodes are created
         self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
         self.assertTrue(self.ti.mortend in self.ti.ifi.admins.all())
         self.assertTrue(self.ti.stein in self.ti.inf1000.admins.all())
         self.assertTrue(self.ti.steing in self.ti.inf1000.admins.all())
+        self.assertEquals(self.ti.uio, Node.objects.get(short_name='uio'))
+        self.assertEquals(self.ti.ifi, Node.objects.get(short_name='ifi'))
+        self.assertEquals(self.ti.inf1000, Subject.objects.get(short_name='inf1000'))
+        self.assertEquals(self.ti.inf1000_fall01, Period.objects.get(short_name='fall01'))
 
     def test_deadliness(self):
         self.ti.add(nodes='uio.ifi',
@@ -1298,6 +1303,9 @@ class TestTestInitializer(TestCase):
         self.assertEquals(d1.delivered_by, self.ti.zakia)
         self.assertFalse(d1.after_deadline)
 
+        self.assertEquals(d2.filemetas.all().count(), 1)
+        self.assertEquals(d3.filemetas.all().count(), 2)
+
         # test the variable creation by testinitializer
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[0], d1)
         with self.assertRaises(IndexError):
@@ -1307,17 +1315,67 @@ class TestTestInitializer(TestCase):
         d4 = self.ti.add_delivery('inf1000.first.oblig1.g1', file1)
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[1], d4)
 
-
-        print ""
-        print d1
-        print d2
-        print d3
-
-        d4 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g1, file1)
+        # add a late dateline
         d5 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g2, file2, after_last_deadline=True)
-        d6 = self.ti.add_delivery(self.ti.inf1000_second_oblig2_g1, files)
+        # and assert that it's really delivered after the deadline
+        self.assertGreater(d5.time_of_delivery, d5.deadline_tag.deadline)   # self.ti.inf1000_second_oblig1.publishing_time)
+        self.assertTrue(d5.delivered_too_late())
 
-        print ""
-        print d4
-        print d5
-        print d6
+        # check that all the created deliveries have the status
+        # Delivery.NOT_CORRECTED
+        self.assertEquals(d1.get_status_number(), Delivery.NOT_CORRECTED)
+        self.assertEquals(d2.get_status_number(), Delivery.NOT_CORRECTED)
+        self.assertEquals(d3.get_status_number(), Delivery.NOT_CORRECTED)
+        self.assertEquals(d4.get_status_number(), Delivery.NOT_CORRECTED)
+        self.assertEquals(d5.get_status_number(), Delivery.NOT_CORRECTED)
+
+    def test_feedback(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        file1 = {'test.py': ['print', 'hello world']}
+        file2 = {'test2.py': ['print "hi"']}
+
+        # deliver with path
+        d1 = self.ti.add_delivery('inf1000.first.oblig1.g1', file1)
+        # test a feedback with default values
+        fb1 = self.ti.add_feedback(d1)
+
+        # assert that a feedback exists in core, and that its the same
+        # we just created
+        self.assertEquals(StaticFeedback.objects.all().count(), 1)
+        self.assertEquals(fb1, StaticFeedback.objects.all()[0])
+
+        # check its values
+        self.assertEquals(fb1.grade, 'A')
+        self.assertEquals(fb1.points, 100)
+        self.assertTrue(fb1.is_passing_grade)
+        self.assertEquals(fb1.saved_by, self.ti.cotryti)
+
+        # try again, but with parameters
+        self.ti.add_delivery('inf1000.first.oblig1.g2', file2)
+        verdict = {'grade': 'B', 'points': 85, 'is_passing_grade': True}
+        fb2 = self.ti.add_feedback('inf1000.first.oblig1.g2', verdict=verdict, examiner=self.ti.jose)
+
+        # check its values
+        self.assertEquals(fb2.grade, 'B')
+        self.assertEquals(fb2.points, 85)
+        self.assertTrue(fb2.is_passing_grade)
+        self.assertEquals(fb2.saved_by, self.ti.jose)
+
+        # Try making a feedback with a certain timestamp
+        fb3 = self.ti.add_feedback(d1, timestamp=datetime.now())
+        self.assertEquals(fb3.save_timestamp.date(), datetime.now().date())
+
+        # try to make an illegal feedback. jose can't grade
+        # zakias deliveries
+        with self.assertRaises(Exception):
+            self.ti.add_feedback(d1, examiner=self.ti.jose)
+        # zakia certainly can't grade his own delivery
+        with self.assertRaises(Exception):
+            self.ti.add_feedback(d1, examiner=self.ti.zakia)
