@@ -166,7 +166,9 @@ class ModelRestView(RestView):
                 data = _serializers.deserialize(self.comformat, self.request.raw_post_data)
             except ValueError, e:
                 return RestResult(
-                        result=dict(error="Bad request data: {0}".format(e)),
+                        result=dict(error='Bad request data: {0}. Perhaps you ment to'\
+                                'send GET data as a querystring? In that case, add ' \
+                                'getdata_in_qrystring=1 to your querystring.'.format(e)),
                         httpresponsecls=HttpResponseBadRequest)
         try:
             form = self.__class__._searchform_to_kwargs(data)
