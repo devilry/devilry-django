@@ -14,6 +14,10 @@
 
     {{ RestfulSimplifiedSubject|extjs_model }}
     var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
+    var nodeform = {{ RestNode|extjs_forms}}
+
+    {{ RestSubject|extjs_model }}
+    var subjectstore = {{ RestSubject|extjs_store }}
 
     {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}

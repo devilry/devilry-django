@@ -7,4 +7,4 @@ def restfulmodelcls_to_extjsstore(restfulmodelcls):
             remoteSort: true,
             autoLoad: true,
             autoSync: true
-        }});""".format(modelname=get_extjs_modelname(restfulmodelcls))
+        }});""".format(modelname=get_extjs_modelname(restfulmodelcls))                   
