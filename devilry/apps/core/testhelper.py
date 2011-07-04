@@ -127,6 +127,17 @@ class TestHelper(object):
         except:
             raise
 
+        # add it to the groups feedbacks list
+        varname = (delivery.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   delivery.assignment_group.parentnode.parentnode.short_name + '_' +             # period_
+                   delivery.assignment_group.parentnode.short_name + '_' +                        # assignment_
+                   delivery.assignment_group.name + '_feedbacks')
+
+        if varname in vars(self).keys():
+            vars(self)[varname].append(feedback)
+        else:
+            vars(self)[varname] = [feedback]
+
         self.objects_created += 1
         return feedback
 
