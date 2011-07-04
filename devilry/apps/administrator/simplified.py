@@ -1,6 +1,8 @@
 from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
 from ..core import models
 
+__all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
+
 
 
 class CanSaveAuthMixin(object):
@@ -17,33 +19,6 @@ class CanSaveAuthMixin(object):
 
 @simplified_modelapi
 class SimplifiedNode(CanSaveAuthMixin):
-    """ Facade to simplify administrator actions on
-    :class:`devilry.apps.core.models.Node`.
-
-    Example:
-
-    .. code-block::
-
-        from django.contrib.auth.models import User
-        from devilry.apps.simplified.administrator import SimplifiedNode
-
-        grandma = User.objects.get(username='grandma') # Would usually get this from request.user
-
-        n = SimplifiedNode.create(grandma, short_name='mytestnode',
-            long_name='My Test SimplifiedNode')
-        print "Created node:", n.short_name, n.long_name
-
-        print "One result", SimplifiedNode.search(grandma, query='mytest').qryset
-
-        SimplifiedNode.update(grandma, id=n.id, short_name='helloworld')
-
-        print "Empty result:", SimplifiedNode.search(grandma, query='mytest').qryset # Returns nothing
-        print "One result:", SimplifiedNode.search(grandma, query='helloworld').qryset
-
-        SimplifiedNode.delete(grandma, id=n.id)
-        print "Empty result:", SimplifiedNode.search(grandma, query='helloworld').qryset # Returns nothing
-    """
-
     class Meta:
         model = models.Node
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')

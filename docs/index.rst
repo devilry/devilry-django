@@ -17,6 +17,8 @@
     utils.groupnodes
     utils.devilry_email
 
+    administrator.simplified
+
 ======================================================================
 Devilry developer documentation overview
 ======================================================================

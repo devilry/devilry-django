@@ -29,3 +29,12 @@ class FieldSpec(object):
             return fields
         else:
             return self.always_available_fields
+
+    def _asdocstring(self):
+        always = '    {0}'.format(', '.join(self.always_available_fields))
+        docs = ['Always available', always, 'Additional fieldgroups']
+        for fieldgroup, fields in self.additional_fieldgroups:
+            docs.append(fieldgroup)
+            docs.append('    {0}'.format(', '.join(fields)))
+        return docs
+
