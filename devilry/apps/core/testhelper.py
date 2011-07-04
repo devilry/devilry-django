@@ -18,15 +18,25 @@ class StuffError(Exception):
 
 
 class TestHelper(object):
+    """
+    This class helps generate test data.
+    """
 
     objects_created = 0
 
-    def add_delivery(self, assignmentgroup=None, files={}, after_last_deadline=False):
-        """assignmentgroup is either an AssignmentGroup object, or a
-        path to one. Either way, get the group, creates a delivery,
-        sets the delivery_time to either before of after the deadline
-        depending on after_last_deadline
+    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False):
         """
+        :param assignmentgroup: Expects either a Delivery object or a
+        string path to an assignmentgroup. This is a mandatory parameter.
+
+        :param files: a dictionary with key/values as file name and
+        file content as described in Delivery.add_file()
+
+        :param after_last_deadline: if true, sets time_of_delivery 1
+        day later than the assignmentgroups active deadline
+        """
+
+        # TODO: add timestamp-parameter for time_of_delivery
 
         if assignmentgroup == None:
             return
@@ -60,6 +70,7 @@ class TestHelper(object):
         else:
             vars(self)[varname] = [delivery]
 
+        self.objects_created += 1
         return delivery
 
     def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
@@ -116,10 +127,13 @@ class TestHelper(object):
         except:
             raise
 
+        self.objects_created += 1
         return feedback
 
     def _parse_extras(self, text, allowed_extras=[]):
-
+        """Parse an 'extras' string. Separate at ':', and create a
+        key/value pair of name/value
+        """
         res = {}
         for extra in allowed_extras:
             res[extra] = []
@@ -151,13 +165,13 @@ class TestHelper(object):
 ## Node specifics
 ##
 #######
-    def _create_or_add_node(self, name, users):
+    def _create_or_add_node(self, parent, name, users):
         node = Node(short_name=name, long_name=name.capitalize())
         try:
             node.clean()
             node.save()
         except:
-            node = Node.objects.get(short_name=name)
+            node = Node.objects.get(parentnode=parent, short_name=name)
 
         # allowed roles in node are:
         for admin in users['admin']:
@@ -184,7 +198,7 @@ class TestHelper(object):
                 node_name = n
                 extras_arg = None
             users = self._parse_extras(extras_arg, ['admin'])
-            new_node = self._create_or_add_node(node_name, users)
+            new_node = self._create_or_add_node(prev_node, node_name, users)
 
             # set up the relation ship between the previous node
             if prev_node:
@@ -208,6 +222,11 @@ class TestHelper(object):
         # add the extras (only admins allowed in subject)
         for admin in extras['admin']:
             subject.admins.add(self._create_or_add_user(admin))
+
+        # if a long_name is given, set it
+        if extras['ln']:
+            subject.long_name = extras['ln']
+
         vars(self)[subject.short_name] = subject
         self.objects_created += 1
         return subject
@@ -226,7 +245,7 @@ class TestHelper(object):
                 subject_name = subject
                 extras_arg = None
 
-            users = self._parse_extras(extras_arg, ['admin'])
+            users = self._parse_extras(extras_arg, ['admin', 'ln'])
             new_subject = self._create_or_add_subject(subject_name, node, users)
             created_subjects.append(new_subject)
         return created_subjects
@@ -256,6 +275,9 @@ class TestHelper(object):
         else:
             period.end_time = period.start_time + timedelta(5 * 30)
 
+        if extras['ln']:
+            period.long_name = extras['ln']
+
         vars(self)[parentnode.short_name + '_' + period.short_name] = period
         self.objects_created += 1
         return period
@@ -277,7 +299,7 @@ class TestHelper(object):
                     period_name = period
                     extras_arg = None
 
-                extras = self._parse_extras(extras_arg, ['admin', 'begins', 'ends'])
+                extras = self._parse_extras(extras_arg, ['admin', 'begins', 'ends', 'ln'])
                 new_period = self._create_or_add_period(period_name, subject, extras)
                 created_periods.append(new_period)
         return created_periods
@@ -508,24 +530,148 @@ class TestHelper(object):
         varname = rest.replace('.', '_')
         return vars(self)[varname]
 
-    def example(self):
-        self.add(nodes="uio:admin(rektor).ifi:admin(mortend)",
-                 subjects=["inf1000:admin(stein,steing)", "inf1100:admin(arne)"],
-                 periods=["fall01", "spring01"],
-                 assignments=["oblig1:admin(jose)", "oblig2:admin(jose)"],
-                 assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
-                                   'g2:candidate(nataliib):examiner(jose)'],
-                 deadlines=['dl1:ends(10)'])
+    def load_generic_scenario(self):
+        # set up the base structure
+        self.add(nodes='uni:admin(mortend)',
+                 subjects=['cs101:admin(admin1,admin2):ln(Basic OO programming)',
+                           'cs110:admin(admin3,admin4):ln(Basic scientific programming)',
+                           'cs111:admin(admin1,damin3):ln(Advanced OO programming)'],
+                 periods=['fall11', 'spring11:begins(6)'])
 
-        self.add(nodes="uio.ifi",
-                 subjects=["inf1000"],
-                 periods=["fall01"],
-                 assignments=["oblig1:student(stud3)"])
+        # add 4 assignments to inf101 and inf110 in fall and spring
+        self.add(nodes='uni',
+                 subjects=['inf101', 'inf110'],
+                 periods=['fall11', 'spring11'],
+                 assignments=['a1', 'a2'])
 
-        self.add_to_path('uio:admin(rektor).ifi:admin(mortend);inf1000:admin(stein,steing).fall01')
+        # add 12 assignments to inf111 fall and spring.
+        self.add(nodes='uni',
+                 subjects=['cs111'],
+                 periods=['fall11', 'spring11'],
+                 assignments=['week1', 'week2', 'week3', 'week4'])
 
-        self.add_deadline(path='uio.ifi:inf1000.fall01.oblig1', deadline=datetime.now())
+        # set up some students with descriptive names
 
-        self.add_delivery('g1', {'file1.txt': 'content of file 1',
-                                 'file2.txt': 'content of file 2'})
-        self.add_feedback()
+        # inf101 is so easy, everyone passes
+        self.add_to_path('uni;cs101.fall11.a1.g1:candidate(goodStud1):examiner(examiner1).dl:ends(5)')
+        self.add_to_path('uni;cs101.fall11.a1.g2:candidate(goodStud2):examiner(examiner1).dl:ends(5)')
+        self.add_to_path('uni;cs101.fall11.a1.g3:candidate(badStud3):examiner(examiner2).dl:ends(5)')
+        self.add_to_path('uni;cs101.fall11.a1.g4:candidate(okStud4):examiner(examiner2).dl:ends(5)')
+
+        self.add_to_path('uni;cs101.fall11.a2.g1:candidate(goodStud1):examiner(examiner1).dl:ends(5)')
+        self.add_to_path('uni;cs101.fall11.a2.g2:candidate(goodStud2):examiner(examiner1).dl:ends(5)')
+        self.add_to_path('uni;cs101.fall11.a2.g3:candidate(badStud3):examiner(examiner2).dl:ends(5)')
+        self.add_to_path('uni;cs101.fall11.a2.g4:candidate(okStud4):examiner(examiner2).dl:ends(5)')
+
+        # inf110 is an easy group-project, everyone passes
+        self.add_to_path('uni;cs110.fall11.a1.g1:candidate(goodStud1,goodStud2):examiner(examiner1).dl:ends(14)')
+        self.add_to_path('uni;cs110.fall11.a1.g2:candidate(badStud3,okStud4):examiner(examiner2).dl.ends(14)')
+
+        self.add_to_path('uni;cs110.fall11.a2.g1:candidate(goodStud1,goodStud2):examiner(examiner1).dl:ends(14)')
+        self.add_to_path('uni;cs110.fall11.a2.g2:candidate(badStud3,okStud4):examiner(examiner2).dl.ends(14)')
+
+        # inf111 is hard! Everyone passes week1
+        self.add_to_path('uni;cs111.fall11.week1.g1:candidate(goodStud1):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week1.g2:candidate(goodStud2):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week1.g3:candidate(badStud3):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week1.g4:candidate(okStud4):examiner(examiner3).dl:ends(5)')
+
+        # and 2
+        self.add_to_path('uni;cs111.fall11.week2.g1:candidate(goodStud1):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week2.g2:candidate(goodStud2):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week2.g3:candidate(badStud3):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week2.g4:candidate(okStud4):examiner(examiner3).dl:ends(5)')
+
+        # badStud4 fails at week3
+        self.add_to_path('uni;cs111.fall11.week3.g1:candidate(goodStud1):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week3.g2:candidate(goodStud2):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week3.g4:candidate(okStud2):examiner(examiner3).dl:ends(5)')
+
+        # and okStud4 fails at week4
+        self.add_to_path('uni;cs111.fall11.week4.g1:candidate(goodStud1):examiner(examiner3).dl:ends(5)')
+        self.add_to_path('uni;cs111.fall11.week4.g2:candidate(goodStud2):examiner(examiner3).dl:ends(5)')
+
+        # deliveries
+        goodFile = {'good.py': ['print ', 'awesome']}
+        okFile = {'ok.py': ['print ', 'meh']}
+        badFile = {'bad.py': ['print ', 'bah']}
+
+        # cs101
+        self.add_delivery('cs101.fall11.a1.g1', goodFile)
+        self.add_delivery('cs101.fall11.a1.g2', goodFile)
+        self.add_delivery('cs101.fall11.a1.g3', badFile)
+        self.add_delivery('cs101.fall11.a1.g4', okFile)
+        self.add_delivery('cs101.fall11.a2.g1', goodFile)
+        self.add_delivery('cs101.fall11.a2.g2', goodFile)
+        self.add_delivery('cs101.fall11.a2.g3', badFile)
+        self.add_delivery('cs101.fall11.a2.g4', okFile)
+
+        # cs110
+        self.add_delivery('cs110.fall11.a1.g1', goodFile)
+        self.add_delivery('cs110.fall11.a1.g1', goodFile)
+        self.add_delivery('cs110.fall11.a2.g2', badFile)
+        self.add_delivery('cs110.fall11.a2.g2', okFile)
+
+        # cs111
+        self.add_delivery('cs111.fall11.week1.g1', goodFile)
+        self.add_delivery('cs111.fall11.week1.g2', goodFile)
+        self.add_delivery('cs111.fall11.week1.g3', badFile)
+        self.add_delivery('cs111.fall11.week1.g4', okFile)
+
+        # g3's delivery fails here
+        self.add_delivery('cs111.fall11.week2.g1', goodFile)
+        self.add_delivery('cs111.fall11.week2.g2', goodFile)
+        self.add_delivery('cs111.fall11.week2.g3', badFile)
+        self.add_delivery('cs111.fall11.week2.g4', okFile)
+
+        # g4's delivery fails here
+        self.add_delivery('cs111.fall11.week3.g1', goodFile)
+        self.add_delivery('cs111.fall11.week3.g2', goodFile)
+        self.add_delivery('cs111.fall11.week3.g4', okFile)
+
+        # g4 fails
+        self.add_delivery('cs111.fall11.week4.g1', goodFile)
+        self.add_delivery('cs111.fall11.week4.g2', goodFile)
+
+        # feedbacks
+        #   an empty verdict defaults to max score
+        goodVerdict = None
+        okVerdict = {'grade': 'C', 'points': 85, 'is_passing_grade': True}
+        badVerdict = {'grade': 'E', 'points': 60, 'is_passing_grade': True}
+        failVerdict = {'grade': 'F', 'points': 30, 'is_passing_grade': False}
+
+        self.add_feedback('cs101.fall11.a1.g1', verdict=goodVerdict)
+        self.add_feedback('cs101.fall11.a1.g2', verdict=goodVerdict)
+        self.add_feedback('cs101.fall11.a1.g3', verdict=badVerdict)
+        self.add_feedback('cs101.fall11.a1.g4', verdict=okVerdict)
+        self.add_feedback('cs101.fall11.a2.g1', verdict=goodVerdict)
+        self.add_feedback('cs101.fall11.a2.g2', verdict=goodVerdict)
+        self.add_feedback('cs101.fall11.a2.g3', verdict=badVerdict)
+        self.add_feedback('cs101.fall11.a2.g4', verdict=okVerdict)
+
+        # cs110
+        self.add_feedback('cs110.fall11.a1.g1', verdict=goodVerdict)
+        self.add_feedback('cs110.fall11.a1.g1', verdict=badVerdict)
+        self.add_feedback('cs110.fall11.a2.g2', verdict=goodVerdict)
+        self.add_feedback('cs110.fall11.a2.g2', verdict=okVerdict)
+
+        # cs111
+        self.add_feedback('cs111.fall11.week1.g1', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week1.g2', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week1.g3', verdict=badVerdict)
+        self.add_feedback('cs111.fall11.week1.g4', verdict=okVerdict)
+
+        # g3's feedback fails here
+        self.add_feedback('cs111.fall11.week2.g1', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week2.g2', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week2.g3', verdict=failVerdict)
+        self.add_feedback('cs111.fall11.week2.g4', verdict=okVerdict)
+
+        # g4's feedback fails here
+        self.add_feedback('cs111.fall11.week3.g1', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week3.g2', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week3.g4', verdict=failVerdict)
+
+        # g4 fails
+        self.add_feedback('cs111.fall11.week4.g1', verdict=goodVerdict)
+        self.add_feedback('cs111.fall11.week4.g2', verdict=goodVerdict)

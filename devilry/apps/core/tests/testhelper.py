@@ -195,7 +195,7 @@ class TestTestHelper(TestCase):
                     periods=['fall01', 'spring01'],
                     assignments=['oblig1'])
 
-        self.ti.add(nodes='ifi',
+        self.ti.add(nodes='uio.ifi',
                     subjects=['inf1000', 'inf1010'],
                     periods=['spring01'],
                     assignments=['oblig2'])
@@ -207,7 +207,7 @@ class TestTestHelper(TestCase):
         # assert that uio doesn't have any subjects and stuff
         self.assertEquals(self.ti.uio.subjects.all().count(), 0)
 
-        self.ti.add(nodes='ifi', subjects=['inf2220'], periods=['fall01', 'spring01'], assignments=['oblig1', 'oblig2'])
+        self.ti.add(nodes='uio.ifi', subjects=['inf2220'], periods=['fall01', 'spring01'], assignments=['oblig1', 'oblig2'])
 
         # assert that inf2220 has 2 assignments
         self.assertEquals(self.ti.inf2220_fall01.assignments.all().count(), 2)
@@ -226,7 +226,7 @@ class TestTestHelper(TestCase):
         self.assertEquals(self.ti.objects_created, 0)
 
     def test_deadlines(self):
-        self.ti.add(nodes="ifi",
+        self.ti.add(nodes="uio.ifi",
                     subjects=["inf1000", "inf1100"],
                     periods=["fall01", "spring01"],
                     assignments=["oblig1", "oblig2"],
@@ -257,7 +257,7 @@ class TestTestHelper(TestCase):
         self.assertFalse(self.ti.inf1000_second.is_active())
 
         # add an old period
-        self.ti.add(nodes='ifi', subjects=['inf1000'], periods=['old:begins(-2):ends(1)'])
+        self.ti.add(nodes='uio.ifi', subjects=['inf1000'], periods=['old:begins(-2):ends(1)'])
 
         # assert that old began 2 months ago, and that it ended 1 month ago.
         self.assertEquals(self.ti.inf1000_old.start_time.date(), today + timedelta(days=-60))
@@ -313,7 +313,7 @@ class TestTestHelper(TestCase):
 
         # add a new deadline for g1. This should overwrite the
         # previous d1 deadline
-        self.ti.add_to_path('ifi;inf1000.first.oblig1.g1.d1:text(Third deadline)')
+        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d1:text(Third deadline)')
         # assert that the texts are set correctly
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1.text, 'Third deadline')
         self.assertEquals(Deadline.objects.all().count(), 17)
