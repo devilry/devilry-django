@@ -79,7 +79,6 @@ class TestStoreIntegration(TestCase):
             model: 'devilry.apps.extjshelpers.tests.SimplifiedUser',
             remoteFilter: true,
             remoteSort: true,
-            autoLoad: true,
             autoSync: true
         });"""
         self.assertEquals(js, expected)
