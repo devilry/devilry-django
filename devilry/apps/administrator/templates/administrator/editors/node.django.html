@@ -11,6 +11,14 @@
     var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
     nodestore.load();
 
+
+    function loadNode(node) {
+        var form = Ext.getCmp('editform');
+        form.loadRecord(node);
+        var title = Ext.String.format('{% trans "Edit" %}: {0}', node.data.long_name);
+        form.setTitle(title);
+    }
+
     Ext.onReady(function() {
         Ext.create('Ext.panel.Panel', {
             height: 400,
@@ -18,12 +26,13 @@
             preventHeader: true,
             renderTo: 'layout',
             items: [{
-                title: 'All nodes',
-                region:'west',
+                title: 'Browse all nodes',
+                region:'east',
                 xtype: 'grid',
-                margins: '5 0 0 5',
+                margins: '0 0 0 0',
                 width: 200,
                 collapsible: true,   // make collapsible
+                collapsed: true,
                 id: 'nodegrid',
                 layout: 'fit',
                 store: nodestore,
@@ -43,15 +52,15 @@
                         var selection = selections[0];
                         if(selection) {
                             var form = Ext.getCmp('editform');
-                            form.loadRecord(selection);
+                            loadNode(selection);
                         }
                     }
                 }
             },{
                 region: 'center',
                 xtype: 'form',
-                margins: '5 5 5 5',
-                title: '{% trans "Edit node" %}',
+                margins: '0',
+                title: '{% trans "Create node" %}',
                 id: 'editform',
 
                 defaultType: 'textfield',
@@ -64,7 +73,10 @@
                         this.up('form').getForm().submit({
                             submitEmptyText: true,
                             method: 'DELETE',
-                            waitMsg: '{% trans "Deleting node..."%}'
+                            waitMsg: '{% trans "Deleting node..."%}',
+                            success: function() {
+                                nodestore.load(); // Reloads grid
+                            }
                         });
                     }
                 }, {
@@ -83,15 +95,14 @@
             }]
         });
 
-        // Load the request record into the form
-        Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load({{ id }}, {
-            success: function(node) {
-                var form = Ext.getCmp('editform');
-                form.loadRecord(node);
-                var title = Ext.String.format('{% trans "Edit" %}: {0}', node.data.long_name);
-                form.setTitle(title);
-            }
-        });
+        {% if mode == "edit" %}
+            // Load the request record into the form
+            Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load({{ record_id }}, {
+                success: function(node) {
+                    loadNode(node);
+                }
+            });
+        {% endif %}
     });
 </script>
 {% endblock %}
