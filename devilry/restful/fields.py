@@ -36,7 +36,7 @@ class BooleanWithFallbackField(forms.Field):
 
 
 class CharWithFallbackField(forms.CharField):
-    def __init__(self, fallbackvalue=False, *args, **kwargs):
+    def __init__(self, fallbackvalue=None, *args, **kwargs):
         self._fallbackvalue = fallbackvalue
         super(CharWithFallbackField, self).__init__(
                 required=False, *args, **kwargs)

@@ -1,8 +1,0 @@
-{% load rst_to_html %}
-{% if delivery.feedback.format == 'txt' %}
-	<pre class='txt-preview'>{{ delivery.feedback.text }}</pre>
-{% else %}
-	<div class='rst-preview'>
-		{{ delivery.feedback.text|rst_to_html }}
-	</div>
-{% endif %}

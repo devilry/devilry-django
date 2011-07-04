@@ -4,10 +4,10 @@ from django.core.exceptions import ValidationError
 
 from ....simplified import PermissionDenied
 from ...core import models
-from ..simplified import Node, Subject, Period, Assignment
+from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment
 
 
-class TestSimplifiedAdministratorNode(TestCase):
+class TestSimplifiedAdministratorSimplifiedNode(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -31,7 +31,7 @@ class TestSimplifiedAdministratorNode(TestCase):
     def test_create(self):
         kw = dict(long_name='Test',
                 parentnode_id=self.univ.id)
-        node = Node.create(self.clarabelle, short_name='test1', **kw)
+        node = SimplifiedNode.create(self.clarabelle, short_name='test1', **kw)
         self.assertEquals(node.short_name, 'test1')
         self.assertEquals(node.long_name, 'Test')
         self.assertEquals(node.parentnode, self.univ)
@@ -39,33 +39,33 @@ class TestSimplifiedAdministratorNode(TestCase):
     def test_create_sequrity(self):
         kw = dict(long_name='Test',
                 parentnode_id=self.univ.id)
-        node = Node.create(self.grandma, short_name='test2', **kw) # superuser allowed
+        node = SimplifiedNode.create(self.grandma, short_name='test2', **kw) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            node = Node.create(self.daisy, short_name='test3', **kw)
+            node = SimplifiedNode.create(self.daisy, short_name='test3', **kw)
 
     def test_create_validation(self):
         with self.assertRaises(models.Node.DoesNotExist):
-            Node.create(self.clarabelle,
+            SimplifiedNode.create(self.clarabelle,
                     short_name='test',
                     long_name='Test',
                     parentnode_id=self.invalidid)
         with self.assertRaisesRegexp(ValidationError,
                 "long_name.*short_name"):
-            Node.update(
+            SimplifiedNode.update(
                     self.clarabelle, self.duckburgh.id,
                     short_name=None, long_name=None)
 
     def test_insecure_read_model(self):
-        node = Node.insecure_read_model(self.clarabelle, idorkw=self.univ.id)
-        node = Node.insecure_read_model(self.grandma, self.univ.id) # superuser allowed
-        node = Node.insecure_read_model(self.grandma, dict(short_name=self.univ.short_name))
+        node = SimplifiedNode.insecure_read_model(self.clarabelle, idorkw=self.univ.id)
+        node = SimplifiedNode.insecure_read_model(self.grandma, self.univ.id) # superuser allowed
+        node = SimplifiedNode.insecure_read_model(self.grandma, dict(short_name=self.univ.short_name))
         self.assertEquals(node.short_name, 'univ')
-        node = Node.insecure_read_model(self.grandma, idorkw=self.univ.id)
+        node = SimplifiedNode.insecure_read_model(self.grandma, idorkw=self.univ.id)
         self.assertEquals(node.short_name, 'univ')
 
     def test_insecure_read_model_security(self):
         with self.assertRaises(PermissionDenied):
-            node = Node.insecure_read_model(self.daisy, self.univ.id)
+            node = SimplifiedNode.insecure_read_model(self.daisy, self.univ.id)
 
     def test_update(self):
         self.assertEquals(self.duckburgh.short_name, 'duckburgh')
@@ -76,7 +76,7 @@ class TestSimplifiedAdministratorNode(TestCase):
                     short_name='test',
                     long_name='Test',
                     parentnode_id=self.univ.id)
-        node = Node.update(self.clarabelle, **kw)
+        node = SimplifiedNode.update(self.clarabelle, **kw)
         self.assertEquals(node.short_name, 'test')
         self.assertEquals(node.long_name, 'Test')
         self.assertEquals(node.parentnode, self.univ)
@@ -88,87 +88,87 @@ class TestSimplifiedAdministratorNode(TestCase):
                     parentnode_id=self.univ.id)
         
         with self.assertRaises(PermissionDenied):
-            node = Node.update(self.daisy, **kw)
+            node = SimplifiedNode.update(self.daisy, **kw)
 
-        node = Node.update(self.grandma, **kw) # superuser allowed
-        node = Node.update(self.grandma,
+        node = SimplifiedNode.update(self.grandma, **kw) # superuser allowed
+        node = SimplifiedNode.update(self.grandma,
                 dict(short_name='test'),
                 long_name = 'My Duckburgh Test')
         self.assertEquals(node.long_name, 'My Duckburgh Test')
         
     def test_update_validation(self):
         with self.assertRaises(models.Node.DoesNotExist):
-            Node.update(self.clarabelle,
+            SimplifiedNode.update(self.clarabelle,
                     idorkw=self.duckburgh.id,
                     short_name='test',
                     long_name='Test',
                     parentnode_id=self.invalidid)
         with self.assertRaises(models.Node.DoesNotExist):
-            Node.update(self.clarabelle,
+            SimplifiedNode.update(self.clarabelle,
                     idorkw=self.invalidid,
                     short_name='test2',
                     long_name='Test 2',
                     parentnode_id=None)
         with self.assertRaisesRegexp(ValidationError,
                 "long_name.*short_name"):
-            Node.update(
+            SimplifiedNode.update(
                     self.clarabelle, self.duckburgh.id,
                     short_name=None, long_name=None)
 
 
     def test_delete_asnodeadmin(self):
-        Node.delete(self.clarabelle, idorkw=self.univ.id)
+        SimplifiedNode.delete(self.clarabelle, idorkw=self.univ.id)
         with self.assertRaises(models.Node.DoesNotExist):
             node = models.Node.objects.get(id=self.univ.id)
 
     def test_delete_asnodeadmin_by_short_name(self):
-        Node.delete(self.clarabelle, dict(short_name='univ'))
+        SimplifiedNode.delete(self.clarabelle, dict(short_name='univ'))
         with self.assertRaises(models.Node.DoesNotExist):
-            Node.delete(self.clarabelle, dict(short_name='univ'))
+            SimplifiedNode.delete(self.clarabelle, dict(short_name='univ'))
 
     def test_delete_assuperadmin(self):
-        Node.delete(self.grandma, idorkw=self.univ.id)
+        SimplifiedNode.delete(self.grandma, idorkw=self.univ.id)
         with self.assertRaises(models.Node.DoesNotExist):
             node = models.Node.objects.get(id=self.univ.id)
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):
-            Node.delete(self.daisy, idorkw=self.univ.id)
+            SimplifiedNode.delete(self.daisy, idorkw=self.univ.id)
 
 
     def test_search(self):
         clarabelle = User.objects.get(username="clarabelle")
         nodes = models.Node.objects.all().order_by("short_name")
-        qrywrap = Node.search(self.clarabelle)
+        qrywrap = SimplifiedNode.search(self.clarabelle)
         self.assertEquals(len(qrywrap), len(nodes))
         self.assertEquals(qrywrap[0]['short_name'], nodes[0].short_name)
 
         # query
-        qrywrap = Node.search(self.clarabelle, query="burgh")
+        qrywrap = SimplifiedNode.search(self.clarabelle, query="burgh")
         self.assertEquals(len(qrywrap), 1)
-        qrywrap = Node.search(self.clarabelle, query="univ")
+        qrywrap = SimplifiedNode.search(self.clarabelle, query="univ")
         self.assertEquals(len(qrywrap), 1)
-        qrywrap = Node.search(self.clarabelle)
+        qrywrap = SimplifiedNode.search(self.clarabelle)
         self.assertEquals(len(qrywrap), 2)
-        qrywrap = Node.search(self.grandma)
+        qrywrap = SimplifiedNode.search(self.grandma)
         self.assertEquals(len(qrywrap), len(nodes))
 
         self.univ.parentnode = self.duckburgh
         self.univ.save()
-        qrywrap = Node.search(self.grandma,
+        qrywrap = SimplifiedNode.search(self.grandma,
                 parentnode_id=self.duckburgh.id)
         self.assertEquals(len(qrywrap), 1)
         self.assertEquals(qrywrap[0]['short_name'], 'univ')
 
     def test_search_security(self):
-        qrywrap = Node.search(self.daisy)
+        qrywrap = SimplifiedNode.search(self.daisy)
         self.assertEquals(len(qrywrap), 0)
 
         self.duckburgh.admins.add(self.daisy)
-        qrywrap = Node.search(self.daisy)
+        qrywrap = SimplifiedNode.search(self.daisy)
         self.assertEquals(len(qrywrap), 1)
 
 
-class TestSimplifiedAdministratorSubject(TestCase):
+class TestSimplifiedAdministratorSimplifiedSubject(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -184,20 +184,20 @@ class TestSimplifiedAdministratorSubject(TestCase):
                 models.Node.where_is_admin_or_superadmin(self.daisy).count())
 
     def test_insecure_read_model(self):
-        subject = Subject.insecure_read_model(self.clarabelle, idorkw=self.duck1100.id)
-        subject = Subject.insecure_read_model(self.clarabelle, self.duck1100.id)
+        subject = SimplifiedSubject.insecure_read_model(self.clarabelle, idorkw=self.duck1100.id)
+        subject = SimplifiedSubject.insecure_read_model(self.clarabelle, self.duck1100.id)
         self.assertEquals(subject.short_name, 'duck1100')
-        subject = Subject.insecure_read_model(self.clarabelle,
+        subject = SimplifiedSubject.insecure_read_model(self.clarabelle,
                 dict(short_name=self.duck1100.short_name))
         self.assertEquals(subject.short_name, 'duck1100')
 
     def test_insecure_read_model_security(self):
-        subject = Subject.insecure_read_model(self.grandma, self.duck1100.id) # superuser allowed
+        subject = SimplifiedSubject.insecure_read_model(self.grandma, self.duck1100.id) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            node = Subject.insecure_read_model(self.daisy, self.duck1100.id)
+            node = SimplifiedSubject.insecure_read_model(self.daisy, self.duck1100.id)
 
     def test_read(self):
-        subject = Subject.read(self.grandma, self.duck1100.id)
+        subject = SimplifiedSubject.read(self.grandma, self.duck1100.id)
         self.assertEquals(subject, dict(
                 short_name = 'duck1100',
                 long_name = self.duck1100.long_name,
@@ -205,30 +205,30 @@ class TestSimplifiedAdministratorSubject(TestCase):
 
     def test_search(self):
         subjects = models.Subject.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
-        qrywrap = Subject.search(self.grandma)
+        qrywrap = SimplifiedSubject.search(self.grandma)
         self.assertEquals(len(qrywrap), len(subjects))
         self.assertEquals(qrywrap[0]['short_name'], subjects[0].short_name)
 
         # query
-        qrywrap = Subject.search(self.grandma, query="duck1")
+        qrywrap = SimplifiedSubject.search(self.grandma, query="duck1")
         self.assertEquals(len(qrywrap), 2)
-        qrywrap = Subject.search(self.grandma, query="duck")
+        qrywrap = SimplifiedSubject.search(self.grandma, query="duck")
         self.assertEquals(len(qrywrap), len(subjects))
-        qrywrap = Subject.search(self.grandma, query="1100")
+        qrywrap = SimplifiedSubject.search(self.grandma, query="1100")
         self.assertEquals(len(qrywrap), 1)
 
     def test_search_security(self):
-        qrywrap = Subject.search(self.daisy, query="1100")
+        qrywrap = SimplifiedSubject.search(self.daisy, query="1100")
         self.assertEquals(len(qrywrap), 0)
         self.duck1100.admins.add(self.daisy)
-        qrywrap = Subject.search(self.daisy, query="1100")
+        qrywrap = SimplifiedSubject.search(self.daisy, query="1100")
         self.assertEquals(len(qrywrap), 1)
 
 
     def test_create(self):
         kw = dict(long_name='Test',
                 parentnode_id=self.univ.id)
-        subject = Subject.create(self.clarabelle, short_name='test1', **kw)
+        subject = SimplifiedSubject.create(self.clarabelle, short_name='test1', **kw)
         self.assertEquals(subject.short_name, 'test1')
         self.assertEquals(subject.long_name, 'Test')
         self.assertEquals(subject.parentnode, self.univ)
@@ -236,9 +236,9 @@ class TestSimplifiedAdministratorSubject(TestCase):
     def test_create_security(self):
         kw = dict(long_name='Test',
                 parentnode_id=self.univ.id)
-        subject = Subject.create(self.grandma, short_name='test2', **kw) # superuser allowed
+        subject = SimplifiedSubject.create(self.grandma, short_name='test2', **kw) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            subject = Subject.create(self.daisy, short_name='test3', **kw)
+            subject = SimplifiedSubject.create(self.daisy, short_name='test3', **kw)
 
     def test_update(self):
         self.assertEquals(self.duck1100.short_name, 'duck1100')
@@ -247,7 +247,7 @@ class TestSimplifiedAdministratorSubject(TestCase):
                     short_name='test',
                     long_name='Test',
                     parentnode_id=self.univ.id)
-        subject = Subject.update(self.clarabelle, idorkw=self.duck1100.id, **kw)
+        subject = SimplifiedSubject.update(self.clarabelle, idorkw=self.duck1100.id, **kw)
         self.assertEquals(subject.short_name, 'test')
         self.assertEquals(subject.long_name, 'Test')
         self.assertEquals(subject.parentnode, self.univ)
@@ -258,29 +258,29 @@ class TestSimplifiedAdministratorSubject(TestCase):
                     long_name='Test',
                     parentnode_id=self.univ.id)
         with self.assertRaises(PermissionDenied):
-            subject = Subject.update(self.daisy, idorkw=self.duck1100.id, **kw)
+            subject = SimplifiedSubject.update(self.daisy, idorkw=self.duck1100.id, **kw)
     
     def test_delete_asnodeadmin(self):
-        Subject.delete(self.clarabelle, idorkw=self.duck1100.id)
+        SimplifiedSubject.delete(self.clarabelle, idorkw=self.duck1100.id)
         with self.assertRaises(models.Subject.DoesNotExist):
             subject = models.Subject.objects.get(id=self.duck1100.id)
 
     def test_delete_asnodeadmin_by_short_name(self):
-        Subject.delete(self.clarabelle, dict(short_name='duck1100'))
+        SimplifiedSubject.delete(self.clarabelle, dict(short_name='duck1100'))
         with self.assertRaises(models.Subject.DoesNotExist):
-            Subject.delete(self.clarabelle, dict(short_name='duck1100'))
+            SimplifiedSubject.delete(self.clarabelle, dict(short_name='duck1100'))
 
     def test_delete_assuperadmin(self):
-        Subject.delete(self.grandma, idorkw=self.duck1100.id)
+        SimplifiedSubject.delete(self.grandma, idorkw=self.duck1100.id)
         with self.assertRaises(models.Subject.DoesNotExist):
             subject = models.Subject.objects.get(id=self.duck1100.id)
 
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):
-            Subject.delete(self.daisy, idorkw=self.duck1100.id)
+            SimplifiedSubject.delete(self.daisy, idorkw=self.duck1100.id)
 
 
-class TestSimplifiedAdministratorPeriod(TestCase):
+class TestSimplifiedAdministratorSimplifiedPeriod(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -297,7 +297,7 @@ class TestSimplifiedAdministratorPeriod(TestCase):
                 models.Node.where_is_admin_or_superadmin(self.daisy).count())
 
     def test_read(self):
-        period = Period.read(self.clarabelle, self.duck1100_h01_core.id)
+        period = SimplifiedPeriod.read(self.clarabelle, self.duck1100_h01_core.id)
         self.assertEquals(period, dict(
                 short_name = self.duck1100_h01_core.short_name,
                 long_name = self.duck1100_h01_core.long_name,
@@ -307,24 +307,24 @@ class TestSimplifiedAdministratorPeriod(TestCase):
                 end_time = self.duck1100_h01_core.end_time))
 
     def test_read_security(self):
-        period = Period.read(self.grandma, self.duck1100_h01_core.id)
+        period = SimplifiedPeriod.read(self.grandma, self.duck1100_h01_core.id)
         with self.assertRaises(PermissionDenied):
-            period = Period.read(self.daisy, self.duck1100_h01_core.id)
+            period = SimplifiedPeriod.read(self.daisy, self.duck1100_h01_core.id)
 
     def test_insecure_read_model(self):
-        period = Period.insecure_read_model(self.clarabelle,
+        period = SimplifiedPeriod.insecure_read_model(self.clarabelle,
                 idorkw=self.duck1100_h01_core.id)
         self.assertEquals(period.short_name, 'spring01')
-        period = Period.insecure_read_model(self.clarabelle,
+        period = SimplifiedPeriod.insecure_read_model(self.clarabelle,
                 dict(short_name=self.duck1100_h01_core.short_name,
                     parentnode__short_name = 'duck1100'))
         self.assertEquals(period.short_name, 'spring01')
 
     def test_insecure_read_model_security(self):
-        period = Period.insecure_read_model(self.grandma, 
+        period = SimplifiedPeriod.insecure_read_model(self.grandma, 
                 self.duck1100_h01_core.id) # superuser allowed
         with self.assertRaises(PermissionDenied):
-            period = Period.insecure_read_model(self.daisy,
+            period = SimplifiedPeriod.insecure_read_model(self.daisy,
                     self.duck1100_h01_core.id)
 
 
@@ -334,7 +334,7 @@ class TestSimplifiedAdministratorPeriod(TestCase):
                 parentnode = self.duck1100_h01_core.parentnode,
                 start_time = self.duck1100_h01_core.start_time,
                 end_time = self.duck1100_h01_core.end_time)
-        period = Period.create(self.clarabelle, short_name='test1', **kw)
+        period = SimplifiedPeriod.create(self.clarabelle, short_name='test1', **kw)
         self.assertEquals(period.short_name, 'test1')
         self.assertEquals(period.long_name, 'Test')
         self.assertEquals(period.start_time,
@@ -351,9 +351,9 @@ class TestSimplifiedAdministratorPeriod(TestCase):
                 start_time = self.duck1100_h01_core.start_time,
                 end_time = self.duck1100_h01_core.end_time)
 
-        period = Period.create(self.grandma, short_name='test2', **kw) #superuser allowed
+        period = SimplifiedPeriod.create(self.grandma, short_name='test2', **kw) #superuser allowed
         with self.assertRaises(PermissionDenied):
-            period = Period.create(self.daisy, short_name='test3', **kw)
+            period = SimplifiedPeriod.create(self.daisy, short_name='test3', **kw)
 
     def test_update(self):
         self.assertEquals(self.duck1100_h01_core.short_name, 'spring01')
@@ -364,7 +364,7 @@ class TestSimplifiedAdministratorPeriod(TestCase):
                 parentnode = self.duck1100_h01_core.parentnode,
                 start_time = self.duck1100_h01_core.start_time,
                 end_time = self.duck1100_h01_core.end_time)
-        period = Period.update(self.clarabelle,
+        period = SimplifiedPeriod.update(self.clarabelle,
                 idorkw=self.duck1100_h01_core.id, **kw)
         self.assertEquals(period.short_name, 'test1')
         self.assertEquals(period.long_name, 'Test')
@@ -377,54 +377,54 @@ class TestSimplifiedAdministratorPeriod(TestCase):
                 start_time = self.duck1100_h01_core.start_time,
                 end_time = self.duck1100_h01_core.end_time)
         with self.assertRaises(PermissionDenied):
-            period = Period.update(self.daisy,
+            period = SimplifiedPeriod.update(self.daisy,
                     idorkw=self.duck1100_h01_core.id, **kw)
-        period = Period.update(self.grandma,
+        period = SimplifiedPeriod.update(self.grandma,
                 idorkw=self.duck1100_h01_core.id, **kw) #superuser
 
     def test_delete_asnodeadmin(self):
-        Period.delete(self.clarabelle, idorkw=self.duck1100_h01_core.id)
+        SimplifiedPeriod.delete(self.clarabelle, idorkw=self.duck1100_h01_core.id)
         with self.assertRaises(models.Period.DoesNotExist):
             period = models.Period.objects.get(id=self.duck1100_h01_core.id)
 
     def test_delete_asnodeadmin_by_short_name(self):
-        Period.delete(self.clarabelle, dict(short_name='spring01',
+        SimplifiedPeriod.delete(self.clarabelle, dict(short_name='spring01',
             parentnode__short_name='duck1100'))
         with self.assertRaises(models.Period.DoesNotExist):
             period = models.Period.objects.get(id=self.duck1100_h01_core.id)
 
     def test_delete_assuperadmin(self):
-        Period.delete(self.grandma, idorkw=self.duck1100_h01_core.id)
+        SimplifiedPeriod.delete(self.grandma, idorkw=self.duck1100_h01_core.id)
         with self.assertRaises(models.Period.DoesNotExist):
             period = models.Period.objects.get(id=self.duck1100_h01_core.id)
 
     def test_delete_noperm(self):
         with self.assertRaises(PermissionDenied):
-            Period.delete(self.daisy, idorkw=self.duck1100_h01_core.id)
+            SimplifiedPeriod.delete(self.daisy, idorkw=self.duck1100_h01_core.id)
 
     def test_search(self):
         periods = models.Period.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
-        qrywrap = Period.search(self.grandma)
+        qrywrap = SimplifiedPeriod.search(self.grandma)
         self.assertEquals(len(qrywrap), len(periods))
         self.assertEquals(qrywrap[0]['short_name'], periods[0].short_name)
 
-        qrywrap = Period.search(self.grandma, query="spring0")
+        qrywrap = SimplifiedPeriod.search(self.grandma, query="spring0")
         self.assertEquals(len(qrywrap), 1)
-        qrywrap = Period.search(self.grandma, query="fall")
+        qrywrap = SimplifiedPeriod.search(self.grandma, query="fall")
         self.assertEquals(len(qrywrap), 2)
-        qrywrap = Period.search(self.grandma, query="01")
+        qrywrap = SimplifiedPeriod.search(self.grandma, query="01")
         self.assertEquals(len(qrywrap), len(periods))
-        qrywrap = Period.search(self.grandma, query="1100")
+        qrywrap = SimplifiedPeriod.search(self.grandma, query="1100")
         self.assertEquals(len(qrywrap), 1)
 
     def test_search_security(self):
-        qrywrap = Period.search(self.daisy, query="spring01")
+        qrywrap = SimplifiedPeriod.search(self.daisy, query="spring01")
         self.assertEquals(len(qrywrap), 0)
         self.duck1100_h01_core.admins.add(self.daisy)
-        qrywrap = Period.search(self.daisy, query="spring01")
+        qrywrap = SimplifiedPeriod.search(self.daisy, query="spring01")
         self.assertEquals(len(qrywrap), 1)
 
-class TestSimplifiedAdministratorAssignment(TestCase):
+class TestSimplifiedAdministratorSimplifiedAssignment(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -440,7 +440,7 @@ class TestSimplifiedAdministratorAssignment(TestCase):
                 short_name='spring01').assignments.get(short_name='week1')
 
     def test_read_base(self):
-        assignment = Assignment.read(self.clarabelle, self.duck1100_spring01_week1_core.id) 
+        assignment = SimplifiedAssignment.read(self.clarabelle, self.duck1100_spring01_week1_core.id) 
         self.assertEquals(assignment, dict(
                 id = self.duck1100_spring01_week1_core.id,
                 short_name = 'week1',
@@ -448,7 +448,7 @@ class TestSimplifiedAdministratorAssignment(TestCase):
                 parentnode__id=self.duck1100_spring01_week1_core.parentnode.id))
 
     def test_read_period(self):
-        assignment = Assignment.read(self.clarabelle,
+        assignment = SimplifiedAssignment.read(self.clarabelle,
                 self.duck1100_spring01_week1_core.id,
                 result_fieldgroups=['period'])
         self.assertEquals(assignment, dict(
@@ -461,7 +461,7 @@ class TestSimplifiedAdministratorAssignment(TestCase):
                 parentnode__parentnode__id=self.duck1100_spring01_week1_core.parentnode.parentnode_id))
 
     def test_read_period_subject(self):
-        assignment = Assignment.read(self.clarabelle,
+        assignment = SimplifiedAssignment.read(self.clarabelle,
                 self.duck1100_spring01_week1_core.id,
                 result_fieldgroups=['period', 'subject'])
         self.assertEquals(assignment, dict(
@@ -476,7 +476,7 @@ class TestSimplifiedAdministratorAssignment(TestCase):
                 parentnode__parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.parentnode.long_name))
 
     def test_read_period_subject_pointfields(self):
-        assignment = Assignment.read(self.clarabelle,
+        assignment = SimplifiedAssignment.read(self.clarabelle,
                 self.duck1100_spring01_week1_core.id,
                 result_fieldgroups=['period', 'subject', 'pointfields'])
         self.assertEquals(assignment, dict(
@@ -496,53 +496,53 @@ class TestSimplifiedAdministratorAssignment(TestCase):
 
     def test_read_security(self):
         #test superuser allowed
-        assignment = Assignment.read(self.grandma, self.duck1100_spring01_week1_core.id) 
+        assignment = SimplifiedAssignment.read(self.grandma, self.duck1100_spring01_week1_core.id) 
 
         #test user with no permissions
         with self.assertRaises(PermissionDenied):
-            assignment = Assignment.read(self.daisy,
+            assignment = SimplifiedAssignment.read(self.daisy,
                     self.duck1100_spring01_week1_core.id)
         with self.assertRaises(PermissionDenied):
-            assignment = Assignment.read(self.daisy,
+            assignment = SimplifiedAssignment.read(self.daisy,
                     self.duck1100_spring01_week1_core.id,
                     result_fieldgroups=['period', 'subject'])
     
     def test_insecure_read_model(self):
-        assignment = Assignment.insecure_read_model(self.clarabelle, 
+        assignment = SimplifiedAssignment.insecure_read_model(self.clarabelle, 
                 idorkw=self.duck1100_spring01_week1_core.id)
 
         self.assertEquals(assignment, self.duck1100_spring01_week1_core)
 
     def test_insecure_read_model_security(self):
         #test superuser allowed
-        Assignment.insecure_read_model(self.grandma,
+        SimplifiedAssignment.insecure_read_model(self.grandma,
                 self.duck1100_spring01_week1_core.id)
 
         #test user with no permissions
         with self.assertRaises(PermissionDenied):
-            Assignment.read(self.daisy,
+            SimplifiedAssignment.read(self.daisy,
                 self.duck1100_spring01_week1_core.id)
 
     def test_search(self):
         assignments = models.Assignment.where_is_admin_or_superadmin(self.grandma).order_by("short_name")
-        qrywrap = Assignment.search(self.grandma)
+        qrywrap = SimplifiedAssignment.search(self.grandma)
         self.assertEquals(len(qrywrap), len(assignments))
         self.assertEquals(qrywrap[0]['short_name'], assignments[0].short_name)
 
         #duck3580, duck1100 and duck1080 have all got an assignment called 'week1'
-        qrywrap = Assignment.search(self.grandma, query="ek1")
+        qrywrap = SimplifiedAssignment.search(self.grandma, query="ek1")
         self.assertEquals(len(qrywrap), 3)
         #this should hit all 9 assignments with 'week' in its short_name
-        qrywrap = Assignment.search(self.grandma, query="week")
+        qrywrap = SimplifiedAssignment.search(self.grandma, query="week")
         self.assertEquals(len(qrywrap), 9)
         #no assignments has 'duck' in its short_name
-        qrywrap = Assignment.search(self.grandma, query="duck")
+        qrywrap = SimplifiedAssignment.search(self.grandma, query="duck")
         self.assertEquals(len(qrywrap), 0)
 
 
     def test_search_security(self):
         #test user with no permissions
-        qrywrap = Assignment.search(self.daisy, query="ek1")
+        qrywrap = SimplifiedAssignment.search(self.daisy, query="ek1")
         self.assertEquals(len(qrywrap), 0)
 
         #make daisy admin in subject 'duck1100'
@@ -551,12 +551,28 @@ class TestSimplifiedAdministratorAssignment(TestCase):
         self.duck1100_h01_core.admins.add(self.daisy)
         
         #admin in subject 'duck1100' has access to 'week1' in 'duck1100'
-        qrywrap = Assignment.search(self.daisy, query="ek1")
+        qrywrap = SimplifiedAssignment.search(self.daisy, query="ek1")
         self.assertEquals(len(qrywrap), 1)
 
     def test_create(self):
-        #TODO
+        # TODO, failes at SimplifiedAssignment.create because of ValidationError on grade plugin
         pass
+    """
+        kw = dict(
+                long_name = 'Test',
+                parentnode = self.duck1100_spring01_week1_core.parentnode,
+                publishing_time = self.duck1100_spring01_week1_core.publishing_time,
+                grade_plugin = self.duck1100_spring01_week1_core.grade_plugin)
+        assignment = SimplifiedAssignment.create(self.clarabelle, short_name='test1', **kw)
+        self.assertEquals(assignment.short_name, 'test1')
+        self.assertEquals(assignment.long_name, 'Test')
+        self.assertEquals(assignment.parentnode,
+                self.duck1100_spring01_week1_core.parentnode)
+        self.assertEquals(assignment.publishing_time, 
+                self.duck1100_spring01_week1_core.publishing_time)
+        self.assertEquals(assignment.grade_plugin, 
+                self.duck1100_spring01_week1_core.grade_plugin)
+        """
 
     def test_create_security(self):
         #TODO

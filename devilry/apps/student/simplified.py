@@ -35,7 +35,7 @@ class Feedback(PublishedWhereIsCandidateMixin):
         _delivery_number  = 'delivery__number'
         _delivery_success = 'delivery__successful'
 
-        model = models.Feedback
+        model = models.StaticFeedback
         resultfields = FieldSpec('id', 'format', 'text',
                                  period=[_period_short, _period_long, _period_id],
                                  subject=[_subject_long, _subject_short, _subject_id],
@@ -87,7 +87,7 @@ class Delivery(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Assignment(PublishedWhereIsCandidateMixin):
+class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -119,7 +119,7 @@ class Assignment(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Period(PublishedWhereIsCandidateMixin):
+class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
 
     class Meta:
         _subject_long     = 'parentnode__long_name'
@@ -134,7 +134,7 @@ class Period(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Subject(PublishedWhereIsCandidateMixin):
+class SimplifiedSubject(PublishedWhereIsCandidateMixin):
 
     class Meta:
         model = models.Subject

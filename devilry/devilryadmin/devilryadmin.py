@@ -22,6 +22,9 @@ if __name__ == '__main__':
         exit_help()
     cmdname = argv[1]
 
-    if not cmdname in commandnames:
-        exit_help()
-    execcommand(cmdname)
+    if cmdname == "--completionlist":
+        print ' '.join(commandnames)
+    else:
+        if not cmdname in commandnames:
+            exit_help()
+        execcommand(cmdname)

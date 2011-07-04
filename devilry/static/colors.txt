@@ -1,5 +1,0 @@
-Grey:
-    Red: #f00
-    Dark grey: #776B5F
-    Borders: #D4D2CE
-	Light grey background: #ECEBE9

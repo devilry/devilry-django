@@ -1,11 +1,11 @@
-from django import forms
+#from django import forms
 
-from ...simplified import (Subject, Period, Assignment, AssignmentGroup)
-from ...restful import fields, SearchFormBase
+#from ...simplified import (SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup)
+#from ...restful import fields, SearchFormBase
 
 
-#class RestSubject(RestView):
-    #SIMPCLASS = Subject
+#class RestfulSimplifiedSubject(RestfulView):
+    #SIMPCLASS = SimplifiedSubject
 
     #def restultqry_to_list(self, resultQry):
         #tpl = '/%(short_name)s'
@@ -17,11 +17,11 @@ from ...restful import fields, SearchFormBase
 
     #class SearchForm(SearchFormBase):
         #orderby = fields.CharListWithFallbackField(
-                #fallbackvalue=Subject._meta.ordering)
+                #fallbackvalue=SimplifiedSubject._meta.ordering)
 
 
-#class RestPeriod(RestView):
-    #SIMPCLASS = Period
+#class RestfulSimplifiedPeriod(RestfulView):
+    #SIMPCLASS = SimplifiedPeriod
 
     #def restultqry_to_list(self, resultQry):
         #tpl = '/%(parentnode__short_name)s/%(short_name)s'
@@ -33,12 +33,12 @@ from ...restful import fields, SearchFormBase
 
     #class SearchForm(SearchFormBase):
         #orderby = fields.CharListWithFallbackField(
-                #fallbackvalue=Subject._meta.ordering)
+                #fallbackvalue=SimplifiedSubject._meta.ordering)
         #subject_short_name = forms.CharField(required=False)
 
 
-#class RestAssignment(RestView):
-    #SIMPCLASS = Assignment
+#class RestfulSimplifiedAssignment(RestfulView):
+    #SIMPCLASS = SimplifiedAssignment
 
     #def restultqry_to_list(self, resultQry):
         #tpl = ('/%(parentnode__parentnode__short_name)s/'
@@ -51,7 +51,7 @@ from ...restful import fields, SearchFormBase
 
     #class SearchForm(SearchFormBase):
         #orderby = fields.CharListWithFallbackField(
-                #fallbackvalue=Assignment._meta.ordering)
+                #fallbackvalue=SimplifiedAssignment._meta.ordering)
         #old = fields.BooleanWithFallbackField(fallbackvalue=True)
         #active = fields.BooleanWithFallbackField(fallbackvalue=True)
         #longnamefields = fields.BooleanWithFallbackField()
@@ -60,9 +60,9 @@ from ...restful import fields, SearchFormBase
         #period_short_name = forms.CharField(required=False)
 
 
-#class RestAssignmentGroup(RestView):
-    #SIMPCLASS = AssignmentGroup
+#class RestfulSimplifiedAssignmentGroup(RestfulView):
+    #SIMPCLASS = SimplifiedAssignmentGroup
     #class SearchForm(SearchFormBase):
         #orderby = fields.CharListWithFallbackField(
-                #fallbackvalue=AssignmentGroup._meta.ordering)
+                #fallbackvalue=SimplifiedAssignmentGroup._meta.ordering)
         #deadlines = fields.BooleanWithFallbackField(fallbackvalue=False)

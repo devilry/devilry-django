@@ -15,7 +15,7 @@ class PublishedWhereIsExaminerMixin(object):
 
 
 @simplified_modelapi
-class Subject(PublishedWhereIsExaminerMixin):
+class SimplifiedSubject(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Subject
         resultfields = FieldSpec('id', 'short_name', 'long_name')
@@ -24,7 +24,7 @@ class Subject(PublishedWhereIsExaminerMixin):
 
 
 @simplified_modelapi
-class Period(PublishedWhereIsExaminerMixin):
+class SimplifiedPeriod(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Period
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
@@ -34,7 +34,7 @@ class Period(PublishedWhereIsExaminerMixin):
 
 
 @simplified_modelapi
-class Assignment(PublishedWhereIsExaminerMixin):
+class SimplifiedAssignment(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Assignment
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
@@ -62,7 +62,7 @@ class Assignment(PublishedWhereIsExaminerMixin):
 
 
 @simplified_modelapi
-class AssignmentGroup(PublishedWhereIsExaminerMixin):
+class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
         resultfields = FieldSpec('id', 'name') #TODO add subject, period, assignment, candidates
@@ -116,7 +116,7 @@ class Delivery(PublishedWhereIsExaminerMixin):
 @simplified_modelapi
 class Feedback(PublishedWhereIsExaminerMixin):
     class Meta:
-        model = models.Feedback
+        model = models.StaticFeedback
         resultfields = FieldSpec('delivery', 'text', 'format', 'id',
                                  subject = ['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',

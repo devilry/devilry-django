@@ -22,7 +22,7 @@
 Functions and attributes
 #########################################################
 
-.. automodule:: devilry.apps.core.models
+.. automodule:: devilry.apps.core.models.model_utils
     :members: pathsep, splitpath
     :no-members:
 
@@ -30,20 +30,20 @@ Functions and attributes
 BaseNode
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.BaseNode
+.. autoclass:: devilry.apps.core.models.basenode.BaseNode
     :no-members:
 
 
 AbstractIsAdmin
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.AbstractIsAdmin
+.. autoclass:: devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin
 
 
 AbstractIsExaminer
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.AbstractIsExaminer
+.. autoclass:: devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer
 
 
 Node
@@ -62,7 +62,7 @@ node-hierarchy:
         - Department of informatics
         - Department of mathematics
 
-.. autoclass:: devilry.apps.core.models.Node
+.. autoclass:: devilry.apps.core.models.node.Node
 
 
 Subject
@@ -71,7 +71,7 @@ Subject
 A subject is a course, seminar, class or something else being given
 regularly. A subject is further divided into periods.
 
-.. autoclass:: devilry.apps.core.models.Subject
+.. autoclass:: devilry.apps.core.models.subject.Subject
 
 Period
 #########################################################
@@ -79,7 +79,7 @@ Period
 A Period is a limited period of time, like *spring 2009*, *week 34 2010* or
 even a single day.
 
-.. autoclass:: devilry.apps.core.models.Period
+.. autoclass:: devilry.apps.core.models.period.Period
 
 Assignment
 #########################################################
@@ -98,18 +98,19 @@ We have three main classifications of assignments:
    past and current time is before ``Period.end_time``.
 
 
-.. autoclass:: devilry.apps.core.models.Assignment
+.. autoclass:: devilry.apps.core.models.assignment.Assignment
 
 
 Candidate
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.Candidate
+.. autoclass:: devilry.apps.core.models.candidate.Candidate
+    :no-members:
 
 AssignmentGroup
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.AssignmentGroup
+.. autoclass:: devilry.apps.core.models.assignment_group.AssignmentGroup
 
 
 Deadline
@@ -117,7 +118,7 @@ Deadline
 
 Each :class:`AssignmentGroup` have zero or more deadlines.
 
-.. autoclass:: devilry.apps.core.models.Deadline
+.. autoclass:: devilry.apps.core.models.deadline.Deadline
 
 
 Delivery
@@ -151,19 +152,19 @@ but as shown above it can be anything you want.
 Delivery API
 ============
 
-.. autoclass:: devilry.apps.core.models.Delivery
+.. autoclass:: devilry.apps.core.models.delivery.Delivery
 
 
 StaticFeedback
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.StaticFeedback
+.. autoclass:: devilry.apps.core.models.static_feedback.StaticFeedback
 
 
 FileMeta
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.FileMeta
+.. autoclass:: devilry.apps.core.models.filemeta.FileMeta
 
 
 
