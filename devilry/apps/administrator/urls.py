@@ -11,5 +11,8 @@ urlpatterns = patterns('devilry.apps.administrator',
                            name='administrator'),
                       url(r'^editors/node/(?P<id>\d+)?',
                           login_required(editorviews.NodeEditor.as_view()),
-                          name='administrator-editors-node'))
+                          name='administrator-editors-node'),
+                      url(r'^editors/period/(?P<id>\d+)?',
+                          login_required(editorviews.PeriodEditor.as_view()),
+                          name='administrator-editors-period'))
 urlpatterns += administrator_restful

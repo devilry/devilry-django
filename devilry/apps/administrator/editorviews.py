@@ -4,7 +4,8 @@ from django.http import HttpResponseBadRequest
 
 import restful
 
-class NodeEditor(View):
+
+class RestfulSimplifiedEditorView(View):
     def get(self, request, id=None):
         if id == None:
             mode = "browse"
@@ -14,7 +15,20 @@ class NodeEditor(View):
             mode = "edit"
         else:
             return HttpResponseBadRequest()
+        print self.restful.__name__
         templatevars =  {'record_id': id,
                          'mode': mode,
-                         'RestfulSimplifiedNode': restful.RestfulSimplifiedNode}
-        return render(request, 'administrator/editors/node.django.html', templatevars)
+                         self.restful.__name__: self.restful}
+        return render(request, self.template_name, templatevars)
+
+
+
+class NodeEditor(RestfulSimplifiedEditorView):
+    template_name = 'administrator/editors/node.django.html'
+    restful = restful.RestfulSimplifiedNode
+
+
+
+class PeriodEditor(RestfulSimplifiedEditorView):
+    template_name = 'administrator/editors/period.django.html'
+    restful = restful.RestfulSimplifiedPeriod

@@ -1,4 +1,5 @@
-/* Override the method that is used to submit forms. */
+/* Override the method that is used to submit forms. We use Ext.data.proxy.Rest
+ * for everything, so we have broken submit for other proxies here. */
 Ext.override(Ext.form.action.Submit, {
     run: function() {
         var record = this.form.getRecord();
