@@ -18,4 +18,4 @@ def restfulmodelcls_to_extjsforms(restfulmodelcls):
                                             modelitems=json.dumps(_get_extjs_modelfields(restfulmodelcls)))
 
 def restfulmodelcls_to_extjsformitems(restfulmodelcls):
-    return """items: {modelitems}""".format(modelitems=json.dumps(_get_extjs_modelfields(restfulmodelcls)))
+    return json.dumps(_get_extjs_modelfields(restfulmodelcls))

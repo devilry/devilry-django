@@ -25,10 +25,8 @@
                 xtype: 'form',
                 id: 'editform',
                 defaultType: 'textfield',
-
-                {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
-
-                {{ RestfulSimplifiedPeriod|extjs_form_items}},
+                model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
+                items: {{ RestfulSimplifiedPeriod|extjs_form_items}},
 
                 buttons: [{
                     text: '{% trans "Delete" %}',
@@ -60,7 +58,7 @@
 
         {% if mode == "edit" %}
             // Load the request record into the form
-            Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedPeriod').load({{ record_id }}, {
+            Ext.ModelManager.getModel({{ RestfulSimplifiedPeriod|get_extjsname_from_class }}).load({{ record_id }}, {
                 success: function(node) {
                     loadNode(node);
                 }
