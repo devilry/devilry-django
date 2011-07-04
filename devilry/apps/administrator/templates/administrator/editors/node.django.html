@@ -9,39 +9,87 @@
 <script>
     {{ RestfulSimplifiedNode|extjs_model }}
     var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
+    nodestore.load();
 
     Ext.onReady(function() {
-        var nodeform = Ext.create('Ext.form.Panel', {
-            renderTo: 'form',
-            title: '{% trans "Edit node" %}',
-            defaultType: 'textfield',
+        Ext.create('Ext.panel.Panel', {
+            height: 400,
+            layout: 'border',
+            preventHeader: true,
+            renderTo: 'layout',
+            items: [{
+                title: 'All nodes',
+                region:'west',
+                xtype: 'grid',
+                margins: '5 0 0 5',
+                width: 200,
+                collapsible: true,   // make collapsible
+                id: 'nodegrid',
+                layout: 'fit',
+                store: nodestore,
+                hideHeaders: true,
 
-            {{ RestfulSimplifiedNode|extjs_forms}},
+                columns: [{
+                    header: 'Nodes', dataIndex: 'long_name', flex: 1,
+                    renderer: function(value, p, record) {
+                        return Ext.String.format(
+                            '<div class="itemlisting"><div class="title">{0}</div><div class="subtitle">{1}</div></div>',
+                            record.get('long_name'), record.get('short_name'));
+                    }
+                }],
 
-            buttons: [{
-                text: '{% trans "Delete" %}',
-                handler: function() {
-                    this.up('form').getForm().submit({
-                        submitEmptyText: true,
-                        method: 'DELETE',
-                        waitMsg: '{% trans "Deleting node..."%}'
-                    });
+                listeners: {
+                    selectionchange: function(selModel, selections) {
+                        var selection = selections[0];
+                        if(selection) {
+                            var form = Ext.getCmp('editform');
+                            form.loadRecord(selection);
+                        }
+                    }
                 }
-            }, {
-                text: '{% trans "Save" %}',
-                scale: 'large',
-                handler: function() {
-                    this.up('form').getForm().submit({
-                        submitEmptyText: true,
-                        waitMsg: '{% trans "Saving node..."%}'
-                    });
-                }
+            },{
+                region: 'center',
+                xtype: 'form',
+                margins: '5 5 5 5',
+                title: '{% trans "Edit node" %}',
+                id: 'editform',
+
+                defaultType: 'textfield',
+
+                {{ RestfulSimplifiedNode|extjs_forms}},
+
+                buttons: [{
+                    text: '{% trans "Delete" %}',
+                    handler: function() {
+                        this.up('form').getForm().submit({
+                            submitEmptyText: true,
+                            method: 'DELETE',
+                            waitMsg: '{% trans "Deleting node..."%}'
+                        });
+                    }
+                }, {
+                    text: '{% trans "Save" %}',
+                    scale: 'large',
+                    handler: function() {
+                        this.up('form').getForm().submit({
+                            submitEmptyText: true,
+                            waitMsg: '{% trans "Saving node..."%}',
+                            success: function() {
+                                nodestore.load(); // Reloads grid
+                            }
+                        });
+                    }
+                }]
             }]
         });
 
+        // Load the request record into the form
         Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedNode').load({{ id }}, {
             success: function(node) {
-                nodeform.loadRecord(node);
+                var form = Ext.getCmp('editform');
+                form.loadRecord(node);
+                var title = Ext.String.format('{% trans "Edit" %}: {0}', node.data.long_name);
+                form.setTitle(title);
             }
         });
     });
@@ -50,5 +98,5 @@
 
 
 {% block main %}
-<div id='form'></div>
+<div id='layout'></div>
 {% endblock %}

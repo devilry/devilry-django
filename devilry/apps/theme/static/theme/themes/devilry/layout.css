@@ -55,3 +55,10 @@ body>footer {
 	border-top-style: solid;
 	border-top-width: 1px;
 }
+
+
+
+div.itemlisting>div.title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
