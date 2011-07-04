@@ -50,6 +50,21 @@ def simplified_modelapi(cls):
         create_searchqryset
             Method used to create the queryset filtered in search().
             Required if ``"search"`` is in ``Meta.methods``.
+
+    The decorator adds the following attributes to ``cls``:
+
+        _meta
+            Alias for the Meta class (above).
+        supports_create
+            Boolean variable: is ``'create'`` in ``_meta.methods``.
+        supports_read
+            Boolean variable: is ``'read'`` in ``_meta.methods``.
+        supports_insecure_read_model
+            Boolean variable: is ``'insecure_read_model'`` in ``_meta.methods``.
+        supports_update
+            Boolean variable: is ``'update'`` in ``_meta.methods``.
+        supports_delete
+            Boolean variable: is ``'delete'`` in ``_meta.methods``.
     """
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))
@@ -72,4 +87,8 @@ def simplified_modelapi(cls):
     # Dynamically create create(), read(), insecure_read_model(), update(), delete()
     for method in cls._meta.methods:
         getattr(_create, 'create_{methodname}_method'.format(methodname=method))(cls) # Calls create.create_[CRUD+S]_method(cls)
+
+    cls._all_crud_methods = ('create', 'read', 'insecure_read_model', 'update', 'delete')
+    for method in cls._all_crud_methods:
+        setattr(cls, 'supports_{0}'.format(method), method in cls._meta.methods)
     return cls
