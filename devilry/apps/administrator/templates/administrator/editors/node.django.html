@@ -1,5 +1,6 @@
 {% extends "theme/base.django.html" %}
 {% load extjs %}
+{% load i18n %}
 
 {% block title %}Devilry node editor{% endblock %}
 
@@ -12,18 +13,27 @@
     Ext.onReady(function() {
         var nodeform = Ext.create('Ext.form.Panel', {
             renderTo: 'form',
-            title: 'This is a shitty form',
+            title: '{% trans "Edit node" %}',
             defaultType: 'textfield',
 
             {{ RestfulSimplifiedNode|extjs_forms}},
 
             buttons: [{
-                text: 'Submit',
-
+                text: '{% trans "Delete" %}',
                 handler: function() {
                     this.up('form').getForm().submit({
                         submitEmptyText: true,
-                        waitMsg: 'Saving Data...'
+                        method: 'DELETE',
+                        waitMsg: '{% trans "Deleting node..."%}'
+                    });
+                }
+            }, {
+                text: '{% trans "Save" %}',
+                scale: 'large',
+                handler: function() {
+                    this.up('form').getForm().submit({
+                        submitEmptyText: true,
+                        waitMsg: '{% trans "Saving node..."%}'
                     });
                 }
             }]
