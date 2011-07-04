@@ -7,7 +7,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditor', {
 
     initComponent: function() {
         Ext.apply(this.form, {
-            title: 'Center Region',
             region: 'center',     // center region is required, no width/height specified
             margins: '0 0 0 0'
         });
@@ -18,12 +17,12 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditor', {
             //title: false,
             //hideHeaders: true,
             items: [{
+                xtype: 'panel',
                 title: 'Actions',
                 region: 'east',     // position for region
                 collapsible: true,   // make collapsible
                 titleCollapse: true,
                 collapsed: false,
-                xtype: 'panel',
                 width: 150,
                 split: true,         // enable resizing
                 margins: '0 0 0 0',
