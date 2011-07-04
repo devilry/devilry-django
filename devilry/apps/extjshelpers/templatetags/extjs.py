@@ -1,6 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
-from ..modelintegration import restfulmodelcls_to_extjsmodel
+from ..modelintegration import (restfulmodelcls_to_extjsmodel, get_extjs_modelname)
 from ..storeintegration import restfulmodelcls_to_extjsstore
 from ..formintegration import restfulmodelcls_to_extjsforms
 
@@ -23,6 +23,11 @@ def extjs_store(restfulmodelcls):
     return mark_safe(js)
 
 @register.filter
-def extjs_forms(restfulmodelcls):
-    js = restfulmodelcls_to_extjsforms(restfulmodelcls)
+def extjs_form_items(restfulmodelcls):
+    js = restfulmodelcls_to_extjsformitems(restfulmodelcls)
+    return mark_safe(js)
+
+@register.filter
+def get_extjsname_from_class(restfulmodelcls):
+    js = get_extjs_modelname(restfulmodelcls)
     return mark_safe(js)

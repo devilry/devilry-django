@@ -7,7 +7,7 @@ def _iter_search_fields(simplifiedcls):
     for fieldname in meta.searchfields.aslist():
         yield fieldname
 
-def get_extjs_modelfields(restfulmodelcls):
+def _get_extjs_modelfields(restfulmodelcls):
     modelitems = [dict(fieldLabel=fieldname, name=fieldname) \
             for fieldname in _iter_search_fields(restfulmodelcls._meta.simplified)]
     return modelitems
@@ -15,4 +15,7 @@ def get_extjs_modelfields(restfulmodelcls):
 def restfulmodelcls_to_extjsforms(restfulmodelcls):
     return """model: '{modelname}',
               items: {modelitems}""".format(modelname=get_extjs_modelname(restfulmodelcls),
-                                            modelitems=json.dumps(get_extjs_modelfields(restfulmodelcls)))
+                                            modelitems=json.dumps(_get_extjs_modelfields(restfulmodelcls)))
+
+def restfulmodelcls_to_extjsformitems(restfulmodelcls):
+    return """items: {modelitems}""".format(modelitems=json.dumps(_get_extjs_modelfields(restfulmodelcls)))
