@@ -37,10 +37,10 @@ class Feedback(PublishedWhereIsCandidateMixin):
 
         model = models.StaticFeedback
         resultfields = FieldSpec('id', 'format', 'text',
-                                 period = [_period_short, _period_long, _period_id],
-                                 subject = [_subject_long, _subject_short, _subject_id],
-                                 assignment = [_assignment_short, _assignment_long, _assignment_id],
-                                 delivery = [_delivery_time, _delivery_number, _delivery_success])
+                                 period=[_period_short, _period_long, _period_id],
+                                 subject=[_subject_long, _subject_short, _subject_id],
+                                 assignment=[_assignment_short, _assignment_long, _assignment_id],
+                                 delivery=[_delivery_time, _delivery_number, _delivery_success])
         searchfields = FieldSpec(_subject_short,
                                  _subject_long,
                                  _period_short,
@@ -71,9 +71,9 @@ class Delivery(PublishedWhereIsCandidateMixin):
 
         model = models.Delivery
         resultfields = FieldSpec('id', 'time_of_delivery', 'number', 'successful',
-                                 period = [_period_short, _period_long, _period_id],
-                                 subject = [_subject_long, _subject_short, _subject_id],
-                                 assignment = [_assignment_short, _assignment_long, _assignment_id])
+                                 period=[_period_short, _period_long, _period_id],
+                                 subject=[_subject_long, _subject_short, _subject_id],
+                                 assignment=[_assignment_short, _assignment_long, _assignment_id])
         searchfields = FieldSpec(
             _subject_short,
             _subject_long,
@@ -89,27 +89,33 @@ class Delivery(PublishedWhereIsCandidateMixin):
 @simplified_modelapi
 class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
 
-        class Meta:
+    class Meta:
 
-            _subject_long     = 'parentnode__parentnode__parentnode__long_name'
-            _subject_short    = 'parentnode__parentnode__parentnode__short_name'
-            _subject_id       = 'parentnode__parentnode__parentnode__id'
+        _subject_long     = 'parentnode__parentnode__long_name'
+        _subject_short    = 'parentnode__parentnode__short_name'
+        _subject_id       = 'parentnode__parentnode__id'
 
-            _period_long      = 'parentnode__parentnode__long_name'
-            _period_short     = 'parentnode__parentnode__short_name'
-            _period_id        = 'parentnode__parentnode__id'
+        _period_long      = 'parentnode__long_name'
+        _period_short     = 'parentnode__short_name'
+        _period_id        = 'parentnode__id'
 
-            model = models.Assignment
-            resultfields = FieldSpec('id', 'format', 'text',
-                                     period = [_period_short, _period_long, _period_id],
-                                     subject = [_subject_long, _subject_short, _subject_id])
-            searchfields = FieldSpec(
-                _subject_short,
-                _subject_long,
-                _period_short,
-                _period_long,
-                )
-            methods = ['search', 'read']
+        _assignment_long  = 'long_name'
+        _assignment_short = 'short_name'
+        _assignment_id    = 'id'
+
+        model = models.Assignment
+        resultfields = FieldSpec(_assignment_long, _assignment_short, _assignment_id,
+                                 period=[_period_short, _period_long, _period_id],
+                                 subject=[_subject_long, _subject_short, _subject_id])
+        searchfields = FieldSpec(
+            _subject_short,
+            _subject_long,
+            _period_short,
+            _period_long,
+            _assignment_short,
+            _assignment_long
+            )
+        methods = ['search', 'read']
 
 
 @simplified_modelapi
@@ -122,7 +128,7 @@ class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
 
         model = models.Period
         resultfields = FieldSpec('id', 'format', 'text',
-                                 subject = [_subject_long, _subject_short, _subject_id])
+                                 subject=[_subject_long, _subject_short, _subject_id])
         searchfields = FieldSpec(_subject_long, _subject_short)
         methods = ['search', 'read']
 

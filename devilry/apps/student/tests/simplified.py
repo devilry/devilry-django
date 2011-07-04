@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
-from ..simplified import Delivery, Feedback, SimplifiedAssignment, SimplifiedPeriod, SimplifiedSubject
+from ..simplified import Delivery, Feedback, Assignment, Period, Subject
 
 import datetime
 
@@ -18,13 +18,12 @@ class SimplifiedDeliveryTestCase(TestCase):
 
     def setUp(self):
         self.duck1100_core = models.Subject.objects.get(short_name='duck1100')
-        self.duck1100_spring01_core = models.Period.objects.get(short_name='spring01',
-                                                                parentnode=self.duck1100_core)
+        self.duck1100_spring01_core = models.Period.objects.get(short_name='spring01', parentnode=self.duck1100_core)
         self.duck1100_spring01_week4_core = models.Assignment.objects.get(short_name='week4',
                                                                           parentnode=self.duck1100_spring01_core)
         ag = self.duck1100_spring01_week4_core.assignmentgroups.all()[0]
         self.duck1100_spring01_week4_deli0_core = ag.deliveries.all()[0]
-
+        self.candidate0 = User.objects.get(username="student0")
 
 
 class TestSimplifiedDelivery(SimplifiedDeliveryTestCase):
@@ -126,8 +125,7 @@ class TestSimplifiedFeedback(SimplifiedDeliveryTestCase):
         examiner = delivery.assignment_group.examiners.all()[0]
         feedback.last_modified_by = examiner
         gradeplugin = assignment.get_gradeplugin_registryitem().model_cls
-        examplegrade = gradeplugin.get_example_xmlrpcstring(assignment,
-                points)
+        examplegrade = gradeplugin.get_example_xmlrpcstring(assignment, points)
         feedback.set_grade_from_xmlrpcstring(examplegrade)
         feedback.save()
         return feedback
@@ -141,7 +139,7 @@ class TestSimplifiedFeedback(SimplifiedDeliveryTestCase):
         for delivery in models.Delivery.objects.all():
             self.autocreate_feedback(delivery, "Hello world")
         self.feedback = self.autocreate_feedback(self.duck1100_spring01_week4_deli0_core,
-                                                "This is a test")
+                                                 "This is a test")
 
         self.subject_long     = 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'
         self.subject_short    = 'delivery__assignment_group__parentnode__parentnode__parentnode__short_name'
@@ -236,22 +234,59 @@ class TestSimplifiedFeedback(SimplifiedDeliveryTestCase):
             Feedback.read(superadmin, self.feedback.id)
 
 
-class TestSimplifiedSimplifiedAssignment(SimplifiedDeliveryTestCase):
-    
-    # def setUp(self):
-    #     self._subject_long     = 'parentnode__parentnode__parentnode__long_name'
-    #     self._subject_short    = 'parentnode__parentnode__parentnode__short_name'
-    #     self._subject_id       = 'parentnode__parentnode__parentnode__id'
+class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
 
-    #     self._period_long      = 'parentnode__parentnode__long_name'
-    #     self._period_short     = 'parentnode__parentnode__short_name'
-    #     self._period_id        = 'parentnode__parentnode__id'
+    def setUp(self):
+        super(TestSimplifiedAssignment, self).setUp()
+        self.subject_long     = 'parentnode__parentnode__long_name'
+        self.subject_short    = 'parentnode__parentnode__short_name'
+        self.subject_id       = 'parentnode__parentnode__id'
 
-    #     self.candidate0 = User.objects.get(username="student0")
-    #     self.candidate1 = User.objects.get(username="student0")
+        self.period_long      = 'parentnode__long_name'
+        self.period_short     = 'parentnode__short_name'
+        self.period_id        = 'parentnode__id'
 
-    # def test_search(self):
+        self.assignment_long  = 'long_name'
+        self.assignment_short = 'short_name'
+        self.assignment_id    = 'id'
 
-    #     print SimplifiedAssignment.search(self.candidate0)
-    #     self.assertEquals(SimplifiedAssignment.search(self.candidate0).count(), 8)
-    pass
+    def test_search(self):
+
+        # check searches for subject
+        self.assertEquals(Assignment.search(self.candidate0).count(), 9)
+        self.assertEquals(Assignment.search(self.candidate0, query='duck1080').count(), 3)
+        self.assertEquals(Assignment.search(self.candidate0, query='duck1100').count(), 4)
+
+        # check searches for period
+        self.assertEquals(Assignment.search(self.candidate0, query='fall01').count(), 5)
+        self.assertEquals(Assignment.search(self.candidate0, query='spring01').count(), 4)
+
+    def test_read(self):
+
+        # check resultfields
+        assignments = Assignment.read(self.candidate0, self.duck1100_spring01_week4_core.id, ['subject', 'period'])
+
+        # subject fields
+        self.assertEquals(assignments[self.subject_long], 'DUCK1100 - Getting started with python')
+        self.assertEquals(assignments[self.subject_short], 'duck1100')
+        self.assertEquals(assignments[self.subject_id], 1)
+
+        # period fields
+        self.assertEquals(assignments[self.period_long], 'Spring year zero')
+        self.assertEquals(assignments[self.period_short], 'spring01')
+        self.assertEquals(assignments[self.period_id], 1)
+
+        # assignment fields
+        self.assertEquals(assignments[self.assignment_long], 'The one and only week tree')
+        self.assertEquals(assignments[self.assignment_short], 'week4')
+        self.assertEquals(assignments[self.assignment_id], 4)
+
+    def test_read_security(self):
+
+        cand1 = User.objects.get(username='student1')
+
+        assignments1 = Assignment.search(self.candidate0)
+        assignments2 = Assignment.search(cand1)
+
+        print assignments1.count()
+        print assignments2.count()
