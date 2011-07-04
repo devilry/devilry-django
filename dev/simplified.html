@@ -230,6 +230,23 @@ method except for <tt class="docutils literal"><span class="pre">read()</span></
 Required if <tt class="docutils literal"><span class="pre">&quot;search&quot;</span></tt> is in <tt class="docutils literal"><span class="pre">Meta.methods</span></tt>.</dd>
 </dl>
 </div></blockquote>
+<p>The decorator adds the following attributes to <tt class="docutils literal"><span class="pre">cls</span></tt>:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>_meta</dt>
+<dd>Alias for the Meta class (above).</dd>
+<dt>supports_create</dt>
+<dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'create'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
+<dt>supports_read</dt>
+<dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'read'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
+<dt>supports_insecure_read_model</dt>
+<dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'insecure_read_model'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
+<dt>supports_update</dt>
+<dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'update'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
+<dt>supports_delete</dt>
+<dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'delete'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="exception">

@@ -98,6 +98,21 @@
 <span class="sd">        create_searchqryset</span>
 <span class="sd">            Method used to create the queryset filtered in search().</span>
 <span class="sd">            Required if ``&quot;search&quot;`` is in ``Meta.methods``.</span>
+
+<span class="sd">    The decorator adds the following attributes to ``cls``:</span>
+
+<span class="sd">        _meta</span>
+<span class="sd">            Alias for the Meta class (above).</span>
+<span class="sd">        supports_create</span>
+<span class="sd">            Boolean variable: is ``&#39;create&#39;`` in ``_meta.methods``.</span>
+<span class="sd">        supports_read</span>
+<span class="sd">            Boolean variable: is ``&#39;read&#39;`` in ``_meta.methods``.</span>
+<span class="sd">        supports_insecure_read_model</span>
+<span class="sd">            Boolean variable: is ``&#39;insecure_read_model&#39;`` in ``_meta.methods``.</span>
+<span class="sd">        supports_update</span>
+<span class="sd">            Boolean variable: is ``&#39;update&#39;`` in ``_meta.methods``.</span>
+<span class="sd">        supports_delete</span>
+<span class="sd">            Boolean variable: is ``&#39;delete&#39;`` in ``_meta.methods``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c">#bases = tuple([SimplifiedBase] + list(cls.__bases__))</span>
     <span class="c">#cls = type(cls.__name__, bases, dict(cls.__dict__))</span>
@@ -120,6 +135,10 @@
     <span class="c"># Dynamically create create(), read(), insecure_read_model(), update(), delete()</span>
     <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="n">_create</span><span class="p">,</span> <span class="s">&#39;create_{methodname}_method&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">methodname</span><span class="o">=</span><span class="n">method</span><span class="p">))(</span><span class="n">cls</span><span class="p">)</span> <span class="c"># Calls create.create_[CRUD+S]_method(cls)</span>
+
+    <span class="n">cls</span><span class="o">.</span><span class="n">_all_crud_methods</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_all_crud_methods</span><span class="p">:</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;supports_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">),</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">methods</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cls</span></div>
 </pre></div>
 

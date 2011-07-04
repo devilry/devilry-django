@@ -169,13 +169,7 @@
     <span class="n">feedback</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;instance&#39;</span><span class="p">]</span>
     <span class="n">update_deadline_and_assignmentgroup_status</span><span class="p">(</span><span class="n">feedback</span><span class="o">.</span><span class="n">delivery</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">feedback_grade_delete_handler</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">feedback</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;instance&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">grade</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">feedback</span><span class="o">.</span><span class="n">grade</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
-
-<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">pre_delete</span><span class="p">,</span> <span class="n">post_save</span>
-<span class="n">pre_delete</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">feedback_grade_delete_handler</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">StaticFeedback</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">post_save</span>
 <span class="n">post_save</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">feedback_update_assignmentgroup_status_handler</span><span class="p">,</span>
                   <span class="n">sender</span><span class="o">=</span><span class="n">StaticFeedback</span><span class="p">)</span>
 </pre></div>

@@ -143,8 +143,23 @@ the following required attributes:</p>
 <dd>A <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> class.</dd>
 </dl>
 </div></blockquote>
-<p>Furthermore, this decorator automatically decorates <tt class="docutils literal"><span class="pre">cls</span></tt> with
+<p>The decorator automatically decorates <tt class="docutils literal"><span class="pre">cls</span></tt> with
 <a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
+<p>The decorator adds the following attributes to <tt class="docutils literal"><span class="pre">cls</span></tt>:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>_meta</dt>
+<dd>Alias for the Meta class (above).</dd>
+<dt>supports_*</dt>
+<dd>Copied from <tt class="docutils literal"><span class="pre">_meta.simplified._meta</span></tt>.</dd>
+<dt>SearchForm</dt>
+<dd>A Django form that can be used to validate the keyword arguments sent
+to the <tt class="docutils literal"><span class="pre">search()</span></tt> method in <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a>.</dd>
+<dt>EditForm</dt>
+<dd>A Django model form that can be used to validate and edit the model
+specified in <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> specified in <tt class="docutils literal"><span class="pre">_meta.simplfied._meta.model</span></tt>.</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">
