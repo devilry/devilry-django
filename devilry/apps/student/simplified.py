@@ -36,7 +36,7 @@ class SimplifiedFeedback(PublishedWhereIsCandidateMixin):
         _delivery_success = 'delivery__successful'
 
         model = models.StaticFeedback
-        resultfields = FieldSpec('id', 'format', 'text',
+        resultfields = FieldSpec('id', 'grade', 'points', 'is_passing_grade',
                                  period=[_period_short, _period_long, _period_id],
                                  subject=[_subject_long, _subject_short, _subject_id],
                                  assignment=[_assignment_short, _assignment_long, _assignment_id],
