@@ -85,20 +85,12 @@ class TestStoreIntegration(TestCase):
 
 
 
-"""
-successfmt = {
-    successful: True,
-    items: [
-            {name: "Espen", score: 10},
-            {name: "Tor", score: 10}
-           ]
-}
 
-errormft = {
-    successful: False,
-    errors: {
-             name: "To many chars.",
-             score: "Not an integer."
-            }
-}
-"""
+from devilry.apps.core.models import Period
+from fieldintegration import find_foreign_field
+class TestFieldIntegration(TestCase):
+    def test_djangofield_to_extjsformfield(self):
+        field = find_foreign_field(Period, ["parentnode", "id"])
+        #print dir(field.model)
+        #print dir(field.model._meta)
+        self.assertEquals(field.name, 'id')

@@ -12,6 +12,7 @@ administrator_restful = RestfulManager()
 class RestfulSimplifiedNode(ModelRestfulView):
     class Meta:
         simplified = SimplifiedNode
+        #foreignkey_fields = {'parentnode__id': RestfulSimplifiedNode}
 
 
 @administrator_restful.register
@@ -19,6 +20,7 @@ class RestfulSimplifiedNode(ModelRestfulView):
 class RestfulSimplifiedSubject(ModelRestfulView):
     class Meta:
         simplified = SimplifiedSubject
+        foreignkey_fields = {'parentnode__id': RestfulSimplifiedNode}
 
 
 @administrator_restful.register
@@ -26,3 +28,4 @@ class RestfulSimplifiedSubject(ModelRestfulView):
 class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
         simplified = SimplifiedPeriod
+        foreignkey_fields = {'parentnode__id': RestfulSimplifiedSubject}
