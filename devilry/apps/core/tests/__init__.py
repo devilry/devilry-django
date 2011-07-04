@@ -11,4 +11,5 @@ from feedbackpublish import *
 from memorydeliverystore import *
 from fsdeliverystore import *
 from dbmdeliverystore import *
+from testhelper import *
 from testhelpers import *
