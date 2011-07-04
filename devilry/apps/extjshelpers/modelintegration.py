@@ -44,7 +44,6 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
                 url: '{resturl}',
                 extraParams: {{
                     getdata_in_qrystring: true,
-                    wrap_in_items: true,
                     result_fieldgroups: '{result_fieldgroups}'
                 }},
                 reader: {{
