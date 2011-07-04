@@ -10,9 +10,7 @@ Ext.override(Ext.form.action.Submit, {
     },
 
     deleteRequest: function(record) {
-        if(record) {
-            console.log(this.method);
-        } else {
+        if(!record) {
             throw "Can not DELETE a non-existing record.";
         }
         record = record.destroy({
