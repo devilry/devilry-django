@@ -1,6 +1,6 @@
 #from django.db.models import fields
 from django.db.models.fields.related import ForeignKey
-from storeintegration import restfulmodelcls_to_extjsstore
+from comboboxintegration import restfulcls_to_extjscombobox_xtype
 
 #def find_foreign_field(model, path):
     #fieldname = path.pop(0)
@@ -14,27 +14,7 @@ from storeintegration import restfulmodelcls_to_extjsstore
 
 def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
     if isinstance(djangofield, ForeignKey):
-        fkmeta = foreignkey_restfulcls._meta
-        store = restfulmodelcls_to_extjsstore(foreignkey_restfulcls,
-                                              integrateModel=True,
-                                              modelkwargs=dict(result_fieldgroups=fkmeta.combobox_fieldgroups))
-        listconfig = """listConfig: {{
-                loadingText: 'Loading...',
-                emptyText: 'No matching items found.',
-                getInnerTpl: function() {{
-                    return '{combobox_tpl}'
-                }}
-            }},""".format(combobox_tpl=fkmeta.combobox_tpl)
-
-        return """
-                xtype: 'combobox',
-                valueField: '{pkfieldname}',
-                displayField: '{combobox_displayfield}',
-                {listconfig}
-                store: {store}""".format(store=store,
-                                         listconfig=listconfig,
-                                         combobox_displayfield=fkmeta.combobox_displayfield,
-                                         pkfieldname=fkmeta.simplified._meta.model._meta.pk.name)
+        return restfulcls_to_extjscombobox_xtype(foreignkey_restfulcls)
     else:
         return "xtype: 'textfield'"
 
