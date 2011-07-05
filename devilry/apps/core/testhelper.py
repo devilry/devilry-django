@@ -473,8 +473,27 @@ class TestHelper(object):
                 created_deadlines.append(new_deadline)
         return created_deadlines
 
+    def _validate_args(self, args):
+        i = 0
+        while i < len(args):
+            arg = args[i]
+            i += 1
+            # look for the first none
+            if not arg:
+                while i < len(args):
+                    # if any args are not-None, return false
+                    if args[i]:
+                        return False
+                    i += 1
+            return True
+
     def add(self, nodes=None, subjects=None, periods=None, assignments=None, assignmentgroups=None,
             delivery=None, feedback=None, deadlines=None):
+
+        # see if any of the parameters 'below' are !None
+        args = [nodes, subjects, periods, assignments, assignmentgroups, delivery, feedback, deadlines]
+        if self._validate_args(args):
+            raise ValueError('Invalid parameters. ')
 
         if not nodes:
             return

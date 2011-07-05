@@ -451,3 +451,12 @@ class TestTestHelper(TestCase):
         # # zakia certainly can't grade his own delivery
         # with self.assertRaises(Exception):
         #     self.ti.add_feedback(d1, examiner=self.ti.zakia)
+
+    def test_invalid_parameters(self):
+        with self.assertRaises(ValueError):
+            self.ti.add(nodes='uio', periods='fall01')
+
+        with self.assertRaises(ValueError):
+            self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
+
+            #self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
