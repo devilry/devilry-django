@@ -65,6 +65,13 @@ def restful_modelapi(cls):
     _create_seachform(cls)
     _create_editform(cls)
 
+    if not hasattr(cls._meta, 'combobox_displayfield'):
+        cls._meta.combobox_displayfield = 'id'
+    if not hasattr(cls._meta, 'combobox_fieldgroups'):
+        cls._meta.combobox_fieldgroups = {}
+    if not hasattr(cls._meta, 'combobox_tpl'):
+        cls._meta.combobox_tpl = '{' + cls._meta.combobox_displayfield + '}'
+
     # Copy all supports_[method] boolean variables from the simplified class.
     for method in cls._meta.simplified._all_crud_methods:
         attrname = 'supports_{0}'.format(method)

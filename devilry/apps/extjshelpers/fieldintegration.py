@@ -14,21 +14,27 @@ from storeintegration import restfulmodelcls_to_extjsstore
 
 def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
     if isinstance(djangofield, ForeignKey):
-        store = restfulmodelcls_to_extjsstore(foreignkey_restfulcls, integrateModel=True)
+        fkmeta = foreignkey_restfulcls._meta
+        store = restfulmodelcls_to_extjsstore(foreignkey_restfulcls,
+                                              integrateModel=True,
+                                              modelkwargs=dict(result_fieldgroups=fkmeta.combobox_fieldgroups))
+        listconfig = """listConfig: {{
+                loadingText: 'Loading...',
+                emptyText: 'No matching items found.',
+                getInnerTpl: function() {{
+                    return '{combobox_tpl}'
+                }}
+            }},""".format(combobox_tpl=fkmeta.combobox_tpl)
+
         return """
                 xtype: 'combobox',
-                valueField: 'id',
-                displayField: 'short_name',
-                listConfig: {{
-                    loadingText: 'Searching...',
-                    emptyText: 'No matching posts found.',
-
-                    getInnerTpl: function() {{
-                        return '{as_foreignkey_listconfig_tpl}'
-                    }}
-                }},
+                valueField: '{pkfieldname}',
+                displayField: '{combobox_displayfield}',
+                {listconfig}
                 store: {store}""".format(store=store,
-                                         as_foreignkey_listconfig_tpl=foreignkey_restfulcls._meta.as_foreignkey_listconfig_tpl)
+                                         listconfig=listconfig,
+                                         combobox_displayfield=fkmeta.combobox_displayfield,
+                                         pkfieldname=fkmeta.simplified._meta.model._meta.pk.name)
     else:
         return "xtype: 'textfield'"
 
