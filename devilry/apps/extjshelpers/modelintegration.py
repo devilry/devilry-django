@@ -1,5 +1,16 @@
 import json
-from fieldintegration import field_to_extjstype
+from django.db.models import fields
+
+
+def field_to_extjstype(field, fieldname):
+    """ Convert django field to extjs  field type. """
+    if isinstance(field, fields.IntegerField):
+        return 'int'
+    elif isinstance(field, fields.AutoField):
+        return 'int'
+    else:
+        return 'string'
+
 
 
 def _recurse_get_fkfield(modelcls, path):
@@ -54,7 +65,7 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
                     type: 'json'
                 }}
             }}
-        }});""".format(modelname = get_extjs_modelname(restfulmodelcls),
+        }})""".format(modelname = get_extjs_modelname(restfulmodelcls),
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
                       resturl = restfulmodelcls.get_rest_url(),

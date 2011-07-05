@@ -34,3 +34,5 @@ cscope.out
 Session.vim
 deliverystore/
 exampledata-backup.tar.bz2
+\#*#
+.#*

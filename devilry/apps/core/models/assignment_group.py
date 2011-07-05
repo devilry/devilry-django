@@ -309,33 +309,37 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         :attr:`AssignmentGroup.status_mapping_student`. """
         return AssignmentGroup.status_mapping_student[self.status]
 
-    def get_status_cssclass(self):
-        """ Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping_cssclass`. """
-        return AssignmentGroup.status_mapping_cssclass[self.status]
+    #TODO delete this?
+    #def get_status_cssclass(self):
+        #""" Returns the current status string from
+        #:attr:`AssignmentGroup.status_mapping_cssclass`. """
+        #return AssignmentGroup.status_mapping_cssclass[self.status]
 
-    def get_status_student_cssclass(self):
-        """ Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping_student_cssclass`. """
-        return AssignmentGroup.status_mapping_student_cssclass[self.status]
+    #TODO delete this?
+    #def get_status_student_cssclass(self):
+        #""" Returns the current status string from
+        #:attr:`AssignmentGroup.status_mapping_student_cssclass`. """
+        #return AssignmentGroup.status_mapping_student_cssclass[self.status]
 
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
 
-    def can_save(self, user_obj):
-        """ Check if the user has permission to save this AssignmentGroup. """
-        if user_obj.is_superuser:
-            return True
-        elif self.parentnode:
-            return self.parentnode.is_admin(user_obj)
-        else:
-            return False
+    #TODO delete this?
+    #def can_save(self, user_obj):
+        #""" Check if the user has permission to save this AssignmentGroup. """
+        #if user_obj.is_superuser:
+            #return True
+        #elif self.parentnode:
+            #return self.parentnode.is_admin(user_obj)
+        #else:
+            #return False
 
-    def can_add_deliveries(self):
-        """ Returns true if a student can add deliveries on this assignmentgroup
+    #TODO delete this?
+    #def can_add_deliveries(self):
+        #""" Returns true if a student can add deliveries on this assignmentgroup
 
-        Both the assignmentgroups is_open attribute, and the periods start
-        and end time is checked.
-        """
-        return self.is_open and self.parentnode.parentnode.is_active()
+        #Both the assignmentgroups is_open attribute, and the periods start
+        #and end time is checked.
+        #"""
+        #return self.is_open and self.parentnode.parentnode.is_active()

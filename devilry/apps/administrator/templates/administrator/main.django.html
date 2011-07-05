@@ -15,14 +15,49 @@
     {{ RestfulSimplifiedSubject|extjs_model }}
     var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
 
+    {{ RestfulSimplifiedSubject|extjs_model }}
+    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
+
     {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
+
+    Ext.require('devilry.administrator.SearchWidget');
+    Ext.onReady(function() {
+        var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
+            renderTo: 'searchwidget',
+            searchResultItems: [{
+                xtype: 'administratorsearchresults',
+                title: 'Nodes',
+                store: nodestore,
+                editorurlprefix: '{% url administrator-editors-node %}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Subjects',
+                store: subjectstore,
+                editorurlprefix: '{% url administrator-editors-period %}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Periods',
+                store: periodstore,
+                formatRow: function(record) {
+                    return this.getFormattedRow(
+                        record.get('long_name'),
+                        Ext.String.format('{0}.{1}',
+                            record.get('parentnode__short_name'),
+                            record.get('short_name')));
+                }
+            }]
+        });
+
+        searchwidget.loadInitialValues();
+        searchwidget.focusOnSearchfield();
+    });
 </script>
 
-<script src="{{ DEVILRY_STATIC_URL }}/administrator/main.js"></script>
 {% endblock %}
 
 
 {% block main %}
 <div id='searchwidget'></div>
+<div id='form-example'></div>
 {% endblock %}

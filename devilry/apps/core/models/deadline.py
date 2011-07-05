@@ -101,12 +101,14 @@ class Deadline(models.Model):
     def __unicode__(self):
         return unicode(self.deadline)
 
-    def is_old(self):
-        """ Return True if :attr:`deadline` expired. """
-        return self.deadline < datetime.now()
+    #TODO delete this?
+    #def is_old(self):
+        #""" Return True if :attr:`deadline` expired. """
+        #return self.deadline < datetime.now()
 
-    def delete(self, *args, **kwargs):
-        """ Prevent deletion if this is the head deadline """
-        if self.is_head:
-            raise PermissionDenied()
-        super(Deadline, self).delete(*args, **kwargs)
+    #TODO delete this?
+    #def delete(self, *args, **kwargs):
+        #""" Prevent deletion if this is the head deadline """
+        #if self.is_head:
+            #raise PermissionDenied()
+        #super(Deadline, self).delete(*args, **kwargs)

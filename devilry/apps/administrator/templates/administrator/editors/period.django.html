@@ -1,0 +1,74 @@
+{% extends "theme/base.django.html" %}
+{% load extjs %}
+{% load i18n %}
+
+{% block headextra %}
+
+<script>
+    {{ RestfulSimplifiedPeriod|extjs_model }}
+    var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
+    periodstore.load();
+
+
+    function loadNode(node) {
+        var form = Ext.getCmp('editform');
+        form.loadRecord(node);
+        var title = Ext.String.format('{% trans "Edit" %}: {0}', node.data.long_name);
+        form.setTitle(title);
+    }
+
+    Ext.onReady(function() {
+        Ext.create('devilry.extjshelpers.RestfulSimplifiedEditor', {
+            renderTo: 'layout',
+            height: 400,
+            form: {
+                xtype: 'form',
+                id: 'editform',
+                //defaultType: 'textfield',
+                model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
+                items: {{ RestfulSimplifiedPeriod|extjs_form_items}},
+
+                buttons: [{
+                    text: '{% trans "Delete" %}',
+                    handler: function() {
+                        this.up('form').getForm().submit({
+                            submitEmptyText: true,
+                            method: 'DELETE',
+                            waitMsg: '{% trans "Deleting node..."%}',
+                            success: function() {
+                                periodstore.load(); // Reloads grid
+                            }
+                        });
+                    }
+                }, {
+                    text: '{% trans "Save" %}',
+                    scale: 'large',
+                    handler: function() {
+                        this.up('form').getForm().submit({
+                            submitEmptyText: true,
+                            waitMsg: '{% trans "Saving node..."%}',
+                            success: function() {
+                                periodstore.load(); // Reloads grid
+                            }
+                        });
+                    }
+                }]
+            }
+        });
+
+        {% if mode == "edit" %}
+            // Load the request record into the form
+            Ext.ModelManager.getModel({{ RestfulSimplifiedPeriod|get_extjsname_from_class }}).load({{ record_id }}, {
+                success: function(node) {
+                    loadNode(node);
+                }
+            });
+        {% endif %}
+    });
+</script>
+{% endblock %}
+
+
+{% block main %}
+<div id='layout'></div>
+{% endblock %}

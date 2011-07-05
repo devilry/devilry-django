@@ -1,3 +1,4 @@
+from functools import wraps
 from django.core.urlresolvers import reverse
 from django.views.generic import View
 from django.http import HttpResponseBadRequest
@@ -6,6 +7,13 @@ from django.contrib.auth.decorators import login_required
 
 from serializers import serialize, SerializableResult
 
+
+def extjshacks(f):
+    @wraps(f)
+    def wrapper(self, request, *args, **kwargs):
+        self.use_extjshacks = bool(request.META.get('HTTP_X_DEVILRY_USE_EXTJS', False))
+        return f(self, request, *args, **kwargs)
+    return wrapper
 
 class RestfulView(View):
     """
@@ -36,6 +44,7 @@ class RestfulView(View):
     def get_rest_url(cls, *args, **kwargs):
         return reverse(cls._meta.urlname, args=args, kwargs=kwargs)
 
+    @extjshacks
     @serialize
     def get(self, request, **kwargs):
         """ Maps HTTP POST requests to the ``crud_read`` and ``crud_search``
@@ -55,18 +64,21 @@ class RestfulView(View):
                     httpresponsecls=HttpResponseBadRequest)
             return self.crud_read(request, **kwargs)
 
+    @extjshacks
     @serialize
     def post(self, request, id=None):
         """ Maps HTTP POST requests to the ``crud_create`` method, which subclasses
         can implement. """
         return self.crud_create(request)
 
+    @extjshacks
     @serialize
     def put(self, request, id):
         """ Maps HTTP PUT requests to the ``crud_update`` method, which subclasses
         can implement. """
         return self.crud_update(request, id)
 
+    @extjshacks
     @serialize
     def delete(self, request, id):
         """ Maps HTTP DELETE requests to the ``crud_delete`` method, which subclasses

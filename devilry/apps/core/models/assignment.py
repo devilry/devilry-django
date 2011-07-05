@@ -182,33 +182,37 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             group.scaled_points = group._get_scaled_points()
             group.save()
 
-    def save(self, *args, **kwargs):
-        """ Save and recalculate the value of :attr:`maxpoints` and
-        :attr:`pointscale`. """
-        if self.autoscale:
-            self.pointscale = self.maxpoints
-        super(Assignment, self).save()
-        self._update_scalepoints()
+    #TODO delete this?
+    #def save(self, *args, **kwargs):
+        #""" Save and recalculate the value of :attr:`maxpoints` and
+        #:attr:`pointscale`. """
+        #if self.autoscale:
+            #self.pointscale = self.maxpoints
+        #super(Assignment, self).save()
+        #self._update_scalepoints()
 
-    def get_gradeplugin_registryitem(self):
-        """ Get the :class:`devilry.core.gradeplugin.RegistryItem`
-        for the current :attr:`grade_plugin`. """
-        return gradeplugin.registry.getitem(self.grade_plugin)
+    #TODO delete this?
+    #def get_gradeplugin_registryitem(self):
+        #""" Get the :class:`devilry.core.gradeplugin.RegistryItem`
+        #for the current :attr:`grade_plugin`. """
+        #return gradeplugin.registry.getitem(self.grade_plugin)
 
-    def get_filenames(self):
-        """ Get the filenames as a list of strings. """
-        return self.filenames.split()
+    #TODO delete this?
+    #def get_filenames(self):
+        #""" Get the filenames as a list of strings. """
+        #return self.filenames.split()
 
-    def validate_filenames(self, filenames):
-        """ Raise ValueError unless each filename in the iterable
-        ``filenames`` is one of the filenames on this assignment. Nothing is
-        done if :attr:`filenames` is not set, or set to a empty string. """
-        if self.filenames:
-            valid = self.get_filenames()
-            for filename in filenames:
-                if not filename in valid:
-                    raise ValueError(_("Invalid filename: %(filename)s" %
-                        dict(filename=filename)))
+    #TODO delete this?
+    #def validate_filenames(self, filenames):
+        #""" Raise ValueError unless each filename in the iterable
+        #``filenames`` is one of the filenames on this assignment. Nothing is
+        #done if :attr:`filenames` is not set, or set to a empty string. """
+        #if self.filenames:
+            #valid = self.get_filenames()
+            #for filename in filenames:
+                #if not filename in valid:
+                    #raise ValueError(_("Invalid filename: %(filename)s" %
+                        #dict(filename=filename)))
 
     @classmethod
     def q_is_admin(cls, user_obj):

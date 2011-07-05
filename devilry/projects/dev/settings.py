@@ -45,5 +45,26 @@ DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStor
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 
 
-# Enable profiling. Just add ?prof=yes to any url to see a profile report
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.utils.profile.ProfilerMiddleware']
+
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+    'devilry.projects.dev.logexceptionsmiddleware.TracebackLoggingMiddleware',
+    #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
+]
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level':'DEBUG',
+            'class':'logging.StreamHandler'
+        }
+    },
+    'loggers': {
+        'devilry.projects.dev.logexceptionsmiddleware': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        }
+    }
+}
