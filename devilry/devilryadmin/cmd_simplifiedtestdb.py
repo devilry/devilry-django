@@ -9,8 +9,9 @@
 
 from subprocess import call
 from os.path import join
-from common import getscriptsdir
+from common import getscriptsdir, require_djangoproject
 
+require_djangoproject()
 scriptsdir = getscriptsdir()
 create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
 

@@ -83,8 +83,6 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
         except:
             assignment = Assignment.objects.get(parentnode=period,
                     short_name=assignmentname)
-        assignment.get_gradeplugin_registryitem().model_cls.init_example(
-                assignment, gradeplugin_maxpoints)
         last = assignment
 
     # Candidates

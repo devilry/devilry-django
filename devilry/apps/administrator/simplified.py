@@ -16,7 +16,7 @@ class CanSaveAuthMixin(object):
 
 
 @simplified_modelapi
-class Node(CanSaveAuthMixin):
+class SimplifiedNode(CanSaveAuthMixin):
     """ Facade to simplify administrator actions on
     :class:`devilry.apps.core.models.Node`.
 
@@ -25,23 +25,23 @@ class Node(CanSaveAuthMixin):
     .. code-block::
 
         from django.contrib.auth.models import User
-        from devilry.apps.simplified.administrator import Node
+        from devilry.apps.simplified.administrator import SimplifiedNode
 
         grandma = User.objects.get(username='grandma') # Would usually get this from request.user
 
-        n = Node.create(grandma, short_name='mytestnode',
-            long_name='My Test Node')
+        n = SimplifiedNode.create(grandma, short_name='mytestnode',
+            long_name='My Test SimplifiedNode')
         print "Created node:", n.short_name, n.long_name
 
-        print "One result", Node.search(grandma, query='mytest').qryset
+        print "One result", SimplifiedNode.search(grandma, query='mytest').qryset
 
-        Node.update(grandma, id=n.id, short_name='helloworld')
+        SimplifiedNode.update(grandma, id=n.id, short_name='helloworld')
 
-        print "Empty result:", Node.search(grandma, query='mytest').qryset # Returns nothing
-        print "One result:", Node.search(grandma, query='helloworld').qryset
+        print "Empty result:", SimplifiedNode.search(grandma, query='mytest').qryset # Returns nothing
+        print "One result:", SimplifiedNode.search(grandma, query='helloworld').qryset
 
-        Node.delete(grandma, id=n.id)
-        print "Empty result:", Node.search(grandma, query='helloworld').qryset # Returns nothing
+        SimplifiedNode.delete(grandma, id=n.id)
+        print "Empty result:", SimplifiedNode.search(grandma, query='helloworld').qryset # Returns nothing
     """
 
     class Meta:
@@ -60,7 +60,7 @@ class Node(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class Subject(CanSaveAuthMixin):
+class SimplifiedSubject(CanSaveAuthMixin):
     class Meta:
         model = models.Subject
         resultfields = FieldSpec('id', 'short_name', 'long_name')
@@ -77,11 +77,12 @@ class Subject(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class Period(CanSaveAuthMixin):
+class SimplifiedPeriod(CanSaveAuthMixin):
     class Meta:
         model = models.Period
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
-                'start_time', 'end_time')
+                'start_time', 'end_time',
+                subject = ['parentnode__short_name', 'parentnode__long_name'])
         searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
                 'parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
@@ -95,7 +96,7 @@ class Period(CanSaveAuthMixin):
         return qryset
 
 @simplified_modelapi
-class Assignment(CanSaveAuthMixin):
+class SimplifiedAssignment(CanSaveAuthMixin):
     class Meta:
         model = models.Assignment
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',

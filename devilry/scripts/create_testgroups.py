@@ -126,12 +126,11 @@ if __name__ == "__main__":
 
     def autocreate_delivery(group):
         student = group.candidates.all()[0].student
-        delivery = Delivery.begin(group, student)
+        delivery = group.deliveries.create(delivered_by=student, successful=True)
         delivery.add_file('helloworld.txt', ['hello cruel world'])
         delivery.add_file('helloworld.py', ['print "hello world"'])
         delivery.add_file('helloworld.java', [
             '// Too much code for a sane "hello world"'])
-        delivery.finish()
 
         active_deadline = group.get_active_deadline().deadline
         others = delivery.assignment_group.deliveries.all().order_by(
@@ -171,16 +170,11 @@ if __name__ == "__main__":
 
     def autocreate_feedback(delivery, points, published):
         assignment = delivery.assignment_group.parentnode
-        feedback = delivery.get_feedback()
-        feedback.text = "Some text here:)"
-        feedback.published = published
         examiner = delivery.assignment_group.examiners.all()[0]
-        feedback.last_modified_by = examiner
-        gradeplugin = assignment.get_gradeplugin_registryitem().model_cls
-        examplegrade = gradeplugin.get_example_xmlrpcstring(assignment,
-                points)
-        feedback.set_grade_from_xmlrpcstring(examplegrade)
-        feedback.save()
+        feedback = delivery.feedbacks.create(rendered_view="Some text here:)",
+                                             saved_by=examiner, points=points,
+                                             grade="g{0}".format(points),
+                                             is_passing_grade=bool(points))
         return feedback
 
 

@@ -18,7 +18,7 @@ A grade plugin is simply a one-to-one relationship between
 :class:`devilry.apps.core.models.Feedback` and a custom django-model defined by the
 grade-plugin. This is the contents of *models.py*:
 
-.. literalinclude:: /../devilry/apps/grade_default/models.py
+.. .. literalinclude:: /../devilry/apps/grade_default/models.py
 
 As you can see, the model is a subclass of
 :class:`devilry.gradeplugin.GradeModel`, which in turn is a subclass of
@@ -37,7 +37,9 @@ view has to create a complete view for creating a new
 some :ref:`shortcuts <grade-plugins-feedback-view>` which makes
 it possible for our view to look a simple as this (*gradeviews.py*):
 
-.. literalinclude:: /../devilry/apps/grade_default/gradeviews.py
+TODO: New example
+
+..  .. literalinclude:: /../devilry/apps/grade_default/gradeviews.py
 
 
 Register the plugin
@@ -47,7 +49,9 @@ To make the plugin register itself when the server starts, you need to put
 something like the following in ``devilry_plugin.py`` in you plugin (see
 :ref:`plugins`):
 
-.. literalinclude:: /../devilry/apps/grade_default/devilry_plugin.py
+TODO : New example.
+
+.. .. literalinclude:: /../devilry/apps/grade_default/devilry_plugin.py
 
 You can see that we register our *model* and our *view*. The API-docs for
 :attr:`devilry.apps.core.gradeplugin.registry` explains all the details.
@@ -59,15 +63,3 @@ Grade plugin classes
 .. currentmodule:: devilry.apps.core.gradeplugin
 
 .. automodule:: devilry.apps.core.gradeplugin
-
-
-
-
-.. _grade-plugins-feedback-view:
-
-Feedback-view shortcuts
-#######################
-
-.. currentmodule:: devilry.apps.examiner.feedback_view
-
-.. automodule:: devilry.apps.examiner.feedback_view

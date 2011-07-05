@@ -1,9 +1,0 @@
-[
-    {
-        "pk": 4, 
-        "model": "grade_default.charfieldgrade", 
-        "fields": {
-            "grade": "A"
-        }
-    }
-]
