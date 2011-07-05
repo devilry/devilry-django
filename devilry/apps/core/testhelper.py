@@ -17,7 +17,7 @@ class StuffError(Exception):
     """ This is stuff """
 
 
-class TestInitializer(object):
+class TestHelper(object):
 
     objects_created = 0
 
