@@ -57,8 +57,38 @@ body>footer {
 }
 
 
-
-div.itemlisting>div.title {
+#main div.itemlisting>div.title {
     font-size: 1.2em;
     font-weight: bold;
 }
+
+
+#main h2 {
+    font-size: 1.4em;
+    margin: 20px 0 15px 0;
+}
+
+#main strong {
+    font-weight: bold;
+}
+
+#main em {
+    font-style: italic;
+}
+
+
+#main span.unimportant {
+    font-size: 0.9em;
+}
+
+#main span.important {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+
+#main a {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
