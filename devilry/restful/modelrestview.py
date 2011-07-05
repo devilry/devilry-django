@@ -9,8 +9,8 @@ from serializers import serializers, SerializableResult
 
 class ErrorMsgSerializableResult(SerializableResult):
     def __init__(self, errormessage, httpresponsecls):
-        super(SerializableResult, self).__init__(errormessages=[errormessage],
-                                                 httpresponsecls=httpresponsecls)
+        super(ErrorMsgSerializableResult, self).__init__(dict(errormessages=[errormessage]),
+                                                         httpresponsecls=httpresponsecls)
 
 class ForbiddenSerializableResult(ErrorMsgSerializableResult):
     def __init__(self):
