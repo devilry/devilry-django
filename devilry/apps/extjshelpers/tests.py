@@ -8,7 +8,6 @@ from ..administrator.restful import RestfulSimplifiedPeriod
 from modelintegration import restfulmodelcls_to_extjsmodel
 from storeintegration import restfulmodelcls_to_extjsstore
 from fieldintegration import djangofield_to_extjsformfield
-import jsdump
 
 
 
@@ -101,4 +100,3 @@ class TestFieldIntegration(TestCase):
 
     def test_djangofield_to_extjs_xtype(self):
         extfield = djangofield_to_extjsformfield(Period, 'parentnode__id', RestfulSimplifiedPeriod)
-        print jsdump.dumps(extfield)

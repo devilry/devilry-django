@@ -15,7 +15,6 @@ class RestfulSimplifiedEditorView(View):
             mode = "edit"
         else:
             return HttpResponseBadRequest()
-        print self.restful.__name__
         templatevars =  {'record_id': id,
                          'mode': mode,
                          self.restful.__name__: self.restful}

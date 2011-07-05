@@ -1,9 +1,6 @@
 #from django.db.models import fields
 from django.db.models.fields.related import ForeignKey
 from storeintegration import restfulmodelcls_to_extjsstore
-import jsdump
-
-
 
 #def find_foreign_field(model, path):
     #fieldname = path.pop(0)
@@ -16,13 +13,11 @@ import jsdump
 
 
 def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
-    #print djangofield
     if isinstance(djangofield, ForeignKey):
-        return dict(xtype = 'combobox',
-                    store = jsdump.UnString(restfulmodelcls_to_extjsstore(foreignkey_restfulcls)))
+        store = restfulmodelcls_to_extjsstore(foreignkey_restfulcls, integrateModel=True)
+        return "xtype: 'combobox', valueField: 'id', displayField: 'short_name', store: {store}".format(store=store)
     else:
-        return dict(xtype='textfield')
-    #return dict(xtype='textfield')
+        return "xtype: 'textfield'"
 
 
 def djangofield_to_extjsformfield(model, fieldname, foreignkey_restfulcls):
@@ -33,7 +28,8 @@ def djangofield_to_extjsformfield(model, fieldname, foreignkey_restfulcls):
     #if isinstance(field, field.AutoField):
         #return None
     #else:
-    extfield = djangofield_to_extjs_xtype(field, foreignkey_restfulcls)
-    extfield.update(dict(name = fieldname,
-                         fieldLabel = field.verbose_name))
+    xtype = djangofield_to_extjs_xtype(field, foreignkey_restfulcls)
+    extfield = '{{ name: "{fieldname}", fieldLabel: "{field.verbose_name}", '\
+            '{xtype} }}'.format(fieldname=fieldname, field=field,
+                                    xtype=xtype)
     return extfield

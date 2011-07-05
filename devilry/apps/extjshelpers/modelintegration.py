@@ -65,7 +65,7 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
                     type: 'json'
                 }}
             }}
-        }});""".format(modelname = get_extjs_modelname(restfulmodelcls),
+        }})""".format(modelname = get_extjs_modelname(restfulmodelcls),
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
                       resturl = restfulmodelcls.get_rest_url(),
