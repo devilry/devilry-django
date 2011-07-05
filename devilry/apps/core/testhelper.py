@@ -57,9 +57,11 @@ class TestHelper(object):
         if after_last_deadline:
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
+#            print delivery.time_of_delivery
 
         delivery.successful = True
-
+        delivery.clean()
+        delivery.save()
         # add it to the groups delivery list
         varname = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
                    group.parentnode.parentnode.short_name + '_' +             # period_
@@ -188,6 +190,9 @@ class TestHelper(object):
         for admin in users['admin']:
             node.admins.add(self._create_or_add_user(admin))
 
+        node.clean()
+        node.save()
+
         vars(self)[node.short_name] = node
         self.objects_created += 1
         return node
@@ -237,6 +242,9 @@ class TestHelper(object):
         # if a long_name is given, set it
         if extras['ln']:
             subject.long_name = extras['ln']
+
+        subject.clean()
+        subject.save()
 
         vars(self)[subject.short_name] = subject
         self.objects_created += 1
@@ -289,6 +297,9 @@ class TestHelper(object):
         if extras['ln']:
             period.long_name = extras['ln']
 
+        period.clean()
+        period.save()
+
         vars(self)[parentnode.short_name + '_' + period.short_name] = period
         self.objects_created += 1
         return period
@@ -336,6 +347,9 @@ class TestHelper(object):
 
         if extras['pub']:
             assignment.publishing_time += timedelta(days=int(extras['pub'][0]))
+
+        assignment.clean()
+        assignment.save()
 
         vars(self)[parentnode.parentnode.short_name + '_' +  # subject
                    parentnode.short_name + '_' +             # period
@@ -387,6 +401,9 @@ class TestHelper(object):
 
         for examiner in extras['examiner']:
             group.examiners.add(self._create_or_add_user(examiner))
+
+        group.clean()
+        group.save()
 
         vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
                    parentnode.parentnode.short_name + '_' +             # period_
@@ -441,6 +458,9 @@ class TestHelper(object):
                   parentnode.parentnode.short_name + '_' +                        # assignment_
                   parentnode.name + '_')
 
+        deadline.clean()
+        deadline.save()
+
         # only create this variable if a name is given
         if deadline_name:
             varname = prefix + deadline_name
@@ -485,14 +505,14 @@ class TestHelper(object):
                     if args[i]:
                         return False
                     i += 1
-            return True
+        return True
 
     def add(self, nodes=None, subjects=None, periods=None, assignments=None, assignmentgroups=None,
             delivery=None, feedback=None, deadlines=None):
 
         # see if any of the parameters 'below' are !None
-        args = [nodes, subjects, periods, assignments, assignmentgroups, delivery, feedback, deadlines]
-        if self._validate_args(args):
+        args = [subjects, periods, assignments, assignmentgroups, deadlines, delivery, feedback]
+        if not self._validate_args(args):
             raise ValueError('Invalid parameters. ')
 
         if not nodes:
