@@ -15,7 +15,7 @@ class PublishedWhereIsCandidateMixin(object):
 
 
 @simplified_modelapi
-class Feedback(PublishedWhereIsCandidateMixin):
+class SimplifiedFeedback(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -53,7 +53,7 @@ class Feedback(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Delivery(PublishedWhereIsCandidateMixin):
+class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
