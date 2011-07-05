@@ -18,7 +18,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditor', {
             //hideHeaders: true,
             items: [{
                 xtype: 'panel',
-                title: 'Actions',
+                title: 'Overview',
                 region: 'east',     // position for region
                 collapsible: true,   // make collapsible
                 titleCollapse: true,
@@ -27,7 +27,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditor', {
                 split: true,         // enable resizing
                 margins: '0 0 0 0',
                 html: "Some buttons here (such as create)"
-            }, this.form],
+            },
+            this.form],
         });
         this.callParent(arguments);
     }

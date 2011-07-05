@@ -18,17 +18,26 @@
     }
 
     Ext.onReady(function() {
-        Ext.create('devilry.extjshelpers.RestfulSimplifiedEditor', {
+        var layout = Ext.create('Ext.container.Container', {
             renderTo: 'layout',
-            height: 400,
-            form: {
+            //height: 400,
+            layout: 'card',
+            items: [{
+                xtype: 'panel',
+                id: 'overview',
+                html: '<h2>Overview</h2><p><strong>Search</strong>, <em>button</em> to create, .....</p>'
+            }, {
                 xtype: 'form',
                 id: 'editform',
-                //defaultType: 'textfield',
                 model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
+
+                defaultType: 'textfield',
                 items: {{ RestfulSimplifiedPeriod|extjs_form_items}},
 
-                buttons: [{
+                buttons: [
+                
+                {% if RestfulSimplifiedPeriod.supports_delete %}
+                {
                     text: '{% trans "Delete" %}',
                     handler: function() {
                         this.up('form').getForm().submit({
@@ -40,7 +49,10 @@
                             }
                         });
                     }
-                }, {
+                },
+                {% endif %}
+                
+                {
                     text: '{% trans "Save" %}',
                     scale: 'large',
                     handler: function() {
@@ -53,7 +65,7 @@
                         });
                     }
                 }]
-            }
+            }]
         });
 
         {% if mode == "edit" %}
@@ -63,7 +75,12 @@
                     loadNode(node);
                 }
             });
+
+            layout.getLayout().setActiveItem('editform');
+        {% else %}
+            layout.getLayout().setActiveItem('overview');
         {% endif %}
+
     });
 </script>
 {% endblock %}
