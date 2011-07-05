@@ -8,7 +8,7 @@ from os import remove
 import sys
 
 def createCoveragerc(crcpath):
-    coveragerc = "#automatically created by devilry\n[run]\ninclude = {path!s}/apps/*".format(path=getreporoot())
+    coveragerc = "#automatically created by devilry\n[run]\ninclude = {path!s}/*".format(path=getreporoot())
     coveragercfile = open(crcpath, 'w')
     coveragercfile.write(coveragerc)
     coveragercfile.close()
