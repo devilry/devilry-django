@@ -19,6 +19,7 @@ class CanSaveAuthMixin(object):
 
 @simplified_modelapi
 class SimplifiedNode(CanSaveAuthMixin):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
     class Meta:
         model = models.Node
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
