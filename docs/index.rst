@@ -42,7 +42,12 @@ Simplified API
 ######################################################################
 
 * :ref:`simplified`
-    * :ref:`apps.administrator.simplified`
+* :ref:`Administrator <apps.administrator.simplified>`
+
+
+RESTful API
+######################################################################
+
 * :ref:`restful`
 
 

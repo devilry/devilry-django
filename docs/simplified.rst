@@ -1,13 +1,10 @@
 .. _simplified:
 
-
 ==========================================
 Simplified API
 ==========================================
 
 .. currentmodule:: devilry.simplified
-
-*The simplified API is under development.*
 
 This API was first introduced in this `github issue <https://github.com/devilry/devilry-django/issues/90>`_
 
@@ -154,11 +151,18 @@ However, of we run::
 
 our query will only match dev10, and *qrywrap* will only contain the subject dev10.
     
+
 Public API
-#################
+##########
 
 Every function and class in the public API is made available directly in
 ``devilry.simplified.NAME``.
 
 
 .. automodule:: devilry.simplified
+
+
+utils
+=====
+
+.. automodule:: devilry.simplified.utils
