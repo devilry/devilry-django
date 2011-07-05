@@ -15,7 +15,20 @@ from storeintegration import restfulmodelcls_to_extjsstore
 def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
     if isinstance(djangofield, ForeignKey):
         store = restfulmodelcls_to_extjsstore(foreignkey_restfulcls, integrateModel=True)
-        return "xtype: 'combobox', valueField: 'id', displayField: 'short_name', store: {store}".format(store=store)
+        return """
+                xtype: 'combobox',
+                valueField: 'id',
+                displayField: 'short_name',
+                listConfig: {{
+                    loadingText: 'Searching...',
+                    emptyText: 'No matching posts found.',
+
+                    getInnerTpl: function() {{
+                        return '{as_foreignkey_listconfig_tpl}'
+                    }}
+                }},
+                store: {store}""".format(store=store,
+                                         as_foreignkey_listconfig_tpl=foreignkey_restfulcls._meta.as_foreignkey_listconfig_tpl)
     else:
         return "xtype: 'textfield'"
 
