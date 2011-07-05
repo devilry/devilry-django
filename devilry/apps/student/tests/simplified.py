@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models, testhelper
 from ...core import pluginloader
-from ..simplified import SimplifiedDelivery, SimplifiedFeedback, SimplifiedAssignment, SimplifiedPeriod, SimplifiedSubject
+from ..simplified import Delivery, Feedback, Assignment, Period, Subject
 
 import datetime
 import re
@@ -21,7 +21,7 @@ class SimplifiedDeliveryTestCase(TestCase, testhelper.TestHelper):
         print self.objects_created
 
 
-class TestSimplifiedDelivery(SimplifiedDeliveryTestCase):
+class TestSimplifiedDelivery(TestCase, testhelper.TestHelper):
 
     def setUp(self):
         super(TestSimplifiedDelivery, self).setUp()
@@ -47,31 +47,31 @@ class TestSimplifiedDelivery(SimplifiedDeliveryTestCase):
 
         # check that:
         #   all deliveries are returned
-        self.assertEquals(SimplifiedDelivery.search(candidate0).count(), 9)
+        self.assertEquals(Delivery.search(candidate0).count(), 9)
 
         #   that a bogus search returns 0 hits
-        self.assertEquals(SimplifiedDelivery.search(candidate0, query='this_hopefully_does_not_return_anything').count(), 0)
+        self.assertEquals(Delivery.search(candidate0, query='this_hopefully_does_not_return_anything').count(), 0)
 
         #   all deliveries in subject duck1100 are returned
-        self.assertEquals(SimplifiedDelivery.search(candidate0, query='duck1100').count(), 4)
+        self.assertEquals(Delivery.search(candidate0, query='duck1100').count(), 4)
 
         #   all deliveries in subject duck3580 are returned
-        self.assertEquals(SimplifiedDelivery.search(candidate0, query='duck3580').count(), 2)
+        self.assertEquals(Delivery.search(candidate0, query='duck3580').count(), 2)
 
         #   all deliveries from period 'h01' are returned
-        self.assertEquals(SimplifiedDelivery.search(candidate0, query='fall01').count(), 5)
+        self.assertEquals(Delivery.search(candidate0, query='fall01').count(), 5)
 
         #   all deliveries from assignment 'week1' are returned
-        self.assertEquals(SimplifiedDelivery.search(candidate0, query='fall01').count(), 5)
+        self.assertEquals(Delivery.search(candidate0, query='fall01').count(), 5)
 
         #   all deliveries from assignment 'week1' are returned
-        self.assertEquals(SimplifiedDelivery.search(candidate0, query='week1').count(), 3)
+        self.assertEquals(Delivery.search(candidate0, query='week1').count(), 3)
 
     def test_read(self):
 
         candidate0 = User.objects.get(username='student0')
-        delivery = SimplifiedDelivery.read(candidate0, self.duck1100_spring01_week4_deli0_core.id,
-                                           ['subject', 'period', 'assignment'])
+        delivery = Delivery.read(candidate0, self.duck1100_spring01_week4_deli0_core.id,
+                                 ['subject', 'period', 'assignment'])
 
         self.assertEquals(delivery['number'], 1)
         self.assertTrue(delivery['successful'])
@@ -102,15 +102,15 @@ class TestSimplifiedDelivery(SimplifiedDeliveryTestCase):
         # Check that:
         #   another student can't read
         with self.assertRaises(PermissionDenied):
-            SimplifiedDelivery.read(candidate1, self.duck1100_spring01_week4_core.id)
+            Delivery.read(candidate1, self.duck1100_spring01_week4_core.id)
 
         #   an examiner can't read
         with self.assertRaises(PermissionDenied):
-            SimplifiedDelivery.read(examiner0, self.duck1100_spring01_week4_core.id)
+            Delivery.read(examiner0, self.duck1100_spring01_week4_core.id)
 
         #   a superadmin can't read
         with self.assertRaises(PermissionDenied):
-            SimplifiedDelivery.read(superadmin, self.duck1100_spring01_week4_core.id)
+            Delivery.read(superadmin, self.duck1100_spring01_week4_core.id)
 
 
 class TestSimplifiedFeedback(TestCase, testhelper.TestHelper):
@@ -165,30 +165,30 @@ class TestSimplifiedFeedback(TestCase, testhelper.TestHelper):
 
         # Check that:
         #    all feedbacks are returned
-        self.assertEquals(SimplifiedFeedback.search(self.firstStud).count(), 4)
+        self.assertEquals(Feedback.search(self.firstStud).count(), 4)
 
-        for p in SimplifiedFeedback.search(self.firstStud):
+        for p in Feedback.search(self.firstStud):
             print p
 
         #   that a bogus search returns 0 hits
-        self.assertEquals(SimplifiedFeedback.search(self.firstStud, query='this_hopefully_does_not_return_anything').count(), 0)
+        self.assertEquals(Feedback.search(self.firstStud, query='this_hopefully_does_not_return_anything').count(), 0)
 
         #   all feedbacks in subject duck1100 are returned
-        self.assertEquals(SimplifiedFeedback.search(self.firstStud, query='inf101').count(), 2)
+        self.assertEquals(Feedback.search(self.firstStud, query='inf101').count(), 2)
 
         #   all feedbacks in subject duck3580 are returned
-        self.assertEquals(SimplifiedFeedback.search(self.firstStud, query='inf').count(), 4)
+        self.assertEquals(Feedback.search(self.firstStud, query='inf').count(), 4)
 
         #   all feedbacks from period 'h01' are returned
-        self.assertEquals(SimplifiedFeedback.search(self.firstStud, query='firstSem').count(), 2)
+        self.assertEquals(Feedback.search(self.firstStud, query='firstSem').count(), 2)
 
         #   all feedbacks from assignment 'week1' are returned
-        self.assertEquals(SimplifiedFeedback.search(self.firstStud, query='secondSem').count(), 2)
+        self.assertEquals(Feedback.search(self.firstStud, query='secondSem').count(), 2)
 
     def test_read(self):
 
         # Read firstStudent's only feedback
-        feedback_result = SimplifiedFeedback.read(self.firstStud, self.inf101_firstSem_a1_g1_feedbacks[-1].id,
+        feedback_result = Feedback.read(self.firstStud, self.inf101_firstSem_a1_g1_feedbacks[-1].id,
                                            ['subject', 'period', 'assignment', 'delivery'])
 
         # check the feedback fields
@@ -239,7 +239,7 @@ class TestSimplifiedFeedback(TestCase, testhelper.TestHelper):
             Feedback.read(superadmin, self.feedback.id)
 
 
-class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
+class TestSimplifiedAssignment(TestCase, testhelper.TestHelper):
 
     def setUp(self):
 
@@ -276,27 +276,27 @@ class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
 
         # check searches for:
         #   all
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud).count(), 4)
+        self.assertEquals(Assignment.search(self.firstStud).count(), 4)
 
         #   subject
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='inf101').count(), 2)
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='inf110').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='inf101').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='inf110').count(), 2)
 
         #   period
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='firstSem').count(), 2)
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='secondSem').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='firstSem').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='secondSem').count(), 2)
 
         #   assignment
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='a1').count(), 2)
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='a2').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='a1').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='a2').count(), 2)
 
         #   some partial searches.
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='second').count(), 2)
-        self.assertEquals(SimplifiedAssignment.search(self.firstStud, query='cond').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='second').count(), 2)
+        self.assertEquals(Assignment.search(self.firstStud, query='cond').count(), 2)
 
     def test_read(self):
 
-        assignment_results = SimplifiedAssignment.read(self.firstStud, self.inf101_firstSem_a1.id, ['subject', 'period'])
+        assignment_results = Assignment.read(self.firstStud, self.inf101_firstSem_a1.id, ['subject', 'period'])
 
         # check the:
         #   subject fields
@@ -319,4 +319,4 @@ class TestSimplifiedAssignment(SimplifiedDeliveryTestCase):
         # We know secondStud hasn't signed up for inf110. Assert that
         # he can't do a read on inf101's id
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.read(self.secondStud, self.inf110_firstSem_a1.id)
+            Assignment.read(self.secondStud, self.inf110_firstSem_a1.id)
