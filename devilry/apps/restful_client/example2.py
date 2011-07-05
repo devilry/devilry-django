@@ -2,7 +2,6 @@ import urllib2
 import json
 
 from login import login
-from utils import dict_to_http_querystring
 
 
 class RestfulError(Exception):
@@ -110,9 +109,9 @@ if __name__ == "__main__":
     logincookie = login('http://localhost:8000/authenticate/login',
             username='grandma', password='test')
 
-    #from devilry.restful_client.restful.examiner import assignments
     restful_factory = RestfulFactory("http://localhost:8000/")
     node = restful_factory.make("administrator/restfulsimplifiednode/")
+    period = restful_factory.make("administrator/restfulsimplifiedperiod/")
 
     print 'All nodes:'
     for x in node.search(limit=4, query=''):
