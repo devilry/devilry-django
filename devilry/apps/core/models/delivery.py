@@ -139,29 +139,28 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     #def q_is_examiner(cls, user_obj):
         #return Q(assignment_group__examiners=user_obj)
 
-    #TODO delete this?
-    #def add_file(self, filename, iterable_data):
-        #""" Add a file to the delivery.
+    def add_file(self, filename, iterable_data):
+        """ Add a file to the delivery.
 
-        #:param filename:
-            #A filename as defined in :class:`FileMeta`.
-        #:param iterable_data:
-            #A iterable yielding data that can be written to file using the
-            #write() method of a storage backend (byte strings).
-        #"""
-        #filemeta = FileMeta()
-        #filemeta.delivery = self
-        #filemeta.filename = filename
-        #filemeta.size = 0
-        #filemeta.save()
-        #f = FileMeta.deliverystore.write_open(filemeta)
-        #filemeta.save()
-        #for data in iterable_data:
-            #f.write(data)
-            #filemeta.size += len(data)
-        #f.close()
-        #filemeta.save()
-        #return filemeta
+        :param filename:
+            A filename as defined in :class:`FileMeta`.
+        :param iterable_data:
+            A iterable yielding data that can be written to file using the
+            write() method of a storage backend (byte strings).
+        """
+        filemeta = FileMeta()
+        filemeta.delivery = self
+        filemeta.filename = filename
+        filemeta.size = 0
+        filemeta.save()
+        f = FileMeta.deliverystore.write_open(filemeta)
+        filemeta.save()
+        for data in iterable_data:
+            f.write(data)
+            filemeta.size += len(data)
+        f.close()
+        filemeta.save()
+        return filemeta
 
     def get_status_number(self):
         """ Get the numeric status for this delivery.
