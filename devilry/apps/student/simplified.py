@@ -15,7 +15,7 @@ class PublishedWhereIsCandidateMixin(object):
 
 
 @simplified_modelapi
-class Feedback(PublishedWhereIsCandidateMixin):
+class SimplifiedFeedback(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -54,7 +54,7 @@ class Feedback(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Delivery(PublishedWhereIsCandidateMixin):
+class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -88,7 +88,7 @@ class Delivery(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Assignment(PublishedWhereIsCandidateMixin):
+class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -120,7 +120,7 @@ class Assignment(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Period(PublishedWhereIsCandidateMixin):
+class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
 
     class Meta:
         _subject_long     = 'parentnode__long_name'
@@ -135,7 +135,7 @@ class Period(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class Subject(PublishedWhereIsCandidateMixin):
+class SimplifiedSubject(PublishedWhereIsCandidateMixin):
 
     class Meta:
         model = models.Subject
