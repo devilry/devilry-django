@@ -40,3 +40,5 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
         combobox_fieldgroups = ['subject']
         combobox_tpl = ('</span><span class="important">{long_name}</span><br/>'
                         '<span class="unimportant">{parentnode__short_name}.{short_name}</span>')
+
+        preview_template = ''

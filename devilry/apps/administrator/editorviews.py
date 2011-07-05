@@ -6,17 +6,11 @@ import restful
 
 
 class RestfulSimplifiedEditorView(View):
-    def get(self, request, id=None):
-        if id == None:
-            mode = "browse"
-        elif id == "create":
-            mode = "create"
-        elif id.isdigit():
-            mode = "edit"
-        else:
-            return HttpResponseBadRequest()
+    def get(self, request, initial_mode, id=None):
+        if initial_mode == 'update' and id == None:
+            return HttpResponseBadRequest('Can not use update as initial mode with no id.')
         templatevars =  {'record_id': id,
-                         'mode': mode,
+                         'initial_mode': initial_mode,
                          self.restful.__name__: self.restful}
         return render(request, self.template_name, templatevars)
 
