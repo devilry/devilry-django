@@ -37,29 +37,32 @@ class FileMeta(models.Model):
         unique_together = ('delivery', 'filename')
         ordering = ['filename']
 
-    def remove_file(self):
-        """
-        Remove the file using the
-        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method
-        of the :attr:`deliverystore`.
-        """
-        return self.deliverystore.remove(self)
+    #TODO delete this?
+    #def remove_file(self):
+        #"""
+        #Remove the file using the
+        #:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.remove`-method
+        #of the :attr:`deliverystore`.
+        #"""
+        #return self.deliverystore.remove(self)
 
-    def file_exists(self):
-        """
-        Check if the file exists using the
-        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method
-        of the :attr:`deliverystore`.
-        """
-        return self.deliverystore.exists(self)
+    #TODO delete this?
+    #def file_exists(self):
+        #"""
+        #Check if the file exists using the
+        #:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method
+        #of the :attr:`deliverystore`.
+        #"""
+        #return self.deliverystore.exists(self)
 
-    def read_open(self):
-        """
-        Open file for reading using the
-        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method
-        of the :attr:`deliverystore`.
-        """
-        return self.deliverystore.read_open(self)
+    #TODO delete this?
+    #def read_open(self):
+        #"""
+        #Open file for reading using the
+        #:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method
+        #of the :attr:`deliverystore`.
+        #"""
+        #return self.deliverystore.read_open(self)
 
     def __unicode__(self):
         return self.filename

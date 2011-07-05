@@ -38,8 +38,9 @@ def create_testgroups(path, numstudents, numexaminers, subject_long_name,
 
 
 if __name__ == '__main__':
-    from common import depends
-    depends('init_exampledb', 'load_grandmauser', 'load_duckburghusers')
+    from common import depends, Command
+    depends(Command('init_exampledb', 'load_grandmauser',
+        'load_duckburghusers'))
 
     # Duck 1100
     create_testgroups(path = 'duckburgh.univ:duck1100.spring01',

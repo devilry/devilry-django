@@ -91,6 +91,7 @@ def checkcommands(allcommands, *cmdnames):
         if not cmd in allcommands:
             raise SystemExit('{0} is not a valid command name.'.format(cmd))
 
+
 def cmdname_to_filename(commandname):
     """ Return the ``commandname`` prefixed with ``cmd_`` and suffixed with ``.py``. """
     return 'cmd_{0}.py'.format(commandname)
@@ -121,12 +122,21 @@ def execcommand(commandname):
     environ['DEVILRYADMIN_COMMANDNAME'] = commandname
     call(command)
 
-def depends(*cmdnames):
+
+class Command(object):
+    def __init__(self, commandname, *args):
+        self.commandname = commandname
+        self.args = args
+
+def depends(*cmds):
     """ Execute the given commands in the given order. """
     allcommands = getcommandnames()
-    checkcommands(allcommands, *cmdnames)
-    for cmd in cmdnames:
-        execcommand(cmd)
+    checkcommands(allcommands, *[c.commandname for c in cmds])
+    for cmd in cmds:
+        commandpath = join(getthisdir(), cmdname_to_filename(cmd.commandname))
+        command = [commandpath] + list(cmd.args)
+        environ['DEVILRYADMIN_COMMANDNAME'] = cmd.commandname
+        call(command)
 
 def require_djangoproject():
     """ Make sure the current working directory is a django project. """

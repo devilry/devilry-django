@@ -134,32 +134,34 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
 
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        return Q(assignment_group__examiners=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_examiner(cls, user_obj):
+        #return Q(assignment_group__examiners=user_obj)
 
-    def add_file(self, filename, iterable_data):
-        """ Add a file to the delivery.
+    #TODO delete this?
+    #def add_file(self, filename, iterable_data):
+        #""" Add a file to the delivery.
 
-        :param filename:
-            A filename as defined in :class:`FileMeta`.
-        :param iterable_data:
-            A iterable yielding data that can be written to file using the
-            write() method of a storage backend (byte strings).
-        """
-        filemeta = FileMeta()
-        filemeta.delivery = self
-        filemeta.filename = filename
-        filemeta.size = 0
-        filemeta.save()
-        f = FileMeta.deliverystore.write_open(filemeta)
-        filemeta.save()
-        for data in iterable_data:
-            f.write(data)
-            filemeta.size += len(data)
-        f.close()
-        filemeta.save()
-        return filemeta
+        #:param filename:
+            #A filename as defined in :class:`FileMeta`.
+        #:param iterable_data:
+            #A iterable yielding data that can be written to file using the
+            #write() method of a storage backend (byte strings).
+        #"""
+        #filemeta = FileMeta()
+        #filemeta.delivery = self
+        #filemeta.filename = filename
+        #filemeta.size = 0
+        #filemeta.save()
+        #f = FileMeta.deliverystore.write_open(filemeta)
+        #filemeta.save()
+        #for data in iterable_data:
+            #f.write(data)
+            #filemeta.size += len(data)
+        #f.close()
+        #filemeta.save()
+        #return filemeta
 
     def get_status_number(self):
         """ Get the numeric status for this delivery.
@@ -174,33 +176,37 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         else:
             #return Delivery.CORRECTED_NOT_PUBLISHED # TODO: Handle the fact that this info does not exist anymore.
             return Delivery.NOT_CORRECTED
-    
-    def get_localized_status(self):
-        """
-        Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping`.
-        """
-        status = self.get_status_number()
-        return status_mapping[status]
 
-    def get_localized_student_status(self):
-        """
-        Returns the current status string from
-        :attr:`status_mapping_student`.
-        """
-        status = self.get_status_number()
-        return status_mapping_student[status]
+    #TODO delete this?
+    #def get_localized_status(self):
+        #"""
+        #Returns the current status string from
+        #:attr:`AssignmentGroup.status_mapping`.
+        #"""
+        #status = self.get_status_number()
+        #return status_mapping[status]
 
-    def get_status_cssclass(self):
-        """ Returns the css class for the current status from
-        :attr:`status_mapping_cssclass`. """
-        return status_mapping_cssclass[self.get_status_number()]
+    #TODO delete this?
+    #def get_localized_student_status(self):
+        #"""
+        #Returns the current status string from
+        #:attr:`status_mapping_student`.
+        #"""
+        #status = self.get_status_number()
+        #return status_mapping_student[status]
 
-    def get_status_student_cssclass(self):
-        """ Returns the css class for the current status from
-        :attr:`status_mapping_student_cssclass`. """
-        return status_mapping_student_cssclass[
-                self.get_status_number()]
+    #TODO delete this?
+    #def get_status_cssclass(self):
+        #""" Returns the css class for the current status from
+        #:attr:`status_mapping_cssclass`. """
+        #return status_mapping_cssclass[self.get_status_number()]
+
+    #TODO delete this?
+    #def get_status_student_cssclass(self):
+        #""" Returns the css class for the current status from
+        #:attr:`status_mapping_student_cssclass`. """
+        #return status_mapping_student_cssclass[
+                #self.get_status_number()]
 
     def _set_number(self):
         m = Delivery.objects.filter(assignment_group=self.assignment_group).aggregate(Max('number'))

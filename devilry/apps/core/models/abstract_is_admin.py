@@ -19,11 +19,12 @@ class AbstractIsAdmin(object):
         """ Get all objects of this type where the given user is admin. """
         return cls.objects.filter(cls.q_is_admin(user_obj)).distinct()
 
-    @classmethod
-    def where_is_admin_or_superadmin(cls, user_obj):
-        """ Get all objects of this type where the given user is admin, or
-        all objects if the user is superadmin. """
-        if user_obj.is_superuser:
-            return cls.objects.all()
-        else:
-            return cls.where_is_admin(user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def where_is_admin_or_superadmin(cls, user_obj):
+        #""" Get all objects of this type where the given user is admin, or
+        #all objects if the user is superadmin. """
+        #if user_obj.is_superuser:
+            #return cls.objects.all()
+        #else:
+            #return cls.where_is_admin(user_obj)
