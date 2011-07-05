@@ -83,7 +83,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     CORRECTED_NOT_PUBLISHED = 3
 
     # Fields automatically 
-    time_of_delivery = models.DateTimeField()
+    time_of_delivery = models.DateTimeField(auto_now_add=True)
     deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField()
 
@@ -211,7 +211,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Set :attr:`number` automatically to one greater than what is was last and
         add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
         """
-        self.time_of_delivery = datetime.now()
+        #self.time_of_delivery = datetime.now()
         if self.id == None:
             self.deadline_tag = self.assignment_group.get_active_deadline()
             self._set_number()

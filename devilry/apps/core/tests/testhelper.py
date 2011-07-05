@@ -387,10 +387,10 @@ class TestTestHelper(TestCase):
         d4 = self.ti.add_delivery('inf1000.first.oblig1.g1', file1)
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[1], d4)
 
-        # add a late dateline
-        d5 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g2, file2, after_last_deadline=True)
+        # add a late delivery
+        d5 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g2, files=file2, after_last_deadline=True)
         # and assert that it's really delivered after the deadline
-        self.assertGreater(d5.time_of_delivery, d5.deadline_tag.deadline)   # self.ti.inf1000_second_oblig1.publishing_time)
+        self.assertGreater(d5.time_of_delivery.date(), d5.deadline_tag.deadline.date())   # self.ti.inf1000_second_oblig1.publishing_time)
         self.assertTrue(d5.delivered_too_late())
 
         # check that all the created deliveries have the status
@@ -451,3 +451,12 @@ class TestTestHelper(TestCase):
         # # zakia certainly can't grade his own delivery
         # with self.assertRaises(Exception):
         #     self.ti.add_feedback(d1, examiner=self.ti.zakia)
+
+    def test_invalid_parameters(self):
+        with self.assertRaises(ValueError):
+            self.ti.add(nodes='uio', periods='fall01')
+
+        with self.assertRaises(ValueError):
+            self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
+
+            #self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
