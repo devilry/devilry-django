@@ -1,4 +1,4 @@
-from ...simplified import PermissionDenied, simplified_modelapi, FieldSpec
+from devilry.simplified import PermissionDenied, simplified_modelapi, FieldSpec
 import models
 
 

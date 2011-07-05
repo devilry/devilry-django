@@ -1,5 +1,5 @@
 from os.path import abspath, dirname, join
-from devilry.apps.default_settings import *
+from devilry.defaults.settings import *
 
 this_dir = dirname(abspath(__file__))
 
@@ -15,7 +15,7 @@ DATABASES = {
 }
 
 INSTALLED_APPS = INSTALLED_APPS + [
-    'devilry.apps.tutorialstats',
+    'devilry.projects.dev.apps.tutorialstats',
     'devilry.utils']
 
 
@@ -46,10 +46,4 @@ DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 
 
 # Enable profiling. Just add ?prof=yes to any url to see a profile report
-MIDDLEWARE_CLASSES = [
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
-    'devilry.utils.profile.ProfilerMiddleware'
-]
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.utils.profile.ProfilerMiddleware']

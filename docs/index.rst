@@ -5,7 +5,6 @@
     core.deliverystore
 
     plugins
-    grade-plugins
 
     simplified
     restful
@@ -14,6 +13,9 @@
 
     utils.assignmentgroup
     utils.ordereddict
+    utils.delivery_collection
+    utils.groupnodes
+    utils.devilry_email
 
 ======================================================================
 Devilry developer documentation overview

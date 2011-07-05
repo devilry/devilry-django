@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 import restful
 import views
 
-urlpatterns = patterns('devilry.apps.tutorialstats',
+urlpatterns = patterns('devilry.projects.dev.apps.tutorialstats',
     restful.RestStatConfig.create_rest_url(),
     restful.RestPeriodPoints.create_rest_url(),
     url(r'^$',
         login_required(views.main),
-        name='devilry-tutorialstats-main'),
+        name='tutorialstats-main'),
 )

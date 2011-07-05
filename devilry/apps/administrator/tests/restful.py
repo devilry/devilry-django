@@ -3,20 +3,20 @@ from django.test import TestCase
 from django.test.client import Client
 from django.utils import simplejson as json
 
-from ..restful import RestNode
+from ..restful import RestfulSimplifiedNode
 from ...core import models
 
 
 
-class TestAdministratorRestNodeNoFixture(TestCase):
+class TestAdministratorRestfulSimplifiedNodeNoFixture(TestCase):
     def test_getdata_to_kwargs(self):
-        kw = RestNode._searchform_to_kwargs({})
+        kw = RestfulSimplifiedNode._searchform_to_kwargs({})
         self.assertEquals(kw, dict(
                 limit=50, start=0, orderby=["short_name"], query=''))
-        #print RestNode.extjs_model
+        #print RestfulSimplifiedNode.extjs_model
 
 
-class TestAdministratorRestNode(TestCase):
+class TestAdministratorRestfulSimplifiedNode(TestCase):
     fixtures = ["simplified/data.json"]
 
     def setUp(self):
@@ -27,8 +27,8 @@ class TestAdministratorRestNode(TestCase):
         self.univ.admins.add(clarabelle)
 
     def test_search(self):
-        url = RestNode.get_rest_url()
-        r = self.client.get(url, data={'data_in_qrystring': True},
+        url = RestfulSimplifiedNode.get_rest_url()
+        r = self.client.get(url, data={'getdata_in_qrystring': True},
                 content_type='application/json')
         data = json.loads(r.content)['items']
         first = data[0]
@@ -41,8 +41,8 @@ class TestAdministratorRestNode(TestCase):
 
     def test_create(self):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
-        url = RestNode.get_rest_url(self.univ.id)
-        data = dict(short_name='testnode', long_name='Test Node', parentnode=None)
+        url = RestfulSimplifiedNode.get_rest_url(self.univ.id)
+        data = dict(short_name='testnode', long_name='Test SimplifiedNode', parentnode=None)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         response = json.loads(r.content)
@@ -50,11 +50,11 @@ class TestAdministratorRestNode(TestCase):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 1)
         fromdb = models.Node.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'testnode')
-        self.assertEquals(fromdb.long_name, 'Test Node')
+        self.assertEquals(fromdb.long_name, 'Test SimplifiedNode')
         self.assertEquals(fromdb.parentnode, None)
 
     def test_create_errors(self):
-        url = RestNode.get_rest_url(self.univ.id)
+        url = RestfulSimplifiedNode.get_rest_url(self.univ.id)
         data = dict(short_name='uniV', long_name='Univ', parentnode=None)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
@@ -65,7 +65,7 @@ class TestAdministratorRestNode(TestCase):
             non_field_errors = []))
 
     def test_update(self):
-        url = RestNode.get_rest_url(self.univ.id)
+        url = RestfulSimplifiedNode.get_rest_url(self.univ.id)
         data = dict(id=2, short_name='univ', long_name='Univ', parentnode=None)
         r = self.client.put(url, data=json.dumps(data),
                 content_type='application/json')
@@ -73,7 +73,7 @@ class TestAdministratorRestNode(TestCase):
         self.assertEquals(response, dict(success=True, id=2))
 
     def test_update_errors(self):
-        url = RestNode.get_rest_url(self.univ.id)
+        url = RestfulSimplifiedNode.get_rest_url(self.univ.id)
         data = dict(id=2, short_name='uniV', long_name='Univ', parentnode=None)
         r = self.client.put(url, data=json.dumps(data),
                 content_type='application/json')
@@ -85,7 +85,7 @@ class TestAdministratorRestNode(TestCase):
 
 
     def test_delete(self):
-        url = RestNode.get_rest_url(self.univ.id)
+        url = RestfulSimplifiedNode.get_rest_url(self.univ.id)
 
         # TODO: delete should not be recursive
         self.assertEquals(models.Node.objects.filter(id=self.univ.id).count(), 1)

@@ -17,6 +17,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
                   'django.contrib.staticfiles',
+                  'django.contrib.sessions',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
@@ -30,11 +31,15 @@ INSTALLED_APPS = ['django.contrib.markup',
                   # Not apps, but here for django to discover them:
                   'devilry.simplified']
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.debug",
-    'devilry.apps.theme.templatecontext.template_variables',
-)
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+                               "django.core.context_processors.debug",
+                               "django.core.context_processors.i18n",
+                               "django.core.context_processors.media",
+                               "django.core.context_processors.debug",
+                               'devilry.apps.theme.templatecontext.template_variables')
+
+
+MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
+                      'django.contrib.sessions.middleware.SessionMiddleware',
+                      'django.contrib.auth.middleware.AuthenticationMiddleware',
+                      'django.middleware.transaction.TransactionMiddleware']

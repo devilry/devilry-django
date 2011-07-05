@@ -1,15 +1,15 @@
 from django.contrib.auth.models import User
 from django.db.models import Sum
 
-from ...restful import (ModelRestView, RestView, RestResult, restful_api,
-        restful_modelapi, UrlMapping)
+from devilry.restful import (ModelRestfulView, RestfulView, SerializableResult, restful_api,
+                             restful_modelapi)
 from simplified import StatConfig
 
 
 
 
 @restful_api
-class RestPeriodPoints(RestView):
+class RestPeriodPoints(RestfulView):
 
     def crud_read(self, request, id):
         dataset = User.objects.filter(
@@ -17,11 +17,11 @@ class RestPeriodPoints(RestView):
         dataset = dataset.annotate(
                 sumperiod=Sum('candidate__assignment_group__scaled_points'))
         data = dataset.values('username', 'sumperiod')
-        return RestResult(dict(items=data))
+        return SerializableResult(dict(items=data))
 
 
 @restful_modelapi
-class RestStatConfig(ModelRestView):
+class RestStatConfig(ModelRestfulView):
     class Meta:
         simplified = StatConfig
-        urlmap = {'periodpoints_url': UrlMapping(RestPeriodPoints, 'period__id')}
+        #urlmap = {'periodpoints_url': UrlMapping(RestPeriodPoints, 'period__id')}

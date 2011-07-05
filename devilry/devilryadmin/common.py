@@ -3,6 +3,7 @@ from os.path import dirname, abspath, join, exists
 from subprocess import call, Popen, PIPE
 from sys import argv
 from os import environ
+from argparse import ArgumentParser
 
 def getdir(filepath):
     """ Get the directory component of the given *filepath*. """
@@ -30,13 +31,33 @@ def dumpfixture(fixturepath, *appnames):
     output = p.communicate()[0]
     open(fixturepath, 'w').write(output)
 
+
+def getcurrentcommandname():
+    """ Get current command name from ``os.environ['DEVILRYADMIN_COMMANDNAME']``. """
+    return environ['DEVILRYADMIN_COMMANDNAME']
+
 def getprogname():
     """ Get the current progname (I.E.: devilryadmin.py dosomethingcool) """
-    return 'devilryadmin.py {0}'.format(environ['DEVILRYADMIN_COMMANDNAME'])
+    return 'devilryadmin.py {0}'.format(getcurrentcommandname())
 
 def getreporoot():
     """ Get the absolute path to the devilry repository root. """
     return abspath(dirname(dirname(getthisdir())))
+
+def get_docsdir():
+    """ Get the absolute path to the REPOROOT/docs/ directory. """
+    return join(getreporoot(), 'docs')
+
+def get_docs_builddir():
+    """ Get the absolute path to the REPOROOT/docs/.build/html/ directory. """
+    return join(get_docsdir(), '.build', 'html')
+
+def get_docs_javascriptbuild_dir():
+    """ Get the absolute path to the REPOROOT/docs/.build/html/javascript/ directory. """
+    return join(get_docs_builddir(), 'javascript')
+
+def getappsdir():
+    return join(getreporoot(), 'devilry', 'apps')
 
 def getscriptsdir():
     """ Get the ``scripts/`` directory. """
@@ -90,6 +111,9 @@ def gethelp(commandname):
     f.close()
     return hlp
 
+def getcurrenthelp():
+    """ Get help for current command. """
+    return gethelp(getcurrentcommandname())
 
 def execcommand(commandname):
     """ Execute the given command. """
@@ -118,3 +142,13 @@ def require_djangoproject():
     """ Make sure the current working directory is a django project. """
     if not exists(join(getcwd(), 'manage.py')):
         raise SystemExit('This command requires CWD to be a django project (a directory containing manage.py).')
+
+
+
+class DevilryAdmArgumentParser(ArgumentParser):
+    """ Extends ArgumentParser and overrides ``__init__`` to set ``prog`` to
+    :func:`getprogname` and description to :func:`getcurrenthelp`. """
+    def __init__(self, *args, **kwargs):
+        kwargs['prog'] = getprogname()
+        kwargs['description'] = getcurrenthelp()
+        super(DevilryAdmArgumentParser, self).__init__(*args, **kwargs)

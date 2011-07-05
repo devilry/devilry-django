@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from ....simplified import PermissionDenied
 from ...core import models
 from ...core import pluginloader
-from ..simplified import Subject, Period, Assignment, AssignmentGroup, Delivery, Feedback
+from ..simplified import SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, Delivery, Feedback
 
 
 pluginloader.autodiscover()
@@ -37,25 +37,25 @@ class SimplifiedExaminerTestCase(TestCase):
         self.assertTrue(self.superadmin.is_superuser)
 
 
-class TestSimplifiedExaminerSubject(SimplifiedExaminerTestCase):
+class TestSimplifiedExaminerSimplifiedSubject(SimplifiedExaminerTestCase):
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         subjects = models.Subject.published_where_is_examiner(examiner0).order_by("short_name")
-        qrywrap = Subject.search(examiner0)
+        qrywrap = SimplifiedSubject.search(examiner0)
         self.assertEquals(len(qrywrap), len(subjects))
         self.assertEquals(qrywrap[0]['short_name'], subjects[0].short_name)
 
         # query
-        qrywrap = Subject.search(examiner0, query="duck1")
+        qrywrap = SimplifiedSubject.search(examiner0, query="duck1")
         self.assertEquals(len(qrywrap), 2)
-        qrywrap = Subject.search(examiner0, query="duck")
+        qrywrap = SimplifiedSubject.search(examiner0, query="duck")
         self.assertEquals(len(qrywrap), len(subjects))
-        qrywrap = Subject.search(examiner0, query="1100")
+        qrywrap = SimplifiedSubject.search(examiner0, query="1100")
         self.assertEquals(len(qrywrap), 1)
 
     def test_read(self):
-        duck1100 = Subject.read(self.duck1100examiner, self.duck1100_core.id)
+        duck1100 = SimplifiedSubject.read(self.duck1100examiner, self.duck1100_core.id)
         self.assertEquals(duck1100, dict(
                 short_name = 'duck1100',
                 long_name = self.duck1100_core.long_name,
@@ -63,40 +63,40 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestCase):
 
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
-            duck1100 = Subject.read(self.testexaminerNoPerm, self.duck1100_core.id)
+            duck1100 = SimplifiedSubject.read(self.testexaminerNoPerm, self.duck1100_core.id)
         with self.assertRaises(PermissionDenied):
-            duck1100 = Subject.read(self.duck1080examiner, self.duck1100_core.id)
+            duck1100 = SimplifiedSubject.read(self.duck1080examiner, self.duck1100_core.id)
         with self.assertRaises(PermissionDenied):
-            duck1100 = Subject.read(self.superadmin, self.duck1100_core.id)
+            duck1100 = SimplifiedSubject.read(self.superadmin, self.duck1100_core.id)
 
 
-class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestCase):
+class TestSimplifiedExaminerSimplifiedPeriod(SimplifiedExaminerTestCase):
     def setUp(self):
-        super(TestSimplifiedExaminerPeriod, self).setUp()
+        super(TestSimplifiedExaminerSimplifiedPeriod, self).setUp()
         self.duck1100_spring01_core = self.duck1100_core.periods.get(short_name='spring01')
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         periods = models.Period.published_where_is_examiner(examiner0).order_by("short_name")
-        qrywrap = Period.search(examiner0)
+        qrywrap = SimplifiedPeriod.search(examiner0)
         self.assertEquals(len(qrywrap), len(periods))
         self.assertEquals(qrywrap[0]['short_name'], periods[0].short_name)
 
         # query
-        qrywrap = Period.search(examiner0, query="fall01")
+        qrywrap = SimplifiedPeriod.search(examiner0, query="fall01")
         self.assertEquals(len(qrywrap), 2)
-        qrywrap = Period.search(examiner0, query="duck1")
+        qrywrap = SimplifiedPeriod.search(examiner0, query="duck1")
         self.assertEquals(len(qrywrap), 2)
 
     def test_read(self):
-        duck1100_spring01 = Period.read(self.duck1100examiner, self.duck1100_spring01_core.id)
+        duck1100_spring01 = SimplifiedPeriod.read(self.duck1100examiner, self.duck1100_spring01_core.id)
         self.assertEquals(duck1100_spring01, dict(
                 id = self.duck1100_spring01_core.id,
                 short_name = 'spring01',
                 long_name = self.duck1100_spring01_core.long_name,
                 parentnode__id = self.duck1100_spring01_core.parentnode_id))
 
-        duck1100_spring01 = Period.read(self.duck1100examiner,
+        duck1100_spring01 = SimplifiedPeriod.read(self.duck1100examiner,
                 self.duck1100_spring01_core.id,
                 result_fieldgroups=['subject'])
         self.assertEquals(duck1100_spring01, dict(
@@ -109,36 +109,36 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestCase):
 
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
-            duck1100_spring01 = Period.read(self.testexaminerNoPerm, self.duck1100_spring01_core.id)
+            duck1100_spring01 = SimplifiedPeriod.read(self.testexaminerNoPerm, self.duck1100_spring01_core.id)
         with self.assertRaises(PermissionDenied):
-            duck1100_spring01 = Period.read(self.duck1080examiner, self.duck1100_spring01_core.id)
+            duck1100_spring01 = SimplifiedPeriod.read(self.duck1080examiner, self.duck1100_spring01_core.id)
         with self.assertRaises(PermissionDenied):
-            duck1100_spring01 = Period.read(self.superadmin, self.duck1100_spring01_core.id)
+            duck1100_spring01 = SimplifiedPeriod.read(self.superadmin, self.duck1100_spring01_core.id)
 
 
-class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
+class TestSimplifiedExaminerSimplifiedAssignment(SimplifiedExaminerTestCase):
     def setUp(self):
-        super(TestSimplifiedExaminerAssignment, self).setUp()
+        super(TestSimplifiedExaminerSimplifiedAssignment, self).setUp()
         self.duck1100_spring01_week1_core = self.duck1100_core.periods.get(
                 short_name='spring01').assignments.get(short_name='week1')
 
     def test_search(self):
         examiner0 = User.objects.get(username="examiner0")
         all_assignments = models.Assignment.objects.all().order_by("short_name")
-        qrywrap = Assignment.search(examiner0)
+        qrywrap = SimplifiedAssignment.search(examiner0)
         self.assertEquals(len(qrywrap), len(all_assignments))
         self.assertEquals(qrywrap[0]['short_name'], all_assignments[0].short_name)
 
         # query
-        qrywrap = Assignment.search(examiner0, query="ek")
+        qrywrap = SimplifiedAssignment.search(examiner0, query="ek")
         self.assertEquals(len(qrywrap), 9)
-        qrywrap = Assignment.search(examiner0, query="fall0")
+        qrywrap = SimplifiedAssignment.search(examiner0, query="fall0")
         self.assertEquals(len(qrywrap), 5)
-        qrywrap = Assignment.search(examiner0, query="1100")
+        qrywrap = SimplifiedAssignment.search(examiner0, query="1100")
         self.assertEquals(len(qrywrap), 4)
 
     def test_read(self):
-        duck1100_spring01_week1 = Assignment.read(self.duck1100examiner,
+        duck1100_spring01_week1 = SimplifiedAssignment.read(self.duck1100examiner,
                 self.duck1100_spring01_week1_core.id)
         self.assertEquals(duck1100_spring01_week1, dict(
                 id = self.duck1100_spring01_week1_core.id,
@@ -146,7 +146,7 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
                 long_name = self.duck1100_spring01_week1_core.long_name,
                 parentnode__id=self.duck1100_spring01_week1_core.parentnode.id))
 
-        duck1100_spring01_week1 = Assignment.read(self.duck1100examiner,
+        duck1100_spring01_week1 = SimplifiedAssignment.read(self.duck1100examiner,
                 self.duck1100_spring01_week1_core.id,
                 result_fieldgroups=['period'])
         self.assertEquals(duck1100_spring01_week1, dict(
@@ -158,7 +158,7 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
                 parentnode__long_name=self.duck1100_spring01_week1_core.parentnode.long_name,
                 parentnode__parentnode__id=self.duck1100_spring01_week1_core.parentnode.parentnode_id))
 
-        duck1100_spring01_week1 = Assignment.read(self.duck1100examiner,
+        duck1100_spring01_week1 = SimplifiedAssignment.read(self.duck1100examiner,
                 self.duck1100_spring01_week1_core.id,
                 result_fieldgroups=['period', 'subject'])
         self.assertEquals(duck1100_spring01_week1, dict(
@@ -174,18 +174,18 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestCase):
 
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
-            duck1100_spring01_week1 = Period.read(self.testexaminerNoPerm, self.duck1100_spring01_week1_core.id)
+            duck1100_spring01_week1 = SimplifiedPeriod.read(self.testexaminerNoPerm, self.duck1100_spring01_week1_core.id)
         with self.assertRaises(PermissionDenied):
-            duck1100_spring01_week1 = Period.read(self.duck1080examiner, self.duck1100_spring01_week1_core.id)
+            duck1100_spring01_week1 = SimplifiedPeriod.read(self.duck1080examiner, self.duck1100_spring01_week1_core.id)
         with self.assertRaises(PermissionDenied):
-            duck1100_spring01_week1 = Period.read(self.superadmin, self.duck1100_spring01_week1_core.id)
+            duck1100_spring01_week1 = SimplifiedPeriod.read(self.superadmin, self.duck1100_spring01_week1_core.id)
 
 
 
-class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
+class TestSimplifiedExaminerSimplifiedAssignmentGroup(SimplifiedExaminerTestCase):
 
     def setUp(self):
-        super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
+        super(TestSimplifiedExaminerSimplifiedAssignmentGroup, self).setUp()
         duck3580_fall01_week1_core = self.duck3580_core.periods.get(
                 short_name='fall01').assignments.get(short_name='week1')
         self.group_core = duck3580_fall01_week1_core.assignmentgroups.all()[0]
@@ -193,33 +193,33 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
     def test_search(self):
         assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
-        qrywrap = AssignmentGroup.search(self.duck3580examiner,
+        qrywrap = SimplifiedAssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 orderby=["-id"], limit=2)
         self.assertEquals(assignment.assignmentgroups.order_by('-id')[0].id, qrywrap[0]['id'])
         self.assertTrue(qrywrap[0]['id'] > qrywrap[1]['id'])
         self.assertEquals(qrywrap.count(), 2)
 
-        qrywrap = AssignmentGroup.search(self.duck3580examiner,
+        qrywrap = SimplifiedAssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 query="student0")
         self.assertEquals(qrywrap.count(), 1)
-        qrywrap = AssignmentGroup.search(self.duck3580examiner,
+        qrywrap = SimplifiedAssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 query="thisisatest")
         self.assertEquals(qrywrap.count(), 0)
 
-        g = AssignmentGroup.search(self.duck3580examiner, assignment=assignment)._insecure_django_qryset[0]
+        g = SimplifiedAssignmentGroup.search(self.duck3580examiner, assignment=assignment)._insecure_django_qryset[0]
         g.name = "thisisatest"
         g.save()
-        qrywrap = AssignmentGroup.search(self.duck3580examiner, assignment=assignment.id,
+        qrywrap = SimplifiedAssignmentGroup.search(self.duck3580examiner, assignment=assignment.id,
                 query="thisisatest")
         self.assertEquals(qrywrap.count(), 1)
 
     def test_search_security(self):
         assignment = models.Assignment.published_where_is_examiner(self.duck3580examiner)[0]
 
-        result = AssignmentGroup.search(self.duck3580examiner,
+        result = SimplifiedAssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 orderby=["-id"], limit=2)
         qrywrap = result
@@ -229,29 +229,29 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestCase):
 
         assignment.anonymous = True
         assignment.save()
-        result = AssignmentGroup.search(self.duck3580examiner,
+        result = SimplifiedAssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id)
         self.assertEquals(result.searchfields, ('name', 'candidates__candidate_id'))
 
-        qrywrap = AssignmentGroup.search(self.duck3580examiner,
+        qrywrap = SimplifiedAssignmentGroup.search(self.duck3580examiner,
                 assignment=assignment.id,
                 query="student0") # Should not be able to search for username on anonymous
         self.assertEquals(qrywrap.count(), 0)
 
     def test_read(self):
         #TODO add tests for read with fieldgroups
-        group = AssignmentGroup.read(self.duck3580examiner, self.group_core.id)
+        group = SimplifiedAssignmentGroup.read(self.duck3580examiner, self.group_core.id)
         self.assertEquals(group, dict(
                 id = self.group_core.id,
                 name = None))
 
     def test_read_security(self):
         with self.assertRaises(PermissionDenied):
-            group = AssignmentGroup.read(self.testexaminerNoPerm, self.group_core.id)
+            group = SimplifiedAssignmentGroup.read(self.testexaminerNoPerm, self.group_core.id)
         with self.assertRaises(PermissionDenied):
-            group = AssignmentGroup.read(self.duck1080examiner, self.group_core.id)
+            group = SimplifiedAssignmentGroup.read(self.duck1080examiner, self.group_core.id)
         with self.assertRaises(PermissionDenied):
-            group = AssignmentGroup.read(self.superadmin, self.group_core.id)
+            group = SimplifiedAssignmentGroup.read(self.superadmin, self.group_core.id)
 
 class TestSimplifiedExaminerDelivery(SimplifiedExaminerTestCase):
 #TODO anonymous deliveries

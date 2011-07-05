@@ -23,3 +23,8 @@ body>footer a {
 body>footer a:hover {
 	color: #776B5F;
 }
+
+
+.unimportant {
+    color: #444;
+}
