@@ -86,14 +86,18 @@ class Node(models.Model, BaseNode):
         if not self.short_name:
             raise ValidationError(_('Short Name is a required attribute.'))
 
+        greater_than_count = 1
+        if self.id == None:
+            greater_than_count = 0
+            
         if self.parentnode:
             if Node.objects.filter(short_name=self.short_name).\
-                   filter(parentnode__pk=self.parentnode.id).count() > 0:
+                   filter(parentnode__pk=self.parentnode.id).count() > greater_than_count:
                 raise ValidationError(_('A node can not have the same '\
                                         'short name as another within the same parent.'))
         else:
             if Node.objects.filter(short_name=self.short_name).\
-                   filter(parentnode=None).count() > 0:
+                   filter(parentnode=None).count() > greater_than_count:
                 raise ValidationError(_('A root node can not have the same '\
                                         'short name as another root node.'))
         for node in self.iter_childnodes():
