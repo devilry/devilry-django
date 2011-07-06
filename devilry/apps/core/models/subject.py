@@ -93,4 +93,4 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
 
     @classmethod
     def q_is_candidate(cls, user_obj):
-        return Q(periods__assignments__assignmentgroups__candidates=user_obj)
+        return Q(periods__assignments__assignmentgroups__candidates__student=user_obj)
