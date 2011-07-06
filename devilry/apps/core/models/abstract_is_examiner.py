@@ -6,7 +6,7 @@ class AbstractIsExaminer(object):
     def q_published(cls, old=True, active=True):
         """
         Return a django.models.Q object which matches all items of this type
-        where :attr:`Assignment.publishing_time` is in the future.
+        where :attr:`Assignment.publishing_time` is in the past.
 
         :param old: Include assignments where :attr:`Period.end_time`
             is in the past?
