@@ -65,17 +65,8 @@ def restful_modelapi(cls):
     _create_seachform(cls)
     _create_editform(cls)
 
-    if not hasattr(cls, "JsMeta"):
-        class JsMeta:
-            """ Fake javascript-meta class """
-        cls.JsMeta = JsMeta
-    cls._jsmeta = cls.JsMeta
-    if not hasattr(cls._jsmeta, 'combobox_displayfield'):
-        cls._jsmeta.combobox_displayfield = 'id'
-    if not hasattr(cls._jsmeta, 'combobox_fieldgroups'):
-        cls._jsmeta.combobox_fieldgroups = {}
-    if not hasattr(cls._jsmeta, 'combobox_tpl'):
-        cls._jsmeta.combobox_tpl = '{' + cls._jsmeta.combobox_displayfield + '}'
+    if not hasattr(cls._meta, 'foreignkey_fields'):
+        cls._meta.foreignkey_fields = {}
 
     # Copy all supports_[method] boolean variables from the simplified class.
     for method in cls._meta.simplified._all_crud_methods:

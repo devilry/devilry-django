@@ -1,4 +1,5 @@
-/** 
+/** Layout for restful simplified editors.
+ *
  * @xtype administratorrestfulsimplifiedlayout
  * */
 Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
@@ -134,16 +135,25 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     },
 
     loadUpdateMode: function(record_id) {
-        var c = Ext.getCmp(this.getChildIdBySuffix('edit-card'));
-        this.getLayout().setActiveItem(c);
+        var editcard = Ext.getCmp(this.getChildIdBySuffix('edit-card'));
+        this.getLayout().setActiveItem(editcard);
         this.loadRecordFromStore(record_id);
+    },
+
+    loadCreateMode: function() {
+        var editcard = Ext.getCmp(this.getChildIdBySuffix('edit-card'));
+        this.getLayout().setActiveItem(editcard);
+        this.editform.enable();
     },
 
 
     loadMode: function(mode, record_id) {
-        if(mode == "update")
+        if(mode == "update") {
             this.loadUpdateMode(record_id);
-        else if(mode == "overview")
+        } else if(mode == "overview") {
             this.loadOverviewMode();
+        } else if(mode == "create") {
+            this.loadCreateMode();
+        }
     }
 });

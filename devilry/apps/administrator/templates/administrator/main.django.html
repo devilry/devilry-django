@@ -34,12 +34,12 @@
                 xtype: 'administratorsearchresults',
                 title: 'Subjects',
                 store: subjectstore,
-                editorurlprefix: ''
+                editorurlprefix: '{% url administrator-editors-subject %}',
             }, {
                 xtype: 'administratorsearchresults',
                 title: 'Periods',
                 store: periodstore,
-                editorurlprefix: '{% url administrator-editors-period "update" %}',
+                editorurlprefix: '{% url administrator-editors-period %}',
                 formatRow: function(record) {
                     return this.getFormattedRow(
                         record.get('long_name'),

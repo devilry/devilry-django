@@ -5,8 +5,8 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedPeriod|extjs_model }}
-    var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
+    {{ RestfulSimplifiedClass|extjs_model }}
+    var periodstore = {{ RestfulSimplifiedClass|extjs_store }}
     //periodstore.load();
 
 
@@ -14,9 +14,9 @@
         var mainlayout = Ext.create('devilry.extjshelpers.RestfulSimplifiedLayout', {
             id: 'maincarddeck',
             renderTo: 'maincarddeck-wrapper',
-            supports_delete: {{ RestfulSimplifiedPeriod.supports_delete|yesno:"true,false" }},
-            model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
-            editformitems: {{ RestfulSimplifiedPeriod|extjs_form_items}}
+            supports_delete: {{ RestfulSimplifiedClass.supports_delete|yesno:"true,false" }},
+            model: {{ RestfulSimplifiedClass|get_extjsname_from_class}},
+            editformitems: {{ RestfulSimplifiedClass|extjs_form_items}}
         });
         mainlayout.loadMode('{{ initial_mode }}', {{ record_id|default_if_none:"null" }});
     });
