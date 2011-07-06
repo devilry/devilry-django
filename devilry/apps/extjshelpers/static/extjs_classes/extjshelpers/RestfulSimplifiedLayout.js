@@ -26,7 +26,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             hidden: !this.supports_delete,
             handler: function() {
                 // TODO: Confirm
-                Ext.getCmp('editform').submit({
+                me.editform.submit({
                     submitEmptyText: true,
                     method: 'DELETE',
                     waitMsg: 'Deleting node...',
@@ -40,7 +40,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             xtype: 'button',
             text: 'Save',
             handler: function() {
-                Ext.getCmp('editform').getForm().submit({
+                me.editform.getForm().submit({
                     submitEmptyText: true,
                     waitMsg: 'Saving node...',
                     success: function() {
