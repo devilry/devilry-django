@@ -5,9 +5,54 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     extend: 'Ext.container.Container',
     alias: 'widget.administratorrestfulsimplifiedlayout',
 
-    initComponent: function() {
-        var me = this;
+    deletebutton: {
+        xtype: 'button',
+        text: 'Delete',
+        flex: 0,
+        hidden: true,
+        handler: function() {
+            // TODO: Confirm
+            Ext.getCmp('editform').submit({
+                submitEmptyText: true,
+                method: 'DELETE',
+                waitMsg: 'Deleting node...',
+                success: function() {
+                }
+            });
+        }
+    },
 
+    savebutton: {
+        xtype: 'button',
+        text: 'Save',
+        handler: function() {
+            Ext.getCmp('editform').getForm().submit({
+                submitEmptyText: true,
+                waitMsg: 'Saving node...',
+                success: function() {
+                    this.editform.disable();
+                    Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-readonlybuttons');
+                }
+            });
+        }
+    },
+
+    editbutton: {
+        xtype: 'button',
+        flex: 0,
+        text: 'Edit',
+        handler: function() {
+            Ext.getCmp('editform').enable();
+            Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-editbuttons');
+        }
+    },
+
+    initComponent: function() {
+        if(this.supports_delete) {
+            this.deletebutton.hidden = false;
+        }
+
+        var me = this;
         Ext.apply(this, {
             layout: 'card',
             items: [{

@@ -44,52 +44,6 @@
         items: {{ RestfulSimplifiedPeriod|extjs_form_items}}
     };
 
-    var editbutton = {
-        xtype: 'button',
-        flex: 0,
-        text: '{% trans "Edit" %}',
-        //flex: 1,
-        handler: function() {
-            Ext.getCmp('editform').enable();
-            Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-editbuttons');
-        }
-    };
-
-    var deletebutton = {
-        xtype: 'button',
-        text: '{% trans "Delete" %}',
-        flex: 0,
-        {% if not RestfulSimplifiedPeriod.supports_delete %}
-            hidden: true,
-        {% endif %}
-        handler: function() {
-            // TODO: Confirm
-            Ext.getCmp('editform').submit({
-                submitEmptyText: true,
-                method: 'DELETE',
-                waitMsg: '{% trans "Deleting node..."%}',
-                success: function() {
-                }
-            });
-        }
-    };
-
-    var savebutton = {
-        xtype: 'button',
-        text: '{% trans "Save" %}',
-        scale: 'large',
-        handler: function() {
-            Ext.getCmp('editform').getForm().submit({
-                submitEmptyText: true,
-                waitMsg: '{% trans "Saving node..."%}',
-                success: function() {
-                    Ext.getCmp('editform').disable();
-                    Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-readonlybuttons');
-                }
-            });
-        }
-    };
-
 
 
     Ext.onReady(function() {
@@ -97,9 +51,7 @@
             id: 'maincarddeck',
             renderTo: 'maincarddeck-wrapper',
             editform: editform,
-            deletebutton: deletebutton,
-            editbutton: editbutton,
-            savebutton: savebutton
+            supports_delete: {{ RestfulSimplifiedPeriod.supports_delete|yesno:"true,false" }}
         });
 
         {% if initial_mode == "update" or initial_mode == "create" %}
