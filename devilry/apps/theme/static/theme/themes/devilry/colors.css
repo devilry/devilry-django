@@ -43,3 +43,10 @@ a:visited {
     color: #111;
 }
 
+
+.x-item-disabled {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1.0 !important;
+}
+
