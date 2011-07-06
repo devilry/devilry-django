@@ -32,7 +32,7 @@ def djangofield_to_extjsformfield(model, fieldname, foreignkey_restfulcls):
     #!!! INTERNAL DJANGO
     field = model._meta.get_field_by_name(fieldname)[0]
     
-    print "MODEL: ", field
+    #print "MODEL: ", field.start_time
     
     #if isinstance(field, field.AutoField):
         #return None

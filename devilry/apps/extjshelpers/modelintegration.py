@@ -8,8 +8,10 @@ def field_to_extjstype(field, fieldname):
         return 'int'
     elif isinstance(field, fields.AutoField):
         return 'int'
+    elif isinstance(field, fields.DateTimeField):
+        return 'date'
     else:
-        return 'string'
+        return 'auto'
 
 
 
