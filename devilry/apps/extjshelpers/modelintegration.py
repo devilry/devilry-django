@@ -11,7 +11,7 @@ def field_to_extjstype(field, fieldname):
     elif isinstance(field, fields.DateTimeField):
         return 'date'
     else:
-        return 'string'
+        return 'auto'
 
 
 
