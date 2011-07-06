@@ -10,11 +10,18 @@ from ..testhelper import TestHelper
 class TestAssignment(TestCase, TestHelper):
 
     def setUp(self):
-        self.add(nodes="uio:admin(uioadmin).ifi",
+        self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
                  periods=["old:begins(-2):ends(1)", "looong"],
                  assignments=["assignment1", "assignment2"],
-                 assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)"])
+                 assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)",
+                                   "g3:examiner(examiner1,examiner2)"])
+
+        print "old start:", self.inf1100_old.start_time
+        print "old   end:", self.inf1100_old.end_time
+        self.add_to_path('uio.ifi;inf1100.looong.assignment3.group1:examiner(examiner1)')
+        self.add_to_path('uio.ifi;inf1100.old.assignment1.group1:examiner(examiner3)')
+        print "old  end2:", self.inf1100_old.end_time
 
     def test_unique(self):
         n = Assignment(parentnode=Period.objects.get(short_name='looong'),
@@ -60,59 +67,40 @@ class TestAssignment(TestCase, TestHelper):
         self.assertEquals(q.count(), 1)
 
     def test_active_where_is_examiner(self):
-        future = datetime.now() + timedelta(10)
+        past = datetime.now() - timedelta(10)
         examiner1 = User.objects.get(username='examiner1')
+        # Get assignments where the period is active
         q = Assignment.active_where_is_examiner(examiner1).order_by('short_name')
-        self.assertEquals(q.count(), 2)
+        print "q:", q
+        print "0:", q[0].publishing_time
+        print "parent:", q[0].parentnode.short_name
+        print "start:", q[0].parentnode.start_time
+        print "end :", q[0].parentnode.end_time
+        self.assertEquals(q.count(), 3)
         self.assertEquals(q[0].short_name, 'assignment1')
-
+        self.assertEquals(q[1].short_name, 'assignment2')
+        self.assertEquals(q[2].short_name, 'assignment3')
+        
         #Create group2 with examiner1 as examiner
-        self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group2:examiner(examiner1)')
-        #ag = AssignmentGroup.objects.get(pk=4)
-        #ag.examiners.add(examiner1)
-        #ag.save()
-        #print "self.inf1010_spring10.end_time:", self.inf1010_spring10.end_time
+        self.add_to_path('uio.ifi;inf1010.spring10.assignment0.group2:examiner(examiner1)')
+        q = Assignment.active_where_is_examiner(examiner1)
+        self.assertEquals(q.count(), 4)
+        self.inf1010_spring10.end_time = past
+        self.inf1010_spring10.save()
+        self.assertEquals(q.count(), 3)
+        self.inf1010_spring10_assignment0.publishing_time = past
+        self.inf1010_spring10_assignment0.save()
         q = Assignment.active_where_is_examiner(examiner1)
         self.assertEquals(q.count(), 3)
-        self.inf1010_spring10.end_time = future
-        self.inf1010_spring10.save()
-        self.assertEquals(q.count(), 2)
-
-        ag.parentnode.publishing_time = future
-        ag.parentnode.save()
-        q = Assignment.active_where_is_examiner(examiner1)
-        self.assertEquals(q.count(), 1)
 
 
-#    def test_active_where_is_examiner(self):
-#        future = datetime.now() + timedelta(10)
-#        examiner1 = User.objects.get(username='examiner1')
-#        q = Assignment.active_where_is_examiner(examiner1)
-#
-#        self.assertEquals(q.count(), 1)
-#        self.assertEquals(q[0].short_name, 'assignment1')
-#
-#        ag = AssignmentGroup.objects.get(pk=4)
-#        ag.examiners.add(examiner1)
-#        ag.save()
-#        q = Assignment.active_where_is_examiner(examiner1)
-#        self.assertEquals(q.count(), 1)
-#        ag.parentnode.parentnode.end_time = future
-#        ag.parentnode.parentnode.save()
-#        self.assertEquals(q.count(), 2)
-#
-#        ag.parentnode.publishing_time = future
-#        ag.parentnode.save()
-#        q = Assignment.active_where_is_examiner(examiner1)
-#        self.assertEquals(q.count(), 1)
-#
     def test_old_where_is_examiner(self):
         past = datetime.now() - timedelta(10)
         examiner3 = User.objects.get(username='examiner3')
         q = Assignment.old_where_is_examiner(examiner3)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oldone')
-
+        
         ag = AssignmentGroup.objects.get(pk=1)
         ag.examiners.add(examiner3)
         ag.save()
@@ -126,11 +114,10 @@ class TestAssignment(TestCase, TestHelper):
     def test_assignmentgroups_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         examiner2 = User.objects.get(username='examiner2')
-        assignment1 = Assignment.objects.get(id=1)
-        self.assertEquals(3,
-                assignment1.assignment_groups_where_is_examiner(examiner2)[0].id)
+        self.assertEquals(self.inf1100_looong_assignment1_g1.id,
+                          self.inf1100_looong_assignment1.assignment_groups_where_is_examiner(examiner1)[0].id)
         self.assertEquals(2,
-                assignment1.assignment_groups_where_is_examiner(examiner1).count())
+                self.inf1100_looong_assignment1.assignment_groups_where_is_examiner(examiner2).count())
 
     def test_assignmentgroups_where_is_examiner_or_admin(self):
         examiner1 = User.objects.get(username='examiner1')
@@ -166,13 +153,11 @@ class TestAssignment(TestCase, TestHelper):
         self.assertRaises(ValidationError, assignment1.clean)
 
     def test_get_path(self):
-        assignment1 = Assignment.objects.get(id=1)
-        self.assertEquals(assignment1.get_path(), 'inf1100.looong.assignment1')
+        self.assertEquals(self.inf1100_looong_assignment1.get_path(), 'inf1100.looong.assignment1')
 
     def test_get_full_path(self):
-        assignment1 = Assignment.objects.get(id=1)
-        self.assertEquals(assignment1.get_full_path(),
-                'uio.ifi.inf1100.looong.assignment1')
+        self.assertEquals(self.inf1100_looong_assignment1.get_full_path(),
+                          'uio.ifi.inf1100.looong.assignment1')
 
     def test_get_by_path(self):
         self.assertEquals(

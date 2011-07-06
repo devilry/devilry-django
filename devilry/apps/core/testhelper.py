@@ -179,7 +179,7 @@ class TestHelper(object):
 ##
 #######
     def _create_or_add_node(self, parent, name, users):
-        node = Node(short_name=name, long_name=name.capitalize())
+        node = Node(parentnode=parent, short_name=name, long_name=name.capitalize())
         try:
             node.clean()
             node.save()
@@ -215,10 +215,6 @@ class TestHelper(object):
                 extras_arg = None
             users = self._parse_extras(extras_arg, ['admin'])
             new_node = self._create_or_add_node(prev_node, node_name, users)
-
-            # set up the relation ship between the previous node
-            if prev_node:
-                prev_node.child_nodes.add(new_node)
             prev_node = new_node
         return new_node
 
@@ -291,7 +287,7 @@ class TestHelper(object):
             period.start_time = datetime.now() + timedelta(days=int(extras['begins'][0]) * 30)
         if extras['ends']:
             period.end_time = period.start_time + timedelta(days=int(extras['ends'][0]) * 30)
-        else:
+        elif extras['begins'] and not extras['ends']:
             period.end_time = period.start_time + timedelta(5 * 30)
 
         if extras['ln']:
