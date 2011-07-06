@@ -1,6 +1,8 @@
 from types import MethodType
 from inspect import getmodule
 from django import forms
+from django.db.models import DateTimeField
+from django.forms import widgets
 
 from ..simplified import _require_metaattr
 from restful_api import restful_api
@@ -21,16 +23,30 @@ def _create_seachform(cls):
 
 def _create_editform(cls):
     formfields = []
+    customfields = {}
     model = cls._meta.simplified._meta.model
     for fieldname in cls._meta.simplified._meta.resultfields.always_available_fields:
         if fieldname.endswith("__id"):
-            formfields.append(fieldname[:-4])
-        else:
-            formfields.append(fieldname)
-    class EditForm(forms.ModelForm):
-        class Meta:
-            model = cls._meta.simplified._meta.model
-            fields = formfields
+            fieldname = fieldname[:-4]
+        formfields.append(fieldname)
+
+        field = model._meta.get_field_by_name(fieldname)[0]
+        if isinstance(field, DateTimeField):
+            input_formats = input_formats=['%Y-%m-%dT%H:%M:%S',
+                                           '%Y-%m-%d %H:%M:%S']
+            required = not field.blank
+            customfields[fieldname] = forms.DateTimeField(input_formats=input_formats,
+                                                          required=required,
+                                                          label=field.verbose_name,
+                                                          help_text=field.help_text,
+                                                          initial=field.default)
+
+    class Meta:
+        model = cls._meta.simplified._meta.model
+        fields = formfields
+
+    customfields['Meta'] = Meta
+    EditForm = type('EditForm', (forms.ModelForm,), customfields)
     cls.EditForm = EditForm
 
 

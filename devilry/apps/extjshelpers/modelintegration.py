@@ -5,13 +5,13 @@ from django.db.models import fields
 def field_to_extjstype(field, fieldname):
     """ Convert django field to extjs  field type. """
     if isinstance(field, fields.IntegerField):
-        return 'int'
+        return dict(type='int')
     elif isinstance(field, fields.AutoField):
-        return 'int'
+        return dict(type='int')
     elif isinstance(field, fields.DateTimeField):
-        return 'date'
+        return dict(type='date')
     else:
-        return 'auto'
+        return dict(type='auto')
 
 
 
@@ -44,7 +44,8 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
     for fieldname, field in _iter_fields(restfulmodelcls._meta.simplified,
                                          result_fieldgroups):
         exttype = field_to_extjstype(field, fieldname)
-        modelfields.append(dict(name=fieldname, type=exttype))
+        exttype['name'] = fieldname
+        modelfields.append(exttype)
     #for fieldname in restfulmodelcls._meta.urlmap:
         #modelfields.append(dict(name=fieldname, type='string'))
 
