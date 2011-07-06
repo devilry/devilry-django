@@ -124,9 +124,7 @@ def execcommand(commandname):
     command = [commandpath] + list(argv[2:])
     environ['DEVILRYADMIN_COMMANDNAME'] = commandname
     co = command[:]
-    print append_pythonexec_to_command(co)
     command = append_pythonexec_to_command(co)
-    print "command: ", command
     call(command)
 
 
