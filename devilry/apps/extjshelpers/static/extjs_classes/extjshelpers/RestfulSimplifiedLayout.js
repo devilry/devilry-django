@@ -10,7 +10,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         var me = this;
 
         var editformargs = {
-            id: 'stuff',
+            id: me.getChildIdBySuffix('editform'),
             xtype: 'form',
             layout: 'fit',
             disabled: true,
