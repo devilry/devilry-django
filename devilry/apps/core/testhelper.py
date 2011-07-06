@@ -348,6 +348,14 @@ class TestHelper(object):
         if extras['pub']:
             assignment.publishing_time += timedelta(days=int(extras['pub'][0]))
 
+        if extras['anon']:
+            if extras['anon'][0] == 'true':
+                assignment.anonymous = True
+            elif extras['anon'][0] == 'false':
+                assignment.anonymous = False
+            else:
+                raise ValueError("anon must be 'true' or 'false'")
+
         assignment.clean()
         assignment.save()
 
@@ -374,7 +382,7 @@ class TestHelper(object):
                     assignment_name = assignment
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['admin', 'pub'])
+                users = self._parse_extras(extras_arg, ['admin', 'pub', 'anon'])
                 new_assignment = self._create_or_add_assignment(assignment_name, period, users)
                 created_assignments.append(new_assignment)
         return created_assignments
@@ -398,6 +406,9 @@ class TestHelper(object):
         # add the extras (only admins allowed in subject)
         for candidate in extras['candidate']:
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate)))
+            cand = group.candidates.order_by('-id')[0]
+            cand.candidate_id = str(cand.student.id)
+            cand.save()
 
         for examiner in extras['examiner']:
             group.examiners.add(self._create_or_add_user(examiner))
