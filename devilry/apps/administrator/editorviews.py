@@ -37,9 +37,11 @@ class RestfulSimplifiedEditorView(View):
 class NodeEditor(RestfulSimplifiedEditorView):
     restful = restful.RestfulSimplifiedNode
 
-
 class SubjectEditor(RestfulSimplifiedEditorView):
     restful = restful.RestfulSimplifiedSubject
 
 class PeriodEditor(RestfulSimplifiedEditorView):
     restful = restful.RestfulSimplifiedPeriod
+
+#class AssignmentEditor(RestfulSimplifiedEditorView):
+    #restful = restful.RestfulSimplifiedPeriod

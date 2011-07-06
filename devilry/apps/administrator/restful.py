@@ -14,7 +14,12 @@ administrator_restful = RestfulManager()
 class RestfulSimplifiedNode(ModelRestfulView):
     class Meta:
         simplified = SimplifiedNode
-        #foreignkey_fields = {'parentnode__id': RestfulSimplifiedNode}
+        foreignkey_fields = {'parentnode__id': 'RestfulSimplifiedNode'}
+
+    class ExtjsModelMeta:
+        combobox_displayfield = 'short_name'
+        combobox_tpl = ('<div class="important">{long_name}</div>'
+                        '<div class="unimportant">{short_name}</div>')
 
 
 @administrator_restful.register
@@ -27,9 +32,9 @@ class RestfulSimplifiedSubject(ModelRestfulView):
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
-        combobox_tpl = ('</span><span class="important">{long_name}</span><br/>'
-                        '<span class="unimportant">{short_name}</span>')
+        combobox_tpl = RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl
         combobox_displayfield = 'short_name'
+
 
 @administrator_restful.register
 @extjs_restful_modelapi
@@ -42,5 +47,5 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
     class ExtjsModelMeta:
         """ Metadata for javascript. """
         combobox_fieldgroups = ['subject']
-        combobox_tpl = ('</span><span class="important">{long_name}</span><br/>'
+        combobox_tpl = ('<span class="important">{long_name}</span><br/>'
                         '<span class="unimportant">{parentnode__short_name}.{short_name}</span>')

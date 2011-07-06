@@ -1,3 +1,5 @@
+from types import MethodType
+from inspect import getmodule
 from django import forms
 
 from ..simplified import _require_metaattr
@@ -32,6 +34,34 @@ def _create_editform(cls):
     cls.EditForm = EditForm
 
 
+def _copy_supports_metaattrs_from_simplified(cls):
+    """ Copy all supports_[method] boolean variables from the simplified class. """
+    for method in cls._meta.simplified._all_crud_methods:
+        attrname = 'supports_{0}'.format(method)
+        setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
+
+
+def _create_get_foreignkey_fieldcls_method(cls):
+    def get_foreignkey_fieldcls(cls, fkfieldname):
+        """ Get the class stored at the ``fkfieldname`` key in the
+        ``cls.foreignkey_fields``.
+
+        :return: None if not found, and a restful class if found.
+        """
+        if not hasattr(cls, 'foreignkey_fields'):
+            return None
+        if not fkfieldname in cls.foreignkey_fields:
+            return None
+        fkrestfulcls = cls.foreignkey_fields[fkfieldname]
+        if isinstance(fkrestfulcls, str):
+            module = getmodule(cls)
+            return getattr(module, fkrestfulcls)
+        else:
+            return fkrestfulcls
+    setattr(cls._meta, get_foreignkey_fieldcls.__name__, MethodType(get_foreignkey_fieldcls, cls._meta))
+
+
+
 def restful_modelapi(cls):
     """
     :class:`ModelRestfulView` is used in conjunction with the
@@ -64,12 +94,7 @@ def restful_modelapi(cls):
     _require_metaattr(cls, 'simplified')
     _create_seachform(cls)
     _create_editform(cls)
+    _copy_supports_metaattrs_from_simplified(cls)
+    _create_get_foreignkey_fieldcls_method(cls)
 
-    if not hasattr(cls._meta, 'foreignkey_fields'):
-        cls._meta.foreignkey_fields = {}
-
-    # Copy all supports_[method] boolean variables from the simplified class.
-    for method in cls._meta.simplified._all_crud_methods:
-        attrname = 'supports_{0}'.format(method)
-        setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
     return cls
