@@ -6,7 +6,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 
 # TODO: Rename to SerializableResult
 class SerializableResult(object):
-    """ Stores Python objects for serialization with :class:`SerializerRegistry`. """
+    """ Stores Python objects for serialization with :class:`devilry.simplified.serializers.SerializerRegistry`. """
     def __init__(self, result, httpresponsecls=HttpResponse, encoding='utf-8'):
         self.result = result
         self.httpresponsecls = httpresponsecls

@@ -83,7 +83,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     CORRECTED_NOT_PUBLISHED = 3
 
     # Fields automatically 
-    time_of_delivery = models.DateTimeField()
+    time_of_delivery = models.DateTimeField(auto_now_add=True)
     deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField()
 
@@ -134,9 +134,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
 
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        return Q(assignment_group__examiners=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_examiner(cls, user_obj):
+        #return Q(assignment_group__examiners=user_obj)
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
@@ -174,33 +175,37 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         else:
             #return Delivery.CORRECTED_NOT_PUBLISHED # TODO: Handle the fact that this info does not exist anymore.
             return Delivery.NOT_CORRECTED
-    
-    def get_localized_status(self):
-        """
-        Returns the current status string from
-        :attr:`AssignmentGroup.status_mapping`.
-        """
-        status = self.get_status_number()
-        return status_mapping[status]
 
-    def get_localized_student_status(self):
-        """
-        Returns the current status string from
-        :attr:`status_mapping_student`.
-        """
-        status = self.get_status_number()
-        return status_mapping_student[status]
+    #TODO delete this?
+    #def get_localized_status(self):
+        #"""
+        #Returns the current status string from
+        #:attr:`AssignmentGroup.status_mapping`.
+        #"""
+        #status = self.get_status_number()
+        #return status_mapping[status]
 
-    def get_status_cssclass(self):
-        """ Returns the css class for the current status from
-        :attr:`status_mapping_cssclass`. """
-        return status_mapping_cssclass[self.get_status_number()]
+    #TODO delete this?
+    #def get_localized_student_status(self):
+        #"""
+        #Returns the current status string from
+        #:attr:`status_mapping_student`.
+        #"""
+        #status = self.get_status_number()
+        #return status_mapping_student[status]
 
-    def get_status_student_cssclass(self):
-        """ Returns the css class for the current status from
-        :attr:`status_mapping_student_cssclass`. """
-        return status_mapping_student_cssclass[
-                self.get_status_number()]
+    #TODO delete this?
+    #def get_status_cssclass(self):
+        #""" Returns the css class for the current status from
+        #:attr:`status_mapping_cssclass`. """
+        #return status_mapping_cssclass[self.get_status_number()]
+
+    #TODO delete this?
+    #def get_status_student_cssclass(self):
+        #""" Returns the css class for the current status from
+        #:attr:`status_mapping_student_cssclass`. """
+        #return status_mapping_student_cssclass[
+                #self.get_status_number()]
 
     def _set_number(self):
         m = Delivery.objects.filter(assignment_group=self.assignment_group).aggregate(Max('number'))
@@ -211,7 +216,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Set :attr:`number` automatically to one greater than what is was last and
         add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
         """
-        self.time_of_delivery = datetime.now()
+        #self.time_of_delivery = datetime.now()
         if self.id == None:
             self.deadline_tag = self.assignment_group.get_active_deadline()
             self._set_number()

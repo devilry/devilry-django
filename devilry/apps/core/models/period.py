@@ -76,14 +76,16 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
             q &= ~Q(end_time__lt=now)
         return q
 
-    @classmethod
-    def q_is_candidate(cls, user_obj):
-        return Q(assignmentgroups__candidates__student=user_obj)
+    #TODO delete this?
+    #@classmethod
+    #def q_is_candidate(cls, user_obj):
+        #return Q(assignmentgroups__candidates__student=user_obj)
 
-    def student_sum_scaled_points(self, user):
-        groups = AssignmentGroup.published_where_is_candidate(user).filter(
-                parentnode__parentnode=self)
-        return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
+    #TODO delete this?
+    #def student_sum_scaled_points(self, user):
+        #groups = AssignmentGroup.published_where_is_candidate(user).filter(
+                #parentnode__parentnode=self)
+        #return groups.aggregate(models.Sum('scaled_points'))['scaled_points__sum']
 
     def student_passes_period(self, user):
         groups = AssignmentGroup.published_where_is_candidate(user).filter(
@@ -95,8 +97,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
         totalpoints = self.student_sum_scaled_points(user)
         return totalpoints >= self.minimum_points
 
-    def get_must_pass_assignments(self):
-        return self.assignments.filter(must_pass=True)
+    #TODO delete this?
+    #def get_must_pass_assignments(self):
+        #return self.assignments.filter(must_pass=True)
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -104,28 +107,30 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
                 Q(parentnode__admins=user_obj) | \
                 Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
-    @classmethod
-    def not_ended_where_is_admin(cls, user_obj):
-        """ Returns a QuerySet matching all Periods where the given user is
-        admin and end_time is in the future.
+    #TODO delete this?
+    #@classmethod
+    #def not_ended_where_is_admin(cls, user_obj):
+        #""" Returns a QuerySet matching all Periods where the given user is
+        #admin and end_time is in the future.
         
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
+        #:param user_obj: A django.contrib.auth.models.User_ object.
+        #:rtype: QuerySet
+        #"""
+        #return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())
 
-    @classmethod
-    def not_ended_where_is_admin_or_superadmin(cls, user_obj):
-        """ Returns a QuerySet matching all Periods where the given user is
-        admin or superadmin and end_time is in the future.
+    #TODO delete this?
+    #@classmethod
+    #def not_ended_where_is_admin_or_superadmin(cls, user_obj):
+        #""" Returns a QuerySet matching all Periods where the given user is
+        #admin or superadmin and end_time is in the future.
         
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        if user_obj.is_superuser:
-            return cls.objects.filter(end_time__gt=datetime.now())
-        else:
-            return cls.not_ended_where_is_admin(user_obj)
+        #:param user_obj: A django.contrib.auth.models.User_ object.
+        #:rtype: QuerySet
+        #"""
+        #if user_obj.is_superuser:
+            #return cls.objects.filter(end_time__gt=datetime.now())
+        #else:
+            #return cls.not_ended_where_is_admin(user_obj)
 
     @classmethod
     def get_by_path(self, path):
@@ -156,11 +161,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
                 raise ValidationError(_('Start time must be before end time.'))
         super(Period, self).clean(*args, **kwargs)
 
-    def is_active(self):
-        """ Returns true if the period is active
-        """
-        now = datetime.now()
-        return self.start_time < now and self.end_time > now
+    #TODO delete this?
+    #def is_active(self):
+        #""" Returns true if the period is active
+        #"""
+        #now = datetime.now()
+        #return self.start_time < now and self.end_time > now
 
     @classmethod
     def q_is_examiner(cls, user_obj):

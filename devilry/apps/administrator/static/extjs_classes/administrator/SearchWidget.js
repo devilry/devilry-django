@@ -46,5 +46,32 @@ Ext.define('devilry.administrator.SearchWidget', {
     focusOnSearchfield: function() {
         var searchfield = this.items.items[0];
         searchfield.focus();
+    },
+
+    /**
+     * @private
+     *
+     * Get the result container, which we expect to be the second item in this
+     * container. */
+    getResultContainer: function() {
+        return this.items.items[1];
+    },
+
+    search: function(value) {
+        Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
+            var store = searchresults.store;
+            store.proxy.extraParams.query = value;
+            store.load(function(records, operation, success) {
+                if(store.data.items.length == 0) {
+                    searchresults.hide();
+                } else {
+                    searchresults.show();
+                }
+            });
+        });
+    },
+
+    loadInitialValues: function() {
+        this.search("");
     }
 });

@@ -5,10 +5,10 @@ if __name__ == '__main__':
     from os import mkdir
     from os.path import exists
     from shutil import rmtree
-    from common import require_djangoproject, depends
+    from common import require_djangoproject, depends, Command
 
     require_djangoproject()
-    depends('clear_exampledb')
+    depends(Command('clear_exampledb'))
 
     if exists('deliverystore'):
         rmtree('deliverystore')

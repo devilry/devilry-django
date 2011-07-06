@@ -17,6 +17,8 @@
     utils.groupnodes
     utils.devilry_email
 
+    administrator.simplified
+
 ======================================================================
 Devilry developer documentation overview
 ======================================================================
@@ -40,6 +42,12 @@ Simplified API
 ######################################################################
 
 * :ref:`simplified`
+* :ref:`Administrator <apps.administrator.simplified>`
+
+
+RESTful API
+######################################################################
+
 * :ref:`restful`
 
 

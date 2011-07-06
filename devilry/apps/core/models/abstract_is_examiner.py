@@ -2,27 +2,29 @@ class AbstractIsExaminer(object):
     """ Abstract class implemented by all classes where it is natural to
     need to check if a user is examiner. """
 
-    @classmethod
-    def q_published(cls, old=True, active=True):
-        """
-        Return a django.models.Q object which matches all items of this type
-        where :attr:`Assignment.publishing_time` is in the future.
+    #TODO delete this?
+    #@classmethod
+    #def q_published(cls, old=True, active=True):
+        #"""
+        #Return a django.models.Q object which matches all items of this type
+        #where :attr:`Assignment.publishing_time` is in the future.
 
-        :param old: Include assignments where :attr:`Period.end_time`
-            is in the past?
-        :param active: Include assignments where :attr:`Period.end_time`
-            is in the future?
-        """
-        raise NotImplementedError()
+        #:param old: Include assignments where :attr:`Period.end_time`
+            #is in the past?
+        #:param active: Include assignments where :attr:`Period.end_time`
+            #is in the future?
+        #"""
+        #raise NotImplementedError()
 
 
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        """
-        Return a django.models.Q object which matches items
-        where the given user is examiner.
-        """
-        raise NotImplementedError()
+    #TODO delete this?
+    #@classmethod
+    #def q_is_examiner(cls, user_obj):
+        #"""
+        #Return a django.models.Q object which matches items
+        #where the given user is examiner.
+        #"""
+        #raise NotImplementedError()
 
 
     @classmethod

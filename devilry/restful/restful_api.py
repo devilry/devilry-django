@@ -15,10 +15,11 @@ def restful_api(cls):
             :meth:`RestfulView.create_rest_url`. This is the full python
             dot-path to ``cls`` with ``.`` replaced by ``-``.
     """
-    class Meta:
-        """ Fake meta class """
-    meta = Meta
-    cls._meta = meta
+    if not hasattr(cls, "Meta"):
+        class Meta:
+            """ Fake meta class """
+        cls.Meta = Meta
+    cls._meta = cls.Meta
     cls._meta.urlprefix = cls.__name__.lower()
     #if not hasattr(cls._meta, 'urlmap'):
         #cls._meta.urlmap = {}

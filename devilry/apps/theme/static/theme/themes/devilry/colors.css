@@ -24,7 +24,18 @@ body>footer a:hover {
 	color: #776B5F;
 }
 
+#main a {
+    color: #0B5A9D;
+}
+#main a:visited {
+    color: #6E0840;
+}
 
-.unimportant {
+#main span.unimportant {
     color: #444;
 }
+
+#main span.important {
+    color: #111;
+}
+
