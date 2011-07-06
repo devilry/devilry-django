@@ -10,58 +10,15 @@
     //periodstore.load();
 
 
-    function loadNode(node) {
-    }
-
-    function loadRecordFromStore(id) {
-        // Load the request record into the form
-        Ext.ModelManager.getModel({{ RestfulSimplifiedPeriod|get_extjsname_from_class }}).load(id, {
-            success: function(node) {
-                var form = Ext.getCmp('editform');
-                form.loadRecord(node);
-                var title = Ext.String.format('{0} ({1})', node.data.long_name, node.data.short_name);
-                form.setTitle(title);
-            }
-        });
-    }
-
-
-    function loadUpdateMode(id) {
-        loadRecordFromStore({{ record_id }});
-        Ext.getCmp('maincarddeck').getLayout().setActiveItem('editcard');
-    }
-
-
-
-    var editform = {
-        xtype: 'form',
-        id: 'editform',
-        layout: 'fit',
-        disabled: true,
-        model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
-
-        defaultType: 'textfield',
-        items: {{ RestfulSimplifiedPeriod|extjs_form_items}}
-    };
-
-
-
     Ext.onReady(function() {
-        Ext.create('devilry.extjshelpers.RestfulSimplifiedLayout', {
+        var mainlayout = Ext.create('devilry.extjshelpers.RestfulSimplifiedLayout', {
             id: 'maincarddeck',
             renderTo: 'maincarddeck-wrapper',
-            editform: editform,
-            supports_delete: {{ RestfulSimplifiedPeriod.supports_delete|yesno:"true,false" }}
+            supports_delete: {{ RestfulSimplifiedPeriod.supports_delete|yesno:"true,false" }},
+            model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
+            editformitems: {{ RestfulSimplifiedPeriod|extjs_form_items}}
         });
-
-        {% if initial_mode == "update" or initial_mode == "create" %}
-            {% if initial_mode == "update" %}
-                loadUpdateMode();
-            {% endif %}
-        {% else %}
-            Ext.getCmp('maincarddeck').getLayout().setActiveItem('overview');
-        {% endif %}
-
+        mainlayout.loadMode('{{ initial_mode }}', {{ record_id|default_if_none:"null" }});
     });
 </script>
 {% endblock %}
