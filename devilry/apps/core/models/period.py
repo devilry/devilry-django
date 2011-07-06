@@ -77,9 +77,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
         return q
 
     #TODO delete this?
-    #@classmethod
-    #def q_is_candidate(cls, user_obj):
-        #return Q(assignmentgroups__candidates__student=user_obj)
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        return Q(assignmentgroups__candidates__student=user_obj)
 
     #TODO delete this?
     #def student_sum_scaled_points(self, user):
