@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 # Create simplified test DB.
 
 #################################################################
@@ -9,7 +9,7 @@
 
 from subprocess import call
 from os.path import join
-from common import getscriptsdir, require_djangoproject
+from common import getscriptsdir, require_djangoproject, append_pythonexec_to_command
 
 require_djangoproject()
 scriptsdir = getscriptsdir()
@@ -33,7 +33,8 @@ def create_testgroups(path, numstudents, numexaminers, subject_long_name,
             args.extend(['--pointscale', str(a['pointscale'])])
         if always_one_delivery:
             args.append('--always-one-delivery')
-        call(args)
+        print "args: ", args
+        call(append_pythonexec_to_command(args))
 
 
 
