@@ -15,7 +15,7 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     Each delivery can have zero or more feedbacks. Each StaticFeedback object stores
     static data that an examiner has published on a delivery. StaticFeedback is
     created and edited in a *grade+feedback editor* in a *grade plugin*, and
-    when an examiner chose to publish feedback, a static copy of the data
+    when an examiner choose to publish feedback, a static copy of the data
     he/she created in the *grade+feedback editor* is stored in a StaticFeedback.
 
     Feedbacks are only visible to students when
@@ -83,7 +83,7 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         now = datetime.now()
         q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
         if not active:
-            q &= ~Q(deliver__assignment_group__parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__gte = now)
         if not old:
             q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
         return q
