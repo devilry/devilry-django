@@ -31,12 +31,6 @@ def djangofield_to_extjsformfield(model, fieldname, foreignkey_restfulcls):
         fieldname = fieldname.split('__')[0]
     #!!! INTERNAL DJANGO
     field = model._meta.get_field_by_name(fieldname)[0]
-    
-    #print "MODEL: ", field.start_time
-    
-    #if isinstance(field, field.AutoField):
-        #return None
-    #else:
     xtype = djangofield_to_extjs_xtype(field, foreignkey_restfulcls)
     extfield = '{{ name: "{fieldname}", fieldLabel: "{field.verbose_name}", '\
             '{xtype} }}'.format(fieldname=fieldname, field=field,

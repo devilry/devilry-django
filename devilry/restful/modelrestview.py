@@ -59,7 +59,7 @@ class ModelRestfulView(RestfulView):
                 result = dict(total = len(data),
                               items = data)
             elif isinstance(data, dict):
-                result = data
+                result = dict(items=data)
             result['success'] = success
             return result
         else:

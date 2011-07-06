@@ -28,7 +28,7 @@ def _iter_fields(simplifiedcls, result_fieldgroups):
     for fieldname in meta.resultfields.aslist(result_fieldgroups):
         if "__" in fieldname:
             path = fieldname.split('__')
-            yield fieldname, _recurse_get_fkfield(meta.model, path)
+            yield path[0], _recurse_get_fkfield(meta.model, path)
         else:
             yield fieldname, meta.model._meta.get_field(fieldname)
 
