@@ -44,11 +44,41 @@ def restful_modelapi(cls):
         simplified
             A :ref:`simplified` class.
 
-    Furthermore, this decorator automatically decorates ``cls`` with
+    The decorator automatically decorates ``cls`` with
     :func:`restful_api`.
+
+    The decorator adds the following attributes to ``cls``:
+
+        _meta
+            Alias for the Meta class (above).
+        supports_*
+            Copied from ``_meta.simplified._meta``.
+        SearchForm
+            A Django form that can be used to validate the keyword arguments sent
+            to the ``search()`` method in :ref:`simplified`.
+        EditForm
+            A Django model form that can be used to validate and edit the model
+            specified in :ref:`simplified` specified in ``_meta.simplfied._meta.model``.
     """
     cls = restful_api(cls)
     _require_metaattr(cls, 'simplified')
     _create_seachform(cls)
     _create_editform(cls)
+
+    if not hasattr(cls, "JsMeta"):
+        class JsMeta:
+            """ Fake javascript-meta class """
+        cls.JsMeta = JsMeta
+    cls._jsmeta = cls.JsMeta
+    if not hasattr(cls._jsmeta, 'combobox_displayfield'):
+        cls._jsmeta.combobox_displayfield = 'id'
+    if not hasattr(cls._jsmeta, 'combobox_fieldgroups'):
+        cls._jsmeta.combobox_fieldgroups = {}
+    if not hasattr(cls._jsmeta, 'combobox_tpl'):
+        cls._jsmeta.combobox_tpl = '{' + cls._jsmeta.combobox_displayfield + '}'
+
+    # Copy all supports_[method] boolean variables from the simplified class.
+    for method in cls._meta.simplified._all_crud_methods:
+        attrname = 'supports_{0}'.format(method)
+        setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
     return cls

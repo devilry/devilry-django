@@ -15,7 +15,7 @@ class PublishedWhereIsCandidateMixin(object):
 
 
 @simplified_modelapi
-class Feedback(PublishedWhereIsCandidateMixin):
+class SimplifiedFeedback(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -33,27 +33,28 @@ class Feedback(PublishedWhereIsCandidateMixin):
 
         _delivery_time    = 'delivery__time_of_delivery'
         _delivery_number  = 'delivery__number'
-        _delivery_success = 'delivery__successful'
+        _delivery_delivered_by = 'delivery__delivered_by'
+        _delivery_after_deadline = 'delivery__after_deadline'
 
         model = models.StaticFeedback
-        resultfields = FieldSpec('id', 'format', 'text',
+        resultfields = FieldSpec('id', 'grade', 'points', 'is_passing_grade',
                                  period=[_period_short, _period_long, _period_id],
                                  subject=[_subject_long, _subject_short, _subject_id],
                                  assignment=[_assignment_short, _assignment_long, _assignment_id],
-                                 delivery=[_delivery_time, _delivery_number, _delivery_success])
+                                 delivery=[_delivery_time, _delivery_number, ])
         searchfields = FieldSpec(_subject_short,
                                  _subject_long,
                                  _period_short,
                                  _period_long,
                                  _assignment_long,
                                  _assignment_short,
-                                 _delivery_success,
-                                 _delivery_number)
+                                 _delivery_number,
+                                 )
         methods = ['search', 'read']
 
 
 @simplified_modelapi
-class Delivery(PublishedWhereIsCandidateMixin):
+class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
 
     class Meta:
 

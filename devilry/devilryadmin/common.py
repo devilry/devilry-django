@@ -2,7 +2,7 @@ from os import listdir, getcwd
 from os.path import dirname, abspath, join, exists
 from subprocess import call, Popen, PIPE
 from sys import argv
-from os import environ
+from os import environ, chdir
 from argparse import ArgumentParser
 
 def getdir(filepath):
@@ -91,6 +91,7 @@ def checkcommands(allcommands, *cmdnames):
         if not cmd in allcommands:
             raise SystemExit('{0} is not a valid command name.'.format(cmd))
 
+
 def cmdname_to_filename(commandname):
     """ Return the ``commandname`` prefixed with ``cmd_`` and suffixed with ``.py``. """
     return 'cmd_{0}.py'.format(commandname)
@@ -121,19 +122,36 @@ def execcommand(commandname):
     environ['DEVILRYADMIN_COMMANDNAME'] = commandname
     call(command)
 
-def depends(*cmdnames):
+
+class Command(object):
+    def __init__(self, commandname, *args):
+        self.commandname = commandname
+        self.args = args
+
+def depends(*cmds):
     """ Execute the given commands in the given order. """
     allcommands = getcommandnames()
-    checkcommands(allcommands, *cmdnames)
-    for cmd in cmdnames:
-        execcommand(cmd)
+    checkcommands(allcommands, *[c.commandname for c in cmds])
+    for cmd in cmds:
+        commandpath = join(getthisdir(), cmdname_to_filename(cmd.commandname))
+        command = [commandpath] + list(cmd.args)
+        environ['DEVILRYADMIN_COMMANDNAME'] = cmd.commandname
+        call(command)
 
 def require_djangoproject():
     """ Make sure the current working directory is a django project. """
     if not exists(join(getcwd(), 'manage.py')):
-        raise SystemExit('This command requires CWD to be a django project (a directory containing manage.py).')
+        warning = "This command requires CWD to be a django project "
+        warning += "(a directory containing manage.py).\nchanging CWD to default: projects/dev/"
+        printWarning(warning)
+        devpath = join(getreporoot(), 'devilry', 'projects', 'dev')
+        chdir(devpath)
 
 
+def printWarning(warning):
+    marker = '#'.join('=' for x in xrange(35))
+
+    print '{0}\n{1}\n{0}'.format(marker, warning)
 
 class DevilryAdmArgumentParser(ArgumentParser):
     """ Extends ArgumentParser and overrides ``__init__`` to set ``prog`` to

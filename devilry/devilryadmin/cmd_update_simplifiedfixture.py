@@ -3,10 +3,10 @@
 
 if __name__ == '__main__':
     from os.path import join
-    from common import require_djangoproject, depends, getreporoot, dumpfixture
+    from common import require_djangoproject, depends, Command, getreporoot, dumpfixture
 
     require_djangoproject()
-    depends('simplifiedtestdb')
+    depends(Command('simplifiedtestdb'))
     fixturepath = join(getreporoot(), 'devilry', 'simplified', 'fixtures',
                        'simplified', 'data.json')
     dumpfixture(fixturepath, 'core', 'auth.user',

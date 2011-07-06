@@ -1,10 +1,15 @@
 from django.test import TestCase
 from django.db import models
 
-from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
+from ...simplified import simplified_modelapi, FieldSpec
 from ...restful import restful_modelapi, ModelRestfulView
+from ..core.models import Period
+from ..administrator.restful import RestfulSimplifiedPeriod
 from modelintegration import restfulmodelcls_to_extjsmodel
 from storeintegration import restfulmodelcls_to_extjsstore
+from fieldintegration import djangofield_to_extjsformfield
+
+
 
 class User(models.Model):
     first = models.CharField(max_length=20, db_index=True)
@@ -79,27 +84,19 @@ class TestStoreIntegration(TestCase):
             model: 'devilry.apps.extjshelpers.tests.SimplifiedUser',
             remoteFilter: true,
             remoteSort: true,
-            autoLoad: true,
             autoSync: true
         });"""
         self.assertEquals(js, expected)
 
 
 
-"""
-successfmt = {
-    successful: True,
-    items: [
-            {name: "Espen", score: 10},
-            {name: "Tor", score: 10}
-           ]
-}
 
-errormft = {
-    successful: False,
-    errors: {
-             name: "To many chars.",
-             score: "Not an integer."
-            }
-}
-"""
+class TestFieldIntegration(TestCase):
+    #def test_djangofield_to_extjsformfield(self):
+        #field = find_foreign_field(Period, ["parentnode", "id"])
+        ##print dir(field.model)
+        ##print dir(field.model._meta)
+        #self.assertEquals(field.name, 'id')
+
+    def test_djangofield_to_extjs_xtype(self):
+        extfield = djangofield_to_extjsformfield(Period, 'parentnode__id', RestfulSimplifiedPeriod)
