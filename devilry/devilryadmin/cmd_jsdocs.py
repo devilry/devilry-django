@@ -10,7 +10,7 @@ from os import chdir, walk, makedirs
 from os.path import exists
 from shutil import rmtree
 
-from common import getappsdir
+from common import getappsdir, append_pythonexec_to_command
 
 
 def find_javascriptfiles():
