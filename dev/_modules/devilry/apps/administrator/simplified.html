@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.administrator.simplified &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.administrator.simplified</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SimplifiedNode&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedSubject&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedPeriod&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedAssignment&#39;</span><span class="p">)</span>
+
+
+
+<span class="k">class</span> <span class="nc">CanSaveAuthMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">can_save</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">read_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">can_save</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+
+
+<span class="nd">@simplified_modelapi</span>
+<div class="viewcode-block" id="SimplifiedNode"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedNode</span><span class="p">(</span><span class="n">CanSaveAuthMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Node`. &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Node</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode__id&#39;</span><span class="p">)</span>
+        <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">qryset</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">parentnode_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;parentnode_id&#39;</span><span class="p">,</span> <span class="s">&#39;DO_NOT_FILTER&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parentnode_id</span> <span class="o">!=</span> <span class="s">&quot;DO_NOT_FILTER&quot;</span><span class="p">:</span>
+            <span class="n">qryset</span> <span class="o">=</span> <span class="n">qryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">parentnode__id</span> <span class="o">=</span> <span class="n">parentnode_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qryset</span>
+
+</div>
+<span class="nd">@simplified_modelapi</span>
+<span class="k">class</span> <span class="nc">SimplifiedSubject</span><span class="p">(</span><span class="n">CanSaveAuthMixin</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Subject</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">qryset</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Subject</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">parentnode_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;parentnode_id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parentnode_id</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">qryset</span> <span class="o">=</span> <span class="n">qryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">parentnode__id</span> <span class="o">=</span> <span class="n">parentnode_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qryset</span>
+
+
+<span class="nd">@simplified_modelapi</span>
+<span class="k">class</span> <span class="nc">SimplifiedPeriod</span><span class="p">(</span><span class="n">CanSaveAuthMixin</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Period</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode__id&#39;</span><span class="p">,</span>
+                <span class="s">&#39;start_time&#39;</span><span class="p">,</span> <span class="s">&#39;end_time&#39;</span><span class="p">,</span>
+                <span class="n">subject</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">])</span>
+        <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">)</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">qryset</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Period</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">parentnode__id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;parentnode__id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parentnode__id</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">qryset</span> <span class="o">=</span> <span class="n">qryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">parentnode__id</span> <span class="o">=</span> <span class="n">parentnode__id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qryset</span>
+
+<span class="nd">@simplified_modelapi</span>
+<span class="k">class</span> <span class="nc">SimplifiedAssignment</span><span class="p">(</span><span class="n">CanSaveAuthMixin</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Assignment</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode__id&#39;</span><span class="p">,</span>
+                                 <span class="n">period</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                                           <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">,</span>
+                                           <span class="s">&#39;parentnode__parentnode__id&#39;</span><span class="p">],</span>
+                                 <span class="n">subject</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                            <span class="s">&#39;parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                                 <span class="n">pointfields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;anonymous&#39;</span><span class="p">,</span> <span class="s">&#39;must_pass&#39;</span><span class="p">,</span> <span class="s">&#39;maxpoints&#39;</span><span class="p">,</span>
+                                                <span class="s">&#39;attempts&#39;</span><span class="p">])</span>
+        <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span> <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">qryset</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Assignment</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">parentnode__id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;parentnode__id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parentnode__id</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">qryset</span> <span class="o">=</span> <span class="n">qryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">parentnode__id</span> <span class="o">=</span> <span class="n">parentnode__id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qryset</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

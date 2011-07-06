@@ -159,34 +159,6 @@ all objects if the user is superadmin.</p>
 <p>Abstract class implemented by all classes where it is natural to
 need to check if a user is examiner.</p>
 <dl class="classmethod">
-<dt id="devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.q_published">
-<em class="property">classmethod </em><tt class="descname">q_published</tt><big>(</big><em>old=True</em>, <em>active=True</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/abstract_is_examiner.html#AbstractIsExaminer.q_published"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.q_published" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a django.models.Q object which matches all items of this type
-where <a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.publishing_time" title="devilry.apps.core.models.model_utils.Assignment.publishing_time"><tt class="xref py py-attr docutils literal"><span class="pre">Assignment.publishing_time</span></tt></a> is in the future.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>old</strong> &#8211; Include assignments where <a class="reference internal" href="#devilry.apps.core.models.model_utils.Period.end_time" title="devilry.apps.core.models.model_utils.Period.end_time"><tt class="xref py py-attr docutils literal"><span class="pre">Period.end_time</span></tt></a>
-is in the past?</li>
-<li><strong>active</strong> &#8211; Include assignments where <a class="reference internal" href="#devilry.apps.core.models.model_utils.Period.end_time" title="devilry.apps.core.models.model_utils.Period.end_time"><tt class="xref py py-attr docutils literal"><span class="pre">Period.end_time</span></tt></a>
-is in the future?</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.q_is_examiner">
-<em class="property">classmethod </em><tt class="descname">q_is_examiner</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/abstract_is_examiner.html#AbstractIsExaminer.q_is_examiner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.q_is_examiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a django.models.Q object which matches items
-where the given user is examiner.</p>
-</dd></dl>
-
-<dl class="classmethod">
 <dt id="devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.where_is_examiner">
 <em class="property">classmethod </em><tt class="descname">where_is_examiner</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/abstract_is_examiner.html#AbstractIsExaminer.where_is_examiner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.where_is_examiner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all items of this type where the given <tt class="docutils literal"><span class="pre">user_obj</span></tt> is
@@ -472,40 +444,6 @@ node.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.core.models.period.Period.not_ended_where_is_admin">
-<em class="property">classmethod </em><tt class="descname">not_ended_where_is_admin</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/period.html#Period.not_ended_where_is_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.period.Period.not_ended_where_is_admin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a QuerySet matching all Periods where the given user is
-admin and end_time is in the future.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.period.Period.not_ended_where_is_admin_or_superadmin">
-<em class="property">classmethod </em><tt class="descname">not_ended_where_is_admin_or_superadmin</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/period.html#Period.not_ended_where_is_admin_or_superadmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.period.Period.not_ended_where_is_admin_or_superadmin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a QuerySet matching all Periods where the given user is
-admin or superadmin and end_time is in the future.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
 <dt id="devilry.apps.core.models.period.Period.get_by_path">
 <em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/period.html#Period.get_by_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.period.Period.get_by_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a Period by path.</p>
@@ -531,12 +469,6 @@ path-elements (uses <a class="reference internal" href="#devilry.apps.core.model
 <p>Always call this before save()! Read about validation here:
 <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/instances/#id1">http://docs.djangoproject.com/en/dev/ref/models/instances/#id1</a></p>
 <p>Raises ValidationError if start_time is after end_time.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.period.Period.is_active">
-<tt class="descname">is_active</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/period.html#Period.is_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.period.Period.is_active" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns true if the period is active</p>
 </dd></dl>
 
 </dd></dl>
@@ -653,34 +585,6 @@ passing grade on the period. Defaults to False.</p>
 <dd><p>Should feedbacks published by examiners be made avalable to the
 students immediately? If not, an administrator have to publish
 feedbacks. See also <a class="reference internal" href="#devilry.apps.core.models.model_utils.Deadline.feedbacks_published" title="devilry.apps.core.models.model_utils.Deadline.feedbacks_published"><tt class="xref py py-attr docutils literal"><span class="pre">Deadline.feedbacks_published</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment.Assignment.save">
-<tt class="descname">save</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment.html#Assignment.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment.Assignment.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save and recalculate the value of <a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.maxpoints" title="devilry.apps.core.models.model_utils.Assignment.maxpoints"><tt class="xref py py-attr docutils literal"><span class="pre">maxpoints</span></tt></a> and
-<a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.pointscale" title="devilry.apps.core.models.model_utils.Assignment.pointscale"><tt class="xref py py-attr docutils literal"><span class="pre">pointscale</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment.Assignment.get_gradeplugin_registryitem">
-<tt class="descname">get_gradeplugin_registryitem</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment.html#Assignment.get_gradeplugin_registryitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment.Assignment.get_gradeplugin_registryitem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the <tt class="xref py py-class docutils literal"><span class="pre">devilry.core.gradeplugin.RegistryItem</span></tt>
-for the current <a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.grade_plugin" title="devilry.apps.core.models.model_utils.Assignment.grade_plugin"><tt class="xref py py-attr docutils literal"><span class="pre">grade_plugin</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment.Assignment.get_filenames">
-<tt class="descname">get_filenames</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment.html#Assignment.get_filenames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment.Assignment.get_filenames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the filenames as a list of strings.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment.Assignment.validate_filenames">
-<tt class="descname">validate_filenames</tt><big>(</big><em>filenames</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment.html#Assignment.validate_filenames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment.Assignment.validate_filenames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise ValueError unless each filename in the iterable
-<tt class="docutils literal"><span class="pre">filenames</span></tt> is one of the filenames on this assignment. Nothing is
-done if <a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.filenames" title="devilry.apps.core.models.model_utils.Assignment.filenames"><tt class="xref py py-attr docutils literal"><span class="pre">filenames</span></tt></a> is not set, or set to a empty string.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -1039,34 +943,6 @@ comma (<tt class="docutils literal"><span class="pre">','</span></tt>).</p>
 <a class="reference internal" href="#devilry.apps.core.models.model_utils.AssignmentGroup.status_mapping_student" title="devilry.apps.core.models.model_utils.AssignmentGroup.status_mapping_student"><tt class="xref py py-attr docutils literal"><span class="pre">AssignmentGroup.status_mapping_student</span></tt></a>.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_cssclass">
-<tt class="descname">get_status_cssclass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment_group.html#AssignmentGroup.get_status_cssclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_cssclass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the current status string from
-<tt class="xref py py-attr docutils literal"><span class="pre">AssignmentGroup.status_mapping_cssclass</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_student_cssclass">
-<tt class="descname">get_status_student_cssclass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment_group.html#AssignmentGroup.get_status_student_cssclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_student_cssclass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the current status string from
-<tt class="xref py py-attr docutils literal"><span class="pre">AssignmentGroup.status_mapping_student_cssclass</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment_group.AssignmentGroup.can_save">
-<tt class="descname">can_save</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment_group.html#AssignmentGroup.can_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment_group.AssignmentGroup.can_save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the user has permission to save this AssignmentGroup.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.assignment_group.AssignmentGroup.can_add_deliveries">
-<tt class="descname">can_add_deliveries</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/assignment_group.html#AssignmentGroup.can_add_deliveries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.assignment_group.AssignmentGroup.can_add_deliveries" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns true if a student can add deliveries on this assignmentgroup</p>
-<p>Both the assignmentgroups is_open attribute, and the periods start
-and end time is checked.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -1142,18 +1018,6 @@ instead, with the following values:</p>
 <li><tt class="docutils literal"><span class="pre">deadline</span></tt> is not before <tt class="docutils literal"><span class="pre">Period.end_time</span></tt>.</li>
 </ul>
 </div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.deadline.Deadline.is_old">
-<tt class="descname">is_old</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/deadline.html#Deadline.is_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.deadline.Deadline.is_old" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if <a class="reference internal" href="#devilry.apps.core.models.model_utils.Deadline.deadline" title="devilry.apps.core.models.model_utils.Deadline.deadline"><tt class="xref py py-attr docutils literal"><span class="pre">deadline</span></tt></a> expired.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.deadline.Deadline.delete">
-<tt class="descname">delete</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/deadline.html#Deadline.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.deadline.Deadline.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prevent deletion if this is the head deadline</p>
 </dd></dl>
 
 </dd></dl>
@@ -1310,34 +1174,6 @@ write() method of a storage backend (byte strings).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.apps.core.models.delivery.Delivery.get_localized_status">
-<tt class="descname">get_localized_status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/delivery.html#Delivery.get_localized_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.delivery.Delivery.get_localized_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the current status string from
-<a class="reference internal" href="#devilry.apps.core.models.model_utils.AssignmentGroup.status_mapping" title="devilry.apps.core.models.model_utils.AssignmentGroup.status_mapping"><tt class="xref py py-attr docutils literal"><span class="pre">AssignmentGroup.status_mapping</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.delivery.Delivery.get_localized_student_status">
-<tt class="descname">get_localized_student_status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/delivery.html#Delivery.get_localized_student_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.delivery.Delivery.get_localized_student_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the current status string from
-<tt class="xref py py-attr docutils literal"><span class="pre">status_mapping_student</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.delivery.Delivery.get_status_cssclass">
-<tt class="descname">get_status_cssclass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/delivery.html#Delivery.get_status_cssclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.delivery.Delivery.get_status_cssclass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the css class for the current status from
-<tt class="xref py py-attr docutils literal"><span class="pre">status_mapping_cssclass</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.delivery.Delivery.get_status_student_cssclass">
-<tt class="descname">get_status_student_cssclass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/delivery.html#Delivery.get_status_student_cssclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.delivery.Delivery.get_status_student_cssclass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the css class for the current status from
-<tt class="xref py py-attr docutils literal"><span class="pre">status_mapping_student_cssclass</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="devilry.apps.core.models.delivery.Delivery.save">
 <tt class="descname">save</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/delivery.html#Delivery.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.delivery.Delivery.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set <a class="reference internal" href="#devilry.apps.core.models.model_utils.Delivery.number" title="devilry.apps.core.models.model_utils.Delivery.number"><tt class="xref py py-attr docutils literal"><span class="pre">number</span></tt></a> automatically to one greater than what is was last and
@@ -1409,20 +1245,6 @@ feedback to avoid that a student can make an issue out of a bad feedback.</p>
 <dd><p>Boolean is passing grade?</p>
 </dd></dl>
 
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.static_feedback.StaticFeedback.q_is_candidate">
-<em class="property">classmethod </em><tt class="descname">q_is_candidate</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/static_feedback.html#StaticFeedback.q_is_candidate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.static_feedback.StaticFeedback.q_is_candidate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a django.models.Q object matching Deliveries where
-the given student is candidate.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.static_feedback.StaticFeedback.q_is_examiner">
-<em class="property">classmethod </em><tt class="descname">q_is_examiner</tt><big>(</big><em>user_obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/static_feedback.html#StaticFeedback.q_is_examiner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.static_feedback.StaticFeedback.q_is_examiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a django.models.Q object matching Feedbacks where
-the given student is candidate.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -1463,22 +1285,6 @@ be given feedback.</p>
 <tt class="descname">remove_file</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/filemeta.html#FileMeta.remove_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.filemeta.FileMeta.remove_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the file using the
 <tt class="xref py py-meth docutils literal"><span class="pre">remove()</span></tt>-method
-of the <a class="reference internal" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="devilry.apps.core.models.model_utils.FileMeta.deliverystore"><tt class="xref py py-attr docutils literal"><span class="pre">deliverystore</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.filemeta.FileMeta.file_exists">
-<tt class="descname">file_exists</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/filemeta.html#FileMeta.file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.filemeta.FileMeta.file_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the file exists using the
-<tt class="xref py py-meth docutils literal"><span class="pre">exists()</span></tt>-method
-of the <a class="reference internal" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="devilry.apps.core.models.model_utils.FileMeta.deliverystore"><tt class="xref py py-attr docutils literal"><span class="pre">deliverystore</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.filemeta.FileMeta.read_open">
-<tt class="descname">read_open</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/filemeta.html#FileMeta.read_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.filemeta.FileMeta.read_open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open file for reading using the
-<tt class="xref py py-meth docutils literal"><span class="pre">read_open()</span></tt>-method
 of the <a class="reference internal" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="devilry.apps.core.models.model_utils.FileMeta.deliverystore"><tt class="xref py py-attr docutils literal"><span class="pre">deliverystore</span></tt></a>.</p>
 </dd></dl>
 

@@ -50,29 +50,31 @@
     <span class="sd">&quot;&quot;&quot; Abstract class implemented by all classes where it is natural to</span>
 <span class="sd">    need to check if a user is examiner. &quot;&quot;&quot;</span>
 
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.q_published"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.q_published">[docs]</a>    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a django.models.Q object which matches all items of this type</span>
-<span class="sd">        where :attr:`Assignment.publishing_time` is in the future.</span>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_published(cls, old=True, active=True):</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#Return a django.models.Q object which matches all items of this type</span>
+        <span class="c">#where :attr:`Assignment.publishing_time` is in the future.</span>
 
-<span class="sd">        :param old: Include assignments where :attr:`Period.end_time`</span>
-<span class="sd">            is in the past?</span>
-<span class="sd">        :param active: Include assignments where :attr:`Period.end_time`</span>
-<span class="sd">            is in the future?</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="c">#:param old: Include assignments where :attr:`Period.end_time`</span>
+            <span class="c">#is in the past?</span>
+        <span class="c">#:param active: Include assignments where :attr:`Period.end_time`</span>
+            <span class="c">#is in the future?</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#raise NotImplementedError()</span>
 
-</div>
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="AbstractIsExaminer.q_is_examiner"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.q_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a django.models.Q object which matches items</span>
-<span class="sd">        where the given user is examiner.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-</div>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_is_examiner(cls, user_obj):</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#Return a django.models.Q object which matches items</span>
+        <span class="c">#where the given user is examiner.</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#raise NotImplementedError()</span>
+
+
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="AbstractIsExaminer.where_is_examiner"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer.where_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">where_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get all items of this type where the given ``user_obj`` is</span>

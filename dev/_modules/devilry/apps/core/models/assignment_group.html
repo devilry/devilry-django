@@ -356,37 +356,41 @@
         <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
 <span class="sd">        :attr:`AssignmentGroup.status_mapping_student`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_student</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="AssignmentGroup.get_status_cssclass"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
-<span class="sd">        :attr:`AssignmentGroup.status_mapping_cssclass`. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="AssignmentGroup.get_status_student_cssclass"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.get_status_student_cssclass">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_student_cssclass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the current status string from</span>
-<span class="sd">        :attr:`AssignmentGroup.status_mapping_student_cssclass`. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">status_mapping_student_cssclass</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def get_status_cssclass(self):</span>
+        <span class="c">#&quot;&quot;&quot; Returns the current status string from</span>
+        <span class="c">#:attr:`AssignmentGroup.status_mapping_cssclass`. &quot;&quot;&quot;</span>
+        <span class="c">#return AssignmentGroup.status_mapping_cssclass[self.status]</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def get_status_student_cssclass(self):</span>
+        <span class="c">#&quot;&quot;&quot; Returns the current status string from</span>
+        <span class="c">#:attr:`AssignmentGroup.status_mapping_student_cssclass`. &quot;&quot;&quot;</span>
+        <span class="c">#return AssignmentGroup.status_mapping_student_cssclass[self.status]</span>
 </div>
     <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Query for the correct status, and set :attr:`status`. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_status_from_qry</span><span class="p">()</span>
 
-<div class="viewcode-block" id="AssignmentGroup.can_save"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.can_save">[docs]</a>    <span class="k">def</span> <span class="nf">can_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Check if the user has permission to save this AssignmentGroup. &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-</div>
-<div class="viewcode-block" id="AssignmentGroup.can_add_deliveries"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.assignment_group.AssignmentGroup.can_add_deliveries">[docs]</a>    <span class="k">def</span> <span class="nf">can_add_deliveries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns true if a student can add deliveries on this assignmentgroup</span>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def can_save(self, user_obj):</span>
+        <span class="c">#&quot;&quot;&quot; Check if the user has permission to save this AssignmentGroup. &quot;&quot;&quot;</span>
+        <span class="c">#if user_obj.is_superuser:</span>
+            <span class="c">#return True</span>
+        <span class="c">#elif self.parentnode:</span>
+            <span class="c">#return self.parentnode.is_admin(user_obj)</span>
+        <span class="c">#else:</span>
+            <span class="c">#return False</span>
 
-<span class="sd">        Both the assignmentgroups is_open attribute, and the periods start</span>
-<span class="sd">        and end time is checked.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">is_active</span><span class="p">()</span></div></div>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def can_add_deliveries(self):</span>
+        <span class="c">#&quot;&quot;&quot; Returns true if a student can add deliveries on this assignmentgroup</span>
+
+        <span class="c">#Both the assignmentgroups is_open attribute, and the periods start</span>
+        <span class="c">#and end time is checked.</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#return self.is_open and self.parentnode.parentnode.is_active()</span></div>
 </pre></div>
 
           </div>

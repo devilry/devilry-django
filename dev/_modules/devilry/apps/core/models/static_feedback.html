@@ -118,32 +118,35 @@
         <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Static feedbacks&#39;</span><span class="p">)</span>
         <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;-save_timestamp&#39;</span><span class="p">]</span>
 
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="StaticFeedback.q_is_candidate"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.static_feedback.StaticFeedback.q_is_candidate">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a django.models.Q object matching Deliveries where</span>
-<span class="sd">        the given student is candidate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
-</div>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__parentnode__publishing_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">deliver__assignment_group__parentnode__parentnode__end_time__gte</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__parentnode__parentnode__end_time__lt</span> <span class="o">=</span> <span class="n">now</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">q</span>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_is_candidate(cls, user_obj):</span>
+    <span class="c">#    &quot;&quot;&quot;</span>
+    <span class="c">#    Returns a django.models.Q object matching Deliveries where</span>
+    <span class="c">#    the given student is candidate.</span>
+    <span class="c">#    &quot;&quot;&quot;</span>
+    <span class="c">#    return Q(delivery__assignment_group__candidates__student=user_obj)</span>
 
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="StaticFeedback.q_is_examiner"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.static_feedback.StaticFeedback.q_is_examiner">[docs]</a>    <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a django.models.Q object matching Feedbacks where</span>
-<span class="sd">        the given student is candidate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">delivery__assignment_group__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
-</div>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_published(cls, old=True, active=True):</span>
+        <span class="c">#now = datetime.now()</span>
+        <span class="c">#q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)</span>
+        <span class="c">#if not active:</span>
+            <span class="c">#q &amp;= ~Q(deliver__assignment_group__parentnode__parentnode__end_time__gte = now)</span>
+        <span class="c">#if not old:</span>
+            <span class="c">#q &amp;= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)</span>
+        <span class="c">#return q</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_is_examiner(cls, user_obj):</span>
+    <span class="c">#    &quot;&quot;&quot;</span>
+    <span class="c">#    Returns a django.models.Q object matching Feedbacks where</span>
+    <span class="c">#    the given student is candidate.</span>
+    <span class="c">#    &quot;&quot;&quot;</span>
+    <span class="c">#    return Q(delivery__assignment_group__examiners=user_obj)</span>
+
     <span class="k">def</span> <span class="nf">_publish_if_allowed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">assignment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">parentnode</span>
         <span class="k">if</span> <span class="n">assignment</span><span class="o">.</span><span class="n">examiners_publish_feedbacks_directly</span><span class="p">:</span>

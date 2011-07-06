@@ -149,15 +149,17 @@
     <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deadline</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Deadline.is_old"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline.is_old">[docs]</a>    <span class="k">def</span> <span class="nf">is_old</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return True if :attr:`deadline` expired. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deadline</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="Deadline.delete"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Prevent deletion if this is the head deadline &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Deadline</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def is_old(self):</span>
+        <span class="c">#&quot;&quot;&quot; Return True if :attr:`deadline` expired. &quot;&quot;&quot;</span>
+        <span class="c">#return self.deadline &lt; datetime.now()</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def delete(self, *args, **kwargs):</span>
+        <span class="c">#&quot;&quot;&quot; Prevent deletion if this is the head deadline &quot;&quot;&quot;</span>
+        <span class="c">#if self.is_head:</span>
+            <span class="c">#raise PermissionDenied()</span>
+        <span class="c">#super(Deadline, self).delete(*args, **kwargs)</span></div>
 </pre></div>
 
           </div>

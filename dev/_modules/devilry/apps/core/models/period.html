@@ -124,14 +124,16 @@
             <span class="n">q</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">end_time__lt</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">q</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignmentgroups__candidates__student</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_is_candidate(cls, user_obj):</span>
+        <span class="c">#return Q(assignmentgroups__candidates__student=user_obj)</span>
 
-    <span class="k">def</span> <span class="nf">student_sum_scaled_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-                <span class="n">parentnode__parentnode</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">groups</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;scaled_points&#39;</span><span class="p">))[</span><span class="s">&#39;scaled_points__sum&#39;</span><span class="p">]</span>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def student_sum_scaled_points(self, user):</span>
+        <span class="c">#groups = AssignmentGroup.published_where_is_candidate(user).filter(</span>
+                <span class="c">#parentnode__parentnode=self)</span>
+        <span class="c">#return groups.aggregate(models.Sum(&#39;scaled_points&#39;))[&#39;scaled_points__sum&#39;]</span>
 
     <span class="k">def</span> <span class="nf">student_passes_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="n">AssignmentGroup</span><span class="o">.</span><span class="n">published_where_is_candidate</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
@@ -143,8 +145,9 @@
         <span class="n">totalpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">student_sum_scaled_points</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">totalpoints</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimum_points</span>
 
-    <span class="k">def</span> <span class="nf">get_must_pass_assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignments</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">must_pass</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def get_must_pass_assignments(self):</span>
+        <span class="c">#return self.assignments.filter(must_pass=True)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
@@ -152,29 +155,31 @@
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
                 <span class="n">Q</span><span class="p">(</span><span class="n">parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
 
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Period.not_ended_where_is_admin"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.period.Period.not_ended_where_is_admin">[docs]</a>    <span class="k">def</span> <span class="nf">not_ended_where_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all Periods where the given user is</span>
-<span class="sd">        admin and end_time is in the future.</span>
-<span class="sd">        </span>
-<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
-<span class="sd">        :rtype: QuerySet</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">where_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">end_time__gt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-</div>
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Period.not_ended_where_is_admin_or_superadmin"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.period.Period.not_ended_where_is_admin_or_superadmin">[docs]</a>    <span class="k">def</span> <span class="nf">not_ended_where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a QuerySet matching all Periods where the given user is</span>
-<span class="sd">        admin or superadmin and end_time is in the future.</span>
-<span class="sd">        </span>
-<span class="sd">        :param user_obj: A django.contrib.auth.models.User_ object.</span>
-<span class="sd">        :rtype: QuerySet</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">end_time__gt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">not_ended_where_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
-</div>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def not_ended_where_is_admin(cls, user_obj):</span>
+        <span class="c">#&quot;&quot;&quot; Returns a QuerySet matching all Periods where the given user is</span>
+        <span class="c">#admin and end_time is in the future.</span>
+        
+        <span class="c">#:param user_obj: A django.contrib.auth.models.User_ object.</span>
+        <span class="c">#:rtype: QuerySet</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#return cls.where_is_admin(user_obj).filter(end_time__gt=datetime.now())</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def not_ended_where_is_admin_or_superadmin(cls, user_obj):</span>
+        <span class="c">#&quot;&quot;&quot; Returns a QuerySet matching all Periods where the given user is</span>
+        <span class="c">#admin or superadmin and end_time is in the future.</span>
+        
+        <span class="c">#:param user_obj: A django.contrib.auth.models.User_ object.</span>
+        <span class="c">#:rtype: QuerySet</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#if user_obj.is_superuser:</span>
+            <span class="c">#return cls.objects.filter(end_time__gt=datetime.now())</span>
+        <span class="c">#else:</span>
+            <span class="c">#return cls.not_ended_where_is_admin(user_obj)</span>
+
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Period.get_by_path"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.period.Period.get_by_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a Period by path.</span>
@@ -203,12 +208,13 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Start time must be before end time.&#39;</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Period</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Period.is_active"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.period.Period.is_active">[docs]</a>    <span class="k">def</span> <span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns true if the period is active</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">now</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">&gt;</span> <span class="n">now</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def is_active(self):</span>
+        <span class="c">#&quot;&quot;&quot; Returns true if the period is active</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#now = datetime.now()</span>
+        <span class="c">#return self.start_time &lt; now and self.end_time &gt; now</span>
 </div>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>

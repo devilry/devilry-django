@@ -92,22 +92,24 @@
 <span class="sd">        of the :attr:`deliverystore`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="FileMeta.file_exists"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.filemeta.FileMeta.file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if the file exists using the</span>
-<span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method</span>
-<span class="sd">        of the :attr:`deliverystore`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="FileMeta.read_open"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.filemeta.FileMeta.read_open">[docs]</a>    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Open file for reading using the</span>
-<span class="sd">        :meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method</span>
-<span class="sd">        of the :attr:`deliverystore`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def file_exists(self):</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#Check if the file exists using the</span>
+        <span class="c">#:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.exists`-method</span>
+        <span class="c">#of the :attr:`deliverystore`.</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#return self.deliverystore.exists(self)</span>
+
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def read_open(self):</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#Open file for reading using the</span>
+        <span class="c">#:meth:`~devilry.core.deliverystore.DeliveryStoreInterface.read_open`-method</span>
+        <span class="c">#of the :attr:`deliverystore`.</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#return self.deliverystore.read_open(self)</span>
 </div>
     <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>

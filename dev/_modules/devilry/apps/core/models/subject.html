@@ -120,10 +120,11 @@
         <span class="sd">&quot;&quot;&quot; Only returns :attr:`short_name` for subject since it is</span>
 <span class="sd">        guaranteed to be unique. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_name</span>
-</div>
-    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#def clean(self, *args, **kwargs):</span>
+        <span class="c">#super(Subject, self).clean(*args, **kwargs)</span>
+</div>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">q_published</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
@@ -138,9 +139,10 @@
     <span class="k">def</span> <span class="nf">q_is_examiner</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">periods__assignments__assignmentgroups__examiners</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">q_is_candidate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">periods__assignments__assignmentgroups__candidates</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span></div>
+    <span class="c">#TODO delete this?</span>
+    <span class="c">#@classmethod</span>
+    <span class="c">#def q_is_candidate(cls, user_obj):</span>
+        <span class="c">#return Q(periods__assignments__assignmentgroups__candidates=user_obj)</span></div>
 </pre></div>
 
           </div>

@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.administrator.simplified — Simplifed API for administrators &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="prev" title="devilry.utils.devilry_email" href="utils.devilry_email.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.devilry_email.html" title="devilry.utils.devilry_email"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="devilry-apps-administrator-simplified-simplifed-api-for-administrators">
+<span id="apps-administrator-simplified"></span><h1><a class="reference internal" href="#module-devilry.apps.administrator.simplified" title="devilry.apps.administrator.simplified"><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.administrator.simplified</span></tt></a> &#8212; Simplifed API for administrators<a class="headerlink" href="#devilry-apps-administrator-simplified-simplifed-api-for-administrators" title="Permalink to this headline">¶</a></h1>
+<p>The administrator simplified API. This API is a simplified wrapper of
+<a class="reference internal" href="core.models.html#devilry-apps-core-models"><em>devilry.apps.core.models &#8212; Devilry core datastructure</em></a> for administrators. Every action requires
+the given user to be administrator on the object being manipulated.</p>
+<div class="section" id="module-devilry.apps.administrator.simplified">
+<span id="api"></span><h2>API<a class="headerlink" href="#module-devilry.apps.administrator.simplified" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode">
+<em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedNode</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveAuthMixin</span></tt></p>
+<p>Simplified wrapper for <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt>.</p>
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.delete">
+<em class="property">classmethod </em><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.insecure_read_model">
+<em class="property">classmethod </em><tt class="descname">insecure_read_model</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.insecure_read_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a django model object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to
+view this object, or if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.read">
+<em class="property">classmethod </em><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.search">
+<em class="property">classmethod </em><tt class="descname">search</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> (List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.) &#8211; Order the result by these fields. For example, if
+<tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and long_name fields,
+we can order our results by ascending short_name and descending
+long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span> <span class="pre">'-long_name')</span></tt>.</li>
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.update">
+<em class="property">classmethod </em><tt class="descname">update</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body"><p class="first">The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">devilry.apps.administrator.simplified</span></tt> &#8212; Simplifed API for administrators</a><ul>
+<li><a class="reference internal" href="#module-devilry.apps.administrator.simplified">API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="utils.devilry_email.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">devilry.utils.devilry_email</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/administrator.simplified.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.devilry_email.html" title="devilry.utils.devilry_email"
+             >previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

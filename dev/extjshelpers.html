@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Design details &mdash; Devilry v1.0 documentation</title>
+    <title>devilry.apps.extjshelpers — ExtJS helpers &mdash; Devilry v1.0 documentation</title>
     <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
-    <link rel="next" title="devilry.utils.assignmentgroup" href="utils.assignmentgroup.html" />
-    <link rel="prev" title="devilry.apps.extjshelpers — ExtJS helpers" href="extjshelpers.html" /> 
+    <link rel="next" title="Design details" href="designdetails.html" />
+    <link rel="prev" title="RESTful web service API" href="restful.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,10 +37,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.assignmentgroup.html" title="devilry.utils.assignmentgroup"
+          <a href="designdetails.html" title="Design details"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+          <a href="restful.html" title="RESTful web service API"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -51,16 +51,33 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="design-details">
-<span id="designdetails"></span><h1>Design details<a class="headerlink" href="#design-details" title="Permalink to this headline">¶</a></h1>
-<div class="admonition-todo admonition " id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Write design details</p>
-</div>
-<div class="figure">
-<img alt="_images/uml-overview.png" src="_images/uml-overview.png" />
-<p class="caption">Overview of the core classes in Devilry.</p>
-</div>
+  <div class="section" id="devilry-apps-extjshelpers-extjs-helpers">
+<span id="extjshelpers"></span><h1><a class="reference internal" href="#module-devilry.apps.extjshelpers" title="devilry.apps.extjshelpers"><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.extjshelpers</span></tt></a> &#8212; ExtJS helpers<a class="headerlink" href="#devilry-apps-extjshelpers-extjs-helpers" title="Permalink to this headline">¶</a></h1>
+<p><strong>TODO:</strong> Tutorial and more docs.</p>
+<span class="target" id="module-devilry.apps.extjshelpers"></span><dl class="function">
+<dt id="devilry.apps.extjshelpers.extjs_restful_modelapi">
+<tt class="descclassname">devilry.apps.extjshelpers.</tt><tt class="descname">extjs_restful_modelapi</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#devilry.apps.extjshelpers.extjs_restful_modelapi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for, and adds defaults for the extjs specific inner meta class, ExtjsModelMeta.</p>
+<p>ExtjsModelMeta can have the following attributes:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>combobox_displayfield</dt>
+<dd>When this object is used in a combobox (search, foreign-key, ...),
+the combobox need a field, <tt class="docutils literal"><span class="pre">displayField</span></tt>, to show after the an item has been
+selected (when not showing a dropdown). This attribute species
+a field name from the result_fieldgroups to use as <tt class="docutils literal"><span class="pre">displayField</span></tt>
+for comboboxes.</dd>
+<dt>combobox_fieldgroups</dt>
+<dd>Species the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt> to use when querying for data in a
+combobox (see combobox_displayfield for more details on comboboxes).</dd>
+<dt>combobox_tpl</dt>
+<dd>Species the <tt class="docutils literal"><span class="pre">Ext.String.format</span></tt> template to use for each item in
+the combobox dropdown (see combobox_displayfield for more details
+on comboboxes).</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
 </div>
 
 
@@ -70,14 +87,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="extjshelpers.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">devilry.apps.extjshelpers</span></tt> &#8212; ExtJS helpers</a></p>
+  <p class="topless"><a href="restful.html"
+                        title="previous chapter">RESTful web service API</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="utils.assignmentgroup.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">devilry.utils.assignmentgroup</span></tt></a></p>
+  <p class="topless"><a href="designdetails.html"
+                        title="next chapter">Design details</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/designdetails.txt"
+    <li><a href="_sources/extjshelpers.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -107,10 +124,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.assignmentgroup.html" title="devilry.utils.assignmentgroup"
+          <a href="designdetails.html" title="Design details"
              >next</a> |</li>
         <li class="right" >
-          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+          <a href="restful.html" title="RESTful web service API"
              >previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>

@@ -53,7 +53,6 @@
             
   <div class="section" id="simplified-api">
 <span id="simplified"></span><h1>Simplified API<a class="headerlink" href="#simplified-api" title="Permalink to this headline">¶</a></h1>
-<p><em>The simplified API is under development.</em></p>
 <p>This API was first introduced in this <a class="reference external" href="https://github.com/devilry/devilry-django/issues/90">github issue</a></p>
 <p>The simplified API is a simple task oriented API which simplifies the most
 common needs. It is a API which lends itself naturally to be exposed
@@ -330,6 +329,31 @@ fields in any of the <tt class="docutils literal"><span class="pre">fieldgroups<
 
 </dd></dl>
 
+<div class="section" id="module-devilry.simplified.utils">
+<span id="utils"></span><h3>utils<a class="headerlink" href="#module-devilry.simplified.utils" title="Permalink to this headline">¶</a></h3>
+<p>General purpose utilities used by the simplified API. If any functions here
+proves useful outside this module, they should me moved to <tt class="docutils literal"><span class="pre">devilry.utils</span></tt>.</p>
+<dl class="function">
+<dt id="devilry.simplified.utils.modelinstance_to_dict">
+<tt class="descclassname">devilry.simplified.utils.</tt><tt class="descname">modelinstance_to_dict</tt><big>(</big><em>instance</em>, <em>fields</em><big>)</big><a class="reference internal" href="_modules/devilry/simplified/utils.html#modelinstance_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.simplified.utils.modelinstance_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given django model instance into a dict where
+each field in <tt class="docutils literal"><span class="pre">fields</span></tt> is a key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>instance</strong> &#8211; A django model instance.</li>
+<li><strong>fields</strong> &#8211; List of field names. Can also be foreign keys, such as
+<tt class="docutils literal"><span class="pre">parentnode__parentnode__short_name</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 </div>
 
@@ -345,7 +369,10 @@ fields in any of the <tt class="docutils literal"><span class="pre">fieldgroups<
 <li><a class="reference internal" href="#what-is-it">What is it?</a></li>
 <li><a class="reference internal" href="#what-is-it-not">What is it not?</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#public-api">Public API</a></li>
+<li><a class="reference internal" href="#public-api">Public API</a><ul>
+<li><a class="reference internal" href="#module-devilry.simplified.utils">utils</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
