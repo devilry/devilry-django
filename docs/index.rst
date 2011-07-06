@@ -8,6 +8,7 @@
 
     simplified
     restful
+    extjshelpers
 
     designdetails
 
@@ -51,6 +52,10 @@ RESTful API
 * :ref:`restful`
 
 
+Integration with the ExtJS javascript library
+######################################################################
+
+* :ref:`extjshelpers`
 
 
 Indices and tables
