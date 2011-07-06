@@ -79,7 +79,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     #TODO delete this?
     @classmethod
     def q_is_candidate(cls, user_obj):
-        return Q(assignmentgroups__candidates__student=user_obj)
+        return Q(assignments__assignmentgroups__candidates__student=user_obj)
 
     #TODO delete this?
     #def student_sum_scaled_points(self, user):
@@ -162,11 +162,11 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
         super(Period, self).clean(*args, **kwargs)
 
     #TODO delete this?
-    #def is_active(self):
-        #""" Returns true if the period is active
-        #"""
-        #now = datetime.now()
-        #return self.start_time < now and self.end_time > now
+    def is_active(self):
+        """ Returns true if the period is active
+        """
+        now = datetime.now()
+        return self.start_time < now and self.end_time > now
 
     @classmethod
     def q_is_examiner(cls, user_obj):
