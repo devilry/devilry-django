@@ -59,6 +59,9 @@
         xtype: 'button',
         text: '{% trans "Delete" %}',
         flex: 0,
+        {% if not RestfulSimplifiedPeriod.supports_delete %}
+            hidden: true,
+        {% endif %}
         handler: function() {
             // TODO: Confirm
             Ext.getCmp('editform').submit({
@@ -90,52 +93,13 @@
 
 
     Ext.onReady(function() {
-        var layout = Ext.create('Ext.container.Container', {
-            renderTo: 'maincarddeck-wrapper',
-            //height: 400,
-            layout: 'card',
+        Ext.create('devilry.extjshelpers.RestfulSimplifiedLayout', {
             id: 'maincarddeck',
-            items: [{
-                xtype: 'panel',
-                id: 'overview',
-                html: '<h2>Overview</h2><p><strong>Search</strong>, <em>button</em> to create, .....</p>'
-            }, {
-                xtype: 'panel',
-                id: 'editcard',
-                items: [editform, {
-                    xtype: 'container',
-                    id: 'editform-buttoncarddeck',
-                    layout: 'card',
-                    items: [{
-                        xtype: 'container',
-                        id: 'editform-readonlybuttons',
-                        height: 40,
-                        layout: {
-                            type: 'hbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
-                        items: [
-                            {% if RestfulSimplifiedPeriod.supports_delete %} deletebutton, {% endif %}
-                            { xtype: 'tbspacer', flex: 1 }, 
-                            editbutton
-                        ]
-                    }, {
-                        xtype: 'container',
-                        id: 'editform-editbuttons',
-                        height: 40,
-                        layout: {
-                            type: 'hbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
-                        items: [{
-                            xtype: 'tbspacer',
-                            flex: 1
-                        }, savebutton ]
-                    }]
-                }]
-            }]
+            renderTo: 'maincarddeck-wrapper',
+            editform: editform,
+            deletebutton: deletebutton,
+            editbutton: editbutton,
+            savebutton: savebutton
         });
 
         {% if initial_mode == "update" or initial_mode == "create" %}
