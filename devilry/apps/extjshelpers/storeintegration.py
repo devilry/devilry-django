@@ -1,10 +1,10 @@
-from modelintegration import get_extjs_modelname, restfulmodelcls_to_extjsmodel
+from modelintegration import get_extjs_modelname, restfulcls_to_extjsmodel
 
-def restfulmodelcls_to_extjsstore(restfulmodelcls, integrateModel=False, modelkwargs={}):
+def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={}):
     if integrateModel:
-        model = restfulmodelcls_to_extjsmodel(restfulmodelcls)
+        model = restfulcls_to_extjsmodel(restfulcls)
     else:
-        model = "'{modelname}'".format(modelname=get_extjs_modelname(restfulmodelcls, **modelkwargs))
+        model = "'{modelname}'".format(modelname=get_extjs_modelname(restfulcls, **modelkwargs))
     return """Ext.create('Ext.data.Store', {{
             model: {model},
             remoteFilter: true,

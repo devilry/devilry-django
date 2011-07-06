@@ -34,19 +34,19 @@ def _iter_fields(simplifiedcls, result_fieldgroups):
 
 
 
-def get_extjs_modelname(restfulmodelcls):
-    simplified = restfulmodelcls._meta.simplified
+def get_extjs_modelname(restfulcls):
+    simplified = restfulcls._meta.simplified
     return '{module}.{name}'.format(module=simplified.__module__, name=simplified.__name__)
 
 
-def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
+def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
     modelfields = []
-    for fieldname, field in _iter_fields(restfulmodelcls._meta.simplified,
+    for fieldname, field in _iter_fields(restfulcls._meta.simplified,
                                          result_fieldgroups):
         exttype = field_to_extjstype(field, fieldname)
         exttype['name'] = fieldname
         modelfields.append(exttype)
-    #for fieldname in restfulmodelcls._meta.urlmap:
+    #for fieldname in restfulcls._meta.urlmap:
         #modelfields.append(dict(name=fieldname, type='string'))
 
     return """Ext.define('{modelname}', {{
@@ -68,8 +68,8 @@ def restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups=[]):
                     type: 'json'
                 }}
             }}
-        }})""".format(modelname = get_extjs_modelname(restfulmodelcls),
+        }})""".format(modelname = get_extjs_modelname(restfulcls),
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
-                      resturl = restfulmodelcls.get_rest_url(),
+                      resturl = restfulcls.get_rest_url(),
                       result_fieldgroups=','.join(result_fieldgroups))

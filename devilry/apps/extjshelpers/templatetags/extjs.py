@@ -1,33 +1,33 @@
 from django import template
 from django.utils.safestring import mark_safe
-from ..modelintegration import (restfulmodelcls_to_extjsmodel, get_extjs_modelname)
-from ..storeintegration import restfulmodelcls_to_extjsstore
-from ..formintegration import restfulmodelcls_to_extjsformitems
+from ..modelintegration import (restfulcls_to_extjsmodel, get_extjs_modelname)
+from ..storeintegration import restfulcls_to_extjsstore
+from ..formintegration import restfulcls_to_extjsformitems
 
 register = template.Library()
 
 
 @register.filter
-def extjs_model(restfulmodelcls, result_fieldgroups=None):
+def extjs_model(restfulcls, result_fieldgroups=None):
     if result_fieldgroups:
         result_fieldgroups = result_fieldgroups.split(',')
     else:
         result_fieldgroups = []
-    js = restfulmodelcls_to_extjsmodel(restfulmodelcls, result_fieldgroups)
+    js = restfulcls_to_extjsmodel(restfulcls, result_fieldgroups)
     return mark_safe(js)
 
 
 @register.filter
-def extjs_store(restfulmodelcls):
-    js = restfulmodelcls_to_extjsstore(restfulmodelcls)
+def extjs_store(restfulcls):
+    js = restfulcls_to_extjsstore(restfulcls)
     return mark_safe(js)
 
 @register.filter
-def extjs_form_items(restfulmodelcls):
-    js = restfulmodelcls_to_extjsformitems(restfulmodelcls)
+def extjs_form_items(restfulcls):
+    js = restfulcls_to_extjsformitems(restfulcls)
     return mark_safe(js)
 
 @register.filter
-def get_extjsname_from_class(restfulmodelcls):
-    js = get_extjs_modelname(restfulmodelcls)
+def get_extjsname_from_class(restfulcls):
+    js = get_extjs_modelname(restfulcls)
     return mark_safe("'{0}'".format(js))

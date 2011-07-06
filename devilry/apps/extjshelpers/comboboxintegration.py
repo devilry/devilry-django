@@ -1,8 +1,8 @@
-from storeintegration import restfulmodelcls_to_extjsstore
+from storeintegration import restfulcls_to_extjsstore
 
 
 def restfulcls_to_extjscombobox_xtype(restfulcls):
-    store = restfulmodelcls_to_extjsstore(restfulcls,
+    store = restfulcls_to_extjsstore(restfulcls,
                                           integrateModel=True,
                                           modelkwargs=dict(result_fieldgroups=restfulcls._exjsmodelmeta.combobox_fieldgroups))
     listconfig = """listConfig: {{
