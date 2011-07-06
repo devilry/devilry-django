@@ -28,18 +28,73 @@
 
     function loadUpdateMode(id) {
         loadRecordFromStore({{ record_id }});
+        Ext.getCmp('maincarddeck').getLayout().setActiveItem('editcard');
     }
 
-    //function enableEditform() {
-        //var form = Ext.getCmp('editform');
-        //form.enable();
-    //}
+
+
+    var editform = {
+        xtype: 'form',
+        id: 'editform',
+        layout: 'fit',
+        disabled: true,
+        model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
+
+        defaultType: 'textfield',
+        items: {{ RestfulSimplifiedPeriod|extjs_form_items}}
+    };
+
+    var editbutton = {
+        xtype: 'button',
+        flex: 0,
+        text: '{% trans "Edit" %}',
+        //flex: 1,
+        handler: function() {
+            Ext.getCmp('editform').enable();
+            Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-editbuttons');
+        }
+    };
+
+    var deletebutton = {
+        xtype: 'button',
+        text: '{% trans "Delete" %}',
+        flex: 0,
+        handler: function() {
+            // TODO: Confirm
+            Ext.getCmp('editform').submit({
+                submitEmptyText: true,
+                method: 'DELETE',
+                waitMsg: '{% trans "Deleting node..."%}',
+                success: function() {
+                }
+            });
+        }
+    };
+
+    var savebutton = {
+        xtype: 'button',
+        text: '{% trans "Save" %}',
+        scale: 'large',
+        handler: function() {
+            Ext.getCmp('editform').getForm().submit({
+                submitEmptyText: true,
+                waitMsg: '{% trans "Saving node..."%}',
+                success: function() {
+                    Ext.getCmp('editform').disable();
+                    Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-readonlybuttons');
+                }
+            });
+        }
+    };
+
+
 
     Ext.onReady(function() {
         var layout = Ext.create('Ext.container.Container', {
-            renderTo: 'layout',
+            renderTo: 'maincarddeck-wrapper',
             //height: 400,
             layout: 'card',
+            id: 'maincarddeck',
             items: [{
                 xtype: 'panel',
                 id: 'overview',
@@ -47,16 +102,7 @@
             }, {
                 xtype: 'panel',
                 id: 'editcard',
-                items: [{
-                    xtype: 'form',
-                    id: 'editform',
-                    layout: 'fit',
-                    disabled: true,
-                    model: {{ RestfulSimplifiedPeriod|get_extjsname_from_class}},
-
-                    defaultType: 'textfield',
-                    items: {{ RestfulSimplifiedPeriod|extjs_form_items}}
-                }, {
+                items: [editform, {
                     xtype: 'container',
                     id: 'editform-buttoncarddeck',
                     layout: 'card',
@@ -70,41 +116,13 @@
                             align: 'stretch'
                         },
                         items: [
-                            {% if RestfulSimplifiedPeriod.supports_delete %}
-                            {
-                                xtype: 'button',
-                                text: '{% trans "Delete" %}',
-                                flex: 0,
-                                handler: function() {
-                                    // TODO: Confirm
-                                    Ext.getCmp('editform').submit({
-                                        submitEmptyText: true,
-                                        method: 'DELETE',
-                                        waitMsg: '{% trans "Deleting node..."%}',
-                                        success: function() {
-                                        }
-                                    });
-                                }
-                            },
-                            {% endif %}
-                            {
-                                xtype: 'tbspacer',
-                                flex: 1
-                            } ,{
-                                xtype: 'button',
-                                flex: 0,
-                                text: '{% trans "Edit" %}',
-                                //flex: 1,
-                                handler: function() {
-                                    console.log('edit');
-                                    Ext.getCmp('editform').enable();
-                                    Ext.getCmp('editform-buttoncarddeck').getLayout().setActiveItem('editform-savebutton');
-                                }
-                            },
+                            {% if RestfulSimplifiedPeriod.supports_delete %} deletebutton, {% endif %}
+                            { xtype: 'tbspacer', flex: 1 }, 
+                            editbutton
                         ]
                     }, {
                         xtype: 'container',
-                        id: 'editform-savebutton',
+                        id: 'editform-editbuttons',
                         height: 40,
                         layout: {
                             type: 'hbox',
@@ -114,19 +132,7 @@
                         items: [{
                             xtype: 'tbspacer',
                             flex: 1
-                        } ,{
-                            xtype: 'button',
-                            text: '{% trans "Save" %}',
-                            scale: 'large',
-                            handler: function() {
-                                Ext.getCmp('editform').getForm().submit({
-                                    submitEmptyText: true,
-                                    waitMsg: '{% trans "Saving node..."%}',
-                                    success: function() {
-                                    }
-                                });
-                            }
-                        }]
+                        }, savebutton ]
                     }]
                 }]
             }]
@@ -136,10 +142,8 @@
             {% if initial_mode == "update" %}
                 loadUpdateMode();
             {% endif %}
-
-            layout.getLayout().setActiveItem('editcard');
         {% else %}
-            layout.getLayout().setActiveItem('overview');
+            Ext.getCmp('maincarddeck').getLayout().setActiveItem('overview');
         {% endif %}
 
     });
@@ -148,5 +152,5 @@
 
 
 {% block main %}
-<div id='layout'></div>
+<div id='maincarddeck-wrapper'></div>
 {% endblock %}
