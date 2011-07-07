@@ -168,7 +168,7 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
-            self.assertEquals(s in expected_res)
+            self.assertTrue(s in expected_res)
 
     def test_read(self):
 
