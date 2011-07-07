@@ -39,7 +39,7 @@ class SimplifiedNode(CanSaveAuthMixin):
 class SimplifiedSubject(CanSaveAuthMixin):
     class Meta:
         model = models.Subject
-        resultfields = FieldSpec('id', 'short_name', 'long_name')
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
         searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 

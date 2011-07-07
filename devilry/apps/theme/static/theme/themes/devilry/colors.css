@@ -6,8 +6,14 @@ body {
 body>header {background-color: #000; color: #fff;}
 body>header a#projectlink {color: #a00;}
 body>header>nav {background-color: #111;}
-body>header>nav a {color: #08C;}
-body>header>nav a:hover {color: #05a;}
+body>header>nav a {
+    color: #08C;
+    border-bottom: 5px solid transparent;
+}
+body>header>nav a:hover {
+    color: #05a;
+    border-bottom: 5px solid #fff;
+}
 body>header>nav a:visited {color: #08C;}
 
 body>#main {background-color: #f8f8f8;}

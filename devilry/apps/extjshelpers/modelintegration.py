@@ -2,7 +2,7 @@ import json
 from django.db.models import fields
 
 
-def field_to_extjstype(field, fieldname):
+def field_to_extjstype(field):
     """ Convert django field to extjs  field type. """
     if isinstance(field, fields.IntegerField):
         return dict(type='int')
@@ -28,7 +28,7 @@ def _iter_fields(simplifiedcls, result_fieldgroups):
     for fieldname in meta.resultfields.aslist(result_fieldgroups):
         if "__" in fieldname:
             path = fieldname.split('__')
-            yield path[0], _recurse_get_fkfield(meta.model, path)
+            yield fieldname, _recurse_get_fkfield(meta.model, path)
         else:
             yield fieldname, meta.model._meta.get_field(fieldname)
 
@@ -43,7 +43,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
     modelfields = []
     for fieldname, field in _iter_fields(restfulcls._meta.simplified,
                                          result_fieldgroups):
-        exttype = field_to_extjstype(field, fieldname)
+        exttype = field_to_extjstype(field)
         exttype['name'] = fieldname
         modelfields.append(exttype)
     #for fieldname in restfulcls._meta.urlmap:
