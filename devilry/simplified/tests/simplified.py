@@ -1,0 +1,64 @@
+from django.test import TestCase
+from devilry.apps.core import models, testhelper
+from ..utils import modelinstance_to_dict
+from devilry.simplified import FieldSpec
+
+
+class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
+
+    def setUp(self):
+        self.add(nodes='uni:admin(admin)',
+                 subjects=['inf101', 'inf102'],
+                 periods=['fall11', 'spring11'],
+                 assignments=['a1', 'a2'],
+                 assignmentgroups=['g1:candidate(stud1, stud2):examiner(exam1)',
+                                   'g2:candidate(stud3):examiner(exam2)'],
+                 deadlines=['d1:ends(10)'])
+
+    def test_model_to_dict_assignment(self):
+        _subject_long     = 'parentnode__parentnode__long_name'
+        _subject_short    = 'parentnode__parentnode__short_name'
+        _subject_id       = 'parentnode__parentnode__id'
+
+        _period_long      = 'parentnode__long_name'
+        _period_short     = 'parentnode__short_name'
+        _period_id        = 'parentnode__id'
+
+        _assignment_long  = 'long_name'
+        _assignment_short = 'short_name'
+        _assignment_id    = 'id'
+
+        resultfields = FieldSpec(_assignment_long, _assignment_short, _assignment_id,
+                                 period=[_period_short, _period_long, _period_id],
+                                 subject=[_subject_long, _subject_short, _subject_id])
+
+        # convert an assignment, a1, to a dict
+        modeldict = modelinstance_to_dict(self.inf101_fall11_a1, resultfields.aslist(['period', 'subject']))
+
+        # assert that there are the expected number of keys
+        self.assertEquals(len(modeldict.keys()), 9)
+        # and assert that all the fields are as expected
+        # subject fields
+        self.assertEquals(modeldict[_subject_long], self.inf101.long_name)
+        self.assertEquals(modeldict[_subject_short], self.inf101.short_name)
+        self.assertEquals(modeldict[_subject_id], self.inf101.id)
+
+        # period fields
+        self.assertEquals(modeldict[_period_long], self.inf101_fall11.long_name)
+        self.assertEquals(modeldict[_period_short], self.inf101_fall11.short_name)
+        self.assertEquals(modeldict[_period_id], self.inf101_fall11.id)
+
+        # assignment fields
+        self.assertEquals(modeldict[_assignment_long], self.inf101_fall11_a1.long_name)
+        self.assertEquals(modeldict[_assignment_short], self.inf101_fall11_a1.short_name)
+        self.assertEquals(modeldict[_assignment_id], self.inf101_fall11_a1.id)
+
+        # convert another assignment, a2, this time without the extra
+        # fields
+        modeldict2 = modelinstance_to_dict(self.inf101_fall11_a2, resultfields.aslist())
+        self.assertEquals(len(modeldict2.keys()), 3)
+
+        # and that the fields are as expected
+        self.assertEquals(modeldict2[_assignment_long], self.inf101_fall11_a2.long_name)
+        self.assertEquals(modeldict2[_assignment_short], self.inf101_fall11_a2.short_name)
+        self.assertEquals(modeldict2[_assignment_id], self.inf101_fall11_a2.id)

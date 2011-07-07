@@ -15,7 +15,7 @@ class PublishedWhereIsCandidateMixin(object):
 
 
 @simplified_modelapi
-class SimplifiedFeedback(PublishedWhereIsCandidateMixin):
+class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -71,7 +71,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
         _assignment_id    = 'assignment_group__parentnode__id'
 
         model = models.Delivery
-        resultfields = FieldSpec('id', 'time_of_delivery', 'number', 'successful',
+        resultfields = FieldSpec('id', 'time_of_delivery', 'number',
                                  period=[_period_short, _period_long, _period_id],
                                  subject=[_subject_long, _subject_short, _subject_id],
                                  assignment=[_assignment_short, _assignment_long, _assignment_id])
@@ -82,9 +82,41 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
             _period_long,
             _assignment_long,
             _assignment_short,
-            'successful'
             )
         methods = ['search', 'read', 'delete']
+
+
+@simplified_modelapi
+class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
+
+    class Meta:
+
+        _subject_long     = 'parentnode__parentnode__parentnode__long_name'
+        _subject_short    = 'parentnode__parentnode__parentnode__short_name'
+        _subject_id       = 'parentnode__parentnode__parentnode__id'
+
+        _period_long      = 'parentnode__parentnode__long_name'
+        _period_short     = 'parentnode__parentnode__short_name'
+        _period_id        = 'parentnode__parentnode__id'
+
+        _assignment_long  = 'parentnode__long_name'
+        _assignment_short = 'parentnode__short_name'
+        _assignment_id    = 'parentnode__id'
+
+        model = models.AssignmentGroup
+        resultfields = FieldSpec(_assignment_long, _assignment_short, _assignment_id,
+                                 period=[_period_short, _period_long, _period_id],
+                                 subject=[_subject_long, _subject_short, _subject_id],
+                                 assignment=[_assignment_short, _assignment_long, _assignment_id])
+        searchfields = FieldSpec(
+            _subject_short,
+            _subject_long,
+            _period_short,
+            _period_long,
+            _assignment_long,
+            _assignment_short,
+            )
+        methods = ['search', 'read', 'create']
 
 
 @simplified_modelapi
@@ -128,9 +160,10 @@ class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
         _subject_id       = 'parentnode__id'
 
         model = models.Period
-        resultfields = FieldSpec('id', 'format', 'text',
+        resultfields = FieldSpec('long_name', 'short_name', 'id',
                                  subject=[_subject_long, _subject_short, _subject_id])
-        searchfields = FieldSpec(_subject_long, _subject_short)
+        searchfields = FieldSpec('long_name', 'short_name', 'id',
+                                 _subject_long, _subject_short)
         methods = ['search', 'read']
 
 
@@ -139,6 +172,6 @@ class SimplifiedSubject(PublishedWhereIsCandidateMixin):
 
     class Meta:
         model = models.Subject
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'periods')
-        searchfields = FieldSpec('short_name', 'long_name', 'periods')
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
+        searchfields = FieldSpec('short_name', 'long_name')
         methods = ['search', 'read']
