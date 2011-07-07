@@ -15,7 +15,7 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     Each delivery can have zero or more feedbacks. Each StaticFeedback object stores
     static data that an examiner has published on a delivery. StaticFeedback is
     created and edited in a *grade+feedback editor* in a *grade plugin*, and
-    when an examiner chose to publish feedback, a static copy of the data
+    when an examiner choose to publish feedback, a static copy of the data
     he/she created in the *grade+feedback editor* is stored in a StaticFeedback.
 
     Feedbacks are only visible to students when
@@ -70,34 +70,31 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         verbose_name_plural = _('Static feedbacks')
         ordering = ['-save_timestamp']
 
-    #TODO delete this?
-    #@classmethod
-    #def q_is_candidate(cls, user_obj):
-    #    """
-    #    Returns a django.models.Q object matching Deliveries where
-    #    the given student is candidate.
-    #    """
-    #    return Q(delivery__assignment_group__candidates__student=user_obj)
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        """
+        Returns a django.models.Q object matching Deliveries where
+        the given student is candidate.
+        """
+        return Q(delivery__assignment_group__candidates__student=user_obj)
 
-    #TODO delete this?
-    #@classmethod
-    #def q_published(cls, old=True, active=True):
-        #now = datetime.now()
-        #q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
-        #if not active:
-            #q &= ~Q(deliver__assignment_group__parentnode__parentnode__end_time__gte = now)
-        #if not old:
-            #q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
-        #return q
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__gte = now)
+        if not old:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
+        return q
 
-    #TODO delete this?
-    #@classmethod
-    #def q_is_examiner(cls, user_obj):
-    #    """
-    #    Returns a django.models.Q object matching Feedbacks where
-    #    the given student is candidate.
-    #    """
-    #    return Q(delivery__assignment_group__examiners=user_obj)
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        """
+        Returns a django.models.Q object matching Feedbacks where
+        the given student is candidate.
+        """
+        return Q(delivery__assignment_group__examiners=user_obj)
 
     def _publish_if_allowed(self):
         assignment = self.delivery.assignment_group.parentnode
@@ -124,6 +121,12 @@ def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']
     update_deadline_and_assignmentgroup_status(feedback.delivery)
 
-from django.db.models.signals import post_save
+def feedback_grade_delete_handler(sender, **kwargs):
+    feedback = kwargs['instance']
+    if feedback.grade != None:
+        feedback.grade.delete()
+
+from django.db.models.signals import pre_delete, post_save
+pre_delete.connect(feedback_grade_delete_handler, sender=StaticFeedback)
 post_save.connect(feedback_update_assignmentgroup_status_handler,
                   sender=StaticFeedback)

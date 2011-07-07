@@ -4,14 +4,20 @@ from django.db import IntegrityError
 from datetime import datetime, timedelta
 
 from ..models import Node, Subject
-from ..testhelpers import create_from_path
+from ..testhelper import TestHelper
 
-class TestSubject(TestCase):
-    fixtures = ['core/deprecated_users.json', 'core/core.json']
+class TestSubject(TestCase, TestHelper):
 
+    def setUp(self):
+        self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
+                 subjects=["inf1060:admin(teacher1)", "inf1100"],
+                 periods=["autumn10", "spring9"],
+                 assignments=["assignment1", "assignment2"],
+                 assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)"])
+        
     def test_unique(self):
         s = Subject(parentnode=Node.objects.get(short_name='ifi'),
-                short_name='inf1060', long_name='INF1060')
+                    short_name='inf1060', long_name='INF1060')
         self.assertRaises(IntegrityError, s.save)
 
     def test_unique2(self):
@@ -26,51 +32,47 @@ class TestSubject(TestCase):
         self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
     def test_get_path(self):
-        inf1100 = Subject.objects.get(id=1)
-        self.assertEquals(inf1100.get_path(), 'inf1100')
+        self.assertEquals(self.inf1100.get_path(), 'inf1100')
 
     def test_get_full_path(self):
-        inf1100 = Subject.objects.get(id=1)
-        self.assertEquals(inf1100.get_full_path(), 'uio.ifi.inf1100')
+        self.assertEquals(self.inf1100.get_full_path(), 'uio.ifi.inf1100')
 
     def test_get_by_path(self):
-        self.assertEquals(Subject.get_by_path('inf1100').short_name,
-                'inf1100')
-        self.assertRaises(Subject.DoesNotExist, Subject.get_by_path,
-                'doesnotexist')
+        self.assertEquals(Subject.get_by_path('inf1100').short_name, 'inf1100')
+        self.assertRaises(Subject.DoesNotExist, Subject.get_by_path, 'doesnotexist')
 
     def test_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         q = Subject.where_is_examiner(examiner1)
-        self.assertEquals(q.count(), 1)
-        self.assertEquals(q[0].short_name, 'inf1100')
-
-        ag = create_from_path(
-                'ifi:inf1010.spring10.oblig1.student1')
-        ag.examiners.add(examiner1)
-        ag.save()
-        q = Subject.where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 2)
-        self.assertEquals(q[0].short_name, 'inf1010')
+        self.assertEquals(q[0].short_name, 'inf1060')
         self.assertEquals(q[1].short_name, 'inf1100')
+
+        self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group1')
+        self.inf1010_spring10_oblig1_group1.examiners.add(examiner1)
+        self.inf1010_spring10_oblig1.save()
+        q = Subject.where_is_examiner(examiner1).order_by('short_name')
+        self.assertEquals(q.count(), 3)
+        self.assertEquals(q[0].short_name, 'inf1010')
+        self.assertEquals(q[1].short_name, 'inf1060')
 
     def test_published_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
-        q = Subject.published_where_is_examiner(examiner1)
-        self.assertEquals(q.count(), 1)
-        self.assertEquals(q[0].short_name, 'inf1100')
-
-        ag = create_from_path(
-                'ifi:inf1010.spring10.oblig1.student1')
-        ag.examiners.add(examiner1)
-        ag.save()
         q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 2)
-        self.assertEquals(q[0].short_name, 'inf1010')
+        self.assertEquals(q[0].short_name, 'inf1060')
         self.assertEquals(q[1].short_name, 'inf1100')
 
-        assignment1010 = ag.parentnode
+        self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group1')
+        self.inf1010_spring10_oblig1_group1.examiners.add(examiner1)
+        self.inf1010_spring10_oblig1_group1.save()
+        q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
+        self.assertEquals(q.count(), 3)
+        self.assertEquals(q[0].short_name, 'inf1010')
+        self.assertEquals(q[1].short_name, 'inf1060')
+        
+        assignment1010 = self.inf1010_spring10_oblig1_group1.parentnode
         assignment1010.publishing_time = datetime.now() + timedelta(10)
         assignment1010.save()
         q = Subject.published_where_is_examiner(examiner1)
-        self.assertEquals(q.count(), 1)
+        self.assertEquals(q.count(), 2)

@@ -83,17 +83,26 @@ class Node(models.Model, BaseNode):
         if self.parentnode == self:
             raise ValidationError(_('A node can not be it\'s own parent.'))
 
-        if self.short_name and self.parentnode == None:
-            if self.id == None:
-                if Node.objects.filter(short_name=self.short_name).count() > 0:
-                    raise ValidationError(_('A node can not have the same '\
-                        'short name as another within the same parent.'))
+        if not self.short_name:
+            raise ValidationError(_('Short Name is a required attribute.'))
 
-
+        greater_than_count = 1
+        if self.id == None:
+            greater_than_count = 0
+            
+        if self.parentnode:
+            if Node.objects.filter(short_name=self.short_name).\
+                   filter(parentnode__pk=self.parentnode.id).count() > greater_than_count:
+                raise ValidationError(_('A node can not have the same '\
+                                        'short name as another within the same parent.'))
+        else:
+            if Node.objects.filter(short_name=self.short_name).\
+                   filter(parentnode=None).count() > greater_than_count:
+                raise ValidationError(_('A root node can not have the same '\
+                                        'short name as another root node.'))
         for node in self.iter_childnodes():
             if node == self.parentnode:
                 raise ValidationError(_('A node can not be the child of one of it\'s own children.'))
-
         super(Node, self).clean(*args, **kwargs)
 
     @classmethod
