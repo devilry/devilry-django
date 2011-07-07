@@ -4,7 +4,8 @@ from fieldspec import FieldSpec
 import create as _create
 
 
-__all__ = ('PermissionDenied', 'QryResultWrapper', 'FieldSpec', 'simplified_modelapi')
+__all__ = ('PermissionDenied', 'QryResultWrapper', 'FieldSpec',
+           'simplified_modelapi', 'SimplifiedModelApi')
 
 
 def _require_metaattr(cls, attr):
@@ -16,6 +17,35 @@ def _require_attr(cls, attr):
     if not hasattr(cls, attr):
         raise ValueError('%s.%s is missing the required "%s" attribute.' % (
             cls.__module__, cls.__name__, attr))
+
+
+
+class SimplifiedModelApi(object):
+    """
+    Base class for all simplified APIs.
+    """
+    @classmethod
+    def create_search_qryresultwrapper(cls, user,
+                                       result_fieldgroups, search_fieldgroups,
+                                       **create_searchqryset_kwargs):
+        """
+        A more powerful alternative to :meth:`create_searchqryset`. By
+        default, this method runs :meth:`create_searchqryset`. Override
+        this to control the searchfields and resultfields forwarded
+        to :class:`QryResultWrapper`.
+
+        :return: A :class:`QryResultWrapper`.
+        """
+        qryset = cls.create_searchqryset(user, **create_searchqryset_kwargs)
+        resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
+        searchfields = cls._meta.searchfields.aslist(search_fieldgroups)
+        result = QryResultWrapper(resultfields, searchfields, qryset)
+        return result
+
+    @classmethod
+    def create_searchqryset(cls, user, **filters):
+        """
+        """
 
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
@@ -55,6 +85,8 @@ def simplified_modelapi(cls):
 
         _meta
             Alias for the Meta class (above).
+        ordering
+            A shortcut for ``cls._meta.model._meta.ordering``.
         supports_create
             Boolean variable: is ``'create'`` in ``_meta.methods``.
         supports_read
