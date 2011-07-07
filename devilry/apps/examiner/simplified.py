@@ -38,10 +38,14 @@ class SimplifiedAssignment(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Assignment
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
-                                 period=['parentnode__short_name', 'parentnode__long_name',
+                                 period=['parentnode__short_name',
+                                         'parentnode__long_name',
+                                         'parentnode__start_time',
+                                         'parentnode__end_time',
                                          'parentnode__parentnode__id'],
                                  subject=['parentnode__parentnode__short_name',
-                                          'parentnode__parentnode__long_name'])
+                                          'parentnode__parentnode__long_name',
+                                          'parentnode__parentnode__id'])
         searchfields = FieldSpec('short_name', 'long_name',
                                  'parentnode__short_name',
                                  'parentnode__parentnode__short_name')
@@ -65,11 +69,16 @@ class SimplifiedAssignment(PublishedWhereIsExaminerMixin):
 class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.AssignmentGroup
-        resultfields = FieldSpec('parentnode__anonymous', 'id', 'name', 'candidates__student__username', 'candidates__id')  # TODO: add subject, period, assignment, candidates
+        resultfields = FieldSpec('id',
+                                 'name',
+                                 'candidates__identifier',
+                                 'parentnode__short_name',
+                                 'parentnode__parentnode__short_name',
+                                 'parentnode__parentnode__parentnode__short_name',
+                                 )  # TODO: add subject, period, assignment, candidates
         searchfields = FieldSpec('name', 'parentnode__short_name',
                                  'parentnode__parentnode__parentnode__short_name',
-                                 'candidates__student__username',
-                                 'candidates__candidate_id')  # candidates__student__username', 'parentnode__short_name')
+                                 'candidates__identifier')  # candidates__student__username', 'parentnode__short_name')
         methods = ['search', 'read']
 
     # @classmethod
@@ -87,30 +96,28 @@ class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
     #     result = QryResultWrapper(resultfields, searchfields, qryset)
     #     return result
 
-    @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        qryset = models.AssignmentGroup.published_where_is_examiner(user)
-        fieldgroups = kwargs.pop('result_fieldgroups', None)
-        resultfields = cls._meta.resultfields.aslist(fieldgroups)
-        searchfields = cls._meta.searchfields.aslist(fieldgroups)
+    # @classmethod
+    # def create_searchqryset(cls, user, **kwargs):
+    #     qryset = models.AssignmentGroup.published_where_is_examiner(user)
+    #     fieldgroups = kwargs.pop('result_fieldgroups', None)
+    #     resultfields = cls._meta.resultfields.aslist(fieldgroups)
+    #     searchfields = cls._meta.searchfields.aslist(fieldgroups)
 
-        # for p in qryset.all():
-        #     print p.parentnode.anonymous, p.candidates.all()
+    #     # for p in qryset.all():
+    #     #     print p.parentnode.anonymous, p.candidates.all()
 
-        # if not assignment.anonymous:
-        #     searchfields = list(searchfields)
-        #     searchfields.append('candidates__student__username')
-        resultfields = list(searchfields)
-        resultfields.append('parentnode__anonymous')
-        result = QryResultWrapper(resultfields, searchfields, qryset)
+    #     # if not assignment.anonymous:
+    #     #     searchfields = list(searchfields)
+    #     #     searchfields.append('candidates__student__username')
+    #     result = QryResultWrapper(resultfields, searchfields, qryset)
 
-        for p in result:
-#            print p
-            if p['parentnode__anonymous']:
-                p['candidates__student__username'] = None
-            else:
-                p['candidates__candidate_id'] = None
-        return result
+#         for p in result:
+# #            print p
+#             if p['parentnode__anonymous']:
+#                 p['candidates__student__username'] = None
+#             else:
+#                 p['candidates__candidate_id'] = None
+#        return result
 
 
 @simplified_modelapi
