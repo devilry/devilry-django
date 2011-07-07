@@ -1,5 +1,5 @@
 # from django.test import TestCase
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 # from ....simplified import PermissionDenied
 from ...core import models
@@ -12,8 +12,8 @@ from ....simplified.utils import modelinstance_to_dict
 
 from ...core import testhelper
 from ...core import pluginloader
-from ..simplified import (#SimplifiedDelivery, 
-    #SimplifiedStaticFeedback, 
+from ..simplified import (  # SimplifiedDelivery,
+    # SimplifiedStaticFeedback,
     SimplifiedAssignment,
     SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject)
 
@@ -81,12 +81,19 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
         expected_res = [modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110, SimplifiedSubject.Meta.resultfields.aslist())]
 
-        self.assertEquals(search_res.count(), 2)
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
         # do a search with query inf101
         search_res = SimplifiedSubject.search(self.firstExam, query='inf101')
+        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist())
+
+        self.assertEquals(search_res.count(), 1)
+        self.assertEquals(search_res[0], expected_res)
+
+        # do a search with partial query
+        search_res = SimplifiedSubject.search(self.firstExam, query='inf10')
         expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist())
 
         self.assertEquals(search_res.count(), 1)
@@ -108,6 +115,16 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
         self.add_to_path('uni;inf110.firstSem.a1.g3:candidate(thirdStud)')
         with self.assertRaises(PermissionDenied):
             SimplifiedSubject.read(self.thirdStud, self.inf101.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.read(self.secondExam, self.inf110.id)
+
+        # TODO: Examiner history?
+        # self.add_to_path('uni;inf102.oldSem:begins(-10).a1.g2:candidate(fourthStud):examiner(thirdExam)')
+        # print self.inf102_oldSem.end_time
+
+        # with self.assertRaises(PermissionDenied):
+        #     SimplifiedSubject.read(self.thirdExam, self.inf102.id)
 
 
 class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
@@ -134,7 +151,7 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
         expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras))]
 
-        self.assertEquals(search_res.count(), 2)
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
@@ -147,10 +164,11 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
         # with query and extra fields
         search_res = SimplifiedPeriod.search(self.firstExam, query='inf101', result_fieldgroups=self.allExtras)
-        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras))
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras))]
 
-        self.assertEquals(search_res.count(), 1)
-        self.assertEquals(search_res[0], expected_res)
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertEquals(s in expected_res)
 
     def test_read(self):
 
@@ -270,32 +288,20 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
 
     def test_search(self):
 
+        self.firstExam = User.objects.get(id=self.firstExam.id)
+
         # search with no query and no extra fields
-        search_res = SimplifiedAssignmentGroup.search(self.firstExam)
+        search_res = SimplifiedAssignmentGroup.search(self.firstExam, query='firstStud')
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a3_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist())]
-
-        for e in expected_res:
-            if e['parentnode__anonymous']:
-                e['candidates__student__username'] = None
-            else:
-                e['candidates__candidate_id'] = None
+                        ]
 
         # assert that all search results are as expected
-
         self.assertEquals(search_res.count(), len(expected_res))
-
-        for e in expected_res:
-            print e
-        print "lskdjflsdkjf\n"
         for s in search_res:
-            print s
             self.assertTrue(s in expected_res)
-
-        return
 
         # search with no query and with extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstExam, result_fieldgroups=self.allExtras)
@@ -331,9 +337,6 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
                                               SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3_g1,
                                               SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))]
-
-        for s in search_res:
-            print s
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
