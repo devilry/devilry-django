@@ -8,6 +8,7 @@ body>header a#projectlink {color: #a00;}
 body>header>nav {background-color: #111;}
 body>header>nav a {color: #08C;}
 body>header>nav a:hover {color: #05a;}
+body>header>nav a:visited {color: #08C;}
 
 body>#main {background-color: #f8f8f8;}
 
@@ -23,15 +24,22 @@ body>footer a {
 body>footer a:hover {
 	color: #776B5F;
 }
+body>footer a:visited{
+	color: #D4D2CE;
+}
 
+a {
+    color: #0B5A9D;
+}
+a:visited {
+    color: #6E0840;
+}
 
 .unimportant {
     color: #444;
-    font-size: 0.9em;
 }
 
 .important {
     color: #111;
-    font-size: 1.1em;
-    font-weight: bold;
 }
+

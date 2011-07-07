@@ -39,6 +39,8 @@ body>header>nav a {
 	display: block;
 	margin-right: 10px;
 	padding: 10px 20px;
+    font-size: 1.0em;
+    font-weight: normal;
 }
 
 body>#main {
@@ -55,10 +57,37 @@ body>footer {
 	border-top-style: solid;
 	border-top-width: 1px;
 }
+body>footer a:visited {
+}
 
 
 
-div.itemlisting>div.title {
+h2 {
+    font-size: 1.4em;
+    margin: 20px 0 15px 0;
+}
+
+strong {
+    font-weight: bold;
+}
+
+em {
+    font-style: italic;
+}
+
+
+.unimportant {
+    font-size: 0.9em;
+}
+
+.important {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+
+a {
     font-size: 1.2em;
     font-weight: bold;
 }
+

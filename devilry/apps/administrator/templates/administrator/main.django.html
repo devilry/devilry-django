@@ -5,9 +5,6 @@
 
 {% block headextra %}
 
-<link rel="stylesheet" type="text/css"
-    href="{{ DEVILRY_STATIC_URL }}/administrator/main.css" />
-
 <script>
     {{ RestfulSimplifiedNode|extjs_model }}
     var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
@@ -34,11 +31,12 @@
                 xtype: 'administratorsearchresults',
                 title: 'Subjects',
                 store: subjectstore,
-                editorurlprefix: '{% url administrator-editors-period %}'
+                editorurlprefix: '{% url administrator-editors-subject %}',
             }, {
                 xtype: 'administratorsearchresults',
                 title: 'Periods',
                 store: periodstore,
+                editorurlprefix: '{% url administrator-editors-period %}',
                 formatRow: function(record) {
                     return this.getFormattedRow(
                         record.get('long_name'),
