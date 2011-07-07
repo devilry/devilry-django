@@ -2,16 +2,14 @@ from django.contrib.auth.models import User
 
 from django.test import TestCase
 from ..models import Node, Subject
+from ..testhelper import TestHelper
 
-class TestBaseNode(TestCase):
-    fixtures = ['core/deprecated_users.json', 'core/core.json']
+class TestBaseNode(TestCase, TestHelper):
 
     def setUp(self):
-        self.thesuperuser= User.objects.get(username='thesuperuser')
-        self.uio = Node.objects.get(short_name='uio', parentnode=None)
-        self.ifi = Node.objects.get(short_name='ifi', parentnode=self.uio)
-        self.uioadmin = User.objects.get(username='uioadmin') # admin on the uio node
-        self.ifiadmin = User.objects.get(username='ifiadmin') # admin on the ifi node
+        self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin,ifitechsupport)")
+        self.add(nodes="uio.deepdummy1")
+        self.thesuperuser = User.objects.create(username='thesuperuser', is_superuser=True)
 
     def test_is_admin(self):
         self.assertTrue(self.uio.is_admin(self.uioadmin))
@@ -40,6 +38,5 @@ class TestBaseNode(TestCase):
         self.assertFalse(Node(parentnode=self.uio).can_save(self.ifiadmin))
 
     def test_can_save_id_none(self):
-        deepdummy1 = Node.objects.get(pk=4)
-        self.assertTrue(Subject(parentnode=deepdummy1).can_save(self.uioadmin))
-        self.assertFalse(Subject(parentnode=deepdummy1).can_save(self.ifiadmin))
+        self.assertTrue(Subject(parentnode=self.deepdummy1).can_save(self.uioadmin))
+        self.assertFalse(Subject(parentnode=self.deepdummy1).can_save(self.ifiadmin))

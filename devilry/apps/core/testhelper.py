@@ -179,7 +179,7 @@ class TestHelper(object):
 ##
 #######
     def _create_or_add_node(self, parent, name, users):
-        node = Node(short_name=name, long_name=name.capitalize())
+        node = Node(parentnode=parent, short_name=name, long_name=name.capitalize())
         try:
             node.clean()
             node.save()
@@ -215,10 +215,6 @@ class TestHelper(object):
                 extras_arg = None
             users = self._parse_extras(extras_arg, ['admin'])
             new_node = self._create_or_add_node(prev_node, node_name, users)
-
-            # set up the relation ship between the previous node
-            if prev_node:
-                prev_node.child_nodes.add(new_node)
             prev_node = new_node
         return new_node
 
@@ -291,7 +287,7 @@ class TestHelper(object):
             period.start_time = datetime.now() + timedelta(days=int(extras['begins'][0]) * 30)
         if extras['ends']:
             period.end_time = period.start_time + timedelta(days=int(extras['ends'][0]) * 30)
-        else:
+        elif extras['begins'] and not extras['ends']:
             period.end_time = period.start_time + timedelta(5 * 30)
 
         if extras['ln']:
@@ -348,6 +344,14 @@ class TestHelper(object):
         if extras['pub']:
             assignment.publishing_time += timedelta(days=int(extras['pub'][0]))
 
+        if extras['anon']:
+            if extras['anon'][0] == 'true':
+                assignment.anonymous = True
+            elif extras['anon'][0] == 'false':
+                assignment.anonymous = False
+            else:
+                raise ValueError("anon must be 'true' or 'false'")
+
         assignment.clean()
         assignment.save()
 
@@ -374,7 +378,7 @@ class TestHelper(object):
                     assignment_name = assignment
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['admin', 'pub'])
+                users = self._parse_extras(extras_arg, ['admin', 'pub', 'anon'])
                 new_assignment = self._create_or_add_assignment(assignment_name, period, users)
                 created_assignments.append(new_assignment)
         return created_assignments
@@ -398,6 +402,9 @@ class TestHelper(object):
         # add the extras (only admins allowed in subject)
         for candidate in extras['candidate']:
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate)))
+            cand = group.candidates.order_by('-id')[0]
+            cand.candidate_id = str(cand.student.id)
+            cand.save()
 
         for examiner in extras['examiner']:
             group.examiners.add(self._create_or_add_user(examiner))

@@ -1,15 +1,13 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 
 from ....simplified import PermissionDenied
+from ....simplified.utils import modelinstance_to_dict
+
 from ...core import testhelper
 from ...core import pluginloader
 from ..simplified import (SimplifiedDelivery, SimplifiedStaticFeedback, SimplifiedAssignment,
                           SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject)
-from devilry.simplified.utils import modelinstance_to_dict
-# from devilry.simplified import FieldSpec
 
-import datetime
 import re
 
 pluginloader.autodiscover()
@@ -81,16 +79,6 @@ class TestSimplifiedSubject(SimplifiedStudentTestBase):
 
 class TestSimplifiedPeriod(SimplifiedStudentTestBase):
 
-    # subject_long     = 'parentnode__long_name'
-    # subject_short    = 'parentnode__short_name'
-    # subject_id       = 'parentnode__id'
-
-    # period_long      = 'long_name'
-    # period_short     = 'short_name'
-    # period_id        = 'id'
-
-#    resultfields = FieldSpec(period_long, period_short, period_id,
-#                             subject=[subject_long, subject_short, subject_id])
     allExtras = SimplifiedPeriod.Meta.resultfields.additional_aslist()
 
     def setUp(self):

@@ -1,19 +1,23 @@
 from django.test import TestCase
 
 from ..models import AssignmentGroup, Assignment, Candidate
+from ..testhelper import TestHelper
 
-class TestCandidate(TestCase):
-    fixtures = ['core/deprecated_users.json', 'core/core.json']
-    
+class TestCandidate(TestCase, TestHelper):
+
+    def setUp(self):
+        self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
+                 subjects=["inf1100"],
+                 periods=["autumn"],
+                 assignments=["assignment1"],
+                 assignmentgroups=["g1:candidate(student1)"])
+        self.cand = Candidate(student=self.student1, candidate_id="1",
+                              assignment_group=self.inf1100_autumn_assignment1_g1)
+
     def test_non_anonymous(self):
-        assignmentgroup1 = AssignmentGroup.objects.get(id=1)
-        student1_candidate = Candidate.objects.get(id=1)
-        self.assertEquals(student1_candidate.get_identifier(), "student1")
-        
+        self.assertEquals(self.cand.get_identifier(), "student1")
+
     def test_anonymous(self):
-        oblig1 = Assignment.objects.get(id=1)
-        # Set anonymous
-        oblig1.anonymous = True
-        oblig1.save()
-        student1_candidate = Candidate.objects.get(id=1)
-        self.assertEquals(student1_candidate.get_identifier(), "1")
+        self.inf1100_autumn_assignment1.anonymous = True
+        self.inf1100_autumn_assignment1.save()
+        self.assertEquals(self.cand.get_identifier(), "1")
