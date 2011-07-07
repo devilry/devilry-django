@@ -1,4 +1,5 @@
-from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
+from ...simplified import (simplified_modelapi, SimplifiedModelApi,
+                           PermissionDenied, FieldSpec)
 from ..core import models
 
 
@@ -15,7 +16,7 @@ class PublishedWhereIsCandidateMixin(object):
 
 
 @simplified_modelapi
-class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin):
+class SimplifiedStaticFeedback(SimplifiedModelApi, PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -54,7 +55,7 @@ class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
+class SimplifiedDelivery(SimplifiedModelApi, PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -87,7 +88,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
+class SimplifiedAssignmentGroup(SimplifiedModelApi, PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -120,7 +121,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
+class SimplifiedAssignment(SimplifiedModelApi, PublishedWhereIsCandidateMixin):
 
     class Meta:
 
@@ -152,7 +153,7 @@ class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
+class SimplifiedPeriod(SimplifiedModelApi, PublishedWhereIsCandidateMixin):
 
     class Meta:
         _subject_long     = 'parentnode__long_name'
@@ -168,7 +169,7 @@ class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedSubject(PublishedWhereIsCandidateMixin):
+class SimplifiedSubject(SimplifiedModelApi, PublishedWhereIsCandidateMixin):
 
     class Meta:
         model = models.Subject
