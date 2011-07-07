@@ -16,6 +16,10 @@ class CanSaveAuthMixin(object):
         if not obj.can_save(user):
             raise PermissionDenied()
 
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        return cls._meta.model.where_is_admin_or_superadmin(user)
+
 
 @simplified_modelapi
 class SimplifiedNode(CanSaveAuthMixin):
@@ -93,3 +97,12 @@ class SimplifiedAssignment(CanSaveAuthMixin):
         if parentnode__id != None:
             qryset = qryset.filter(parentnode__id = parentnode__id)
         return qryset
+
+
+@simplified_modelapi
+class SimplifiedAssignmentGroup(CanSaveAuthMixin):
+    class Meta:
+        model = models.AssignmentGroup
+        resultfields = FieldSpec('id', 'name', 'is_open', 'status', 'candidates__identifier', 'examiners__username')
+        searchfields = FieldSpec('name', 'is_open', 'examiners__username')
+        methods = ['search', 'read']
