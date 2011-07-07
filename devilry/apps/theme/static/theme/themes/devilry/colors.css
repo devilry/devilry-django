@@ -8,6 +8,7 @@ body>header a#projectlink {color: #a00;}
 body>header>nav {background-color: #111;}
 body>header>nav a {color: #08C;}
 body>header>nav a:hover {color: #05a;}
+body>header>nav a:visited {color: #08C;}
 
 body>#main {background-color: #f8f8f8;}
 
@@ -23,19 +24,22 @@ body>footer a {
 body>footer a:hover {
 	color: #776B5F;
 }
+body>footer a:visited{
+	color: #D4D2CE;
+}
 
-#main a {
+a {
     color: #0B5A9D;
 }
-#main a:visited {
+a:visited {
     color: #6E0840;
 }
 
-#main span.unimportant {
+.unimportant {
     color: #444;
 }
 
-#main span.important {
+.important {
     color: #111;
 }
 

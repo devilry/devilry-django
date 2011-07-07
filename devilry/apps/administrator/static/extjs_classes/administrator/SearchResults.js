@@ -43,7 +43,7 @@ Ext.define('devilry.administrator.SearchResults', {
 
     getFormattedRow: function(title, subtitle) {
         return Ext.String.format(
-            '<div class="long_name">{0}</div><div class="short_name unimportant">{1}</div>',
+            '<div class="important">{0}</div><div class="unimportant">{1}</div>',
             title, subtitle);
     },
 

@@ -1,7 +1,7 @@
 from os import listdir, getcwd
 from os.path import dirname, abspath, join, exists
 from subprocess import call, Popen, PIPE
-from sys import argv
+from sys import argv, executable
 from os import environ, chdir
 from argparse import ArgumentParser
 
@@ -23,7 +23,7 @@ def load_devilryadmin_fixture(fixturename):
     :func:`get_devilryadminfixture_path`. """
     fixturepath = get_devilryadminfixture_path(fixturename)
     print "Loading fixture: {0}".format(fixturepath)
-    call(['python', 'manage.py', 'loaddata', '-v0', fixturepath])
+    call([executable, 'manage.py', 'loaddata', '-v0', fixturepath])
 
 def dumpfixture(fixturepath, *appnames):
     p = Popen(['python', 'manage.py', 'dumpdata', '--indent', '2'] + list(appnames),
@@ -31,6 +31,9 @@ def dumpfixture(fixturepath, *appnames):
     output = p.communicate()[0]
     open(fixturepath, 'w').write(output)
 
+def append_pythonexec_to_command(command):
+   executeable_command = [executable] + command
+   return executeable_command
 
 def getcurrentcommandname():
     """ Get current command name from ``os.environ['DEVILRYADMIN_COMMANDNAME']``. """
@@ -120,6 +123,8 @@ def execcommand(commandname):
     commandpath = join(getthisdir(), cmdname_to_filename(commandname))
     command = [commandpath] + list(argv[2:])
     environ['DEVILRYADMIN_COMMANDNAME'] = commandname
+    co = command[:]
+    command = append_pythonexec_to_command(co)
     call(command)
 
 
@@ -136,6 +141,7 @@ def depends(*cmds):
         commandpath = join(getthisdir(), cmdname_to_filename(cmd.commandname))
         command = [commandpath] + list(cmd.args)
         environ['DEVILRYADMIN_COMMANDNAME'] = cmd.commandname
+        command = append_pythonexec_to_command(command)
         call(command)
 
 def require_djangoproject():

@@ -9,7 +9,7 @@ import gradeplugin
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
         Delivery, FileMeta, Candidate
 from deliverystore import FileNotFoundError
-
+from testhelper import TestHelper
 
 
 def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
@@ -105,7 +105,7 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
     return last
 
 
-class TestDeliveryStoreMixin(object):
+class TestDeliveryStoreMixin(TestHelper):
     """ Mixin-class that tests if
     :class:`devilry.core.deliverystore.DeliveryStoreInterface` is
     implemented correctly.
@@ -120,7 +120,6 @@ class TestDeliveryStoreMixin(object):
         class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):
             ...
     """
-    fixtures = ['core/deprecated_users.json', 'core/core.json']
 
     def get_storageobj(self):
         """ Return a object implementing
@@ -130,8 +129,16 @@ class TestDeliveryStoreMixin(object):
     def setUp(self):
         """ Make sure to call this if you override it in subclasses, or the
         tests **will fail**. """
+        self.add(nodes="uio.ifi",
+                 subjects=["inf1100"],
+                 periods=["period"],
+                 assignments=["assignment1"],
+                 assignmentgroups=["g1:candidate(student1)"])
+        # file and verdict
+        self.goodFile = {"good.py": "print awesome"}
+        d = self.add_delivery("inf1100.period.assignment1.g1", self.goodFile)
         self.filemeta = FileMeta()
-        self.filemeta.delivery = Delivery.objects.get(id=1)
+        self.filemeta.delivery = d
         self.filemeta.size = 0
         self.filemeta.filename = 'test.txt'
 

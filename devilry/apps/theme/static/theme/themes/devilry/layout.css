@@ -39,6 +39,8 @@ body>header>nav a {
 	display: block;
 	margin-right: 10px;
 	padding: 10px 20px;
+    font-size: 1.0em;
+    font-weight: normal;
 }
 
 body>#main {
@@ -55,39 +57,36 @@ body>footer {
 	border-top-style: solid;
 	border-top-width: 1px;
 }
-
-
-#main div.itemlisting>div.title {
-    font-size: 1.2em;
-    font-weight: bold;
+body>footer a:visited {
 }
 
 
-#main h2 {
+
+h2 {
     font-size: 1.4em;
     margin: 20px 0 15px 0;
 }
 
-#main strong {
+strong {
     font-weight: bold;
 }
 
-#main em {
+em {
     font-style: italic;
 }
 
 
-#main span.unimportant {
+.unimportant {
     font-size: 0.9em;
 }
 
-#main span.important {
+.important {
     font-size: 1.1em;
     font-weight: bold;
 }
 
 
-#main a {
+a {
     font-size: 1.2em;
     font-weight: bold;
 }
