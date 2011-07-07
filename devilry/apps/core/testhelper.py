@@ -408,6 +408,7 @@ class TestHelper(object):
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate)))
             cand = group.candidates.order_by('-id')[0]
             cand.candidate_id = str(cand.student.id)
+            cand.clean()
             cand.save()
 
         for examiner in extras['examiner']:
