@@ -14,11 +14,8 @@
 from os.path import join, dirname, abspath, exists
 from os import system, chdir
 from shutil import rmtree, copytree
-from sys import argv
 
-if len(argv) != 2:
-    raise SystemExit('usage: %s "<commitmsg>"' % argv[0])
-commitmsg = argv[1]
+commitmsg = "updated docs"
 
 this_dir = abspath(dirname(__file__))
 

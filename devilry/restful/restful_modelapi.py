@@ -1,4 +1,8 @@
+from types import MethodType
+from inspect import getmodule
 from django import forms
+from django.db.models import DateTimeField
+from django.forms import widgets
 
 from ..simplified import _require_metaattr
 from restful_api import restful_api
@@ -19,17 +23,59 @@ def _create_seachform(cls):
 
 def _create_editform(cls):
     formfields = []
+    customfields = {}
     model = cls._meta.simplified._meta.model
     for fieldname in cls._meta.simplified._meta.resultfields.always_available_fields:
         if fieldname.endswith("__id"):
-            formfields.append(fieldname[:-4])
-        else:
-            formfields.append(fieldname)
-    class EditForm(forms.ModelForm):
-        class Meta:
-            model = cls._meta.simplified._meta.model
-            fields = formfields
+            fieldname = fieldname[:-4]
+        formfields.append(fieldname)
+
+        field = model._meta.get_field_by_name(fieldname)[0]
+        if isinstance(field, DateTimeField):
+            input_formats = input_formats=['%Y-%m-%dT%H:%M:%S',
+                                           '%Y-%m-%d %H:%M:%S']
+            required = not field.blank
+            customfields[fieldname] = forms.DateTimeField(input_formats=input_formats,
+                                                          required=required,
+                                                          label=field.verbose_name,
+                                                          help_text=field.help_text,
+                                                          initial=field.default)
+
+    class Meta:
+        model = cls._meta.simplified._meta.model
+        fields = formfields
+
+    customfields['Meta'] = Meta
+    EditForm = type('EditForm', (forms.ModelForm,), customfields)
     cls.EditForm = EditForm
+
+
+def _copy_supports_metaattrs_from_simplified(cls):
+    """ Copy all supports_[method] boolean variables from the simplified class. """
+    for method in cls._meta.simplified._all_crud_methods:
+        attrname = 'supports_{0}'.format(method)
+        setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
+
+
+def _create_get_foreignkey_fieldcls_method(cls):
+    def get_foreignkey_fieldcls(cls, fkfieldname):
+        """ Get the class stored at the ``fkfieldname`` key in the
+        ``cls.foreignkey_fields``.
+
+        :return: None if not found, and a restful class if found.
+        """
+        if not hasattr(cls, 'foreignkey_fields'):
+            return None
+        if not fkfieldname in cls.foreignkey_fields:
+            return None
+        fkrestfulcls = cls.foreignkey_fields[fkfieldname]
+        if isinstance(fkrestfulcls, str):
+            module = getmodule(cls)
+            return getattr(module, fkrestfulcls)
+        else:
+            return fkrestfulcls
+    setattr(cls._meta, get_foreignkey_fieldcls.__name__, MethodType(get_foreignkey_fieldcls, cls._meta))
+
 
 
 def restful_modelapi(cls):
@@ -64,21 +110,7 @@ def restful_modelapi(cls):
     _require_metaattr(cls, 'simplified')
     _create_seachform(cls)
     _create_editform(cls)
+    _copy_supports_metaattrs_from_simplified(cls)
+    _create_get_foreignkey_fieldcls_method(cls)
 
-    if not hasattr(cls, "JsMeta"):
-        class JsMeta:
-            """ Fake javascript-meta class """
-        cls.JsMeta = JsMeta
-    cls._jsmeta = cls.JsMeta
-    if not hasattr(cls._jsmeta, 'combobox_displayfield'):
-        cls._jsmeta.combobox_displayfield = 'id'
-    if not hasattr(cls._jsmeta, 'combobox_fieldgroups'):
-        cls._jsmeta.combobox_fieldgroups = {}
-    if not hasattr(cls._jsmeta, 'combobox_tpl'):
-        cls._jsmeta.combobox_tpl = '{' + cls._jsmeta.combobox_displayfield + '}'
-
-    # Copy all supports_[method] boolean variables from the simplified class.
-    for method in cls._meta.simplified._all_crud_methods:
-        attrname = 'supports_{0}'.format(method)
-        setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
     return cls
