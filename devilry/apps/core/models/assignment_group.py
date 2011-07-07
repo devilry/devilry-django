@@ -246,10 +246,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     def q_is_examiner(cls, user_obj):
         return Q(examiners=user_obj)
 
-    @classmethod
-    def where_is_admin_or_superadmin(cls, user_obj):
-        return AssignmentGroup.objects.filter(cls.q_is_admin(user_obj))
-
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
                 self.get_candidates())
