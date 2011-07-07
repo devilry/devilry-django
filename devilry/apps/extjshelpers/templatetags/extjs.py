@@ -1,6 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
-from ..modelintegration import (restfulcls_to_extjsmodel, get_extjs_modelname)
+from ..modelintegration import (restfulcls_to_extjsmodel, get_extjs_modelname,
+                                restfulcls_to_extjscomboboxmodel)
 from ..storeintegration import restfulcls_to_extjsstore
 from ..formintegration import restfulcls_to_extjsformitems
 
@@ -16,6 +17,10 @@ def extjs_model(restfulcls, result_fieldgroups=None):
     js = restfulcls_to_extjsmodel(restfulcls, result_fieldgroups)
     return mark_safe(js)
 
+@register.filter
+def extjs_combobox_model(restfulcls):
+    js = restfulcls_to_extjscomboboxmodel(restfulcls)
+    return mark_safe(js)
 
 @register.filter
 def extjs_store(restfulcls):

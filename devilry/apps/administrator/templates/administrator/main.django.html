@@ -6,17 +6,16 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedNode|extjs_model }}
+
+    {% for RestfulCls in restfulclasses %}
+        {{ RestfulCls|extjs_combobox_model }}
+    {% endfor %}
+
     var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
-
-    {{ RestfulSimplifiedSubject|extjs_model }}
     var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
-
-    {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
-
-    {{ RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
     var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
 
     Ext.require('devilry.administrator.SearchWidget');
     Ext.onReady(function() {
@@ -46,6 +45,12 @@
                 store: assignmentstore,
                 editorurlprefix: '{% url administrator-editors-assignment %}',
                 rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Assignment groups',
+                store: assignmentgroupstore,
+                editorurlprefix: '{% url administrator-editors-assignmentgroup %}',
+                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
 

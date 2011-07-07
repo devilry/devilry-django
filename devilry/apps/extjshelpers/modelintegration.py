@@ -20,7 +20,7 @@ def _recurse_get_fkfield(modelcls, path):
     if not path:
         return cur
     else:
-        return _recurse_get_fkfield(cur.related.model, path)
+        return _recurse_get_fkfield(cur.related.parent_model, path)
 
 
 def _iter_fields(simplifiedcls, result_fieldgroups):
@@ -73,3 +73,8 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                       idprop = 'id', # TODO: metaoption
                       resturl = restfulcls.get_rest_url(),
                       result_fieldgroups=','.join(result_fieldgroups))
+
+
+def restfulcls_to_extjscomboboxmodel(restfulcls):
+    """ Create a extjs model using the ``restfulcls.ExtjsModelMeta.combobox_fieldgroups`` """
+    return restfulcls_to_extjsmodel(restfulcls, restfulcls._extjsmodelmeta.combobox_fieldgroups)

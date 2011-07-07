@@ -45,3 +45,6 @@ class PeriodEditor(RestfulSimplifiedEditorView):
 
 class AssignmentEditor(RestfulSimplifiedEditorView):
     restful = restful.RestfulSimplifiedAssignment
+
+class AssignmentGroupEditor(RestfulSimplifiedEditorView):
+    restful = restful.RestfulSimplifiedAssignmentGroup

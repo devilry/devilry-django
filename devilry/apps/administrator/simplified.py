@@ -83,12 +83,42 @@ class SimplifiedAssignment(CanSaveAuthMixin):
                                             'parentnode__parentnode__long_name'],
                                  pointfields = ['anonymous', 'must_pass', 'maxpoints',
                                                 'attempts'])
-        searchfields = FieldSpec('short_name', 'long_name')
+        searchfields = FieldSpec('short_name', 'long_name',
+                                 'parentnode__short_name', 'parentnode__long_name', # period
+                                 'parentnode__parentnode__short_name', 'parentnode__parentnode__long_name') # subject
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         qryset = models.Assignment.where_is_admin_or_superadmin(user)
+        parentnode__id = kwargs.pop('parentnode__id', None)
+        if parentnode__id != None:
+            qryset = qryset.filter(parentnode__id = parentnode__id)
+        return qryset
+
+
+@simplified_modelapi
+class SimplifiedAssignmentGroup(CanSaveAuthMixin):
+    class Meta:
+        model = models.AssignmentGroup
+        resultfields = FieldSpec('id', 'name', 'parentnode__id',
+                                 assignment = ['parentnode__short_name',
+                                               'parentnode__long_name',
+                                               'parentnode__parentnode__id'],
+                                 period = ['parentnode__parentnode__short_name',
+                                           'parentnode__parentnode__long_name',
+                                           'parentnode__parentnode__parentnode__id'],
+                                 subject = ['parentnode__parentnode__parentnode__short_name',
+                                            'parentnode__parentnode__parentnode__long_name'])
+        searchfields = FieldSpec('name',
+                                 'parentnode__short_name', 'parentnode__long_name', # assignment
+                                 'parentnode__parentnode__short_name', 'parentnode__parentnode__long_name', # period
+                                 'parentnode__parentnode__parentnode__short_name', 'parentnode__parentnode__parentnode__long_name') # subject
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        qryset = models.AssignmentGroup.where_is_admin_or_superadmin(user)
         parentnode__id = kwargs.pop('parentnode__id', None)
         if parentnode__id != None:
             qryset = qryset.filter(parentnode__id = parentnode__id)
