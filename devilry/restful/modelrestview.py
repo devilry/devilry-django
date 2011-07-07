@@ -74,12 +74,12 @@ class ModelRestfulView(RestfulView):
                 for itemdct in qryresultwrapper]
 
     def _create_or_replace(self, instance=None):
-        print self.request.raw_post_data
         data = serializers.deserialize(self.comformat, self.request.raw_post_data)
-        #data['start_time'] = data['start_time'].replace('T', ' ')
-        #data['end_time'] = data['end_time'].replace('T', ' ')
-        #for x, y in data.iteritems():
-            #print x, y, type(y)
+        for key in data:
+            if "__" in key:  # Foreign keys
+                item = data.pop(key)
+                newkey = key.split('__')[0]
+                data[newkey] = item
         form = self.__class__.EditForm(data, instance=instance)
         result = None
         if form.is_valid():

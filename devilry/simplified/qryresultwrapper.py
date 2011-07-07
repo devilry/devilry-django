@@ -10,12 +10,12 @@ class QryResultWrapper(object):
 
         The underlying django queryset provides access to far more data
         than what we usually require. This list contains the fields provided
-        when methods in this class converts the model instances
+        when methods in this class convert the model instances
         in the wrapped django queryset into a dict.
 
     .. attribute:: searchfields
 
-        The fields that was search when generating this result.
+        The fields that were searched when generating this result.
 
     .. attribute:: _insecure_django_qryset
 

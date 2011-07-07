@@ -22,12 +22,12 @@ def extjs_restful_modelapi(cls):
         class ExtjsModelMeta:
             """ Fake javascript-meta class """
         cls.ExtjsModelMeta = ExtjsModelMeta
-    cls._exjsmodelmeta = cls.ExtjsModelMeta
-    if not hasattr(cls._exjsmodelmeta, 'combobox_displayfield'):
-        cls._exjsmodelmeta.combobox_displayfield = 'id'
-    if not hasattr(cls._exjsmodelmeta, 'combobox_fieldgroups'):
-        cls._exjsmodelmeta.combobox_fieldgroups = {}
-    if not hasattr(cls._exjsmodelmeta, 'combobox_tpl'):
-        cls._exjsmodelmeta.combobox_tpl = '{' + cls._exjsmodelmeta.combobox_displayfield + '}'
+    cls._extjsmodelmeta = cls.ExtjsModelMeta
+    if not hasattr(cls._extjsmodelmeta, 'combobox_displayfield'):
+        cls._extjsmodelmeta.combobox_displayfield = 'id'
+    if not hasattr(cls._extjsmodelmeta, 'combobox_fieldgroups'):
+        cls._extjsmodelmeta.combobox_fieldgroups = {}
+    if not hasattr(cls._extjsmodelmeta, 'combobox_tpl'):
+        cls._extjsmodelmeta.combobox_tpl = '{' + cls._extjsmodelmeta.combobox_displayfield + '}'
 
     return cls

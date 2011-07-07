@@ -36,15 +36,8 @@ Ext.define('devilry.administrator.SearchResults', {
     },
 
     formatRow: function(record) {
-        return this.getFormattedRow(
-            record.get('long_name'),
-            record.get('short_name'));
-    },
-
-    getFormattedRow: function(title, subtitle) {
-        return Ext.String.format(
-            '<div class="important">{0}</div><div class="unimportant">{1}</div>',
-            title, subtitle);
+        var tpl = Ext.create('Ext.XTemplate', this.rowformattpl);
+        return tpl.apply(record.data);
     },
 
     listeners: {
