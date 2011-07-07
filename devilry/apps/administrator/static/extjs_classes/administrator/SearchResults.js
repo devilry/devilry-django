@@ -37,7 +37,6 @@ Ext.define('devilry.administrator.SearchResults', {
 
     formatRow: function(record) {
         var tpl = Ext.create('Ext.XTemplate', this.rowformattpl);
-        console.log(record.data);
         return tpl.apply(record.data);
     },
 

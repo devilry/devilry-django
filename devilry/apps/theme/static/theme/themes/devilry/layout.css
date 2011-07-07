@@ -76,6 +76,8 @@ em {
 }
 
 
+/* important and unimportant are used by:
+ * - Items in comboboxes */
 .unimportant {
     font-size: 0.9em;
 }
@@ -83,6 +85,10 @@ em {
 .important {
     font-size: 1.1em;
     font-weight: bold;
+}
+
+div.important {
+    padding-bottom: 5px;
 }
 
 

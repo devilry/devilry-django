@@ -15,6 +15,9 @@
     {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
 
+    {{ RestfulSimplifiedAssignment|extjs_model:"subject,period" }}
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
+
     Ext.require('devilry.administrator.SearchWidget');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
@@ -37,6 +40,12 @@
                 store: periodstore,
                 editorurlprefix: '{% url administrator-editors-period %}',
                 rowformattpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Assignments',
+                store: assignmentstore,
+                editorurlprefix: '{% url administrator-editors-assignment %}',
+                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
 
