@@ -115,13 +115,51 @@ class SimplifiedAssignmentGroup(CanSaveAuthMixin):
                                           'parentnode__parentnode__parentnode__long_name',
                                           'parentnode__parentnode__parentnode__short_name']
                                  )
-        searchfields = FieldSpec('name', 'is_open', 'status',
-                                 'examiners__username', 'candidates__identifier',
-                                 'parentnode__parentnode__id',  # period
+        searchfields = FieldSpec('name',
+                                 'examiners__username',
+                                 'candidates__identifier',
+                                 # assignment
+                                 'parentnode__long_name',
+                                 'parentnode__short_name',
+                                 # period
                                  'parentnode__parentnode__long_name',
                                  'parentnode__parentnode__short_name',
-                                 'parentnode__parentnode__parentnode__id',  # subject
+                                 # subject
                                  'parentnode__parentnode__parentnode__long_name',
                                  'parentnode__parentnode__parentnode__short_name',
                                  )
+        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+
+
+@simplified_modelapi
+class SimplifiedDelivery(CanSaveAuthMixin):
+    class Meta:
+        model = models.Delivery
+        resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'deadline_tag__id',
+                                 assignmentgroup=['parentnode__id', 'parentnode__name'],
+                                 assignment=['parentnode__parentnode__id',
+                                             'parentnode__parentnode__long_name',
+                                             'parentnode__parentnode__short_name'],
+                                 period=['parentnode__parentnode__parentnode__id',
+                                         'parentnode__parentnode__parentnode__long_name',
+                                         'parentnode__parentnode__parentnode__short_name'],
+                                 subject=['parentnode__parentnode__parentnode__parentnode__id',
+                                          'parentnode__parentnode__parentnode__parentnode__long_name',
+                                          'parentnode__parentnode__parentnode__parentnode__short_name'])
+        searchfields = FieldSpec('number',
+                                 # assignmentgroup
+                                 'parentnode__name',
+                                 'parentnode__examiners__username',
+                                 'parentnode__candidates__identifier',
+                                 'parentnode__examiners__username',
+                                 'parentnode__candidates__identifier',
+                                 # assignment
+                                 'parentnode__parentnode__long_name',
+                                 'parentnode__parentnode__short_name',
+                                 # period
+                                 'parentnode__parentnode__parentnode__long_name',
+                                 'parentnode__parentnode__parentnode__short_name',
+                                 # subject
+                                 'parentnode__parentnode__parentnode__parentnode__long_name',
+                                 'parentnode__parentnode__parentnode__parentnode__short_name')
         methods = ['search', 'read']
