@@ -48,3 +48,6 @@ class AssignmentEditor(RestfulSimplifiedEditorView):
 
 class AssignmentGroupEditor(RestfulSimplifiedEditorView):
     restful = restful.RestfulSimplifiedAssignmentGroup
+
+class DeliveryEditor(RestfulSimplifiedEditorView):
+    restful = restful.RestfulSimplifiedDelivery

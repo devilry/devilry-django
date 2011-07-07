@@ -135,31 +135,31 @@ class SimplifiedAssignmentGroup(CanSaveAuthMixin):
 class SimplifiedDelivery(CanSaveAuthMixin):
     class Meta:
         model = models.Delivery
-        resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'deadline_tag__id',
-                                 assignmentgroup=['parentnode__id', 'parentnode__name'],
-                                 assignment=['parentnode__parentnode__id',
-                                             'parentnode__parentnode__long_name',
-                                             'parentnode__parentnode__short_name'],
-                                 period=['parentnode__parentnode__parentnode__id',
-                                         'parentnode__parentnode__parentnode__long_name',
-                                         'parentnode__parentnode__parentnode__short_name'],
-                                 subject=['parentnode__parentnode__parentnode__parentnode__id',
-                                          'parentnode__parentnode__parentnode__parentnode__long_name',
-                                          'parentnode__parentnode__parentnode__parentnode__short_name'])
+        resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'assignment_group__id',
+                                 assignment_group=['assignment_group__id', 'assignment_group__name'],
+                                 assignment=['assignment_group__parentnode__id',
+                                             'assignment_group__parentnode__long_name',
+                                             'assignment_group__parentnode__short_name'],
+                                 period=['assignment_group__parentnode__parentnode__id',
+                                         'assignment_group__parentnode__parentnode__long_name',
+                                         'assignment_group__parentnode__parentnode__short_name'],
+                                 subject=['assignment_group__parentnode__parentnode__parentnode__id',
+                                          'assignment_group__parentnode__parentnode__parentnode__long_name',
+                                          'assignment_group__parentnode__parentnode__parentnode__short_name'])
         searchfields = FieldSpec('number',
                                  # assignmentgroup
-                                 'parentnode__name',
-                                 'parentnode__examiners__username',
-                                 'parentnode__candidates__identifier',
-                                 'parentnode__examiners__username',
-                                 'parentnode__candidates__identifier',
+                                 'assignment_group__name',
+                                 'assignment_group__examiners__username',
+                                 'assignment_group__candidates__identifier',
+                                 'assignment_group__examiners__username',
+                                 'assignment_group__candidates__identifier',
                                  # assignment
-                                 'parentnode__parentnode__long_name',
-                                 'parentnode__parentnode__short_name',
+                                 'assignment_group__parentnode__long_name',
+                                 'assignment_group__parentnode__short_name',
                                  # period
-                                 'parentnode__parentnode__parentnode__long_name',
-                                 'parentnode__parentnode__parentnode__short_name',
+                                 'assignment_group__parentnode__parentnode__long_name',
+                                 'assignment_group__parentnode__parentnode__short_name',
                                  # subject
-                                 'parentnode__parentnode__parentnode__parentnode__long_name',
-                                 'parentnode__parentnode__parentnode__parentnode__short_name')
+                                 'assignment_group__parentnode__parentnode__parentnode__long_name',
+                                 'assignment_group__parentnode__parentnode__parentnode__short_name')
         methods = ['search', 'read']
