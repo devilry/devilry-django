@@ -610,6 +610,7 @@ class TestSimplifiedAdministratorSimplifiedAssignment(TestCase):
 from ...core import testhelper
 from ....simplified.utils import modelinstance_to_dict
 
+
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
     def setUp(self):
         # create a base structure
@@ -619,7 +620,7 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondSem assignments
-        self.add_to_path('uni;inf101.firstSem.a1.g1:candidate(firstStud):examiner(exam1)')
+        self.add_to_path('uni;inf101.firstSem.a1.g1:candidate(firstStud):examiner(exam1,exam3)')
         self.add_to_path('uni;inf101.firstSem.a2.g1:candidate(firstStud):examiner(exam1)')
         self.add_to_path('uni;inf110.secondSem.a1.g1:candidate(firstStud):examiner(exam2)')
         self.add_to_path('uni;inf110.secondSem.a2.g1:candidate(firstStud):examiner(exam2)')
@@ -632,41 +633,37 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
     allExtras = SimplifiedAssignmentGroup.Meta.resultfields.additional_aslist()
+    baseFields = SimplifiedAssignmentGroup.Meta.resultfields.aslist()
+    allFields = SimplifiedAssignmentGroup.Meta.resultfields.aslist(allExtras)
 
     def setUp(self):
         super(TestSimplifiedAdminAssignmentGroup, self).setUp()
 
     def test_search(self):
         # search with no query and no extra fields
-        search_res = SimplifiedAssignmentGroup.search(self.admin1, query='exam1')
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_firstSem_a2_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a2_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_secondSem_a1_g2, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_secondSem_a2_g2, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
+
+        search_res = SimplifiedAssignmentGroup.search(self.admin1)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, self.baseFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1, self.baseFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, self.baseFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1, self.baseFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2, self.baseFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2, self.baseFields),
                         ]
 
         # assert that all search results are as expected
-        #self.assertEquals(search_res.count(), len(expected_res))
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
-            #self.assertTrue(s in expected_res)
-            print s
-        return
+            self.assertTrue(s in expected_res)
+
         # search with no query and with extra fields
         search_res = SimplifiedAssignmentGroup.search(self.admin1, result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf101_firstSem_a2_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondSem_a1_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondSem_a2_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf101_secondSem_a1_g2,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf101_secondSem_a2_g2,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1, self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1, self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2, self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2, self.allFields),
                         ]
 
         self.assertEquals(search_res.count(), len(expected_res))
@@ -675,22 +672,19 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
         # search with query
         search_res = SimplifiedAssignmentGroup.search(self.admin1, query='secondStud')
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist())]
-
-        for s in search_res:
-            print s
+        expected_res = [modelinstance_to_dict(self.inf101_secondSem_a1_g2, self.baseFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2, self.baseFields)]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
         # with query and extra fields
-        search_res = SimplifiedAssignmentGroup.search(self.admin1, query='inf110', result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf110_secondSem_a1_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondSem_a2_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))]
+        search_res = SimplifiedAssignmentGroup.search(self.admin1, query='inf101', result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1, self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2, self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2, self.allFields)]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -699,15 +693,16 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
     def test_read(self):
 
         # do a read with no extra fields
-        read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstSem_a1.id)
+        read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstSem_a1_g1.id)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1,
                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
         # do a read with all extras
-        read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstSem_a1.id, result_fieldgroups=self.allExtras)
+        read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstSem_a1_g1.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1,
                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))
+
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):

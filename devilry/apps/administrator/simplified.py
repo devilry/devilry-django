@@ -103,8 +103,25 @@ class SimplifiedAssignment(CanSaveAuthMixin):
 class SimplifiedAssignmentGroup(CanSaveAuthMixin):
     class Meta:
         model = models.AssignmentGroup
-        resultfields = FieldSpec('id', 'name', 'is_open', 'status', 'candidates__identifier',
-                                 examiners=['examiners__username'],
+        resultfields = FieldSpec('id', 'name', 'is_open', 'status',
+                                 users=['examiners__username', 'candidates__identifier'],
+                                 assignment=['parentnode__id',
+                                             'parentnode__long_name',
+                                             'parentnode__short_name'],
+                                 period=['parentnode__parentnode__id',
+                                         'parentnode__parentnode__long_name',
+                                         'parentnode__parentnode__short_name'],
+                                 subject=['parentnode__parentnode__parentnode__id',
+                                          'parentnode__parentnode__parentnode__long_name',
+                                          'parentnode__parentnode__parentnode__short_name']
                                  )
-        searchfields = FieldSpec('name', 'is_open', 'examiners__username', 'candidates__identifier')
+        searchfields = FieldSpec('name', 'is_open', 'status',
+                                 'examiners__username', 'candidates__identifier',
+                                 'parentnode__parentnode__id',  # period
+                                 'parentnode__parentnode__long_name',
+                                 'parentnode__parentnode__short_name',
+                                 'parentnode__parentnode__parentnode__id',  # subject
+                                 'parentnode__parentnode__parentnode__long_name',
+                                 'parentnode__parentnode__parentnode__short_name',
+                                 )
         methods = ['search', 'read']
