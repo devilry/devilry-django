@@ -7,10 +7,16 @@ def _recurse_getmodelattr(instance, path):
     pathseg = path.pop(0)
     try:
         cur = getattr(instance, pathseg)
-    except AttributeError, e:
-        # NOTE: Dirty hack specifically for candidates
+    except AttributeError:
+        # NOTE: Dirty hack to support list results. This is to return
+        # multiple candidates
         if repr(type(instance)) == "<class 'django.db.models.fields.related.RelatedManager'>":
             return [getattr(obj, pathseg) for obj in instance.all()]
+        # NOTE: Dirty hack to support list results. This is to return
+        # multiple examiners
+        if repr(type(instance)) == "<class 'django.db.models.fields.related.ManyRelatedManager'>":
+            return [getattr(obj, pathseg) for obj in instance.all()]
+
         return None  # If the foreign relationship we are following is null, we return None
     if not path:
         return cur
