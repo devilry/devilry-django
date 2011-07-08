@@ -13,8 +13,9 @@ from basenode import BaseNode
 from node import Node
 from subject import Subject
 from model_utils import *
+from model_utils import Etag, EtagMismatchException
 
-class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
+class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
     A Period represents a period of time, for example a half-year term
     at a university.
@@ -65,6 +66,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     minimum_points = models.PositiveIntegerField(default=0,
             help_text=_('Students must get at least this many points to '\
                     'pass the period.'))
+    etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -171,3 +173,4 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignments__assignmentgroups__examiners=user_obj)
+
