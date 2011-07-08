@@ -174,11 +174,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if create_default_deadline:
             self.deadlines.create(deadline=datetime.now(), assignment_group=self, is_head=True)
 
-    def etag_update(self, etag):
-        if self.etag != etag:
-            raise EtagMismatchException(self.etag)
-        super(AssignmentGroup, self).save()
-
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(parentnode__admins=user_obj) | \
