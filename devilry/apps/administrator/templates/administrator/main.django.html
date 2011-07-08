@@ -6,17 +6,17 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedNode|extjs_model }}
+
+    {% for RestfulCls in restfulclasses %}
+        {{ RestfulCls|extjs_combobox_model }}
+    {% endfor %}
+
     var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
-
-    {{ RestfulSimplifiedSubject|extjs_model }}
     var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
-
-    {{ RestfulSimplifiedSubject|extjs_model }}
-    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
-
-    {{ RestfulSimplifiedPeriod|extjs_model:"subject" }}
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
 
     Ext.require('devilry.administrator.SearchWidget');
     Ext.onReady(function() {
@@ -26,24 +26,38 @@
                 xtype: 'administratorsearchresults',
                 title: 'Nodes',
                 store: nodestore,
-                editorurlprefix: '{% url administrator-editors-node %}'
+                editorurlprefix: '{% url administrator-editors-node %}',
+                rowformattpl: '{{ RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'administratorsearchresults',
                 title: 'Subjects',
                 store: subjectstore,
                 editorurlprefix: '{% url administrator-editors-subject %}',
+                rowformattpl: '{{ RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'administratorsearchresults',
                 title: 'Periods',
                 store: periodstore,
                 editorurlprefix: '{% url administrator-editors-period %}',
-                formatRow: function(record) {
-                    return this.getFormattedRow(
-                        record.get('long_name'),
-                        Ext.String.format('{0}.{1}',
-                            record.get('parentnode__short_name'),
-                            record.get('short_name')));
-                }
+                rowformattpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Assignments',
+                store: assignmentstore,
+                editorurlprefix: '{% url administrator-editors-assignment %}',
+                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Assignment groups',
+                store: assignmentgroupstore,
+                editorurlprefix: '{% url administrator-editors-assignmentgroup %}',
+                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Delivery',
+                store: deliverystore,
+                editorurlprefix: '{% url administrator-editors-delivery %}',
+                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
 

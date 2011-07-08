@@ -1,17 +1,17 @@
-from storeintegration import restfulmodelcls_to_extjsstore
+from storeintegration import restfulcls_to_extjsstore
 
 
 def restfulcls_to_extjscombobox_xtype(restfulcls):
-    store = restfulmodelcls_to_extjsstore(restfulcls,
+    store = restfulcls_to_extjsstore(restfulcls,
                                           integrateModel=True,
-                                          modelkwargs=dict(result_fieldgroups=restfulcls._exjsmodelmeta.combobox_fieldgroups))
+                                          modelkwargs=dict(result_fieldgroups=restfulcls._extjsmodelmeta.combobox_fieldgroups))
     listconfig = """listConfig: {{
                 loadingText: 'Loading...',
                 emptyText: 'No matching items found.',
                 getInnerTpl: function() {{
                     return '{combobox_tpl}'
                 }}
-            }},""".format(combobox_tpl=restfulcls._exjsmodelmeta.combobox_tpl)
+            }},""".format(combobox_tpl=restfulcls._extjsmodelmeta.combobox_tpl)
 
     model = restfulcls._meta.simplified._meta.model
     return """
@@ -21,7 +21,7 @@ def restfulcls_to_extjscombobox_xtype(restfulcls):
             {listconfig}
             store: {store}""".format(store=store,
                                      listconfig=listconfig,
-                                     combobox_displayfield=restfulcls._exjsmodelmeta.combobox_displayfield,
+                                     combobox_displayfield=restfulcls._extjsmodelmeta.combobox_displayfield,
                                      pkfieldname=model._meta.pk.name)
 
 

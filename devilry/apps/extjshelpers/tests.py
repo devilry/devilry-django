@@ -5,8 +5,8 @@ from ...simplified import simplified_modelapi, FieldSpec
 from ...restful import restful_modelapi, ModelRestfulView
 from ..core.models import Period
 from ..administrator.restful import RestfulSimplifiedPeriod
-from modelintegration import restfulmodelcls_to_extjsmodel
-from storeintegration import restfulmodelcls_to_extjsstore
+from modelintegration import restfulcls_to_extjsmodel
+from storeintegration import restfulcls_to_extjsstore
 from fieldintegration import djangofield_to_extjsformfield
 
 
@@ -47,7 +47,7 @@ class RestUser(ModelRestfulView):
 
 class TestModelIntegration(TestCase):
     def test_to_extjsmodel(self):
-        js = restfulmodelcls_to_extjsmodel(RestUser)
+        js = restfulcls_to_extjsmodel(RestUser)
         expected = """Ext.define('devilry.apps.extjshelpers.tests.SimplifiedUser', {
             extend: 'Ext.data.Model',
             fields: [{"type": "int", "name": "id"}, {"type": "string", "name": "first"}, {"type": "string", "name": "last"}, {"type": "string", "name": "email"}, {"type": "int", "name": "score"}],
@@ -71,15 +71,15 @@ class TestModelIntegration(TestCase):
         self.assertEquals(js, expected)
 
     def test_to_extjsmodel_fieldgroups(self):
-        js = restfulmodelcls_to_extjsmodel(RestUser)
+        js = restfulcls_to_extjsmodel(RestUser)
         self.assertFalse('textfields' in js)
-        js = restfulmodelcls_to_extjsmodel(RestUser, ['textfields'])
+        js = restfulcls_to_extjsmodel(RestUser, ['textfields'])
         self.assertTrue('textfields' in js)
 
 
 class TestStoreIntegration(TestCase):
     def test_to_extjsstore(self):
-        js = restfulmodelcls_to_extjsstore(RestUser)
+        js = restfulcls_to_extjsstore(RestUser)
         expected = """Ext.create('Ext.data.Store', {
             model: 'devilry.apps.extjshelpers.tests.SimplifiedUser',
             remoteFilter: true,
