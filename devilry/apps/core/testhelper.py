@@ -413,9 +413,16 @@ class TestHelper(object):
 
         # add the extras (only admins allowed in subject)
         for candidate in extras['candidate']:
-            group.candidates.add(Candidate(student=self._create_or_add_user(candidate)))
+
+            try:
+                candidate_name, cid = candidate.split(';', 1)
+            except ValueError:
+                candidate_name = candidate
+                cid = None
+
+            group.candidates.add(Candidate(student=self._create_or_add_user(candidate_name)))
             cand = group.candidates.order_by('-id')[0]
-            cand.candidate_id = str(cand.student.id)
+            cand.candidate_id = cid if cid != None else str(cand.student.id)
             cand.clean()
             cand.save()
 
@@ -449,7 +456,7 @@ class TestHelper(object):
                     group_name = group
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['examiner', 'candidate'])
+                users = self._parse_extras(extras_arg, ['examiner', 'candidate', 'candidate_id'])
                 new_group = self._create_or_add_assignmentgroup(group_name, assignment, users)
                 created_groups.append(new_group)
         return created_groups
