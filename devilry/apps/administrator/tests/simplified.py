@@ -1,9 +1,8 @@
 from django.test import TestCase
 
 from ....simplified import PermissionDenied
-from ...core import testhelper
-from ....simplified.utils import modelinstance_to_dict
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup
+from ...core import models
+from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline
 
 
 class SimplifiedAdministratorTestBase(TestCase, testhelper.TestHelper):
