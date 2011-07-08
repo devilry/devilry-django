@@ -10,8 +10,9 @@ from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
 from node import Node
+from model_utils import Etag, EtagMismatchException
 
-class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
+class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
 
     .. attribute:: parentnode
@@ -48,6 +49,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     long_name = LongNameField()
     parentnode = models.ForeignKey(Node, related_name='subjects')
     admins = models.ManyToManyField(User, blank=True)
+    etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -94,3 +96,5 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     @classmethod
     def q_is_candidate(cls, user_obj):
         return Q(periods__assignments__assignmentgroups__candidates__student=user_obj)
+
+
