@@ -16,6 +16,7 @@
     var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
     var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
     var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
 
     Ext.require('devilry.administrator.SearchWidget');
     Ext.onReady(function() {
@@ -51,6 +52,12 @@
                 store: assignmentgroupstore,
                 editorurlprefix: '{% url administrator-editors-assignmentgroup %}',
                 rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Delivery',
+                store: deliverystore,
+                editorurlprefix: '{% url administrator-editors-delivery %}',
+                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
 
