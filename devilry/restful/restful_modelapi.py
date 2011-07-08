@@ -23,11 +23,18 @@ def _create_seachform(cls):
 
 def _create_editform(cls):
     formfields = []
-    customfields = {}
+    extra_classattributes = {}
     model = cls._meta.simplified._meta.model
-    for fieldname in cls._meta.simplified._meta.resultfields.always_available_fields:
-        if fieldname.endswith("__id"):
-            fieldname = fieldname[:-4]
+    resultfields = cls._meta.simplified._meta.resultfields
+    for fieldname in resultfields.aslist(resultfields.additional_aslist()):
+        if '__' in fieldname:
+            # Fieldnames can only be be fields in this model.
+            # Therefore, we split on __ and keep the first item.
+            # We support foreign keys as fieldname__id (this means that foreign keys must have id as their primary key)
+            fieldname, rest = fieldname.split('__', 1)
+            print fieldname, rest
+            if not rest == 'id': # We only support foreign keys
+                continue
         formfields.append(fieldname)
 
         field = model._meta.get_field_by_name(fieldname)[0]
@@ -35,18 +42,18 @@ def _create_editform(cls):
             input_formats = input_formats=['%Y-%m-%dT%H:%M:%S',
                                            '%Y-%m-%d %H:%M:%S']
             required = not field.blank
-            customfields[fieldname] = forms.DateTimeField(input_formats=input_formats,
-                                                          required=required,
-                                                          label=field.verbose_name,
-                                                          help_text=field.help_text,
-                                                          initial=field.default)
+            extra_classattributes[fieldname] = forms.DateTimeField(input_formats=input_formats,
+                                                                   required=required,
+                                                                   label=field.verbose_name,
+                                                                   help_text=field.help_text,
+                                                                   initial=field.default)
 
     class Meta:
         model = cls._meta.simplified._meta.model
         fields = formfields
 
-    customfields['Meta'] = Meta
-    EditForm = type('EditForm', (forms.ModelForm,), customfields)
+    extra_classattributes['Meta'] = Meta
+    EditForm = type('EditForm', (forms.ModelForm,), extra_classattributes)
     cls.EditForm = EditForm
 
 

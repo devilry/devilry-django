@@ -31,4 +31,7 @@ class FieldSpec(object):
             return self.always_available_fields
 
     def additional_aslist(self):
+        """
+        Returns a list of the keys in ``additional_fieldgroups``.
+        """
         return list(self.additional_fieldgroups.keys())
