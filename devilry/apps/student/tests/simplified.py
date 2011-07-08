@@ -159,7 +159,7 @@ class TestSimplifiedAssignment(SimplifiedStudentTestBase):
                         modelinstance_to_dict(self.inf110_secondSem_a2, SimplifiedAssignment.Meta.resultfields.aslist())]
 
         # assert that all search results are as expected
-        self.assertEquals(search_res.count(), 4)
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
@@ -174,7 +174,7 @@ class TestSimplifiedAssignment(SimplifiedStudentTestBase):
                         modelinstance_to_dict(self.inf110_secondSem_a2,
                                               SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras))]
 
-        self.assertEquals(search_res.count(), 4)
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
@@ -183,7 +183,7 @@ class TestSimplifiedAssignment(SimplifiedStudentTestBase):
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1, SimplifiedAssignment.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondSem_a1, SimplifiedAssignment.Meta.resultfields.aslist())]
 
-        self.assertEquals(search_res.count(), 2)
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
@@ -194,7 +194,7 @@ class TestSimplifiedAssignment(SimplifiedStudentTestBase):
                         modelinstance_to_dict(self.inf110_secondSem_a2,
                                               SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras))]
 
-        self.assertEquals(search_res.count(), 2)
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 

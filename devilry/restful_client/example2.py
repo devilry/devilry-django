@@ -110,31 +110,31 @@ if __name__ == "__main__":
             username='grandma', password='test')
 
     restful_factory = RestfulFactory("http://localhost:8000/")
-    node = restful_factory.make("administrator/restfulsimplifiednode/")
-    period = restful_factory.make("administrator/restfulsimplifiedperiod/")
+    SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
+    SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
 
     print 'All nodes:'
-    for x in node.search(limit=4, query=''):
+    for x in SimplifiedNode.search(limit=4, query=''):
         print '  ', x
 
     print
-    print 'Read Node with id=1:'
-    print '  ', node.read(1)
+    print 'Read SimplifiedNode with id=1:'
+    print '  ', SimplifiedNode.read(1)
 
     print
-    print 'Create a new node:'
-    newnode = node.create(short_name='newly_created', long_name='Newly created')
+    print 'Create a new SimplifiedNode:'
+    newnode = SimplifiedNode.create(short_name='newly_created', long_name='Newly created')
     print '  ', newnode
 
     print
-    print 'Update Node with id={0}:'.format(newnode['id'])
-    print '  ', node.update(1, long_name='This has been updated', short_name='has_been_updated')
+    print 'Update SimplifiedNode with id={0}:'.format(newnode['id'])
+    print '  ', SimplifiedNode.update(1, long_name='This has been updated', short_name='has_been_updated')
 
 
     print
-    print 'Delete and re-read Node with id={0}:'.format(newnode['id'])
-    node.delete(newnode['id'])
+    print 'Delete and re-read SimplifiedNode with id={0}:'.format(newnode['id'])
+    SimplifiedNode.delete(newnode['id'])
     try:
-        node.read(1)
+        SimplifiedNode.read(1)
     except HttpResponseForbidden, e:
-        print 'Node with id=1 could not be read (which should be correct since we just deleted it)'
+        print 'SimplifiedNode with id=1 could not be read (which should be correct since we just deleted it)'

@@ -246,6 +246,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
     def q_is_examiner(cls, user_obj):
         return Q(examiners=user_obj)
 
+    @classmethod
+    def where_is_admin_or_superadmin(cls, user_obj):
+        return AssignmentGroup.objects.filter(cls.q_is_admin(user_obj))
+
     def __unicode__(self):
         return u'%s (%s)' % (self.parentnode.get_path(),
                 self.get_candidates())
@@ -325,15 +329,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
 
-    #TODO delete this?
-    #def can_save(self, user_obj):
-        #""" Check if the user has permission to save this AssignmentGroup. """
-        #if user_obj.is_superuser:
-            #return True
-        #elif self.parentnode:
-            #return self.parentnode.is_admin(user_obj)
-        #else:
-            #return False
+    def can_save(self, user_obj):
+        """ Check if the user has permission to save this AssignmentGroup. """
+        if user_obj.is_superuser:
+            return True
+        elif self.parentnode:
+            return self.parentnode.is_admin(user_obj)
+        else:
+            return False
 
     #TODO delete this?
     #def can_add_deliveries(self):
