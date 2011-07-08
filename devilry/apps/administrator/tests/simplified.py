@@ -803,6 +803,10 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1_feedbacks[0],
                                               SimplifiedStaticFeedback.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1_feedbacks[0],
+                                              SimplifiedStaticFeedback.Meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_feedbacks[0],
+                                              SimplifiedStaticFeedback.Meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2_feedbacks[0],
                                               SimplifiedStaticFeedback.Meta.resultfields.aslist())]
 
         # assert that all search results are as expected
@@ -819,6 +823,10 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1_feedbacks[0],
                                               SimplifiedStaticFeedback.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1_feedbacks[0],
+                                              SimplifiedStaticFeedback.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_feedbacks[0],
+                                              SimplifiedStaticFeedback.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2_feedbacks[0],
                                               SimplifiedStaticFeedback.Meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
@@ -828,6 +836,8 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         # search with query
         search_res = SimplifiedStaticFeedback.search(self.admin1, query='a1')
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_feedbacks[0],
+                                              SimplifiedStaticFeedback.Meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_feedbacks[0],
                                               SimplifiedStaticFeedback.Meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1_feedbacks[0],
                                               SimplifiedStaticFeedback.Meta.resultfields.aslist())]
