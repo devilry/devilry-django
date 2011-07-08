@@ -492,3 +492,6 @@ class TestTestHelper(TestCase):
         # assert that the username needs to be unique!
         with self.assertRaises(Exception):
             self.ti.create_superuser('cotryti')
+
+    def test_load_generic_data(self):
+        self.ti.load_generic_scenario()

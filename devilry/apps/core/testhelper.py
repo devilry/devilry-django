@@ -249,7 +249,7 @@ class TestHelper(object):
 
         # if a long_name is given, set it
         if extras['ln']:
-            subject.long_name = extras['ln']
+            subject.long_name = extras['ln'][0]
 
         subject.clean()
         subject.save()
