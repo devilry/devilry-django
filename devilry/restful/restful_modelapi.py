@@ -2,7 +2,6 @@ from types import MethodType
 from inspect import getmodule
 from django import forms
 from django.db.models import DateTimeField
-from django.forms import widgets
 
 from ..simplified import _require_metaattr
 from restful_api import restful_api
@@ -22,6 +21,16 @@ def _create_seachform(cls):
 
 
 def _create_editform(cls):
+    """
+    Generates an inner class named EditForm from ``Meta.resultfields``::
+
+        class EditForm(django.forms.ModelForm):
+            class Meta:
+                model = cls._meta.simplified._meta.model
+                fields = fields_deduced_from_resultfields
+    """
+
+
     formfields = []
     extra_classattributes = {}
     model = cls._meta.simplified._meta.model
@@ -32,7 +41,6 @@ def _create_editform(cls):
             # Therefore, we split on __ and keep the first item.
             # We support foreign keys as fieldname__id (this means that foreign keys must have id as their primary key)
             fieldname, rest = fieldname.split('__', 1)
-            print fieldname, rest
             if not rest == 'id': # We only support foreign keys
                 continue
         formfields.append(fieldname)
@@ -40,7 +48,7 @@ def _create_editform(cls):
         field = model._meta.get_field_by_name(fieldname)[0]
         if isinstance(field, DateTimeField):
             input_formats = input_formats=['%Y-%m-%dT%H:%M:%S',
-                                           '%Y-%m-%d %H:%M:%S']
+                                           '%Y-%m-%d %H:%M:%S'] # TODO: More datetime input formats
             required = not field.blank
             extra_classattributes[fieldname] = forms.DateTimeField(input_formats=input_formats,
                                                                    required=required,
@@ -48,6 +56,7 @@ def _create_editform(cls):
                                                                    help_text=field.help_text,
                                                                    initial=field.default)
 
+    #print cls.__name__, formfields
     class Meta:
         model = cls._meta.simplified._meta.model
         fields = formfields
@@ -76,7 +85,7 @@ def _create_get_foreignkey_fieldcls_method(cls):
         if not fkfieldname in cls.foreignkey_fields:
             return None
         fkrestfulcls = cls.foreignkey_fields[fkfieldname]
-        if isinstance(fkrestfulcls, str):
+        if isinstance(fkrestfulcls, str): # Support giving the class name as string if in the same module. For recursive foreign keys, such as Node.parentnode.
             module = getmodule(cls)
             return getattr(module, fkrestfulcls)
         else:
