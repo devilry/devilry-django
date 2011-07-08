@@ -16,6 +16,14 @@ class CanSaveAuthMixin(object):
         if not obj.can_save(user):
             raise PermissionDenied()
 
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        qryset = cls._meta.model.where_is_admin_or_superadmin(user)
+        parentnode_id = kwargs.pop('parentnode_id', None)
+        if parentnode_id != None:
+            qryset = qryset.filter(parentnode__id = parentnode_id)
+        return qryset
+
 
 @simplified_modelapi
 class SimplifiedNode(CanSaveAuthMixin):
@@ -37,23 +45,17 @@ class SimplifiedNode(CanSaveAuthMixin):
 
 @simplified_modelapi
 class SimplifiedSubject(CanSaveAuthMixin):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta:
         model = models.Subject
         resultfields = FieldSpec('id', 'short_name', 'long_name')
         searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
-    @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        qryset = models.Subject.where_is_admin_or_superadmin(user)
-        parentnode_id = kwargs.pop('parentnode_id', None)
-        if parentnode_id != None:
-            qryset = qryset.filter(parentnode__id = parentnode_id)
-        return qryset
-
 
 @simplified_modelapi
 class SimplifiedPeriod(CanSaveAuthMixin):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta:
         model = models.Period
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
@@ -63,16 +65,10 @@ class SimplifiedPeriod(CanSaveAuthMixin):
                 'parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
-    @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        qryset = models.Period.where_is_admin_or_superadmin(user)
-        parentnode__id = kwargs.pop('parentnode__id', None)
-        if parentnode__id != None:
-            qryset = qryset.filter(parentnode__id = parentnode__id)
-        return qryset
 
 @simplified_modelapi
 class SimplifiedAssignment(CanSaveAuthMixin):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta:
         model = models.Assignment
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
@@ -83,13 +79,9 @@ class SimplifiedAssignment(CanSaveAuthMixin):
                                             'parentnode__parentnode__long_name'],
                                  pointfields = ['anonymous', 'must_pass', 'maxpoints',
                                                 'attempts'])
-        searchfields = FieldSpec('short_name', 'long_name')
+        searchfields = FieldSpec('short_name', 'long_name',
+                                'parentnode__short_name', 
+                                'parentnode__long_name', 
+                                'parentnode__parentnode__short_name', 
+                                'parentnode__parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
-
-    @classmethod
-    def create_searchqryset(cls, user, **kwargs):
-        qryset = models.Assignment.where_is_admin_or_superadmin(user)
-        parentnode__id = kwargs.pop('parentnode__id', None)
-        if parentnode__id != None:
-            qryset = qryset.filter(parentnode__id = parentnode__id)
-        return qryset
