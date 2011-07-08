@@ -460,3 +460,35 @@ class TestTestHelper(TestCase):
             self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
 
             #self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
+
+    def test_refresh_var(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        node = Node.objects.get(pk=self.ti.uio.pk)
+        node.long_name = "university"
+        node.save()
+        self.ti.refresh_var(self.ti.uio)
+        self.assertEquals(node, self.ti.uio)
+
+    def test_create_superuser(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        # create a superuser
+        self.ti.create_superuser('grandma')
+        self.assertTrue(self.ti.grandma.is_superuser)
+
+        # assert that the username needs to be unique!
+        with self.assertRaises(Exception):
+            self.ti.create_superuser('cotryti')

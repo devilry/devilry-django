@@ -24,6 +24,18 @@ class TestHelper(object):
 
     objects_created = 0
 
+    def refresh_var(self, obj):
+        freshed_obj = type(obj).objects.get(pk=obj.pk)
+        for key in vars(self).keys():
+            if vars(self)[key] == obj:
+                vars(self)[key] = freshed_obj
+
+    def create_superuser(self, name):
+        su = User(username=name, is_superuser=True)
+        su.clean()
+        su.save()
+        vars(self)[name] = su
+
     def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False):
         """
         :param assignmentgroup: Expects either a Delivery object or a
