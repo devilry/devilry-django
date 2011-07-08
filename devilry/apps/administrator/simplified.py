@@ -147,3 +147,51 @@ class SimplifiedDelivery(CanSaveAuthMixin):
                                  'assignment_group__parentnode__parentnode__parentnode__long_name',
                                  'assignment_group__parentnode__parentnode__parentnode__short_name')
         methods = ['search', 'read']
+
+
+@simplified_modelapi
+class SimplifiedStaticFeedback():
+    class Meta:
+        _subject_long     = 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'
+        _subject_short    = 'delivery__assignment_group__parentnode__parentnode__parentnode__short_name'
+        _subject_id       = 'delivery__assignment_group__parentnode__parentnode__parentnode__id'
+
+        _period_long      = 'delivery__assignment_group__parentnode__parentnode__long_name'
+        _period_short     = 'delivery__assignment_group__parentnode__parentnode__short_name'
+        _period_id        = 'delivery__assignment_group__parentnode__parentnode__id'
+
+        _assignment_long  = 'delivery__assignment_group__parentnode__long_name'
+        _assignment_short = 'delivery__assignment_group__parentnode__short_name'
+        _assignment_id    = 'delivery__assignment_group__parentnode__id'
+
+        _delivery_time    = 'delivery__time_of_delivery'
+        _delivery_number  = 'delivery__number'
+        _delivery_delivered_by = 'delivery__delivered_by'
+        _delivery_after_deadline = 'delivery__after_deadline'
+
+        model = models.StaticFeedback
+        resultfields = FieldSpec('id', 'grade', 'points', 'is_passing_grade',
+                                 period=[_period_short, _period_long, _period_id],
+                                 subject=[_subject_long, _subject_short, _subject_id],
+                                 assignment=[_assignment_short, _assignment_long, _assignment_id],
+                                 delivery=[_delivery_time, _delivery_number, ])
+        searchfields = FieldSpec(_subject_short,
+                                 _subject_long,
+                                 _period_short,
+                                 _period_long,
+                                 _assignment_long,
+                                 _assignment_short,
+                                 _delivery_number,
+                                 )
+        methods = ['search', 'read']
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        return cls._meta.model.where_is_admin_or_superadmin(user)
+
+    @classmethod
+    def read_authorize(cls, user, obj):
+        #TODO: Replace when issue #141 is resolved!
+        if not user.is_superuser:
+            if not obj.delivery.assignment_group.is_admin(user):
+                raise PermissionDenied()
