@@ -9,9 +9,10 @@ from node import Node
 from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from assignment import Assignment
+from model_utils import Etag, EtagMismatchException
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
-class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
+class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
     Represents a student or a group of students. 
 
@@ -151,6 +152,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
                 'be changed manually.'))
     scaled_points = models.FloatField(default=0.0)
     is_passing_grade = models.BooleanField(default=False)
+    etag = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'core'
@@ -171,6 +173,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_default_deadline:
             self.deadlines.create(deadline=datetime.now(), assignment_group=self, is_head=True)
+
+    def etag_update(self, etag):
+        if self.etag != etag:
+            raise EtagMismatchException(self.etag)
+        super(AssignmentGroup, self).save()
 
     @classmethod
     def q_is_admin(cls, user_obj):

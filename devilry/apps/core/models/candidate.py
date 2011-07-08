@@ -3,7 +3,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.db import models
 
-class Candidate(models.Model):
+from model_utils import Etag
+
+class Candidate(models.Model, Etag):
     """
     .. attribute:: assignment_group
 
@@ -30,7 +32,8 @@ class Candidate(models.Model):
 
     # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
-    
+    etag = models.DateTimeField(auto_now_add=True)
+
     def get_identifier(self):
         """
         Gives the identifier of the candidate. When the Assignment is anyonymous

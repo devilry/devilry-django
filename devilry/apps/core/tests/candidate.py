@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django.test import TestCase
 
 from ..models import AssignmentGroup, Assignment, Candidate
 from ..testhelper import TestHelper
+from ..models.model_utils import EtagMismatchException
 
 class TestCandidate(TestCase, TestHelper):
 
@@ -21,3 +24,16 @@ class TestCandidate(TestCase, TestHelper):
         self.inf1100_autumn_assignment1.anonymous = True
         self.inf1100_autumn_assignment1.save()
         self.assertEquals(self.cand.get_identifier(), "1")
+
+    def test_etag_update(self):
+        etag = datetime.now()
+        obj = self.inf1100
+        #obj.candidate_id = "Test_ID"
+        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
+        try:
+            obj.etag_update(etag)
+        except EtagMismatchException as e:
+            # Should not raise exception
+            obj.etag_update(e.etag)
+        #obj2 = Candidate.objects.get(id=obj.id)
+        #self.assertEquals(obj2.candidate_id, "Test_ID")
