@@ -587,15 +587,10 @@ class TestSimplifiedAdministratorSimplifiedAssignment(SimplifiedAdministratorTes
             self.assertTrue(s in expected_res)
 
     def test_create(self):
-        #TODO: fix this test.. it failes because of:
-        #   ValidationError: {'grade_plugin': [u"Value u'grade_default:charfieldgrade' is not a valid choice."]}
-        pass
-        """
         kw = dict(
                 long_name = 'Test',
                 parentnode = self.inf110_firstSem_a2.parentnode,
-                publishing_time = self.inf110_firstSem_a2.publishing_time,
-                grade_plugin = self.inf110_firstSem_a2.grade_plugin)
+                publishing_time = self.inf110_firstSem_a2.publishing_time)
 
         self.create_res = SimplifiedAssignment.create(self.admin, short_name='test1', **kw)
         self.assertEquals(self.create_res.short_name, 'test1')
@@ -604,32 +599,58 @@ class TestSimplifiedAdministratorSimplifiedAssignment(SimplifiedAdministratorTes
                 self.inf110_firstSem_a2.parentnode)
         self.assertEquals(self.create_res.publishing_time,
                 self.inf110_firstSem_a2.publishing_time)
-        self.assertEquals(self.create_res.grade_plugin,
-                self.inf110_firstSem_a2.grade_plugin)
-        """
 
     def test_create_security(self):
-        #TODO: create new teststash
-        pass
+        kw = dict(
+                long_name = 'Test',
+                parentnode = self.inf110_firstSem_a2.parentnode,
+                publishing_time = self.inf110_firstSem_a2.publishing_time)
+
+        #test that a student cannot create an assignment
+        self.add_to_path('uni;inf110.firstSem.a2.g1:candidate(inf110Student)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.create(self.inf110Student, short_name='test1', **kw)
+
+        #test that an administrator cannot create assignment for the wrong course
+        self.add_to_path('uni;inf101:admin(inf101Admin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.create(self.inf101Admin, short_name='test1', **kw)
+
+        #test that a course-administrator can create assignments for his/her course..
+        self.add_to_path('uni;inf110:admin(inf110Admin)')
+        SimplifiedAssignment.create(self.inf110Admin, short_name='test1', **kw)
 
     def test_update(self):
-        #TODO: fix this test.. it failes because of:
-        #   ValidationError: {'grade_plugin': [u"Value u'grade_default:charfieldgrade' is not a valid choice."]}
-        pass
-        """
         self.assertEquals(self.inf110_firstSem_a2.short_name, 'a2')
 
-        kw = dict(short_name = 'test110',
-                    grade_plugin = self.inf110_firstSem_a2.grade_plugin)
-        update_res = SimplifiedAssignment.update(self.admin, idorkw =
-                self.inf110_firstSem_a2.id, **kw)
+        kw = dict(short_name = 'testa2',
+                    long_name = 'Test',
+                    parentnode = self.inf110_firstSem_a2.parentnode)
 
-        self.assertEquals(self.inf110_firstSem_a2.short_name, 'test110')
-        """
+        update_res = SimplifiedAssignment.update(self.admin, 
+                            idorkw = self.inf110_firstSem_a2.id, 
+                            **kw)
+
+        self.assertEquals(update_res.short_name, 'testa2')
 
     def test_update_security(self):
-        #TODO: create new teststash
-        pass
+        kw = dict(
+                long_name = 'TestAssignment',
+                short_name = 'ta')
+
+        #test that a student cannot change an assignment
+        self.add_to_path('uni;inf110.firstSem.a2.g1:candidate(inf110Student)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.update(self.inf110Student, idorkw=self.inf110_firstSem_a2.id, **kw)
+
+        #test that an administrator cannot change assignment for the wrong course
+        self.add_to_path('uni;inf101:admin(inf101Admin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.update(self.inf101Admin, idorkw=self.inf110_firstSem_a2.id, **kw)
+
+        #test that a course-administrator can change assignments for his/her course..
+        self.add_to_path('uni;inf110:admin(inf110Admin)')
+        SimplifiedAssignment.update(self.inf110Admin, idorkw=self.inf110_firstSem_a2.id, **kw)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf110.firstSem.a1:admin(testadmin)')
