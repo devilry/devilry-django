@@ -1,3 +1,4 @@
+import textwrap
 from os import listdir, getcwd
 from os.path import dirname, abspath, join, exists
 from subprocess import call, Popen, PIPE
@@ -147,17 +148,18 @@ def depends(*cmds):
 def require_djangoproject():
     """ Make sure the current working directory is a django project. """
     if not exists(join(getcwd(), 'manage.py')):
-        warning = "This command requires CWD to be a django project "
-        warning += "(a directory containing manage.py).\nchanging CWD to default: projects/dev/"
-        printWarning(warning)
         devpath = join(getreporoot(), 'devilry', 'projects', 'dev')
+        warning = ("This command requires CWD to be a django project "
+                   "(a directory containing manage.py). Changing "
+                   "CWD to default: {devpath}").format(devpath=devpath)
+        printWarning(warning)
         chdir(devpath)
 
 
 def printWarning(warning):
-    marker = '#'.join('=' for x in xrange(35))
-
-    print '{0}\n{1}\n{0}'.format(marker, warning)
+    width = 80
+    marker = '#'.join('=' for x in xrange(width/2))
+    print '{0}\n{1}\n{0}'.format(marker, textwrap.fill(warning, width))
 
 class DevilryAdmArgumentParser(ArgumentParser):
     """ Extends ArgumentParser and overrides ``__init__`` to set ``prog`` to
