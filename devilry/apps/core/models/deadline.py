@@ -1,10 +1,16 @@
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models
+from django.db.models import Q
 
+from abstract_is_examiner import AbstractIsExaminer
+from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
 
-class Deadline(models.Model):
+from node import Node
+
+
+class Deadline(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     """
     .. attribute:: assignment_group
 
@@ -112,3 +118,14 @@ class Deadline(models.Model):
         #if self.is_head:
             #raise PermissionDenied()
         #super(Deadline, self).delete(*args, **kwargs)
+
+    @classmethod
+    def q_is_admin(cls, user_obj):
+        return Q(assignment_group__parentnode__admins=user_obj) | \
+            Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
+            Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+            Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+
+    @classmethod
+    def where_is_admin_or_superadmin(cls, user_obj):
+        return cls.objects.filter(cls.q_is_admin(user_obj))
