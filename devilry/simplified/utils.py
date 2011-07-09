@@ -7,7 +7,10 @@ def _get_instanceattr(instance, fieldname):
     fieldvalue = getattr(instance, fieldname)
     field = instance.__class__._meta.get_field_by_name(fieldname)[0]
     if isinstance(field, ForeignKey):
-        return fieldvalue.pk
+        if fieldvalue == None: # If the foreign key is null
+            return None
+        else:
+            return fieldvalue.pk
     else:
         return fieldvalue
 
