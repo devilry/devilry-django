@@ -40,7 +40,6 @@ class FieldSpec(object):
         """ Get all fields belonging to the current table.
 
         Fields not belonging to the current table are any field
-        containing ``__``.
-        ``__id``. """
+        containing ``__``. """
         return [fieldname for fieldname in self.aslist(self.additional_aslist()) \
                 if not '__' in fieldname]
