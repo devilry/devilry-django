@@ -44,7 +44,7 @@ class SimplifiedSubject(CanSaveAuthMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta:
         model = models.Subject
-        resultfields = FieldSpec('id', 'short_name', 'long_name')
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode')
         searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
