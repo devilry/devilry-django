@@ -1,3 +1,4 @@
+from django.db.models.fields import AutoField
 import create
 
 
@@ -15,21 +16,25 @@ def _require_attr(cls, attr):
                                                                classname=cls.__name__,
                                                                attr=attr))
 
-def _cache_localfields(cls):
-    cls._meta.local_resultfields = cls._meta.resultfields.localfields_aslist()
-    cls._meta.local_searchfields = cls._meta.searchfields.localfields_aslist()
+def _create_meta_ediablefields(cls):
+    if not hasattr(cls._meta, 'editablefields'):
+        cls._meta.editablefields = set(cls._meta.resultfields.localfields_aslist())
+        pk = cls._meta.model._meta.pk
+        if pk.get_attname() in cls._meta.editablefields:
+            if isinstance(pk, AutoField):
+                cls._meta.editablefields.remove(pk.get_attname())
 
 
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
 
     The ``cls`` must have an inner class named ``Meta`` with
-    the following required attributes:
+    the following attributes:
 
         model
-            Then Django model.
+            Then Django model. **Required**.
         methods
-            A list of supported CRUD+S methods. Legal values are:
+            A list of supported CRUD+S methods. **Required**. Legal values are:
 
                 - create
                 - read
@@ -38,10 +43,18 @@ def simplified_modelapi(cls):
                 - delete
         resultfields
             A :class:`FieldSpec` which defines what fields to
-            return from ``read()`` and ``search()``.
+            return from ``read()`` and ``search()``. **Required**.
         searchfields
             A :class:`FieldSpec` which defines what fields to
-            search in ``search()``.
+            search in ``search()``. **Required**.
+        editablefields
+            A set of fields that are editable. If this is not specified,
+            it defaults to ``resultfields.localfields_aslist()`` with
+            the primary key field removed if it is a AutoField.
+
+            Only fields in this set may be given as ``field_values``
+            to ``update()`` or ``create()``. Furthermore, these
+            fields are used to generate forms in :ref:`restful`.
 
     The ``cls`` must have the following methods for handling permissions:
 
@@ -58,6 +71,7 @@ def simplified_modelapi(cls):
 
         _meta
             Alias for the Meta class (above).
+        _meta.editablefields
         supports_create
             Boolean variable: is ``'create'`` in ``_meta.methods``.
         supports_read
@@ -80,7 +94,7 @@ def simplified_modelapi(cls):
     _require_metaattr(cls, 'methods')
     _require_metaattr(cls, 'resultfields')
     _require_metaattr(cls, 'searchfields')
-    _cache_localfields(cls)
+    _create_meta_ediablefields(cls)
     cls._meta.methods = set(cls._meta.methods)
     if 'read' in cls._meta.methods:
         _require_attr(cls, 'read_authorize')
