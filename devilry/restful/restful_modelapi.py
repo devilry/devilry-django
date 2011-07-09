@@ -34,15 +34,7 @@ def _create_editform(cls):
     formfields = []
     extra_classattributes = {}
     model = cls._meta.simplified._meta.model
-    resultfields = cls._meta.simplified._meta.resultfields
-    for fieldname in resultfields.aslist(resultfields.additional_aslist()):
-        if '__' in fieldname:
-            # Fieldnames can only be be fields in this model.
-            # Therefore, we split on __ and keep the first item.
-            # We support foreign keys as fieldname__id (this means that foreign keys must have id as their primary key)
-            fieldname, rest = fieldname.split('__', 1)
-            if not rest == 'id': # We only support foreign keys
-                continue
+    for fieldname in cls._meta.simplified.local_resultfields:
         formfields.append(fieldname)
 
         field = model._meta.get_field_by_name(fieldname)[0]
@@ -91,7 +83,6 @@ def _create_get_foreignkey_fieldcls_method(cls):
         else:
             return fkrestfulcls
     setattr(cls._meta, get_foreignkey_fieldcls.__name__, MethodType(get_foreignkey_fieldcls, cls._meta))
-
 
 
 def restful_modelapi(cls):
