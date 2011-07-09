@@ -3,7 +3,7 @@ from inspect import getmodule
 from django import forms
 from django.db.models import DateTimeField
 
-from ..simplified import _require_metaattr
+from ..simplified.modelapi import _require_metaattr
 from restful_api import restful_api
 import fields
 
