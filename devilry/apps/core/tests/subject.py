@@ -1,10 +1,12 @@
+from datetime import datetime, timedelta
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from datetime import datetime, timedelta
 
 from ..models import Node, Subject
 from ..testhelper import TestHelper
+from ..models.model_utils import EtagMismatchException
 
 class TestSubject(TestCase, TestHelper):
 
@@ -24,6 +26,19 @@ class TestSubject(TestCase, TestHelper):
         s = Subject(parentnode=Node.objects.get(short_name='uio'),
                 short_name='inf1060', long_name='INF1060')
         self.assertRaises(IntegrityError, s.save)
+
+    def test_etag_update(self):
+        etag = datetime.now()
+        obj = self.inf1100
+        obj.long_name = "Test"
+        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
+        try:
+            obj.etag_update(etag)
+        except EtagMismatchException as e:
+            # Should not raise exception
+            obj.etag_update(e.etag)
+        obj2 = Subject.objects.get(id=obj.id)
+        self.assertEquals(obj2.long_name, "Test")
 
     def test_where_is_admin(self):
         uioadmin = User.objects.get(username='uioadmin')

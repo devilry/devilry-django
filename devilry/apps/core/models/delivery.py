@@ -132,7 +132,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         return Q(assignment_group__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
                 Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)) \
+                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     #TODO delete this?
     #@classmethod

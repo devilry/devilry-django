@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -6,6 +8,7 @@ from datetime import datetime, timedelta
 
 from ..models import Period, Subject
 from ..testhelper import TestHelper
+from ..models.model_utils import EtagMismatchException
 
 class TestPeriod(TestCase, TestHelper):
 
@@ -22,6 +25,19 @@ class TestPeriod(TestCase, TestHelper):
                 start_time=datetime.now(),
                 end_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
+
+    def test_etag_update(self):
+        etag = datetime.now()
+        obj = self.inf1100_looong
+        obj.minimum_points = 66
+        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
+        try:
+            obj.etag_update(etag)
+        except EtagMismatchException as e:
+            # Should not raise exception
+            obj.etag_update(e.etag)
+        obj2 = Period.objects.get(id=obj.id)
+        self.assertEquals(obj2.minimum_points, 66)
 
     def test_where_is_admin(self):
         self.assertEquals(Period.where_is_admin(self.uioadmin).count(), 2)

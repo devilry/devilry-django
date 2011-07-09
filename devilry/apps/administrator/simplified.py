@@ -147,3 +147,39 @@ class SimplifiedDelivery(CanSaveAuthMixin):
                                  'assignment_group__parentnode__parentnode__parentnode__long_name',
                                  'assignment_group__parentnode__parentnode__parentnode__short_name')
         methods = ['search', 'read']
+
+
+@simplified_modelapi
+class SimplifiedDeadline(CanSaveAuthMixin):
+    class Meta:
+
+        subject = ['assignment_group__parentnode__parentnode__parentnode__id',
+                   'assignment_group__parentnode__parentnode__parentnode__long_name',
+                   'assignment_group__parentnode__parentnode__parentnode__short_name']
+        period = ['assignment_group__parentnode__parentnode__id',
+                  'assignment_group__parentnode__parentnode__long_name',
+                  'assignment_group__parentnode__parentnode__short_name']
+        assignment = ['assignment_group__parentnode__id',
+                      'assignment_group__parentnode__long_name',
+                      'assignment_group__parentnode__short_name']
+        assignmentgroup = ['assignment_group__id',
+                           'assignment_group__candidates__identifier',
+                           'assignment_group__examiners__username',
+                           'assignment_group__status']
+
+        model = models.Deadline
+        resultfields = FieldSpec('id', 'status', 'deadline', 'text',
+                                 'deliveries_available_before_deadline',
+                                 'feedbacks_published', 'is_head',
+                                 assignmentgroup=assignmentgroup,
+                                 assignment=assignment,
+                                 period=period,
+                                 subject=subject
+                                 )
+        searchfields = FieldSpec('status', 'deadline',
+                                 subject[1], subject[2],
+                                 period[1], period[2],
+                                 assignment[1], assignment[2],
+                                 assignmentgroup[1], assignmentgroup[2], assignmentgroup[3]
+                                 )
+        methods = ['search', 'read', 'update', 'create', 'delete']
