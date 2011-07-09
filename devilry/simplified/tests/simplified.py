@@ -1,5 +1,5 @@
 from django.test import TestCase
-from devilry.apps.core import models, testhelper
+from devilry.apps.core import testhelper
 from ..utils import modelinstance_to_dict
 from devilry.simplified import FieldSpec
 
@@ -18,11 +18,11 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
     def test_model_to_dict_assignment(self):
         _subject_long     = 'parentnode__parentnode__long_name'
         _subject_short    = 'parentnode__parentnode__short_name'
-        _subject_id       = 'parentnode__parentnode__id'
+        _subject_id       = 'parentnode__parentnode'
 
         _period_long      = 'parentnode__long_name'
         _period_short     = 'parentnode__short_name'
-        _period_id        = 'parentnode__id'
+        _period_id        = 'parentnode'
 
         _assignment_long  = 'long_name'
         _assignment_short = 'short_name'

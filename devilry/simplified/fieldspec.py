@@ -31,16 +31,15 @@ class FieldSpec(object):
             return self.always_available_fields
 
     def additional_aslist(self):
-        lst = []
-        for value in self.additional_fieldgroups.keys():
-            lst.append(value)
-        return lst
+        """
+        Returns a list of the keys in ``additional_fieldgroups``.
+        """
+        return list(self.additional_fieldgroups.keys())
 
-    def _asdocstring(self):
-        always = '    {0}'.format(', '.join(self.always_available_fields))
-        docs = ['Always available', always, 'Additional fieldgroups']
-        for fieldgroup, fields in self.additional_fieldgroups:
-            docs.append(fieldgroup)
-            docs.append('    {0}'.format(', '.join(fields)))
-        return docs
+    def localfields_aslist(self):
+        """ Get all fields belonging to the current table.
 
+        Fields not belonging to the current table are any field
+        containing ``__``. """
+        return [fieldname for fieldname in self.aslist(self.additional_aslist()) \
+                if not '__' in fieldname]

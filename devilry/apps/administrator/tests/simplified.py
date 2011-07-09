@@ -615,19 +615,13 @@ class TestSimplifiedAdministratorSimplifiedAssignment(SimplifiedAdministratorTes
         pass
 
     def test_update(self):
-        #TODO: fix this test.. it failes because of:
-        #   ValidationError: {'grade_plugin': [u"Value u'grade_default:charfieldgrade' is not a valid choice."]}
-        pass
-        """
+        # TODO: More tests
         self.assertEquals(self.inf110_firstSem_a2.short_name, 'a2')
-
-        kw = dict(short_name = 'test110',
-                    grade_plugin = self.inf110_firstSem_a2.grade_plugin)
-        update_res = SimplifiedAssignment.update(self.admin, idorkw =
-                self.inf110_firstSem_a2.id, **kw)
-
+        update_res = SimplifiedAssignment.update(self.admin,
+                                                 idorkw=self.inf110_firstSem_a2.id,
+                                                 short_name = 'test110')
+        self.refresh_var(self.inf110_firstSem_a2)
         self.assertEquals(self.inf110_firstSem_a2.short_name, 'test110')
-        """
 
     def test_update_security(self):
         #TODO: create new teststash

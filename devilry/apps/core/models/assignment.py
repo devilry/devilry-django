@@ -13,10 +13,11 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
+from model_utils import Etag, EtagMismatchException
 
 from .. import gradeplugin
 
-class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
+class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
 
     .. attribute:: parentnode
@@ -103,6 +104,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     short_name = ShortNameField()
     long_name = LongNameField()
     parentnode = models.ForeignKey(Period, related_name='assignments')
+    etag = models.DateTimeField(auto_now_add=True)
     publishing_time = models.DateTimeField(
             verbose_name=_("Publishing time"))
     anonymous = models.BooleanField(default=False,
@@ -162,7 +164,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                                  'avalable to the students immediately? If not, an '
                                                                  'administrator have to publish feedbacks '
                                                                  'manually.'))
-
+    
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
