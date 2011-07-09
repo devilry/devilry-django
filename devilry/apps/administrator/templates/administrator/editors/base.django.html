@@ -5,7 +5,7 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedClass|extjs_model }}
+    {{ RestfulSimplifiedClass|extjs_model:"pointfields" }}
     var periodstore = {{ RestfulSimplifiedClass|extjs_store }}
     //periodstore.load();
 

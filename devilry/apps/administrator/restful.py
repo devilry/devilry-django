@@ -2,7 +2,7 @@ from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
 from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery)
-from ..extjshelpers import extjs_restful_modelapi
+from ..extjshelpers import extjs_restful_modelapi, wizard
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
@@ -18,7 +18,7 @@ administrator_restful = RestfulManager()
 class RestfulSimplifiedNode(ModelRestfulView):
     class Meta:
         simplified = SimplifiedNode
-        foreignkey_fields = {'parentnode__id': 'RestfulSimplifiedNode'}
+        foreignkey_fields = {'parentnode': 'RestfulSimplifiedNode'}
 
     class ExtjsModelMeta:
         combobox_displayfield = 'short_name'
@@ -32,7 +32,7 @@ class RestfulSimplifiedNode(ModelRestfulView):
 class RestfulSimplifiedSubject(ModelRestfulView):
     class Meta:
         simplified = SimplifiedSubject
-        foreignkey_fields = {'parentnode__id': RestfulSimplifiedNode}
+        foreignkey_fields = {'parentnode': RestfulSimplifiedNode}
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
@@ -46,7 +46,7 @@ class RestfulSimplifiedSubject(ModelRestfulView):
 class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
         simplified = SimplifiedPeriod
-        foreignkey_fields = {'parentnode__id': RestfulSimplifiedSubject}
+        foreignkey_fields = {'parentnode': RestfulSimplifiedSubject}
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
@@ -62,7 +62,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
 class RestfulSimplifiedAssignment(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignment
-        foreignkey_fields = {'parentnode__id': RestfulSimplifiedPeriod}
+        foreignkey_fields = {'parentnode': RestfulSimplifiedPeriod}
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
@@ -71,6 +71,12 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
                         '<div class="unimportant">{long_name}</div>')
         combobox_displayfield = 'short_name'
 
+        wizard = wizard.Wizards(
+                wizard.Wizard("Simple obligatory assignment",
+                               ("An assignment where each student is corrected "
+                                "by a single examiner."),
+                               wizard.Page(fields=['parentnode', 'publishing_time']))
+            )
 
 @administrator_restful.register
 @extjs_restful_modelapi
@@ -78,7 +84,7 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
 class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignmentGroup
-        foreignkey_fields = {'parentnode__id': RestfulSimplifiedAssignment}
+        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """
@@ -93,7 +99,7 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
 class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDelivery
-        foreignkey_fields = {'parentnode__id': RestfulSimplifiedAssignmentGroup}
+        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
 
     class ExtjsModelMeta:
         """ Metadata for javascript. """

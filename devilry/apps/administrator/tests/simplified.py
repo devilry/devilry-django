@@ -6,6 +6,8 @@ from ....simplified import PermissionDenied
 from ...core import testhelper
 from ....simplified.utils import modelinstance_to_dict
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedStaticFeedback
+from ....simplified.utils import modelinstance_to_dict
+from ...core import models, testhelper
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline
 
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
@@ -644,6 +646,13 @@ class TestSimplifiedAdministratorSimplifiedAssignment(SimplifiedAdminTestBase):
                             **kw)
 
         self.assertEquals(update_res.short_name, 'testa2')
+        self.assertEquals(self.inf110_firstSem_a2.short_name, 'a2')
+
+        update_res = SimplifiedAssignment.update(self.admin1,
+                                                 idorkw=self.inf110_firstSem_a2.id,
+                                                 short_name = 'test110')
+        self.refresh_var(self.inf110_firstSem_a2)
+        self.assertEquals(self.inf110_firstSem_a2.short_name, 'test110')
 
     def test_update_security(self):
         kw = dict(
