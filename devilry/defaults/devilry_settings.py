@@ -9,7 +9,7 @@ DEVILRY_MAIN_PAGE = ''
 
 # The default grade-plugin:
 # grade_default:approvedgrade, grade_rstschema:rstschemagrade or grade_default:charfieldgrade
-DEVILRY_DEFAULT_GRADEPLUGIN='grade_default:charfieldgrade'
+DEVILRY_DEFAULT_GRADEPLUGIN='fake'
 
 DEVILRY_STATIC_URL = '/static'
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'

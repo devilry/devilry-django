@@ -44,16 +44,11 @@ class QryResultWrapper(object):
         return len(self._insecure_django_qryset)
         return self._insecure_django_qryset.count()
 
-    def _valuesQryset(self):
-        if not self._cached_valuesqryset:
-            self._cached_valuesqryset = self._insecure_django_qryset.values(*self.resultfields)
-        return self._cached_valuesqryset
-
     def __iter__(self):
         """ Iterate over all items in the result, yielding a dict
         containing the result data for each item. """
-        for item in self._valuesQryset():
-            yield item
+        for item in self._insecure_django_qryset.all():
+            yield modelinstance_to_dict(item, self.resultfields)
 
     def _create_q(self, query):
         """ Create a ``django.db.models.Q`` object from the given

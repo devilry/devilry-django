@@ -13,12 +13,6 @@ class GradePluginDoesNotExistError(Exception):
 
 
 
-def get_registry_key(model_cls):
-    """ Get the registry key for the given model class. """
-    meta = model_cls._meta
-    return '%s:%s' % (meta.app_label, meta.module_name)
-
-
 class RegistryItem(object):
     """
     Information about a grade plugin.
@@ -38,9 +32,6 @@ class RegistryItem(object):
         self.label = label
         self.description = description
 
-    def get_key(self):
-        return get_registry_key(self.model_cls)
-
     def __str__(self):
         return self.label
 
@@ -51,7 +42,7 @@ class Registry(object):
     It is already available as :attr:`registry`.
     """
     def __init__(self):
-        self._registry = {}
+        self._registry = {'fake': RegistryItem(None, 'fake', 'Fake')} # TODO: This hack must be replaced when we develop the new grade plugins
 
     def register(self, registryitem):
         """
@@ -65,12 +56,6 @@ class Registry(object):
         """
         return self._registry[key]
 
-    def getitem_from_cls(self, cls):
-        """
-        Get the :class:`RegistryItem` registered with the given class.
-        """
-        return self._registry[get_registry_key(cls)]
-
     def getdefaultkey(self):
         """
         Get the default key (the key defined in the
@@ -80,10 +65,8 @@ class Registry(object):
 
     def iterlabels(self):
         """ Iterate over the registry yielding (key, label). """
-        values = self._registry.values()
-        values.sort(key=lambda i: i.label)
-        for v in values:
-            yield (v.get_key(), v)
+        for key, item in self._registry.iteritems():
+            yield key, item.label
 
     def iteritems(self):
         """ Iterate over the registry yielding (key, RegistryItem). """

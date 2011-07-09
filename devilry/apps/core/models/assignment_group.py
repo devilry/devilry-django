@@ -9,9 +9,10 @@ from node import Node
 from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from assignment import Assignment
+from model_utils import Etag, EtagMismatchException
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
-class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
+class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
     Represents a student or a group of students. 
 
@@ -151,6 +152,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
                 'be changed manually.'))
     scaled_points = models.FloatField(default=0.0)
     is_passing_grade = models.BooleanField(default=False)
+    etag = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'core'
@@ -325,15 +327,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
 
-    #TODO delete this?
-    #def can_save(self, user_obj):
-        #""" Check if the user has permission to save this AssignmentGroup. """
-        #if user_obj.is_superuser:
-            #return True
-        #elif self.parentnode:
-            #return self.parentnode.is_admin(user_obj)
-        #else:
-            #return False
+    def can_save(self, user_obj):
+        """ Check if the user has permission to save this AssignmentGroup. """
+        if user_obj.is_superuser:
+            return True
+        elif self.parentnode:
+            return self.parentnode.is_admin(user_obj)
+        else:
+            return False
 
     #TODO delete this?
     #def can_add_deliveries(self):

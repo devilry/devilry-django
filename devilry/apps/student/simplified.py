@@ -2,6 +2,9 @@ from ...simplified import (simplified_modelapi, SimplifiedModelApi,
                            PermissionDenied, FieldSpec)
 from ..core import models
 
+# TODO: Add SimplifiedDeadline
+# TODO: Add SimplifiedNode
+
 
 class PublishedWhereIsCandidateMixin(object):
 

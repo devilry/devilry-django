@@ -1,6 +1,6 @@
 #from django.db.models import fields
 from django.db.models.fields.related import ForeignKey
-from django.db.models.fields import DateTimeField
+from django.db.models import fields
 from comboboxintegration import restfulcls_to_extjscombobox_xtype
 from datepickerintegration import restfulcls_to_datepicker_xtype
 
@@ -15,24 +15,18 @@ from datepickerintegration import restfulcls_to_datepicker_xtype
 
 
 def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
-    #print "djangofield", type(djangofield)
-    #TODO root restfulcls
     if isinstance(djangofield, ForeignKey):
         return restfulcls_to_extjscombobox_xtype(foreignkey_restfulcls)
-    elif isinstance(djangofield, DateTimeField):
-        #print "FIELD: ", djangofield.start_time
+    elif isinstance(djangofield, fields.DateTimeField):
         return restfulcls_to_datepicker_xtype()
+    elif isinstance(djangofield, fields.BooleanField):
+        return "xtype: 'checkbox'"
     else:
         return "xtype: 'textfield'"
 
 
 def djangofield_to_extjsformfield(model, fieldname, foreignkey_restfulcls):
-    if "__" in fieldname:
-        real_fieldname = fieldname.split('__')[0]
-    else:
-        real_fieldname = fieldname
-    #!!! INTERNAL DJANGO
-    field = model._meta.get_field_by_name(real_fieldname)[0]
+    field = model._meta.get_field_by_name(fieldname)[0] #!!! INTERNAL DJANGO
     xtype = djangofield_to_extjs_xtype(field, foreignkey_restfulcls)
     extfield = '{{ name: "{fieldname}", fieldLabel: "{field.verbose_name}", '\
             '{xtype} }}'.format(fieldname=fieldname, field=field,

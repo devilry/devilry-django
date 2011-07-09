@@ -5,11 +5,13 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 
+from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from delivery import Delivery
+from node import Node
 
-class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
+class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
     """ Represents a feedback for a `Delivery`_.
 
     Each delivery can have zero or more feedbacks. Each StaticFeedback object stores
@@ -69,6 +71,13 @@ class StaticFeedback(models.Model, AbstractIsExaminer, AbstractIsCandidate):
         verbose_name = _('Static feedback')
         verbose_name_plural = _('Static feedbacks')
         ordering = ['-save_timestamp']
+
+    @classmethod
+    def q_is_admin(cls, user_obj):
+        return Q(delivery__assignment_group__parentnode__admins=user_obj) | \
+                Q(delivery__assignment_group__parentnode__parentnode__admins=user_obj) | \
+                Q(delivery__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+                Q(delivery__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_candidate(cls, user_obj):
