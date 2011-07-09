@@ -47,3 +47,7 @@ pre {
     border-left: none;
     border-right: none;
 }
+
+blockquote dl.docutils dt {
+    font-style: italic;
+}
