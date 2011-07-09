@@ -76,7 +76,7 @@ def create_read_method(cls):
         resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
         #if hasattr(cls, 'filter_read_resultfields'):
             #resultfields = cls.filter_read_resultfields(user, obj, resultfields)
-        return modelinstance_to_dict(obj, fields=resultfields)
+        return modelinstance_to_dict(obj, resultfields)
     setattr(cls, read.__name__, MethodType(read, cls))
 
 def create_delete_method(cls):
