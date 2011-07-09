@@ -1,3 +1,7 @@
+
+def _is_local_field(fieldname):
+    return not '__' in fieldname
+
 class FieldSpec(object):
     """
     Specifies and groups fields for search and read results.
@@ -42,4 +46,18 @@ class FieldSpec(object):
         Fields not belonging to the current table are any field
         containing ``__``. """
         return [fieldname for fieldname in self.aslist(self.additional_aslist()) \
-                if not '__' in fieldname]
+                if _is_local_field(fieldname)]
+
+    def localfieldgroups_aslist(self):
+        """ Get all fieldgroups containing fields belonging to the current table.
+
+        Fields not belonging to the current table are any field
+        containing ``__``. """
+        local_fieldgroups = []
+        for fieldgroup, fieldnames in self.additional_fieldgroups.iteritems():
+            for fieldname in fieldnames:
+                if _is_local_field(fieldname):
+                    local_fieldgroups.append(fieldname)
+                    break
+        return local_fieldgroups
+
