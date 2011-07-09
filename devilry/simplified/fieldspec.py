@@ -35,3 +35,12 @@ class FieldSpec(object):
         Returns a list of the keys in ``additional_fieldgroups``.
         """
         return list(self.additional_fieldgroups.keys())
+
+    def localfields_aslist(self):
+        """ Get all fields belonging to the current table.
+
+        Fields not belonging to the current table are any field
+        containing ``__``.
+        ``__id``. """
+        return [fieldname for fieldname in self.aslist(self.additional_aslist()) \
+                if not '__' in fieldname]

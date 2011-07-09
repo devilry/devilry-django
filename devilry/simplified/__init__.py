@@ -17,6 +17,10 @@ def _require_attr(cls, attr):
         raise ValueError('%s.%s is missing the required "%s" attribute.' % (
             cls.__module__, cls.__name__, attr))
 
+def _cache_localfields(cls):
+    cls._meta.local_resultfields = cls._meta.resultfields.localfields_aslist()
+    cls._meta.local_searchfields = cls._meta.searchfields.localfields_aslist()
+
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
 
@@ -77,6 +81,7 @@ def simplified_modelapi(cls):
     _require_metaattr(cls, 'methods')
     _require_metaattr(cls, 'resultfields')
     _require_metaattr(cls, 'searchfields')
+    _cache_localfields(cls)
     cls._meta.methods = set(cls._meta.methods)
     if 'read' in cls._meta.methods:
         _require_attr(cls, 'read_authorize')
