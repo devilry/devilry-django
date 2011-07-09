@@ -1,7 +1,8 @@
 from django.test import TestCase
 
 from ....simplified import PermissionDenied
-from ...core import models
+from ....simplified.utils import modelinstance_to_dict
+from ...core import models, testhelper
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline
 
 
