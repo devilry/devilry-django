@@ -34,7 +34,7 @@ def _create_editform(cls):
     formfields = []
     extra_classattributes = {}
     model = cls._meta.simplified._meta.model
-    for fieldname in cls._meta.simplified.local_resultfields:
+    for fieldname in cls._meta.simplified._meta.editablefields:
         formfields.append(fieldname)
 
         field = model._meta.get_field_by_name(fieldname)[0]
