@@ -67,7 +67,7 @@ class SimplifiedAssignment(CanSaveAuthMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta:
         model = models.Assignment
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode',
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode', 'publishing_time',
                                  period = ['parentnode__short_name',
                                            'parentnode__long_name',
                                            'parentnode__parentnode'],
