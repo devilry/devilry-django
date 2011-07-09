@@ -70,7 +70,7 @@ class SimplifiedAssignment(CanSaveAuthMixin):
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode',
                                  period = ['parentnode__short_name',
                                            'parentnode__long_name',
-                                           'parentnode__parentnode__id'],
+                                           'parentnode__parentnode'],
                                  subject = ['parentnode__parentnode__short_name',
                                             'parentnode__parentnode__long_name'],
                                  pointfields = ['anonymous', 'must_pass', 'maxpoints',
@@ -92,10 +92,10 @@ class SimplifiedAssignmentGroup(CanSaveAuthMixin):
                                  assignment=['parentnode',
                                              'parentnode__long_name',
                                              'parentnode__short_name'],
-                                 period=['parentnode__parentnode__id',
+                                 period=['parentnode__parentnode',
                                          'parentnode__parentnode__long_name',
                                          'parentnode__parentnode__short_name'],
-                                 subject=['parentnode__parentnode__parentnode__id',
+                                 subject=['parentnode__parentnode__parentnode',
                                           'parentnode__parentnode__parentnode__long_name',
                                           'parentnode__parentnode__parentnode__short_name']
                                  )
@@ -119,15 +119,15 @@ class SimplifiedAssignmentGroup(CanSaveAuthMixin):
 class SimplifiedDelivery(CanSaveAuthMixin):
     class Meta:
         model = models.Delivery
-        resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'assignment_group__id',
-                                 assignment_group=['assignment_group__id', 'assignment_group__name'],
-                                 assignment=['assignment_group__parentnode__id',
+        resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'assignment_group',
+                                 assignment_group=['assignment_group', 'assignment_group__name'],
+                                 assignment=['assignment_group__parentnode',
                                              'assignment_group__parentnode__long_name',
                                              'assignment_group__parentnode__short_name'],
-                                 period=['assignment_group__parentnode__parentnode__id',
+                                 period=['assignment_group__parentnode__parentnode',
                                          'assignment_group__parentnode__parentnode__long_name',
                                          'assignment_group__parentnode__parentnode__short_name'],
-                                 subject=['assignment_group__parentnode__parentnode__parentnode__id',
+                                 subject=['assignment_group__parentnode__parentnode__parentnode',
                                           'assignment_group__parentnode__parentnode__parentnode__long_name',
                                           'assignment_group__parentnode__parentnode__parentnode__short_name'])
         searchfields = FieldSpec('number',
@@ -153,16 +153,16 @@ class SimplifiedDelivery(CanSaveAuthMixin):
 class SimplifiedDeadline(CanSaveAuthMixin):
     class Meta:
 
-        subject = ['assignment_group__parentnode__parentnode__parentnode__id',
+        subject = ['assignment_group__parentnode__parentnode__parentnode',
                    'assignment_group__parentnode__parentnode__parentnode__long_name',
                    'assignment_group__parentnode__parentnode__parentnode__short_name']
-        period = ['assignment_group__parentnode__parentnode__id',
+        period = ['assignment_group__parentnode__parentnode',
                   'assignment_group__parentnode__parentnode__long_name',
                   'assignment_group__parentnode__parentnode__short_name']
-        assignment = ['assignment_group__parentnode__id',
+        assignment = ['assignment_group__parentnode',
                       'assignment_group__parentnode__long_name',
                       'assignment_group__parentnode__short_name']
-        assignmentgroup = ['assignment_group__id',
+        assignmentgroup = ['assignment_group',
                            'assignment_group__candidates__identifier',
                            'assignment_group__examiners__username',
                            'assignment_group__status']
