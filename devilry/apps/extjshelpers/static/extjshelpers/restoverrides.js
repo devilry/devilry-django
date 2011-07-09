@@ -52,7 +52,7 @@ Ext.override(Ext.form.action.Submit, {
         this.operation = operation;
         this.response = operation.response;
         if(operation.responseData) {
-            this.form.markInvalid(operation.responseData.errors);
+            this.form.markInvalid(operation.responseData.items.fielderrors);
         }
 
         if(operation.error.status === 0) {
