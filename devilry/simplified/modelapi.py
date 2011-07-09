@@ -17,13 +17,19 @@ def _require_attr(cls, attr):
                                                                attr=attr))
 
 def _create_meta_ediablefields(cls):
-    if not hasattr(cls._meta, 'editablefields'):
-        cls._meta.editablefields = set(cls._meta.resultfields.localfields_aslist())
+    if hasattr(cls._meta, 'editablefields'):
+        editablefields = cls._meta.editablefields
+    else:
+        editablefields = cls._meta.resultfields.localfields_aslist()
         pk = cls._meta.model._meta.pk
-        if pk.get_attname() in cls._meta.editablefields:
+        if pk.get_attname() in editablefields:
             if isinstance(pk, AutoField):
-                cls._meta.editablefields.remove(pk.get_attname())
+                editablefields.remove(pk.get_attname())
+    cls._meta.editablefields = set(editablefields)
 
+def _create_meta_ediable_fieldgroups(cls):
+    if not hasattr(cls._meta, 'editable_fieldgroups'):
+        cls._meta.editable_fieldgroups = cls._meta.resultfields.localfieldgroups_aslist()
 
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
@@ -48,13 +54,17 @@ def simplified_modelapi(cls):
             A :class:`FieldSpec` which defines what fields to
             search in ``search()``. **Required**.
         editablefields
-            A set of fields that are editable. If this is not specified,
+            A list of fields that are editable. If this is not specified,
             it defaults to ``resultfields.localfields_aslist()`` with
             the primary key field removed if it is a AutoField.
 
             Only fields in this set may be given as ``field_values``
             to ``update()`` or ``create()``. Furthermore, these
             fields are used to generate forms in :ref:`restful`.
+        editable_fieldgroups
+            A list of result field groups which should at least contain
+            all fields in ``editablefields``. Defaults to
+            ``resultfields.localfieldgroups_aslist()``
 
     The ``cls`` must have the following methods for handling permissions:
 
@@ -95,6 +105,7 @@ def simplified_modelapi(cls):
     _require_metaattr(cls, 'resultfields')
     _require_metaattr(cls, 'searchfields')
     _create_meta_ediablefields(cls)
+    _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
     if 'read' in cls._meta.methods:
         _require_attr(cls, 'read_authorize')
