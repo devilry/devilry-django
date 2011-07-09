@@ -1,9 +1,11 @@
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django import forms
 
 from ..simplified import PermissionDenied
 from errors import InvalidRequestDataError
 from restview import RestfulView
 from serializers import serializers, SerializableResult
+import fields
 
 
 class ErrorMsgSerializableResult(SerializableResult):
@@ -16,6 +18,18 @@ class ForbiddenSerializableResult(ErrorMsgSerializableResult):
         super(ForbiddenSerializableResult, self).__init__('Forbidden',
                                                           HttpResponseForbidden)
 
+class FormErrorSerializableResult(SerializableResult):
+    def __init__(self, form):
+        fielderrors = dict(form.errors)
+        non_field_errors = list(form.non_field_errors())
+        result = dict(fielderrors=fielderrors, errormessages=non_field_errors)
+        result = self._extjswrap_failure(result)
+        super(FormErrorSerializableResult, self).__init__(result, httpresponsecls=HttpResponseBadRequest)
+
+
+class ReadForm(forms.Form):
+    result_fieldgroups = fields.CharListWithFallbackField()
+
 
 class ModelRestfulView(RestfulView):
     """
@@ -23,6 +37,7 @@ class ModelRestfulView(RestfulView):
     :class:`restful_modelapi`-decorator to autogenerate a RESTful
     interface for a simplified class (see :ref:`simplified`).
     """
+
 
     @classmethod
     def _searchform_to_kwargs(cls, getdata):
@@ -74,11 +89,6 @@ class ModelRestfulView(RestfulView):
 
     def _create_or_replace(self, instance=None):
         data = serializers.deserialize(self.comformat, self.request.raw_post_data)
-        #for key in data: # NOTE: Should not be needed anymore since __ is not used for foreign keys.
-            #if '__' in key:  # Foreign keys
-                #item = data.pop(key)
-                #newkey = key.split('__')[0]
-                #data[newkey] = item
         form = self.__class__.EditForm(data, instance=instance)
         result = None
         if form.is_valid():
@@ -87,16 +97,10 @@ class ModelRestfulView(RestfulView):
             result = self._extjswrap(data)
             return SerializableResult(result)
         else:
-            fielderrors = dict(form.errors)
-            non_field_errors = list(form.non_field_errors())
-            result = dict(fielderrors=fielderrors, errormessages=non_field_errors)
-            self._extjswrap_failure(result)
-            return SerializableResult(result, httpresponsecls=HttpResponseBadRequest)
+            return FormErrorSerializableResult(form)
 
 
-
-    def crud_search(self, request, **kwargs):
-        """ Maps to the ``search`` method of the simplified class. """
+    def _load_getdata(self):
         if 'getdata_in_qrystring' in self.request.GET: # NOTE: For easier ExtJS integration
             data = self.request.GET
         else:
@@ -107,28 +111,39 @@ class ModelRestfulView(RestfulView):
                                                    'send GET data as a querystring? In that case, add '
                                                    'getdata_in_qrystring=1 to your querystring.'.format(e)),
                                                   httpresponsecls=HttpResponseBadRequest)
-        try:
-            form = self.__class__._searchform_to_kwargs(data)
-        except InvalidRequestDataError, e:
-            return ErrorMsgSerializableResult("Bad request: %s" % e,
-                                              httpresponsecls=HttpResponseBadRequest)
+        return data
 
-        form.update(**kwargs) # add variables from url PATH
-        qryresultwrapper = self._meta.simplified.search(self.request.user, **form)
-        resultlist = self.restultqry_to_list(qryresultwrapper)
-        result = self._extjswrap(resultlist)
-        return SerializableResult(result)
+    def crud_search(self, request, **kwargs):
+        """ Maps to the ``search`` method of the simplified class. """
+        getdata = self._load_getdata()
+        form = self.__class__.SearchForm(getdata)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            cleaned_data.update(**kwargs) # add variables from url PATH
+            qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
+            resultlist = self.restultqry_to_list(qryresultwrapper)
+            result = self._extjswrap(resultlist)
+            return SerializableResult(result)
+        else:
+            return FormErrorSerializableResult(form)
+
 
 
     def crud_read(self, request, id):
         """ Maps to the ``read`` method of the simplified class. """
-        try:
-            data = self._meta.simplified.read(self.request.user, id)
-        except PermissionDenied, e:
-            return ForbiddenSerializableResult()
-        if self.use_extjshacks:
-            data = dict(items=data, total=1, success=True)
-        return SerializableResult(data)
+        getdata = self._load_getdata()
+        form = ReadForm(getdata)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            try:
+                data = self._meta.simplified.read(self.request.user, id, **cleaned_data)
+            except PermissionDenied, e:
+                return ForbiddenSerializableResult()
+            if self.use_extjshacks:
+                data = dict(items=data, total=1, success=True)
+            return SerializableResult(data)
+        else:
+            return FormErrorSerializableResult(form)
 
 
     def crud_create(self, request):
