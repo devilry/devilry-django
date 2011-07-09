@@ -8,6 +8,20 @@ from serializers import serializers, SerializableResult
 import fields
 
 
+def _extjswrap(data, use_extjshacks, success=True):
+    if use_extjshacks:
+        if isinstance(data, list):
+            result = dict(total = len(data),
+                          items = data)
+        elif isinstance(data, dict):
+            result = dict(items=data)
+        else:
+            raise ValueError('_extjswrap only supports list and dict, not: {type}'.format(type=type(data)))
+        result['success'] = success
+        return result
+    else:
+        return data
+
 class ErrorMsgSerializableResult(SerializableResult):
     def __init__(self, errormessage, httpresponsecls):
         super(ErrorMsgSerializableResult, self).__init__(dict(errormessages=[errormessage]),
@@ -19,11 +33,11 @@ class ForbiddenSerializableResult(ErrorMsgSerializableResult):
                                                           HttpResponseForbidden)
 
 class FormErrorSerializableResult(SerializableResult):
-    def __init__(self, form):
+    def __init__(self, form, use_extjshacks):
         fielderrors = dict(form.errors)
         non_field_errors = list(form.non_field_errors())
         result = dict(fielderrors=fielderrors, errormessages=non_field_errors)
-        result = self._extjswrap_failure(result)
+        result = _extjswrap(result, use_extjshacks, success=False)
         super(FormErrorSerializableResult, self).__init__(result, httpresponsecls=HttpResponseBadRequest)
 
 
@@ -67,21 +81,8 @@ class ModelRestfulView(RestfulView):
         return cls.filter_urlmap(itemdct)
 
 
-    def _extjswrap(self, data, success=True):
-        if self.use_extjshacks:
-            if isinstance(data, list):
-                result = dict(total = len(data),
-                              items = data)
-            elif isinstance(data, dict):
-                result = dict(items=data)
-            result['success'] = success
-            return result
-        else:
-            return data
-
-    def _extjswrap_failure(self, data):
-        return self._extjswrap(data, success=False)
-
+    def _extjswrapshortcut(self, data, success=True):
+        return _extjswrap(data, self.use_extjshacks, success)
 
     def restultqry_to_list(self, qryresultwrapper):
         return [self.__class__.filter_resultitem(itemdct) \
@@ -94,10 +95,10 @@ class ModelRestfulView(RestfulView):
         if form.is_valid():
             form.save()
             data['id'] = form.instance.id
-            result = self._extjswrap(data)
+            result = self._extjswrapshortcut(data)
             return SerializableResult(result)
         else:
-            return FormErrorSerializableResult(form)
+            return FormErrorSerializableResult(form, self.use_extjshacks)
 
 
     def _load_getdata(self):
@@ -122,10 +123,10 @@ class ModelRestfulView(RestfulView):
             cleaned_data.update(**kwargs) # add variables from url PATH
             qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
             resultlist = self.restultqry_to_list(qryresultwrapper)
-            result = self._extjswrap(resultlist)
+            result = self._extjswrapshortcut(resultlist)
             return SerializableResult(result)
         else:
-            return FormErrorSerializableResult(form)
+            return FormErrorSerializableResult(form, self.use_extjshacks)
 
 
 
@@ -139,11 +140,10 @@ class ModelRestfulView(RestfulView):
                 data = self._meta.simplified.read(self.request.user, id, **cleaned_data)
             except PermissionDenied, e:
                 return ForbiddenSerializableResult()
-            if self.use_extjshacks:
-                data = dict(items=data, total=1, success=True)
+            data = self._extjswrapshortcut(data)
             return SerializableResult(data)
         else:
-            return FormErrorSerializableResult(form)
+            return FormErrorSerializableResult(form, self.use_extjshacks)
 
 
     def crud_create(self, request):
@@ -162,7 +162,7 @@ class ModelRestfulView(RestfulView):
         """ Maps to the ``delete`` method of the simplified class. """
         self._meta.simplified.delete(request.user, id)
         try:
-            data = self._extjswrap(dict(pk=id))
+            data = self._extjswrapshortcut(dict(pk=id))
             return SerializableResult(data)
         except PermissionDenied, e:
             return ForbiddenSerializableResult()
