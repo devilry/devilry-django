@@ -26,7 +26,7 @@ class SimplifiedNode(CanSaveAuthMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
     class Meta:
         model = models.Node
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode')
         searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
@@ -35,7 +35,7 @@ class SimplifiedNode(CanSaveAuthMixin):
         qryset = models.Node.where_is_admin_or_superadmin(user)
         parentnode_id = kwargs.pop('parentnode_id', 'DO_NOT_FILTER')
         if parentnode_id != "DO_NOT_FILTER":
-            qryset = qryset.filter(parentnode__id = parentnode_id)
+            qryset = qryset.filter(parentnode = parentnode_id)
         return qryset
 
 
@@ -54,7 +54,7 @@ class SimplifiedPeriod(CanSaveAuthMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta:
         model = models.Period
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode',
                 'start_time', 'end_time',
                 subject = ['parentnode__short_name', 'parentnode__long_name'])
         searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
@@ -67,7 +67,7 @@ class SimplifiedAssignment(CanSaveAuthMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta:
         model = models.Assignment
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id',
+        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode',
                                  period = ['parentnode__short_name',
                                            'parentnode__long_name',
                                            'parentnode__parentnode__id'],
@@ -89,7 +89,7 @@ class SimplifiedAssignmentGroup(CanSaveAuthMixin):
         model = models.AssignmentGroup
         resultfields = FieldSpec('id', 'name', 'is_open', 'status',
                                  users=['examiners__username', 'candidates__identifier'],
-                                 assignment=['parentnode__id',
+                                 assignment=['parentnode',
                                              'parentnode__long_name',
                                              'parentnode__short_name'],
                                  period=['parentnode__parentnode__id',
