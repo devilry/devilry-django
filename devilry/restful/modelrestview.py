@@ -74,11 +74,11 @@ class ModelRestfulView(RestfulView):
 
     def _create_or_replace(self, instance=None):
         data = serializers.deserialize(self.comformat, self.request.raw_post_data)
-        for key in data:
-            if "__" in key:  # Foreign keys
-                item = data.pop(key)
-                newkey = key.split('__')[0]
-                data[newkey] = item
+        #for key in data: # NOTE: Should not be needed anymore since __ is not used for foreign keys.
+            #if '__' in key:  # Foreign keys
+                #item = data.pop(key)
+                #newkey = key.split('__')[0]
+                #data[newkey] = item
         form = self.__class__.EditForm(data, instance=instance)
         result = None
         if form.is_valid():
