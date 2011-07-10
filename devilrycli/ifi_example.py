@@ -44,19 +44,28 @@ def nodepath_to_fields(nodepath):
 #nodesearch = SimplifiedPeriod.search(logincookie, parentnode=4)
 #print nodesearch
 print "Create nodes, or update if they already exist:"
-print
-print SimplifiedNode.search(logincookie, short_name='matnat', parentnode__short_name='uio')
 for path, nodedata in nodes:
     pathfields = nodepath_to_fields(path)
     matches = SimplifiedNode.search(logincookie, **pathfields)
     if len(matches) == 0:
         nodedata['short_name'] = pathfields['short_name']
-        print pathfields, nodedata
-        newnode = SimplifiedNode.create(logincookie, **nodedata)
+        del pathfields['short_name']
+        parentnode_path = path.rsplit('.', 1)
+        if len(parentnode_path) == 1:
+            parentnode_id = None
+        else:
+            parentnode_path = parentnode_path[0]
+            parentnodesearch = SimplifiedNode.search(logincookie, **nodepath_to_fields(parentnode_path))
+            if len(parentnodesearch) == 0:
+                raise ValueError('Paretnode for "{0}" does not exist.'.format(path))
+            parentnode_id = parentnodesearch[0]['id']
+        newnode = SimplifiedNode.create(logincookie, parentnode=parentnode_id, **nodedata)
+        print 'Created:', newnode
     elif len(matches) == 1:
         currentnode = matches[0]
         currentnode.update(**nodedata) # Add our data to the node
-        SimplifiedNode.update(logincookie, **currentnode)
+        updated_node = SimplifiedNode.update(logincookie, **currentnode)
+        print 'Updated:', updated_node
     else:
         raise ValueError('More than one match. This is a bug, since our search should match only one item.')
 
