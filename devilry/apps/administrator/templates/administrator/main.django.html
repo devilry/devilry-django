@@ -11,12 +11,12 @@
         {{ RestfulCls|extjs_combobox_model }}
     {% endfor %}
 
-    var nodestore = {{ RestfulSimplifiedNode|extjs_store }}
-    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store }}
-    var periodstore = {{ RestfulSimplifiedPeriod|extjs_store }}
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
+    var nodestore = {{ RestfulSimplifiedNode|extjs_store:3 }}
+    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store:3 }}
+    var periodstore = {{ RestfulSimplifiedPeriod|extjs_store:3 }}
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
 
     Ext.require('devilry.administrator.SearchWidget');
     Ext.onReady(function() {
