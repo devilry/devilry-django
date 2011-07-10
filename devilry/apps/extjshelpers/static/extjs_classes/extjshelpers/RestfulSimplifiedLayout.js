@@ -3,21 +3,11 @@
  * @xtype administratorrestfulsimplifiedlayout
  * */
 Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.administratorrestfulsimplifiedlayout',
 
     initComponent: function() {
         var me = this;
-
-        var editformargs = {
-            id: me.getChildIdBySuffix('editform'),
-            xtype: 'form',
-            layout: 'fit',
-            disabled: true,
-            model: this.model,
-            items: this.editformitems
-        };
-
         
         var deletebuttonargs = {
             xtype: 'button',
@@ -52,50 +42,35 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             }
         };
 
-        var editbuttonargs = {
+        this.overlayBar = Ext.create('Ext.button.Button', {
             xtype: 'button',
-            flex: 0,
-            text: 'Edit',
-            handler: function() {
-                me.editable();
+            scale: 'large',
+            text: 'Click to edit',
+            floating: true,
+            listeners: {
+                click: function(button, pressed) {
+                    me.editable();
+                }
             }
+        });
+
+
+        var editformargs = {
+            id: me.getChildIdBySuffix('editform'),
+            xtype: 'form',
+            //layout: 'fit',
+            disabled: true,
+            model: this.model,
+            items: this.editformitems,
+            buttons: [
+                savebuttonargs,
+            ]
         };
 
 
         Ext.apply(this, {
-            items: [editformargs, {
-                xtype: 'container',
-                id: me.getChildIdBySuffix('buttoncarddeck'),
-                layout: 'card',
-                items: [{
-                    xtype: 'container',
-                    id: me.getChildIdBySuffix('readonlybuttons'),
-                    height: 40,
-                    layout: {
-                        type: 'hbox',
-                        pack: 'start',
-                        align: 'stretch'
-                    },
-                    items: [
-                        deletebuttonargs,
-                        { xtype: 'tbspacer', flex: 1 }, 
-                        editbuttonargs
-                    ]
-                }, {
-                    xtype: 'container',
-                    id: me.getChildIdBySuffix('editbuttons'),
-                    height: 40,
-                    layout: {
-                        type: 'hbox',
-                        pack: 'start',
-                        align: 'stretch'
-                    },
-                    items: [{
-                        xtype: 'tbspacer',
-                        flex: 1
-                    }, savebuttonargs ]
-                }]
-            }]
+            items: [editformargs],
+            layout: 'fit'
         });
         this.callParent(arguments);
 
@@ -126,17 +101,25 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         });
     },
 
+    getFormButtonBar: function() {
+        return this.editform.dockedItems.items[0];
+    },
+
     readonly: function() {
         this.editform.disable();
-        Ext.getCmp(this.getChildIdBySuffix('buttoncarddeck')).getLayout().setActiveItem(this.getChildIdBySuffix('readonlybuttons'));
+        this.overlayBar.show();
+        this.overlayBar.alignTo(this, 'tr-tr');
+        this.getFormButtonBar().hide();
     },
     editable: function() {
         this.editform.enable();
-        Ext.getCmp(this.getChildIdBySuffix('buttoncarddeck')).getLayout().setActiveItem(this.getChildIdBySuffix('editbuttons'));
+        this.overlayBar.hide();
+        this.getFormButtonBar().show();
     },
 
     loadUpdateMode: function(record_id) {
         this.loadRecordFromStore(record_id);
+        this.readonly();
     },
     loadCreateMode: function() {
         this.editable();
