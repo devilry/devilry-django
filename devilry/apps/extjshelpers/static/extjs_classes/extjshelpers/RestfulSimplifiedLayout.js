@@ -18,6 +18,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             text: 'Delete',
             flex: 0,
             hidden: !this.supports_delete,
+            iconCls: 'icon-delete',
             handler: function() {
                 // TODO: Confirm
                 me.editform.submit({
@@ -34,6 +35,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             xtype: 'button',
             text: 'Save',
             scale: 'large',
+            iconCls: 'icon-save',
             handler: function() {
                 me.editform.getForm().submit({
                     submitEmptyText: true,
@@ -51,6 +53,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             xtype: 'button',
             //scale: 'large',
             text: 'Click to edit',
+            iconCls: 'icon-edit',
             listeners: {
                 click: function(button, pressed) {
                     me.editable();

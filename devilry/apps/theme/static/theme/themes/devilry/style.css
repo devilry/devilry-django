@@ -130,6 +130,19 @@ body>#main {
 }
 
 
+
+.icon-delete {
+    background-image: url(icons/delete.png);
+}
+.icon-edit {
+    background-image: url(icons/edit.png);
+}
+.icon-save {
+    background-image: url(icons/save.png);
+}
+
+
+
 /**
  *
  * Footer
