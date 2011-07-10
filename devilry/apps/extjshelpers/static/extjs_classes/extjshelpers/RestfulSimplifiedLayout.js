@@ -20,12 +20,16 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             hidden: !this.supports_delete,
             iconCls: 'icon-delete',
             handler: function() {
-                // TODO: Confirm
-                me.editform.submit({
-                    submitEmptyText: true,
-                    method: 'DELETE',
-                    waitMsg: 'Deleting item...',
-                    success: function() {
+                Ext.MessageBox.show({
+                    title: 'Confirm delete',
+                    msg: 'Are you sure you want to delete?',
+                    animateTarget: this,
+                    buttons: Ext.Msg.YESNO,
+                    icon: Ext.Msg.ERROR,
+                    fn: function(btn) {
+                        if(btn == 'yes') {
+                            me.deleteCurrent();
+                        }
                     }
                 });
             }
@@ -34,7 +38,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         var savebuttonargs = {
             xtype: 'button',
             text: 'Save',
-            scale: 'large',
+            scale: 'medium',
             iconCls: 'icon-save',
             handler: function() {
                 me.editform.getForm().submit({
@@ -51,7 +55,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
 
         var clicktoeditbuttonargs = {
             xtype: 'button',
-            //scale: 'large',
             text: 'Click to edit',
             iconCls: 'icon-edit',
             listeners: {
@@ -64,7 +67,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         this.overlayBar = Ext.create('Ext.container.Container', {
             floating: true,
             cls: 'form-overlay-bar',
-            height: 40,
+            height: 30,
             width: 300,
             layout: {
                 type: 'hbox',
@@ -112,6 +115,16 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         this.callParent(arguments);
 
         this.editform = Ext.getCmp(editformargs.id);
+    },
+
+    deleteCurrent: function() {
+        this.editform.submit({
+            submitEmptyText: true,
+            method: 'DELETE',
+            waitMsg: 'Deleting item...',
+            success: function() {
+            }
+        });
     },
 
     getChildIdBySuffix: function(idsuffix) {
