@@ -81,27 +81,19 @@ class SimplifiedModelApi(object):
         return obj
 
     @classmethod
-    def create_search_qryresultwrapper(cls, user,
-                                       result_fieldgroups, search_fieldgroups,
-                                       **filters):
+    def handle_fieldgroups(cls, user,
+                           result_fieldgroups, search_fieldgroups,
+                           **filters):
         """
-        A more powerful alternative to :meth:`create_searchqryset`. By
-        default, this method runs :meth:`create_searchqryset`. Override
-        this to control the searchfields and resultfields forwarded
-        to :class:`QryResultWrapper`.
+        Can be overridden to change fieldgroups before they are sent into the
+        QryResultWrapper. For example, if certain fieldgroups contain
+        senstive data for anonymous assignments, we can add those fieldgroups
+        if a filter for a specific assignment is provided in ``filters`` and
+        that assignment is not anonymous.
 
-        :param filters:
-            Keyword arguments which are forwarded to
-            :meth:`create_searchqryset`, so that it is called
-            as: ``cls.create_searchqryset(user, **filters)``.
-
-        :return: A :class:`QryResultWrapper`.
+        :return: (result_fieldgroups, search_fieldgroups)
         """
-        qryset = cls.create_searchqryset(user, **filters)
-        resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
-        searchfields = cls._meta.searchfields.aslist(search_fieldgroups)
-        result = QryResultWrapper(resultfields, searchfields, qryset)
-        return result
+        return result_fieldgroups, search_fieldgroups
 
     @classmethod
     def create_searchqryset(cls, user, **filters):
@@ -111,6 +103,29 @@ class SimplifiedModelApi(object):
         :return: A Django QuerySet.
         """
         raise NotImplementedError()
+
+    @classmethod
+    def _create_search_qryresultwrapper(cls, user,
+                                       result_fieldgroups, search_fieldgroups,
+                                       **filters):
+        """
+        :param filters:
+            Keyword arguments which are forwarded to
+            :meth:`create_searchqryset`, so that it is called
+            as: ``cls.create_searchqryset(user, **filters)``.
+
+        :return: A :class:`QryResultWrapper`.
+        """
+        qryset = cls.create_searchqryset(user)
+        qryset = qryset.filter(**filters)
+        result_fieldgroups, search_fieldgroups = cls.handle_fieldgroups(user,
+                                                                        result_fieldgroups,
+                                                                        search_fieldgroups,
+                                                                        **filters)
+        resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
+        searchfields = cls._meta.searchfields.aslist(search_fieldgroups)
+        result = QryResultWrapper(resultfields, searchfields, qryset)
+        return result
 
     @classmethod
     def create(cls, user, **field_values):
@@ -242,7 +257,7 @@ class SimplifiedModelApi(object):
         :return: The result of the search.
         :rtype: QryResultWrapper
         """
-        result = cls.create_search_qryresultwrapper(user,
+        result = cls._create_search_qryresultwrapper(user,
                                                     result_fieldgroups, search_fieldgroups,
                                                     **filters)
         orderby = orderby or cls._meta.ordering
