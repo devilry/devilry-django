@@ -63,7 +63,6 @@ class QryResultWrapper(object):
                 result_q = word_q
             else:
                 result_q &= word_q
-        print result_q
         return result_q
 
     def _create_word_q(self, queryword):
