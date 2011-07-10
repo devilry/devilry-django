@@ -1,11 +1,10 @@
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
-from django import forms
 
 from ..simplified import PermissionDenied
 from errors import InvalidRequestDataError
 from restview import RestfulView
 from serializers import serializers, SerializableResult
-import fields
+from readform import ReadForm
 
 
 def _extjswrap(data, use_extjshacks, success=True):
@@ -39,10 +38,6 @@ class FormErrorSerializableResult(SerializableResult):
         result = dict(fielderrors=fielderrors, errormessages=non_field_errors)
         result = _extjswrap(result, use_extjshacks, success=False)
         super(FormErrorSerializableResult, self).__init__(result, httpresponsecls=HttpResponseBadRequest)
-
-
-class ReadForm(forms.Form):
-    result_fieldgroups = fields.CharListWithFallbackField()
 
 
 class ModelRestfulView(RestfulView):
@@ -108,15 +103,18 @@ class ModelRestfulView(RestfulView):
             try:
                 data = serializers.deserialize(self.comformat, self.request.raw_post_data)
             except ValueError, e:
-                return ErrorMsgSerializableResult(('Bad request data: {0}. Perhaps you ment to'
-                                                   'send GET data as a querystring? In that case, add '
-                                                   'getdata_in_qrystring=1 to your querystring.'.format(e)),
-                                                  httpresponsecls=HttpResponseBadRequest)
+                raise ValueError(('Bad request data: {0}. Perhaps you ment to'
+                                  'send GET data as a querystring? In that case, add '
+                                  'getdata_in_qrystring=1 to your querystring.'.format(e)))
         return data
 
     def crud_search(self, request, **kwargs):
         """ Maps to the ``search`` method of the simplified class. """
-        getdata = self._load_getdata()
+        try:
+            getdata = self._load_getdata()
+        except ValueError, e:
+            return ErrorMsgSerializableResult(str(e),
+                                              httpresponsecls=HttpResponseBadRequest)
         form = self.__class__.SearchForm(getdata)
         if form.is_valid():
             cleaned_data = form.cleaned_data
@@ -132,7 +130,11 @@ class ModelRestfulView(RestfulView):
 
     def crud_read(self, request, id):
         """ Maps to the ``read`` method of the simplified class. """
-        getdata = self._load_getdata()
+        try:
+            getdata = self._load_getdata()
+        except ValueError, e:
+            return ErrorMsgSerializableResult(str(e),
+                                              httpresponsecls=HttpResponseBadRequest)
         form = ReadForm(getdata)
         if form.is_valid():
             cleaned_data = form.cleaned_data
