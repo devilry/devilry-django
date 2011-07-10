@@ -2,6 +2,8 @@ from django.db.models.fields import AutoField
 
 import create
 from qryresultwrapper import QryResultWrapper
+from utils import modelinstance_to_dict
+from exceptions import PermissionDenied
 
 
 
@@ -41,6 +43,37 @@ class SimplifiedModelApi(object):
     """
     Base class for all simplified APIs.
     """
+
+    @classmethod
+    def _getwrapper(cls, idorkw):
+        if isinstance(idorkw, dict):
+            kw = idorkw
+        else:
+            kw = dict(pk=idorkw)
+        try:
+            return cls._meta.model.objects.get(**kw)
+        except cls._meta.model.DoesNotExist, e:
+            raise PermissionDenied() # Raise permission denied instead of "does not exist" to make it impossible to "brute force" query for existing items
+
+    @classmethod
+    def _writeauth_get(cls, user, idorkw):
+        obj = cls._getwrapper(idorkw)
+        cls.write_authorize(user, obj)
+        return obj
+
+    @classmethod
+    def _set_values(cls, obj, field_values):
+        for fieldname, value in field_values.iteritems():
+            if not fieldname in cls._meta.editablefields:
+                raise PermissionDenied('Field {fieldname} can not be edited.'.format(fieldname=fieldname))
+            setattr(obj, fieldname, value)
+
+    @classmethod
+    def _readauth_get(cls, user, idorkw):
+        obj = cls._getwrapper(idorkw)
+        cls.read_authorize(user, obj)
+        return obj
+
     @classmethod
     def create_search_qryresultwrapper(cls, user,
                                        result_fieldgroups, search_fieldgroups,
@@ -64,6 +97,95 @@ class SimplifiedModelApi(object):
         """
         """
         raise NotImplementedError()
+
+    @classmethod
+    def create(cls, user, **field_values):
+        """ Create the given object.
+
+        :param user: Django user object.
+        :field_values: The values to set on the given object.
+        :throws PermissionDenied:
+            If the given user does not have permission to edit this object,
+            if the object does not exist, or if any of the ``field_values``
+            is not in ``cls._meta.editablefields``.
+        """
+        obj =  cls._meta.model()
+        cls._set_values(obj, field_values)
+        cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+        obj.full_clean()
+        obj.save()
+        return obj
+
+    @classmethod
+    def read(cls, user, idorkw, result_fieldgroups=[]):
+        """ Read the requested item and return a dict with the fields specified
+        in ``Meta.resultfields`` and additional fields specified in
+        ``result_fieldgroups``.
+
+        :param user: Django user object.
+        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :param result_fieldgroups:
+            Fieldgroups from the additional_fieldgroups specified in
+            ``result_fieldgroups``.
+
+        :throws PermissionDenied:
+            If the given user does not have permission to view this object, or
+            if the object does not exist.
+        """
+        obj = cls._readauth_get(user, idorkw) # authorization in cls._readauth_get
+        resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
+        #if hasattr(cls, 'filter_read_resultfields'):
+            #resultfields = cls.filter_read_resultfields(user, obj, resultfields)
+        return modelinstance_to_dict(obj, resultfields)
+
+    @classmethod
+    def insecure_read_model(cls, user, idorkw):
+        """ Read the requested item and return a django model object.
+
+        :param user: Django user object.
+        :param idorkw: Id of object or kwargs to the get method of the configured model.
+
+        :throws PermissionDenied:
+            If the given user does not have permission to
+            view this object, or if the object does not exist.
+        """
+        return cls._writeauth_get(user, idorkw)
+
+    @classmethod
+    def update(cls, user, idorkw, **field_values):
+        """ Update the given object.
+
+        :param user: Django user object.
+        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :field_values: The values to set on the given object.
+        :throws PermissionDenied:
+            If the given user does not have permission to edit this object,
+            if the object does not exist, or if any of the ``field_values``
+            is not in ``cls._meta.editablefields``.
+        """
+        obj = cls._getwrapper(idorkw)
+        cls._set_values(obj, field_values)
+        # Important to write authorize after _set_values in case any attributes
+        # used in write_authorize is changed by _set_values.
+        cls.write_authorize(user, obj)
+        obj.full_clean()
+        obj.save()
+        return obj
+
+    @classmethod
+    def delete(cls, user, idorkw):
+        """ Delete the given object.
+
+        :param user: Django user object.
+        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :throws PermissionDenied:
+            If the given user does not have permission to delete this object, or
+            if the object does not exist.
+        """
+        obj = cls._writeauth_get(user, idorkw) # authorization in cls._writeauth_get
+        pk = obj.pk
+        obj.delete()
+        return pk
 
     @classmethod
     def search(cls, user,
@@ -115,7 +237,6 @@ class SimplifiedModelApi(object):
                                     limit = limit,
                                     orderby = orderby)
         return result
-
 
 
 
@@ -201,11 +322,12 @@ def simplified_modelapi(cls):
     if cls._meta.methods and cls._meta.methods.issubset(writemethods): # Check for empty methods to support empty methods list ([] is a subset of any set)
         _require_attr(cls, 'write_authorize')
 
-    # Dynamically create create(), read(), insecure_read_model(), update(), delete()
-    for method in cls._meta.methods:
-        getattr(create, 'create_{methodname}_method'.format(methodname=method))(cls) # Calls create.create_[CRUD+S]_method(cls)
-
+    # Dynamically remove create(), read(), insecure_read_model(), update(), delete() if not supported
     cls._all_crud_methods = ('create', 'read', 'insecure_read_model', 'update', 'delete')
+    for method in cls._all_crud_methods:
+        if not method in cls._meta.methods:
+            setattr(cls, method, None)
+
     for method in cls._all_crud_methods:
         setattr(cls, 'supports_{0}'.format(method), method in cls._meta.methods)
     return cls
