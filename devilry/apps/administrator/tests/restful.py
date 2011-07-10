@@ -8,17 +8,6 @@ from ...core import models, testhelper
 
 
 
-class TestAdministratorRestfulSimplifiedNodeNoFixture(TestCase):
-    def test_getdata_to_kwargs(self):
-        kw = RestfulSimplifiedNode._searchform_to_kwargs({})
-        self.assertEquals(kw, {'orderby': ['short_name'],
-                               'start': 0,
-                               'limit': 50,
-                               'result_fieldgroups': None,
-                               'query': u'',
-                               'search_fieldgroups': None})
-
-
 class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def setUp(self):
         self.add(nodes='uni:admin(admin1)')

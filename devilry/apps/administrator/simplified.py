@@ -1,6 +1,6 @@
 from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            PermissionDenied, FieldSpec,
-                           FilterSpecs, FilterSpec, ForeignFilterSpec)
+                           FilterSpecs, FilterSpec, ForeignFilterSpec, PatternFilterSpec)
 from ..core import models
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
@@ -33,7 +33,10 @@ class SimplifiedNode(CanSaveBase):
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
         filters = FilterSpecs(FilterSpec('parentnode'),
                               FilterSpec('short_name'),
-                              FilterSpec('long_name'))
+                              FilterSpec('long_name'),
+                              PatternFilterSpec('parentnode__*short_name'),
+                              PatternFilterSpec('parentnode__*long_name'),
+                              PatternFilterSpec('parentnode__*id'))
 
     @classmethod
     def create_searchqryset(cls, user):
