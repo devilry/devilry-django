@@ -11,6 +11,7 @@ from node import Node
 from period import Period
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
+from candidate import Candidate
 from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
 from model_utils import Etag, EtagMismatchException
@@ -184,6 +185,22 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         for group in self.assignmentgroups.iterator():
             group.scaled_points = group._get_scaled_points()
             group.save()
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            # Only when assignment already exists in the database
+            self.update_anonymous(True)
+        super(Assignment, self).save(*args, **kwargs)
+
+    def update_anonymous(self, anonymous):
+        a = Assignment.objects.get(id=self.id)
+        if self.anonymous == a.anonymous:
+            return
+        # Get all candidates on assignmentgroups for this assignment
+        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
+        # Each candidate recalculates the identifier
+        for cands in candidates: 
+            cands.save()
 
     #TODO delete this?
     #def save(self, *args, **kwargs):

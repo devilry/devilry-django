@@ -17,8 +17,8 @@ class TestAssignment(TestCase, TestHelper):
                  subjects=["inf1100"],
                  periods=["old:begins(-2):ends(1)", "looong"],
                  assignments=["assignment1", "assignment2"],
-                 assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)",
-                                   "g3:examiner(examiner1,examiner2)"])
+                 assignmentgroups=["g1:candidate(student1):examiner(examiner1)", "g2:examiner(examiner2)",
+                                   "g3:candidate(student2,student3):examiner(examiner1,examiner2)"])
         self.add_to_path('uio.ifi;inf1100.looong.assignment3.group1:examiner(examiner1)')
         self.add_to_path('uio.ifi;inf1100.old.oldassignment.group1:examiner(examiner3)')
 
@@ -28,6 +28,13 @@ class TestAssignment(TestCase, TestHelper):
                 publishing_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
 
+#def anon_test(self):
+#    print "\n\n\ntest anon1:", self.inf1100_looong_assignment1.anonymous
+#    self.inf1100_looong_assignment1.anonymous = True
+#    self.inf1100_looong_assignment1.save()
+#    print "test anon2:", self.inf1100_looong_assignment1.anonymous
+#    self.inf1100_looong_assignment1.save()
+#
     def test_etag_update(self):
         etag = datetime.now()
         obj = self.inf1100_looong_assignment1
