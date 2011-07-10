@@ -957,7 +957,6 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # add some new deadlines, to simulate groups getting a second
         # chance
         self.add_to_path('uni;inf101.secondSem.a1.g2.deadline:ends(10):text(This is your last shot!)')
-        print self.inf101_secondSem_a1_g2_deadlines[0].id
 
     def test_read(self):
 
