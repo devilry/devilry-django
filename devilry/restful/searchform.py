@@ -9,6 +9,7 @@ def _create_seachform(cls):
     """
     class SearchForm(forms.Form):
         query = forms.CharField(required=False)
+        page = fields.PositiveIntegerWithFallbackField(fallbackvalue=0)
         limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         start = fields.PositiveIntegerWithFallbackField()
         orderby = fields.JsonListWithFallbackField(

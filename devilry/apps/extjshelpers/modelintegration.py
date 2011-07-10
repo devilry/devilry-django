@@ -60,7 +60,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                 url: '{resturl}',
                 extraParams: {{
                     getdata_in_qrystring: true,
-                    result_fieldgroups: '{result_fieldgroups}'
+                    result_fieldgroups: {result_fieldgroups}
                 }},
                 reader: {{
                     type: 'json',
@@ -74,7 +74,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
                       resturl = restfulcls.get_rest_url(),
-                      result_fieldgroups=','.join(result_fieldgroups))
+                      result_fieldgroups=json.dumps(result_fieldgroups))
 
 
 def restfulcls_to_extjscomboboxmodel(restfulcls):

@@ -63,7 +63,10 @@ class JsonListWithFallbackField(CharWithFallbackField):
             if value == '':
                 return self._fallbackvalue
             else:
-                pythonvalue = json.loads(value)
+                try:
+                    pythonvalue = json.loads(value)
+                except ValueError, e:
+                    return self._fallbackvalue
                 if isinstance(pythonvalue, list):
                     return pythonvalue
                 else:

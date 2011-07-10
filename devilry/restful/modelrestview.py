@@ -94,11 +94,16 @@ class ModelRestfulView(RestfulView):
     def _cleanfilters(self, cleaned_data, fromGET, getdata):
         cleanedfilterdata = {}
         for filterop, filtervalue in getdata.iteritems():
-            if not filterop in cleaned_data: # the keys in cleaned_data are not filters
-                filtervalue = unicode(filtervalue)
-                if filtervalue.isdigit():
-                    filtervalue = int(filtervalue)
-                cleanedfilterdata[filterop] = filtervalue
+            if self.use_extjshacks and filterop == '_dc':
+                continue
+            if filterop == 'getdata_in_qrystring':
+                continue
+            if filterop in cleaned_data:
+                continue
+            filtervalue = unicode(filtervalue)
+            if filtervalue.isdigit():
+                filtervalue = int(filtervalue)
+            cleanedfilterdata[filterop] = filtervalue
         return cleanedfilterdata
 
 
@@ -110,6 +115,7 @@ class ModelRestfulView(RestfulView):
             return ErrorMsgSerializableResult(str(e),
                                               httpresponsecls=HttpResponseBadRequest)
         form = self.__class__.SearchForm(getdata)
+        print getdata
         if form.is_valid():
             cleaned_data = form.cleaned_data
             cleanedfilterdata = self._cleanfilters(cleaned_data, fromGET, getdata)
