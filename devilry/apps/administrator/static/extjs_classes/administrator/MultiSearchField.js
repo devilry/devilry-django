@@ -16,6 +16,8 @@ Ext.define('devilry.administrator.MultiSearchField', {
                 specialKey: function(field, e) {
                     if(e.getKey() == e.ENTER) {
                         me.ownerCt.search(me.getValue());
+                    } else if(e.getKey() == e.ESC) {
+                        me.ownerCt.hideResults();
                     }
                 },
 
