@@ -1,5 +1,6 @@
 from ...simplified import (SimplifiedModelApi, simplified_modelapi,
-                           PermissionDenied, FieldSpec)
+                           PermissionDenied, FieldSpec,
+                           FilterSpecs, FilterSpec, ForeignFilterSpec)
 from ..core import models
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
@@ -30,13 +31,13 @@ class SimplifiedNode(CanSaveBase):
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode')
         searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        filters = FilterSpecs(FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'))
 
     @classmethod
-    def create_searchqryset(cls, user, **kwargs):
+    def create_searchqryset(cls, user):
         qryset = models.Node.where_is_admin_or_superadmin(user)
-        parentnode_id = kwargs.pop('parentnode_id', 'DO_NOT_FILTER')
-        if parentnode_id != "DO_NOT_FILTER":
-            qryset = qryset.filter(parentnode = parentnode_id)
         return qryset
 
 
@@ -77,11 +78,20 @@ class SimplifiedAssignment(CanSaveBase):
                                  pointfields = ['anonymous', 'must_pass', 'maxpoints',
                                                 'attempts'])
         searchfields = FieldSpec('short_name', 'long_name',
-                                'parentnode__short_name', 
-                                'parentnode__long_name', 
-                                'parentnode__parentnode__short_name', 
+                                'parentnode__short_name',
+                                'parentnode__long_name',
+                                'parentnode__parentnode__short_name',
                                 'parentnode__parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        filters = FilterSpecs(FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'),
+                              ForeignFilterSpec('parentnode', # Period
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')),
+                              ForeignFilterSpec('parentnode__parentnode', # Subject
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
@@ -187,7 +197,7 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
         methods = ['search', 'read']
 
     @classmethod
-    def create_searchqryset(cls, user, **kwargs):
+    def create_searchqryset(cls, user):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
