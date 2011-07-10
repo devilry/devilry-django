@@ -3,6 +3,7 @@ from django.test import TestCase
 import re
 
 from ....simplified import PermissionDenied
+
 from ...core import testhelper
 from ....simplified.utils import modelinstance_to_dict
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedStaticFeedback
@@ -11,6 +12,7 @@ from ...core import models, testhelper
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline
 
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
+
     def setUp(self):
         # create a base structure
         self.add(nodes='uni:admin(admin1)',
@@ -966,26 +968,41 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # add some new deadlines, to simulate groups getting a second
         # chance
         self.add_to_path('uni;inf101.secondSem.a1.g2.deadline:ends(10):text(This is your last shot!)')
-        print self.inf101_secondSem_a1_g2_deadlines[0].id
+
+        search_res = SimplifiedDeadline.search(self.admin1, result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1.deadlines.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1.deadlines.all()[0], self.allFields),
+                        # this group now has 2 deadlines. make sure to include the old one here
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2.deadlines.order_by('deadline')[0], self.allFields),
+                        # and the new one here
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_deadlines[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2.deadlines.all()[0], self.allFields),
+                        ]
+
+        print self.inf101_secondSem_a1_g2.deadlines.all()
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
 
     def test_read(self):
 
         # do a read with no extra fields
-        read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstSem_a1_g1.id)
-        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1,
-                                             SimplifiedAssignmentGroup.Meta.resultfields.aslist())
+        read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
+                                             SimplifiedDeadline.Meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
         # do a read with all extras
-        read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstSem_a1_g1.id, result_fieldgroups=self.allExtras)
-        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1,
-                                             SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))
-
+        read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstSem_a1_g1.id.deadlines.all()[0], result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
+                                             SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
 
         # We know secondStud hasn't signed up for firstSem.inf101.
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignmentGroup.read(self.secondStud, self.inf101_firstSem_a1_g1.id)
-
+            SimplifiedDeadline.read(self.secondStud, self.inf101_firstSem_a1_g1.id)
