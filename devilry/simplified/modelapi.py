@@ -257,6 +257,7 @@ class SimplifiedModelApi(object):
         :return: The result of the search.
         :rtype: QryResultWrapper
         """
+        cls._meta.filters.validate(filters)
         result = cls._create_search_qryresultwrapper(user,
                                                     result_fieldgroups, search_fieldgroups,
                                                     **filters)
