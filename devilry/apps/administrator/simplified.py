@@ -1,11 +1,12 @@
-from ...simplified import simplified_modelapi, PermissionDenied, FieldSpec
+from ...simplified import (SimplifiedModelApi, simplified_modelapi,
+                           PermissionDenied, FieldSpec)
 from ..core import models
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
 
 
 
-class CanSaveAuthMixin(object):
+class CanSaveBase(SimplifiedModelApi):
     @classmethod
     def write_authorize(cls, user, obj):
         if not obj.can_save(user):
@@ -22,7 +23,7 @@ class CanSaveAuthMixin(object):
 
 
 @simplified_modelapi
-class SimplifiedNode(CanSaveAuthMixin):
+class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
     class Meta:
         model = models.Node
@@ -40,7 +41,7 @@ class SimplifiedNode(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class SimplifiedSubject(CanSaveAuthMixin):
+class SimplifiedSubject(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta:
         model = models.Subject
@@ -50,7 +51,7 @@ class SimplifiedSubject(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(CanSaveAuthMixin):
+class SimplifiedPeriod(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta:
         model = models.Period
@@ -63,7 +64,7 @@ class SimplifiedPeriod(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class SimplifiedAssignment(CanSaveAuthMixin):
+class SimplifiedAssignment(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta:
         model = models.Assignment
@@ -84,7 +85,7 @@ class SimplifiedAssignment(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class SimplifiedAssignmentGroup(CanSaveAuthMixin):
+class SimplifiedAssignmentGroup(CanSaveBase):
     class Meta:
         model = models.AssignmentGroup
         resultfields = FieldSpec('id', 'name', 'is_open', 'status',
@@ -116,7 +117,7 @@ class SimplifiedAssignmentGroup(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class SimplifiedDelivery(CanSaveAuthMixin):
+class SimplifiedDelivery(CanSaveBase):
     class Meta:
         model = models.Delivery
         resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'assignment_group',
@@ -150,7 +151,7 @@ class SimplifiedDelivery(CanSaveAuthMixin):
 
 
 @simplified_modelapi
-class SimplifiedStaticFeedback():
+class SimplifiedStaticFeedback(SimplifiedModelApi):
     class Meta:
         _subject_long     = 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'
         _subject_short    = 'delivery__assignment_group__parentnode__parentnode__parentnode__short_name'
@@ -197,7 +198,8 @@ class SimplifiedStaticFeedback():
                 raise PermissionDenied()
 
 
-class SimplifiedDeadline(CanSaveAuthMixin):
+@simplified_modelapi
+class SimplifiedDeadline(CanSaveBase):
     class Meta:
 
         subject = ['assignment_group__parentnode__parentnode__parentnode',
