@@ -9,8 +9,15 @@ Ext.define('devilry.administrator.MultiSearchField', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            fieldLabel: 'Search',
             width: 600,
+            fieldStyle: {
+                'font-size': '30px',
+                'line-height': 'normal',
+                'height': 'auto',
+                'padding': '7px',
+                'border-radius': '15px'
+            },
+            emptyText: 'Search for anything...',
 
             listeners: {
                 specialKey: function(field, e) {

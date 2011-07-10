@@ -63,7 +63,7 @@ Ext.define('devilry.administrator.SearchWidget', {
 
     showResults: function() {
         this.getResultContainer().show();
-        this.getResultContainer().alignTo(this.getSearchField());
+        this.getResultContainer().alignTo(this.getSearchField(), 'bl', [15, 0]);
     },
 
     hideResults: function() {
@@ -86,6 +86,6 @@ Ext.define('devilry.administrator.SearchWidget', {
     },
 
     loadInitialValues: function() {
-        //this.search("");
+        //this.search("3580");
     }
 });

@@ -17,8 +17,10 @@ Ext.define('devilry.administrator.SearchResults', {
 
     initComponent: function() {
         Ext.apply(this, {
-            width: 600,
-            margin: {bottom: 20},
+            width: 570,
+            margin: {
+                top: 20
+            },
             //height: 150,
             frame: false,
             //title: false,
