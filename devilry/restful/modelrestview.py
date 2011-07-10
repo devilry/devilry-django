@@ -105,7 +105,6 @@ class ModelRestfulView(RestfulView):
             if filtervalue.isdigit():
                 filtervalue = int(filtervalue)
             cleanedfilterdata[filterop] = filtervalue
-        print cleanedfilterdata.keys()
         return cleanedfilterdata
 
 
