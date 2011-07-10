@@ -1,3 +1,7 @@
+from fnmatch import fnmatchcase
+
+
+
 class FilterValidationError(Exception):
     """ Raised when an invalid filter is given to
     :meth:`devilry.simplified.SimplifiedModelApi.search`. """
@@ -18,14 +22,23 @@ class FilterSpec(object):
         self.fieldname = fieldname
         self.operations = operations
 
+    def _yield(self, value):
+        return False, value
+
     def __iter__(self):
         for operation in self.operations:
             if operation == '':
-                yield self.fieldname
+                yield self._yield(self.fieldname)
             else:
-                yield '{0}__{1}'.format(self.fieldname, operation)
+                yield self._yield('{0}__{1}'.format(self.fieldname, operation))
 
-class ForeignFilterSpec():
+
+class PatternFilterSpec(FilterSpec):
+    def _yield(self, value):
+        return True, value
+
+
+class ForeignFilterSpec(object):
     """ Specify FilterSpec for foreign tables without having to type
     ``__`` for each table. Instead of::
 
@@ -54,8 +67,13 @@ class FilterSpecs(object):
     """ Container of :class:`FilterSpec` and :class:`ForeignFilterSpec`. """
     def __init__(self, *filterspecs):
         self.all_filters = set()
+        self.pattern_filters = []
         for filterspec in filterspecs:
-            self.all_filters.update(filterspec)
+            for ispattern, fieldoperation in filterspec:
+                if ispattern:
+                    self.pattern_filters.append(fieldoperation)
+                else:
+                    self.all_filters.add(fieldoperation)
 
     def validate(self, filters):
         """
@@ -66,5 +84,12 @@ class FilterSpecs(object):
                 filterspecs.
         """
         for filtername in filters:
+            print filtername
             if not filtername in self.all_filters:
-                raise FilterValidationError('{0} is not a valid filter.'.format(filtername))
+                valid = False
+                if self.pattern_filters:
+                    for patternfilterspec in self.pattern_filters:
+                        if fnmatchcase(filtername, patternfilterspec):
+                            valid = True
+                if not valid:
+                    raise FilterValidationError('{0} is not a valid filter.'.format(filtername))
