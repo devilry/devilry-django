@@ -84,7 +84,6 @@ class FilterSpecs(object):
                 filterspecs.
         """
         for filtername in filters:
-            print filtername
             if not filtername in self.all_filters:
                 valid = False
                 if self.pattern_filters:
