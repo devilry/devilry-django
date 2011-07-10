@@ -5,6 +5,10 @@
 Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.administratorrestfulsimplifiedlayout',
+    border: 0,
+    bodyStyle: {
+        'background-color': 'transparent'
+    },
 
     initComponent: function() {
         var me = this;
@@ -29,6 +33,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         var savebuttonargs = {
             xtype: 'button',
             text: 'Save',
+            scale: 'large',
             handler: function() {
                 me.editform.getForm().submit({
                     submitEmptyText: true,
@@ -42,26 +47,55 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             }
         };
 
-        this.overlayBar = Ext.create('Ext.button.Button', {
+        var clicktoeditbuttonargs = {
             xtype: 'button',
-            scale: 'large',
+            //scale: 'large',
             text: 'Click to edit',
-            floating: true,
             listeners: {
                 click: function(button, pressed) {
                     me.editable();
                 }
             }
+        };
+
+        this.overlayBar = Ext.create('Ext.container.Container', {
+            floating: true,
+            cls: 'form-overlay-bar',
+            height: 40,
+            width: 300,
+            layout: {
+                type: 'hbox',
+                align: 'stretch',
+                pack: 'end'
+            },
+            items: [
+                deletebuttonargs,
+                {xtype: 'component', width: 10},
+                clicktoeditbuttonargs
+            ]
         });
 
 
         var editformargs = {
             id: me.getChildIdBySuffix('editform'),
             xtype: 'form',
-            //layout: 'fit',
-            disabled: true,
             model: this.model,
             items: this.editformitems,
+
+            // Fields will be arranged vertically, stretched to full width
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%',
+            },
+
+            bodyStyle: {
+                padding: '15px'
+            },
+
+            // Disable by default
+            disabled: true,
+
+            // Only save button. Other buttons are in overlayBar
             buttons: [
                 savebuttonargs,
             ]
