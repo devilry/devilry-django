@@ -222,7 +222,7 @@ class SimplifiedModelApi(object):
 
     @classmethod
     def search(cls, user,
-               query = '', start = 0, limit = 50, page=0, orderby = None,
+               query = '', start = 0, limit = 50, orderby = None,
                result_fieldgroups=None, search_fieldgroups=None,
                **filters):
         """ Search for objects.

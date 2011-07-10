@@ -95,6 +95,8 @@ class ModelRestfulView(RestfulView):
         for filterop, filtervalue in getdata.iteritems():
             if self.use_extjshacks and filterop == '_dc':
                 continue
+            if self.use_extjshacks and filterop == 'page':
+                continue
             if filterop == 'getdata_in_qrystring':
                 continue
             if filterop in cleaned_data:
@@ -103,6 +105,7 @@ class ModelRestfulView(RestfulView):
             if filtervalue.isdigit():
                 filtervalue = int(filtervalue)
             cleanedfilterdata[filterop] = filtervalue
+        print cleanedfilterdata.keys()
         return cleanedfilterdata
 
 
