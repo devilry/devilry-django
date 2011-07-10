@@ -29,7 +29,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
                 me.editform.submit({
                     submitEmptyText: true,
                     method: 'DELETE',
-                    waitMsg: 'Deleting node...',
+                    waitMsg: 'Deleting item...',
                     success: function() {
                     }
                 });
@@ -42,7 +42,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             handler: function() {
                 me.editform.getForm().submit({
                     submitEmptyText: true,
-                    waitMsg: 'Saving node...',
+                    waitMsg: 'Saving item...',
                     success: function() {
                         me.editform.disable();
                         Ext.getCmp(me.getChildIdBySuffix('buttoncarddeck')).getLayout().setActiveItem(me.getChildIdBySuffix('readonlybuttons'));
@@ -126,10 +126,17 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     loadRecordFromStore: function (record_id) {
         var me = this;
         Ext.ModelManager.getModel(this.model).load(record_id, {
-            success: function(node) {
-                me.editform.loadRecord(node);
-                var title = Ext.String.format('{0} ({1})', node.data.long_name, node.data.short_name);
+            success: function(record) {
+                me.editform.loadRecord(record);
+                var title = Ext.String.format('{0} ({1})', record.data.long_name, record.data.short_name);
                 me.editform.setTitle(title);
+                var fields = me.editform.getForm().getFields();
+                Ext.each(me.foreignkeys, function(fieldname) {
+                    var field = fields.filter('name', fieldname).items[0];
+                    field.store.load(function(store, records, successful) {
+                        field.setValue(record.data[fieldname]);
+                    });
+                });
             }
         });
     },

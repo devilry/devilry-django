@@ -602,6 +602,15 @@ class TestSimplifiedAdministratorSimplifiedAssignment(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_filters(self):
+        qrywrap = SimplifiedAssignment.search(self.admin1,
+                                              result_fieldgroups=['period'])
+        self.assertEquals(len(qrywrap), 8)
+        qrywrap = SimplifiedAssignment.search(self.admin1,
+                                              result_fieldgroups=['period'],
+                                              parentnode__short_name='firstSem')
+        self.assertEquals(len(qrywrap), 4)
+
     def test_create(self):
         kw = dict(
                 long_name = 'Test',

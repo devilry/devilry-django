@@ -2,7 +2,7 @@ import json
 from django.db.models import fields
 
 
-def field_to_extjstype(field):
+def _djangofield_to_extjstype(field):
     """ Convert django field to extjs  field type. """
     if isinstance(field, fields.IntegerField):
         return dict(type='int')
@@ -10,6 +10,8 @@ def field_to_extjstype(field):
         return dict(type='int')
     elif isinstance(field, fields.DateTimeField):
         return dict(type='date')
+    elif isinstance(field, fields.BooleanField):
+        return dict(type='bool')
     else:
         return dict(type='auto')
 
@@ -43,7 +45,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
     modelfields = []
     for fieldname, field in _iter_fields(restfulcls._meta.simplified,
                                          result_fieldgroups):
-        exttype = field_to_extjstype(field)
+        exttype = _djangofield_to_extjstype(field)
         exttype['name'] = fieldname
         modelfields.append(exttype)
     #for fieldname in restfulcls._meta.urlmap:
