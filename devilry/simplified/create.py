@@ -3,7 +3,6 @@ Functions used to add CRUD+S methods to simplified classes at module load time.
 """
 from types import MethodType
 
-from qryresultwrapper import QryResultWrapper
 from utils import modelinstance_to_dict
 from exceptions import PermissionDenied
 
@@ -146,53 +145,4 @@ def create_update_method(cls):
     setattr(cls, update.__name__, MethodType(update, cls))
 
 def create_search_method(cls):
-    def search(cls, user,
-               query = '', start = 0, limit = 50, orderby = None,
-               result_fieldgroups=None, search_fieldgroups=None,
-               **create_searchqryset_kwargs):
-        """ Search for objects.
-
-        :param query:
-            A string to search for within the model specified in
-            ``Meta.model``. The fields to search for is specified in
-            ``Meta.search_fieldgroups``.
-        :param start:
-            Return results from this index in the results from the given
-            ``query``. Defaults to ``0``.
-        :param limit:
-            Limit results to this number of items. Defaults to ``50``.
-        :param orderby:
-            Order the result by these fields. For example, if
-            ``Meta.resultfields`` contains the short_name and long_name fields,
-            we can order our results by ascending short_name and descending
-            long_name as this: ``orderby=('short_name', '-long_name')``.
-            This defaults to ``cls._meta.ordering`` (see
-            :ref:`devilry.simplified.simplified_modelapi`).
-        :type orderby:
-            List of fieldnames. Fieldnames can be prefixed by ``'-'`` for
-            descending ordering.
-        :param result_fieldgroups:
-            Adds additional fields to the result. Available values are the
-            fieldgroups in ``Meta.resultfields.additional_fieldgroups``.
-        :param search_fieldgroups:
-            Adds additional fields which are searched for the ``query`` string.
-            Available values are the fieldgroups in
-            ``Meta.searchfields.additional_fieldgroups``.
-        :param create_searchqryset_kwargs:
-            Keyword arguments which are forwarded to the
-            ``create_searchqryset`` method, so that it is called
-            as: ``cls.create_searchqryset(user, **create_searchqryset)``
-
-        :return: The result of the search.
-        :rtype: QryResultWrapper
-        """
-        result = cls.create_search_qryresultwrapper(user,
-                                                    result_fieldgroups, search_fieldgroups,
-                                                    **create_searchqryset_kwargs)
-        orderby = orderby or cls._meta.ordering
-        result._standard_operations(query = query,
-                                    start = start,
-                                    limit = limit,
-                                    orderby = orderby)
-        return result
-    setattr(cls, search.__name__, MethodType(search, cls))
+    pass
