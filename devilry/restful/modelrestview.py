@@ -1,7 +1,6 @@
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 
 from ..simplified import PermissionDenied
-from errors import InvalidRequestDataError
 from restview import RestfulView
 from serializers import serializers, SerializableResult
 from readform import ReadForm
@@ -46,22 +45,6 @@ class ModelRestfulView(RestfulView):
     :class:`restful_modelapi`-decorator to autogenerate a RESTful
     interface for a simplified class (see :ref:`simplified`).
     """
-
-
-    @classmethod
-    def _searchform_to_kwargs(cls, getdata):
-        """
-        Converts the ``data`` to a validated :class:`SearchForm`.
-
-        Throws :class:`errors.InvalidRequestDataError` if the form does not
-        validate.
-        """
-        form = cls.SearchForm(getdata)
-        if form.is_valid():
-            return form.cleaned_data
-        else:
-            raise InvalidRequestDataError(form)
-
     @classmethod
     def filter_urlmap(cls, itemdct):
         if not hasattr(cls._meta, 'urlmap'):
