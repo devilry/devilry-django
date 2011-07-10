@@ -3,6 +3,7 @@ from django.db.models.fields import AutoField
 from qryresultwrapper import QryResultWrapper
 from utils import modelinstance_to_dict
 from exceptions import PermissionDenied
+from filterspec import FilterSpecs
 
 
 
@@ -304,6 +305,9 @@ def simplified_modelapi(cls):
             A list of result field groups which should at least contain
             all fields in ``editablefields``. Defaults to
             ``resultfields.localfieldgroups_aslist()``
+        filters
+            A :class:`devilry.simplified.FilterSpecs` limiting the possible
+            filters to perform. Defaults to an empty ``FilterSpec``.
 
     The ``cls`` must have the following methods for handling permissions:
 
@@ -346,6 +350,9 @@ def simplified_modelapi(cls):
     _create_meta_ediablefields(cls)
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
+
+    if not hasattr(cls._meta, 'filters'):
+        cls._meta.filters = FilterSpecs()
 
     # Dynamically remove create(), read(), insecure_read_model(), update(), delete() if not supported
     cls._all_crud_methods = ('create', 'read', 'insecure_read_model', 'update', 'delete')
