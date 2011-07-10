@@ -1,6 +1,7 @@
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 
 from ..simplified import PermissionDenied
+from ..simplified.filterspec import FilterValidationError
 from restview import RestfulView
 from serializers import serializers, SerializableResult
 from readform import ReadForm
@@ -81,28 +82,44 @@ class ModelRestfulView(RestfulView):
 
     def _load_getdata(self):
         if 'getdata_in_qrystring' in self.request.GET: # NOTE: For easier ExtJS integration
-            data = self.request.GET
+            return True, self.request.GET
         else:
             try:
-                data = serializers.deserialize(self.comformat, self.request.raw_post_data)
+                return False, serializers.deserialize(self.comformat, self.request.raw_post_data)
             except ValueError, e:
                 raise ValueError(('Bad request data: {0}. Perhaps you ment to'
                                   'send GET data as a querystring? In that case, add '
                                   'getdata_in_qrystring=1 to your querystring.'.format(e)))
-        return data
 
-    def crud_search(self, request, **kwargs):
+    def _cleanfilters(self, cleaned_data, fromGET, getdata):
+        cleanedfilterdata = {}
+        for filterop, filtervalue in getdata.iteritems():
+            if not filterop in cleaned_data: # the keys in cleaned_data are not filters
+                filtervalue = unicode(filtervalue)
+                if filtervalue.isdigit():
+                    filtervalue = int(filtervalue)
+                cleanedfilterdata[filterop] = filtervalue
+        return cleanedfilterdata
+
+
+    def crud_search(self, request):
         """ Maps to the ``search`` method of the simplified class. """
         try:
-            getdata = self._load_getdata()
+            fromGET, getdata = self._load_getdata()
         except ValueError, e:
             return ErrorMsgSerializableResult(str(e),
                                               httpresponsecls=HttpResponseBadRequest)
         form = self.__class__.SearchForm(getdata)
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            cleaned_data.update(**kwargs) # add variables from url PATH
-            qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
+            cleanedfilterdata = self._cleanfilters(cleaned_data, fromGET, getdata)
+            cleaned_data.update(**cleanedfilterdata)
+            try:
+                qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
+            except FilterValidationError, e:
+                return ErrorMsgSerializableResult(str(e),
+                                                  httpresponsecls=HttpResponseBadRequest)
+
             resultlist = self.restultqry_to_list(qryresultwrapper)
             result = self._extjswrapshortcut(resultlist)
             return SerializableResult(result)
@@ -114,7 +131,7 @@ class ModelRestfulView(RestfulView):
     def crud_read(self, request, id):
         """ Maps to the ``read`` method of the simplified class. """
         try:
-            getdata = self._load_getdata()
+            fromGET, getdata = self._load_getdata()
         except ValueError, e:
             return ErrorMsgSerializableResult(str(e),
                                               httpresponsecls=HttpResponseBadRequest)
