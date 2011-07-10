@@ -75,71 +75,48 @@ body>#main {
 	padding: 20px;
     background-color: #f8f8f8;
 }
-
 #main h2 {
     font-size: 1.4em;
     margin: 20px 0 15px 0;
 }
-
-strong {
+#main a {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #0B5A9D;
+}
+#main a:visited {
+    color: #6E0840;
+}
+#main strong {
     font-weight: bold;
 }
-
-em {
+#main em {
     font-style: italic;
 }
 
-p {
+#main p {
     padding: 5px 0;
     line-height: 1.2em;
 }
 
 
-/* important and unimportant are used by:
- * - Items in comboboxes */
-.unimportant {
+/* .x-layer are floating ExtJS items */
+#main .unimportant .x-layer .important {
     font-size: 0.9em;
-}
-
-.important {
-    font-size: 1.1em;
-    font-weight: bold;
-}
-
-div.important {
-    padding-bottom: 5px;
-}
-
-
-a {
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-
-a {
-    color: #0B5A9D;
-}
-a:visited {
-    color: #6E0840;
-}
-
-.unimportant {
     color: #444;
 }
-
-.important {
+#main .important, .x-layer .important {
+    font-size: 1.1em;
+    font-weight: bold;
     color: #111;
 }
 
-
+/* The overlay of disabled ExtJS forms. */
 .x-item-disabled {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
     opacity: 1.0 !important;
 }
-
-
 
 
 
