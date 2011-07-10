@@ -32,6 +32,7 @@ class TestHelper(object):
 
     def create_superuser(self, name):
         su = User(username=name, is_superuser=True)
+        su.set_password("test")
         su.clean()
         su.save()
         vars(self)[name] = su
@@ -176,6 +177,7 @@ class TestHelper(object):
 
     def _create_or_add_user(self, name):
         user = User(username=name)
+        user.set_password("test")
         try:
             user.clean()
             user.save()
