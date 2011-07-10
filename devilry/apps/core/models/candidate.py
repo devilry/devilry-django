@@ -46,6 +46,15 @@ class Candidate(models.Model, Etag):
     def __unicode__(self):
         return self.get_identifier()
 
+    def update_identifier(self, anonymous):
+        if anonymous:
+            if not self.candidate_id:
+                self.identifier = "candidate-id missing"
+            else:
+                self.identifier = self.candidate_id
+        else:
+            self.identifier = self.student.username
+
     #TODO delete this?
     def save(self, *args, **kwargs):
         """Validate the assignment.
@@ -58,14 +67,5 @@ class Candidate(models.Model, Etag):
             - candidate id is empty on anonymous assignment.
 
         """
-        if self.assignment_group.parentnode.anonymous:
-            if not self.candidate_id:
-                self.identifier = "candidate-id missing"
-                # raise ValidationError(
-                #     _("Candidate id cannot be empty when assignment
-                #     is anonymous.)"))
-            else:
-                self.identifier = self.candidate_id
-        else:
-            self.identifier = self.student.username
+        self.update_identifier(self.assignment_group.parentnode.anonymous)
         super(Candidate, self).save(*args, **kwargs)

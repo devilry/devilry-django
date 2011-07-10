@@ -13,7 +13,7 @@ class TestCandidate(TestCase, TestHelper):
                  subjects=["inf1100"],
                  periods=["autumn"],
                  assignments=["assignment1"],
-                 assignmentgroups=["g1:candidate(student1)"])
+                 assignmentgroups=["g1:candidate(student1;5)"])
         # self.cand = Candidate(student=self.student1, candidate_id="1",
         #                       assignment_group=self.inf1100_autumn_assignment1_g1)
 
@@ -21,9 +21,10 @@ class TestCandidate(TestCase, TestHelper):
         self.assertEquals(self.inf1100_autumn_assignment1_g1.candidates.all()[0].get_identifier(), "student1")
 
     def test_anonymous(self):
+        cands = self.inf1100_autumn_assignment1_g1.candidates.all()
         self.inf1100_autumn_assignment1.anonymous = True
         self.inf1100_autumn_assignment1.save()
-        self.assertEquals(self.inf1100_autumn_assignment1_g1.candidates.all()[0].get_identifier(), str(self.student1.id))
+        self.assertEquals(self.student1.get_identifier(), str(self.student1.id))
 
     def test_etag_update(self):
         etag = datetime.now()
