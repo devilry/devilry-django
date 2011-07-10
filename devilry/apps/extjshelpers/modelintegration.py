@@ -65,7 +65,8 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                 }},
                 reader: {{
                     type: 'json',
-                    root: 'items'
+                    root: 'items',
+                    totalProperty: 'total'
                 }},
                 writer: {{
                     type: 'json'
