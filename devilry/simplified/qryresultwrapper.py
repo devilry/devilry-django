@@ -23,6 +23,11 @@ class QryResultWrapper(object):
         Should **not** be used unless the public methods of this class
         fails to provide the required functionality. Any use of _insecure_django_qryset
         is considered a security risc.
+
+    .. attribute:: total
+
+        The total number of matches before slicing (before applying start and
+        limit).
     """
     def __init__(self, resultfields, searchfields, django_qryset):
         self.resultfields = resultfields
@@ -100,4 +105,5 @@ class QryResultWrapper(object):
         self._insecure_django_qryset = self._insecure_django_qryset.distinct()
         if orderby:
             self._order_queryset(orderby)
+        self.total = self._insecure_django_qryset.count()
         self._limit_queryset(limit, start)
