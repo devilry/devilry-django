@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.test.client import Client
-from django.utils import simplejson as json
+import json
 
-from ..restful import RestfulSimplifiedNode
+from ..restful import (RestfulSimplifiedNode, RestfulSimplifiedAssignment)
+from ..simplified import SimplifiedAssignment
 from ...core import models, testhelper
 
 
@@ -20,26 +21,21 @@ class TestAdministratorRestfulSimplifiedNodeNoFixture(TestCase):
 
 class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def setUp(self):
-        self.add(nodes='uni:admin(admin1)',
-                 subjects=['inf101', 'inf110'],
-                 periods=['firstSem', 'secondSem:admin(admin2)'],
-                 assignments=['a1', 'a2'])
+        self.add(nodes='uni:admin(admin1)')
         self.client = Client()
         self.client.login(username="admin1", password="test")
 
     def test_search(self):
         url = RestfulSimplifiedNode.get_rest_url()
-        r = self.client.get(url, data={'getdata_in_qrystring': True},
-                            Accept='application/json')
+        r = self.client.get(url, data={'getdata_in_qrystring': True})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
         first = data[0]
-        self.assertEquals(first, {
-            u'id': self.uni.id,
-            u'short_name': self.uni.short_name,
-            u'long_name': self.uni.long_name,
-            u'parentnode': None
-            })
+        self.assertEquals(first, {'id': self.uni.id,
+                                  'short_name': self.uni.short_name,
+                                  'long_name': self.uni.long_name,
+                                  'parentnode': None
+                                 })
 
     def test_create(self):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
@@ -87,9 +83,37 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
             fielderrors = {u'short_name': [u"Can only contain numbers, lowercase letters, '_' and '-'. "]},
             errormessages = []))
 
-
     def test_delete(self):
         url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
         self.assertEquals(models.Node.objects.filter(id=self.uni.id).count(), 1)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(models.Node.objects.filter(id=self.uni.id).count(), 0)
+
+
+
+class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelper):
+    def setUp(self):
+        self.add(nodes='uni:admin(admin1)',
+                 subjects=['inf101', 'inf110'],
+                 periods=['firstSem', 'secondSem:admin(admin2)'],
+                 assignments=['a1', 'a2'])
+        self.client = Client()
+        self.client.login(username="admin1", password="test")
+
+    def test_search_fieldgroups(self):
+        resultfields = SimplifiedAssignment._meta.resultfields
+        url = RestfulSimplifiedAssignment.get_rest_url()
+
+        r = self.client.get(url, data={'getdata_in_qrystring': True})
+        self.assertEquals(r.status_code, 200)
+        data = json.loads(r.content)
+        first = data[0]
+        self.assertEquals(set(first.keys()), set(resultfields.aslist()))
+
+        r = self.client.get(url, data={'getdata_in_qrystring': True,
+                                       'result_fieldgroups': json.dumps(['subject', 'period', 'pointfields'])})
+        self.assertEquals(r.status_code, 200)
+        data = json.loads(r.content)
+        first = data[0]
+        all_resultfields = resultfields.aslist(resultfields.additional_aslist())
+        self.assertEquals(set(first.keys()), set(all_resultfields))
