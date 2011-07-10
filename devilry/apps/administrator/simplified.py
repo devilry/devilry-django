@@ -49,6 +49,13 @@ class SimplifiedSubject(CanSaveBase):
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode')
         searchfields = FieldSpec('short_name', 'long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        filters = FilterSpecs(FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'),
+                              ForeignFilterSpec('parentnode', # Node
+                                                FilterSpec('paretnode'),
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
@@ -62,6 +69,13 @@ class SimplifiedPeriod(CanSaveBase):
         searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
                 'parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        filters = FilterSpecs(FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'),
+                              ForeignFilterSpec('parentnode', # Subject
+                                                FilterSpec('paretnode'),
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
@@ -87,9 +101,11 @@ class SimplifiedAssignment(CanSaveBase):
                               FilterSpec('short_name'),
                               FilterSpec('long_name'),
                               ForeignFilterSpec('parentnode', # Period
+                                                FilterSpec('paretnode'),
                                                 FilterSpec('short_name'),
                                                 FilterSpec('long_name')),
                               ForeignFilterSpec('parentnode__parentnode', # Subject
+                                                FilterSpec('paretnode'),
                                                 FilterSpec('short_name'),
                                                 FilterSpec('long_name')))
 
@@ -98,10 +114,9 @@ class SimplifiedAssignment(CanSaveBase):
 class SimplifiedAssignmentGroup(CanSaveBase):
     class Meta:
         model = models.AssignmentGroup
-        resultfields = FieldSpec('id', 'name', 'is_open', 'status',
+        resultfields = FieldSpec('id', 'name', 'is_open', 'status', 'parentnode',
                                  users=['examiners__username', 'candidates__identifier'],
-                                 assignment=['parentnode',
-                                             'parentnode__long_name',
+                                 assignment=['parentnode__long_name',
                                              'parentnode__short_name'],
                                  period=['parentnode__parentnode',
                                          'parentnode__parentnode__long_name',
@@ -124,6 +139,22 @@ class SimplifiedAssignmentGroup(CanSaveBase):
                                  'parentnode__parentnode__parentnode__short_name',
                                  )
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        filters = FilterSpecs(FilterSpec('id'),
+                              FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'),
+                              ForeignFilterSpec('parentnode', # Assignment
+                                                FilterSpec('paretnode'),
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')),
+                              ForeignFilterSpec('parentnode__parentnode', # Period
+                                                FilterSpec('paretnode'),
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')),
+                              ForeignFilterSpec('parentnode__parentnode__parentnode', # Subject
+                                                FilterSpec('parentnode'),
+                                                FilterSpec('short_name'),
+                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
