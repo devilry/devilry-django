@@ -43,7 +43,9 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
                 me.editform.getForm().submit({
                     submitEmptyText: true,
                     waitMsg: 'Saving item...',
-                    success: function() {
+                    success: function(form, action) {
+                        var record = action.record;
+                        me.editform.loadRecord(record); // Need to load the record. If not, the proxy will do a POST instead of PUT on next save.
                         me.readonly();
                     }
                 });
