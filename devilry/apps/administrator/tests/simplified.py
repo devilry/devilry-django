@@ -454,10 +454,10 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
         #qrywrap = SimplifiedPeriod.search(self.daisy, query="spring01")
         #self.assertEquals(len(qrywrap), 1)
 
-class TestSimplifiedAdministratorSimplifiedAssignment(SimplifiedAdminTestBase):
+class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
     def setUp(self):
-        super(TestSimplifiedAdministratorSimplifiedAssignment, self).setUp()
+        super(TestSimplifiedAssignment, self).setUp()
 
     def test_read_base(self):
         # do a read with no extra fields

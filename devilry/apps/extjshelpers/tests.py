@@ -50,7 +50,7 @@ class TestModelIntegration(TestCase):
         js = restfulcls_to_extjsmodel(RestUser)
         expected = """Ext.define('devilry.apps.extjshelpers.tests.SimplifiedUser', {
             extend: 'Ext.data.Model',
-            fields: [{"type": "int", "name": "id"}, {"type": "string", "name": "first"}, {"type": "string", "name": "last"}, {"type": "string", "name": "email"}, {"type": "int", "name": "score"}],
+            fields: [{"type": "int", "name": "id"}, {"type": "auto", "name": "first"}, {"type": "auto", "name": "last"}, {"type": "auto", "name": "email"}, {"type": "int", "name": "score"}],
             idProperty: 'id',
             proxy: {
                 type: 'rest',
@@ -67,7 +67,7 @@ class TestModelIntegration(TestCase):
                     type: 'json'
                 }
             }
-        });"""
+        })"""
         self.assertEquals(js, expected)
 
     def test_to_extjsmodel_fieldgroups(self):
@@ -85,7 +85,7 @@ class TestStoreIntegration(TestCase):
             remoteFilter: true,
             remoteSort: true,
             autoSync: true
-        });"""
+        })"""
         self.assertEquals(js, expected)
 
 
@@ -99,4 +99,4 @@ class TestFieldIntegration(TestCase):
         #self.assertEquals(field.name, 'id')
 
     def test_djangofield_to_extjs_xtype(self):
-        extfield = djangofield_to_extjsformfield(Period, 'parentnode__id', RestfulSimplifiedPeriod)
+        extfield = djangofield_to_extjsformfield(Period, 'parentnode', RestfulSimplifiedPeriod)
