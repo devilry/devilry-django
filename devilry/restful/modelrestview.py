@@ -115,7 +115,6 @@ class ModelRestfulView(RestfulView):
             return ErrorMsgSerializableResult(str(e),
                                               httpresponsecls=HttpResponseBadRequest)
         form = self.__class__.SearchForm(getdata)
-        print getdata
         if form.is_valid():
             cleaned_data = form.cleaned_data
             cleanedfilterdata = self._cleanfilters(cleaned_data, fromGET, getdata)
