@@ -56,12 +56,15 @@ class FormatField(CharWithFallbackField):
 
 class JsonListWithFallbackField(CharWithFallbackField):
     def to_python(self, value):
-        value = super(CharWithFallbackField, self).to_python(value)
-        if value == '':
-            return self._fallbackvalue
+        if isinstance(value, list):
+            return value
         else:
-            pythonvalue = json.loads(value)
-            if isinstance(pythonvalue, list):
-                return pythonvalue
-            else:
+            value = super(CharWithFallbackField, self).to_python(value)
+            if value == '':
                 return self._fallbackvalue
+            else:
+                pythonvalue = json.loads(value)
+                if isinstance(pythonvalue, list):
+                    return pythonvalue
+                else:
+                    return self._fallbackvalue
