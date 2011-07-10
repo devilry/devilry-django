@@ -1,4 +1,7 @@
+import json
+
 from fieldintegration import djangofield_to_extjsformfield
+
 
 def _iter_editfields(restfulcls):
     fieldnames = restfulcls.EditForm.Meta.fields
@@ -12,3 +15,10 @@ def _iter_editfields(restfulcls):
 def restfulcls_to_extjsformitems(restfulcls):
     js = '[\n    {0}\n]'.format(',\n    '.join(_iter_editfields(restfulcls)))
     return js
+
+def restfulcls_to_foreignkeylist(restfulcls):
+    if hasattr(restfulcls._meta, 'foreignkey_fields'):
+        foreignkeys = restfulcls._meta.foreignkey_fields.keys()
+    else:
+        foreignkeys = []
+    return json.dumps(foreignkeys)

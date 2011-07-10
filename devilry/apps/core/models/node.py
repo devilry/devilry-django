@@ -34,7 +34,9 @@ class Node(models.Model, BaseNode, Etag):
     """
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey('self', blank=True, null=True, related_name='child_nodes')
+    parentnode = models.ForeignKey('self', blank=True, null=True,
+                                   related_name='child_nodes',
+                                   verbose_name=_('Parent'))
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 

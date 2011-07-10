@@ -103,7 +103,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Period, related_name='assignments')
+    parentnode = models.ForeignKey(Period, related_name='assignments',
+                                   verbose_name=_('Period'))
     etag = models.DateTimeField(auto_now_add=True)
     publishing_time = models.DateTimeField(
             verbose_name=_("Publishing time"))

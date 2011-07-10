@@ -6,8 +6,6 @@
 
 <script>
     {{ RestfulSimplifiedClass|extjs_model:"pointfields" }}
-    var periodstore = {{ RestfulSimplifiedClass|extjs_store }}
-    //periodstore.load();
 
 
     Ext.onReady(function() {
@@ -16,10 +14,13 @@
             renderTo: 'maincarddeck-wrapper',
             supports_delete: {{ RestfulSimplifiedClass.supports_delete|yesno:"true,false" }},
             model: {{ RestfulSimplifiedClass|get_extjsname_from_class}},
-            editformitems: {{ RestfulSimplifiedClass|extjs_form_items}}
+            editformitems: {{ RestfulSimplifiedClass|extjs_form_items}},
+            foreignkeys: {{ RestfulSimplifiedClass|extjs_foreignkeys }}
         });
         mainlayout.loadMode('{{ initial_mode }}', {{ record_id|default_if_none:"null" }});
+
     });
+
 </script>
 {% endblock %}
 
