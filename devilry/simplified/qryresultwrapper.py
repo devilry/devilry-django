@@ -54,14 +54,28 @@ class QryResultWrapper(object):
         """ Create a ``django.db.models.Q`` object from the given
         query. The resulting Q matches data in any field in
         :attr:`resultfields` """
+        result_q = None
+        for word in query.split():
+            if word.strip() == '':
+                break
+            word_q = self._create_word_q(word)
+            if result_q == None:
+                result_q = word_q
+            else:
+                result_q &= word_q
+        print result_q
+        return result_q
+
+    def _create_word_q(self, queryword):
         filterargs = None
         for field in self.searchfields:
-            q = Q(**{"%s__icontains" % field: query})
+            q = Q(**{"%s__icontains" % field: queryword})
             if filterargs:
                 filterargs |= q
             else:
                 filterargs = q
         return filterargs
+
 
     def _limit_queryset(self, limit, start):
         self._insecure_django_qryset = self._insecure_django_qryset[start:start+limit]
@@ -80,7 +94,7 @@ class QryResultWrapper(object):
         orderby_filtered = self._filter_orderby(orderby)
         self._insecure_django_qryset = self._insecure_django_qryset.order_by(*orderby_filtered)
 
-    def _standard_operations(self, query='', limit=50, start=0, orderby=[]):
+    def _query_order_and_limit(self, query='', limit=50, start=0, orderby=[]):
         if query:
             q = self._create_q(query)
             self._insecure_django_qryset = self._insecure_django_qryset.filter(q)
