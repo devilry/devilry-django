@@ -17,8 +17,10 @@ Ext.define('devilry.administrator.SearchResults', {
 
     initComponent: function() {
         Ext.apply(this, {
-            width: 600,
-            margin: {bottom: 20},
+            width: 570,
+            margin: {
+                top: 20
+            },
             //height: 150,
             frame: false,
             //title: false,
@@ -26,6 +28,12 @@ Ext.define('devilry.administrator.SearchResults', {
             columns: [{
                 header: 'Nodes', dataIndex: 'long_name', flex: 1,
                 renderer: this.formatRowWrapper
+            }],
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,   // same store GridPanel is using
+                dock: 'top',
+                displayInfo: true
             }]
         });
         this.callParent(arguments);

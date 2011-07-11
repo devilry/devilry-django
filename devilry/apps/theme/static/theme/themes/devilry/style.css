@@ -1,0 +1,201 @@
+body {
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #222;
+}
+
+body>header {
+    background-color: #000; color: #fff;
+}
+body>header h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
+body>header a#projectlink {
+	display: block;
+	margin: 0 20px 5px 20px;
+	text-decoration: none;
+	font-size: 0.8em;
+	text-align: right;
+    color: #a00;
+}
+body>header>#version {
+	margin: 0 20px 5px 20px;
+	text-decoration: none;
+	font-size: 0.8em;
+	text-align: right;
+}
+body>header>#version>span#number {
+    font-weight: bold;
+}
+body>header>#version span#codename {
+    font-style: italic;
+}
+
+
+
+/**
+ *
+ * Header navigation bar
+ *
+ */
+body>header>nav {
+    background-color: #111;
+}
+body>header>nav ul {
+	margin: 0;
+}
+body>header>nav li {display: inline-block;}
+body>header>nav a {
+	text-decoration: none;
+	display: block;
+	margin-right: 10px;
+	padding: 10px 20px;
+    font-size: 1.0em;
+    font-weight: normal;
+    color: #08C;
+    border-bottom: 5px solid transparent;
+}
+body>header>nav a:hover {
+    color: #05a;
+    border-bottom: 5px solid #fff;
+}
+body>header>nav a:visited {
+    color: #08C;
+}
+
+
+
+
+/**
+ *
+ * Main (dynamic) content
+ *
+ */
+
+body>#main {
+	padding: 20px;
+    background-color: #f8f8f8;
+}
+#main h2 {
+    font-size: 1.4em;
+    margin: 20px 0 15px 0;
+}
+#main a {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #0B5A9D;
+}
+#main a:visited {
+    color: #6E0840;
+}
+#main strong {
+    font-weight: bold;
+}
+#main em {
+    font-style: italic;
+}
+
+#main p {
+    padding: 5px 0;
+    line-height: 1.2em;
+}
+
+
+/* .x-layer are floating ExtJS items */
+#main .unimportant .x-layer .important {
+    font-size: 0.9em;
+    color: #444;
+}
+#main .important, .x-layer .important {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #111;
+}
+
+/* The overlay of disabled ExtJS forms. */
+.x-item-disabled {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1.0 !important;
+}
+
+.searchfield {
+    font-size: 30px;
+    line-height: normal !important;
+    height: auto !important;
+    padding: 7px !important;
+    border-radius: 15px;
+}
+.search-popup-panel {
+    box-shadow: 0 3px 8px #888;
+}
+
+
+
+.icon-delete-16 { background-image: url(icons/16x16/delete.png); }
+.icon-edit-16 { background-image: url(icons/16x16/edit.png); }
+.icon-save-16 { background-image: url(icons/16x16/save.png); }
+.icon-save-16 { background-image: url(icons/16x16/save.png); }
+.icon-add-16 { background-image: url(icons/16x16/add.png); }
+
+.icon-delete-32 { background-image: url(icons/32x32/delete.png); }
+.icon-edit-32 { background-image: url(icons/32x32/edit.png); }
+.icon-save-32 { background-image: url(icons/32x32/save.png); }
+.icon-save-32 { background-image: url(icons/32x32/save.png); }
+.icon-add-32 { background-image: url(icons/32x32/add.png); }
+
+.errorlist .x-panel-header-text {
+    color: #BB0000;
+}
+.errorlist .errorlist-body {
+    padding: 15px;
+}
+.errorlist p.errorlist-item {
+    color: #BB0000;
+}
+
+.editform .editform-body {
+    padding: 15px;
+}
+
+.searchwidget-help {
+    padding: 4px 15px 15px 15px !important;
+    color: #444;
+    font-size: 0.9em;
+    width: 600px;
+}
+
+.tooltip-title {
+    margin-bottom: 5px;
+    font-size: 1.2em;
+}
+.tooltip-title span.tooltip-title-current-item {
+    font-weight: bold;
+}
+
+
+/**
+ *
+ * Footer
+ *
+ */
+
+body>footer {
+	text-align: right;
+	clear: both;
+	padding: 20px;
+	text-align: center;
+	border-top-style: solid;
+	border-top-width: 1px;
+	color: #D4D2CE;
+	border-top-color: 1px solid #ECEBE9;
+	background-color: #fff;
+}
+body>footer a {
+	color: #D4D2CE;
+}
+body>footer a:hover {
+	color: #776B5F;
+}
+body>footer a:visited {
+	color: #D4D2CE;
+}

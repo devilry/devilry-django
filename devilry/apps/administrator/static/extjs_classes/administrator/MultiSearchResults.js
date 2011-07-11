@@ -6,6 +6,9 @@
  * Integrates with {@link devilry.administrator.MultiSearchField}.
  * */
 Ext.define('devilry.administrator.MultiSearchResults', {
-    extend: 'Ext.container.Container',
-    alias: 'widget.administratormultisearchresults'
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.administratormultisearchresults',
+    id: 'floating-searchresult',
+    floating: true,
+    cls: 'search-popup-panel'
 });

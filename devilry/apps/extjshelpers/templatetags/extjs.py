@@ -24,8 +24,8 @@ def extjs_combobox_model(restfulcls):
     return mark_safe(js)
 
 @register.filter
-def extjs_store(restfulcls):
-    js = restfulcls_to_extjsstore(restfulcls)
+def extjs_store(restfulcls, pagesize=None):
+    js = restfulcls_to_extjsstore(restfulcls, pagesize=pagesize)
     return mark_safe(js)
 
 @register.filter

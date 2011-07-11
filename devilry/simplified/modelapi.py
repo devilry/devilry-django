@@ -267,7 +267,7 @@ class SimplifiedModelApi(object):
                                                     result_fieldgroups, search_fieldgroups,
                                                     **filters)
         orderby = orderby or cls._meta.ordering
-        result._standard_operations(query = query,
+        result._query_order_and_limit(query = query,
                                     start = start,
                                     limit = limit,
                                     orderby = orderby)

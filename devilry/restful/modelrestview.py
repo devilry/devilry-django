@@ -7,19 +7,18 @@ from serializers import serializers, SerializableResult
 from readform import ReadForm
 
 
-def _extjswrap(data, use_extjshacks, success=True):
+def _extjswrap(data, use_extjshacks, success=True, total=None):
     if use_extjshacks:
-        if isinstance(data, list):
-            result = dict(total = len(data),
-                          items = data)
-        elif isinstance(data, dict):
-            result = dict(items=data)
-        else:
-            raise ValueError('_extjswrap only supports list and dict, not: {type}'.format(type=type(data)))
+        result = dict(items = data)
+        if total != None:
+            result['total'] = total
         result['success'] = success
         return result
     else:
-        return data
+        if total == None:
+            return data
+        else:
+            return dict(items=data, total=total)
 
 class ErrorMsgSerializableResult(SerializableResult):
     def __init__(self, errormessage, httpresponsecls):
@@ -60,8 +59,8 @@ class ModelRestfulView(RestfulView):
         return cls.filter_urlmap(itemdct)
 
 
-    def _extjswrapshortcut(self, data, success=True):
-        return _extjswrap(data, self.use_extjshacks, success)
+    def _extjswrapshortcut(self, data, success=True, total=None):
+        return _extjswrap(data, self.use_extjshacks, success, total)
 
     def restultqry_to_list(self, qryresultwrapper):
         return [self.__class__.filter_resultitem(itemdct) \
@@ -94,11 +93,18 @@ class ModelRestfulView(RestfulView):
     def _cleanfilters(self, cleaned_data, fromGET, getdata):
         cleanedfilterdata = {}
         for filterop, filtervalue in getdata.iteritems():
-            if not filterop in cleaned_data: # the keys in cleaned_data are not filters
-                filtervalue = unicode(filtervalue)
-                if filtervalue.isdigit():
-                    filtervalue = int(filtervalue)
-                cleanedfilterdata[filterop] = filtervalue
+            if self.use_extjshacks and filterop == '_dc':
+                continue
+            if self.use_extjshacks and filterop == 'page':
+                continue
+            if filterop == 'getdata_in_qrystring':
+                continue
+            if filterop in cleaned_data:
+                continue
+            filtervalue = unicode(filtervalue)
+            if filtervalue.isdigit():
+                filtervalue = int(filtervalue)
+            cleanedfilterdata[filterop] = filtervalue
         return cleanedfilterdata
 
 
@@ -121,7 +127,7 @@ class ModelRestfulView(RestfulView):
                                                   httpresponsecls=HttpResponseBadRequest)
 
             resultlist = self.restultqry_to_list(qryresultwrapper)
-            result = self._extjswrapshortcut(resultlist)
+            result = self._extjswrapshortcut(resultlist, total=qryresultwrapper.total)
             return SerializableResult(result)
         else:
             return FormErrorSerializableResult(form, self.use_extjshacks)

@@ -9,13 +9,16 @@ Ext.define('devilry.administrator.MultiSearchField', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            fieldLabel: 'Search',
             width: 600,
+            fieldCls: 'searchfield',
+            emptyText: 'Search for anything...',
 
             listeners: {
                 specialKey: function(field, e) {
                     if(e.getKey() == e.ENTER) {
                         me.ownerCt.search(me.getValue());
+                    } else if(e.getKey() == e.ESC) {
+                        me.ownerCt.hideResults();
                     }
                 },
 
