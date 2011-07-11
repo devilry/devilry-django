@@ -276,3 +276,31 @@ class SimplifiedDeadline(CanSaveBase):
                                  assignmentgroup[1], assignmentgroup[2], assignmentgroup[3]
                                  )
         methods = ['search', 'read', 'update', 'create', 'delete']
+
+@simplified_modelapi
+class SimplifiedExaminerFilemeta(SimplifiedModelApi):
+    class Meta:
+        model = models.Delivery
+        resultfields = FieldSpec('filename', 'size', 'id',
+                                 subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
+                                            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                            'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
+                                 period=['delivery__assignment_group__parentnode__parentnode__long_name',
+                                         'delivery__assignment_group__parentnode__parentnode__short_name',
+                                         'delivery__assignment_group__parentnode__parentnode__id'],
+                                 assignment=['delivery__assignment_group__parentnode__long_name',
+                                             'delivery__assignment_group__parentnode__short_name',
+                                             'delivery__assignment_group__parentnode__id']
+                                 )
+        searchfields = FieldSpec(
+            # delivery__delivered_by
+            'delivery__assignment_group__parentnode__parentnode__parentnode__long_name',  # subject
+            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',  # subject
+            'delivery__assignment_group__parentnode__parentnode__long_name',  # period
+            'delivery__assignment_group__parentnode__parentnode__short_name',  # period
+            'delivery__assignment_group__parentnode__long_name',  # assignment
+            'delivery__assignment_group__parentnode__short_name',  # assignment
+            )
+
+        methods = ['search', 'read']
+

@@ -177,7 +177,7 @@ class Feedback(PublishedWhereIsExaminerMixin):
 class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Deadline
-        resultfields = FieldSpec('text', 'format', 'deliveries', 'status', 'feedbacks_published', 'id',
+        resultfields = FieldSpec('text', 'deadline', 'assignment_group', 'status', 'feedbacks_published', 'id',
                                  subject=['assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'assignment_group__parentnode__parentnode__parentnode__short_name',
                                             'assignment_group__parentnode__parentnode__parentnode__id'],
@@ -198,3 +198,32 @@ class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
             'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
             )  # What should search() search from
         methods = ['search', 'read', 'create', 'update']
+
+
+@simplified_modelapi
+class SimplifiedExaminerFilemeta(PublishedWhereIsExaminerMixin):
+    class Meta:
+        model = models.Delivery
+        resultfields = FieldSpec('filename', 'size', 'id',
+                                 subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
+                                            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                            'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
+                                 period=['delivery__assignment_group__parentnode__parentnode__long_name',
+                                         'delivery__assignment_group__parentnode__parentnode__short_name',
+                                         'delivery__assignment_group__parentnode__parentnode__id'],
+                                 assignment=['delivery__assignment_group__parentnode__long_name',
+                                             'delivery__assignment_group__parentnode__short_name',
+                                             'delivery__assignment_group__parentnode__id']
+                                 )
+        searchfields = FieldSpec(
+            # delivery__delivered_by
+            'delivery__assignment_group__parentnode__parentnode__parentnode__long_name',  # subject
+            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',  # subject
+            'delivery__assignment_group__parentnode__parentnode__long_name',  # period
+            'delivery__assignment_group__parentnode__parentnode__short_name',  # period
+            'delivery__assignment_group__parentnode__long_name',  # assignment
+            'delivery__assignment_group__parentnode__short_name',  # assignment
+            )
+
+        methods = ['search', 'read']
+

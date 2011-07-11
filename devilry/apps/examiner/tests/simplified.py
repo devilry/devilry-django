@@ -367,22 +367,39 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
             SimplifiedAssignmentGroup.read(self.admin, self.inf101_firstSem_a1_g1.id)
 
 class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
+
+    allExtras = SimplifiedAssignmentGroup.Meta.resultfields.additional_aslist()
+    baseFields = SimplifiedAssignmentGroup.Meta.resultfields.aslist()
+    allFields = SimplifiedAssignmentGroup.Meta.resultfields.aslist(allExtras)
+
     def set_up(self):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
 
-        self.add_to_path('uni;inf101.firstSem.a1.g1.dl.ends(5)')
-
     def test_search(self):
         search_res = SimplifiedExaminerDeadline.search(self.firstExam)
-        print search_res
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
+                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
+                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1.deadlines.all()[0],
+                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1.deadlines.all()[0],
+                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf110_secondSem_a3_g1.deadlines.all()[0],
+                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras))]
+
+        self.assertEquals(len(search_res), len(expected_res))
+
+        for s in search_res:
+            self.assertTrue(s in expected_res)
 
     def test_search_security(self):
         #TODO - complete this
         pass
 
     def test_read(self):
-        read_res = SimplifiedExaminerDeadline.read(self.firstExam)
-        print read_res
+        #TODO - complete this
+        pass
 
     def test_read_security(self):
         #TODO - complete this
