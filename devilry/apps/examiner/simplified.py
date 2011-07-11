@@ -197,8 +197,12 @@ class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
             'assignment_group__parentnode__parentnode__parentnode__short_name',  # Name of subject
             'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
             )  # What should search() search from
-        methods = ['search', 'read', 'create', 'update']
+        methods = ['search', 'read', 'create', 'delete'] #TODO: should we have update here?
 
+    @classmethod
+    def write_authorize(cls, user, obj):
+        if not obj.assignment_group.can_save(user):
+            raise PermissionDenied()
 
 @simplified_modelapi
 class SimplifiedExaminerFilemeta(PublishedWhereIsExaminerMixin):

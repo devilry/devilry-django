@@ -617,12 +617,12 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                 parentnode = self.inf110_firstSem_a2.parentnode,
                 publishing_time = self.inf110_firstSem_a2.publishing_time)
 
-        self.create_res = SimplifiedAssignment.create(self.admin1, short_name='test1', **kw)
-        self.assertEquals(self.create_res.short_name, 'test1')
-        self.assertEquals(self.create_res.long_name, 'Test')
-        self.assertEquals(self.create_res.parentnode,
+        create_res = SimplifiedAssignment.create(self.admin1, short_name='test1', **kw)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'Test')
+        self.assertEquals(create_res.parentnode,
                 self.inf110_firstSem_a2.parentnode)
-        self.assertEquals(self.create_res.publishing_time,
+        self.assertEquals(create_res.publishing_time,
                 self.inf110_firstSem_a2.publishing_time)
 
     def test_create_security(self):
@@ -1002,7 +1002,5 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
-
-        # We know secondStud hasn't signed up for firstSem.inf101.
         with self.assertRaises(PermissionDenied):
             SimplifiedDeadline.read(self.secondStud, self.inf101_firstSem_a1_g1.id)
