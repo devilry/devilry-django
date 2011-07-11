@@ -19,6 +19,7 @@
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
 
     Ext.require('devilry.administrator.SearchWidget');
+    Ext.require('devilry.extjshelpers.ButtonBar');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
             renderTo: 'searchwidget',
@@ -60,10 +61,22 @@
                 rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
-
         searchwidget.loadInitialValues();
         searchwidget.focusOnSearchfield();
+
+        Ext.create('devilry.extjshelpers.ButtonBar', {
+            renderTo: 'createbuttonbar',
+            width: 600,
+            buttons: [
+                {text: 'Node', url: '{% url administrator-editors-node "create" %}'},
+                {text: 'Subject', url: '{% url administrator-editors-subject "create" %}'},
+                {text: 'Period', url: '{% url administrator-editors-period "create" %}'},
+                {text: 'Assignment', url: '{% url administrator-editors-assignment "create" %}'}
+            ]   
+        });
     });
+
+
 </script>
 
 {% endblock %}
@@ -71,5 +84,10 @@
 
 {% block main %}
 <div id='searchwidget'></div>
-<div id='form-example'></div>
+<p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
+have permission to view or edit. Searching for a user will find any item
+related to that user, and searching for a subject will find anything related to
+that subject.</p>
+
+<div id="createbuttonbar"></div>
 {% endblock %}

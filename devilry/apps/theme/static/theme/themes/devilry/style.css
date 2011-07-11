@@ -131,15 +131,17 @@ body>#main {
 
 
 
-.icon-delete {
-    background-image: url(icons/delete.png);
-}
-.icon-edit {
-    background-image: url(icons/edit.png);
-}
-.icon-save {
-    background-image: url(icons/save.png);
-}
+.icon-delete-16 { background-image: url(icons/16x16/delete.png); }
+.icon-edit-16 { background-image: url(icons/16x16/edit.png); }
+.icon-save-16 { background-image: url(icons/16x16/save.png); }
+.icon-save-16 { background-image: url(icons/16x16/save.png); }
+.icon-add-16 { background-image: url(icons/16x16/add.png); }
+
+.icon-delete-32 { background-image: url(icons/32x32/delete.png); }
+.icon-edit-32 { background-image: url(icons/32x32/edit.png); }
+.icon-save-32 { background-image: url(icons/32x32/save.png); }
+.icon-save-32 { background-image: url(icons/32x32/save.png); }
+.icon-add-32 { background-image: url(icons/32x32/add.png); }
 
 .errorlist .x-panel-header-text {
     color: #BB0000;
@@ -153,6 +155,13 @@ body>#main {
 
 .editform .editform-body {
     padding: 15px;
+}
+
+.searchwidget-help {
+    padding: 4px 15px 15px 15px !important;
+    color: #444;
+    font-size: 0.9em;
+    width: 600px;
 }
 
 

@@ -14,33 +14,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     initComponent: function() {
         var me = this;
         
-        var deletebuttonargs = {
-            xtype: 'button',
-            text: 'Delete',
-            flex: 0,
-            hidden: !this.supports_delete,
-            iconCls: 'icon-delete',
-            handler: function() {
-                Ext.MessageBox.show({
-                    title: 'Confirm delete',
-                    msg: 'Are you sure you want to delete?',
-                    animateTarget: this,
-                    buttons: Ext.Msg.YESNO,
-                    icon: Ext.Msg.ERROR,
-                    fn: function(btn) {
-                        if(btn == 'yes') {
-                            me.deleteCurrent();
-                        }
-                    }
-                });
-            }
-        };
-
         var savebuttonargs = {
             xtype: 'button',
             text: 'Save',
-            scale: 'medium',
-            iconCls: 'icon-save',
+            scale: 'large',
+            iconCls: 'icon-save-32',
             handler: function() {
                 me.errorlist.clearErrors();
                 me.editform.getForm().submit({
@@ -61,10 +39,34 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             }
         };
 
+        var deletebuttonargs = {
+            xtype: 'button',
+            text: 'Delete',
+            flex: 0,
+            hidden: !this.supports_delete,
+            scale: 'large',
+            iconCls: 'icon-delete-32',
+            handler: function() {
+                Ext.MessageBox.show({
+                    title: 'Confirm delete',
+                    msg: 'Are you sure you want to delete?',
+                    animateTarget: this,
+                    buttons: Ext.Msg.YESNO,
+                    icon: Ext.Msg.ERROR,
+                    fn: function(btn) {
+                        if(btn == 'yes') {
+                            me.deleteCurrent();
+                        }
+                    }
+                });
+            }
+        };
+
         var clicktoeditbuttonargs = {
             xtype: 'button',
             text: 'Click to edit',
-            iconCls: 'icon-edit',
+            scale: 'large',
+            iconCls: 'icon-edit-32',
             listeners: {
                 click: function(button, pressed) {
                     me.editable();
@@ -77,7 +79,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         this.overlayBar = Ext.create('Ext.container.Container', {
             floating: true,
             cls: 'form-overlay-bar',
-            height: 30,
+            height: 40,
             width: 300,
             layout: {
                 type: 'hbox',
@@ -114,7 +116,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
 
             // Only save button. Other buttons are in overlayBar
             buttons: [
-                savebuttonargs,
+                savebuttonargs
             ]
         };
 
@@ -186,6 +188,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         this.readonly();
     },
     loadCreateMode: function() {
+        this.getFormButtonBar().hide(); // NOTE: This is required for some reason?
         this.editable();
     },
     loadMode: function(mode, record_id) {
