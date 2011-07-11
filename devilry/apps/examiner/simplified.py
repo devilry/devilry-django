@@ -174,7 +174,7 @@ class Feedback(PublishedWhereIsExaminerMixin):
         methods = ['search', 'read', 'create']
 
 @simplified_modelapi
-class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
+class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Deadline
         resultfields = FieldSpec('text', 'deadline', 'assignment_group', 'status', 'feedbacks_published', 'id',
@@ -205,7 +205,7 @@ class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
             raise PermissionDenied()
 
 @simplified_modelapi
-class SimplifiedExaminerFileMeta(PublishedWhereIsExaminerMixin):
+class SimplifiedFileMeta(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.FileMeta
         resultfields = FieldSpec('filename', 'size', 'id',
