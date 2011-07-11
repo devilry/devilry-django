@@ -12,9 +12,9 @@ __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
            'RestfulStaticFeedback')
 
 
-examiner_restful = RestfulManager()
+student_restful = RestfulManager()
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedNode(ModelRestfulView):
     class Meta:
@@ -22,7 +22,7 @@ class RestfulSimplifiedNode(ModelRestfulView):
         foreignkey_fields = {'parentnode': 'RestfulSimplifiedNode'}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedSubject(ModelRestfulView):
     class Meta:
@@ -30,7 +30,7 @@ class RestfulSimplifiedSubject(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedNode}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
@@ -38,7 +38,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedSubject}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedAssignment(ModelRestfulView):
     class Meta:
@@ -46,7 +46,7 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedPeriod}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
@@ -54,7 +54,7 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
@@ -62,7 +62,7 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedDeadline(ModelRestfulView):
     class Meta:
@@ -70,7 +70,7 @@ class RestfulSimplifiedDeadline(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedStaticFeedback(ModelRestfulView):
     class Meta:
@@ -78,7 +78,7 @@ class RestfulSimplifiedStaticFeedback(ModelRestfulView):
         foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}
 
 
-@examiner_restful.register
+@student_restful.register
 @restful_modelapi
 class RestfulSimplifiedFileMeta(ModelRestfulView):
     class Meta:
