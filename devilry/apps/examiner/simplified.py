@@ -171,4 +171,30 @@ class Feedback(PublishedWhereIsExaminerMixin):
             'delivery__assignment_group__parentnode__long_name',  # assignment
             'delivery__assignment_group__parentnode__short_name',  # assignment
             )
-        methods = ['search', 'read', 'create']  # TODO: 'delete', 'update'
+        methods = ['search', 'read', 'create']
+
+@simplified_modelapi
+class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
+    class Meta:
+        model = models.Deadline
+        resultfields = FieldSpec('text', 'format', 'deliveries', 'status', 'feedbacks_published', 'id',
+                                 subject=['assignment_group__parentnode__parentnode__parentnode__long_name',
+                                            'assignment_group__parentnode__parentnode__parentnode__short_name',
+                                            'assignment_group__parentnode__parentnode__parentnode__id'],
+                                 period=['assignment_group__parentnode__parentnode__long_name',
+                                            'assignment_group__parentnode__parentnode__short_name',
+                                            'assignment_group__parentnode__parentnode__id'],
+                                 assignment=['assignment_group__parentnode__long_name',
+                                              'assignment_group__parentnode__short_name',
+                                              'assignment_group__parentnode__id']
+                                 )
+        searchfields = FieldSpec(
+            #'delivered_by',
+            'assignment_group__parentnode__short_name',  # Name of assignment
+            'assignment_group__parentnode__long_name',  # Name of assignment
+            'assignment_group__parentnode__parentnode__short_name',  # Name of period
+            'assignment_group__parentnode__parentnode__long_name',  # Name of period
+            'assignment_group__parentnode__parentnode__parentnode__short_name',  # Name of subject
+            'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
+            )  # What should search() search from
+        methods = ['search', 'read', 'create', 'update']

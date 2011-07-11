@@ -15,7 +15,8 @@ from ...core import pluginloader
 from ..simplified import (  # SimplifiedDelivery,
     # SimplifiedStaticFeedback,
     SimplifiedAssignment,
-    SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject)
+    SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject,
+    SimplifiedExaminerDeadline)
 
 import re
 
@@ -365,7 +366,43 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.read(self.admin, self.inf101_firstSem_a1_g1.id)
 
+class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
+    def set_up(self):
+        super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
 
+        self.add_to_path('uni;inf101.firstSem.a1.g1.dl.ends(5)')
+
+    def test_search(self):
+        search_res = SimplifiedExaminerDeadline.search(self.firstExam)
+        print search_res
+
+    def test_search_security(self):
+        #TODO - complete this
+        pass
+
+    def test_read(self):
+        read_res = SimplifiedExaminerDeadline.read(self.firstExam)
+        print read_res
+
+    def test_read_security(self):
+        #TODO - complete this
+        pass
+
+    def test_create(self):
+        #TODO 
+        pass
+
+    def test_create_security(self):
+        #TODO 
+        pass
+
+    def test_update(self):
+        #TODO 
+        pass
+
+    def test_update_security(self):
+        #TODO 
+        pass
 # class TestSimplifiedExaminerSimplifiedSubject(SimplifiedExaminerTestCase):
 
 #     def test_search(self):
