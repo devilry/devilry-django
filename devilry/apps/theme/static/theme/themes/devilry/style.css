@@ -164,6 +164,14 @@ body>#main {
     width: 600px;
 }
 
+.tooltip-title {
+    margin-bottom: 5px;
+    font-size: 1.2em;
+}
+.tooltip-title span.tooltip-title-current-item {
+    font-weight: bold;
+}
+
 
 /**
  *

@@ -67,13 +67,33 @@
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             width: 600,
-            buttons: [
-                {text: 'Node', url: '{% url administrator-editors-node "create" %}'},
-                {text: 'Subject', url: '{% url administrator-editors-subject "create" %}'},
-                {text: 'Period', url: '{% url administrator-editors-period "create" %}'},
-                {text: 'Assignment', url: '{% url administrator-editors-assignment "create" %}'}
-            ]   
+            buttons: [{
+                text: 'Node', url: '{% url administrator-editors-node "create" %}',
+                tooltip: {
+                    title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
+                    body: 'A Node is a place to organise top-level administrators.'
+                }
+            }, {
+                text: 'Subject', url: '{% url administrator-editors-subject "create" %}',
+                tooltip: {
+                    title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
+                    body: 'A Subject is often also called a course.'
+                }
+            }, {
+                text: 'Period', url: '{% url administrator-editors-period "create" %}',
+                tooltip: {
+                    title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
+                    body: 'A Period is a limited period in time, such as a semester.'
+                }
+            }, {
+                text: 'Assignment', url: '{% url administrator-editors-assignment "create" %}',
+                tooltip: {
+                    title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
+                    body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
+                }
+            }]   
         });
+        Ext.QuickTips.init();
     });
 
 
