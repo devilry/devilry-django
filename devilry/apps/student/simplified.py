@@ -3,7 +3,7 @@ from ...simplified import (simplified_modelapi, SimplifiedModelApi,
 from ..core import models
 
 
-class PublishedWhereIsCandidateMixin(object):
+class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -11,13 +11,14 @@ class PublishedWhereIsCandidateMixin(object):
 
     @classmethod
     def read_authorize(cls, user, obj):
-        if not cls._meta.model.published_where_is_candidate(user).filter(id=obj.id):
+        if not obj.published_where_is_candidate(user).filter(id=obj.id):
             raise PermissionDenied()
 
+
 @simplified_modelapi
-class SimplifiedExaminerFilemeta(PublishedWhereIsCandidateMixin):
+class SimplifiedFileMeta(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     class Meta:
-        model = models.Delivery
+        model = models.FileMeta
         resultfields = FieldSpec('filename', 'size', 'id',
                                  subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
@@ -41,20 +42,21 @@ class SimplifiedExaminerFilemeta(PublishedWhereIsCandidateMixin):
 
         methods = ['search', 'read', 'create']
 
+
 @simplified_modelapi
-class SimplifiedExaminerDeadline(PublishedWhereIsCandidateMixin):
+class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
     class Meta:
         model = models.Deadline
         resultfields = FieldSpec('text', 'deadline', 'assignment_group', 'status', 'feedbacks_published', 'id',
                                  subject=['assignment_group__parentnode__parentnode__parentnode__long_name',
-                                            'assignment_group__parentnode__parentnode__parentnode__short_name',
+                                          'assignment_group__parentnode__parentnode__parentnode__short_name',
                                             'assignment_group__parentnode__parentnode__parentnode__id'],
                                  period=['assignment_group__parentnode__parentnode__long_name',
-                                            'assignment_group__parentnode__parentnode__short_name',
-                                            'assignment_group__parentnode__parentnode__id'],
+                                         'assignment_group__parentnode__parentnode__short_name',
+                                         'assignment_group__parentnode__parentnode__id'],
                                  assignment=['assignment_group__parentnode__long_name',
-                                              'assignment_group__parentnode__short_name',
-                                              'assignment_group__parentnode__id']
+                                             'assignment_group__parentnode__short_name',
+                                             'assignment_group__parentnode__id']
                                  )
         searchfields = FieldSpec(
             #'delivered_by',
@@ -66,6 +68,7 @@ class SimplifiedExaminerDeadline(PublishedWhereIsCandidateMixin):
             'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
             )  # What should search() search from
         methods = ['search', 'read']
+
 
 @simplified_modelapi
 class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelApi):

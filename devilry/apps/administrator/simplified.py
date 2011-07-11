@@ -67,10 +67,10 @@ class SimplifiedPeriod(CanSaveBase):
     class Meta:
         model = models.Period
         resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode',
-                'start_time', 'end_time',
-                subject = ['parentnode__short_name', 'parentnode__long_name'])
+                                 'start_time', 'end_time',
+                                 subject = ['parentnode__short_name', 'parentnode__long_name'])
         searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
-                'parentnode__long_name')
+                                 'parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
         filters = FilterSpecs(FilterSpec('parentnode'),
                               FilterSpec('short_name'),
@@ -95,10 +95,10 @@ class SimplifiedAssignment(CanSaveBase):
                                  pointfields = ['anonymous', 'must_pass', 'maxpoints',
                                                 'attempts'])
         searchfields = FieldSpec('short_name', 'long_name',
-                                'parentnode__short_name',
-                                'parentnode__long_name',
-                                'parentnode__parentnode__short_name',
-                                'parentnode__parentnode__long_name')
+                                 'parentnode__short_name',
+                                 'parentnode__long_name',
+                                 'parentnode__parentnode__short_name',
+                                 'parentnode__parentnode__long_name')
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
         filters = FilterSpecs(FilterSpec('parentnode'),
                               FilterSpec('short_name'),
@@ -243,7 +243,7 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedDeadline(CanSaveBase):
+class SimplifiedDeadline(SimplifiedModelApi):
     class Meta:
 
         subject = ['assignment_group__parentnode__parentnode__parentnode',
@@ -275,16 +275,33 @@ class SimplifiedDeadline(CanSaveBase):
                                  assignment[1], assignment[2],
                                  assignmentgroup[1], assignmentgroup[2], assignmentgroup[3]
                                  )
-        methods = ['search', 'read', 'update', 'create', 'delete']
+        methods = ['search', 'read', 'create', 'delete']
+
+    @classmethod
+    def create_searchqryset(cls, user):
+        return cls._meta.model.where_is_admin_or_superadmin(user)
+
+    @classmethod
+    def read_authorize(cls, user_obj, obj):
+        #TODO: Replace when issue #141 is resolved!
+        if not user_obj.is_superuser:
+            if not obj.assignment_group.is_admin(user_obj):
+                raise PermissionDenied()
+
+    @classmethod
+    def write_authorize(cls, user_obj, obj):
+        if not obj.assignment_group.can_save(user_obj):
+            raise PermissionDenied()
+
 
 @simplified_modelapi
-class SimplifiedExaminerFilemeta(SimplifiedModelApi):
+class SimplifiedFileMeta(SimplifiedModelApi):
     class Meta:
-        model = models.Delivery
+        model = models.FileMeta
         resultfields = FieldSpec('filename', 'size', 'id',
                                  subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
-                                            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                                            'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
+                                          'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                          'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
                                  period=['delivery__assignment_group__parentnode__parentnode__long_name',
                                          'delivery__assignment_group__parentnode__parentnode__short_name',
                                          'delivery__assignment_group__parentnode__parentnode__id'],
@@ -300,7 +317,19 @@ class SimplifiedExaminerFilemeta(SimplifiedModelApi):
             'delivery__assignment_group__parentnode__parentnode__short_name',  # period
             'delivery__assignment_group__parentnode__long_name',  # assignment
             'delivery__assignment_group__parentnode__short_name',  # assignment
+            'delivery__assignment_group__candidates__identifier',  # assignment
+            'delivery__assignment_group__examiners__username',  # assignmen
             )
 
         methods = ['search', 'read']
 
+    @classmethod
+    def create_searchqryset(cls, user):
+        return cls._meta.model.where_is_admin_or_superadmin(user)
+
+    @classmethod
+    def read_authorize(cls, user_obj, obj):
+        #TODO: Replace when issue #141 is resolved!
+        if not user_obj.is_superuser:
+            if not obj.delivery.assignment_group.is_admin(user_obj):
+                raise PermissionDenied()

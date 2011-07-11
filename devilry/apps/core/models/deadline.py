@@ -8,11 +8,12 @@ from datetime import datetime
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
+from abstract_is_admin import AbstractIsAdmin
 
 from node import Node
 
 
-class Deadline(models.Model, AbstractIsExaminer, AbstractIsCandidate):
+class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
     """
     .. attribute:: assignment_group
 
@@ -131,7 +132,7 @@ class Deadline(models.Model, AbstractIsExaminer, AbstractIsCandidate):
     @classmethod
     def where_is_admin_or_superadmin(cls, user_obj):
         return cls.objects.filter(cls.q_is_admin(user_obj))
-    
+
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()

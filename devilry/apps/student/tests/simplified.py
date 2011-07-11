@@ -6,7 +6,8 @@ from ....simplified.utils import modelinstance_to_dict
 from ...core import testhelper
 from ...core import pluginloader
 from ..simplified import (SimplifiedDelivery, SimplifiedStaticFeedback, SimplifiedAssignment,
-                          SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject)
+                          SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject,
+                          SimplifiedFileMeta)
 
 import re
 
@@ -497,3 +498,110 @@ class TestSimplifiedStaticFeedback(SimplifiedStudentTestBase):
 
         with self.assertRaises(PermissionDenied):
             SimplifiedStaticFeedback.read(self.admin, self.inf101_firstSem_a1_g1_feedbacks[0].id)
+
+
+class TestSimplifiedCandidateFileMeta(SimplifiedStudentTestBase):
+
+    allExtras = SimplifiedFileMeta.Meta.resultfields.additional_aslist()
+    baseFields = SimplifiedFileMeta.Meta.resultfields.aslist()
+    allFields = SimplifiedFileMeta.Meta.resultfields.aslist(allExtras)
+
+    def setUp(self):
+        super(TestSimplifiedCandidateFileMeta, self)
+        # create a base structure
+        self.add(nodes='uni:admin(admin1)',
+                 subjects=['inf101', 'inf110'],
+                 periods=['firstSem', 'secondSem:admin(admin2)'],
+                 assignments=['a1', 'a2'])
+
+        # add firstStud to the first and secondSem assignments
+        self.add_to_path('uni;inf101.firstSem.a1.g1:candidate(firstStud):examiner(exam1,exam3)')
+        self.add_to_path('uni;inf101.firstSem.a2.g1:candidate(firstStud):examiner(exam1)')
+        self.add_to_path('uni;inf110.secondSem.a1.g1:candidate(firstStud):examiner(exam2)')
+        self.add_to_path('uni;inf110.secondSem.a2.g1:candidate(firstStud):examiner(exam2)')
+
+        # secondStud began secondSem
+        self.add_to_path('uni;inf101.secondSem.a1.g2:candidate(secondStud):examiner(exam1)')
+        self.add_to_path('uni;inf101.secondSem.a2.g2:candidate(secondStud):examiner(exam1)')
+
+        for var in dir(self):
+            # find any variable that ends with '_gN' where N is a
+            # number
+            if re.search('_g\d$', var):
+                group = getattr(self, var)
+                group.examiners.add(self.exam1)
+                files = {'good.py': ['print ', 'awesome']}
+                self.add_delivery(group, files)
+
+    def test_search(self):
+        # search with no query and no extra fields
+        # should only have the deafault deadlines created when the
+        # assignment group was created
+        search_res = SimplifiedFileMeta.search(self.firstStud)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        ]
+
+        # assert that all search results are as expected
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+        # search with no query and with extra fields
+        search_res = SimplifiedFileMeta.search(self.firstStud, result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        ]
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+        # search with query
+        search_res = SimplifiedFileMeta.search(self.firstStud, query='secondStud')
+        expected_res = []
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+        # with query and extra fields
+        search_res = SimplifiedFileMeta.search(self.firstStud, query='inf101', result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        ]
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_read(self):
+
+        # do a read with no extra fields
+        read_res = SimplifiedFileMeta.read(self.firstStud, self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0].id)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0],
+                                             SimplifiedFileMeta.Meta.resultfields.aslist())
+        self.assertEquals(read_res, expected_res)
+
+        # do a read with all extras
+        read_res = SimplifiedFileMeta.read(self.firstStud, self.inf101_firstSem_a1_g1.deadlines.all()[0].id,
+                                           result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0],
+                                             SimplifiedFileMeta.Meta.resultfields.aslist(self.allExtras))
+        self.assertEquals(read_res, expected_res)
+
+    def test_read_security(self):
+
+        # We know secondStud hasn't signed up for firstSem.inf101.
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.read(self.secondStud, self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0].id)
+
+        # test that an admin in another subject cant read outside his
+        # subjects
+        self.add_to_path('uni;inf110:admin(inf110admin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.read(self.inf110admin, self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0].id)
