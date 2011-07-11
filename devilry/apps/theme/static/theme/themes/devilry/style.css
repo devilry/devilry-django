@@ -141,6 +141,19 @@ body>#main {
     background-image: url(icons/save.png);
 }
 
+.errorlist .x-panel-header-text {
+    color: #BB0000;
+}
+.errorlist .errorlist-body {
+    padding: 15px;
+}
+.errorlist p.errorlist-item {
+    color: #BB0000;
+}
+
+.editform .editform-body {
+    padding: 15px;
+}
 
 
 /**

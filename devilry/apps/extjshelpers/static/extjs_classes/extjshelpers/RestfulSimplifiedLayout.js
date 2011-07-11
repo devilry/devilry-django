@@ -5,6 +5,7 @@
 Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.administratorrestfulsimplifiedlayout',
+    requires: ['devilry.extjshelpers.ErrorList'],
     border: 0,
     bodyStyle: {
         'background-color': 'transparent'
@@ -41,6 +42,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             scale: 'medium',
             iconCls: 'icon-save',
             handler: function() {
+                me.errorlist.clearErrors();
                 me.editform.getForm().submit({
                     submitEmptyText: true,
                     waitMsg: 'Saving item...',
@@ -48,6 +50,12 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
                         var record = action.record;
                         me.editform.loadRecord(record); // Need to load the record. If not, the proxy will do a POST instead of PUT on next save.
                         me.readonly();
+                    },
+                    failure: function(form, action) {
+                        var errormessages = action.operation.responseData.items.errormessages;
+                        Ext.each(errormessages, function(errormessage) {
+                            me.errorlist.addError(errormessage);
+                        });
                     }
                 });
             }
@@ -60,6 +68,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             listeners: {
                 click: function(button, pressed) {
                     me.editable();
+                    //me.errorlist.addError('Hello world');
+                    //me.errorlist.addError('This is a long error message. Message message message message message message message message message message message message message message message message message message message message message message message message message message message message.');
                 }
             }
         };
@@ -82,6 +92,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         });
 
 
+        this.errorlist = Ext.create('devilry.extjshelpers.ErrorList', {});
+
         var editformargs = {
             id: me.getChildIdBySuffix('editform'),
             xtype: 'form',
@@ -94,9 +106,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
                 anchor: '100%',
             },
 
-            bodyStyle: {
-                padding: '15px'
-            },
+            cls: 'editform',
+            bodyCls: 'editform-body',
 
             // Disable by default
             disabled: true,
@@ -109,7 +120,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
 
 
         Ext.apply(this, {
-            items: [editformargs],
+            items: [
+                this.errorlist,
+                editformargs
+            ],
             layout: 'fit'
         });
         this.callParent(arguments);
@@ -158,7 +172,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     readonly: function() {
         this.editform.disable();
         this.overlayBar.show();
-        this.overlayBar.alignTo(this, 'tr-tr');
+        this.overlayBar.alignTo(this.editform, 'tr-tr');
         this.getFormButtonBar().hide();
     },
     editable: function() {
