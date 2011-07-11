@@ -1,28 +1,37 @@
 from django.db import models
 from django.utils.translation import ugettext as _
+from django.db.models import Q
+
+from node import Node
+from abstract_is_admin import AbstractIsAdmin
+from abstract_is_examiner import AbstractIsExaminer
+from abstract_is_candidate import AbstractIsCandidate
 
 from ..deliverystore import load_deliverystore_backend, FileNotFoundError
 
-class FileMeta(models.Model):
+from datetime import datetime
+
+
+class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
     """
     Represents the metadata for a file belonging to a `Delivery`_.
 
     .. attribute:: delivery
 
-        A django.db.models.OneToOneField_ that points to the `Delivery`_ to
-        be given feedback.
+    A django.db.models.OneToOneField_ that points to the `Delivery`_ to
+    be given feedback.
 
     .. attribute:: filename
 
-        Name of the file.
+    Name of the file.
 
     .. attribute:: size
 
-        Size of the file in bytes.
+    Size of the file in bytes.
 
     .. attribute:: deliverystore
 
-        The current :ref:`DeliveryStore <devilry.apps.core.deliverystore>`.
+    The current :ref:`DeliveryStore <devilry.apps.core.deliverystore>`.
     """
     delivery = models.ForeignKey("Delivery", related_name='filemetas')
     filename = models.CharField(max_length=255)
@@ -62,6 +71,31 @@ class FileMeta(models.Model):
         #of the :attr:`deliverystore`.
         #"""
         #return self.deliverystore.read_open(self)
+
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(delivery__assignment_group__parentnode__publishing_time__lt=now)
+        if not active:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__gte=now)
+        if not old:
+            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt=now)
+        return q
+
+    @classmethod
+    def q_is_candidate(cls, user_obj):
+        return Q(delivery__assignment_group__candidates__identifier=user_obj)
+
+    @classmethod
+    def q_is_examiner(cls, user_obj):
+        return Q(delivery__assignment_group__examiners=user_obj)
+
+    @classmethod
+    def q_is_admin(cls, user_obj):
+        return Q(delivery__assignment_group__parentnode__admins=user_obj) | \
+            Q(delivery__assignment_group__parentnode__parentnode__admins=user_obj) | \
+            Q(delivery__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+            Q(delivery__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return self.filename

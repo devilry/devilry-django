@@ -84,7 +84,7 @@ class SimplifiedModelApi(object):
     @classmethod
     def handle_fieldgroups(cls, user,
                            result_fieldgroups, search_fieldgroups,
-                           **filters):
+                           **validatedfilters):
         """
         Can be overridden to change fieldgroups before they are sent into the
         QryResultWrapper. For example, if certain fieldgroups contain
@@ -92,12 +92,16 @@ class SimplifiedModelApi(object):
         if a filter for a specific assignment is provided in ``filters`` and
         that assignment is not anonymous.
 
+        :param validatedfilters:
+            Filters which are applied to the QuerySet returned by
+            :meth:`create_searchqryset`. Do **NOT** change this.
+
         :return: (result_fieldgroups, search_fieldgroups)
         """
         return result_fieldgroups, search_fieldgroups
 
     @classmethod
-    def create_searchqryset(cls, user, **filters):
+    def create_searchqryset(cls, user):
         """
         Create search queryset.
 
@@ -108,21 +112,20 @@ class SimplifiedModelApi(object):
     @classmethod
     def _create_search_qryresultwrapper(cls, user,
                                        result_fieldgroups, search_fieldgroups,
-                                       **filters):
+                                       **validatedfilters):
         """
-        :param filters:
-            Keyword arguments which are forwarded to
-            :meth:`create_searchqryset`, so that it is called
-            as: ``cls.create_searchqryset(user, **filters)``.
+        :param validatedfilters:
+            Filters which are applied to the QuerySet returned by
+            :meth:`create_searchqryset`.
 
         :return: A :class:`QryResultWrapper`.
         """
         qryset = cls.create_searchqryset(user)
-        qryset = qryset.filter(**filters)
+        qryset = qryset.filter(**validatedfilters)
         result_fieldgroups, search_fieldgroups = cls.handle_fieldgroups(user,
                                                                         result_fieldgroups,
                                                                         search_fieldgroups,
-                                                                        **filters)
+                                                                        **validatedfilters)
         resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
         searchfields = cls._meta.searchfields.aslist(search_fieldgroups)
         result = QryResultWrapper(resultfields, searchfields, qryset)
@@ -251,19 +254,20 @@ class SimplifiedModelApi(object):
             Available values are the fieldgroups in
             ``Meta.searchfields.additional_fieldgroups``.
         :param filters:
-            Keyword arguments which are forwarded to
-            :meth:`create_searchqryset`, so that it is called
-            as: ``cls.create_searchqryset(user, **filters)``
+            Filters which are applied to the QuerySet returned by
+            :meth:`create_searchqryset`. These filters are validated
+            by :meth:`devilry.simplified.FilterSpecs.validate` before
+            they are applied.
 
         :return: The result of the search.
         :rtype: QryResultWrapper
         """
-        cls._meta.filters.validate(filters) # NOTE: This _must_ be before filters are sent on to use specified methods to ensure the filters are validated.
+        cls._meta.filters.validate(filters) # NOTE: This _must_ be before filters are sent on to user specified methods to ensure the filters are validated.
         result = cls._create_search_qryresultwrapper(user,
                                                     result_fieldgroups, search_fieldgroups,
                                                     **filters)
         orderby = orderby or cls._meta.ordering
-        result._standard_operations(query = query,
+        result._query_order_and_limit(query = query,
                                     start = start,
                                     limit = limit,
                                     orderby = orderby)

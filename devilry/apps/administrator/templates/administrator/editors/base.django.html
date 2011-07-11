@@ -10,8 +10,8 @@
 
     Ext.onReady(function() {
         var mainlayout = Ext.create('devilry.extjshelpers.RestfulSimplifiedLayout', {
-            id: 'maincarddeck',
-            renderTo: 'maincarddeck-wrapper',
+            id: 'editor',
+            renderTo: 'editorcontainer',
             supports_delete: {{ RestfulSimplifiedClass.supports_delete|yesno:"true,false" }},
             model: {{ RestfulSimplifiedClass|get_extjsname_from_class}},
             editformitems: {{ RestfulSimplifiedClass|extjs_form_items}},
@@ -26,5 +26,5 @@
 
 
 {% block main %}
-<div id='maincarddeck-wrapper'></div>
+<div id='editorcontainer'></div>
 {% endblock %}

@@ -1,8 +1,8 @@
 from django.views.generic import View
 from django.shortcuts import render
-from django.http import HttpResponseBadRequest
 from django.conf.urls.defaults import url
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseNotFound
 
 import restful
 
@@ -10,17 +10,15 @@ import restful
 class RestfulSimplifiedEditorView(View):
     template_name = 'administrator/editors/base.django.html'
 
-    def get(self, request, id=None):
-        record_id = None
-        if id == None:
-            initial_mode = 'overview'
-        elif id.isdigit():
-            record_id = int(id)
-            initial_mode = 'update'
-        elif id != 'create':
-            return HttpResponseBadRequest('Requires create or a digit as last url path segment.')
-        else:
+    def get(self, request, record_id):
+        if record_id == 'create':
+            record_id = None
             initial_mode = 'create'
+        elif record_id != None and record_id.isdigit():
+            initial_mode = 'update'
+            record_id = int(record_id)
+        else:
+            return HttpResponseNotFound()
         templatevars =  {'record_id': record_id,
                          'initial_mode': initial_mode,
                          'RestfulSimplifiedClass': self.restful}
@@ -29,7 +27,7 @@ class RestfulSimplifiedEditorView(View):
     @classmethod
     def create_url(cls):
         prefix = cls.__name__.replace('Editor', '').lower()
-        return url(r'^editors/{0}/(?P<id>\w+)?'.format(prefix),
+        return url(r'^editors/{0}/(?P<record_id>\w+)?'.format(prefix),
                    login_required(cls.as_view()),
                    name='administrator-editors-{0}'.format(prefix))
 

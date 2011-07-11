@@ -11,8 +11,8 @@ def _create_seachform(cls):
         query = forms.CharField(required=False)
         limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
         start = fields.PositiveIntegerWithFallbackField()
-        orderby = fields.CharListWithFallbackField(
+        orderby = fields.JsonListWithFallbackField(
                 fallbackvalue=cls._meta.simplified._meta.ordering)
-        result_fieldgroups = fields.CharListWithFallbackField()
-        search_fieldgroups = fields.CharListWithFallbackField()
+        result_fieldgroups = fields.JsonListWithFallbackField()
+        search_fieldgroups = fields.JsonListWithFallbackField()
     cls.SearchForm = SearchForm

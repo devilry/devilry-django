@@ -1,3 +1,4 @@
+import json
 from django import forms
 
 
@@ -52,10 +53,21 @@ class FormatField(CharWithFallbackField):
     def __init__(self):
         super(FormatField, self).__init__(fallbackvalue='application/json')
 
-class CharListWithFallbackField(CharWithFallbackField):
+
+class JsonListWithFallbackField(CharWithFallbackField):
     def to_python(self, value):
-        value = super(CharWithFallbackField, self).to_python(value)
-        if value == '':
-            return self._fallbackvalue
+        if isinstance(value, list):
+            return value
         else:
-            return value.split(',')
+            value = super(CharWithFallbackField, self).to_python(value)
+            if value == '':
+                return self._fallbackvalue
+            else:
+                try:
+                    pythonvalue = json.loads(value)
+                except ValueError, e:
+                    return self._fallbackvalue
+                if isinstance(pythonvalue, list):
+                    return pythonvalue
+                else:
+                    return self._fallbackvalue

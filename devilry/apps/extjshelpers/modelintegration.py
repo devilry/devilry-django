@@ -51,6 +51,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
     #for fieldname in restfulcls._meta.urlmap:
         #modelfields.append(dict(name=fieldname, type='string'))
 
+    js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
     return """Ext.define('{modelname}', {{
             extend: 'Ext.data.Model',
             fields: {modelfields},
@@ -60,11 +61,12 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                 url: '{resturl}',
                 extraParams: {{
                     getdata_in_qrystring: true,
-                    result_fieldgroups: '{result_fieldgroups}'
+                    result_fieldgroups: '{js_result_fieldgroups}'
                 }},
                 reader: {{
                     type: 'json',
-                    root: 'items'
+                    root: 'items',
+                    totalProperty: 'total'
                 }},
                 writer: {{
                     type: 'json'
@@ -74,7 +76,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
                       resturl = restfulcls.get_rest_url(),
-                      result_fieldgroups=','.join(result_fieldgroups))
+                      js_result_fieldgroups=js_result_fieldgroups)
 
 
 def restfulcls_to_extjscomboboxmodel(restfulcls):
