@@ -1,53 +1,13 @@
 from types import MethodType
 from inspect import getmodule
-from django import forms
-from django.db.models import DateTimeField
-from django.forms import widgets
 
-from ..simplified import _require_metaattr
+from ..simplified.modelapi import _require_metaattr
 from restful_api import restful_api
-import fields
+from searchform import _create_seachform
+from editform import _create_editform
 
 
-def _create_seachform(cls):
-    class SearchForm(forms.Form):
-        query = forms.CharField(required=False)
-        limit = fields.PositiveIntegerWithFallbackField(fallbackvalue=50)
-        start = fields.PositiveIntegerWithFallbackField()
-        orderby = fields.CharListWithFallbackField(
-                fallbackvalue=cls._meta.simplified._meta.ordering)
-        result_fieldgroups = fields.CharListWithFallbackField()
-        search_fieldgroups = fields.CharListWithFallbackField()
-    cls.SearchForm = SearchForm
 
-
-def _create_editform(cls):
-    formfields = []
-    customfields = {}
-    model = cls._meta.simplified._meta.model
-    for fieldname in cls._meta.simplified._meta.resultfields.always_available_fields:
-        if fieldname.endswith("__id"):
-            fieldname = fieldname[:-4]
-        formfields.append(fieldname)
-
-        field = model._meta.get_field_by_name(fieldname)[0]
-        if isinstance(field, DateTimeField):
-            input_formats = input_formats=['%Y-%m-%dT%H:%M:%S',
-                                           '%Y-%m-%d %H:%M:%S']
-            required = not field.blank
-            customfields[fieldname] = forms.DateTimeField(input_formats=input_formats,
-                                                          required=required,
-                                                          label=field.verbose_name,
-                                                          help_text=field.help_text,
-                                                          initial=field.default)
-
-    class Meta:
-        model = cls._meta.simplified._meta.model
-        fields = formfields
-
-    customfields['Meta'] = Meta
-    EditForm = type('EditForm', (forms.ModelForm,), customfields)
-    cls.EditForm = EditForm
 
 
 def _copy_supports_metaattrs_from_simplified(cls):
@@ -69,13 +29,12 @@ def _create_get_foreignkey_fieldcls_method(cls):
         if not fkfieldname in cls.foreignkey_fields:
             return None
         fkrestfulcls = cls.foreignkey_fields[fkfieldname]
-        if isinstance(fkrestfulcls, str):
+        if isinstance(fkrestfulcls, str): # Support giving the class name as string if in the same module. For recursive foreign keys, such as Node.parentnode.
             module = getmodule(cls)
             return getattr(module, fkrestfulcls)
         else:
             return fkrestfulcls
     setattr(cls._meta, get_foreignkey_fieldcls.__name__, MethodType(get_foreignkey_fieldcls, cls._meta))
-
 
 
 def restful_modelapi(cls):

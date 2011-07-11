@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -5,6 +7,7 @@ from datetime import datetime, timedelta
 
 from ..models import Assignment, AssignmentGroup, Delivery, Deadline
 from ..testhelper import TestHelper
+from ..models.model_utils import EtagMismatchException
 
 class TestAssignmentGroup(TestCase, TestHelper):
 
@@ -129,6 +132,19 @@ class TestAssignmentGroup(TestCase, TestHelper):
     def add_delivery(self, assignmentgroup, user):
         assignmentgroup.deliveries.create(delivered_by=user,
                                           successful=True)
+
+    def test_etag_update(self):
+        etag = datetime.now()
+        obj = self.inf1100_looong_assignment1_g1
+        obj.is_open = False
+        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
+        try:
+            obj.etag_update(etag)
+        except EtagMismatchException as e:
+            # Should not raise exception
+            obj.etag_update(e.etag)
+        obj2 = AssignmentGroup.objects.get(id=obj.id)
+        self.assertFalse(obj2.is_open)
 
 #    def test_status_one_deadline(self):
 #        teacher1 = User.objects.get(username='teacher1')

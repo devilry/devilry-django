@@ -3,7 +3,8 @@ from django.utils.safestring import mark_safe
 from ..modelintegration import (restfulcls_to_extjsmodel, get_extjs_modelname,
                                 restfulcls_to_extjscomboboxmodel)
 from ..storeintegration import restfulcls_to_extjsstore
-from ..formintegration import restfulcls_to_extjsformitems
+from ..formintegration import (restfulcls_to_extjsformitems,
+                               restfulcls_to_foreignkeylist)
 
 register = template.Library()
 
@@ -23,13 +24,18 @@ def extjs_combobox_model(restfulcls):
     return mark_safe(js)
 
 @register.filter
-def extjs_store(restfulcls):
-    js = restfulcls_to_extjsstore(restfulcls)
+def extjs_store(restfulcls, pagesize=None):
+    js = restfulcls_to_extjsstore(restfulcls, pagesize=pagesize)
     return mark_safe(js)
 
 @register.filter
 def extjs_form_items(restfulcls):
     js = restfulcls_to_extjsformitems(restfulcls)
+    return mark_safe(js)
+
+@register.filter
+def extjs_foreignkeys(restfulcls):
+    js = restfulcls_to_foreignkeylist(restfulcls)
     return mark_safe(js)
 
 @register.filter

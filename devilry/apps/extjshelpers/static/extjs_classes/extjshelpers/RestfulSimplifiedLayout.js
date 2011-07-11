@@ -3,119 +3,145 @@
  * @xtype administratorrestfulsimplifiedlayout
  * */
 Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.administratorrestfulsimplifiedlayout',
+    requires: ['devilry.extjshelpers.ErrorList'],
+    border: 0,
+    bodyStyle: {
+        'background-color': 'transparent'
+    },
 
     initComponent: function() {
         var me = this;
-
-        var editformargs = {
-            id: me.getChildIdBySuffix('editform'),
-            xtype: 'form',
-            layout: 'fit',
-            disabled: true,
-            model: this.model,
-            items: this.editformitems
+        
+        var savebuttonargs = {
+            xtype: 'button',
+            text: 'Save',
+            scale: 'large',
+            iconCls: 'icon-save-32',
+            handler: function() {
+                me.errorlist.clearErrors();
+                me.editform.getForm().submit({
+                    submitEmptyText: true,
+                    waitMsg: 'Saving item...',
+                    success: function(form, action) {
+                        var record = action.record;
+                        me.editform.loadRecord(record); // Need to load the record. If not, the proxy will do a POST instead of PUT on next save.
+                        me.readonly();
+                    },
+                    failure: function(form, action) {
+                        var errormessages = action.operation.responseData.items.errormessages;
+                        Ext.each(errormessages, function(errormessage) {
+                            me.errorlist.addError(errormessage);
+                        });
+                    }
+                });
+            }
         };
 
-        
         var deletebuttonargs = {
             xtype: 'button',
             text: 'Delete',
             flex: 0,
             hidden: !this.supports_delete,
+            scale: 'large',
+            iconCls: 'icon-delete-32',
             handler: function() {
-                // TODO: Confirm
-                me.editform.submit({
-                    submitEmptyText: true,
-                    method: 'DELETE',
-                    waitMsg: 'Deleting node...',
-                    success: function() {
+                Ext.MessageBox.show({
+                    title: 'Confirm delete',
+                    msg: 'Are you sure you want to delete?',
+                    animateTarget: this,
+                    buttons: Ext.Msg.YESNO,
+                    icon: Ext.Msg.ERROR,
+                    fn: function(btn) {
+                        if(btn == 'yes') {
+                            me.deleteCurrent();
+                        }
                     }
                 });
             }
         };
 
-        var savebuttonargs = {
+        var clicktoeditbuttonargs = {
             xtype: 'button',
-            text: 'Save',
-            handler: function() {
-                me.editform.getForm().submit({
-                    submitEmptyText: true,
-                    waitMsg: 'Saving node...',
-                    success: function() {
-                        me.editform.disable();
-                        Ext.getCmp(me.getChildIdBySuffix('buttoncarddeck')).getLayout().setActiveItem(me.getChildIdBySuffix('readonlybuttons'));
-                    }
-                });
+            text: 'Click to edit',
+            scale: 'large',
+            iconCls: 'icon-edit-32',
+            listeners: {
+                click: function(button, pressed) {
+                    me.editable();
+                    //me.errorlist.addError('Hello world');
+                    //me.errorlist.addError('This is a long error message. Message message message message message message message message message message message message message message message message message message message message message message message message message message message message.');
+                }
             }
         };
 
-        var editbuttonargs = {
-            xtype: 'button',
-            flex: 0,
-            text: 'Edit',
-            handler: function() {
-                me.editform.enable();
-                Ext.getCmp(me.getChildIdBySuffix('buttoncarddeck')).getLayout().setActiveItem(me.getChildIdBySuffix('editbuttons'));
-            }
-        };
+        this.overlayBar = Ext.create('Ext.container.Container', {
+            floating: true,
+            cls: 'form-overlay-bar',
+            height: 40,
+            width: 300,
+            layout: {
+                type: 'hbox',
+                align: 'stretch',
+                pack: 'end'
+            },
+            items: [
+                deletebuttonargs,
+                {xtype: 'component', width: 10},
+                clicktoeditbuttonargs
+            ]
+        });
 
+
+        this.errorlist = Ext.create('devilry.extjshelpers.ErrorList', {});
+
+        var editformargs = {
+            id: me.getChildIdBySuffix('editform'),
+            xtype: 'form',
+            model: this.model,
+            items: this.editformitems,
+
+            // Fields will be arranged vertically, stretched to full width
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%',
+            },
+
+            cls: 'editform',
+            bodyCls: 'editform-body',
+
+            // Disable by default
+            disabled: true,
+
+            // Only save button. Other buttons are in overlayBar
+            buttons: [
+                savebuttonargs
+            ]
+        };
 
 
         Ext.apply(this, {
-            layout: 'card',
-            items: [{
-                xtype: 'panel',
-                id: me.getChildIdBySuffix('overview-card'),
-                html: '<h2>Overview</h2><p><strong>Search</strong>, <em>button</em> to create, .....</p>'
-            }, {
-                xtype: 'panel',
-                id: me.getChildIdBySuffix('edit-card'),
-                items: [editformargs, {
-                    xtype: 'container',
-                    id: me.getChildIdBySuffix('buttoncarddeck'),
-                    layout: 'card',
-                    items: [{
-                        xtype: 'container',
-                        id: me.getChildIdBySuffix('readonlybuttons'),
-                        height: 40,
-                        layout: {
-                            type: 'hbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
-                        items: [
-                            deletebuttonargs,
-                            { xtype: 'tbspacer', flex: 1 }, 
-                            editbuttonargs
-                        ]
-                    }, {
-                        xtype: 'container',
-                        id: me.getChildIdBySuffix('editbuttons'),
-                        height: 40,
-                        layout: {
-                            type: 'hbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
-                        items: [{
-                            xtype: 'tbspacer',
-                            flex: 1
-                        }, savebuttonargs ]
-                    }]
-                }]
-            }]
+            items: [
+                this.errorlist,
+                editformargs
+            ],
+            layout: 'fit'
         });
         this.callParent(arguments);
 
         this.editform = Ext.getCmp(editformargs.id);
     },
 
-    loadOverviewMode: function() {
-        this.getLayout().setActiveItem(this.getChildIdBySuffix('overview-card'));
+    deleteCurrent: function() {
+        this.editform.submit({
+            submitEmptyText: true,
+            method: 'DELETE',
+            waitMsg: 'Deleting item...',
+            success: function() {
+            }
+        });
     },
-
 
     getChildIdBySuffix: function(idsuffix) {
         return this.id + '-' + idsuffix;
@@ -126,32 +152,48 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     loadRecordFromStore: function (record_id) {
         var me = this;
         Ext.ModelManager.getModel(this.model).load(record_id, {
-            success: function(node) {
-                me.editform.loadRecord(node);
-                var title = Ext.String.format('{0} ({1})', node.data.long_name, node.data.short_name);
-                me.editform.setTitle(title);
+            success: function(record) {
+                me.editform.loadRecord(record);
+                //var title = Ext.String.format('Edit', record.data.long_name, record.data.short_name);
+                //me.editform.setTitle(title);
+                var fields = me.editform.getForm().getFields();
+                Ext.each(me.foreignkeys, function(fieldname) {
+                    var field = fields.filter('name', fieldname).items[0];
+                    field.store.load(function(store, records, successful) {
+                        field.setValue(record.data[fieldname]);
+                    });
+                });
             }
         });
     },
 
-    loadUpdateMode: function(record_id) {
-        var editcard = Ext.getCmp(this.getChildIdBySuffix('edit-card'));
-        this.getLayout().setActiveItem(editcard);
-        this.loadRecordFromStore(record_id);
+    getFormButtonBar: function() {
+        return this.editform.dockedItems.items[0];
     },
 
-    loadCreateMode: function() {
-        var editcard = Ext.getCmp(this.getChildIdBySuffix('edit-card'));
-        this.getLayout().setActiveItem(editcard);
+    readonly: function() {
+        this.editform.disable();
+        this.overlayBar.show();
+        this.overlayBar.alignTo(this.editform, 'tr-tr');
+        this.getFormButtonBar().hide();
+    },
+    editable: function() {
         this.editform.enable();
+        this.overlayBar.hide();
+        this.getFormButtonBar().show();
     },
 
-
+    loadUpdateMode: function(record_id) {
+        this.loadRecordFromStore(record_id);
+        this.readonly();
+    },
+    loadCreateMode: function() {
+        this.getFormButtonBar().hide(); // NOTE: This is required for some reason?
+        this.editable();
+    },
     loadMode: function(mode, record_id) {
         if(mode == "update") {
             this.loadUpdateMode(record_id);
-        } else if(mode == "overview") {
-            this.loadOverviewMode();
         } else if(mode == "create") {
             this.loadCreateMode();
         }

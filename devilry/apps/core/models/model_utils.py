@@ -44,3 +44,18 @@ def splitpath(path, expected_len=0):
     if expected_len and len(p) != expected_len:
         raise ValueError('Path must have exactly %d parts' % expected_len)
     return p
+
+
+class EtagMismatchException(Exception):
+    def __init__(self, etag):
+        self.etag = etag
+
+class Etag(object):
+    """
+    This class adds a method to update the object with an etag,
+    making sure it is up to date before saving.
+    """
+    def etag_update(self, etag):
+        if self.etag != etag:
+            raise EtagMismatchException(self.etag)
+        super(self.__class__, self).save()

@@ -1,10 +1,13 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-
 from django.test import TestCase
+
 from ..models import Node
 from ..testhelper import TestHelper
+from ..models.model_utils import EtagMismatchException
 
 class TestNode(TestCase, TestHelper):
 
@@ -28,6 +31,19 @@ class TestNode(TestCase, TestHelper):
 
     def test_can_save(self):
         self.assertFalse(Node().can_save(self.ifiadmin))
+
+    def test_etag_update(self):
+        etag = datetime.now()
+        obj = self.uio
+        obj.long_name = "Test"
+        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
+        try:
+            obj.etag_update(etag)
+        except EtagMismatchException as e:
+            # Should not raise exception
+            obj.etag_update(e.etag)
+        obj2 = Node.objects.get(id=obj.id)
+        self.assertEquals(obj2.long_name, "Test")
 
     def test_short_name_validation(self):
         self.uio.short_name = '1'

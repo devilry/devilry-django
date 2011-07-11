@@ -1,6 +1,8 @@
 import urllib2
 import json
-from errors import HttpResponseNotFound, HttpResponseBadRequest, HttpResponseUnauthorized, HttpResponseForbidden
+from errors import (HttpResponseNotFound, HttpResponseBadRequest,
+                    HttpResponseUnauthorized, HttpResponseForbidden,
+                    JsonDecodeError)
 
 
 class CrudsJsonRequest(urllib2.Request):
@@ -51,7 +53,7 @@ def call_restful_method(url, crudsmethod, logincookie, restful_method_kwargs):
     # Convert json to python
     json_data = json.loads(data)
     if "errormsg" in json_data:
-        raise RestfulError(json_data['errormsg'])
+        raise JsonDecodeError(json_data['errormsg'])
     return json_data
 
 
@@ -66,13 +68,13 @@ class RestfulWrapper(object):
     def create(self, logincookie, **kwargs):
         return call_restful_method(self.url, 'create', logincookie, kwargs)
 
-    def read(self, id, logincookie, **kwargs):
+    def read(self, logincookie, id, **kwargs):
         return call_restful_method(self._url_with_id(id), 'read', logincookie, kwargs)
 
-    def update(self, id, logincookie, **kwargs):
+    def update(self, logincookie, id, **kwargs):
         return call_restful_method(self._url_with_id(id), 'update', logincookie, kwargs)
 
-    def delete(self, id, logincookie, **kwargs):
+    def delete(self, logincookie, id, **kwargs):
         return call_restful_method(self._url_with_id(id), 'delete', logincookie, kwargs)
 
     def search(self, logincookie, **kwargs):

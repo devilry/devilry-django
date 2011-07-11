@@ -1,3 +1,7 @@
+
+def _is_local_field(fieldname):
+    return not '__' in fieldname
+
 class FieldSpec(object):
     """
     Specifies and groups fields for search and read results.
@@ -31,16 +35,29 @@ class FieldSpec(object):
             return self.always_available_fields
 
     def additional_aslist(self):
-        lst = []
-        for value in self.additional_fieldgroups.keys():
-            lst.append(value)
-        return lst
+        """
+        Returns a list of the keys in ``additional_fieldgroups``.
+        """
+        return list(self.additional_fieldgroups.keys())
 
-    def _asdocstring(self):
-        always = '    {0}'.format(', '.join(self.always_available_fields))
-        docs = ['Always available', always, 'Additional fieldgroups']
-        for fieldgroup, fields in self.additional_fieldgroups:
-            docs.append(fieldgroup)
-            docs.append('    {0}'.format(', '.join(fields)))
-        return docs
+    def localfields_aslist(self):
+        """ Get all fields belonging to the current table.
+
+        Fields not belonging to the current table are any field
+        containing ``__``. """
+        return [fieldname for fieldname in self.aslist(self.additional_aslist()) \
+                if _is_local_field(fieldname)]
+
+    def localfieldgroups_aslist(self):
+        """ Get all fieldgroups containing fields belonging to the current table.
+
+        Fields not belonging to the current table are any field
+        containing ``__``. """
+        local_fieldgroups = []
+        for fieldgroup, fieldnames in self.additional_fieldgroups.iteritems():
+            for fieldname in fieldnames:
+                if _is_local_field(fieldname):
+                    local_fieldgroups.append(fieldname)
+                    break
+        return local_fieldgroups
 

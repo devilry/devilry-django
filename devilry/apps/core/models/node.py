@@ -6,8 +6,9 @@ from django.db import models
 
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
+from model_utils import Etag, EtagMismatchException
 
-class Node(models.Model, BaseNode):
+class Node(models.Model, BaseNode, Etag):
     """
     This class is typically used to represent a hierarchy of institutions, 
     faculties and departments.
@@ -33,8 +34,11 @@ class Node(models.Model, BaseNode):
     """
     short_name = ShortNameField()
     long_name = LongNameField()
-    parentnode = models.ForeignKey('self', blank=True, null=True, related_name='child_nodes')
+    parentnode = models.ForeignKey('self', blank=True, null=True,
+                                   related_name='child_nodes',
+                                   verbose_name=_('Parent'))
     admins = models.ManyToManyField(User, blank=True)
+    etag = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'core'

@@ -14,5 +14,5 @@ class HttpResponseForbidden(RestfulError):
 class HttpResponseNotFound(RestfulError):
     """ Raised on HTTP ``404 Not Found`` response. """
 
-
-
+class JsonDecodeError(RestfulError):
+    """ Raised when we fail to decode the json data in a response. """

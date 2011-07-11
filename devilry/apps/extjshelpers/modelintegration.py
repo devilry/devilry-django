@@ -2,7 +2,7 @@ import json
 from django.db.models import fields
 
 
-def field_to_extjstype(field):
+def _djangofield_to_extjstype(field):
     """ Convert django field to extjs  field type. """
     if isinstance(field, fields.IntegerField):
         return dict(type='int')
@@ -10,6 +10,8 @@ def field_to_extjstype(field):
         return dict(type='int')
     elif isinstance(field, fields.DateTimeField):
         return dict(type='date')
+    elif isinstance(field, fields.BooleanField):
+        return dict(type='bool')
     else:
         return dict(type='auto')
 
@@ -43,12 +45,13 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
     modelfields = []
     for fieldname, field in _iter_fields(restfulcls._meta.simplified,
                                          result_fieldgroups):
-        exttype = field_to_extjstype(field)
+        exttype = _djangofield_to_extjstype(field)
         exttype['name'] = fieldname
         modelfields.append(exttype)
     #for fieldname in restfulcls._meta.urlmap:
         #modelfields.append(dict(name=fieldname, type='string'))
 
+    js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
     return """Ext.define('{modelname}', {{
             extend: 'Ext.data.Model',
             fields: {modelfields},
@@ -58,11 +61,12 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                 url: '{resturl}',
                 extraParams: {{
                     getdata_in_qrystring: true,
-                    result_fieldgroups: '{result_fieldgroups}'
+                    result_fieldgroups: '{js_result_fieldgroups}'
                 }},
                 reader: {{
                     type: 'json',
-                    root: 'items'
+                    root: 'items',
+                    totalProperty: 'total'
                 }},
                 writer: {{
                     type: 'json'
@@ -72,7 +76,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
                       resturl = restfulcls.get_rest_url(),
-                      result_fieldgroups=','.join(result_fieldgroups))
+                      js_result_fieldgroups=js_result_fieldgroups)
 
 
 def restfulcls_to_extjscomboboxmodel(restfulcls):

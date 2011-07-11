@@ -24,6 +24,19 @@ class TestHelper(object):
 
     objects_created = 0
 
+    def refresh_var(self, obj):
+        freshed_obj = type(obj).objects.get(pk=obj.pk)
+        for key in vars(self).keys():
+            if vars(self)[key] == obj:
+                vars(self)[key] = freshed_obj
+
+    def create_superuser(self, name):
+        su = User(username=name, is_superuser=True)
+        su.set_password("test")
+        su.clean()
+        su.save()
+        vars(self)[name] = su
+
     def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False):
         """
         :param assignmentgroup: Expects either a Delivery object or a
@@ -164,6 +177,7 @@ class TestHelper(object):
 
     def _create_or_add_user(self, name):
         user = User(username=name)
+        user.set_password("test")
         try:
             user.clean()
             user.save()
@@ -237,7 +251,7 @@ class TestHelper(object):
 
         # if a long_name is given, set it
         if extras['ln']:
-            subject.long_name = extras['ln']
+            subject.long_name = extras['ln'][0]
 
         subject.clean()
         subject.save()
@@ -401,9 +415,16 @@ class TestHelper(object):
 
         # add the extras (only admins allowed in subject)
         for candidate in extras['candidate']:
-            group.candidates.add(Candidate(student=self._create_or_add_user(candidate)))
+
+            try:
+                candidate_name, cid = candidate.split(';', 1)
+            except ValueError:
+                candidate_name = candidate
+                cid = None
+
+            group.candidates.add(Candidate(student=self._create_or_add_user(candidate_name)))
             cand = group.candidates.order_by('-id')[0]
-            cand.candidate_id = str(cand.student.id)
+            cand.candidate_id = cid if cid != None else str(cand.student.id)
             cand.clean()
             cand.save()
 
@@ -437,7 +458,7 @@ class TestHelper(object):
                     group_name = group
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['examiner', 'candidate'])
+                users = self._parse_extras(extras_arg, ['examiner', 'candidate', 'candidate_id'])
                 new_group = self._create_or_add_assignmentgroup(group_name, assignment, users)
                 created_groups.append(new_group)
         return created_groups

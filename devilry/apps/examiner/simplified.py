@@ -1,9 +1,9 @@
-from ...simplified import (simplified_modelapi, PermissionDenied,
-                           QryResultWrapper, FieldSpec)
+from ...simplified import (SimplifiedModelApi, simplified_modelapi,
+                           PermissionDenied, QryResultWrapper, FieldSpec)
 from ..core import models
 
 
-class PublishedWhereIsExaminerMixin(object):
+class PublishedWhereIsExaminerMixin(SimplifiedModelApi):
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         return cls._meta.model.published_where_is_examiner(user)
