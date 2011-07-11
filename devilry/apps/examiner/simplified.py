@@ -205,9 +205,9 @@ class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
             raise PermissionDenied()
 
 @simplified_modelapi
-class SimplifiedExaminerFilemeta(PublishedWhereIsExaminerMixin):
+class SimplifiedExaminerFileMeta(PublishedWhereIsExaminerMixin):
     class Meta:
-        model = models.Delivery
+        model = models.FileMeta
         resultfields = FieldSpec('filename', 'size', 'id',
                                  subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
