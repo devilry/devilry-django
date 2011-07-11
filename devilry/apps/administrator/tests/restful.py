@@ -19,7 +19,7 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
         r = self.client.get(url, data={'getdata_in_qrystring': True})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
-        first = data[0]
+        first = data['items'][0]
         self.assertEquals(first, {'id': self.uni.id,
                                   'short_name': self.uni.short_name,
                                   'long_name': self.uni.long_name,
@@ -96,13 +96,13 @@ class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelp
         r = self.client.get(url, data={'getdata_in_qrystring': True})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
-        first = data[0]
+        first = data['items'][0]
         self.assertEquals(set(first.keys()), set(resultfields.aslist()))
 
         r = self.client.get(url, data={'getdata_in_qrystring': True,
                                        'result_fieldgroups': json.dumps(['subject', 'period', 'pointfields'])})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
-        first = data[0]
+        first = data['items'][0]
         all_resultfields = resultfields.aslist(resultfields.additional_aslist())
         self.assertEquals(set(first.keys()), set(all_resultfields))
