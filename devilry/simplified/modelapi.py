@@ -137,6 +137,7 @@ class SimplifiedModelApi(object):
 
         :param user: Django user object.
         :field_values: The values to set on the given object.
+        :return: The primary key of the newly created object.
         :throws PermissionDenied:
             If the given user does not have permission to edit this object,
             if the object does not exist, or if any of the ``field_values``
@@ -147,7 +148,7 @@ class SimplifiedModelApi(object):
         cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
         obj.full_clean()
         obj.save()
-        return obj
+        return obj.pk
 
     @classmethod
     def read(cls, user, idorkw, result_fieldgroups=[]):
@@ -191,6 +192,7 @@ class SimplifiedModelApi(object):
         :param user: Django user object.
         :param idorkw: Id of object or kwargs to the get method of the configured model.
         :field_values: The values to set on the given object.
+        :return: The primary key of the updated object.
         :throws PermissionDenied:
             If the given user does not have permission to edit this object,
             if the object does not exist, or if any of the ``field_values``
@@ -203,7 +205,7 @@ class SimplifiedModelApi(object):
         cls.write_authorize(user, obj)
         obj.full_clean()
         obj.save()
-        return obj
+        return obj.pk
 
     @classmethod
     def delete(cls, user, idorkw):
@@ -211,6 +213,7 @@ class SimplifiedModelApi(object):
 
         :param user: Django user object.
         :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :return: The primary key of the deleted object.
         :throws PermissionDenied:
             If the given user does not have permission to delete this object, or
             if the object does not exist.

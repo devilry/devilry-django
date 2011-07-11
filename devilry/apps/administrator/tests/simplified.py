@@ -615,7 +615,8 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                 parentnode = self.inf110_firstSem_a2.parentnode,
                 publishing_time = self.inf110_firstSem_a2.publishing_time)
 
-        create_res = SimplifiedAssignment.create(self.admin1, short_name='test1', **kw)
+        newpk = SimplifiedAssignment.create(self.admin1, short_name='test1', **kw)
+        create_res = models.Assignment.objects.get(pk=newpk)
         self.assertEquals(create_res.short_name, 'test1')
         self.assertEquals(create_res.long_name, 'Test')
         self.assertEquals(create_res.parentnode,
@@ -650,9 +651,10 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                     long_name = 'Test',
                     parentnode = self.inf110_firstSem_a2.parentnode)
 
-        update_res = SimplifiedAssignment.update(self.admin1, 
-                            idorkw = self.inf110_firstSem_a2.id, 
+        pk = SimplifiedAssignment.update(self.admin1,
+                            idorkw = self.inf110_firstSem_a2.id,
                             **kw)
+        update_res = models.Assignment.objects.get(pk=pk)
 
         self.assertEquals(update_res.short_name, 'testa2')
         self.assertEquals(self.inf110_firstSem_a2.short_name, 'a2')
@@ -1015,8 +1017,9 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
             deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
             text='Last shot!')
 
-        create_res = SimplifiedDeadline.create(self.admin1, **kw)
-        read_res = SimplifiedDeadline.read(self.admin1, create_res.id, result_fieldgroups=self.allExtras)
+        createdpk = SimplifiedDeadline.create(self.admin1, **kw)
+        read_res = SimplifiedDeadline.read(self.admin1, createdpk, result_fieldgroups=self.allExtras)
+        create_res = models.Deadline.objects.get(pk=createdpk)
         expected_res = modelinstance_to_dict(create_res, SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
 
         self.assertEquals(read_res, expected_res)
