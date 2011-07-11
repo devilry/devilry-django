@@ -245,7 +245,7 @@ class SimplifiedModelApi(object):
             we can order our results by ascending short_name and descending
             long_name as this: ``orderby=('short_name', '-long_name')``.
             This defaults to ``cls._meta.ordering`` (see
-            :ref:`devilry.simplified.simplified_modelapi`).
+            :func:`devilry.simplified.simplified_modelapi`).
         :type orderby:
             List of fieldnames. Fieldnames can be prefixed by ``'-'`` for
             descending ordering.
@@ -331,7 +331,6 @@ def simplified_modelapi(cls):
 
         _meta
             Alias for the Meta class (above).
-        _meta.editablefields
         supports_create
             Boolean variable: is ``'create'`` in ``_meta.methods``.
         supports_read
@@ -342,6 +341,7 @@ def simplified_modelapi(cls):
             Boolean variable: is ``'update'`` in ``_meta.methods``.
         supports_delete
             Boolean variable: is ``'delete'`` in ``_meta.methods``.
+
     """
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))
