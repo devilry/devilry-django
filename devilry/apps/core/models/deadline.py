@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models
 from django.db.models import Q
 
+from datetime import datetime
+
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
@@ -126,6 +128,20 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
             Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
             Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+
+    @classmethod
+    def where_is_admin_or_superadmin(cls, user_obj):
+        return cls.objects.filter(cls.q_is_admin(user_obj))
+
+    @classmethod
+    def q_published(cls, old=True, active=True):
+        now = datetime.now()
+        q = Q(assignment_group__parentnode__publishing_time__lt = now)
+        if not active:
+            q &= ~Q(assignment_group__parentnode__parentnode__end_time__gte = now)
+        if not old:
+            q &= ~Q(assignment_group__parentnode__parentnode__end_time__lt = now)
+        return q
 
     @classmethod
     def q_is_examiner(cls, user_obj):
