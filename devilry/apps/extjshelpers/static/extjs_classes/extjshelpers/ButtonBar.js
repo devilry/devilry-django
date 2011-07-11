@@ -36,7 +36,6 @@ Ext.define('devilry.extjshelpers.ButtonBar', {
             },
             listeners: {
                 render: function() {
-                    console.log(tooltip);
                     Ext.create('Ext.tip.ToolTip', {
                         target: button.id,
                         anchor: 'top',
