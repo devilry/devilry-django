@@ -3,13 +3,11 @@ from django.test import TestCase
 import re
 
 from ....simplified import PermissionDenied
-
-from ...core import testhelper
-from ....simplified.utils import modelinstance_to_dict
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedStaticFeedback
 from ....simplified.utils import modelinstance_to_dict
 from ...core import models, testhelper
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline
+from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline, SimplifiedStaticFeedback
+
+from datetime import datetime, timedelta
 
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 
@@ -981,8 +979,6 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondSem_a2_g2.deadlines.all()[0], self.allFields),
                         ]
 
-        print self.inf101_secondSem_a1_g2.deadlines.all()
-
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
@@ -996,7 +992,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         self.assertEquals(read_res, expected_res)
 
         # do a read with all extras
-        read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstSem_a1_g1.id.deadlines.all()[0], result_fieldgroups=self.allExtras)
+        read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstSem_a1_g1.deadlines.all()[0].id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
                                              SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
@@ -1006,3 +1002,49 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # We know secondStud hasn't signed up for firstSem.inf101.
         with self.assertRaises(PermissionDenied):
             SimplifiedDeadline.read(self.secondStud, self.inf101_firstSem_a1_g1.id)
+
+    def test_create(self):
+
+        # create a deadline that runs out in 3 days
+        kw = dict(
+            assignment_group=self.inf101_firstSem_a1_g1,
+            deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            text='Last shot!')
+
+        create_res = SimplifiedDeadline.create(self.admin1, **kw)
+        read_res = SimplifiedDeadline.read(self.admin1, create_res.id, result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(create_res, SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
+
+        self.assertEquals(read_res, expected_res)
+
+    def test_create_security(self):
+
+        # create an invalid deadline, which runs out before the
+        # publishing date
+        invalid_deadline_dict = dict(
+            assignment_group=self.inf101_firstSem_a1_g1,
+            deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=-10),
+            text='this deadline is impossible')
+        with self.assertRaises(Exception):  # TODO: Where is ValidationError declared?
+            SimplifiedDeadline.create(self.admin1, **invalid_deadline_dict)
+
+        # Now try a valid deadline, but with a student
+        valid = dict(
+            assignment_group=self.inf101_firstSem_a1_g1,
+            deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            text='Last shot!')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.create(self.firstStud, **valid)
+
+        # and another admin that isnt an admin for this course
+        self.add_to_path('uni;inf110:admin(inf110admin)')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.create(self.inf110admin, **valid)
+        self.refresh_var(self.inf110)
+        self.refresh_var(self.inf110_secondSem_a1_g1)
+        print models.Subject.objects.get(short_name='inf110').admins.all()
+        #print self.inf110_secondSem_a1_g1.parentnode.parentnode.parentnode.admins.all()
+        SimplifiedDeadline.create(self.inf110admin, assignment_group=self.inf110_secondSem_a1_g1,
+                                  deadline=self.inf110_secondSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+                                  text='Last shot!')
