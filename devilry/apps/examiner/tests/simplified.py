@@ -16,7 +16,7 @@ from ..simplified import (  # SimplifiedDelivery,
     # SimplifiedStaticFeedback,
     SimplifiedAssignment,
     SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject,
-    SimplifiedExaminerDeadline)
+    SimplifiedDeadline)
 
 import re
 
@@ -375,18 +375,30 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
     def set_up(self):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
 
-    def test_search(self):
-        search_res = SimplifiedExaminerDeadline.search(self.firstExam)
+    def test_search_all(self):
+        search_res = SimplifiedDeadline.search(self.firstExam)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
-                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
-                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1.deadlines.all()[0],
-                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1.deadlines.all()[0],
-                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3_g1.deadlines.all()[0],
-                                    SimplifiedExaminerDeadline.Meta.resultfields.aslist(self.allExtras))]
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))]
+
+        self.assertEquals(len(search_res), len(expected_res))
+
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_search_query(self):
+        search_res = SimplifiedDeadline.search(self.firstExam, query='101')
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
+                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(len(search_res), len(expected_res))
 
@@ -394,32 +406,84 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
             self.assertTrue(s in expected_res)
 
     def test_search_security(self):
-        #TODO - complete this
-        pass
 
-    def test_read(self):
-        #TODO - complete this
-        pass
+        #test that a candidate does not get any results searching through the examiner interface
+        self.add_to_path('uni;inf101.firstSem.a1.g1:candidate(testPerson)')
+        search_res = SimplifiedDeadline.search(self.testPerson)
+        self.assertEquals(len(search_res), 0)
+
+        #but he/she/it does get a result when he/she/it is set to be an examiner
+        self.add_to_path('uni;inf101.firstSem.a1.g1:examiner(testPerson)')
+        search_res = SimplifiedDeadline.search(self.testPerson)
+        self.assertEquals(len(search_res), 1)
+
+        #but not in another course
+        search_res = SimplifiedDeadline.search(self.testPerson, query='inf110')
+        self.assertEquals(len(search_res), 0)
+
+    def test_read_base(self):
+        # do a read with no extra fields
+        read_res = SimplifiedDeadline.read(self.firstExam, self.inf101_firstSem_a1.id)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
+                                             SimplifiedDeadline.Meta.resultfields.aslist())
+        self.assertEquals(read_res, expected_res)
+
+    def test_read_all(self):
+        # do a read with all extras
+        read_res = SimplifiedDeadline.read(self.firstExam, self.inf101_firstSem_a1.id, result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
+                                             SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
+        self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
-        #TODO - complete this
-        pass
+        # We know secondStud hasn't signed up for firstSem.inf101.
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.read(self.secondStud, self.inf101_firstSem_a1_g1.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.read(self.admin, self.inf101_firstSem_a1_g1.id)
 
     def test_create(self):
-        #TODO 
-        pass
+        kw = dict(text = 'test',
+                assignment_group = self.inf101_firstSem_a1_g1,
+                deadline = self.inf101_firstSem_a1_g1.deadlines.all()[0])
+        create_res = SimplifiedDeadline.create(self.firstExam, **kw)
+
+        self.assertEquals(create_res.text, 'test')
+        self.assertEquals(create_res.assignment_group,
+                self.inf101_firstSem_a1_g1)
+        self.assertEquals(create_res.deadline, 
+                self.inf101_firstSem_a1_g1.deadlines.all()[0].deadline)
 
     def test_create_security(self):
-        #TODO 
-        pass
+        kw = dict(text = 'test',
+                assignment_group = self.inf101_firstSem_a1_g1,
+                deadline = self.inf101_firstSem_a1_g1.deadlines.all()[0])
+        with self.assertRaises(PermissionDenied):
+            create_res = SimplifiedDeadline.create(self.firstStud, **kw)
 
-    def test_update(self):
-        #TODO 
-        pass
+        with self.assertRaises(PermissionDenied):
+            create_res = SimplifiedDeadline.create(self.admin, **kw)
 
-    def test_update_security(self):
-        #TODO 
-        pass
+    def test_delete(self):
+        SimplifiedDeadline.delete(self.firstExam,
+                self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+
+        with self.assertRaises(IndexError): #TODO: this should probably be PermissionDenied, but atm it gets an IndexError..
+            SimplifiedDeadline.delete(self.firstExam,
+                    self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+
+    def test_delete_as_student(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.delete(self.firstStud,
+                    self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+
+    def test_delete_wrong_assignment_group(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.delete(self.secondExam,
+                    self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+
+
 # class TestSimplifiedExaminerSimplifiedSubject(SimplifiedExaminerTestCase):
 
 #     def test_search(self):

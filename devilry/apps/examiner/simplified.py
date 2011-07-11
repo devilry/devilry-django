@@ -174,7 +174,7 @@ class Feedback(PublishedWhereIsExaminerMixin):
         methods = ['search', 'read', 'create']
 
 @simplified_modelapi
-class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
+class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
     class Meta:
         model = models.Deadline
         resultfields = FieldSpec('text', 'deadline', 'assignment_group', 'status', 'feedbacks_published', 'id',
@@ -197,13 +197,17 @@ class SimplifiedExaminerDeadline(PublishedWhereIsExaminerMixin):
             'assignment_group__parentnode__parentnode__parentnode__short_name',  # Name of subject
             'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
             )  # What should search() search from
-        methods = ['search', 'read', 'create', 'update']
+        methods = ['search', 'read', 'create', 'delete'] #TODO: should we have update here?
 
+    @classmethod
+    def write_authorize(cls, user, obj):
+        if not obj.assignment_group.can_save(user):
+            raise PermissionDenied()
 
 @simplified_modelapi
-class SimplifiedExaminerFilemeta(PublishedWhereIsExaminerMixin):
+class SimplifiedFileMeta(PublishedWhereIsExaminerMixin):
     class Meta:
-        model = models.Delivery
+        model = models.FileMeta
         resultfields = FieldSpec('filename', 'size', 'id',
                                  subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
                                             'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
