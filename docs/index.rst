@@ -19,6 +19,8 @@
     utils.devilry_email
 
     administrator.simplified
+    public_restful_api
+
 
 ======================================================================
 Devilry developer documentation overview
@@ -50,6 +52,7 @@ RESTful API
 ######################################################################
 
 * :ref:`restful`
+* :ref:`public_restful_api`
 
 
 Integration with the ExtJS javascript library
