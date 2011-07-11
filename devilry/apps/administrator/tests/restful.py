@@ -32,7 +32,7 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
         data = dict(short_name='testnode', long_name='Test SimplifiedNode', parentnode=None)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
-        self.assertEquals(r.status_code, 200)
+        self.assertEquals(r.status_code, 201)
         response = json.loads(r.content)
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 1)
         fromdb = models.Node.objects.get(id=response['id'])
