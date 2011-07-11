@@ -6,11 +6,12 @@ from django.db.models import Q
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
+from abstract_is_admin import AbstractIsAdmin
 
 from node import Node
 
 
-class Deadline(models.Model, AbstractIsExaminer, AbstractIsCandidate):
+class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
     """
     .. attribute:: assignment_group
 
@@ -127,5 +128,5 @@ class Deadline(models.Model, AbstractIsExaminer, AbstractIsCandidate):
             Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
-    def where_is_admin_or_superadmin(cls, user_obj):
-        return cls.objects.filter(cls.q_is_admin(user_obj))
+    def q_is_examiner(cls, user_obj):
+        return Q(assignment_group__examiners=user_obj)
