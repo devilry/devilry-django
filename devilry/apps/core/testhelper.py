@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-from models import Node, Subject, Period, Assignment, AssignmentGroup, Candidate, Deadline, Delivery, StaticFeedback
+from models import (Node, Subject, Period, Assignment, AssignmentGroup,
+                    Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
+from deliverystore import MemoryDeliveryStore
 
+
+FileMeta.deliverystore = MemoryDeliveryStore()
 
 # TODO:
 # raise error when trying to give roles to nodes that dont support it?
@@ -11,10 +15,6 @@ from models import Node, Subject, Period, Assignment, AssignmentGroup, Candidate
 # subjects don't have candidates, so trying to create a subject with
 # `add(subjects=['inf1010:candidates(bendiko)'])` doesn't fail, it
 # just doesn't add any users at all.
-
-
-class StuffError(Exception):
-    """ This is stuff """
 
 
 class TestHelper(object):
