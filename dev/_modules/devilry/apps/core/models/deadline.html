@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="devilry.apps.core.models" href="../models.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +36,8 @@
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../models.html" accesskey="U">devilry.apps.core.models</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,10 +50,16 @@
 <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
 <span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">PermissionDenied</span>
 <span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
 
+<span class="kn">from</span> <span class="nn">abstract_is_examiner</span> <span class="kn">import</span> <span class="n">AbstractIsExaminer</span>
+<span class="kn">from</span> <span class="nn">abstract_is_candidate</span> <span class="kn">import</span> <span class="n">AbstractIsCandidate</span>
 <span class="kn">from</span> <span class="nn">assignment_group</span> <span class="kn">import</span> <span class="n">AssignmentGroup</span>
 
-<div class="viewcode-block" id="Deadline"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline">[docs]</a><span class="k">class</span> <span class="nc">Deadline</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="kn">from</span> <span class="nn">node</span> <span class="kn">import</span> <span class="n">Node</span>
+
+
+<div class="viewcode-block" id="Deadline"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.deadline.Deadline">[docs]</a><span class="k">class</span> <span class="nc">Deadline</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">AbstractIsExaminer</span><span class="p">,</span> <span class="n">AbstractIsCandidate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. attribute:: assignment_group</span>
 
@@ -159,7 +166,18 @@
         <span class="c">#&quot;&quot;&quot; Prevent deletion if this is the head deadline &quot;&quot;&quot;</span>
         <span class="c">#if self.is_head:</span>
             <span class="c">#raise PermissionDenied()</span>
-        <span class="c">#super(Deadline, self).delete(*args, **kwargs)</span></div>
+        <span class="c">#super(Deadline, self).delete(*args, **kwargs)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">q_is_admin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
+            <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
+            <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__parentnode__admins</span><span class="o">=</span><span class="n">user_obj</span><span class="p">)</span> <span class="o">|</span> \
+            <span class="n">Q</span><span class="p">(</span><span class="n">assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in</span><span class="o">=</span><span class="n">Node</span><span class="o">.</span><span class="n">_get_nodepks_where_isadmin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">q_is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span></div>
 </pre></div>
 
           </div>
@@ -194,7 +212,8 @@
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../models.html" >devilry.apps.core.models</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

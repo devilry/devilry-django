@@ -30,20 +30,20 @@ Functions and attributes
 BaseNode
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.basenode.BaseNode
+.. autoclass:: devilry.apps.core.models.BaseNode
     :no-members:
 
 
 AbstractIsAdmin
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin
+.. autoclass:: devilry.apps.core.models.AbstractIsAdmin
 
 
 AbstractIsExaminer
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer
+.. autoclass:: devilry.apps.core.models.AbstractIsExaminer
 
 
 Node
@@ -71,7 +71,7 @@ Subject
 A subject is a course, seminar, class or something else being given
 regularly. A subject is further divided into periods.
 
-.. autoclass:: devilry.apps.core.models.subject.Subject
+.. autoclass:: devilry.apps.core.models.Subject
 
 Period
 #########################################################
@@ -79,7 +79,7 @@ Period
 A Period is a limited period of time, like *spring 2009*, *week 34 2010* or
 even a single day.
 
-.. autoclass:: devilry.apps.core.models.period.Period
+.. autoclass:: devilry.apps.core.models.Period
 
 Assignment
 #########################################################
@@ -98,19 +98,19 @@ We have three main classifications of assignments:
    past and current time is before ``Period.end_time``.
 
 
-.. autoclass:: devilry.apps.core.models.assignment.Assignment
+.. autoclass:: devilry.apps.core.models.Assignment
 
 
 Candidate
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.candidate.Candidate
+.. autoclass:: devilry.apps.core.models.Candidate
     :no-members:
 
 AssignmentGroup
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.assignment_group.AssignmentGroup
+.. autoclass:: devilry.apps.core.models.AssignmentGroup
 
 
 Deadline
@@ -152,19 +152,19 @@ but as shown above it can be anything you want.
 Delivery API
 ============
 
-.. autoclass:: devilry.apps.core.models.delivery.Delivery
+.. autoclass:: devilry.apps.core.models.Delivery
 
 
 StaticFeedback
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.static_feedback.StaticFeedback
+.. autoclass:: devilry.apps.core.models.StaticFeedback
 
 
 FileMeta
 #########################################################
 
-.. autoclass:: devilry.apps.core.models.filemeta.FileMeta
+.. autoclass:: devilry.apps.core.models.FileMeta
 
 
 

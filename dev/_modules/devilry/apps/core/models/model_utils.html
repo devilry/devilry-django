@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="devilry.apps.core.models" href="../models.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +36,8 @@
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../models.html" accesskey="U">devilry.apps.core.models</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -91,7 +92,22 @@
     <span class="n">p</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">pathsep</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">expected_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected_len</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Path must have exactly </span><span class="si">%d</span><span class="s"> parts&#39;</span> <span class="o">%</span> <span class="n">expected_len</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">p</span></div>
+    <span class="k">return</span> <span class="n">p</span>
+
+</div>
+<span class="k">class</span> <span class="nc">EtagMismatchException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">etag</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">etag</span> <span class="o">=</span> <span class="n">etag</span>
+
+<span class="k">class</span> <span class="nc">Etag</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class adds a method to update the object with an etag,</span>
+<span class="sd">    making sure it is up to date before saving.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">etag_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">etag</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">etag</span> <span class="o">!=</span> <span class="n">etag</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EtagMismatchException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">etag</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 
           </div>
@@ -126,7 +142,8 @@
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../models.html" >devilry.apps.core.models</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

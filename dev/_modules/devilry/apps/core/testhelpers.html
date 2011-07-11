@@ -57,7 +57,7 @@
 <span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Subject</span><span class="p">,</span> <span class="n">Period</span><span class="p">,</span> <span class="n">Assignment</span><span class="p">,</span> <span class="n">AssignmentGroup</span><span class="p">,</span> \
         <span class="n">Delivery</span><span class="p">,</span> <span class="n">FileMeta</span><span class="p">,</span> <span class="n">Candidate</span>
 <span class="kn">from</span> <span class="nn">deliverystore</span> <span class="kn">import</span> <span class="n">FileNotFoundError</span>
-
+<span class="kn">from</span> <span class="nn">testhelper</span> <span class="kn">import</span> <span class="n">TestHelper</span>
 
 
 <span class="k">def</span> <span class="nf">create_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">grade_plugin_key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gradeplugin_maxpoints</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -153,7 +153,7 @@
     <span class="k">return</span> <span class="n">last</span>
 
 
-<div class="viewcode-block" id="TestDeliveryStoreMixin"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin">[docs]</a><span class="k">class</span> <span class="nc">TestDeliveryStoreMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TestDeliveryStoreMixin"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin">[docs]</a><span class="k">class</span> <span class="nc">TestDeliveryStoreMixin</span><span class="p">(</span><span class="n">TestHelper</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Mixin-class that tests if</span>
 <span class="sd">    :class:`devilry.core.deliverystore.DeliveryStoreInterface` is</span>
 <span class="sd">    implemented correctly.</span>
@@ -168,7 +168,6 @@
 <span class="sd">        class TestMyDeliveryStore(TestDeliveryStoreMixin, django.test.TestCase):</span>
 <span class="sd">            ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fixtures</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;core/deprecated_users.json&#39;</span><span class="p">,</span> <span class="s">&#39;core/core.json&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="TestDeliveryStoreMixin.get_storageobj"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.get_storageobj">[docs]</a>    <span class="k">def</span> <span class="nf">get_storageobj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a object implementing</span>
@@ -178,8 +177,16 @@
 <div class="viewcode-block" id="TestDeliveryStoreMixin.setUp"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.testhelpers.TestDeliveryStoreMixin.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Make sure to call this if you override it in subclasses, or the</span>
 <span class="sd">        tests **will fail**. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="s">&quot;uio.ifi&quot;</span><span class="p">,</span>
+                 <span class="n">subjects</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;inf1100&quot;</span><span class="p">],</span>
+                 <span class="n">periods</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;period&quot;</span><span class="p">],</span>
+                 <span class="n">assignments</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;assignment1&quot;</span><span class="p">],</span>
+                 <span class="n">assignmentgroups</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;g1:candidate(student1)&quot;</span><span class="p">])</span>
+        <span class="c"># file and verdict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goodFile</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;good.py&quot;</span><span class="p">:</span> <span class="s">&quot;print awesome&quot;</span><span class="p">}</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_delivery</span><span class="p">(</span><span class="s">&quot;inf1100.period.assignment1.g1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goodFile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span> <span class="o">=</span> <span class="n">FileMeta</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">delivery</span> <span class="o">=</span> <span class="n">Delivery</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">delivery</span> <span class="o">=</span> <span class="n">d</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filemeta</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;test.txt&#39;</span>
 </div>

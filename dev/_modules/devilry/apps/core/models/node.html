@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="../../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../../index.html" /> 
+    <link rel="up" title="devilry.apps.core.models" href="../models.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +36,8 @@
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../models.html" accesskey="U">devilry.apps.core.models</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,8 +55,9 @@
 
 <span class="kn">from</span> <span class="nn">basenode</span> <span class="kn">import</span> <span class="n">BaseNode</span>
 <span class="kn">from</span> <span class="nn">custom_db_fields</span> <span class="kn">import</span> <span class="n">ShortNameField</span><span class="p">,</span> <span class="n">LongNameField</span>
+<span class="kn">from</span> <span class="nn">model_utils</span> <span class="kn">import</span> <span class="n">Etag</span><span class="p">,</span> <span class="n">EtagMismatchException</span>
 
-<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">):</span>
+<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">BaseNode</span><span class="p">,</span> <span class="n">Etag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class is typically used to represent a hierarchy of institutions, </span>
 <span class="sd">    faculties and departments.</span>
@@ -81,8 +83,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">short_name</span> <span class="o">=</span> <span class="n">ShortNameField</span><span class="p">()</span>
     <span class="n">long_name</span> <span class="o">=</span> <span class="n">LongNameField</span><span class="p">()</span>
-    <span class="n">parentnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;self&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;child_nodes&#39;</span><span class="p">)</span>
+    <span class="n">parentnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;self&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                   <span class="n">related_name</span><span class="o">=</span><span class="s">&#39;child_nodes&#39;</span><span class="p">,</span>
+                                   <span class="n">verbose_name</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Parent&#39;</span><span class="p">))</span>
     <span class="n">admins</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">etag</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">app_label</span> <span class="o">=</span> <span class="s">&#39;core&#39;</span>
@@ -131,17 +136,26 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;A node can not be it</span><span class="se">\&#39;</span><span class="s">s own parent.&#39;</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_name</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">short_name</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;A node can not have the same &#39;</span>\
-                        <span class="s">&#39;short name as another within the same parent.&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Short Name is a required attribute.&#39;</span><span class="p">))</span>
 
-
+        <span class="n">greater_than_count</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">greater_than_count</span> <span class="o">=</span> <span class="mi">0</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">short_name</span><span class="p">)</span><span class="o">.</span>\
+                   <span class="nb">filter</span><span class="p">(</span><span class="n">parentnode__pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">greater_than_count</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;A node can not have the same &#39;</span>\
+                                        <span class="s">&#39;short name as another within the same parent.&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">short_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">short_name</span><span class="p">)</span><span class="o">.</span>\
+                   <span class="nb">filter</span><span class="p">(</span><span class="n">parentnode</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">greater_than_count</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;A root node can not have the same &#39;</span>\
+                                        <span class="s">&#39;short name as another root node.&#39;</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_childnodes</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentnode</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;A node can not be the child of one of it</span><span class="se">\&#39;</span><span class="s">s own children.&#39;</span><span class="p">))</span>
-
         <span class="nb">super</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
@@ -223,7 +237,8 @@
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
-          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../models.html" >devilry.apps.core.models</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -61,12 +61,6 @@
 
 
 </div>
-<div class="viewcode-block" id="get_registry_key"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.get_registry_key">[docs]</a><span class="k">def</span> <span class="nf">get_registry_key</span><span class="p">(</span><span class="n">model_cls</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Get the registry key for the given model class. &quot;&quot;&quot;</span>
-    <span class="n">meta</span> <span class="o">=</span> <span class="n">model_cls</span><span class="o">.</span><span class="n">_meta</span>
-    <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
-
-</div>
 <div class="viewcode-block" id="RegistryItem"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.RegistryItem">[docs]</a><span class="k">class</span> <span class="nc">RegistryItem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Information about a grade plugin.</span>
@@ -86,9 +80,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
 
-    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">get_registry_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
 
@@ -99,7 +90,7 @@
 <span class="sd">    It is already available as :attr:`registry`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;fake&#39;</span><span class="p">:</span> <span class="n">RegistryItem</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;fake&#39;</span><span class="p">,</span> <span class="s">&#39;Fake&#39;</span><span class="p">)}</span> <span class="c"># TODO: This hack must be replaced when we develop the new grade plugins</span>
 
 <div class="viewcode-block" id="Registry.register"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.Registry.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registryitem</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -113,12 +104,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Registry.getitem_from_cls"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.Registry.getitem_from_cls">[docs]</a>    <span class="k">def</span> <span class="nf">getitem_from_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the :class:`RegistryItem` registered with the given class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">get_registry_key</span><span class="p">(</span><span class="n">cls</span><span class="p">)]</span>
-</div>
 <div class="viewcode-block" id="Registry.getdefaultkey"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.Registry.getdefaultkey">[docs]</a>    <span class="k">def</span> <span class="nf">getdefaultkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the default key (the key defined in the</span>
@@ -128,10 +113,8 @@
 </div>
 <div class="viewcode-block" id="Registry.iterlabels"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.Registry.iterlabels">[docs]</a>    <span class="k">def</span> <span class="nf">iterlabels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Iterate over the registry yielding (key, label). &quot;&quot;&quot;</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-        <span class="n">values</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get_key</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">label</span>
 </div>
 <div class="viewcode-block" id="Registry.iteritems"><a class="viewcode-back" href="../../../../grade-plugins.html#devilry.apps.core.gradeplugin.Registry.iteritems">[docs]</a>    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Iterate over the registry yielding (key, RegistryItem). &quot;&quot;&quot;</span>

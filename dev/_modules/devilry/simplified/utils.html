@@ -49,33 +49,56 @@
   <h1>Source code for devilry.simplified.utils</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot; General purpose utilities used by the simplified API. If any functions here</span>
 <span class="sd">proves useful outside this module, they should me moved to ``devilry.utils``. &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
 
+
+<span class="k">def</span> <span class="nf">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">):</span>
+    <span class="n">fieldvalue</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field_by_name</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fieldvalue</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="c"># If the foreign key is null</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fieldvalue</span><span class="o">.</span><span class="n">pk</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fieldvalue</span>
 
 <span class="k">def</span> <span class="nf">_recurse_getmodelattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">pathseg</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">cur</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span> <span class="c"># If the foreign relationship we are following is null, we return None</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c"># NOTE: Dirty hack to support list results. This is to return</span>
+        <span class="c"># multiple candidates</span>
+        <span class="k">if</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">))</span> <span class="o">==</span> <span class="s">&quot;&lt;class &#39;django.db.models.fields.related.RelatedManager&#39;&gt;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="c"># NOTE: Dirty hack to support list results. This is to return</span>
+        <span class="c"># multiple examiners</span>
+        <span class="k">if</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">))</span> <span class="o">==</span> <span class="s">&quot;&lt;class &#39;django.db.models.fields.related.ManyRelatedManager&#39;&gt;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+
+        <span class="k">return</span> <span class="bp">None</span>  <span class="c"># If the foreign relationship we are following is null, we return None</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cur</span>
+        <span class="k">return</span> <span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_recurse_getmodelattr</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-<div class="viewcode-block" id="modelinstance_to_dict"><a class="viewcode-back" href="../../../simplified.html#devilry.simplified.utils.modelinstance_to_dict">[docs]</a><span class="k">def</span> <span class="nf">modelinstance_to_dict</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
+
+<div class="viewcode-block" id="modelinstance_to_dict"><a class="viewcode-back" href="../../../simplified.html#devilry.simplified.utils.modelinstance_to_dict">[docs]</a><span class="k">def</span> <span class="nf">modelinstance_to_dict</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldnames</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Convert the given django model instance into a dict where</span>
-<span class="sd">    each field in ``fields`` is a key.</span>
+<span class="sd">    each fieldname in ``fieldnames`` is a key.</span>
 
 <span class="sd">    :param instance: A django model instance.</span>
-<span class="sd">    :param fields: List of field names. Can also be foreign keys, such as</span>
+<span class="sd">    :param fieldname: List of fieldname names. Can also be foreign keys, such as</span>
 <span class="sd">        ``parentnode__parentnode__short_name``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dct</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s">&quot;__&quot;</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
-            <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recurse_getmodelattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">fieldnames</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&quot;__&quot;</span> <span class="ow">in</span> <span class="n">fieldname</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
+            <span class="n">dct</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recurse_getmodelattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">dct</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+            <span class="n">dct</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">dct</span></div>
 </pre></div>
 
