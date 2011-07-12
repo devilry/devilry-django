@@ -475,7 +475,13 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
 
         with self.assertRaises(FilterValidationError):
             SimplifiedNode.search(self.admin1,
-                                  filters=[dict(field='parentnode__somethinginvalid__short_name', comp='exact', value='uni')])
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedNode.search(self.admin1,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedNode.search(self.admin1,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
 
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):
