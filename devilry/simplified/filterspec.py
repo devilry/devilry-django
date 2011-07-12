@@ -14,6 +14,17 @@ COMP_TO_DJANGO_MAP = {'exact': 'exact',
                       'endswith': 'endswith'}
 
 
+def _in_both(lstA, lstB):
+    """
+    Return the first item which is in both ``lstA`` and ``lstB``, or ``None``
+    if the two lists do not contain any equal items.
+    """
+    for item in lstA:
+        if item in lstB:
+            return item
+    return None
+
+
 class FilterValidationError(Exception):
     """ Raised when an invalid filter is given to
     :meth:`devilry.simplified.SimplifiedModelApi.search`. """
@@ -93,7 +104,6 @@ class ForeignFilterSpec(object):
 class FilterSpecs(object):
     """ Container of :class:`FilterSpec` and :class:`ForeignFilterSpec`. """
     def __init__(self, *filterspecs_and_foreignkeyfilterspecs):
-        self.all_filters = set()
         self.filterspecs = {}
         self.patternfilterpecs = []
         for filterspec_or_fkfilterspec in filterspecs_and_foreignkeyfilterspecs:
@@ -136,3 +146,20 @@ class FilterSpecs(object):
             else:
                 qry &= filterspec.to_django_qry(filterdict)
         return qry
+
+    def __add__(self, other):
+
+        # Make sure other does not share any items with self
+        inboth = _in_both(self.filterspecs.keys(), other.filterspecs.keys())
+        if inboth:
+            raise ValueError("{0} already in filterspec." % inboth)
+        inboth = _in_both(self.patternfilterpecs, other.patternfilterpecs)
+        if inboth:
+            raise ValueError("{0} already in filterspec." % inboth)
+
+        # Create a new FilterSpecs from self and other
+        filterspecs = FilterSpecs()
+        filterspecs.filterspecs = self.filterspecs.copy()
+        filterspecs.filterspecs.update(other.filterspecs)
+        filterspecs.patternfilterpecs = list(self.patternfilterpecs) + list(other.patternfilterpecs)
+        return filterspecs

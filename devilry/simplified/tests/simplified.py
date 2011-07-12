@@ -1,7 +1,9 @@
 from django.test import TestCase
 from devilry.apps.core import testhelper
 from ..utils import modelinstance_to_dict
-from devilry.simplified import FieldSpec
+
+from ..fieldspec import FieldSpec
+from ..filterspec import FilterSpecs, FilterSpec, PatternFilterSpec
 
 
 class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
@@ -83,3 +85,15 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
         with self.assertRaises(ValueError):
             fs3 + fs5
 
+    def test_filterspecs_copy(self):
+        f1 = FilterSpecs(FilterSpec('hello'),
+                         PatternFilterSpec('hel.*'),
+                         FilterSpec('world'))
+        f2 = FilterSpecs(FilterSpec('cruel'),
+                         FilterSpec('stuff'),
+                         PatternFilterSpec('^(hello)+__world'))
+        fmerge = f1 + f2
+        self.assertEquals(set(fmerge.filterspecs.keys()), set(('hello', 'world', 'cruel', 'stuff')))
+        self.assertEquals(len(fmerge.patternfilterpecs), 2)
+        self.assertEquals(fmerge.patternfilterpecs[0].fieldname, 'hel.*')
+        self.assertEquals(fmerge.patternfilterpecs[1].fieldname, '^(hello)+__world')
