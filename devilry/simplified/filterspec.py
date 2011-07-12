@@ -177,3 +177,6 @@ class FilterSpecs(object):
         filterspecs.patternfilterpecs = list(self.patternfilterpecs) + list(other.patternfilterpecs)
         filterspecs.validate_no_dups_with_patterns()
         return filterspecs
+
+    def __nonzero__(self):
+        return len(self.filterspecs) > 0 or len(self.patternfilterpecs) > 0
