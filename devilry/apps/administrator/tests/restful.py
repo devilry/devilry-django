@@ -83,7 +83,7 @@ class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelp
     def setUp(self):
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
-                 periods=['firstSem', 'secondSem:admin(admin2)'],
+                 periods=['firstsem', 'secondsem:admin(admin2)'],
                  assignments=['a1', 'a2'])
         self.client = Client()
         self.client.login(username="admin1", password="test")
