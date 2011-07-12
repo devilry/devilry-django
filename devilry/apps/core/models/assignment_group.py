@@ -249,8 +249,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return Q(examiners=user_obj)
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.parentnode.get_path(),
-                self.get_candidates())
+        return u'%s (%s)' % (self.parentnode.get_path(), self.get_candidates())
 
     def get_students(self):
         """ Get a string containing all students in the group separated by
@@ -260,8 +259,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         an administrator. Use :meth:`get_candidates`
         instead.
         """
-        return u', '.join(
-                [c.student.username for c in self.candidates.all()])
+        return u', '.join([c.student.username for c in self.candidates.all()])
 
     def get_candidates(self):
         """ Get a string containing all candiates in the group separated by
@@ -269,8 +267,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         assignments, and something like: ``321, 1533, 111`` for anonymous
         assignments.
         """
-        return u', '.join(
-                [c.get_identifier() for c in self.candidates.all()])
+        return u', '.join([c.identifier for c in self.candidates.all()])
 
     def get_examiners(self):
         """ Get a string contaning all examiners in the group separated by

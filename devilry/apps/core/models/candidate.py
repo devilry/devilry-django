@@ -35,16 +35,8 @@ class Candidate(models.Model, Etag):
     identifier = models.CharField(max_length=30)
     etag = models.DateTimeField(auto_now_add=True)
 
-    def get_identifier(self):
-        """
-        Gives the identifier of the candidate. When the Assignment is anyonymous
-        the candidate_id is returned. Else, the student name is returned. This
-        method should always be used when retrieving the candidate identifier.
-        """
-        return self.identifier
-
     def __unicode__(self):
-        return self.get_identifier()
+        return self.identifier
 
     def update_identifier(self, anonymous):
         if anonymous:
