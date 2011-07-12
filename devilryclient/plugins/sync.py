@@ -4,7 +4,7 @@ import logging, sys
 from os.path import join, exists
 from os import environ, mkdir
 from login import login
-from devilrycli.restfulclient import RestfulFactory
+from devilryclient.restfulclient import RestfulFactory
 from utils import logging_startup
 
 #Arguments for logging

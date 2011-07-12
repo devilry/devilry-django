@@ -1,4 +1,4 @@
-from devilrycli.restfulclient import (login,
+from devilryclient.restfulclient import (login,
                                       RestfulFactory,
                                       RestfulError,
                                       HttpResponseNotFound,
