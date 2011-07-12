@@ -7,22 +7,37 @@ from devilry.simplified import SimplifiedModelApi
 
 
 
-def unindent_docstring(docstring, expectedindent=8):
-    splitdocs = docstring.split('\n')
-    result = [splitdocs[0].lstrip()]
-    for line in splitdocs[1:]:
-        result.append(line[expectedindent:])
-    return '\n'.join(result)
 
-def format_docstring_first_para(first_para):
-    return first_para.replace('\n', ' ')
+CREATE_DOCS = '''Create a {modelclsname}.
+'''
+READ_DOCS = '''Retreive a {modelclsname}.
+'''
+UPDATE_DOCS = '''Update a {modelclsname}.
+'''
+DELETE_DOCS = '''Delete a {modelclsname}.
+'''
+SEARCH_DOCS = '''Search for {modelclsname_plural}.
+'''
 
 
-CRUD_TO_HTTP = {'create': ('POST', False),
-                'read': ('GET', True),
-                'update': ('PUT', True),
-                'delete': ('DELETE', True),
-                'search': ('GET', False)}
+
+
+
+
+class Docstring(object):
+    def __init__(self, docstring, restfulcls):
+        self.docstring = docstring
+        self.restfulcls = restfulcls
+        self.modelclsname = restfulcls._meta.simplified._meta.model._meta.verbose_name
+        self.modelclsname_plural = restfulcls._meta.simplified._meta.model._meta.verbose_name_plural
+
+    def get_first_para(self):
+        return str(self).split('\n\n')[0].replace('\n', ' ')
+
+    def __str__(self):
+        return self.docstring.format(**self.__dict__)
+
+
 
 
 class Page(object):
@@ -64,7 +79,7 @@ class IndexItem(object):
         if url.endswith('id'):
             self.prettyrestfulurl = self.prettyrestfulurl[:-2]
             self.prettyrestfulurl += '<span class="restfulid">id</span>'
-        self.first_para = format_docstring_first_para(docs.split('\n\n')[0])
+        self.first_para = docs.get_first_para()
         self.page = Page(refprefix, methodname, httpmethod, url, docs)
 
     def __unicode__(self):
@@ -139,13 +154,17 @@ Index page for something
 
 
 class RestfulDocs(object):
-    def iter_restfulcls_docs(self, restfulcls):
+    CRUD_TO_HTTP = {'create': ('POST', False, CREATE_DOCS),
+                    'read': ('GET', True, READ_DOCS),
+                    'update': ('PUT', True, UPDATE_DOCS),
+                    'delete': ('DELETE', True, DELETE_DOCS),
+                    'search': ('GET', False, SEARCH_DOCS)}
+    def iter_restfulcls_methods(self, restfulcls):
         for methodname in restfulcls._meta.simplified._meta.methods:
             if methodname.startswith('insecure_'):
                 continue
             method = getattr(SimplifiedModelApi, methodname)
-            docs = unindent_docstring(method.__doc__)
-            yield methodname, docs
+            yield methodname
 
     def _get_restfulcls_docprefix(self, restfulcls):
         appname = restfulcls.__module__.split('.')[-2] # Assume restful is in appdir.restful
@@ -156,13 +175,13 @@ class RestfulDocs(object):
             refprefix = self._get_restfulcls_docprefix(restfulcls)
             url = restfulcls.get_rest_url()
             indexitems = []
-            for methodname, docs in self.iter_restfulcls_docs(restfulcls):
-                httpmethod, hasid = CRUD_TO_HTTP[methodname]
+            for methodname in self.iter_restfulcls_methods(restfulcls):
+                httpmethod, hasid, docs = self.CRUD_TO_HTTP[methodname]
                 if hasid:
                     itemurl = '{0}id'.format(url)
                 else:
                     itemurl = url
-                indexitems.append(IndexItem(refprefix, methodname, httpmethod, itemurl, docs))
+                indexitems.append(IndexItem(refprefix, methodname, httpmethod, itemurl, Docstring(docs, restfulcls)))
             yield IndexPageItem(restfulcls, indexitems)
 
     def restfulmanager_docs_to_rstfiles(self, directory, indexpageitem):
