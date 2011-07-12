@@ -84,7 +84,7 @@ class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelp
     def setUp(self):
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
-                 periods=['firstSem', 'secondSem:admin(admin2)'],
+                 periods=['firstsem', 'secondsem:admin(admin2)'],
                  assignments=['a1', 'a2'])
         self.client = Client()
         self.client.login(username="admin1", password="test")
@@ -273,18 +273,18 @@ class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.Tes
         # create a base structure
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
-                 periods=['firstSem', 'secondSem'],
+                 periods=['firstsem', 'secondsem'],
                  assignments=['a1', 'a2'])
 
-        # add firstStud to the first and secondSem assignments
-        self.add_to_path('uni;inf101.firstSem.a1.g1:candidate(firstStud)')
-        self.add_to_path('uni;inf101.firstSem.a2.g1:candidate(firstStud)')
-        self.add_to_path('uni;inf110.secondSem.a1.g1:candidate(firstStud)')
-        self.add_to_path('uni;inf110.secondSem.a2.g1:candidate(firstStud)')
+        # add firstStud to the first and secondsem assignments
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud)')
 
-        # secondStud began secondSem
-        self.add_to_path('uni;inf101.secondSem.a1.g2:candidate(secondStud)')
-        self.add_to_path('uni;inf101.secondSem.a2.g2:candidate(secondStud)')
+        # secondStud began secondsem
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud)')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud)')
 
         self.client.login(username="admin1", password="test")
 
