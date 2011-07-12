@@ -62,3 +62,24 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
         self.assertEquals(modeldict2[_assignment_long], self.inf101_fall11_a2.long_name)
         self.assertEquals(modeldict2[_assignment_short], self.inf101_fall11_a2.short_name)
         self.assertEquals(modeldict2[_assignment_id], self.inf101_fall11_a2.id)
+
+    def test_fieldspec(self):
+        fs1 = FieldSpec('value1', 'value2', group1=['groupval1', 'groupval2'])
+        fs2 = FieldSpec('value3', 'value4', group1=['groupval3', 'groupval4'])
+
+        # this should be fine. fs3 should be a brand new instance
+        fs3 = fs1 + fs2
+        self.assertFalse(fs1 is fs2)
+        self.assertFalse(fs1 is fs3)
+        self.assertFalse(fs2 is fs3)
+
+        # Try adding fieldspecs with duplicate fields
+        fs4 = FieldSpec('value1')
+        with self.assertRaises(ValueError):
+            fs3 + fs4
+
+        # now with a duplicate value within the field_group
+        fs5 = FieldSpec('value4', group1=['groupval1'])
+        with self.assertRaises(ValueError):
+            fs3 + fs5
+
