@@ -16,7 +16,7 @@ SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
 SimplifiedSubject = restful_factory.make("administrator/restfulsimplifiedsubject/")
 SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
 
-subjects = SimplifiedSubject.search(logincookie, query='')
+subjects = SimplifiedSubject.search(logincookie, query='')['items']
 
 #path to dir where delivery data is to be stored
 devilry_path = join(environ['HOME'], 'devilry', 'devdata')
