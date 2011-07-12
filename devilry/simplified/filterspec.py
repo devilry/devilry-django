@@ -1,5 +1,17 @@
 from fnmatch import fnmatchcase
+from django.db.models import Q
 
+
+COMP_TO_DJANGO_MAP = {'exact': 'exact',
+                      'iexact': 'exact',
+                      '<': 'lt',
+                      '>': 'gt',
+                      '<=': 'lte',
+                      '=>': 'gte',
+                      'contains': 'contains',
+                      'icontains': 'icontains',
+                      'startswith': 'startswith',
+                      'endswith': 'endswith'}
 
 
 class FilterValidationError(Exception):
@@ -7,30 +19,54 @@ class FilterValidationError(Exception):
     :meth:`devilry.simplified.SimplifiedModelApi.search`. """
 
 class FilterSpec(object):
-    """ Specifies that a specific field can be filtered, and what filtering
-    operation it can do. Filtering operations are those supported by Django,
-    such as *exact* and *gte*. """
-    def __init__(self, fieldname, operations=('', 'exact', 'iexact',
-                                              'lt', 'gt', 'lte', 'gte',
-                                              'contains', 'icontains',
-                                              'startswith', 'endswith')):
+    """ Specifies that a specific field can be filtered, and what *comp* it can
+    use. """
+    def __init__(self, fieldname, supported_comp=('exact', 'iexact',
+                                                 '<', '>', '<=', '=>',
+                                                 'contains', 'icontains',
+                                                 'startswith', 'endswith')):
         """
         :param fieldname: The field to allow filtering on.
-        :param operations: The allowed operations. Note that ``''`` is the same
-            as ``'exact'``.
+        :param supported_comp: The allowed *comp* for this field.
         """
         self.fieldname = fieldname
-        self.operations = operations
+        for comp in supported_comp:
+            if not comp in COMP_TO_DJANGO_MAP:
+                raise ValueError('A FieldSpec uses an invalid supported_cmp: {0}.'
+                                 'Fieldname: {1}. All supported comps: '
+                                 '{2}'.format(comp, fieldname,
+                                              ','.join(COMP_TO_DJANGO_MAP.keys())))
+        self.supported_comp = set(supported_comp)
+
 
     def _yield(self, value):
         return False, value
 
     def __iter__(self):
-        for operation in self.operations:
-            if operation == '':
+        for comp in self.supported_comp:
+            if comp == '':
                 yield self._yield(self.fieldname)
             else:
-                yield self._yield('{0}__{1}'.format(self.fieldname, operation))
+                yield self._yield('{0}__{1}'.format(self.fieldname, comp))
+
+    def to_django_qry(self, filterdict):
+        try:
+            comp = filterdict['comp']
+            value = filterdict['value']
+        except KeyError, e:
+            raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+        else:
+            if not comp in self.supported_comp:
+                raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
+            djangocomp = COMP_TO_DJANGO_MAP[comp]
+            filterfieldname = '{0}__{1}'.format(self.fieldname, djangocomp)
+            qryparam = {filterfieldname: value}
+            return Q(**qryparam)
+
+    def aslist(self):
+        return [self]
+
+
 
 
 class PatternFilterSpec(FilterSpec):
@@ -55,40 +91,45 @@ class ForeignFilterSpec(object):
         self.filterspecs = []
         for filterspec in filterspecs:
             fieldname = '{0}__{1}'.format(parentfield, filterspec.fieldname)
-            self.filterspecs.append(FilterSpec(fieldname, filterspec.operations))
+            self.filterspecs.append(FilterSpec(fieldname, filterspec.supported_comp))
 
-    def __iter__(self):
-        for filterspec in self.filterspecs:
-            for fieldoperation in filterspec:
-                yield fieldoperation
-
+    def aslist(self):
+        return self.filterspecs
 
 class FilterSpecs(object):
     """ Container of :class:`FilterSpec` and :class:`ForeignFilterSpec`. """
-    def __init__(self, *filterspecs):
+    def __init__(self, *filterspecs_and_foreignkeyfilterspecs):
         self.all_filters = set()
-        self.pattern_filters = []
-        for filterspec in filterspecs:
-            for ispattern, fieldoperation in filterspec:
-                if ispattern:
-                    self.pattern_filters.append(fieldoperation)
-                else:
-                    self.all_filters.add(fieldoperation)
+        self.filterspecs = {}
+        for filterspec_or_fkfilterspec in filterspecs_and_foreignkeyfilterspecs:
+            for filterspec in filterspec_or_fkfilterspec.aslist():
+                self.filterspecs[filterspec.fieldname] = filterspec
 
-    def validate(self, filters):
+    def parse(self, filters):
         """
-        Validate the given filters.
+        Validate the given filters and translate them into a Django query.
 
-        :param filters: Dict where keys are filter fields.
+        :param filters: A list of filters on the following format::
+
+            [{'field': 'myfieldname', 'comp': '>', 'value': 30},
+             {'field': 'myotherfieldname', 'comp': '=', 'value': 'myname'}]
+
         :throws FilterValidationError: If any of the ``filters`` are not in the
                 filterspecs.
         """
-        for filtername in filters:
-            if not filtername in self.all_filters:
-                valid = False
-                if self.pattern_filters:
-                    for patternfilterspec in self.pattern_filters:
-                        if fnmatchcase(filtername, patternfilterspec):
-                            valid = True
-                if not valid:
-                    raise FilterValidationError('{0} is not a valid filter.'.format(filtername))
+        qry = Q()
+        for filterdict in filters:
+            try:
+                filtername = filterdict['field']
+                filterspec = self.filterspecs[filtername]
+            except KeyError, e:
+                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+            except TypeError, e:
+                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+            else:
+                qry &= filterspec.to_django_qry(filterdict)
+                #if self.pattern_filters:
+                    #for patternfilterspec in self.pattern_filters:
+                        #if fnmatchcase(filtername, patternfilterspec):
+                            #valid = True
+        return qry

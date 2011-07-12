@@ -601,13 +601,17 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
             self.assertTrue(s in expected_res)
 
     def test_search_filters(self):
-        qrywrap = SimplifiedAssignment.search(self.admin1,
-                                              result_fieldgroups=['period'])
+        qrywrap = SimplifiedAssignment.search(self.admin1)
         self.assertEquals(len(qrywrap), 8)
         qrywrap = SimplifiedAssignment.search(self.admin1,
-                                              result_fieldgroups=['period'],
-                                              parentnode__short_name='firstSem')
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstSem')])
         self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedAssignment.search(self.admin1,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstSem'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 2)
 
     def test_create(self):
         kw = dict(
