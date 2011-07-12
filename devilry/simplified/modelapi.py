@@ -1,7 +1,7 @@
-from django.db.models.fields import AutoField
+from django.db.models.fields import AutoField, FieldDoesNotExist
 
 from qryresultwrapper import QryResultWrapper
-from utils import modelinstance_to_dict
+from utils import modelinstance_to_dict, get_field_from_fieldname, get_clspath
 from exceptions import PermissionDenied
 from filterspec import FilterSpecs
 
@@ -269,6 +269,20 @@ class SimplifiedModelApi(object):
         return result
 
 
+class SimplifiedConfigError(Exception):
+    """
+    Raised when :func:`simplified_modelapi` discovers a configuration error.
+    """
+
+
+def _validate_fieldnameiterator(cls, attribute, fieldnameiterator):
+    for fieldname in fieldnameiterator.iterfieldnames():
+        try:
+            get_field_from_fieldname(cls._meta.model, fieldname)
+        except FieldDoesNotExist, e:
+            raise SimplifiedConfigError('{0}.{1}: Invalid field name: {2}.'.format(get_clspath(cls),
+                                                                                   attribute,
+                                                                                   fieldname))
 
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
@@ -350,7 +364,9 @@ def simplified_modelapi(cls):
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
 
-    if not hasattr(cls._meta, 'filters'):
+    if hasattr(cls._meta, 'filters'):
+        _validate_fieldnameiterator(cls, 'Meta.filters', cls._meta.filters)
+    else:
         cls._meta.filters = FilterSpecs()
 
     # Dynamically remove create(), read(), insecure_read_model(), update(), delete() if not supported

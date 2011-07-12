@@ -71,6 +71,12 @@ class FilterSpec(object):
 
 
 class PatternFilterSpec(FilterSpec):
+    """
+    Pattern based field spec.
+
+    **NOTE**: Should only be used when _really_ required, since it is less
+    secure and slows down filter validation (which is done on each search()).
+    """
     def __init__(self, *args, **kwargs):
         super(PatternFilterSpec, self).__init__(*args, **kwargs)
         self.fieldpatt = re.compile(self.fieldname)
@@ -180,3 +186,12 @@ class FilterSpecs(object):
 
     def __nonzero__(self):
         return len(self.filterspecs) > 0 or len(self.patternfilterspecs) > 0
+
+
+    def iterfieldnames(self):
+        """
+        Iterate over all fieldnames in this FilterSpecs. Used in
+        @simplified_modelapi to validate the fields in this FilterSpecs. Note
+        that PatternFilterSpec are not validated.
+        """
+        return self.filterspecs.keys().__iter__()
