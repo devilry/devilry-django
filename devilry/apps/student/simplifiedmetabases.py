@@ -214,6 +214,10 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'grade',
                              'points',
                              'is_passing_grade',
+                             'saved_by',
+                             'delivery',
+                             'rendered_view',
+                             #'delivery__assignment_group__examiners__username',
                              period=['delivery__assignment_group__parentnode__parentnode__id',
                                      'delivery__assignment_group__parentnode__parentnode__short_name',
                                      'delivery__assignment_group__parentnode__parentnode__long_name'],
@@ -232,7 +236,8 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery__assignment_group__parentnode__parentnode__long_name',
                              'delivery__assignment_group__parentnode__short_name',
                              'delivery__assignment_group__parentnode__long_name',
-                             'delivery__number'
+                             'delivery__number',
+                             'delivery__assignment_group__examiners__username',
                              )
 
 
