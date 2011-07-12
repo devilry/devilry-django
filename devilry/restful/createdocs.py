@@ -9,15 +9,15 @@ from devilry.simplified import SimplifiedModelApi
 
 
 
-CREATE_DOCS = '''Create a {{model_verbose_name}}.
+CREATE_DOCS = '''Create a {{doc.model_verbose_name}}.
 '''
-READ_DOCS = '''Retreive a {{model_verbose_name}}.
+READ_DOCS = '''Retreive a {{doc.model_verbose_name}}.
 '''
-UPDATE_DOCS = '''Update a {{model_verbose_name}}.
+UPDATE_DOCS = '''Update a {{doc.model_verbose_name}}.
 '''
-DELETE_DOCS = '''Delete a {{model_verbose_name}}.
+DELETE_DOCS = '''Delete a {{doc.model_verbose_name}}.
 '''
-SEARCH_DOCS = '''Search for {{model_verbose_name_plural}}.
+SEARCH_DOCS = '''Search for {{doc.model_verbose_name_plural}}.
 
 
 Parameters
@@ -29,20 +29,40 @@ query
 A string to search for.
 
 
+{% if doc.filters %}
 
 filters
 ---------------
-TODO: Autogenerate filter docs
 
+A list of filters, where each filter is a map of with the following entries:
+
+    field
+        A field name.
+    comp
+        A comparison operator.
+    value
+        The value to filter on.
+
+Generic example of a *filters* list:
+
+    .. code-block:: javascript
+
+        [{field:"last", comp:"=", value:"McDuck"},
+         {field:"score", comp:">", value:40}]
+
+Available filters:
+    {% for fieldname, filterspec in doc.filters.filterspecs.iteritems %}
+        {{ fieldname }}
+            Supported comparison operators: {%for comp in filterspec.supported_comp%}``{{comp|safe}}``{%if not forloop.last%}, {%endif%}{%endfor%}.
+    {% endfor %}
+
+{%endif%}
 
 orderby
 -------
-List of fieldnames. Fieldnames can be prefixed by ``'-'`` for descending
-ordering.  Order the result by these fields. For example, if
-``Meta.resultfields`` contains the short_name and long_name fields, we can
-order our results by ascending short_name and descending long_name as this:
-``orderby=('short_name', '-long_name')``.  This defaults to
-``cls._meta.ordering`` (see :func:`devilry.simplified.simplified_modelapi`).
+List of fieldnames. Order the result by these fields.
+Fieldnames can be prefixed by ``'-'`` for descending ordering.
+Example: TODO generate ordeby example.
 
 start
 -----
@@ -53,26 +73,26 @@ limit
 -----
 Limit results to this number of items. Defaults to ``50``.
 
-{% if result_fieldgroups %}
+{% if doc.result_fieldgroups %}
 result_fieldgroups
 ------------------
 Adds additional fields to each item in the result.
-{{result_fieldgroups}}
+{{doc.result_fieldgroups}}
 
-The fields are documented in :class:`{{modelmodulename}}.{{modelclsname}}`.
+The fields are documented in :class:`{{doc.modelmodulename}}.{{doc.modelclsname}}`.
 Follow fields containing ``__`` through the corrensponding related attributes.
 {% endif %}
 
 
 
-{% if search_fieldgroups %}
+{% if doc.search_fieldgroups %}
 search_fieldgroups
 ------------------
 Adds additional fields which are searched for the ``query`` string.
 
-{{search_fieldgroups}}
+{{doc.search_fieldgroups}}
 
-The fields are documented in :class:`{{modelmodulename}}.{{modelclsname}}`.
+The fields are documented in :class:`{{doc.modelmodulename}}.{{doc.modelclsname}}`.
 Follow fields containing ``__`` through the corrensponding related attributes.
 {% endif %}
 
@@ -82,6 +102,12 @@ Return
 ######
 
 TODO: Autogenereate return example(s) containing fields.
+
+
+Notes for non-standard extensions
+#################################
+
+TODO: getdata_in_qrystring and X-header
 '''
 
 
@@ -92,21 +118,32 @@ TODO: Autogenereate return example(s) containing fields.
 class Docstring(object):
     def __init__(self, docstring, restfulcls):
         self.docstring = Template(docstring)
-
-        modelclsname = restfulcls._meta.simplified._meta.model.__name__
-        modelmodulename = restfulcls._meta.simplified._meta.model.__module__
-        if modelmodulename.endswith('.' + modelclsname.lower()):
-            modelmodulename = modelmodulename.rsplit('.', 1)[0]
-        self.modelclspath = '{0}.{1}'.format(modelmodulename, modelclsname)
-
+        self.restfulcls = restfulcls
         simplified = restfulcls._meta.simplified
-        self.context = Context(dict(result_fieldgroups = self._create_fieldgroup_overview(simplified._meta.resultfields.additional_fieldgroups),
-                                    search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups),
-                                    model_verbose_name = restfulcls._meta.simplified._meta.model._meta.verbose_name,
-                                    model_verbose_name_plural = restfulcls._meta.simplified._meta.model._meta.verbose_name_plural,
-                                    modelclsname = modelclsname,
-                                    modelmodulename = modelmodulename
-                                   ))
+
+        self.modelclsname = simplified._meta.model.__name__
+        self.modelmodulename = simplified._meta.model.__module__
+        if self.modelmodulename.endswith('.' + self.modelclsname.lower()):
+            self.modelmodulename = self.modelmodulename.rsplit('.', 1)[0]
+        self.modelclspath = '{0}.{1}'.format(self.modelmodulename, self.modelclsname)
+
+        self.model_verbose_name = simplified._meta.model._meta.verbose_name
+        self.model_verbose_name_plural = simplified._meta.model._meta.verbose_name_plural
+        self.result_fieldgroups = self._create_fieldgroup_overview(simplified._meta.resultfields.additional_fieldgroups)
+        self.search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups)
+
+        #self._create_filterdocs()
+        self.filters = simplified._meta.filters
+
+        self.context = Context(dict(doc=self))
+
+    #def _create_filterdocs(self):
+        #docs = {}
+
+        #for filterspec in self.restfulcls._meta.simplified._meta.filters.filterspecs.itervalues():
+            #legal = '    ' + ', '.join(filterspec.supported_comp)
+            #docs[filterspec.fieldname] = legal
+        #self.filterdocs = docs
 
     def _create_fieldgroup_overview(self, fieldgroups):
         if not fieldgroups:
