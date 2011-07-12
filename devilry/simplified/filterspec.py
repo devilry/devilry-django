@@ -43,7 +43,7 @@ class FilterSpec(object):
         self.fieldname = fieldname
         for comp in supported_comp:
             if not comp in COMP_TO_DJANGO_MAP:
-                raise ValueError('A FieldSpec uses an invalid supported_cmp: {0}.'
+                raise ValueError('FilterSpec uses an invalid supported_cmp: {0}.'
                                  'Fieldname: {1}. All supported comps: '
                                  '{2}'.format(comp, fieldname,
                                               ','.join(COMP_TO_DJANGO_MAP.keys())))
@@ -111,7 +111,19 @@ class FilterSpecs(object):
                 if isinstance(filterspec, PatternFilterSpec):
                     self.patternfilterpecs.append(filterspec)
                 else:
+                    if filterspec.fieldname in self.filterspecs:
+                        raise ValueError('A FilterSpec with fieldname "{0}" is '
+                                         'already in the FilterSpecs.'.format(filterspec.fieldname))
                     self.filterspecs[filterspec.fieldname] = filterspec
+        self.validate_no_dups_with_patterns()
+
+    def validate_no_dups_with_patterns(self):
+        for filterspec in self.filterspecs.itervalues():
+            for patternfilterpec in self.patternfilterpecs:
+                if patternfilterpec.matches(filterspec.fieldname):
+                    raise ValueError('The "{0}" pattern matches the non-pattern '
+                                     'filterspec: {1}'.format(patternfilterpec.fieldname,
+                                                              filterspec.fieldname))
 
     def find_filterspec(self, fieldname):
         try:
@@ -152,14 +164,16 @@ class FilterSpecs(object):
         # Make sure other does not share any items with self
         inboth = _in_both(self.filterspecs.keys(), other.filterspecs.keys())
         if inboth:
-            raise ValueError("{0} already in filterspec." % inboth)
-        inboth = _in_both(self.patternfilterpecs, other.patternfilterpecs)
+            raise ValueError("{0} already in filterspec.".format(inboth))
+        inboth = _in_both([p.fieldname for p in self.patternfilterpecs],
+                          [p.fieldname for p in other.patternfilterpecs])
         if inboth:
-            raise ValueError("{0} already in filterspec." % inboth)
+            raise ValueError("{0} already in filterspec.".format(inboth))
 
         # Create a new FilterSpecs from self and other
         filterspecs = FilterSpecs()
         filterspecs.filterspecs = self.filterspecs.copy()
         filterspecs.filterspecs.update(other.filterspecs)
         filterspecs.patternfilterpecs = list(self.patternfilterpecs) + list(other.patternfilterpecs)
+        filterspecs.validate_no_dups_with_patterns()
         return filterspecs

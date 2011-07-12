@@ -85,9 +85,20 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
         with self.assertRaises(ValueError):
             fs3 + fs5
 
+    def test_filterspecs(self):
+        f1 = FilterSpecs(FilterSpec('hello'),
+                         PatternFilterSpec('test.*'),
+                         FilterSpec('world'))
+        with self.assertRaises(ValueError):
+            f1 = FilterSpecs(FilterSpec('hello'),
+                             FilterSpec('hello'))
+        with self.assertRaises(ValueError):
+            f1 = FilterSpecs(FilterSpec('hello'),
+                             PatternFilterSpec('he.*'))
+
     def test_filterspecs_copy(self):
         f1 = FilterSpecs(FilterSpec('hello'),
-                         PatternFilterSpec('hel.*'),
+                         PatternFilterSpec('test.*'),
                          FilterSpec('world'))
         f2 = FilterSpecs(FilterSpec('cruel'),
                          FilterSpec('stuff'),
@@ -95,5 +106,13 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
         fmerge = f1 + f2
         self.assertEquals(set(fmerge.filterspecs.keys()), set(('hello', 'world', 'cruel', 'stuff')))
         self.assertEquals(len(fmerge.patternfilterpecs), 2)
-        self.assertEquals(fmerge.patternfilterpecs[0].fieldname, 'hel.*')
+        self.assertEquals(fmerge.patternfilterpecs[0].fieldname, 'test.*')
         self.assertEquals(fmerge.patternfilterpecs[1].fieldname, '^(hello)+__world')
+
+    def test_filterspecs_copy_error(self):
+        with self.assertRaises(ValueError):
+            fmerge = FilterSpecs(FilterSpec('hello')) + FilterSpecs(FilterSpec('hello'))
+        with self.assertRaises(ValueError):
+            fmerge = FilterSpecs(PatternFilterSpec('hello')) + FilterSpecs(PatternFilterSpec('hello'))
+        with self.assertRaises(ValueError):
+            fmerge = FilterSpecs(PatternFilterSpec('hello')) + FilterSpecs(FilterSpec('hello'))
