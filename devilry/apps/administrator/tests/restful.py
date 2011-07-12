@@ -4,8 +4,9 @@ from django.test.client import Client
 import json
 
 from ..restful import (RestfulSimplifiedNode, RestfulSimplifiedAssignment, RestfulSimplifiedSubject,
-                       RestfulSimplifiedPeriod)
-from ..simplified import SimplifiedAssignment, SimplifiedSubject, SimplifiedPeriod
+                       RestfulSimplifiedPeriod, RestfulSimplifiedAssignmentGroup)
+from ..simplified import (SimplifiedAssignment, SimplifiedSubject, SimplifiedPeriod,
+                          SimplifiedAssignmentGroup)
 from ...core import models, testhelper
 
 class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
@@ -261,3 +262,60 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
         self.assertEquals(models.Period.objects.filter(short_name='v2011').count(), 1)
+
+
+class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
+    pekerkjede = RestfulSimplifiedAssignmentGroup
+    resultfields = SimplifiedAssignmentGroup._meta.resultfields
+
+    def setUp(self):
+        # create a base structure
+        self.add(nodes='uni:admin(admin)',
+                 subjects=['inf101', 'inf110'],
+                 periods=['firstSem', 'secondSem'],
+                 assignments=['a1', 'a2'])
+        
+        # add firstStud to the first and secondSem assignments
+        self.add_to_path('uni;inf101.firstSem.a1.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf101.firstSem.a2.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf110.secondSem.a1.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf110.secondSem.a2.g1:candidate(firstStud)')
+        
+        # secondStud began secondSem
+        self.add_to_path('uni;inf101.secondSem.a1.g2:candidate(secondStud)')
+        self.add_to_path('uni;inf101.secondSem.a2.g2:candidate(secondStud)')
+
+        self.client = Client()
+        self.client.login(username="admin1", password="test")
+    
+    def test_search(self):
+        # url = self.pekerkjede.get_rest_url()
+        # print url
+        # r = self.client.get(url, data={'getdata_in_qrystring': True})
+        # #self.assertEquals(r.status_code, 200)
+        # print "\n\n\nasdfasdf\n\n\n", r.content, "asdfasdf\n\n\n"
+        # data = json.loads(r.content)
+        # print "\n\n", data, "\n\n"
+        # first = data['items'][0]
+        # self.assertEquals(set(first.keys()), set(self.resultfields.aslist()))
+        pass
+
+    def test_create(self):
+        #TODO test_create
+        pass
+
+    def test_create_errors(self):
+        #TODO test_create_errors
+        pass
+
+    def test_update(self):
+        #TODO test_update
+        pass
+
+    def test_update_errors(self):
+        #TODO test_update_errors
+        pass
+    
+    def test_delete(self):
+        #TODO test_delete
+        pass
