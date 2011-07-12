@@ -50,11 +50,22 @@ Generic example of a *filters* list:
         [{field:"last", comp:"=", value:"McDuck"},
          {field:"score", comp:">", value:40}]
 
-Available filters:
-    {% for fieldname, filterspec in doc.filters.filterspecs.iteritems %}
-        {{ fieldname }}
-            Supported comparison operators: {%for comp in filterspec.supported_comp%}``{{comp|safe}}``{%if not forloop.last%}, {%endif%}{%endfor%}.
+{{doc.model_verbose_name_plural}} can be filtered on the following *fields*:
+{% if doc.filters.filterspecs %}
+{% for filterspec in doc.filterspecs %}
+    {{ filterspec.fieldname }}
+        Supported comparison operators:
+        {%for comp in filterspec.supported_comp%}``{{comp|safe}}``{%if not forloop.last%}, {%endif%}{%endfor%}.
+{% endfor %}
+{% endif %}
+{% if doc.filters.patternfilterspecs %}
+    Filters matching the following python compatible regular expressions:
+    {% for filterspec in doc.patternfilterspecs %}
+        ``{{ filterspec.fieldname }}``
+            Supported comparison operators:
+            {%for comp in filterspec.supported_comp%}``{{comp|safe}}``{%if not forloop.last%}, {%endif%}{%endfor%}.
     {% endfor %}
+{% endif %}
 
 {%endif%}
 
@@ -132,18 +143,12 @@ class Docstring(object):
         self.result_fieldgroups = self._create_fieldgroup_overview(simplified._meta.resultfields.additional_fieldgroups)
         self.search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups)
 
-        #self._create_filterdocs()
-        self.filters = simplified._meta.filters
+        self.filters =simplified._meta.filters
+        self.filterspecs = sorted(self.filters.filterspecs.values(), key=lambda s: s.fieldname)
+        self.patternfilterspecs = sorted(self.filters.patternfilterspecs, key=lambda s: s.fieldname)
 
         self.context = Context(dict(doc=self))
 
-    #def _create_filterdocs(self):
-        #docs = {}
-
-        #for filterspec in self.restfulcls._meta.simplified._meta.filters.filterspecs.itervalues():
-            #legal = '    ' + ', '.join(filterspec.supported_comp)
-            #docs[filterspec.fieldname] = legal
-        #self.filterdocs = docs
 
     def _create_fieldgroup_overview(self, fieldgroups):
         if not fieldgroups:
