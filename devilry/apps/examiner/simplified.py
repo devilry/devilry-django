@@ -7,6 +7,8 @@ from ..student.simplifiedmetabases import (SimplifiedSubjectMetaMixin, Simplifie
 
 
 class PublishedWhereIsExaminerMixin(SimplifiedModelApi):
+    """ Mixin class extended by many of the classes in the Simplified API for Examiner """
+
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
         """ Returns all objects of this type that matches arguments
@@ -35,6 +37,7 @@ class PublishedWhereIsExaminerMixin(SimplifiedModelApi):
 class SimplifiedSubject(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
+        """ Defines what methods an Examiner can use on a Subject object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -42,6 +45,7 @@ class SimplifiedSubject(PublishedWhereIsExaminerMixin):
 class SimplifiedPeriod(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
+        """ Defines what methods an Examiner can use on a Period object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -49,6 +53,7 @@ class SimplifiedPeriod(PublishedWhereIsExaminerMixin):
 class SimplifiedAssignment(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
+        """ Defines what methods an Examiner can use on an Assignment object using the Simplified API """
         methods = ['search', 'read']
 
     @classmethod
@@ -76,6 +81,7 @@ class SimplifiedAssignment(PublishedWhereIsExaminerMixin):
 class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
+        """ Defines what methods an Examiner can use on an AssignmentGroup object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -83,6 +89,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsExaminerMixin):
 class SimplifiedDelivery(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
+        """ Defines what methods an Examiner can use on a Delivery object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -90,6 +97,9 @@ class SimplifiedDelivery(PublishedWhereIsExaminerMixin):
 class SimplifiedStaticFeedback(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.StaticFeedback`. """
     class Meta(SimplifiedStaticFeedbackMetaMixin):
+        """ Defines what methods an Examiner can use on a StaticFeedback
+        object using the Simplified API. Also adds to the resultfields
+        returned by search """
         methods = ['search', 'read', 'create']
         # Examiners need a few more fields than is given by
         # default in SimplifiedStaticFeedbackMetaMixin. Addition them in!
@@ -112,6 +122,7 @@ class SimplifiedStaticFeedback(PublishedWhereIsExaminerMixin):
 class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
     class Meta(SimplifiedDeadlineMetaMixin):
+        """ Defines what methods an Examiner can use on a Deadline object using the Simplified API """
         methods = ['search', 'read', 'create', 'delete']  # TODO: should we have update here?
 
     @classmethod
@@ -131,4 +142,5 @@ class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
 class SimplifiedFileMeta(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
     class Meta(SimplifiedFileMetaMetaMixin):
+        """ Defines what methods an Examiner can use on a FileMeta object using the Simplified API """
         methods = ['search', 'read']

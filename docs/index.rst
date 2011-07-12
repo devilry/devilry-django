@@ -19,6 +19,7 @@
     utils.devilry_email
 
     administrator.simplified
+    metabases.simplified
     examiner.simplified
     student.simplified
     public_restful_api

@@ -6,6 +6,7 @@ from simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedPeriodMet
 
 
 class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
+    """ Mixin class extended by all classes in the Simplified API for Student using the Simplified API """
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -35,6 +36,7 @@ class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
 class SimplifiedFileMeta(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
     class Meta(SimplifiedFileMetaMetaMixin):
+        """ Defines what methods a Student can use on a FileMeta object using the Simplified API """
         methods = ['search', 'read', 'create']
 
 
@@ -42,6 +44,7 @@ class SimplifiedFileMeta(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
     class Meta(SimplifiedDeadlineMetaMixin):
+        """ Defines what methods a Student can use on a Deadline object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -49,6 +52,7 @@ class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
 class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.StaticFeedback`. """
     class Meta(SimplifiedStaticFeedbackMetaMixin):
+        """ Defines what methods a Student can use on a StaticFeedback object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -56,6 +60,7 @@ class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelAp
 class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
+        """ Defines what methods a Student can use on a Delivery object using the Simplified API """
         methods = ['search', 'read', 'delete']
 
 
@@ -63,6 +68,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
+        """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
         methods = ['search', 'read', 'create']
 
 
@@ -70,6 +76,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelA
 class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
+        """ Defines what methods a Student can use on an Assignment object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -77,6 +84,7 @@ class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
+        """ Defines what methods a Student can use on a Period object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -84,4 +92,5 @@ class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 class SimplifiedSubject(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
+        """ Defines what methods a Student can use on a Subject object using the Simplified API """
         methods = ['search', 'read']
