@@ -1,6 +1,7 @@
 """
 Autogenerate documentation RESTful APIs
 """
+from random import randint
 from os.path import join
 from django.template import Context, Template
 from django.db.models import fields
@@ -35,7 +36,7 @@ A string to search for.
 filters
 ---------------
 
-A list of filters, where each filter is a map of with the following entries:
+A list of filters, where each filter is a map with the following entries:
 
     field
         A field name.
@@ -44,12 +45,11 @@ A list of filters, where each filter is a map of with the following entries:
     value
         The value to filter on.
 
-Generic example of a *filters* list:
+Example:
 
     .. code-block:: javascript
 
-        [{field:"last", comp:"=", value:"McDuck"},
-         {field:"score", comp:">", value:40}]
+{{ doc.filterexample|safe }}
 
 {{doc.model_verbose_name_plural}} can be filtered on the following *fields*:
 {% if doc.filters.filterspecs %}
@@ -129,9 +129,9 @@ TODO: getdata_in_qrystring and X-header
 
 def field_to_restfultype(field):
     if isinstance(field, fields.related.AutoField):
-        return 'Integer'
+        return 'Integer', 15
     elif isinstance(field, fields.CharField):
-        return 'String'
+        return 'String', 'myvalue'
     else:
         raise ValueError('Unsupported field type.')
 
@@ -171,11 +171,30 @@ class Docstring(object):
         for filterspec in sorted(self.filters.filterspecs.values(), key=lambda s: s.fieldname):
             field = self._get_field(filterspec.fieldname)
             help_text = field_to_help_text(field)
-            fieldtype = field_to_restfultype(field)
+            fieldtype, valueexample = field_to_restfultype(field)
             self.filterspecs.append(dict(filterspec=filterspec,
                                          help_text=help_text,
-                                         fieldtype=fieldtype))
+                                         fieldtype=fieldtype,
+                                         valueexample=valueexample))
+
         self.patternfilterspecs = sorted(self.filters.patternfilterspecs, key=lambda s: s.fieldname)
+        self._create_filter_example()
+
+    def _create_filter_example(self):
+        filterexample = []
+        for fs in self.filterspecs[:3]:
+            filterspec = fs['filterspec']
+            supported_comp = list(filterspec.supported_comp)
+            compindex = randint(0, len(supported_comp)-1)
+            example = '{{field:"{0}", comp:"{1}", value:{2}}}'.format(filterspec.fieldname,
+                                                                supported_comp[compindex],
+                                                                repr(fs['valueexample']))
+            filterexample.append(example)
+        filterexample = '[{0}]'.format(',\n '.join(filterexample))
+        self.filterexample = self._indent(filterexample, '        ')
+
+    def _indent(self, value, indent):
+        return '\n'.join('{0}{1}'.format(indent, line) for line in value.split('\n'))
 
 
     def _create_fieldgroup_overview(self, fieldgroups):
