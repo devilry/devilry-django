@@ -65,6 +65,11 @@ class SimplifiedStaticFeedback(PublishedWhereIsExaminerMixin):
     class Meta(SimplifiedStaticFeedbackMetaMixin):
         methods = ['search', 'read', 'create']
 
+    @classmethod
+    def write_authorize(cls, user, obj):
+        if not obj.delivery.assignment_group.is_examiner(user):
+            raise PermissionDenied()
+
 
 @simplified_modelapi
 class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
@@ -73,7 +78,7 @@ class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
 
     @classmethod
     def write_authorize(cls, user, obj):
-        if not obj.assignment_group.can_save(user):
+        if not obj.assignment_group.is_examiner(user):
             raise PermissionDenied()
 
 
