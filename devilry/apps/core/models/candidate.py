@@ -67,5 +67,7 @@ class Candidate(models.Model, Etag):
             - candidate id is empty on anonymous assignment.
 
         """
-        self.update_identifier(self.assignment_group.parentnode.anonymous)
+        # Only if object doesn't yet exist in the database
+        if not self.pk:
+            self.update_identifier(self.assignment_group.parentnode.anonymous)
         super(Candidate, self).save(*args, **kwargs)
