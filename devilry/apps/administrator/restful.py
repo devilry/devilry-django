@@ -1,13 +1,16 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
 from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
-                        SimplifiedDelivery)
+                        SimplifiedDelivery, SimplifiedDeadline,
+                        SimplifiedStaticFeedback, SimplifiedFileMeta)
 from ..extjshelpers import extjs_restful_modelapi, wizard
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
            'RestfulSimplifiedPeriod', 'RestfulSimplifiedAssignment',
-           'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery')
+           'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
+           'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
+           'RestfulStaticFeedback')
 
 
 administrator_restful = RestfulManager()
@@ -114,3 +117,30 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
                         '.{assignment_group__parentnode__parentnode__short_name}.'
                         '{assignment_group__parentnode__short_name}</div>')
         combobox_displayfield = 'id'
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedDeadline(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedDeadline
+        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedStaticFeedback(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedStaticFeedback
+        foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedFileMeta(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedFileMeta
+        foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}

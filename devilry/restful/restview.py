@@ -42,6 +42,12 @@ class RestfulView(View):
 
     @classmethod
     def get_rest_url(cls, *args, **kwargs):
+        """
+        Get the reverse url for this view. Shortcut for::
+
+            from django.core.urlresolvers import reverse
+            reverse(cls._meta.urlname, args=args, kwargs=kwargs)
+        """
         return reverse(cls._meta.urlname, args=args, kwargs=kwargs)
 
     @extjshacks

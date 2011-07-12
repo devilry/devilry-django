@@ -3,13 +3,11 @@ from django.test import TestCase
 import re
 
 from ....simplified import PermissionDenied
-
-from ...core import testhelper
-from ....simplified.utils import modelinstance_to_dict
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedStaticFeedback
 from ....simplified.utils import modelinstance_to_dict
 from ...core import models, testhelper
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline
+from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline, SimplifiedStaticFeedback, SimplifiedFileMeta
+
+from datetime import datetime, timedelta
 
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 
@@ -617,12 +615,13 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                 parentnode = self.inf110_firstSem_a2.parentnode,
                 publishing_time = self.inf110_firstSem_a2.publishing_time)
 
-        self.create_res = SimplifiedAssignment.create(self.admin1, short_name='test1', **kw)
-        self.assertEquals(self.create_res.short_name, 'test1')
-        self.assertEquals(self.create_res.long_name, 'Test')
-        self.assertEquals(self.create_res.parentnode,
+        newpk = SimplifiedAssignment.create(self.admin1, short_name='test1', **kw)
+        create_res = models.Assignment.objects.get(pk=newpk)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'Test')
+        self.assertEquals(create_res.parentnode,
                 self.inf110_firstSem_a2.parentnode)
-        self.assertEquals(self.create_res.publishing_time,
+        self.assertEquals(create_res.publishing_time,
                 self.inf110_firstSem_a2.publishing_time)
 
     def test_create_security(self):
@@ -652,9 +651,10 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                     long_name = 'Test',
                     parentnode = self.inf110_firstSem_a2.parentnode)
 
-        update_res = SimplifiedAssignment.update(self.admin1, 
-                            idorkw = self.inf110_firstSem_a2.id, 
+        pk = SimplifiedAssignment.update(self.admin1,
+                            idorkw = self.inf110_firstSem_a2.id,
                             **kw)
+        update_res = models.Assignment.objects.get(pk=pk)
 
         self.assertEquals(update_res.short_name, 'testa2')
         self.assertEquals(self.inf110_firstSem_a2.short_name, 'a2')
@@ -981,8 +981,6 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondSem_a2_g2.deadlines.all()[0], self.allFields),
                         ]
 
-        print self.inf101_secondSem_a1_g2.deadlines.all()
-
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
@@ -996,13 +994,161 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         self.assertEquals(read_res, expected_res)
 
         # do a read with all extras
-        read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstSem_a1_g1.id.deadlines.all()[0], result_fieldgroups=self.allExtras)
+        read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstSem_a1_g1.deadlines.all()[0].id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
                                              SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
+        self.assertEquals(read_res, expected_res)
+
+    def test_read_security(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.read(self.secondStud, self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+
+        # test that an admin in another subject cant read outside his
+        # subjects
+        self.add_to_path('uni;inf110:admin(inf110admin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.read(self.inf110admin, self.inf101_firstSem_a1_g1.deadlines.all()[0].id)
+
+    def test_create(self):
+
+        # create a deadline that runs out in 3 days
+        kw = dict(
+            assignment_group=self.inf101_firstSem_a1_g1,
+            deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            text='Last shot!')
+
+        createdpk = SimplifiedDeadline.create(self.admin1, **kw)
+        read_res = SimplifiedDeadline.read(self.admin1, createdpk, result_fieldgroups=self.allExtras)
+        create_res = models.Deadline.objects.get(pk=createdpk)
+        expected_res = modelinstance_to_dict(create_res, SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
+
+        self.assertEquals(read_res, expected_res)
+
+    def test_create_security(self):
+
+        # create an invalid deadline, which runs out before the
+        # publishing date
+        invalid_deadline_dict = dict(
+            assignment_group=self.inf101_firstSem_a1_g1,
+            deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=-10),
+            text='this deadline is impossible')
+        with self.assertRaises(Exception):  # TODO: Where is ValidationError declared?
+            SimplifiedDeadline.create(self.admin1, **invalid_deadline_dict)
+
+        # Now try a valid deadline, but with a student
+        valid = dict(
+            assignment_group=self.inf101_firstSem_a1_g1,
+            deadline=self.inf101_firstSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            text='Last shot!')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.create(self.firstStud, **valid)
+
+        # and another admin that isnt an admin for this course
+        self.add_to_path('uni;inf110:admin(inf110admin)')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.create(self.inf110admin, **valid)
+
+        # see that the new admin can create a deadline where he is admin
+        SimplifiedDeadline.create(self.inf110admin,
+                                  assignment_group=self.inf110_secondSem_a1_g1,
+                                  deadline=self.inf110_secondSem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+                                  text='Last shot!')
+
+
+class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
+
+    allExtras = SimplifiedFileMeta.Meta.resultfields.additional_aslist()
+    baseFields = SimplifiedFileMeta.Meta.resultfields.aslist()
+    allFields = SimplifiedFileMeta.Meta.resultfields.aslist(allExtras)
+
+    def setUp(self):
+        super(TestSimplifiedAdminFileMeta, self).setUp()
+
+        for var in dir(self):
+            # find any variable that ends with '_gN' where N is a
+            # number
+            if re.search('_g\d$', var):
+                group = getattr(self, var)
+                group.examiners.add(self.exam1)
+                files = {'good.py': ['print ', 'awesome']}
+                self.add_delivery(group, files)
+
+    def test_search(self):
+        # search with no query and no extra fields
+        # should only have the deafault deadlines created when the
+        # assignment group was created
+        search_res = SimplifiedFileMeta.search(self.admin1)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2_deliveries[0].filemetas.all()[0], self.baseFields),
+                        ]
+
+        # assert that all search results are as expected
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+        # search with no query and with extra fields
+        search_res = SimplifiedFileMeta.search(self.admin1, result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2_deliveries[0].filemetas.all()[0], self.allFields),
+                        ]
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+        # search with query
+        search_res = SimplifiedFileMeta.search(self.admin1, query='secondStud')
+        expected_res = [modelinstance_to_dict(self.inf101_secondSem_a1_g2_deliveries[0].filemetas.all()[0], self.baseFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2_deliveries[0].filemetas.all()[0], self.baseFields)]
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+        # with query and extra fields
+        search_res = SimplifiedFileMeta.search(self.admin1, query='inf101', result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a1_g2_deliveries[0].filemetas.all()[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondSem_a2_g2_deliveries[0].filemetas.all()[0], self.allFields)]
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_read(self):
+
+        # do a read with no extra fields
+        read_res = SimplifiedFileMeta.read(self.admin1, self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0].id)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0],
+                                             SimplifiedFileMeta.Meta.resultfields.aslist())
+        self.assertEquals(read_res, expected_res)
+
+        # do a read with all extras
+        read_res = SimplifiedFileMeta.read(self.admin1, self.inf101_firstSem_a1_g1.deadlines.all()[0].id,
+                                           result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0],
+                                             SimplifiedFileMeta.Meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
 
         # We know secondStud hasn't signed up for firstSem.inf101.
         with self.assertRaises(PermissionDenied):
-            SimplifiedDeadline.read(self.secondStud, self.inf101_firstSem_a1_g1.id)
+            SimplifiedFileMeta.read(self.secondStud, self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0].id)
+
+        # test that an admin in another subject cant read outside his
+        # subjects
+        self.add_to_path('uni;inf110:admin(inf110admin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.read(self.inf110admin, self.inf101_firstSem_a1_g1_deliveries[0].filemetas.all()[0].id)

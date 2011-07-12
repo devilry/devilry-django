@@ -57,11 +57,12 @@ class TestModelIntegration(TestCase):
                 url: '/restuser',
                 extraParams: {
                     getdata_in_qrystring: true,
-                    result_fieldgroups: ''
+                    result_fieldgroups: '[]'
                 },
                 reader: {
                     type: 'json',
-                    root: 'items'
+                    root: 'items',
+                    totalProperty: 'total'
                 },
                 writer: {
                     type: 'json'

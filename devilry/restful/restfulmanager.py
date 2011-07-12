@@ -17,7 +17,7 @@ class RestfulManager(object):
     and rather use :class:`devilry.`
     """
     def __init__(self):
-        self.restapis = []
+        self._restapis = []
 
     def register(self, restapi):
         """
@@ -27,20 +27,17 @@ class RestfulManager(object):
         """
         if not hasattr(restapi, 'create_rest_url'):
             raise ValueError('Requires the create_rest_url method on any class that can be decorated with RestfulManager.register')
-        self.restapis.append(restapi)
+        self._restapis.append(restapi)
         return restapi
-
-    def create_rest_urls(self):
-        """
-        Create a list of django url objects for the restful apis registered
-        with this manager.
-
-        Typical usage in urls.py::
-        """
-        return [r.create_rest_url() for r in self.restapis]
 
     def __iter__(self):
         """ Iterate over all urls in the registered restful apis. This is what makes
         ``urlpattern += myrestfulmanager`` work. """
-        for restapi in self.restapis:
+        for restapi in self._restapis:
             yield restapi.create_rest_url()
+
+    def iter_restfulclasses(self):
+        """
+        Iterate over the registered RESTful API classes and yield each API class.
+        """
+        return self._restapis.__iter__()
