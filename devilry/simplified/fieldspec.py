@@ -17,6 +17,17 @@ class FieldSpec(object):
         self.always_available_fields = always_available_fields
         self.additional_fieldgroups = additional_fieldgroups
 
+    def all_aslist(self):
+        """
+        Get all fields in always_available_fields and in additional_fieldgroups.
+        """
+        return self.aslist(fieldgroups=self.additional_aslist())
+
+    def iterfieldnames(self):
+        """
+        Iterate over all fieldnames in this FieldSpec.
+        """
+        return self.all_aslist().__iter__()
 
     def aslist(self, fieldgroups=None):
         """ Get the fields in ``always_available_fields`` and all
