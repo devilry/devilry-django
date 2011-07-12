@@ -10,7 +10,7 @@ __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
            'RestfulSimplifiedPeriod', 'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
            'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
-           'RestfulStaticFeedback')
+           'RestfulSimplifiedStaticFeedback')
 
 
 administrator_restful = RestfulManager()

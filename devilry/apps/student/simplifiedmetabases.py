@@ -1,4 +1,4 @@
-from ..core import models
+from ..core import models, testhelper
 from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
@@ -13,9 +13,9 @@ class SimplifiedNodeMetaMixin(object):
     filters = FilterSpecs(FilterSpec('parentnode'),
                           FilterSpec('short_name'),
                           FilterSpec('long_name'),
-                          PatternFilterSpec('parentnode__*short_name'),
-                          PatternFilterSpec('parentnode__*long_name'),
-                          PatternFilterSpec('parentnode__*id'))
+                          PatternFilterSpec('(parentnode__)+short_name'),
+                          PatternFilterSpec('(parentnode__)+long_name'),
+                          PatternFilterSpec('(parentnode__)+id'))
 
 
 class SimplifiedSubjectMetaMixin(object):
@@ -127,7 +127,6 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              'parentnode__parentnode__parentnode__long_name',
                              'parentnode__parentnode__parentnode__short_name',
                              )
-
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
                           FilterSpec('short_name'),
@@ -212,8 +211,11 @@ class SimplifiedStaticFeedbackMetaMixin(object):
     model = models.StaticFeedback
     resultfields = FieldSpec('id',
                              'grade',
-                             'points',
                              'is_passing_grade',
+                             'saved_by',
+                             'delivery',
+                             'rendered_view',
+                             #'delivery__assignment_group__examiners__username',
                              period=['delivery__assignment_group__parentnode__parentnode__id',
                                      'delivery__assignment_group__parentnode__parentnode__short_name',
                                      'delivery__assignment_group__parentnode__parentnode__long_name'],
@@ -232,7 +234,8 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery__assignment_group__parentnode__parentnode__long_name',
                              'delivery__assignment_group__parentnode__short_name',
                              'delivery__assignment_group__parentnode__long_name',
-                             'delivery__number'
+                             'delivery__number',
+                             'delivery__assignment_group__examiners__username',
                              )
 
 

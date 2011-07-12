@@ -6,7 +6,8 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 
-from ..models import Period, Assignment, AssignmentGroup
+from django.db.models import Q
+from ..models import Period, Assignment, AssignmentGroup, Candidate
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
@@ -17,8 +18,8 @@ class TestAssignment(TestCase, TestHelper):
                  subjects=["inf1100"],
                  periods=["old:begins(-2):ends(1)", "looong"],
                  assignments=["assignment1", "assignment2"],
-                 assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)",
-                                   "g3:examiner(examiner1,examiner2)"])
+                 assignmentgroups=["g1:candidate(student1):examiner(examiner1)", "g2:examiner(examiner2)",
+                                   "g3:candidate(student2,student3):examiner(examiner1,examiner2)"])
         self.add_to_path('uio.ifi;inf1100.looong.assignment3.group1:examiner(examiner1)')
         self.add_to_path('uio.ifi;inf1100.old.oldassignment.group1:examiner(examiner3)')
 
@@ -27,6 +28,20 @@ class TestAssignment(TestCase, TestHelper):
                 short_name='assignment1', long_name='O1',
                 publishing_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
+
+    def anon_change_anonymous(self):
+        self.inf1100_looong_assignment1.anonymous = True
+        self.inf1100_looong_assignment1.save()
+        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=\
+                                                self.inf1100_looong_assignment1.id))
+        for can in candidates:
+            self.assertEquals(can.candidate_id, can.identifier)
+        self.inf1100_looong_assignment1.anonymous = False
+        self.inf1100_looong_assignment1.save()
+        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=\
+                                                self.inf1100_looong_assignment1.id))
+        for can in candidates:
+            self.assertEquals(can.student.username, can.identifier)
 
     def test_etag_update(self):
         etag = datetime.now()
