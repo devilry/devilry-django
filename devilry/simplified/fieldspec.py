@@ -61,3 +61,17 @@ class FieldSpec(object):
                     break
         return local_fieldgroups
 
+    def append(self, *always_available_fields, **additional_fieldgroups):
+        """ Add new fields and fieldgroups to this instance """
+        # TODO: is this the best way to extend a tuple?
+        tmplist = list(self.always_available_fields)
+        tmplist.extend(list(always_available_fields))
+        self.always_available_fields = tuple(tmplist)
+
+        # TODO: Should we extend the additionals, or overwrite them if
+        # they exist already?
+        for key in additional_fieldgroups.keys():
+            if key in self.additional_fieldgroups.keys():
+                self.additional_fieldgroups[key].extend(additional_fieldgroups[key])
+            else:
+                self.additional_fieldgroups[key] = additional_fieldgroups[key]
