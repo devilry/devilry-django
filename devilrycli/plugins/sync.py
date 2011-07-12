@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
-import logging
+import logging, sys
 from os.path import join, exists
 from os import environ, mkdir
-from devilry.restful_client.login import login
-from devilry.restful_client.restfulfactory import RestfulFactory
+from login import login
+from restfulfactory import RestfulFactory
+from utils import logging_startup
 
+#Arguments for logging
+args = sys.argv[1:]
+logging_startup(args)
 logging.debug('hello from sync.py')
 
 logincookie = login('http://localhost:8000/authenticate/login',
@@ -33,7 +37,6 @@ for s in subjects:
         period_path = join(subj_path, p)
         if not exists(period_path):
             logging.debug('INFO: Creating {}'.format(period_path))
-            print 'Print from sync.py'
             mkdir(period_path)
 
 
