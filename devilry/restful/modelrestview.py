@@ -1,10 +1,15 @@
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
 
 from ..simplified import PermissionDenied
 from ..simplified.filterspec import FilterValidationError
 from restview import RestfulView
 from serializers import serializers, SerializableResult
 from readform import ReadForm
+
+
+
+class HttpResponseCreated(HttpResponse):
+    status_code = 201
 
 
 def _extjswrap(data, use_extjshacks, success=True, total=None):
@@ -74,7 +79,10 @@ class ModelRestfulView(RestfulView):
             form.save()
             data['id'] = form.instance.id
             result = self._extjswrapshortcut(data)
-            return SerializableResult(result)
+            if instance == None:
+                return SerializableResult(result, httpresponsecls=HttpResponseCreated)
+            else:
+                return SerializableResult(result)
         else:
             return FormErrorSerializableResult(form, self.use_extjshacks)
 
