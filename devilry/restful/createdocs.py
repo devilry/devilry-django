@@ -17,6 +17,46 @@ UPDATE_DOCS = '''Update a {modelclsname}.
 DELETE_DOCS = '''Delete a {modelclsname}.
 '''
 SEARCH_DOCS = '''Search for {modelclsname_plural}.
+
+Parameters
+----------
+
+query
+    A string to search for within the model specified in
+    ``Meta.model``. The fields to search for is specified in
+    ``Meta.search_fieldgroups``.
+
+start
+    Return results from this index in the results from the given
+    ``query``. Defaults to ``0``.
+
+limit
+    Limit results to this number of items. Defaults to ``50``.
+
+orderby
+    List of fieldnames. Fieldnames can be prefixed by ``'-'`` for
+    descending ordering.  Order the result by these fields. For
+    example, if ``Meta.resultfields`` contains the short_name and
+    long_name fields, we can order our results by ascending short_name
+    and descending long_name as this: ``orderby=('short_name',
+    '-long_name')``.  This defaults to ``cls._meta.ordering`` (see
+    :func:`devilry.simplified.simplified_modelapi`).
+
+result_fieldgroups
+    Adds additional fields to the result. Available values are the
+    fieldgroups in ``Meta.resultfields.additional_fieldgroups``.
+
+search_fieldgroups
+    Adds additional fields which are searched for the ``query`` string.
+    Available values are the fieldgroups in
+    ``Meta.searchfields.additional_fieldgroups``.
+
+other arguments
+    Filters which are applied to the QuerySet returned by
+    :meth:`create_searchqryset`. These filters are validated
+    by :meth:`devilry.simplified.FilterSpecs.validate` before
+    they are applied.
+
 '''
 
 

@@ -80,5 +80,5 @@ table.restfulindex tbody th, table.restfulindex tbody td {
     vertical-align: top;
 }
 span.restfulid {
-    font-style: italic;
+    font-weight: bold;
 }
