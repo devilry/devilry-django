@@ -1,11 +1,11 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
-from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
+from simplified import (SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta)
 
 
-__all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
+__all__ = ('RestfulSimplifiedSubject',
            'RestfulSimplifiedPeriod', 'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
            'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
@@ -14,20 +14,12 @@ __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
 
 examiner_restful = RestfulManager()
 
-@examiner_restful.register
-@restful_modelapi
-class RestfulSimplifiedNode(ModelRestfulView):
-    class Meta:
-        simplified = SimplifiedNode
-        foreignkey_fields = {'parentnode': 'RestfulSimplifiedNode'}
-
 
 @examiner_restful.register
 @restful_modelapi
 class RestfulSimplifiedSubject(ModelRestfulView):
     class Meta:
         simplified = SimplifiedSubject
-        foreignkey_fields = {'parentnode': RestfulSimplifiedNode}
 
 
 @examiner_restful.register
