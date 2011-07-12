@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 
-import sys
-from utils import execute, showhelp
+import sys, logging
+from utils import execute, logging_startup
 
-if len(sys.argv) < 2:
-    showhelp()
-    raise SystemExit()
 
 command = sys.argv[1]
-execute(command)
-#showhelp()
+args = sys.argv[2:]
+
+logging_startup(args)
+
+logging.info('Hello!')
+execute(command, args)
+
+
