@@ -366,6 +366,7 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.read(self.admin, self.inf101_firstSem_a1_g1.id)
 
+
 class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
 
     allExtras = SimplifiedAssignmentGroup.Meta.resultfields.additional_aslist()
@@ -376,7 +377,7 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
 
     def test_search_all(self):
-        search_res = SimplifiedDeadline.search(self.firstExam)
+        search_res = SimplifiedDeadline.search(self.firstExam, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
                                     SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
@@ -389,12 +390,11 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
                                     SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(len(search_res), len(expected_res))
-
         for s in search_res:
             self.assertTrue(s in expected_res)
 
     def test_search_query(self):
-        search_res = SimplifiedDeadline.search(self.firstExam, query='101')
+        search_res = SimplifiedDeadline.search(self.firstExam, query='101', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
                                     SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
