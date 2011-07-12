@@ -105,9 +105,9 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
                          PatternFilterSpec('^(hello)+__world'))
         fmerge = f1 + f2
         self.assertEquals(set(fmerge.filterspecs.keys()), set(('hello', 'world', 'cruel', 'stuff')))
-        self.assertEquals(len(fmerge.patternfilterpecs), 2)
-        self.assertEquals(fmerge.patternfilterpecs[0].fieldname, 'test.*')
-        self.assertEquals(fmerge.patternfilterpecs[1].fieldname, '^(hello)+__world')
+        self.assertEquals(len(fmerge.patternfilterspecs), 2)
+        self.assertEquals(fmerge.patternfilterspecs[0].fieldname, 'test.*')
+        self.assertEquals(fmerge.patternfilterspecs[1].fieldname, '^(hello)+__world')
 
     def test_filterspecs_copy_error(self):
         with self.assertRaises(ValueError):

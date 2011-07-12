@@ -1,17 +1,16 @@
+import re
 from django.test import TestCase
 
 from ....simplified import PermissionDenied
 from ....simplified.utils import modelinstance_to_dict
 
 from ...core import testhelper
-from ...core import pluginloader
 from ..simplified import (SimplifiedDelivery, SimplifiedStaticFeedback, SimplifiedAssignment,
                           SimplifiedAssignmentGroup, SimplifiedPeriod, SimplifiedSubject,
                           SimplifiedFileMeta)
 
-import re
 
-pluginloader.autodiscover()
+testhelper.TestHelper.set_memory_deliverystore()
 
 
 class SimplifiedStudentTestBase(TestCase, testhelper.TestHelper):

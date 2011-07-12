@@ -3,13 +3,14 @@ import re
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from ...core import models, testhelper, pluginloader
+from ...core import models, testhelper
 from ....simplified import PermissionDenied
 from ....simplified.utils import modelinstance_to_dict
 from ..simplified import (SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedPeriod,
                           SimplifiedSubject, SimplifiedDeadline, SimplifiedStaticFeedback)
 
-pluginloader.autodiscover()
+
+testhelper.TestHelper.set_memory_deliverystore()
 
 
 class SimplifiedExaminerTestBase(TestCase, testhelper.TestHelper):
