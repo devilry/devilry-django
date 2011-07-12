@@ -2,7 +2,7 @@
 # Check test coverage, takes optional parameters for what to test. eg core to run all core-tests
 
 from subprocess import call
-from common import require_djangoproject, getcwd, getreporoot
+from common import require_djangoproject, getcwd, getreporoot, append_pythonexec_to_command
 from os.path import join, exists
 from os import remove
 import sys
@@ -32,7 +32,7 @@ def runCoverage(crcpath):
 
     if len(sys.argv)>1:
         commands.append(sys.argv[1])
-    call(commands)
+    call(append_pythonexec_to_command(commands))
 
 
 

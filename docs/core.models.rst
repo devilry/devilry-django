@@ -62,7 +62,7 @@ node-hierarchy:
         - Department of informatics
         - Department of mathematics
 
-.. autoclass:: devilry.apps.core.models.node.Node
+.. autoclass:: devilry.apps.core.models.Node
 
 
 Subject
@@ -118,7 +118,7 @@ Deadline
 
 Each :class:`AssignmentGroup` have zero or more deadlines.
 
-.. autoclass:: devilry.apps.core.models.deadline.Deadline
+.. autoclass:: devilry.apps.core.models.Deadline
 
 
 Delivery
