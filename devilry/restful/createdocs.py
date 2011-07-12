@@ -3,60 +3,85 @@ Autogenerate documentation RESTful APIs
 """
 from os.path import join
 
+from django.template import Context, Template
 from devilry.simplified import SimplifiedModelApi
 
 
 
 
-CREATE_DOCS = '''Create a {modelclsname}.
+CREATE_DOCS = '''Create a {{model_verbose_name}}.
 '''
-READ_DOCS = '''Retreive a {modelclsname}.
+READ_DOCS = '''Retreive a {{model_verbose_name}}.
 '''
-UPDATE_DOCS = '''Update a {modelclsname}.
+UPDATE_DOCS = '''Update a {{model_verbose_name}}.
 '''
-DELETE_DOCS = '''Delete a {modelclsname}.
+DELETE_DOCS = '''Delete a {{model_verbose_name}}.
 '''
-SEARCH_DOCS = '''Search for {modelclsname_plural}.
+SEARCH_DOCS = '''Search for {{model_verbose_name_plural}}.
+
 
 Parameters
-----------
+##########
+
 
 query
-    A string to search for within the model specified in
-    ``Meta.model``. The fields to search for is specified in
-    ``Meta.search_fieldgroups``.
+-----
+A string to search for.
 
-start
-    Return results from this index in the results from the given
-    ``query``. Defaults to ``0``.
 
-limit
-    Limit results to this number of items. Defaults to ``50``.
+
+filters
+---------------
+TODO: Autogenerate filter docs
+
 
 orderby
-    List of fieldnames. Fieldnames can be prefixed by ``'-'`` for
-    descending ordering.  Order the result by these fields. For
-    example, if ``Meta.resultfields`` contains the short_name and
-    long_name fields, we can order our results by ascending short_name
-    and descending long_name as this: ``orderby=('short_name',
-    '-long_name')``.  This defaults to ``cls._meta.ordering`` (see
-    :func:`devilry.simplified.simplified_modelapi`).
+-------
+List of fieldnames. Fieldnames can be prefixed by ``'-'`` for descending
+ordering.  Order the result by these fields. For example, if
+``Meta.resultfields`` contains the short_name and long_name fields, we can
+order our results by ascending short_name and descending long_name as this:
+``orderby=('short_name', '-long_name')``.  This defaults to
+``cls._meta.ordering`` (see :func:`devilry.simplified.simplified_modelapi`).
 
+start
+-----
+After query, filters and orderby have been executed, the result is limited to
+the values from *start* to *start+limit*. Start defalts to ``0``.
+
+limit
+-----
+Limit results to this number of items. Defaults to ``50``.
+
+{% if result_fieldgroups %}
 result_fieldgroups
-    Adds additional fields to the result. Available values are the
-    fieldgroups in ``Meta.resultfields.additional_fieldgroups``.
+------------------
+Adds additional fields to each item in the result.
+{{result_fieldgroups}}
 
+The fields are documented in :class:`{{modelmodulename}}.{{modelclsname}}`.
+Follow fields containing ``__`` through the corrensponding related attributes.
+{% endif %}
+
+
+
+{% if search_fieldgroups %}
 search_fieldgroups
-    Adds additional fields which are searched for the ``query`` string.
-    Available values are the fieldgroups in
-    ``Meta.searchfields.additional_fieldgroups``.
+------------------
+Adds additional fields which are searched for the ``query`` string.
 
-other arguments
-    Filters which are applied to the QuerySet returned by
-    :meth:`create_searchqryset`. These filters are validated
-    by :meth:`devilry.simplified.FilterSpecs.validate` before
-    they are applied.
+{{search_fieldgroups}}
 
+The fields are documented in :class:`{{modelmodulename}}.{{modelclsname}}`.
+Follow fields containing ``__`` through the corrensponding related attributes.
+{% endif %}
+
+
+
+Return
+######
+
+TODO: Autogenereate return example(s) containing fields.
 '''
 
 
@@ -66,16 +91,37 @@ other arguments
 
 class Docstring(object):
     def __init__(self, docstring, restfulcls):
-        self.docstring = docstring
-        self.restfulcls = restfulcls
-        self.modelclsname = restfulcls._meta.simplified._meta.model._meta.verbose_name
-        self.modelclsname_plural = restfulcls._meta.simplified._meta.model._meta.verbose_name_plural
+        self.docstring = Template(docstring)
+
+        modelclsname = restfulcls._meta.simplified._meta.model.__name__
+        modelmodulename = restfulcls._meta.simplified._meta.model.__module__
+        if modelmodulename.endswith('.' + modelclsname.lower()):
+            modelmodulename = modelmodulename.rsplit('.', 1)[0]
+        self.modelclspath = '{0}.{1}'.format(modelmodulename, modelclsname)
+
+        simplified = restfulcls._meta.simplified
+        self.context = Context(dict(result_fieldgroups = self._create_fieldgroup_overview(simplified._meta.resultfields.additional_fieldgroups),
+                                    search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups),
+                                    model_verbose_name = restfulcls._meta.simplified._meta.model._meta.verbose_name,
+                                    model_verbose_name_plural = restfulcls._meta.simplified._meta.model._meta.verbose_name_plural,
+                                    modelclsname = modelclsname,
+                                    modelmodulename = modelmodulename
+                                   ))
+
+    def _create_fieldgroup_overview(self, fieldgroups):
+        if not fieldgroups:
+            return ''
+        result = ['Available values are:', '']
+        for fieldgroup, fieldgroupfields in fieldgroups.iteritems():
+            result.append(fieldgroup)
+            result.append('    Expands to the following fields: ' + ', '.join(fieldgroupfields))
+        return '\n    '.join(result)
 
     def get_first_para(self):
         return str(self).split('\n\n')[0].replace('\n', ' ')
 
     def __str__(self):
-        return self.docstring.format(**self.__dict__)
+        return self.docstring.render(self.context)
 
 
 
