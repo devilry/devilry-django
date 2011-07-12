@@ -79,8 +79,8 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
     def test_search(self):
         # do an empty search to get all subjects firstExam examines
         search_res = SimplifiedSubject.search(self.firstExam)
-        expected_res = [modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110, SimplifiedSubject.Meta.resultfields.aslist())]
+        expected_res = [modelinstance_to_dict(self.inf101, SimplifiedSubject._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist())]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -88,14 +88,14 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
 
         # do a search with query inf101
         search_res = SimplifiedSubject.search(self.firstExam, query='inf101')
-        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist())
+        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject._meta.resultfields.aslist())
 
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
 
         # do a search with partial query
         search_res = SimplifiedSubject.search(self.firstExam, query='inf10')
-        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist())
+        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject._meta.resultfields.aslist())
 
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
@@ -103,7 +103,7 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
     def test_read(self):
         # read firstsem without extra fields
         read_res = SimplifiedSubject.read(self.firstExam, self.inf101.id)
-        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject.Meta.resultfields.aslist())
+        expected_res = modelinstance_to_dict(self.inf101, SimplifiedSubject._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
@@ -130,7 +130,7 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
 
 class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
-    allExtras = SimplifiedPeriod.Meta.resultfields.additional_aslist()
+    allExtras = SimplifiedPeriod._meta.resultfields.additional_aslist()
 
     def setUp(self):
         super(TestSimplifiedExaminerPeriod, self).setUp()
@@ -139,8 +139,8 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
         # search with no query and no extra fields
         search_res = SimplifiedPeriod.search(self.firstExam)
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem, SimplifiedPeriod.Meta.resultfields.aslist())]
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem, SimplifiedPeriod._meta.resultfields.aslist())]
 
         # assert that all search results are as expected
         self.assertEquals(search_res.count(), 2)
@@ -149,8 +149,8 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
         # search with no query and with extra fields
         search_res = SimplifiedPeriod.search(self.firstExam, result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras)),
-                        modelinstance_to_dict(self.inf110_secondSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras))]
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf110_secondSem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -158,14 +158,14 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
         # search with query
         search_res = SimplifiedPeriod.search(self.firstExam, query='inf101')
-        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist())
+        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod._meta.resultfields.aslist())
 
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
 
         # with query and extra fields
         search_res = SimplifiedPeriod.search(self.firstExam, query='inf101', result_fieldgroups=self.allExtras)
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras))]
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -175,12 +175,12 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
         # read firstsem without extra fields
         read_res = SimplifiedPeriod.read(self.firstExam, self.inf101_firstSem.id)
-        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist())
+        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
         # read firstSem with extras fields
         read_res = SimplifiedPeriod.read(self.firstExam, self.inf101_firstSem.id, result_fieldgroups=self.allExtras)
-        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod.Meta.resultfields.aslist(self.allExtras))
+        expected_res = modelinstance_to_dict(self.inf101_firstSem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
@@ -196,7 +196,7 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
 
 class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
 
-    allExtras = SimplifiedAssignment.Meta.resultfields.additional_aslist()
+    allExtras = SimplifiedAssignment._meta.resultfields.additional_aslist()
 
     def setUp(self):
         super(TestSimplifiedExaminerAssignment, self).setUp()
@@ -205,11 +205,11 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
 
         # search with no query and no extra fields
         search_res = SimplifiedAssignment.search(self.firstExam)
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1, SimplifiedAssignment.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_firstSem_a2, SimplifiedAssignment.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a1, SimplifiedAssignment.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a2, SimplifiedAssignment.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a3, SimplifiedAssignment.Meta.resultfields.aslist())]
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101_firstSem_a2, SimplifiedAssignment._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a2, SimplifiedAssignment._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a3, SimplifiedAssignment._meta.resultfields.aslist())]
 
         # assert that all search results are as expected
         self.assertEquals(search_res.count(), len(expected_res))
@@ -219,15 +219,15 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
         # search with no query and with extra fields
         search_res = SimplifiedAssignment.search(self.firstExam, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a1,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras))]
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -235,8 +235,8 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
 
         # search with query
         search_res = SimplifiedAssignment.search(self.firstExam, query='a1')
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1, SimplifiedAssignment.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a1, SimplifiedAssignment.Meta.resultfields.aslist())]
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a1, SimplifiedAssignment._meta.resultfields.aslist())]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -245,11 +245,11 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
         # with query and extra fields
         search_res = SimplifiedAssignment.search(self.firstExam, query='inf110', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf110_secondSem_a1,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3,
-                                              SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras))]
+                                              SimplifiedAssignment._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -260,13 +260,13 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
         # do a read with no extra fields
         read_res = SimplifiedAssignment.read(self.firstExam, self.inf101_firstSem_a1.id)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1,
-                                             SimplifiedAssignment.Meta.resultfields.aslist())
+                                             SimplifiedAssignment._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
         # do a read with all extras
         read_res = SimplifiedAssignment.read(self.firstExam, self.inf101_firstSem_a1.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1,
-                                             SimplifiedAssignment.Meta.resultfields.aslist(self.allExtras))
+                                             SimplifiedAssignment._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
@@ -282,7 +282,7 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
 
 class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
 
-    allExtras = SimplifiedAssignmentGroup.Meta.resultfields.additional_aslist()
+    allExtras = SimplifiedAssignmentGroup._meta.resultfields.additional_aslist()
 
     def setUp(self):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
@@ -293,10 +293,10 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
 
         # search with no query and no extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstExam, query='firstStud')
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_firstSem_a2_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a2_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101_firstSem_a2_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a2_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
                         ]
 
         # assert that all search results are as expected
@@ -307,15 +307,15 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         # search with no query and with extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstExam, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))]
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -323,8 +323,8 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
 
         # search with query
         search_res = SimplifiedAssignmentGroup.search(self.firstExam, query='a1')
-        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup.Meta.resultfields.aslist())]
+        expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondSem_a1_g1, SimplifiedAssignmentGroup._meta.resultfields.aslist())]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -333,11 +333,11 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         # with query and extra fields
         search_res = SimplifiedAssignmentGroup.search(self.firstExam, query='inf110', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf110_secondSem_a1_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras)),
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3_g1,
-                                              SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))]
+                                              SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -348,13 +348,13 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         # do a read with no extra fields
         read_res = SimplifiedAssignmentGroup.read(self.firstExam, self.inf101_firstSem_a1.id)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1,
-                                             SimplifiedAssignmentGroup.Meta.resultfields.aslist())
+                                             SimplifiedAssignmentGroup._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
         # do a read with all extras
         read_res = SimplifiedAssignmentGroup.read(self.firstExam, self.inf101_firstSem_a1.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1,
-                                             SimplifiedAssignmentGroup.Meta.resultfields.aslist(self.allExtras))
+                                             SimplifiedAssignmentGroup._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
@@ -369,9 +369,9 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
 
 class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
 
-    allExtras = SimplifiedAssignmentGroup.Meta.resultfields.additional_aslist()
-    baseFields = SimplifiedAssignmentGroup.Meta.resultfields.aslist()
-    allFields = SimplifiedAssignmentGroup.Meta.resultfields.aslist(allExtras)
+    allExtras = SimplifiedAssignmentGroup._meta.resultfields.additional_aslist()
+    baseFields = SimplifiedAssignmentGroup._meta.resultfields.aslist()
+    allFields = SimplifiedAssignmentGroup._meta.resultfields.aslist(allExtras)
 
     def set_up(self):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
@@ -379,15 +379,15 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
     def test_search_all(self):
         search_res = SimplifiedDeadline.search(self.firstExam, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a1_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a2_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondSem_a3_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))]
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(len(search_res), len(expected_res))
         for s in search_res:
@@ -396,9 +396,9 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
     def test_search_query(self):
         search_res = SimplifiedDeadline.search(self.firstExam, query='101', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras)),
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstSem_a2_g1.deadlines.all()[0],
-                                    SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))]
+                                    SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))]
 
         self.assertEquals(len(search_res), len(expected_res))
 
@@ -425,14 +425,14 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
         # do a read with no extra fields
         read_res = SimplifiedDeadline.read(self.firstExam, self.inf101_firstSem_a1.id)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
-                                             SimplifiedDeadline.Meta.resultfields.aslist())
+                                             SimplifiedDeadline._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
     def test_read_all(self):
         # do a read with all extras
         read_res = SimplifiedDeadline.read(self.firstExam, self.inf101_firstSem_a1.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstSem_a1_g1.deadlines.all()[0],
-                                             SimplifiedDeadline.Meta.resultfields.aslist(self.allExtras))
+                                             SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):

@@ -1,11 +1,9 @@
-from ...simplified import (SimplifiedModelApi, simplified_modelapi,
-                           PermissionDenied, QryResultWrapper, FieldSpec)
+from ...simplified import SimplifiedModelApi, simplified_modelapi, PermissionDenied
 from ..core import models
-
-from ..student.simplified import (SimplifiedSubjectMetaMixin, SimplifiedFileMetaMetaMixin,
-                                  SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
-                                  SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
-                                  SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,)
+from ..student.simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedFileMetaMetaMixin,
+                                           SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
+                                           SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
+                                           SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,)
 
 
 class PublishedWhereIsExaminerMixin(SimplifiedModelApi):
