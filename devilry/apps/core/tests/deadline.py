@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from ..models import Delivery, Deadline
 from ..testhelper import TestHelper
 
+TestHelper.set_memory_deliverystore()
+
 class TestDeadline(TestCase, TestHelper):
 
     def setUp(self):

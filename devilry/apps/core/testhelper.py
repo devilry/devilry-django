@@ -5,8 +5,6 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
 from deliverystore import MemoryDeliveryStore
 
 
-FileMeta.deliverystore = MemoryDeliveryStore()
-
 # TODO:
 # raise error when trying to give roles to nodes that dont support it?
 #
@@ -23,6 +21,10 @@ class TestHelper(object):
     """
 
     objects_created = 0
+
+    @classmethod
+    def set_memory_deliverystore(cls):
+        FileMeta.deliverystore = MemoryDeliveryStore()
 
     def create_user(self, name):
         user = User(username=name)

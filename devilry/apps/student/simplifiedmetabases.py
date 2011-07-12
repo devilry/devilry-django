@@ -1,4 +1,4 @@
-from ..core import models, testhelper
+from ..core import models
 from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
