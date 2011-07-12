@@ -1,4 +1,4 @@
-from ..core import models
+from ..core import models, testhelper
 from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
@@ -127,7 +127,6 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              'parentnode__parentnode__parentnode__long_name',
                              'parentnode__parentnode__parentnode__short_name',
                              )
-
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
                           FilterSpec('short_name'),
@@ -212,7 +211,6 @@ class SimplifiedStaticFeedbackMetaMixin(object):
     model = models.StaticFeedback
     resultfields = FieldSpec('id',
                              'grade',
-                             'points',
                              'is_passing_grade',
                              'saved_by',
                              'delivery',
