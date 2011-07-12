@@ -1,7 +1,11 @@
-from login import login
-from devilrycli.restfulclient import RestfulFactory
-from errors import (HttpResponseForbidden, HttpResponseBadRequest,
-                    HttpResponseUnauthorized, HttpResponseNotFound)
+from devilrycli.restfulclient import (login,
+                                      RestfulFactory,
+                                      RestfulError,
+                                      HttpResponseNotFound,
+                                      HttpResponseBadRequest,
+                                      HttpResponseUnauthorized,
+                                      HttpResponseForbidden,
+                                      JsonDecodeError)
 
 
 devilry_url = 'http://localhost:8000'
