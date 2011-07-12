@@ -18,8 +18,8 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     .. attribute:: delivery
 
-    A django.db.models.OneToOneField_ that points to the `Delivery`_ to
-    be given feedback.
+    A django.db.models.ForeignKey_ that points to the `Delivery`_ of
+    the given feedback.
 
     .. attribute:: filename
 
