@@ -3,11 +3,11 @@ from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            FilterSpecs, FilterSpec, ForeignFilterSpec, PatternFilterSpec)
 from ..core import models
 
-from ..student.simplified import (SimplifiedNodeMetaMixin, SimplifiedSubjectMetaMixin,
-                                  SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
-                                  SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
-                                  SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,
-                                  SimplifiedFileMetaMetaMixin)
+from ..student.simplifiedmetabases import (SimplifiedNodeMetaMixin, SimplifiedSubjectMetaMixin,
+                                           SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
+                                           SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
+                                           SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,
+                                           SimplifiedFileMetaMetaMixin)
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
 
