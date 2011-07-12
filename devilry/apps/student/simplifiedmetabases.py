@@ -13,9 +13,9 @@ class SimplifiedNodeMetaMixin(object):
     filters = FilterSpecs(FilterSpec('parentnode'),
                           FilterSpec('short_name'),
                           FilterSpec('long_name'),
-                          PatternFilterSpec('parentnode__*short_name'),
-                          PatternFilterSpec('parentnode__*long_name'),
-                          PatternFilterSpec('parentnode__*id'))
+                          PatternFilterSpec('(parentnode__)+short_name'),
+                          PatternFilterSpec('(parentnode__)+long_name'),
+                          PatternFilterSpec('(parentnode__)+id'))
 
 
 class SimplifiedSubjectMetaMixin(object):

@@ -1,4 +1,4 @@
-from fnmatch import fnmatchcase
+import re
 from django.db.models import Q
 
 
@@ -38,28 +38,18 @@ class FilterSpec(object):
                                               ','.join(COMP_TO_DJANGO_MAP.keys())))
         self.supported_comp = set(supported_comp)
 
-
-    def _yield(self, value):
-        return False, value
-
-    def __iter__(self):
-        for comp in self.supported_comp:
-            if comp == '':
-                yield self._yield(self.fieldname)
-            else:
-                yield self._yield('{0}__{1}'.format(self.fieldname, comp))
-
     def to_django_qry(self, filterdict):
         try:
             comp = filterdict['comp']
             value = filterdict['value']
+            fieldname = filterdict['field']
         except KeyError, e:
             raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
         else:
             if not comp in self.supported_comp:
                 raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
             djangocomp = COMP_TO_DJANGO_MAP[comp]
-            filterfieldname = '{0}__{1}'.format(self.fieldname, djangocomp)
+            filterfieldname = '{0}__{1}'.format(fieldname, djangocomp)
             qryparam = {filterfieldname: value}
             return Q(**qryparam)
 
@@ -70,8 +60,12 @@ class FilterSpec(object):
 
 
 class PatternFilterSpec(FilterSpec):
-    def _yield(self, value):
-        return True, value
+    def __init__(self, *args, **kwargs):
+        super(PatternFilterSpec, self).__init__(*args, **kwargs)
+        self.fieldpatt = re.compile(self.fieldname)
+
+    def matches(self, fieldname):
+        return bool(self.fieldpatt.match(fieldname))
 
 
 class ForeignFilterSpec(object):
@@ -101,9 +95,22 @@ class FilterSpecs(object):
     def __init__(self, *filterspecs_and_foreignkeyfilterspecs):
         self.all_filters = set()
         self.filterspecs = {}
+        self.patternfilterpecs = []
         for filterspec_or_fkfilterspec in filterspecs_and_foreignkeyfilterspecs:
             for filterspec in filterspec_or_fkfilterspec.aslist():
-                self.filterspecs[filterspec.fieldname] = filterspec
+                if isinstance(filterspec, PatternFilterSpec):
+                    self.patternfilterpecs.append(filterspec)
+                else:
+                    self.filterspecs[filterspec.fieldname] = filterspec
+
+    def find_filterspec(self, fieldname):
+        try:
+            return self.filterspecs[fieldname]
+        except KeyError, e:
+            for patternfilterpec in self.patternfilterpecs:
+                if patternfilterpec.matches(fieldname):
+                    return patternfilterpec
+            raise KeyError()
 
     def parse(self, filters):
         """
@@ -120,16 +127,12 @@ class FilterSpecs(object):
         qry = Q()
         for filterdict in filters:
             try:
-                filtername = filterdict['field']
-                filterspec = self.filterspecs[filtername]
+                fieldname = filterdict['field']
+                filterspec = self.find_filterspec(fieldname)
             except KeyError, e:
                 raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
             except TypeError, e:
                 raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
             else:
                 qry &= filterspec.to_django_qry(filterdict)
-                #if self.pattern_filters:
-                    #for patternfilterspec in self.pattern_filters:
-                        #if fnmatchcase(filtername, patternfilterspec):
-                            #valid = True
         return qry

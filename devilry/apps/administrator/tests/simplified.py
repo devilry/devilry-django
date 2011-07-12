@@ -2,7 +2,7 @@ from django.test import TestCase
 
 import re
 
-from ....simplified import PermissionDenied
+from ....simplified import PermissionDenied, FilterValidationError
 from ....simplified.utils import modelinstance_to_dict
 from ...core import models, testhelper
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline, SimplifiedStaticFeedback, SimplifiedFileMeta
@@ -451,6 +451,27 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
         #self.duck1100_h01_core.admins.add(self.daisy)
         #qrywrap = SimplifiedPeriod.search(self.daisy, query="spring01")
         #self.assertEquals(len(qrywrap), 1)
+
+class TestSimplifiedNode(SimplifiedAdminTestBase):
+    def setUp(self):
+        self.add(nodes='uni:admin(admin1).mat.inf')
+        self.add(nodes='uni.fys')
+
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedNode.search(self.admin1)
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedNode.search(self.admin1,
+                                        filters=[dict(field='parentnode__short_name', comp='exact', value='uni')])
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedNode.search(self.admin1,
+                                        filters=[dict(field='parentnode__parentnode__short_name', comp='exact', value='uni')])
+        self.assertEquals(len(qrywrap), 1)
+
+        with self.assertRaises(FilterValidationError):
+            SimplifiedNode.search(self.admin1,
+                                  filters=[dict(field='parentnode__somethinginvalid__short_name', comp='exact', value='uni')])
+
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
