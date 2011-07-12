@@ -51,3 +51,34 @@ pre {
 blockquote dl.docutils dt {
     font-style: italic;
 }
+
+
+
+table.restfulindex {
+    border-collapse: collapse;
+    background-color: transparent;
+}
+table.restfulindex th, table.restfulindex td {
+    background-color: transparent;
+    border-width: 0;
+}
+table.restfulindex th {
+    padding: 10px 25px 10px 0;
+}
+table.restfulindex td {
+    padding: 10px 0 10px 25px;
+}
+
+table.restfulindex thead th, table.restfulindex thead td {
+    font-weight: bold;
+    border-top: 1px solid #d8d8d8;
+    border-bottom: 1px solid #d8d8d8;
+}
+table.restfulindex tbody th, table.restfulindex tbody td {
+    border-bottom: 1px solid #d8d8d8;
+    font-weight: normal;
+    vertical-align: top;
+}
+span.restfulid {
+    font-style: italic;
+}

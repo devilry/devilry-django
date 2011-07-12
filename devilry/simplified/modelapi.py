@@ -191,7 +191,8 @@ class SimplifiedModelApi(object):
 
         :param user: Django user object.
         :param idorkw: Id of object or kwargs to the get method of the configured model.
-        :field_values: The values to set on the given object.
+        :param: field_values: The values to set on the given object.
+
         :return: The primary key of the updated object.
         :throws PermissionDenied:
             If the given user does not have permission to edit this object,
@@ -213,6 +214,7 @@ class SimplifiedModelApi(object):
 
         :param user: Django user object.
         :param idorkw: Id of object or kwargs to the get method of the configured model.
+
         :return: The primary key of the deleted object.
         :throws PermissionDenied:
             If the given user does not have permission to delete this object, or
@@ -240,15 +242,13 @@ class SimplifiedModelApi(object):
         :param limit:
             Limit results to this number of items. Defaults to ``50``.
         :param orderby:
-            Order the result by these fields. For example, if
-            ``Meta.resultfields`` contains the short_name and long_name fields,
-            we can order our results by ascending short_name and descending
-            long_name as this: ``orderby=('short_name', '-long_name')``.
-            This defaults to ``cls._meta.ordering`` (see
-            :ref:`devilry.simplified.simplified_modelapi`).
-        :type orderby:
             List of fieldnames. Fieldnames can be prefixed by ``'-'`` for
-            descending ordering.
+            descending ordering.  Order the result by these fields. For
+            example, if ``Meta.resultfields`` contains the short_name and
+            long_name fields, we can order our results by ascending short_name
+            and descending long_name as this: ``orderby=('short_name',
+            '-long_name')``.  This defaults to ``cls._meta.ordering`` (see
+            :func:`devilry.simplified.simplified_modelapi`).
         :param result_fieldgroups:
             Adds additional fields to the result. Available values are the
             fieldgroups in ``Meta.resultfields.additional_fieldgroups``.
@@ -331,7 +331,6 @@ def simplified_modelapi(cls):
 
         _meta
             Alias for the Meta class (above).
-        _meta.editablefields
         supports_create
             Boolean variable: is ``'create'`` in ``_meta.methods``.
         supports_read
@@ -342,6 +341,7 @@ def simplified_modelapi(cls):
             Boolean variable: is ``'update'`` in ``_meta.methods``.
         supports_delete
             Boolean variable: is ``'delete'`` in ``_meta.methods``.
+
     """
     #bases = tuple([SimplifiedBase] + list(cls.__bases__))
     #cls = type(cls.__name__, bases, dict(cls.__dict__))

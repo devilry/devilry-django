@@ -16,8 +16,11 @@ HTTP status codes
 
 200 OK
     The request was successful. The requested data is returned.
+201 CREATED
+    Creation of a resource was successful. The created item is
+    contained in the response.
 400 Bad Request
-    A parameter is invalid. The data contains an error message.
+    A parameter is invalid. The response contains the error message.
 401 Unauthorized
     Authorization required.
 403 Forbidden
