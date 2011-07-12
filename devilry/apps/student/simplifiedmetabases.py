@@ -129,8 +129,6 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              )
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
-                          FilterSpec('short_name'),
-                          FilterSpec('long_name'),
                           ForeignFilterSpec('parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
