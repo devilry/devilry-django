@@ -127,7 +127,7 @@ class IndexPage(object):
     TPL = '''.. _{ref}:
 
 ===============================================================
-Index page for something
+{indextitle}
 ===============================================================
 
 .. toctree::
@@ -136,7 +136,7 @@ Index page for something
     {toctree}
 
 {items}'''
-    def __init__(self, indexpageitems, ref):
+    def __init__(self, indexpageitems, ref, indextitle):
         self.items = '\n\n'.join(unicode(indexpageitem) for indexpageitem in indexpageitems)
         toctreerefs = []
         for indexpageitem in indexpageitems:
@@ -144,6 +144,7 @@ Index page for something
                 toctreerefs.append(page.ref)
         self.toctree = '\n    '.join(toctreerefs)
         self.ref = ref
+        self.indextitle = indextitle
 
     def __unicode__(self):
         return self.TPL.format(**self.__dict__)
@@ -188,10 +189,10 @@ class RestfulDocs(object):
         for page in indexpageitem.iterpages():
             page.write_to_dir(directory)
 
-    def create_in_directory(self, directory, indexpageref, restfulmanager):
+    def create_in_directory(self, directory, indexpageref, indextitle, restfulmanager):
         indexpageitems = []
         for indexpageitem in self.iter_restfulmanager_docs(restfulmanager):
             indexpageitems.append(indexpageitem)
             self.restfulmanager_docs_to_rstfiles(directory, indexpageitem)
-        indexpage = IndexPage(indexpageitems, indexpageref)
+        indexpage = IndexPage(indexpageitems, indexpageref, indextitle)
         indexpage.write(join(directory, 'index.rst'))

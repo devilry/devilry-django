@@ -11,3 +11,4 @@ Public RESTful API
 ==========================================
 
 * :ref:`restful_apiadministrator`
+* :ref:`restful_apistudent`
