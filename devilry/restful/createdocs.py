@@ -52,15 +52,23 @@ class Page(object):
 
 
 class IndexItem(object):
-    TPL = '{httpmethod} {url}\n    {first_para}'
+    TPL = '''
+    <tr>
+        <th><a href="{pageref}.html">{httpmethod}&nbsp;{prettyrestfulurl}</a></th>
+        <td>{first_para}</td>
+    </tr>'''
     def __init__(self, refprefix, methodname, httpmethod, url, docs):
         self.httpmethod = httpmethod
         self.url = url
+        self.prettyrestfulurl = url
+        if url.endswith('id'):
+            self.prettyrestfulurl = self.prettyrestfulurl[:-2]
+            self.prettyrestfulurl += '<span class="restfulid">id</span>'
         self.first_para = format_docstring_first_para(docs.split('\n\n')[0])
         self.page = Page(refprefix, methodname, httpmethod, url, docs)
 
     def __unicode__(self):
-        return self.TPL.format(**self.__dict__)
+        return self.TPL.format(pageref=self.page.ref, **self.__dict__)
 
 
 class IndexPageItem(object):
@@ -68,7 +76,20 @@ class IndexPageItem(object):
 {modelclsname}
 -------------------------------------------------------------------------
 
-{indexitems}'''
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            {indexitems}
+        </tbody>
+    </table>
+'''
     def __init__(self, restfulcls, indexitems):
         self.restfulcls = restfulcls
         self.simplifiedclsname = self.restfulcls._meta.simplified.__name__
@@ -78,7 +99,7 @@ class IndexPageItem(object):
     def __unicode__(self):
         return self.TPL.format(simplifiedclsname=self.simplifiedclsname,
                                modelclsname=self.modelclsname,
-                               indexitems='\n'.join(unicode(i) for i in self.indexitems))
+                               indexitems='\n    '.join(unicode(i) for i in self.indexitems))
 
     def iterpages(self):
         for indexitem in self.indexitems:
@@ -138,7 +159,7 @@ class RestfulDocs(object):
             for methodname, docs in self.iter_restfulcls_docs(restfulcls):
                 httpmethod, hasid = CRUD_TO_HTTP[methodname]
                 if hasid:
-                    itemurl = '{0}**id**'.format(url)
+                    itemurl = '{0}id'.format(url)
                 else:
                     itemurl = url
                 indexitems.append(IndexItem(refprefix, methodname, httpmethod, itemurl, docs))
