@@ -52,9 +52,13 @@ def get_docsdir():
     """ Get the absolute path to the REPOROOT/docs/ directory. """
     return join(getreporoot(), 'docs')
 
+def get_docs_buildrootdir():
+    """ Get the absolute path to the REPOROOT/docs/.build/ directory. """
+    return join(get_docsdir(), '.build')
+
 def get_docs_builddir():
     """ Get the absolute path to the REPOROOT/docs/.build/html/ directory. """
-    return join(get_docsdir(), '.build', 'html')
+    return join(get_docs_buildrootdir(), 'html')
 
 def get_docs_javascriptbuild_dir():
     """ Get the absolute path to the REPOROOT/docs/.build/html/javascript/ directory. """
