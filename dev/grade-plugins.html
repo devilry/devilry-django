@@ -22,7 +22,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="index.html" /> 
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="devilry.utils.assignmentgroup" href="utils.assignmentgroup.html" />
+    <link rel="prev" title="devilry.apps.extjshelpers — ExtJS helpers" href="extjshelpers.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,6 +36,12 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.assignmentgroup.html" title="devilry.utils.assignmentgroup"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+             accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -45,6 +53,7 @@
             
   <div class="section" id="grade-plugins">
 <span id="id1"></span><h1>Grade plugins<a class="headerlink" href="#grade-plugins" title="Permalink to this headline">¶</a></h1>
+<p><strong>WARNING</strong>: OUTDATED docs. This will be updated for the new <em>grade editors</em>.</p>
 <p>A grade plugin is a way to plug-in custom grade-handling. We will explain how
 to create a grade plugin by explaining the most simple grade plugin used in
 Devilry, <tt class="docutils literal"><span class="pre">devilry.apps.grade_default</span></tt>. <tt class="docutils literal"><span class="pre">grade_default</span></tt> simply allows for
@@ -61,13 +70,6 @@ functions.</p>
 </div>
 <div class="section" id="the-view">
 <h2>The view<a class="headerlink" href="#the-view" title="Permalink to this headline">¶</a></h2>
-<p>Next we have to create a view which examiners can use to give feedback using
-this plugin. To make grade-plugins as flexible as possible, the grade-plugin
-gets complete control of the view for the entire feedback. This means that the
-view has to create a complete view for creating a new
-<tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Feedback</span></tt>. This is a lot of work, so we provide
-some <em class="xref std std-ref">shortcuts</em> which makes
-it possible for our view to look a simple as this (<em>gradeviews.py</em>):</p>
 <p>TODO: New example</p>
 </div>
 <div class="section" id="register-the-plugin">
@@ -175,6 +177,12 @@ DEVILRY_DEFAULT_GRADEPLUGIN setting).</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="extjshelpers.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">devilry.apps.extjshelpers</span></tt> &#8212; ExtJS helpers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.assignmentgroup.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">devilry.utils.assignmentgroup</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/grade-plugins.txt"
@@ -206,6 +214,12 @@ DEVILRY_DEFAULT_GRADEPLUGIN setting).</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.assignmentgroup.html" title="devilry.utils.assignmentgroup"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+             >previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>

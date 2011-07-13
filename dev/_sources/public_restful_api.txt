@@ -3,6 +3,8 @@
     :hidden:
 
     restfulapi/administrator/index.rst
+    restfulapi/examiner/index.rst
+    restfulapi/student/index.rst
 
 .. _public_restful_api:
 

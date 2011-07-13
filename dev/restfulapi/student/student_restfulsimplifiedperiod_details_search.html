@@ -22,7 +22,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" /> 
+    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Student" href="index.html" />
+    <link rel="next" title="GET /student/restfulsimplifiedassignment/id" href="student_restfulsimplifiedassignment_details_read.html" />
+    <link rel="prev" title="GET /student/restfulsimplifiedperiod/id" href="student_restfulsimplifiedperiod_details_read.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +37,15 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="student_restfulsimplifiedassignment_details_read.html" title="GET /student/restfulsimplifiedassignment/id"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="student_restfulsimplifiedperiod_details_read.html" title="GET /student/restfulsimplifiedperiod/id"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Student</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -68,8 +79,8 @@ applied in the following order:</p>
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
     <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="s2">&quot;start_time&quot;</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
@@ -151,8 +162,8 @@ list of filters, where each filter is a map with the following entries:</p>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -434,6 +445,12 @@ request parameter.</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="student_restfulsimplifiedperiod_details_read.html"
+                        title="previous chapter">GET /student/restfulsimplifiedperiod/id</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="student_restfulsimplifiedassignment_details_read.html"
+                        title="next chapter">GET /student/restfulsimplifiedassignment/id</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/restfulapi/student/student_restfulsimplifiedperiod_details_search.txt"
@@ -465,7 +482,15 @@ request parameter.</p>
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="student_restfulsimplifiedassignment_details_read.html" title="GET /student/restfulsimplifiedassignment/id"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="student_restfulsimplifiedperiod_details_read.html" title="GET /student/restfulsimplifiedperiod/id"
+             >previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" >Student</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
