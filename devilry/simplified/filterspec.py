@@ -71,6 +71,12 @@ class FilterSpec(object):
 
 
 class PatternFilterSpec(FilterSpec):
+    """
+    Pattern based field spec.
+
+    **NOTE**: Should only be used when _really_ required, since it is less
+    secure and slows down filter validation (which is done on each search()).
+    """
     def __init__(self, *args, **kwargs):
         super(PatternFilterSpec, self).__init__(*args, **kwargs)
         self.fieldpatt = re.compile(self.fieldname)
@@ -105,11 +111,11 @@ class FilterSpecs(object):
     """ Container of :class:`FilterSpec` and :class:`ForeignFilterSpec`. """
     def __init__(self, *filterspecs_and_foreignkeyfilterspecs):
         self.filterspecs = {}
-        self.patternfilterpecs = []
+        self.patternfilterspecs = []
         for filterspec_or_fkfilterspec in filterspecs_and_foreignkeyfilterspecs:
             for filterspec in filterspec_or_fkfilterspec.aslist():
                 if isinstance(filterspec, PatternFilterSpec):
-                    self.patternfilterpecs.append(filterspec)
+                    self.patternfilterspecs.append(filterspec)
                 else:
                     if filterspec.fieldname in self.filterspecs:
                         raise ValueError('A FilterSpec with fieldname "{0}" is '
@@ -119,7 +125,7 @@ class FilterSpecs(object):
 
     def validate_no_dups_with_patterns(self):
         for filterspec in self.filterspecs.itervalues():
-            for patternfilterpec in self.patternfilterpecs:
+            for patternfilterpec in self.patternfilterspecs:
                 if patternfilterpec.matches(filterspec.fieldname):
                     raise ValueError('The "{0}" pattern matches the non-pattern '
                                      'filterspec: {1}'.format(patternfilterpec.fieldname,
@@ -129,7 +135,7 @@ class FilterSpecs(object):
         try:
             return self.filterspecs[fieldname]
         except KeyError, e:
-            for patternfilterpec in self.patternfilterpecs:
+            for patternfilterpec in self.patternfilterspecs:
                 if patternfilterpec.matches(fieldname):
                     return patternfilterpec
             raise KeyError()
@@ -165,8 +171,8 @@ class FilterSpecs(object):
         inboth = _in_both(self.filterspecs.keys(), other.filterspecs.keys())
         if inboth:
             raise ValueError("{0} already in filterspec.".format(inboth))
-        inboth = _in_both([p.fieldname for p in self.patternfilterpecs],
-                          [p.fieldname for p in other.patternfilterpecs])
+        inboth = _in_both([p.fieldname for p in self.patternfilterspecs],
+                          [p.fieldname for p in other.patternfilterspecs])
         if inboth:
             raise ValueError("{0} already in filterspec.".format(inboth))
 
@@ -174,6 +180,18 @@ class FilterSpecs(object):
         filterspecs = FilterSpecs()
         filterspecs.filterspecs = self.filterspecs.copy()
         filterspecs.filterspecs.update(other.filterspecs)
-        filterspecs.patternfilterpecs = list(self.patternfilterpecs) + list(other.patternfilterpecs)
+        filterspecs.patternfilterspecs = list(self.patternfilterspecs) + list(other.patternfilterspecs)
         filterspecs.validate_no_dups_with_patterns()
         return filterspecs
+
+    def __nonzero__(self):
+        return len(self.filterspecs) > 0 or len(self.patternfilterspecs) > 0
+
+
+    def iterfieldnames(self):
+        """
+        Iterate over all fieldnames in this FilterSpecs. Used in
+        @simplified_modelapi to validate the fields in this FilterSpecs. Note
+        that PatternFilterSpec are not validated.
+        """
+        return self.filterspecs.keys().__iter__()

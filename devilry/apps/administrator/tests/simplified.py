@@ -1,13 +1,18 @@
+from datetime import timedelta
+import re
+
 from django.test import TestCase
 
-import re
 
 from ....simplified import PermissionDenied, FilterValidationError
 from ....simplified.utils import modelinstance_to_dict
 from ...core import models, testhelper
 from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline, SimplifiedStaticFeedback, SimplifiedFileMeta
 
-from datetime import datetime, timedelta
+
+testhelper.TestHelper.set_memory_deliverystore()
+
+
 
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 
@@ -470,7 +475,13 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
 
         with self.assertRaises(FilterValidationError):
             SimplifiedNode.search(self.admin1,
-                                  filters=[dict(field='parentnode__somethinginvalid__short_name', comp='exact', value='uni')])
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedNode.search(self.admin1,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedNode.search(self.admin1,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
 
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):

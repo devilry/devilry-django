@@ -1,8 +1,11 @@
-from ..core import models, testhelper
+from ..core import models
 from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
 class SimplifiedNodeMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a Node object
+    using the Simplified API """
     model = models.Node
     resultfields = FieldSpec('id',
                              'parentnode',
@@ -13,12 +16,15 @@ class SimplifiedNodeMetaMixin(object):
     filters = FilterSpecs(FilterSpec('parentnode'),
                           FilterSpec('short_name'),
                           FilterSpec('long_name'),
-                          PatternFilterSpec('(parentnode__)+short_name'),
-                          PatternFilterSpec('(parentnode__)+long_name'),
-                          PatternFilterSpec('(parentnode__)+id'))
+                          PatternFilterSpec('^(parentnode__)+short_name$'),
+                          PatternFilterSpec('^(parentnode__)+long_name$'),
+                          PatternFilterSpec('^(parentnode__)+id$'))
 
 
 class SimplifiedSubjectMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a Subject object
+    using the Simplified API """
     model = models.Subject
     resultfields = FieldSpec('id',
                              'parentnode',
@@ -37,6 +43,9 @@ class SimplifiedSubjectMetaMixin(object):
 
 
 class SimplifiedPeriodMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a Period object
+    using the Simplified API """
     model = models.Period
     resultfields = FieldSpec('id',
                              'parentnode',
@@ -60,6 +69,9 @@ class SimplifiedPeriodMetaMixin(object):
 
 
 class SimplifiedAssignmentMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for an Assignment object
+    using the Simplified API """
     model = models.Assignment
     resultfields = FieldSpec('id',
                              'parentnode',
@@ -97,6 +109,9 @@ class SimplifiedAssignmentMetaMixin(object):
 
 
 class SimplifiedAssignmentGroupMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for an AssignmentGroup object
+    using the Simplified API """
     model = models.AssignmentGroup
     resultfields = FieldSpec('id',
                              'name',
@@ -129,8 +144,6 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              )
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
-                          FilterSpec('short_name'),
-                          FilterSpec('long_name'),
                           ForeignFilterSpec('parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
@@ -146,6 +159,9 @@ class SimplifiedAssignmentGroupMetaMixin(object):
 
 
 class SimplifiedDeadlineMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a Deadline object
+    using the Simplified API """
     model = models.Deadline
     resultfields = FieldSpec('id',
                              'text',
@@ -175,6 +191,9 @@ class SimplifiedDeadlineMetaMixin(object):
 
 
 class SimplifiedDeliveryMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a Delivery object
+    using the Simplified API """
     model = models.Delivery
     resultfields = FieldSpec('id',
                              'number',
@@ -208,6 +227,9 @@ class SimplifiedDeliveryMetaMixin(object):
 
 
 class SimplifiedStaticFeedbackMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a StaticFeedback object
+    using the Simplified API """
     model = models.StaticFeedback
     resultfields = FieldSpec('id',
                              'grade',
@@ -240,6 +262,9 @@ class SimplifiedStaticFeedbackMetaMixin(object):
 
 
 class SimplifiedFileMetaMetaMixin(object):
+    """ Defines the django model to be used, resultfields returned by
+    search and which fields can be used to search for a FileMeta object
+    using the Simplified API """
     model = models.FileMeta
     resultfields = FieldSpec('filename',
                              'size',

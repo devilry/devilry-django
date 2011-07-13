@@ -49,17 +49,19 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         :class:`StaticFeedback` objects associated with this Deadline through a
         :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
     """
-    status = models.PositiveIntegerField(
-            default = 0,
-            choices = enumerate(AssignmentGroup.status_mapping),
-            verbose_name = _('Status'))
+    status = models.PositiveIntegerField(default = 0,
+                                         choices = enumerate(AssignmentGroup.status_mapping),
+                                         verbose_name = _('Status'),
+                                         help_text = _('Status number.'))
     assignment_group = models.ForeignKey(AssignmentGroup,
-            related_name='deadlines') 
-    deadline = models.DateTimeField()
-    text = models.TextField(blank=True, null=True)
+            related_name='deadlines')
+    deadline = models.DateTimeField(help_text=_('The time of the deadline.'))
+    text = models.TextField(blank=True, null=True,
+                            help_text=_('An optional text to show to students and examiners.'))
     is_head = models.BooleanField(default=False)
     deliveries_available_before_deadline = models.BooleanField(default=False)
-    feedbacks_published = models.BooleanField(default=False)
+    feedbacks_published = models.BooleanField(default=False,
+                                             help_text=_('If this ``True``, the student can see all StaticFeedbacks associated with this Deadline'))
 
     class Meta:
         app_label = 'core'

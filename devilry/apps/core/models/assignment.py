@@ -107,10 +107,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     parentnode = models.ForeignKey(Period, related_name='assignments',
                                    verbose_name=_('Period'))
     etag = models.DateTimeField(auto_now_add=True)
-    publishing_time = models.DateTimeField(
-            verbose_name=_("Publishing time"))
+    publishing_time = models.DateTimeField(verbose_name=_("Publishing time"),
+                                           help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
     anonymous = models.BooleanField(default=False,
-            verbose_name=_("Anonymous"))
+                                    verbose_name=_("Anonymous"),
+                                    help_text=_('Specifies if this assignment is anonymous.'))
     students_can_see_points = models.BooleanField(default=True,
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,

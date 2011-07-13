@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.test import TestCase
 from django.test.client import Client
 import json
@@ -8,6 +7,10 @@ from ..restful import (RestfulSimplifiedNode, RestfulSimplifiedAssignment, Restf
 from ..simplified import (SimplifiedAssignment, SimplifiedSubject, SimplifiedPeriod,
                           SimplifiedAssignmentGroup)
 from ...core import models, testhelper
+
+
+testhelper.TestHelper.set_memory_deliverystore()
+
 
 class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def setUp(self):

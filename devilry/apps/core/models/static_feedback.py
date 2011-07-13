@@ -58,12 +58,16 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         Boolean is passing grade?
     """
     delivery = models.ForeignKey(Delivery, related_name='feedbacks')
-    rendered_view = models.TextField()
-    grade = models.CharField(max_length=12)
-    points = models.PositiveIntegerField(help_text = _('Number of points given on this feedback.'))
-    is_passing_grade = models.BooleanField()
-    save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False)
-    saved_by = models.ForeignKey(User, blank=False, null=False)
+    rendered_view = models.TextField(help_text=_('A rendered HTML version of the feedback, containing '
+                                                 'whatever the grade-editor chose to dump in this field.'))
+    grade = models.CharField(max_length=12, help_text=_('The rendered grade, such as "A" or "approved".'))
+    points = models.PositiveIntegerField(help_text=_('Number of points given on this feedback.'))
+    is_passing_grade = models.BooleanField(help_text=_('Is this a passing grade?'))
+    save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False,
+                                         help_text=_('Time when this feedback was saved. Since StaticFeedback '
+                                                     'is immutable, this never changes.'))
+    saved_by = models.ForeignKey(User, blank=False, null=False,
+                                 help_text=_('The user (examiner) who saved this feedback'))
 
 
     class Meta:
