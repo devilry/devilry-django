@@ -5,8 +5,6 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
 from deliverystore import MemoryDeliveryStore
 
 
-FileMeta.deliverystore = MemoryDeliveryStore()
-
 # TODO:
 # raise error when trying to give roles to nodes that dont support it?
 #
@@ -27,6 +25,17 @@ class TestHelper(object):
 
     objects_created = 0
 
+    @classmethod
+    def set_memory_deliverystore(cls):
+        FileMeta.deliverystore = MemoryDeliveryStore()
+
+    def create_user(self, name):
+        user = User(username=name)
+        user.set_password('test')
+        user.full_clean()
+        user.save()
+        vars(self)[name] = user
+
     def refresh_var(self, obj):
         freshed_obj = type(obj).objects.get(pk=obj.pk)
         for key in vars(self).keys():
@@ -36,7 +45,7 @@ class TestHelper(object):
     def create_superuser(self, name):
         su = User(username=name, is_superuser=True)
         su.set_password("test")
-        su.clean()
+        su.full_clean()
         su.save()
         vars(self)[name] = su
 
@@ -91,10 +100,9 @@ class TestHelper(object):
         if after_last_deadline:
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
-#            print delivery.time_of_delivery
 
         delivery.successful = successful
-        delivery.clean()
+        delivery.full_clean()
         delivery.save()
         # add it to the groups delivery list
         varname = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
@@ -155,10 +163,11 @@ class TestHelper(object):
 
         # create the feedback
         feedback = StaticFeedback(saved_by=examiner, delivery=delivery, grade=verdict['grade'],
-                                  points=verdict['points'], is_passing_grade=verdict['is_passing_grade'])
+                                  points=verdict['points'], is_passing_grade=verdict['is_passing_grade'],
+                                  rendered_view='This is a default static feedback')
         # and finally, save it!
         try:
-            feedback.clean()
+            feedback.full_clean()
             feedback.save()
         except:
             raise
@@ -200,7 +209,7 @@ class TestHelper(object):
         user = User(username=name)
         user.set_password("test")
         try:
-            user.clean()
+            user.full_clean()
             user.save()
         except:
             user = User.objects.get(username=name)
@@ -216,7 +225,7 @@ class TestHelper(object):
     def _create_or_add_node(self, parent, name, users):
         node = Node(parentnode=parent, short_name=name, long_name=name.capitalize())
         try:
-            node.clean()
+            node.full_clean()
             node.save()
         except:
             node = Node.objects.get(parentnode=parent, short_name=name)
@@ -225,7 +234,7 @@ class TestHelper(object):
         for admin in users['admin']:
             node.admins.add(self._create_or_add_user(admin))
 
-        node.clean()
+        node.full_clean()
         node.save()
 
         vars(self)[node.short_name] = node
@@ -261,7 +270,7 @@ class TestHelper(object):
     def _create_or_add_subject(self, subject_name, parentnode, extras):
         subject = Subject(parentnode=parentnode, short_name=subject_name, long_name=subject_name.capitalize())
         try:
-            subject.clean()
+            subject.full_clean()
             subject.save()
         except:
             subject = Subject.objects.get(short_name=subject_name)
@@ -274,7 +283,7 @@ class TestHelper(object):
         if extras['ln']:
             subject.long_name = extras['ln'][0]
 
-        subject.clean()
+        subject.full_clean()
         subject.save()
 
         vars(self)[subject.short_name] = subject
@@ -309,9 +318,9 @@ class TestHelper(object):
         period = Period(parentnode=parentnode, short_name=period_name, long_name=period_name.capitalize(),
                         start_time=datetime.now(), end_time=datetime.now() + timedelta(days=5 * 30))
         try:
-            period.clean()
+            period.full_clean()
             period.save()
-        except:
+        except Exception:
             period = Period.objects.get(parentnode=parentnode, short_name=period_name)
 
         # add the extras (only admins allowed in subject)
@@ -328,7 +337,7 @@ class TestHelper(object):
         if extras['ln']:
             period.long_name = extras['ln']
 
-        period.clean()
+        period.full_clean()
         period.save()
 
         vars(self)[parentnode.short_name + '_' + period.short_name] = period
@@ -366,7 +375,7 @@ class TestHelper(object):
         assignment = Assignment(parentnode=parentnode, short_name=assignment_name,
                                 long_name=assignment_name.capitalize(), publishing_time=parentnode.start_time)
         try:
-            assignment.clean()
+            assignment.full_clean()
             assignment.save()
         except:
             assignment = Assignment.objects.get(parentnode=parentnode,
@@ -387,7 +396,7 @@ class TestHelper(object):
             else:
                 raise ValueError("anon must be 'true' or 'false'")
 
-        assignment.clean()
+        assignment.full_clean()
         assignment.save()
 
         vars(self)[parentnode.parentnode.short_name + '_' +  # subject
@@ -429,7 +438,7 @@ class TestHelper(object):
         else:
             group = AssignmentGroup(parentnode=parentnode, name=group_name)
             try:
-                group.clean()
+                group.full_clean()
                 group.save()
             except:
                 raise ValueError("Assignmentgroup not created!")
@@ -453,7 +462,7 @@ class TestHelper(object):
         for examiner in extras['examiner']:
             group.examiners.add(self._create_or_add_user(examiner))
 
-        group.clean()
+        group.full_clean()
         group.save()
 
         vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
@@ -493,7 +502,7 @@ class TestHelper(object):
     def _create_or_add_deadline(self, deadline_name, parentnode, extras):
         deadline = Deadline(assignment_group=parentnode, deadline=parentnode.parentnode.publishing_time + timedelta(days=10))
         try:
-            deadline.clean()
+            deadline.full_clean()
             deadline.save()
         except:
             raise  ValueError("something impossible happened when creating deadline")
@@ -509,7 +518,7 @@ class TestHelper(object):
                   parentnode.parentnode.short_name + '_' +                        # assignment_
                   parentnode.name + '_')
 
-        deadline.clean()
+        deadline.full_clean()
         deadline.save()
 
         # only create this variable if a name is given

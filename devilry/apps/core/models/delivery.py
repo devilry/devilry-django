@@ -77,9 +77,13 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     CORRECTED_NOT_PUBLISHED = 3
 
     # Fields automatically 
-    time_of_delivery = models.DateTimeField(auto_now_add=True)
+    time_of_delivery = models.DateTimeField(auto_now_add=True,
+                                           help_text=_('Holds the date and time the Delivery was uploaded.'))
     deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
-    number = models.PositiveIntegerField()
+    number = models.PositiveIntegerField(
+        help_text=_('The delivery-number within this assignment-group. This number is automatically '
+                    'incremented within each AssignmentGroup, starting from 1. Always '
+                    'unique within the assignment-group.'))
 
     # Fields set by user
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')

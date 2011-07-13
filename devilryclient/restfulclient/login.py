@@ -10,9 +10,11 @@ def login(url, **logindata):
     """
     :param url: Url of the login form.
     :param logindata: The required login data (usually username and
-        password). With the devilry login form, this is
-        ``{'user':'myuser', 'password':'mysecret'}``. However it may
-        be something (on custom login solutions).
+        password). With the devilry login form, this is::
+
+            {'user':'myuser', 'password':'mysecret'}
+
+        However it may be something else (on custom login solutions).
     """
     parsedurl = urlparse(url)
     host = parsedurl.netloc

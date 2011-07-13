@@ -1,12 +1,16 @@
-from datetime import datetime
 from django.test import TestCase
 from django.test.client import Client
 import json
 
 from ..restful import (RestfulSimplifiedNode, RestfulSimplifiedAssignment, RestfulSimplifiedSubject,
-                       RestfulSimplifiedPeriod)
-from ..simplified import SimplifiedAssignment, SimplifiedSubject, SimplifiedPeriod
+                       RestfulSimplifiedPeriod, RestfulSimplifiedAssignmentGroup)
+from ..simplified import (SimplifiedAssignment, SimplifiedSubject, SimplifiedPeriod,
+                          SimplifiedAssignmentGroup)
 from ...core import models, testhelper
+
+
+testhelper.TestHelper.set_memory_deliverystore()
+
 
 class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def setUp(self):
@@ -83,7 +87,7 @@ class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelp
     def setUp(self):
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
-                 periods=['firstSem', 'secondSem:admin(admin2)'],
+                 periods=['firstsem', 'secondsem:admin(admin2)'],
                  assignments=['a1', 'a2'])
         self.client = Client()
         self.client.login(username="admin1", password="test")
@@ -261,3 +265,56 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
         self.assertEquals(models.Period.objects.filter(short_name='v2011').count(), 1)
+
+
+
+class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
+    pekerkjede = RestfulSimplifiedAssignmentGroup
+    resultfields = SimplifiedAssignmentGroup._meta.resultfields
+
+    def setUp(self):
+        # create a base structure
+        self.add(nodes='uni:admin(admin1)',
+                 subjects=['inf101', 'inf110'],
+                 periods=['firstsem', 'secondsem'],
+                 assignments=['a1', 'a2'])
+
+        # add firstStud to the first and secondsem assignments
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud)')
+
+        # secondStud began secondsem
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud)')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud)')
+
+        self.client.login(username="admin1", password="test")
+
+    def test_search(self):
+        url = self.pekerkjede.get_rest_url()
+        r = self.client.get(url, data={'getdata_in_qrystring': True})
+        self.assertEquals(r.status_code, 200)
+        data = json.loads(r.content)
+        first = data['items'][0]
+        self.assertEquals(set(first.keys()), set(self.resultfields.aslist()))
+
+    def test_create(self):
+        #TODO test_create
+        pass
+
+    def test_create_errors(self):
+        #TODO test_create_errors
+        pass
+
+    def test_update(self):
+        #TODO test_update
+        pass
+
+    def test_update_errors(self):
+        #TODO test_update_errors
+        pass
+    
+    def test_delete(self):
+        #TODO test_delete
+        pass

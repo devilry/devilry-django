@@ -24,7 +24,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     .. attribute:: name
 
-        A optional name for the group.
+        An optional name for the group.
 
     .. attribute:: candidates
 
@@ -135,15 +135,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     CORRECTED_AND_PUBLISHED = 3
     
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30, blank=True, null=True,
+                           help_text=_('An optional name for the group. Typically used a project name on project assignments.'))
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
             help_text = _('If this is checked, the group can add deliveries.'))
-    status = models.PositiveIntegerField(
-            default = 0,
-            choices = enumerate(status_mapping),
-            verbose_name = _('Status'))
+    status = models.PositiveIntegerField(default = 0,
+                                         choices = enumerate(status_mapping),
+                                         verbose_name = _('Status'),
+                                         help_text = _('Status number.'))
 
     # Caches for fields in the last feedback
     points = models.PositiveIntegerField(default=0,

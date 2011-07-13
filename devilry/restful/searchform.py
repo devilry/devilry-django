@@ -15,4 +15,5 @@ def _create_seachform(cls):
                 fallbackvalue=cls._meta.simplified._meta.ordering)
         result_fieldgroups = fields.JsonListWithFallbackField()
         search_fieldgroups = fields.JsonListWithFallbackField()
+        filters = fields.JsonListWithFallbackField()
     cls.SearchForm = SearchForm
