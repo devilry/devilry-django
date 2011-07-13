@@ -36,10 +36,19 @@ div.body>div.section>div.section>h2 {
     padding: 0;
 }
 
-div.body>div.section>div.section>div.section>h3 {
+div.body>div.section>div.section>div.section>h3, div.body>div.section>div.section>div.section>div.section>h4 {
     border: none;
     margin: 20px 0 15px 0;
     padding: 0;
+}
+
+div.body>div.section>div.section>div.section>h3 {
+    border-bottom: 1px solid #d8d8d8;
+}
+
+div.body>div.section>div.section>div.section>div.section>h4 {
+    font-weight: bold;
+    border: none;
 }
 
 tr.field {

@@ -1,9 +1,17 @@
 Create a {{doc.model_verbose_name}}.
 
-The underlying data model where the item is created is defined in :class:`{{doc.modelclspath}}`.
+The underlying data model where the item is created is defined in
+:class:`{{doc.modelclspath}}`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`{{doc.simplifiedclspath}}.create`.
 
 
-Request example
+********
+Request
+********
+
+
+Example
 ################
 
 .. code-block:: javascript
@@ -34,3 +42,33 @@ About the field:
 Type
     {{ info.fieldtype }}
 {% endfor %}
+
+
+
+**************
+Response
+**************
+
+On success
+##########
+
+Example
+----------------
+
+.. code-block:: javascript
+
+    201 CREATED
+
+    {
+        {% for info in doc.editablefields_and_id %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
+        {% endif %}{% endfor %}
+    }
+
+
+Success response details
+------------------------
+
+As long as the {{doc.model_verbose_name}} is created without an error, the
+response is *HTTP 201* with the requested data in the body. The result always
+contains the request data with the *id* field added, however it may have been
+changed due to logic performed on the server before saving.

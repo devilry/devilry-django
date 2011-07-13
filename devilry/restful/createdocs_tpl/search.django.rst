@@ -1,6 +1,8 @@
 Search for {{doc.model_verbose_name_plural}}.
 
 The underlying data model searched is defined in :class:`{{doc.modelclspath}}`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`{{doc.simplifiedclspath}}.search`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -10,6 +12,10 @@ applied in the following order:
     3. The result of the filtering is ordered as specified in ``orderby``.
     4. The result of the ordering is limited by ``start`` and ``limit``.
 
+
+**************************
+Request
+**************************
 
 Request example
 ###############
@@ -21,7 +27,7 @@ Request example
     {
         query: 'a query string',
         filters: {{ doc.filterexample_for_overview|safe }},
-        orderby: ['list', 'of', '-fieldnames', 'to', 'order', 'by'],
+        orderby: {{ doc.orderby_example|safe }},
         start: 10,
         limit: 100
     }
@@ -134,7 +140,6 @@ results of the search. The following group names are available:
                     {{ info.fieldtype }}
         {% endfor %}
 {% endfor %}
-
 {% endif %}
 
 
@@ -161,11 +166,33 @@ searched using the ``query``. The following group names are available:
 
 
 
+
+*********************
 Response
-########
+*********************
 
 On success
-----------
+##########
+
+
+Example
+------------------------
+
+.. code-block:: javascript
+
+    200 OK
+
+    [
+        { {% for info in doc.resultfields %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
+          {% endif %}{% endfor %} },
+        { {% for info in doc.resultfields %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
+          {% endif %}{% endfor %} },
+        ...
+    ]
+
+
+Success response details
+------------------------
 
 Responds with HTTP code *200* and a *JSON encoded* list of results. Each result in the
 list is a JSON object where the *key* is a fieldname and the associated value is
@@ -185,14 +212,3 @@ the *value* for that field. The result always contains the following fields:
 However, there may be more fields if specified with the ``result_fieldgroups``
 request parameter.
 {% endif %}
-
-
-
-
-
-{% comment %}
-Notes for non-standard extensions
-#################################
-
-TODO: getdata_in_qrystring and X-header
-{% endcomment %}

@@ -3,7 +3,11 @@ Delete a {{doc.model_verbose_name}}.
 The underlying data model where the item is deleted from is defined in :class:`{{doc.modelclspath}}`.
 
 
-Request example
+********
+Request
+********
+
+Example
 ################
 
 .. code-block:: javascript
@@ -20,3 +24,27 @@ id
 
 The unique identifier of a {{doc.model_verbose_name}}. You will typically get
 this id in response from a search.
+
+
+**************
+Response
+**************
+
+
+On success
+##########
+
+As long as the {{doc.model_verbose_name}} is deleted without an error, the
+response is *HTTP 200* with a JSON object containing the id in the response body.
+
+
+Example
+-------
+
+.. code-block:: javascript
+
+    200 OK
+
+    {
+        id: 10
+    }

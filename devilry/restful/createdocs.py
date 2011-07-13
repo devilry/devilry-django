@@ -1,6 +1,7 @@
 """
 Autogenerate documentation RESTful APIs
 """
+import json
 from random import randint
 from os.path import join, dirname
 from django.template import Context, Template
@@ -90,11 +91,21 @@ class Docstring(object):
         self.model = model
 
         self.result_fieldgroups = self._create_fieldgroup_overview(simplified._meta.resultfields.additional_fieldgroups)
+        self.result_fieldgroups_example = self._create_jslist(simplified._meta.resultfields.additional_fieldgroups.keys())
         self.search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups)
+        self.search_fieldgroups_example = self._create_jslist(simplified._meta.searchfields.additional_fieldgroups.keys())
+
         self.searchfields = self._create_fieldinfolist(simplified._meta.searchfields.always_available_fields)
         self.resultfields = self._create_fieldinfolist(simplified._meta.resultfields.always_available_fields)
         self.editablefields = self._create_fieldinfolist(simplified._meta.editablefields)
+        self.editablefields_and_id = self._create_fieldinfolist(list(simplified._meta.editablefields) + ['id'])
         self._create_filter_docattrs()
+
+        self.orderby_example = self._create_orderby_jslist(simplified._meta.resultfields.aslist())
+
+        self.simplifiedclspath = get_clspath(simplified)
+        #for method in simplified._meta.methods:
+            #setattr(self, 'simplified_{0}methodpath'.format(method), )
 
         self.context = Context(dict(doc=self))
 
@@ -140,9 +151,11 @@ class Docstring(object):
     def _indent(self, value, indent):
         return '\n'.join('{0}{1}'.format(indent, line) for line in value.split('\n'))
 
-    def _create_fieldinfolist(self, fieldnames):
+    def _create_fieldinfolist(self, fieldnames, exclude=None):
         infolist = []
         for fieldname in fieldnames:
+            if exclude and exclude == fieldname:
+                continue
             info = self._fieldinfo_dict(self._get_field(fieldname))
             info['fieldname'] = fieldname
             infolist.append(info)
@@ -154,6 +167,15 @@ class Docstring(object):
             result.append(dict(fieldgroup=fieldgroup,
                                fieldinfolist=self._create_fieldinfolist(fieldgroupfields)))
         return result
+
+    def _create_jslist(self, iterable):
+        return json.dumps(list(iterable))
+
+    def _create_orderby_jslist(self, fieldnames):
+        fieldnames = list(fieldnames)
+        if len(fieldnames) > 1:
+            fieldnames[1] = '-' + fieldnames[1]
+        return json.dumps(fieldnames)
 
     def get_first_para(self):
         return str(self).split('\n\n')[0].replace('\n', ' ')

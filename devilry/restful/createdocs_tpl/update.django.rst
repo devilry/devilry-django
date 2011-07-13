@@ -1,9 +1,18 @@
 Update a {{doc.model_verbose_name}}.
 
-The underlying data model where the item is updated is defined in :class:`{{doc.modelclspath}}`.
+The underlying data model where the item is updated is defined in
+:class:`{{doc.modelclspath}}`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`{{doc.simplifiedclspath}}.update`.
 
 
-Request example
+
+********
+Request
+********
+
+
+Example
 ################
 
 .. code-block:: javascript
@@ -44,3 +53,33 @@ About the field:
 Type
     {{ info.fieldtype }}
 {% endfor %}
+
+
+
+**************
+Response
+**************
+
+On success
+##########
+
+Example
+----------------
+
+.. code-block:: javascript
+
+    200 OK
+
+    {
+        {% for info in doc.editablefields_and_id %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
+        {% endif %}{% endfor %}
+    }
+
+
+Success response details
+------------------------
+
+As long as the {{doc.model_verbose_name}} is updated without an error, the
+response is *HTTP 201* with the requested data in the body.  The result always
+contains the data you sent in to the update method, however some values may
+have been changed due to logic performed on the server before saving.
