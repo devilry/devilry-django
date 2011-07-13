@@ -178,7 +178,7 @@ from University of Oslo. Furthermore, this example shows how to use <strong>filt
                                          <span class="n">HttpResponseUnauthorized</span><span class="p">,</span>
                                          <span class="n">HttpResponseForbidden</span><span class="p">,</span>
                                          <span class="n">JsonDecodeError</span><span class="p">)</span>
-
+<span class="kn">from</span> <span class="nn">uiodata</span> <span class="kn">import</span> <span class="n">subjects</span>
 
 <span class="n">devilry_url</span> <span class="o">=</span> <span class="s">&#39;http://localhost:8000&#39;</span>
 <span class="n">login_url</span> <span class="o">=</span> <span class="s">&#39;{0}/authenticate/login&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">devilry_url</span><span class="p">)</span>
@@ -193,12 +193,14 @@ from University of Oslo. Furthermore, this example shows how to use <strong>filt
 <span class="n">SimplifiedAssignment</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiedassignment/&quot;</span><span class="p">)</span>
 <span class="n">SimplifiedAssignmentGroup</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiedassignmentgroup/&quot;</span><span class="p">)</span>
 
+<span class="n">uio</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">matnat</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">ifi</span> <span class="o">=</span> <span class="p">{}</span>
 
-<span class="sd">&quot;&quot;&quot; ####################################################</span>
-<span class="sd">                    SEARCH / GET</span>
-<span class="sd">#################################################### &quot;&quot;&quot;</span>
 
 <span class="k">def</span> <span class="nf">all_search</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Searches through Node, Subject and Period&quot;&quot;&quot;</span>
+
     <span class="k">print</span> <span class="s">&#39;Every node in the system:&#39;</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">logincookie</span><span class="p">)[</span><span class="s">&#39;items&#39;</span><span class="p">]:</span>
         <span class="k">print</span> <span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="n">node</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span> <span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="n">node</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">]</span>
@@ -211,75 +213,69 @@ from University of Oslo. Furthermore, this example shows how to use <strong>filt
     <span class="k">for</span> <span class="n">period</span> <span class="ow">in</span> <span class="n">SimplifiedPeriod</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">logincookie</span><span class="p">)[</span><span class="s">&#39;items&#39;</span><span class="p">]:</span>
         <span class="k">print</span> <span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="n">period</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span> <span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="n">period</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">]</span>
 
-    <span class="k">print</span> <span class="s">&#39;Every Assignment in the system&#39;</span>
-    <span class="k">for</span> <span class="n">assignment</span> <span class="ow">in</span> <span class="n">SimplifiedAssignment</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">logincookie</span><span class="p">)[</span><span class="s">&#39;items&#39;</span><span class="p">]:</span>
-        <span class="k">print</span> <span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span> <span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="n">assignment</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">]</span>
 
-    <span class="c"># print &#39;Every Assignment in the system&#39;</span>
-    <span class="c"># for assignmentgroup in SimplifiedAssignmentGroup.search(logincookie)[&#39;items&#39;]:</span>
-        <span class="c"># print &#39;  &#39;, assignmentgroup[&#39;status&#39;], &#39;:&#39;, assignmentgroup[&#39;is_open&#39;]</span>
+<span class="k">def</span> <span class="nf">create_uio_matnat_ifi_nodes</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Creates Nodes for UiO</span>
 
+<span class="sd">    uio is the topmost Node</span>
+<span class="sd">    matnat is one below uio</span>
+<span class="sd">    ifi is on the bottom of the Node-hierarchy</span>
 
-<span class="sd">&quot;&quot;&quot; ####################################################</span>
-<span class="sd">                    CREATE / POST</span>
-<span class="sd">#################################################### &quot;&quot;&quot;</span>
-<span class="k">print</span> <span class="s">&quot;System Status - Initial&quot;</span>
-<span class="n">all_search</span><span class="p">()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">print</span> <span class="s">&quot;CREATE UIO/MATNAT/IFI&quot;</span>
+    <span class="k">global</span> <span class="n">uio</span><span class="p">,</span> <span class="n">matnat</span><span class="p">,</span> <span class="n">ifi</span>
+    <span class="n">uio</span> <span class="o">=</span> <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;uio&#39;</span><span class="p">,</span> <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Universitetet i Oslo&#39;</span><span class="p">,</span> <span class="n">parentnode</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">matnat</span> <span class="o">=</span> <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;matnat&#39;</span><span class="p">,</span> <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Matematisk Naturvitenskapelig Fakultet&#39;</span><span class="p">,</span> <span class="n">parentnode</span><span class="o">=</span><span class="n">uio</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+    <span class="n">ifi</span> <span class="o">=</span> <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;ifi&#39;</span><span class="p">,</span> <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Institutt for informatikk&#39;</span><span class="p">,</span> <span class="n">parentnode</span><span class="o">=</span><span class="n">matnat</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
 
-<span class="k">print</span> <span class="s">&quot;Create a new Node with no parentnode - Donald Duck University&quot;</span>
-<span class="n">donald</span> <span class="o">=</span> <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;donald&#39;</span><span class="p">,</span>
-                               <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Donald Duck University&#39;</span><span class="p">,</span>
-                               <span class="n">parentnode</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_subjects_and_period</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Creates subjects from a list of IFI-subjects</span>
 
-<span class="k">print</span> <span class="s">&quot;Create a new Subject mac1110&quot;</span>
-<span class="n">mac1110</span> <span class="o">=</span> <span class="n">SimplifiedSubject</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;mac1110&#39;</span><span class="p">,</span>
-                                   <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Introduction in how to maintain a nearly bursting Money Bin&#39;</span><span class="p">,</span>
-                                   <span class="n">parentnode</span><span class="o">=</span><span class="n">donald</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+<span class="sd">    Adds h2011 period to each of the subjects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="k">print</span> <span class="s">&quot;Create a new Period in mac1110&quot;</span>
-<span class="n">mac1110v2011</span> <span class="o">=</span> <span class="n">SimplifiedPeriod</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;v2011&#39;</span><span class="p">,</span>
-                                       <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;V2011&#39;</span><span class="p">,</span>
-                                       <span class="n">parentnode</span><span class="o">=</span><span class="n">mac1110</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
-                                       <span class="n">start_time</span><span class="o">=</span><span class="s">&#39;2011-01-01 00:00:01&#39;</span><span class="p">,</span>
-                                       <span class="n">end_time</span><span class="o">=</span><span class="s">&#39;2011-06-01 15:00:00&#39;</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;CREATE SUBJECTS&quot;</span>
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">subjects</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">SimplifiedSubject</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="n">subject</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span> <span class="n">long_name</span><span class="o">=</span><span class="n">subject</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">],</span> <span class="n">parentnode</span><span class="o">=</span><span class="n">ifi</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="n">SimplifiedPeriod</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;h2011&#39;</span><span class="p">,</span>
+                                <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;H2011&#39;</span><span class="p">,</span>
+                                <span class="n">parentnode</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
+                                <span class="n">start_time</span><span class="o">=</span><span class="s">&#39;2011-08-01 00:00:01&#39;</span><span class="p">,</span>
+                                <span class="n">end_time</span><span class="o">=</span><span class="s">&#39;2011-12-01 15:00:00&#39;</span><span class="p">)</span>
 
-<span class="k">print</span> <span class="s">&quot;System Status - After CREATE/POST&quot;</span>
-<span class="n">all_search</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">search_with_filtering</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Creates searching with given filters</span>
 
+<span class="sd">    long_name contains</span>
+<span class="sd">        20 Studiepoeng</span>
+<span class="sd">        10 Studiepoeng</span>
 
-<span class="sd">&quot;&quot;&quot; ####################################################</span>
-<span class="sd">                    UPDATE / PUT</span>
-<span class="sd">#################################################### &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">print</span> <span class="s">&quot;SEARCH WITH FILTERING&quot;</span>
 
-<span class="k">print</span> <span class="s">&quot;Change information about Donald Duck University&quot;</span>
-<span class="n">gladgander</span> <span class="o">=</span> <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">donald</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
-                                   <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;gander&#39;</span><span class="p">,</span>
-                                   <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Gladstone Gander University&#39;</span><span class="p">)</span>
+    <span class="n">studp20</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;field&#39;</span><span class="p">:</span><span class="s">&quot;long_name&quot;</span><span class="p">,</span> <span class="s">&#39;comp&#39;</span><span class="p">:</span><span class="s">&quot;icontains&quot;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span><span class="s">&quot;20 Studiepoeng&quot;</span><span class="p">}]</span>
+    <span class="n">studp10</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;field&#39;</span><span class="p">:</span><span class="s">&quot;long_name&quot;</span><span class="p">,</span> <span class="s">&#39;comp&#39;</span><span class="p">:</span><span class="s">&quot;icontains&quot;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span><span class="s">&quot;10 Studiepoeng&quot;</span><span class="p">}]</span>
 
-<span class="k">print</span> <span class="s">&quot;Redefine mac1110&quot;</span>
-<span class="n">mac5110</span> <span class="o">=</span> <span class="n">SimplifiedSubject</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">mac1110</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span>
-                                   <span class="n">short_name</span><span class="o">=</span><span class="s">&#39;mac5110&#39;</span><span class="p">,</span>
-                                   <span class="n">long_name</span><span class="o">=</span><span class="s">&#39;Advanced Money Swimming&#39;</span><span class="p">,</span>
-                                   <span class="n">parentnode</span><span class="o">=</span><span class="n">gladgander</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;Filter long_name contains 20 studiepoeng&quot;</span>
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">SimplifiedSubject</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-short_name&#39;</span><span class="p">],</span>
+                                            <span class="n">filters</span><span class="o">=</span><span class="n">studp20</span><span class="p">)[</span><span class="s">&#39;items&#39;</span><span class="p">]:</span>
+        <span class="k">print</span> <span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span> <span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">]</span>
 
-<span class="k">print</span> <span class="s">&quot;System Status - After UPDATE/PUT&quot;</span>
-<span class="n">all_search</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Filter long_name contains 10 studiepoeng&quot;</span>
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">SimplifiedSubject</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-short_name&#39;</span><span class="p">],</span>
+                                            <span class="n">filters</span><span class="o">=</span><span class="n">studp10</span><span class="p">)[</span><span class="s">&#39;items&#39;</span><span class="p">]:</span>
+        <span class="k">print</span> <span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">[</span><span class="s">&#39;short_name&#39;</span><span class="p">],</span> <span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">[</span><span class="s">&#39;long_name&#39;</span><span class="p">]</span>
 
-<span class="sd">&quot;&quot;&quot; ####################################################</span>
-<span class="sd">                    DELETE / DELETE</span>
-<span class="sd">#################################################### &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">delete_uio</span><span class="p">():</span>
+    <span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">uio</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
 
-
-<span class="k">print</span> <span class="s">&quot;Delete Period&quot;</span>
-<span class="n">SimplifiedPeriod</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">mac1110v2011</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
-
-<span class="k">print</span> <span class="s">&quot;Delete Gladstone Ganders university&quot;</span>
-<span class="n">SimplifiedNode</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">logincookie</span><span class="p">,</span> <span class="n">gladgander</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
-
-<span class="k">print</span> <span class="s">&quot;System Status - After DELETE/DELETE&quot;</span>
-<span class="n">all_search</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">create_uio_matnat_ifi_nodes</span><span class="p">()</span>
+    <span class="n">create_subjects_and_period</span><span class="p">()</span>
+    <span class="n">search_with_filtering</span><span class="p">()</span>
+    <span class="n">delete_uio</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
