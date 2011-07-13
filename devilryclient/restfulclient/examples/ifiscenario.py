@@ -61,7 +61,7 @@ def create_subjects_and_period():
     """Creates subjects from a list of IFI-subjects
     
     Adds h2011 period to each of the subjects
-    """"
+    """
     
     print "CREATE SUBJECTS"
     for subject in subjects:
