@@ -77,6 +77,10 @@ class Docstring(object):
         self.restfulcls = restfulcls
         self.httpmethod = httpmethod
         self.itemurl = itemurl
+        if itemurl.endswith('id**'):
+            self.itemexampleurl = itemurl[:-4] + '10'
+        else:
+            self.itemexampleurl = itemurl
         simplified = restfulcls._meta.simplified
         model = simplified._meta.model
 

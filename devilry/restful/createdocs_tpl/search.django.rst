@@ -1,6 +1,6 @@
 Search for {{doc.model_verbose_name_plural}}.
 
-The underlying data model searched is :class:`{{doc.modelclspath}}`
+The underlying data model searched is defined in :class:`{{doc.modelclspath}}`.
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -16,7 +16,7 @@ Request example
 
 .. code-block:: javascript
 
-    {{doc.httpmethod}} {{doc.itemurl}}
+    {{doc.httpmethod}} {{doc.itemexampleurl}}
 
     {
         query: 'a query string',
