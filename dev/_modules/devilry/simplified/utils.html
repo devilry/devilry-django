@@ -52,6 +52,25 @@
 <span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
 
 
+<span class="k">def</span> <span class="nf">get_clspath</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;{0}.{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_field_from_fieldname</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">fkfield_as_idfield</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_recurse_get_modelfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">pathseg</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">modelcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field_by_name</span><span class="p">(</span><span class="n">pathseg</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">):</span>
+            <span class="n">parentmodel</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">related</span><span class="o">.</span><span class="n">parent_model</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fkfield_as_idfield</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">parentmodel</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">field</span>
+            <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">parentmodel</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">field</span>
+    <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))</span>
+
+
 <span class="k">def</span> <span class="nf">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">):</span>
     <span class="n">fieldvalue</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">)</span>
     <span class="n">field</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field_by_name</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>

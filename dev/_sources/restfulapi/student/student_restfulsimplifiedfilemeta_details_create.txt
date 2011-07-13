@@ -1,0 +1,99 @@
+.. _student_restfulsimplifiedfilemeta_details_create:
+
+=============================================================================
+POST /student/restfulsimplifiedfilemeta/
+=============================================================================
+
+Create a FileMeta.
+
+The underlying data model where the item is created is defined in
+:class:`devilry.apps.core.models.FileMeta`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`devilry.apps.student.simplified.SimplifiedFileMeta.create`.
+
+
+********
+Request
+********
+
+
+Example
+################
+
+.. code-block:: javascript
+
+    POST /student/restfulsimplifiedfilemeta/
+
+    {
+        size: 20,
+        filename: "My example value"
+    }
+
+
+Required request parameters
+###########################
+
+The following request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.
+
+
+
+size
+--------------------------------------------------
+
+Actual location of the field:
+    :class:`devilry.apps.core.models.FileMeta`
+About the field:
+    Size of the file in bytes.
+Type
+    Integer
+
+
+filename
+--------------------------------------------------
+
+Actual location of the field:
+    :class:`devilry.apps.core.models.FileMeta`
+About the field:
+    Name of the file.
+Type
+    String
+
+
+
+
+**************
+Response
+**************
+
+On success
+##########
+
+Example
+----------------
+
+.. code-block:: javascript
+
+    201 CREATED
+
+    {
+        size: 20,
+        filename: "My example value",
+        id: 15
+    }
+
+
+Success response details
+------------------------
+
+As long as the FileMeta is created without an error, the
+response is *HTTP 201* with the requested data in the body. The result always
+contains the request data with the *id* field added, however some values may
+have been changed due to logic performed on the server before saving.
+
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`.

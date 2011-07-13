@@ -1,0 +1,444 @@
+.. _student_restfulsimplifiedassignment_details_search:
+
+=============================================================================
+GET /student/restfulsimplifiedassignment/
+=============================================================================
+
+Search for Assignments.
+
+The underlying data model searched is defined in :class:`devilry.apps.core.models.Assignment`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`devilry.apps.student.simplified.SimplifiedAssignment.search`.
+
+The request parameters (below) all modify the result of the search. They are
+applied in the following order:
+
+    1. The ``query`` is executed.
+    2. The result of the query is filtered through the ``filters``.
+    3. The result of the filtering is ordered as specified in ``orderby``.
+    4. The result of the ordering is limited by ``start`` and ``limit``.
+
+
+**************************
+Request
+**************************
+
+Request example
+###############
+
+.. code-block:: javascript
+
+    GET /student/restfulsimplifiedassignment/
+
+    {
+        query: 'a query string',
+        filters: [{field:"long_name", comp:"=>", value:"My example value"},
+                      {field:"parentnode", comp:"contains", value:15},
+                      {field:"parentnode__long_name", comp:"exact", value:"My example value"}],
+        orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time"],
+        start: 10,
+        limit: 100
+    }
+
+
+
+Optional request parameters
+###########################
+
+Optional request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.
+
+query
+-----
+A string to search for. If this is empty or not given, all
+Assignments that the authenticated user has access to is
+returned.
+
+If the string is not empty, the ``query``-string is split on whitespace,
+resulting in a list of words. Every *word* in the list is searched for
+*case-insensitive* matches within the following fields:
+
+    
+        short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+        parentnode__short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Period`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        parentnode__long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Period`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+        parentnode__parentnode__short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Subject`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        parentnode__parentnode__long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Subject`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+
+
+
+
+
+filters
+-------
+
+Filters can be used to perform complex queries. The ``filters`` parameter is a
+list of filters, where each filter is a map with the following entries:
+
+    field
+        A field name.
+    comp
+        A comparison operator.
+    value
+        The value to filter on.
+
+Example:
+
+    .. code-block:: javascript
+
+        [{field:"long_name", comp:"=>", value:"My example value"},
+         {field:"parentnode", comp:"contains", value:15},
+         {field:"parentnode__long_name", comp:"exact", value:"My example value"}]
+
+Assignments can be filtered on the following *fields*:
+
+
+    long_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            A longer name, more descriptive than "Short name". This is the name visible to students.
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode__long_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            A longer name, more descriptive than "Short name". This is the name visible to students.
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode__parentnode
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Subject`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode__parentnode__long_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Subject`
+        About the field:
+            A longer name, more descriptive than "Short name". This is the name visible to students.
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode__parentnode__parentnode
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Node`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode__parentnode__short_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Subject`
+        About the field:
+            Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    parentnode__short_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+    short_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+
+
+
+
+
+
+orderby
+-------
+List of fieldnames. Order the result by these fields.
+Fieldnames can be prefixed by ``'-'`` for descending ordering.
+
+start
+-----
+After query, filters and orderby have been executed, the result is limited to
+the values from *start* to *start+limit*. Start defalts to ``0``.
+
+limit
+-----
+Limit results to this number of items. Defaults to ``50``.
+
+
+result_fieldgroups
+------------------
+A list of group names. Each group adds an additional set of fields to the
+results of the search. The following group names are available:
+
+    pointfields
+        *Expands to the following fields:*
+        
+            anonymous
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    Specifies if this assignment is anonymous.
+                Type
+                    Boolean
+        
+            must_pass
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    Each student must get a passing grade on this assignment to get a passing grade on the period.
+                Type
+                    Boolean
+        
+            maxpoints
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    The maximum number of points possible without scaling.
+                Type
+                    Integer
+        
+            attempts
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    The number of attempts a student get on this assignment. This is not a hard limit, but it makes the work of the examiners easier because the system will close groups (leaving students unable to deliver more attempts) when they have this many published feedbacks. Examiners can open closed groups, and they are notified when a group is automatically closed. Leave this empty if you do not want to use this feature.
+                Type
+                    Integer
+        
+
+    period
+        *Expands to the following fields:*
+        
+            parentnode__short_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+                Type
+                    String
+        
+            parentnode__long_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    A longer name, more descriptive than "Short name". This is the name visible to students.
+                Type
+                    String
+        
+            parentnode__parentnode
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Subject`
+                About the field:
+                    Autogenerated identifier.
+                Type
+                    Integer
+        
+
+    subject
+        *Expands to the following fields:*
+        
+            parentnode__parentnode__short_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Subject`
+                About the field:
+                    Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+                Type
+                    String
+        
+            parentnode__parentnode__long_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Subject`
+                About the field:
+                    A longer name, more descriptive than "Short name". This is the name visible to students.
+                Type
+                    String
+        
+
+
+
+
+
+
+
+
+
+
+*********************
+Response
+*********************
+
+On success
+##########
+
+
+Example
+------------------------
+
+*note that the is wrong in the example. The id is always unique. However, the
+example is generated from a non-varying dataset.*
+
+.. code-block:: javascript
+
+    200 OK
+
+    {
+        total: 20,
+        items: [
+            { id: 15,
+              parentnode: 15,
+              short_name: "my_example001_value",
+              long_name: "My example value",
+              publishing_time: "2010-02-22 22:32:10" },
+            { id: 15,
+              parentnode: 15,
+              short_name: "my_example001_value",
+              long_name: "My example value",
+              publishing_time: "2010-02-22 22:32:10" },
+            ...
+        ]
+    }
+
+
+Success response details
+------------------------
+
+Responds with HTTP code *200* and a *JSON encoded* dict containing the list of
+results and the *total* number of items found before applying ``limit`` and
+``start``. Each result in the
+list is a JSON object where the *key* is a fieldname and the associated value is
+the *value* for that field. The result always contains the following fields:
+
+    
+        id
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Autogenerated identifier.
+            Type
+                Integer
+    
+        parentnode
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Period`
+            About the field:
+                Autogenerated identifier.
+            Type
+                Integer
+    
+        short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+        publishing_time
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                The time when the assignment is to be published (visible to students and examiners).
+            Type
+                DateTime string (YYYY-MM-DD hh:mm:ss)
+    
+
+
+However, there may be more fields if specified with the ``result_fieldgroups``
+request parameter.
+
+
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`.

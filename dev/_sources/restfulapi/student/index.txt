@@ -1,0 +1,266 @@
+.. _restful_apistudent:
+
+===============================================================
+Student
+===============================================================
+
+.. toctree::
+    :hidden:
+
+    student_restfulsimplifiedsubject_details_read
+    student_restfulsimplifiedsubject_details_search
+    student_restfulsimplifiedperiod_details_read
+    student_restfulsimplifiedperiod_details_search
+    student_restfulsimplifiedassignment_details_read
+    student_restfulsimplifiedassignment_details_search
+    student_restfulsimplifiedassignmentgroup_details_read
+    student_restfulsimplifiedassignmentgroup_details_search
+    student_restfulsimplifiedassignmentgroup_details_create
+    student_restfulsimplifieddelivery_details_read
+    student_restfulsimplifieddelivery_details_search
+    student_restfulsimplifieddelivery_details_delete
+    student_restfulsimplifieddeadline_details_read
+    student_restfulsimplifieddeadline_details_search
+    student_restfulsimplifiedstaticfeedback_details_read
+    student_restfulsimplifiedstaticfeedback_details_search
+    student_restfulsimplifiedfilemeta_details_read
+    student_restfulsimplifiedfilemeta_details_search
+    student_restfulsimplifiedfilemeta_details_create
+
+
+Subject
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifiedsubject_details_search.html">GET&nbsp;/student/restfulsimplifiedsubject/</a></th>
+        <td>Search for Subjects.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedsubject_details_read.html">GET&nbsp;/student/restfulsimplifiedsubject/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Subject.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Period
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifiedperiod_details_search.html">GET&nbsp;/student/restfulsimplifiedperiod/</a></th>
+        <td>Search for Periods.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedperiod_details_read.html">GET&nbsp;/student/restfulsimplifiedperiod/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Period.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Assignment
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifiedassignment_details_search.html">GET&nbsp;/student/restfulsimplifiedassignment/</a></th>
+        <td>Search for Assignments.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedassignment_details_read.html">GET&nbsp;/student/restfulsimplifiedassignment/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Assignment.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+AssignmentGroup
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifiedassignmentgroup_details_search.html">GET&nbsp;/student/restfulsimplifiedassignmentgroup/</a></th>
+        <td>Search for assignment groups.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedassignmentgroup_details_read.html">GET&nbsp;/student/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a assignment group.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedassignmentgroup_details_create.html">POST&nbsp;/student/restfulsimplifiedassignmentgroup/</a></th>
+        <td>Create a assignment group.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Delivery
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifieddelivery_details_search.html">GET&nbsp;/student/restfulsimplifieddelivery/</a></th>
+        <td>Search for Deliveries.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifieddelivery_details_read.html">GET&nbsp;/student/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Delivery.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifieddelivery_details_delete.html">DELETE&nbsp;/student/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Delete a Delivery.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Deadline
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifieddeadline_details_search.html">GET&nbsp;/student/restfulsimplifieddeadline/</a></th>
+        <td>Search for Deadlines.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifieddeadline_details_read.html">GET&nbsp;/student/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Deadline.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+StaticFeedback
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifiedstaticfeedback_details_search.html">GET&nbsp;/student/restfulsimplifiedstaticfeedback/</a></th>
+        <td>Search for Static feedbacks.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedstaticfeedback_details_read.html">GET&nbsp;/student/restfulsimplifiedstaticfeedback/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Static feedback.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+FileMeta
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="student_restfulsimplifiedfilemeta_details_search.html">GET&nbsp;/student/restfulsimplifiedfilemeta/</a></th>
+        <td>Search for FileMetas.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedfilemeta_details_read.html">GET&nbsp;/student/restfulsimplifiedfilemeta/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a FileMeta.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifiedfilemeta_details_create.html">POST&nbsp;/student/restfulsimplifiedfilemeta/</a></th>
+        <td>Create a FileMeta.</td>
+    </tr>
+        </tbody>
+    </table>

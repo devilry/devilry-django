@@ -53,6 +53,7 @@
 <span class="kn">from</span> <span class="nn">node</span> <span class="kn">import</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">subject</span> <span class="kn">import</span> <span class="n">Subject</span>
 <span class="kn">from</span> <span class="nn">period</span> <span class="kn">import</span> <span class="n">Period</span>
+<span class="kn">from</span> <span class="nn">relateduser</span> <span class="kn">import</span> <span class="n">RelatedExaminer</span><span class="p">,</span> <span class="n">RelatedStudent</span>
 <span class="kn">from</span> <span class="nn">assignment</span> <span class="kn">import</span> <span class="n">Assignment</span>
 <span class="kn">from</span> <span class="nn">assignment_group</span> <span class="kn">import</span> <span class="n">AssignmentGroup</span>
 <span class="kn">from</span> <span class="nn">delivery</span> <span class="kn">import</span> <span class="n">Delivery</span>
@@ -60,8 +61,11 @@
 <span class="kn">from</span> <span class="nn">candidate</span> <span class="kn">import</span> <span class="n">Candidate</span>
 <span class="kn">from</span> <span class="nn">static_feedback</span> <span class="kn">import</span> <span class="n">StaticFeedback</span>
 <span class="kn">from</span> <span class="nn">filemeta</span> <span class="kn">import</span> <span class="n">FileMeta</span>
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;AbstractIsAdmin&quot;</span><span class="p">,</span> <span class="s">&quot;AbstractIsExaminer&quot;</span><span class="p">,</span> <span class="s">&quot;AbstractIsCandidate&quot;</span><span class="p">,</span> <span class="s">&quot;BaseNode&quot;</span><span class="p">,</span> <span class="s">&quot;Node&quot;</span><span class="p">,</span> <span class="s">&quot;Subject&quot;</span><span class="p">,</span> <span class="s">&quot;Period&quot;</span><span class="p">,</span> <span class="s">&quot;Assignment&quot;</span><span class="p">,</span> <span class="s">&quot;AssignmentGroup&quot;</span><span class="p">,</span> <span class="s">&quot;Delivery&quot;</span><span class="p">,</span> <span class="s">&quot;Deadline&quot;</span><span class="p">,</span>
-           <span class="s">&quot;Candidate&quot;</span><span class="p">,</span> <span class="s">&quot;StaticFeedback&quot;</span><span class="p">,</span> <span class="s">&quot;FileMeta&quot;</span><span class="p">]</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;AbstractIsAdmin&quot;</span><span class="p">,</span> <span class="s">&quot;AbstractIsExaminer&quot;</span><span class="p">,</span> <span class="s">&quot;AbstractIsCandidate&quot;</span><span class="p">,</span>
+           <span class="s">&quot;BaseNode&quot;</span><span class="p">,</span> <span class="s">&quot;Node&quot;</span><span class="p">,</span> <span class="s">&quot;Subject&quot;</span><span class="p">,</span> <span class="s">&quot;Period&quot;</span><span class="p">,</span> <span class="s">&#39;RelatedExaminer&#39;</span><span class="p">,</span>
+           <span class="s">&#39;RelatedStudent&#39;</span><span class="p">,</span> <span class="s">&quot;Assignment&quot;</span><span class="p">,</span> <span class="s">&quot;AssignmentGroup&quot;</span><span class="p">,</span> <span class="s">&quot;Delivery&quot;</span><span class="p">,</span>
+           <span class="s">&quot;Deadline&quot;</span><span class="p">,</span> <span class="s">&quot;Candidate&quot;</span><span class="p">,</span> <span class="s">&quot;StaticFeedback&quot;</span><span class="p">,</span> <span class="s">&quot;FileMeta&quot;</span><span class="p">)</span>
 </pre></div>
 
           </div>

@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="devilry.apps.examiner.simplified — Simplifed API for examiners" href="examiner.simplified.html" />
+    <link rel="prev" title="devilry.apps.administrator.simplified — Simplifed API for administrators" href="administrator.simplified.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examiner.simplified.html" title="devilry.apps.examiner.simplified — Simplifed API for examiners"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="administrator.simplified.html" title="devilry.apps.administrator.simplified — Simplifed API for administrators"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="devilry-apps-student-simplifiedmetabases-metaclasses-for-the-simplified-classes">
+<span id="apps-student-simplifiedmetabases"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases</span></tt> &#8212; Metaclasses for the Simplified classes<a class="headerlink" href="#devilry-apps-student-simplifiedmetabases-metaclasses-for-the-simplified-classes" title="Permalink to this headline">¶</a></h1>
+<p>Classes defining which fields can be searched for and what fields will be
+returned from methods in the classes in the Simplified API</p>
+<div class="section" id="simplified-meta">
+<h2>Simplified Meta<a class="headerlink" href="#simplified-meta" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="node">
+<h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedNodeMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedNodeMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a Node object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="subject">
+<h3>Subject<a class="headerlink" href="#subject" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedSubjectMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedSubjectMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a Subject object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Subject</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="period">
+<h3>Period<a class="headerlink" href="#period" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedPeriodMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedPeriodMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a Period object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Period</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="assignment">
+<h3>Assignment<a class="headerlink" href="#assignment" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedAssignmentMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedAssignmentMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for an Assignment object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Assignment</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="assignmentgroup">
+<h3>AssignmentGroup<a class="headerlink" href="#assignmentgroup" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedAssignmentGroupMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedAssignmentGroupMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for an AssignmentGroup object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">AssignmentGroup</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="deadline">
+<h3>Deadline<a class="headerlink" href="#deadline" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedDeadlineMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedDeadlineMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a Deadline object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Deadline</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="delivery">
+<h3>Delivery<a class="headerlink" href="#delivery" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedDeliveryMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedDeliveryMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a Delivery object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Delivery</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="staticfeedback">
+<h3>StaticFeedback<a class="headerlink" href="#staticfeedback" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedStaticFeedbackMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedStaticFeedbackMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a StaticFeedback object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">StaticFeedback</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="filemeta">
+<h3>FileMeta<a class="headerlink" href="#filemeta" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin">
+<em class="property">class </em><tt class="descclassname">devilry.apps.student.simplifiedmetabases.</tt><tt class="descname">SimplifiedFileMetaMetaMixin</tt><a class="reference internal" href="_modules/devilry/apps/student/simplifiedmetabases.html#SimplifiedFileMetaMetaMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines the django model to be used, resultfields returned by
+search and which fields can be used to search for a FileMeta object
+using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">FileMeta</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases</span></tt> &#8212; Metaclasses for the Simplified classes</a><ul>
+<li><a class="reference internal" href="#simplified-meta">Simplified Meta</a><ul>
+<li><a class="reference internal" href="#node">Node</a></li>
+<li><a class="reference internal" href="#subject">Subject</a></li>
+<li><a class="reference internal" href="#period">Period</a></li>
+<li><a class="reference internal" href="#assignment">Assignment</a></li>
+<li><a class="reference internal" href="#assignmentgroup">AssignmentGroup</a></li>
+<li><a class="reference internal" href="#deadline">Deadline</a></li>
+<li><a class="reference internal" href="#delivery">Delivery</a></li>
+<li><a class="reference internal" href="#staticfeedback">StaticFeedback</a></li>
+<li><a class="reference internal" href="#filemeta">FileMeta</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="administrator.simplified.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">devilry.apps.administrator.simplified</span></tt> &#8212; Simplifed API for administrators</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examiner.simplified.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">devilry.apps.examiner.simplified</span></tt> &#8212; Simplifed API for examiners</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/metabases.simplified.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examiner.simplified.html" title="devilry.apps.examiner.simplified — Simplifed API for examiners"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="administrator.simplified.html" title="devilry.apps.administrator.simplified — Simplifed API for administrators"
+             >previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

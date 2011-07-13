@@ -23,6 +23,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes" href="metabases.simplified.html" />
     <link rel="prev" title="devilry.utils.devilry_email" href="utils.devilry_email.html" /> 
   </head>
   <body>
@@ -36,6 +37,9 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="metabases.simplified.html" title="devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
           <a href="utils.devilry_email.html" title="devilry.utils.devilry_email"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
@@ -48,40 +52,2080 @@
           <div class="body">
             
   <div class="section" id="devilry-apps-administrator-simplified-simplifed-api-for-administrators">
-<span id="apps-administrator-simplified"></span><h1><a class="reference internal" href="#module-devilry.apps.administrator.simplified" title="devilry.apps.administrator.simplified"><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.administrator.simplified</span></tt></a> &#8212; Simplifed API for administrators<a class="headerlink" href="#devilry-apps-administrator-simplified-simplifed-api-for-administrators" title="Permalink to this headline">¶</a></h1>
+<span id="apps-administrator-simplified"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.administrator.simplified</span></tt> &#8212; Simplifed API for administrators<a class="headerlink" href="#devilry-apps-administrator-simplified-simplifed-api-for-administrators" title="Permalink to this headline">¶</a></h1>
 <p>The administrator simplified API. This API is a simplified wrapper of
 <a class="reference internal" href="core.models.html#devilry-apps-core-models"><em>devilry.apps.core.models &#8212; Devilry core datastructure</em></a> for administrators. Every action requires
 the given user to be administrator on the object being manipulated.</p>
-<div class="section" id="module-devilry.apps.administrator.simplified">
-<span id="api"></span><h2>API<a class="headerlink" href="#module-devilry.apps.administrator.simplified" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="simplified-api">
+<h2>Simplified API<a class="headerlink" href="#simplified-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="node">
+<h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="devilry.apps.administrator.simplified.SimplifiedNode">
 <em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedNode</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveBase</span></tt></p>
-<p>Simplified wrapper for <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt>.</p>
+<p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedNode.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a Node object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedNode.create_searchqryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all node-objects where given <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.create">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.delete">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.insecure_read_model">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">insecure_read_model</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.insecure_read_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a django model object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to
+view this object, or if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to <tt class="docutils literal"><span class="pre">obj</span></tt>, and raise
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.update">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">update</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the given
+<tt class="docutils literal"><span class="pre">obj</span></tt>, and raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="subject">
+<h3>Subject<a class="headerlink" href="#subject" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="devilry.apps.administrator.simplified.SimplifiedSubject">
 <em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedSubject</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedSubject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveBase</span></tt></p>
 <p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedSubject.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a Subject object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Subject</span></tt></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.create">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all objects of this type that matches arguments
+given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.delete">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.insecure_read_model">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">insecure_read_model</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.insecure_read_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a django model object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to
+view this object, or if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to <tt class="docutils literal"><span class="pre">obj</span></tt>, and raise
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.update">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">update</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the given
+<tt class="docutils literal"><span class="pre">obj</span></tt>, and raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="period">
+<h3>Period<a class="headerlink" href="#period" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="devilry.apps.administrator.simplified.SimplifiedPeriod">
 <em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedPeriod</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedPeriod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveBase</span></tt></p>
 <p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedPeriod.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a Period object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Period</span></tt></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.create">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all objects of this type that matches arguments
+given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.delete">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.insecure_read_model">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">insecure_read_model</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.insecure_read_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a django model object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to
+view this object, or if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to <tt class="docutils literal"><span class="pre">obj</span></tt>, and raise
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.update">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">update</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the given
+<tt class="docutils literal"><span class="pre">obj</span></tt>, and raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="assignment">
+<h3>Assignment<a class="headerlink" href="#assignment" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="devilry.apps.administrator.simplified.SimplifiedAssignment">
 <em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedAssignment</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedAssignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveBase</span></tt></p>
 <p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedAssignment.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on an Assignment object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Assignment</span></tt></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.create">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all objects of this type that matches arguments
+given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.delete">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.insecure_read_model">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">insecure_read_model</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.insecure_read_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a django model object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to
+view this object, or if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to <tt class="docutils literal"><span class="pre">obj</span></tt>, and raise
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.update">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">update</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the given
+<tt class="docutils literal"><span class="pre">obj</span></tt>, and raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="assignmentgroup">
+<h3>AssignmentGroup<a class="headerlink" href="#assignmentgroup" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup">
+<em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedAssignmentGroup</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedAssignmentGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveBase</span></tt></p>
+<p>Simplified wrapper for
+<a class="reference internal" href="core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedAssignmentGroup.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">AssignmentGroup</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.create">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all objects of this type that matches arguments
+given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.delete">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.insecure_read_model">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">insecure_read_model</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.insecure_read_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a django model object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to
+view this object, or if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to <tt class="docutils literal"><span class="pre">obj</span></tt>, and raise
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.update">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">update</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the given
+<tt class="docutils literal"><span class="pre">obj</span></tt>, and raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="deadline">
+<h3>Deadline<a class="headerlink" href="#deadline" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline">
+<em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedDeadline</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDeadline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.modelapi.SimplifiedModelApi</span></tt></p>
+<p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDeadline.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a Deadline object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Deadline</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDeadline.create_searchqryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all Deadline-objects where given <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user_obj</em>, <em>obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDeadline.read_authorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <tt class="docutils literal"><span class="pre">user</span></tt> is an administrator for the given
+Deadline <tt class="docutils literal"><span class="pre">obj</span></tt> or a superadmin, and raises <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A Deadline object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user_obj</em>, <em>obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDeadline.write_authorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the
+AssignmentGroup of the given Deadline <tt class="docutils literal"><span class="pre">obj</span></tt>, and raises
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A Deadline object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.create">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">create</tt><big>(</big><em>user</em>, <em>**field_values</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
+if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.delete">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>idorkw</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="delivery">
+<h3>Delivery<a class="headerlink" href="#delivery" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery">
+<em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedDelivery</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDelivery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.administrator.simplified.CanSaveBase</span></tt></p>
+<p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedDelivery.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a Delivery object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Delivery</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all objects of this type that matches arguments
+given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> where <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>**kwargs</strong> &#8211; A dict containing search-parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a django queryset</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to <tt class="docutils literal"><span class="pre">obj</span></tt>, and raise
+<tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; An object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.write_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">write_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.write_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given <tt class="docutils literal"><span class="pre">user</span></tt> can save changes to the given
+<tt class="docutils literal"><span class="pre">obj</span></tt>, and raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A object of the type this method is used in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="staticfeedback">
+<h3>StaticFeedback<a class="headerlink" href="#staticfeedback" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback">
+<em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedStaticFeedback</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedStaticFeedback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.modelapi.SimplifiedModelApi</span></tt></p>
+<p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedStaticFeedback.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a StaticFeedback object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">StaticFeedback</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedStaticFeedback.create_searchqryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all StaticFeedback-objects where given <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedStaticFeedback.read_authorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <tt class="docutils literal"><span class="pre">user</span></tt> is an administrator for the given
+StaticFeedback <tt class="docutils literal"><span class="pre">obj</span></tt> or a superadmin, and raises <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A StaticFeedback object</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="filemeta">
+<h3>FileMeta<a class="headerlink" href="#filemeta" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta">
+<em class="property">class </em><tt class="descclassname">devilry.apps.administrator.simplified.</tt><tt class="descname">SimplifiedFileMeta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedFileMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.modelapi.SimplifiedModelApi</span></tt></p>
+<p>Simplified wrapper for <a class="reference internal" href="core.models.html#devilry.apps.core.models.FileMeta" title="devilry.apps.core.models.FileMeta"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.FileMeta</span></tt></a>.</p>
+<dl class="class">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedFileMeta.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin</span></tt></a></p>
+<p>Defines what methods an Administrator can use on a FileMeta object using the Simplified API</p>
+<dl class="attribute">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.Meta.model">
+<tt class="descname">model</tt><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">FileMeta</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.create_searchqryset">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">create_searchqryset</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedFileMeta.create_searchqryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.create_searchqryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all FileMeta-objects where given <tt class="docutils literal"><span class="pre">user</span></tt> is admin or superadmin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; A django user object.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">a django queryset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.read_authorize">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">read_authorize</tt><big>(</big><em>user_obj</em>, <em>obj</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/administrator/simplified.html#SimplifiedFileMeta.read_authorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.read_authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <tt class="docutils literal"><span class="pre">user</span></tt> is an administrator for the given
+FileMeta <tt class="docutils literal"><span class="pre">obj</span></tt> or a superadmin, and raises <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; A django user object.</li>
+<li><strong>obj</strong> &#8211; A FileMeta object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.handle_fieldgroups">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be overridden to change fieldgroups before they are sent into the
+QryResultWrapper. For example, if certain fieldgroups contain
+senstive data for anonymous assignments, we can add those fieldgroups
+if a filter for a specific assignment is provided in <tt class="docutils literal"><span class="pre">filters</span></tt> and
+that assignment is not anonymous.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.read">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>idorkw</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the requested item and return a dict with the fields specified
+in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> and additional fields specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user</strong> &#8211; Django user object.</li>
+<li><strong>idorkw</strong> &#8211; Id of object or kwargs to the get method of the configured model.</li>
+<li><strong>result_fieldgroups</strong> &#8211; Fieldgroups from the additional_fieldgroups specified in
+<tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+if the object does not exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.search">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> &#8211; A string to search for within the model specified in
+<tt class="docutils literal"><span class="pre">Meta.model</span></tt>. The fields to search for is specified in
+<tt class="docutils literal"><span class="pre">Meta.search_fieldgroups</span></tt>.</li>
+<li><strong>start</strong> &#8211; Return results from this index in the results from the given
+<tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="simplified.html#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
+<li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
+fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
+Available values are the fieldgroups in
+<tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the search.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">QryResultWrapper</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 </div>
 
@@ -94,7 +2138,18 @@ the given user to be administrator on the object being manipulated.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">devilry.apps.administrator.simplified</span></tt> &#8212; Simplifed API for administrators</a><ul>
-<li><a class="reference internal" href="#module-devilry.apps.administrator.simplified">API</a></li>
+<li><a class="reference internal" href="#simplified-api">Simplified API</a><ul>
+<li><a class="reference internal" href="#node">Node</a></li>
+<li><a class="reference internal" href="#subject">Subject</a></li>
+<li><a class="reference internal" href="#period">Period</a></li>
+<li><a class="reference internal" href="#assignment">Assignment</a></li>
+<li><a class="reference internal" href="#assignmentgroup">AssignmentGroup</a></li>
+<li><a class="reference internal" href="#deadline">Deadline</a></li>
+<li><a class="reference internal" href="#delivery">Delivery</a></li>
+<li><a class="reference internal" href="#staticfeedback">StaticFeedback</a></li>
+<li><a class="reference internal" href="#filemeta">FileMeta</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -102,6 +2157,9 @@ the given user to be administrator on the object being manipulated.</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="utils.devilry_email.html"
                         title="previous chapter"><tt class="docutils literal"><span class="pre">devilry.utils.devilry_email</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="metabases.simplified.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases</span></tt> &#8212; Metaclasses for the Simplified classes</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/administrator.simplified.txt"
@@ -133,6 +2191,9 @@ the given user to be administrator on the object being manipulated.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="metabases.simplified.html" title="devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes"
+             >next</a> |</li>
         <li class="right" >
           <a href="utils.devilry_email.html" title="devilry.utils.devilry_email"
              >previous</a> |</li>

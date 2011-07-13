@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>GET /administrator/restfulsimplifiednode/ &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Administrator" href="index.html" />
+    <link rel="next" title="GET /administrator/restfulsimplifiednode/id" href="administrator_restfulsimplifiednode_details_read.html" />
+    <link rel="prev" title="Administrator" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifiednode_details_read.html" title="GET /administrator/restfulsimplifiednode/id"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Administrator"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="get-administrator-restfulsimplifiednode">
+<span id="administrator-restfulsimplifiednode-details-search"></span><h1>GET /administrator/restfulsimplifiednode/<a class="headerlink" href="#get-administrator-restfulsimplifiednode" title="Permalink to this headline">¶</a></h1>
+<p>Search for Nodes.</p>
+<p>The underlying data model searched is defined in <a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a>.
+The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
+<a class="reference internal" href="../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.search" title="devilry.apps.administrator.simplified.SimplifiedNode.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedNode.search()</span></tt></a>.</p>
+<p>The request parameters (below) all modify the result of the search. They are
+applied in the following order:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The <tt class="docutils literal"><span class="pre">query</span></tt> is executed.</li>
+<li>The result of the query is filtered through the <tt class="docutils literal"><span class="pre">filters</span></tt>.</li>
+<li>The result of the filtering is ordered as specified in <tt class="docutils literal"><span class="pre">orderby</span></tt>.</li>
+<li>The result of the ordering is limited by <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">limit</span></tt>.</li>
+</ol>
+</div></blockquote>
+<div class="section" id="request">
+<h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="request-example">
+<h3>Request example<a class="headerlink" href="#request-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">GET</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiednode</span><span class="o">/</span>
+
+<span class="p">{</span>
+    <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;icontains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;my_example001_value&quot;</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="s2">&quot;long_name&quot;</span><span class="p">],</span>
+    <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional-request-parameters">
+<h3>Optional request parameters<a class="headerlink" href="#optional-request-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Optional request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.</p>
+<div class="section" id="query">
+<h4>query<a class="headerlink" href="#query" title="Permalink to this headline">¶</a></h4>
+<p>A string to search for. If this is empty or not given, all
+Nodes that the authenticated user has access to is
+returned.</p>
+<p>If the string is not empty, the <tt class="docutils literal"><span class="pre">query</span></tt>-string is split on whitespace,
+resulting in a list of words. Every <em>word</em> in the list is searched for
+<em>case-insensitive</em> matches within the following fields:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>short_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>long_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="filters">
+<h4>filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h4>
+<p>Filters can be used to perform complex queries. The <tt class="docutils literal"><span class="pre">filters</span></tt> parameter is a
+list of filters, where each filter is a map with the following entries:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>field</dt>
+<dd>A field name.</dd>
+<dt>comp</dt>
+<dd>A comparison operator.</dd>
+<dt>value</dt>
+<dd>The value to filter on.</dd>
+</dl>
+</div></blockquote>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;icontains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;my_example001_value&quot;</span><span class="p">}]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Nodes can be filtered on the following <em>fields</em>:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>long_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">=&gt;</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>parentnode</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">=&gt;</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+<dt>short_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">=&gt;</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
+</dl>
+<p>Filters matching the following python compatible regular expressions:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">^(parentnode__)+id$</span></tt></dt>
+<dd>Supported comparison operators:
+<tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">=&gt;</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">^(parentnode__)+long_name$</span></tt></dt>
+<dd>Supported comparison operators:
+<tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">=&gt;</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">^(parentnode__)+short_name$</span></tt></dt>
+<dd>Supported comparison operators:
+<tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">=&gt;</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="orderby">
+<h4>orderby<a class="headerlink" href="#orderby" title="Permalink to this headline">¶</a></h4>
+<p>List of fieldnames. Order the result by these fields.
+Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for descending ordering.</p>
+</div>
+<div class="section" id="start">
+<h4>start<a class="headerlink" href="#start" title="Permalink to this headline">¶</a></h4>
+<p>After query, filters and orderby have been executed, the result is limited to
+the values from <em>start</em> to <em>start+limit</em>. Start defalts to <tt class="docutils literal"><span class="pre">0</span></tt>.</p>
+</div>
+<div class="section" id="limit">
+<h4>limit<a class="headerlink" href="#limit" title="Permalink to this headline">¶</a></h4>
+<p>Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="on-success">
+<h3>On success<a class="headerlink" href="#on-success" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<p><em>note that the is wrong in the example. The id is always unique. However, the
+example is generated from a non-varying dataset.</em></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="mi">200</span> <span class="nx">OK</span>
+
+<span class="p">{</span>
+    <span class="nx">total</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
+          <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
+          <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span> <span class="p">},</span>
+        <span class="p">...</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="success-response-details">
+<h4>Success response details<a class="headerlink" href="#success-response-details" title="Permalink to this headline">¶</a></h4>
+<p>Responds with HTTP code <em>200</em> and a <em>JSON encoded</em> dict containing the list of
+results and the <em>total</em> number of items found before applying <tt class="docutils literal"><span class="pre">limit</span></tt> and
+<tt class="docutils literal"><span class="pre">start</span></tt>. Each result in the
+list is a JSON object where the <em>key</em> is a fieldname and the associated value is
+the <em>value</em> for that field. The result always contains the following fields:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>id</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>parentnode</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>short_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>long_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Node" title="devilry.apps.core.models.Node"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Node</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="on-error">
+<h3>On error<a class="headerlink" href="#on-error" title="Permalink to this headline">¶</a></h3>
+<p>On errors, we respond with one of the <a class="reference internal" href="../../public_restful_api.html#restful-api-error-statuscodes"><em>HTTP Error status codes</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">GET /administrator/restfulsimplifiednode/</a><ul>
+<li><a class="reference internal" href="#request">Request</a><ul>
+<li><a class="reference internal" href="#request-example">Request example</a></li>
+<li><a class="reference internal" href="#optional-request-parameters">Optional request parameters</a><ul>
+<li><a class="reference internal" href="#query">query</a></li>
+<li><a class="reference internal" href="#filters">filters</a></li>
+<li><a class="reference internal" href="#orderby">orderby</a></li>
+<li><a class="reference internal" href="#start">start</a></li>
+<li><a class="reference internal" href="#limit">limit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#on-success">On success</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#success-response-details">Success response details</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#on-error">On error</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Administrator</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="administrator_restfulsimplifiednode_details_read.html"
+                        title="next chapter">GET /administrator/restfulsimplifiednode/id</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/restfulapi/administrator/administrator_restfulsimplifiednode_details_search.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifiednode_details_read.html" title="GET /administrator/restfulsimplifiednode/id"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Administrator"
+             >previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" >Administrator</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,380 @@
+.. _restful_apiadministrator:
+
+===============================================================
+Administrator
+===============================================================
+
+.. toctree::
+    :hidden:
+
+    administrator_restfulsimplifiednode_details_search
+    administrator_restfulsimplifiednode_details_read
+    administrator_restfulsimplifiednode_details_create
+    administrator_restfulsimplifiednode_details_update
+    administrator_restfulsimplifiednode_details_delete
+    administrator_restfulsimplifiedsubject_details_search
+    administrator_restfulsimplifiedsubject_details_read
+    administrator_restfulsimplifiedsubject_details_create
+    administrator_restfulsimplifiedsubject_details_update
+    administrator_restfulsimplifiedsubject_details_delete
+    administrator_restfulsimplifiedperiod_details_search
+    administrator_restfulsimplifiedperiod_details_read
+    administrator_restfulsimplifiedperiod_details_create
+    administrator_restfulsimplifiedperiod_details_update
+    administrator_restfulsimplifiedperiod_details_delete
+    administrator_restfulsimplifiedassignment_details_search
+    administrator_restfulsimplifiedassignment_details_read
+    administrator_restfulsimplifiedassignment_details_create
+    administrator_restfulsimplifiedassignment_details_update
+    administrator_restfulsimplifiedassignment_details_delete
+    administrator_restfulsimplifiedassignmentgroup_details_search
+    administrator_restfulsimplifiedassignmentgroup_details_read
+    administrator_restfulsimplifiedassignmentgroup_details_create
+    administrator_restfulsimplifiedassignmentgroup_details_update
+    administrator_restfulsimplifiedassignmentgroup_details_delete
+    administrator_restfulsimplifieddelivery_details_read
+    administrator_restfulsimplifieddelivery_details_search
+    administrator_restfulsimplifieddeadline_details_read
+    administrator_restfulsimplifieddeadline_details_search
+    administrator_restfulsimplifieddeadline_details_create
+    administrator_restfulsimplifieddeadline_details_delete
+    administrator_restfulsimplifiedstaticfeedback_details_read
+    administrator_restfulsimplifiedstaticfeedback_details_search
+    administrator_restfulsimplifiedfilemeta_details_read
+    administrator_restfulsimplifiedfilemeta_details_search
+
+
+Node
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiednode_details_search.html">GET&nbsp;/administrator/restfulsimplifiednode/</a></th>
+        <td>Search for Nodes.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiednode_details_read.html">GET&nbsp;/administrator/restfulsimplifiednode/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Node.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiednode_details_create.html">POST&nbsp;/administrator/restfulsimplifiednode/</a></th>
+        <td>Create a Node.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiednode_details_update.html">PUT&nbsp;/administrator/restfulsimplifiednode/<span class="restfulid">id</span></a></th>
+        <td>Update a Node.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiednode_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiednode/<span class="restfulid">id</span></a></th>
+        <td>Delete a Node.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Subject
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedsubject_details_search.html">GET&nbsp;/administrator/restfulsimplifiedsubject/</a></th>
+        <td>Search for Subjects.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedsubject_details_read.html">GET&nbsp;/administrator/restfulsimplifiedsubject/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Subject.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedsubject_details_create.html">POST&nbsp;/administrator/restfulsimplifiedsubject/</a></th>
+        <td>Create a Subject.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedsubject_details_update.html">PUT&nbsp;/administrator/restfulsimplifiedsubject/<span class="restfulid">id</span></a></th>
+        <td>Update a Subject.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedsubject_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedsubject/<span class="restfulid">id</span></a></th>
+        <td>Delete a Subject.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Period
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedperiod_details_search.html">GET&nbsp;/administrator/restfulsimplifiedperiod/</a></th>
+        <td>Search for Periods.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedperiod_details_read.html">GET&nbsp;/administrator/restfulsimplifiedperiod/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Period.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedperiod_details_create.html">POST&nbsp;/administrator/restfulsimplifiedperiod/</a></th>
+        <td>Create a Period.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedperiod_details_update.html">PUT&nbsp;/administrator/restfulsimplifiedperiod/<span class="restfulid">id</span></a></th>
+        <td>Update a Period.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedperiod_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedperiod/<span class="restfulid">id</span></a></th>
+        <td>Delete a Period.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Assignment
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignment_details_search.html">GET&nbsp;/administrator/restfulsimplifiedassignment/</a></th>
+        <td>Search for Assignments.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignment_details_read.html">GET&nbsp;/administrator/restfulsimplifiedassignment/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Assignment.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignment_details_create.html">POST&nbsp;/administrator/restfulsimplifiedassignment/</a></th>
+        <td>Create a Assignment.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignment_details_update.html">PUT&nbsp;/administrator/restfulsimplifiedassignment/<span class="restfulid">id</span></a></th>
+        <td>Update a Assignment.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignment_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedassignment/<span class="restfulid">id</span></a></th>
+        <td>Delete a Assignment.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+AssignmentGroup
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignmentgroup_details_search.html">GET&nbsp;/administrator/restfulsimplifiedassignmentgroup/</a></th>
+        <td>Search for assignment groups.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignmentgroup_details_read.html">GET&nbsp;/administrator/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a assignment group.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignmentgroup_details_create.html">POST&nbsp;/administrator/restfulsimplifiedassignmentgroup/</a></th>
+        <td>Create a assignment group.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignmentgroup_details_update.html">PUT&nbsp;/administrator/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
+        <td>Update a assignment group.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedassignmentgroup_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
+        <td>Delete a assignment group.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Delivery
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifieddelivery_details_search.html">GET&nbsp;/administrator/restfulsimplifieddelivery/</a></th>
+        <td>Search for Deliveries.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifieddelivery_details_read.html">GET&nbsp;/administrator/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Delivery.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Deadline
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifieddeadline_details_search.html">GET&nbsp;/administrator/restfulsimplifieddeadline/</a></th>
+        <td>Search for Deadlines.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifieddeadline_details_read.html">GET&nbsp;/administrator/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Deadline.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifieddeadline_details_create.html">POST&nbsp;/administrator/restfulsimplifieddeadline/</a></th>
+        <td>Create a Deadline.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifieddeadline_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
+        <td>Delete a Deadline.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+StaticFeedback
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedstaticfeedback_details_search.html">GET&nbsp;/administrator/restfulsimplifiedstaticfeedback/</a></th>
+        <td>Search for Static feedbacks.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedstaticfeedback_details_read.html">GET&nbsp;/administrator/restfulsimplifiedstaticfeedback/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Static feedback.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+FileMeta
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedfilemeta_details_search.html">GET&nbsp;/administrator/restfulsimplifiedfilemeta/</a></th>
+        <td>Search for FileMetas.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedfilemeta_details_read.html">GET&nbsp;/administrator/restfulsimplifiedfilemeta/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a FileMeta.</td>
+    </tr>
+        </tbody>
+    </table>

@@ -2,7 +2,7 @@
 
 
 ==========================================
-RESTful web service API
+Low level RESTful web service API
 ==========================================
 
 .. currentmodule:: devilry.restful
@@ -10,21 +10,6 @@ RESTful web service API
 http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services
 
 This API was first introduced in this `github issue <https://github.com/devilry/devilry-django/issues/93>`_
-
-HTTP status codes
-#####################################################################
-
-200 OK
-    The request was successful. The requested data is returned.
-400 Bad Request
-    A parameter is invalid. The data contains an error message.
-401 Unauthorized
-    Authorization required.
-403 Forbidden
-    Not authorized to access this page.
-404 Not found
-    Resource not found at the given url.
-
 
 
 Tutorial

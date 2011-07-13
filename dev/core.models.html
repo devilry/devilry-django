@@ -268,8 +268,8 @@ node-hierarchy:</p>
 </ul>
 </div></blockquote>
 <dl class="class">
-<dt id="devilry.apps.core.models.node.Node">
-<em class="property">class </em><tt class="descclassname">devilry.apps.core.models.node.</tt><tt class="descname">Node</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.node.Node" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.models.Node">
+<em class="property">class </em><tt class="descclassname">devilry.apps.core.models.</tt><tt class="descname">Node</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.basenode.BaseNode</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.model_utils.Etag</span></tt></p>
 <p>This class is typically used to represent a hierarchy of institutions, 
 faculties and departments.</p>
@@ -300,15 +300,15 @@ is always a <a class="reference internal" href="#node">Node</a>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.apps.core.models.node.Node.iter_childnodes">
-<tt class="descname">iter_childnodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/node.html#Node.iter_childnodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.node.Node.iter_childnodes" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.models.Node.iter_childnodes">
+<tt class="descname">iter_childnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node.iter_childnodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively iterates over all child nodes, and their child nodes.
 For a list of direct child nodes, use atribute child_nodes instead.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.apps.core.models.node.Node.clean">
-<tt class="descname">clean</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/node.html#Node.clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.node.Node.clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.models.Node.clean">
+<tt class="descname">clean</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node.clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the node, making sure it does not do something stupid.</p>
 <p>Always call this before save()! Read about validation here:
 <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/instances/#id1">http://docs.djangoproject.com/en/dev/ref/models/instances/#id1</a></p>
@@ -322,8 +322,8 @@ For a list of direct child nodes, use atribute child_nodes instead.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.core.models.node.Node.get_by_path_kw">
-<em class="property">classmethod </em><tt class="descname">get_by_path_kw</tt><big>(</big><em>pathlist</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/node.html#Node.get_by_path_kw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.node.Node.get_by_path_kw" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.models.Node.get_by_path_kw">
+<em class="property">classmethod </em><tt class="descname">get_by_path_kw</tt><big>(</big><em>pathlist</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node.get_by_path_kw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used by <tt class="xref py py-meth docutils literal"><span class="pre">get_by_path()</span></tt> to create the required kwargs for
 Node.objects.get(). Might be a starting point for more sophisticated
 queries including paths. Example:</p>
@@ -341,8 +341,8 @@ queries including paths. Example:</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.core.models.node.Node.get_by_path">
-<em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/node.html#Node.get_by_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.node.Node.get_by_path" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.models.Node.get_by_path">
+<em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node.get_by_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a node by path.</p>
 <p>Raises <tt class="xref py py-exc docutils literal"><span class="pre">Node.DoesNotExist</span></tt> if the query does not match.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -621,6 +621,13 @@ students immediately? If not, an administrator have to publish
 feedbacks. See also <a class="reference internal" href="#devilry.apps.core.models.model_utils.Deadline.feedbacks_published" title="devilry.apps.core.models.model_utils.Deadline.feedbacks_published"><tt class="xref py py-attr docutils literal"><span class="pre">Deadline.feedbacks_published</span></tt></a>.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="devilry.apps.core.models.Assignment.update_candidates_identifer">
+<tt class="descname">update_candidates_identifer</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.update_candidates_identifer" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the anonymous flag is changed, update the identifer on all
+the candidates on this assignment.</p>
+</dd></dl>
+
 <dl class="classmethod">
 <dt id="devilry.apps.core.models.Assignment.get_by_path">
 <em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.get_by_path" title="Permalink to this definition">¶</a></dt>
@@ -735,7 +742,7 @@ which is always an <a class="reference internal" href="#assignment">Assignment</
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.AssignmentGroup.name">
 <tt class="descname">name</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.AssignmentGroup.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>A optional name for the group.</p>
+<dd><p>An optional name for the group.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -990,9 +997,9 @@ comma (<tt class="docutils literal"><span class="pre">','</span></tt>).</p>
 <h2>Deadline<a class="headerlink" href="#deadline" title="Permalink to this headline">¶</a></h2>
 <p>Each <tt class="xref py py-class docutils literal"><span class="pre">AssignmentGroup</span></tt> have zero or more deadlines.</p>
 <dl class="class">
-<dt id="devilry.apps.core.models.deadline.Deadline">
-<em class="property">class </em><tt class="descclassname">devilry.apps.core.models.deadline.</tt><tt class="descname">Deadline</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/deadline.html#Deadline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.deadline.Deadline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_candidate.AbstractIsCandidate</span></tt></p>
+<dt id="devilry.apps.core.models.Deadline">
+<em class="property">class </em><tt class="descclassname">devilry.apps.core.models.</tt><tt class="descname">Deadline</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Deadline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_candidate.AbstractIsCandidate</span></tt></p>
 <blockquote>
 <div><dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Deadline.assignment_group">
@@ -1046,8 +1053,8 @@ instead, with the following values:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.apps.core.models.deadline.Deadline.clean">
-<tt class="descname">clean</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/core/models/deadline.html#Deadline.clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.core.models.deadline.Deadline.clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.core.models.Deadline.clean">
+<tt class="descname">clean</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Deadline.clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the deadline.</p>
 <p>Always call this before save()! Read about validation here:
 <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/instances/#id1">http://docs.djangoproject.com/en/dev/ref/models/instances/#id1</a></p>
@@ -1307,15 +1314,15 @@ the given student is candidate.</p>
 <dl class="class">
 <dt id="devilry.apps.core.models.FileMeta">
 <em class="property">class </em><tt class="descclassname">devilry.apps.core.models.</tt><tt class="descname">FileMeta</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.FileMeta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_candidate.AbstractIsCandidate</span></tt></p>
 <p>Represents the metadata for a file belonging to a <a class="reference internal" href="#delivery">Delivery</a>.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.FileMeta.delivery">
 <tt class="descname">delivery</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.FileMeta.delivery" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#onetoonefield">django.db.models.OneToOneField</a> that points to the <a class="reference internal" href="#delivery">Delivery</a> to
-be given feedback.</p>
-</dd></dl>
+<dd></dd></dl>
 
+<p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#onetoonefield">django.db.models.OneToOneField</a> that points to the <a class="reference internal" href="#delivery">Delivery</a> to
+be given feedback.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.FileMeta.filename">
 <tt class="descname">filename</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.FileMeta.filename" title="Permalink to this definition">¶</a></dt>

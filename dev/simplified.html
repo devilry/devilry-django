@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
-    <link rel="next" title="RESTful web service API" href="restful.html" />
+    <link rel="next" title="Low level RESTful web service API" href="restful.html" />
     <link rel="prev" title="How to write a plugin" href="plugins.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="restful.html" title="RESTful web service API"
+          <a href="restful.html" title="Low level RESTful web service API"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="plugins.html" title="How to write a plugin"
@@ -263,6 +263,12 @@ a list/tuple/iterable of field names.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="devilry.simplified.FieldSpec.all_aslist">
+<tt class="descname">all_aslist</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.simplified.FieldSpec.all_aslist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all fields in always_available_fields and in additional_fieldgroups.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="devilry.simplified.FieldSpec.aslist">
 <tt class="descname">aslist</tt><big>(</big><em>fieldgroups=None</em><big>)</big><a class="headerlink" href="#devilry.simplified.FieldSpec.aslist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the fields in <tt class="docutils literal"><span class="pre">always_available_fields</span></tt> and all
@@ -276,6 +282,12 @@ fields in any of the <tt class="docutils literal"><span class="pre">fieldgroups<
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.simplified.FieldSpec.iterfieldnames">
+<tt class="descname">iterfieldnames</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.simplified.FieldSpec.iterfieldnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over all fieldnames in this FieldSpec.</p>
 </dd></dl>
 
 <dl class="method">
@@ -330,7 +342,7 @@ it defaults to <tt class="docutils literal"><span class="pre">resultfields.local
 the primary key field removed if it is a AutoField.</p>
 <p class="last">Only fields in this set may be given as <tt class="docutils literal"><span class="pre">field_values</span></tt>
 to <tt class="docutils literal"><span class="pre">update()</span></tt> or <tt class="docutils literal"><span class="pre">create()</span></tt>. Furthermore, these
-fields are used to generate forms in <a class="reference internal" href="restful.html#restful"><em>RESTful web service API</em></a>.</p>
+fields are used to generate forms in <a class="reference internal" href="restful.html#restful"><em>Low level RESTful web service API</em></a>.</p>
 </dd>
 <dt>editable_fieldgroups</dt>
 <dd>A list of result field groups which should at least contain
@@ -359,12 +371,8 @@ Required if <tt class="docutils literal"><span class="pre">&quot;search&quot;</s
 <div><dl class="docutils">
 <dt>_meta</dt>
 <dd>Alias for the Meta class (above).</dd>
-</dl>
-<p>_meta.editablefields
-supports_create</p>
-<blockquote>
-<div>Boolean variable: is <tt class="docutils literal"><span class="pre">'create'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</div></blockquote>
-<dl class="docutils">
+<dt>supports_create</dt>
+<dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'create'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
 <dt>supports_read</dt>
 <dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'read'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
 <dt>supports_insecure_read_model</dt>
@@ -393,6 +401,8 @@ supports_create</p>
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
 </tr>
 <tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
 <tr><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
@@ -431,6 +441,9 @@ is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefield
 </ul>
 </td>
 </tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the deleted object.</p>
+</td>
+</tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
 <tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object, or
 if the object does not exist.</p>
@@ -442,7 +455,7 @@ if the object does not exist.</p>
 
 <dl class="classmethod">
 <dt id="devilry.simplified.SimplifiedModelApi.handle_fieldgroups">
-<em class="property">classmethod </em><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>**validatedfilters</em><big>)</big><a class="headerlink" href="#devilry.simplified.SimplifiedModelApi.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">handle_fieldgroups</tt><big>(</big><em>user</em>, <em>result_fieldgroups</em>, <em>search_fieldgroups</em>, <em>filters</em><big>)</big><a class="headerlink" href="#devilry.simplified.SimplifiedModelApi.handle_fieldgroups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Can be overridden to change fieldgroups before they are sent into the
 QryResultWrapper. For example, if certain fieldgroups contain
 senstive data for anonymous assignments, we can add those fieldgroups
@@ -452,9 +465,6 @@ that assignment is not anonymous.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>validatedfilters</strong> &#8211; Filters which are applied to the QuerySet returned by
-<a class="reference internal" href="#devilry.simplified.SimplifiedModelApi.create_searchqryset" title="devilry.simplified.SimplifiedModelApi.create_searchqryset"><tt class="xref py py-meth docutils literal"><span class="pre">create_searchqryset()</span></tt></a>. Do <strong>NOT</strong> change this.</td>
-</tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">(result_fieldgroups, search_fieldgroups)</td>
 </tr>
 </tbody>
@@ -513,7 +523,7 @@ if the object does not exist.</p>
 
 <dl class="classmethod">
 <dt id="devilry.simplified.SimplifiedModelApi.search">
-<em class="property">classmethod </em><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>**filters</em><big>)</big><a class="headerlink" href="#devilry.simplified.SimplifiedModelApi.search" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">search</tt><big>(</big><em>user</em>, <em>query=''</em>, <em>start=0</em>, <em>limit=50</em>, <em>orderby=None</em>, <em>result_fieldgroups=None</em>, <em>search_fieldgroups=None</em>, <em>filters={}</em><big>)</big><a class="headerlink" href="#devilry.simplified.SimplifiedModelApi.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -526,22 +536,19 @@ if the object does not exist.</p>
 <li><strong>start</strong> &#8211; Return results from this index in the results from the given
 <tt class="docutils literal"><span class="pre">query</span></tt>. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
 <li><strong>limit</strong> &#8211; Limit results to this number of items. Defaults to <tt class="docutils literal"><span class="pre">50</span></tt>.</li>
-<li><strong>orderby</strong> (List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
-descending ordering.) &#8211; Order the result by these fields. For example, if
-<tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and long_name fields,
-we can order our results by ascending short_name and descending
-long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span> <span class="pre">'-long_name')</span></tt>.
-This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
-<em class="xref std std-ref">devilry.simplified.simplified_modelapi</em>).</li>
+<li><strong>orderby</strong> &#8211; List of fieldnames. Fieldnames can be prefixed by <tt class="docutils literal"><span class="pre">'-'</span></tt> for
+descending ordering.  Order the result by these fields. For
+example, if <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> contains the short_name and
+long_name fields, we can order our results by ascending short_name
+and descending long_name as this: <tt class="docutils literal"><span class="pre">orderby=('short_name',</span>
+<span class="pre">'-long_name')</span></tt>.  This defaults to <tt class="docutils literal"><span class="pre">cls._meta.ordering</span></tt> (see
+<a class="reference internal" href="#devilry.simplified.simplified_modelapi" title="devilry.simplified.simplified_modelapi"><tt class="xref py py-func docutils literal"><span class="pre">devilry.simplified.simplified_modelapi()</span></tt></a>).</li>
 <li><strong>result_fieldgroups</strong> &#8211; Adds additional fields to the result. Available values are the
 fieldgroups in <tt class="docutils literal"><span class="pre">Meta.resultfields.additional_fieldgroups</span></tt>.</li>
 <li><strong>search_fieldgroups</strong> &#8211; Adds additional fields which are searched for the <tt class="docutils literal"><span class="pre">query</span></tt> string.
 Available values are the fieldgroups in
 <tt class="docutils literal"><span class="pre">Meta.searchfields.additional_fieldgroups</span></tt>.</li>
-<li><strong>filters</strong> &#8211; Filters which are applied to the QuerySet returned by
-<a class="reference internal" href="#devilry.simplified.SimplifiedModelApi.create_searchqryset" title="devilry.simplified.SimplifiedModelApi.create_searchqryset"><tt class="xref py py-meth docutils literal"><span class="pre">create_searchqryset()</span></tt></a>. These filters are validated
-by <a class="reference internal" href="#devilry.simplified.FilterSpecs.validate" title="devilry.simplified.FilterSpecs.validate"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpecs.validate()</span></tt></a> before
-they are applied.</li>
+<li><strong>filters</strong> &#8211; List of filters that can be parsed by <tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.FilterSpec.parse()</span></tt>.</li>
 </ul>
 </td>
 </tr>
@@ -569,7 +576,10 @@ they are applied.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Field_values :</th><td class="field-body"><p class="first">The values to set on the given object.</p>
+<tr class="field"><th class="field-name">Param :</th><td class="field-body"><p class="first">field_values: The values to set on the given object.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the updated object.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
@@ -586,18 +596,31 @@ is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefield
 
 <dl class="class">
 <dt id="devilry.simplified.FilterSpecs">
-<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterSpecs</tt><big>(</big><em>*filterspecs</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpecs" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterSpecs</tt><big>(</big><em>*filterspecs_and_foreignkeyfilterspecs</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpecs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Container of <a class="reference internal" href="#devilry.simplified.FilterSpec" title="devilry.simplified.FilterSpec"><tt class="xref py py-class docutils literal"><span class="pre">FilterSpec</span></tt></a> and <a class="reference internal" href="#devilry.simplified.ForeignFilterSpec" title="devilry.simplified.ForeignFilterSpec"><tt class="xref py py-class docutils literal"><span class="pre">ForeignFilterSpec</span></tt></a>.</p>
 <dl class="method">
-<dt id="devilry.simplified.FilterSpecs.validate">
-<tt class="descname">validate</tt><big>(</big><em>filters</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpecs.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the given filters.</p>
+<dt id="devilry.simplified.FilterSpecs.iterfieldnames">
+<tt class="descname">iterfieldnames</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpecs.iterfieldnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over all fieldnames in this FilterSpecs. Used in
+&#64;simplified_modelapi to validate the fields in this FilterSpecs. Note
+that PatternFilterSpec are not validated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.simplified.FilterSpecs.parse">
+<tt class="descname">parse</tt><big>(</big><em>filters</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpecs.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the given filters and translate them into a Django query.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filters</strong> &#8211; Dict where keys are filter fields.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filters</strong> &#8211; <p>A list of filters on the following format:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[{</span><span class="s">&#39;field&#39;</span><span class="p">:</span> <span class="s">&#39;myfieldname&#39;</span><span class="p">,</span> <span class="s">&#39;comp&#39;</span><span class="p">:</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+ <span class="p">{</span><span class="s">&#39;field&#39;</span><span class="p">:</span> <span class="s">&#39;myotherfieldname&#39;</span><span class="p">,</span> <span class="s">&#39;comp&#39;</span><span class="p">:</span> <span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="s">&#39;myname&#39;</span><span class="p">}]</span>
+</pre></div>
+</div>
+</td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws FilterValidationError:</th></tr>
 <tr><td>&nbsp;</td><td class="field-body">If any of the <tt class="docutils literal"><span class="pre">filters</span></tt> are not in the
@@ -611,19 +634,17 @@ filterspecs.</td>
 
 <dl class="class">
 <dt id="devilry.simplified.FilterSpec">
-<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterSpec</tt><big>(</big><em>fieldname</em>, <em>operations=(''</em>, <em>'exact'</em>, <em>'iexact'</em>, <em>'lt'</em>, <em>'gt'</em>, <em>'lte'</em>, <em>'gte'</em>, <em>'contains'</em>, <em>'icontains'</em>, <em>'startswith'</em>, <em>'endswith')</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpec" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">FilterSpec</tt><big>(</big><em>fieldname</em>, <em>supported_comp=('exact'</em>, <em>'iexact'</em>, <em>'&lt;'</em>, <em>'&gt;'</em>, <em>'&lt;='</em>, <em>'=&gt;'</em>, <em>'contains'</em>, <em>'icontains'</em>, <em>'startswith'</em>, <em>'endswith')</em><big>)</big><a class="headerlink" href="#devilry.simplified.FilterSpec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>Specifies that a specific field can be filtered, and what filtering
-operation it can do. Filtering operations are those supported by Django,
-such as <em>exact</em> and <em>gte</em>.</p>
+<p>Specifies that a specific field can be filtered, and what <em>comp</em> it can
+use.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>fieldname</strong> &#8211; The field to allow filtering on.</li>
-<li><strong>operations</strong> &#8211; The allowed operations. Note that <tt class="docutils literal"><span class="pre">''</span></tt> is the same
-as <tt class="docutils literal"><span class="pre">'exact'</span></tt>.</li>
+<li><strong>supported_comp</strong> &#8211; The allowed <em>comp</em> for this field.</li>
 </ul>
 </td>
 </tr>
@@ -646,6 +667,15 @@ as <tt class="docutils literal"><span class="pre">'exact'</span></tt>.</li>
                               FilterSpec('short_name'),
                               FilterSpec('long_name'))</pre>
 </div>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.simplified.PatternFilterSpec">
+<em class="property">class </em><tt class="descclassname">devilry.simplified.</tt><tt class="descname">PatternFilterSpec</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.simplified.PatternFilterSpec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.filterspec.FilterSpec</span></tt></p>
+<p>Pattern based field spec.</p>
+<p><strong>NOTE</strong>: Should only be used when _really_ required, since it is less
+secure and slows down filter validation (which is done on each search()).</p>
 </dd></dl>
 
 <div class="section" id="module-devilry.simplified.utils">
@@ -701,7 +731,7 @@ each fieldname in <tt class="docutils literal"><span class="pre">fieldnames</spa
                         title="previous chapter">How to write a plugin</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="restful.html"
-                        title="next chapter">RESTful web service API</a></p>
+                        title="next chapter">Low level RESTful web service API</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/simplified.txt"
@@ -734,7 +764,7 @@ each fieldname in <tt class="docutils literal"><span class="pre">fieldnames</spa
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="restful.html" title="RESTful web service API"
+          <a href="restful.html" title="Low level RESTful web service API"
              >next</a> |</li>
         <li class="right" >
           <a href="plugins.html" title="How to write a plugin"
