@@ -19,9 +19,11 @@ def showhelp():
 
 def getcmdinfo(cmd):
     """
-    :param cmd: Command
+    :param cmd: Command (with .py ending)
     :return: Available info on cmd
     """
+    path = join(getpluginsdir(), cmd)
+    #print path
     return "bla bla"
 
 def getcommandlist():
@@ -57,7 +59,6 @@ def pathwithargs(path, args):
         commands.append(arg)
     return commands
    
-
 def execute(command, args):
     """
     Execute command by calling the corresponding py-file with args as arguments
@@ -76,7 +77,9 @@ def execute(command, args):
         if exists(path):
             commands = pathwithargs(path, args)
             call(commands)
-
+        else:
+            showhelp()
+            raise SystemExit()
 
 def logging_startup(args):
     """
@@ -85,10 +88,12 @@ def logging_startup(args):
     Raises: SystemExit if arguments cannot be parsed
 
     :param args: The logging arguments
+    :return: other command-specific arguments
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-q', action='store_true', default=False, help='Quiet mode')
     parser.add_argument('-v', action='store_true', default=False, help='Verbose mode')
+    parser.add_argument('otherargs', nargs='+', help='Additional arguments')
     try:
        args = parser.parse_args(args)
     except:
@@ -101,4 +106,6 @@ def logging_startup(args):
     elif args.v:
         log_level = logging.DEBUG
     logging.basicConfig(format='%(message)s', level=log_level)
+    #retrun args that are needed for command
+    return args.otherargs
 

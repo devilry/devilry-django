@@ -9,7 +9,7 @@ from utils import logging_startup
 
 #Arguments for logging
 args = sys.argv[1:]
-logging_startup(args)
+otherargs = logging_startup(args) #otherargs has commandspecific args
 logging.debug('hello from sync.py')
 
 logincookie = login('http://localhost:8000/authenticate/login',
