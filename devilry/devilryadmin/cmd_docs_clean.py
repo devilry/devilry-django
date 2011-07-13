@@ -2,9 +2,9 @@
 # Clean the docs (removes docs/.build/)
 
 from shutil import rmtree
-from common import get_docs_buildrootdir
+from common import get_docs_build_dir
 from os.path import exists
 
 
-if exists(get_docs_buildrootdir()):
-    rmtree(get_docs_buildrootdir())
+if exists(get_docs_build_dir()):
+    rmtree(get_docs_build_dir())
