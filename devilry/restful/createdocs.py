@@ -37,7 +37,7 @@ DELETE_DOCS = read_tpl('delete')
 def get_model_clspath(model):
     modelclsname = model.__name__
     modelmodulename = model.__module__
-    if modelmodulename.endswith('.' + modelclsname.lower()):
+    if modelmodulename.replace('_', '').endswith('.' + modelclsname.lower()): # .....assignment_group.AssignmentGroup -> AssignmentGroup
         modelmodulename = modelmodulename.rsplit('.', 1)[0]
     return '{0}.{1}'.format(modelmodulename, modelclsname)
 
@@ -84,10 +84,6 @@ class Docstring(object):
         simplified = restfulcls._meta.simplified
         model = simplified._meta.model
 
-        self.modelclsname = model.__name__
-        self.modelmodulename = model.__module__
-        if self.modelmodulename.endswith('.' + self.modelclsname.lower()):
-            self.modelmodulename = self.modelmodulename.rsplit('.', 1)[0]
         self.modelclspath = get_model_clspath(model)
         self.model_verbose_name = model._meta.verbose_name
         self.model_verbose_name_plural = model._meta.verbose_name_plural
