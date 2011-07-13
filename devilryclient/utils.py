@@ -1,7 +1,7 @@
 from os.path import dirname, join, exists
 from os import listdir, environ
 from subprocess import call
-import sys, logging, argparse
+import sys, logging, argparse, os
 
 def helloworld():
     print "Hello world"
@@ -93,9 +93,9 @@ def logging_startup(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-q', action='store_true', default=False, help='Quiet mode')
     parser.add_argument('-v', action='store_true', default=False, help='Verbose mode')
-    parser.add_argument('otherargs', nargs='+', help='Additional arguments')
+    parser.add_argument('otherargs', nargs='*', help='Additional arguments')
     try:
-       args = parser.parse_args(args)
+        args = parser.parse_args(args)
     except:
         showhelp()
         raise SystemExit()
@@ -108,4 +108,23 @@ def logging_startup(args):
     logging.basicConfig(format='%(message)s', level=log_level)
     #retrun args that are needed for command
     return args.otherargs
+
+def findconffolder():
+    cwd = os.getcwd()
+    while cwd != environ["HOME"]:  
+        print cwd
+        if exists(join(cwd, '.devilry')):
+            return cwd
+        else:
+            cwd = dirname(cwd)
+
+    raise ValueError(".devirly not found")
+
+#TODO
+def make_restful():
+    pass
+
+#TODO
+def create_folder(parent):
+    pass
 

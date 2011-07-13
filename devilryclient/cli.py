@@ -6,6 +6,7 @@ from utils import execute, logging_startup, showhelp
 try:
     command = sys.argv[1]
     args = sys.argv[2:]
+
 except:
     showhelp()
     raise SystemExit()
