@@ -63,13 +63,19 @@ the <a class="reference internal" href="#restful-ifi-schenario"><em>IFI scenario
                                          <span class="n">JsonDecodeError</span><span class="p">)</span>
 
 
+<span class="c"># may be something like http://devilry.myorganzation.com/some/subpath/ in production</span>
 <span class="n">devilry_url</span> <span class="o">=</span> <span class="s">&#39;http://localhost:8000&#39;</span>
+
+<span class="c"># Log in</span>
+<span class="c"># - login url may be somthing else if devilry does not handle the login,</span>
+<span class="c">#   however this example assumes that devilry is used for login, and the devilry</span>
+<span class="c">#   login form is at /authenticate/login</span>
 <span class="n">login_url</span> <span class="o">=</span> <span class="s">&#39;{0}/authenticate/login&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">devilry_url</span><span class="p">)</span>
 <span class="n">logincookie</span> <span class="o">=</span> <span class="n">login</span><span class="p">(</span><span class="n">login_url</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s">&#39;grandma&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;test&#39;</span><span class="p">)</span>
 
 <span class="c"># Create proxy classes which makes it natural to program against the</span>
 <span class="c"># RESTful interface using python.</span>
-<span class="n">restful_factory</span> <span class="o">=</span> <span class="n">RestfulFactory</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/&quot;</span><span class="p">)</span>
+<span class="n">restful_factory</span> <span class="o">=</span> <span class="n">RestfulFactory</span><span class="p">(</span><span class="n">devilry_url</span><span class="p">)</span>
 <span class="n">SimplifiedNode</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiednode/&quot;</span><span class="p">)</span>
 <span class="n">SimplifiedSubject</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiedsubject/&quot;</span><span class="p">)</span>
 <span class="n">SimplifiedPeriod</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiedperiod/&quot;</span><span class="p">)</span>
@@ -180,13 +186,19 @@ from University of Oslo. Furthermore, this example shows how to use <strong>filt
                                          <span class="n">JsonDecodeError</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">uiodata</span> <span class="kn">import</span> <span class="n">subjects</span>
 
+<span class="c"># may be something like http://devilry.myorganzation.com/some/subpath/ in production</span>
 <span class="n">devilry_url</span> <span class="o">=</span> <span class="s">&#39;http://localhost:8000&#39;</span>
+
+<span class="c"># Log in</span>
+<span class="c"># - login url may be somthing else if devilry does not handle the login,</span>
+<span class="c">#   however this example assumes that devilry is used for login, and the devilry</span>
+<span class="c">#   login form is at /authenticate/login</span>
 <span class="n">login_url</span> <span class="o">=</span> <span class="s">&#39;{0}/authenticate/login&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">devilry_url</span><span class="p">)</span>
 <span class="n">logincookie</span> <span class="o">=</span> <span class="n">login</span><span class="p">(</span><span class="n">login_url</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s">&#39;grandma&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;test&#39;</span><span class="p">)</span>
 
 <span class="c"># Create proxy classes which makes it natural to program against the</span>
 <span class="c"># RESTful interface using python.</span>
-<span class="n">restful_factory</span> <span class="o">=</span> <span class="n">RestfulFactory</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/&quot;</span><span class="p">)</span>
+<span class="n">restful_factory</span> <span class="o">=</span> <span class="n">RestfulFactory</span><span class="p">(</span><span class="n">devilry_url</span><span class="p">)</span>
 <span class="n">SimplifiedNode</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiednode/&quot;</span><span class="p">)</span>
 <span class="n">SimplifiedSubject</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiedsubject/&quot;</span><span class="p">)</span>
 <span class="n">SimplifiedPeriod</span> <span class="o">=</span> <span class="n">restful_factory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s">&quot;administrator/restfulsimplifiedperiod/&quot;</span><span class="p">)</span>
