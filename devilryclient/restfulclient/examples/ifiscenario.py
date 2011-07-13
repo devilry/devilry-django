@@ -27,6 +27,8 @@ ifi = {}
 
 
 def all_search():
+    """Searches through Node, Subject and Period"""
+    
     print 'Every node in the system:'
     for node in SimplifiedNode.search(logincookie)['items']:
         print '  ', node['short_name'], ':', node['long_name']
@@ -41,6 +43,14 @@ def all_search():
 
 
 def create_uio_matnat_ifi_nodes():
+    """Creates Nodes for UiO
+    
+    uio is the topmost Node
+    matnat is one below uio
+    ifi is on the bottom of the Node-hierarchy
+    
+    """
+    
     print "CREATE UIO/MATNAT/IFI"
     global uio, matnat, ifi 
     uio = SimplifiedNode.create(logincookie, short_name='uio', long_name='Universitetet i Oslo', parentnode=None) 
@@ -48,6 +58,11 @@ def create_uio_matnat_ifi_nodes():
     ifi = SimplifiedNode.create(logincookie, short_name='ifi', long_name='Institutt for informatikk', parentnode=matnat['id'])
 
 def create_subjects_and_period():
+    """Creates subjects from a list of IFI-subjects
+    
+    Adds h2011 period to each of the subjects
+    """"
+    
     print "CREATE SUBJECTS"
     for subject in subjects:
         item = SimplifiedSubject.create(logincookie, short_name=subject['short_name'], long_name=subject['long_name'], parentnode=ifi['id'])
@@ -58,18 +73,36 @@ def create_subjects_and_period():
                                 end_time='2011-12-01 15:00:00')
     
 def search_with_filtering():
-    pass
+    """Creates searching with given filters
     
+    long_name contains
+        20 Studiepoeng
+        10 Studiepoeng
+
+    """
+
+    print "SEARCH WITH FILTERING"
+    
+    studp20 = [{'field':"long_name", 'comp':"icontains", 'value':"20 Studiepoeng"}]
+    studp10 = [{'field':"long_name", 'comp':"icontains", 'value':"10 Studiepoeng"}]
+    
+    print "Filter long_name contains 20 studiepoeng"
+    for subject in SimplifiedSubject.search(logincookie, orderby=['-short_name'], 
+                                            filters=studp20)['items']:
+        print '  ', subject['short_name'], ':', subject['long_name']
+    
+    print "Filter long_name contains 10 studiepoeng"
+    for subject in SimplifiedSubject.search(logincookie, orderby=['-short_name'], 
+                                            filters=studp10)['items']:
+        print '  ', subject['short_name'], ':', subject['long_name']
+
 def delete_uio():
     SimplifiedNode.delete(logincookie, uio['id'])
     
 if __name__ == '__main__':
-    #create_uio_matnat_ifi_nodes()
-    for item in subjects:
-        print item
     create_uio_matnat_ifi_nodes()
-    create_subjects()
-    all_search()
+    create_subjects_and_period()
+    search_with_filtering()
     delete_uio()
 
 

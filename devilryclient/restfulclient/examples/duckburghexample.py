@@ -51,9 +51,9 @@ def all_search():
 """ ####################################################
                     CREATE / POST 
 #################################################### """
-
 print "System Status - Initial"
 all_search()
+
 
 print "Create a new Node with no parentnode - Donald Duck University"
 donald = SimplifiedNode.create(logincookie, short_name='donald', 
@@ -79,6 +79,7 @@ all_search()
 """ ####################################################
                     UPDATE / PUT 
 #################################################### """
+
 
 print "Change information about Donald Duck University"
 gladgander = SimplifiedNode.update(logincookie, donald['id'], 
@@ -107,4 +108,6 @@ SimplifiedNode.delete(logincookie, gladgander['id'])
 
 print "System Status - After DELETE/DELETE"
 all_search()
-
+    
+    
+    
