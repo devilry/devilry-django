@@ -25,7 +25,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     .. attribute:: deadline_tag
 
-       A django.db.models.ForeignKey_ pointing to the Deadline for this Delivery.
+       A django.db.models.ForeignKey_ pointing to the `Deadline`_ for this Delivery.
 
     .. attribute:: number
 
@@ -52,11 +52,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     .. attribute:: filemetas
 
-        A set of filemetas for this delivery.
+        A set of `FileMeta`_ for this delivery.
 
     .. attribute:: feedbacks
 
-       A set of :class:`StaticFeedback` on this delivery.
+       A set of `StaticFeedback`_ on this delivery.
 
     """
     status_mapping = (

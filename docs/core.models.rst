@@ -16,8 +16,7 @@
 (edit the images umldiagram1_ and umldiagram2_ using yuml.me)
 
 .. _umldiagram1: http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/edit/%5BNode%5D++1-subjects%20%3E*%5BSubject%5D,%20%5BNode%5D++0-child-nodes%20%3E*%5BNode%5D,%20%5BSubject%5D++1-periods%20%3E*%5BPeriod%5D,%20%5BPeriod%5D++1-assignments%20%3E*%5BAssignment%5D
-.. _umldiagram2: http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/edit/[Assignment]++1-assignmentgroups%20%3E*[AssignmentGroup],%20[AssignmentGroup]++1-deliveries%20%3E*[Delivery],%20[AssignmentGroup]++1-deadlines%20%3E*[Deadline],%20[Delivery]++1-feedback%20%3E0..1[Feedback],%20[Delivery]++1-filemetas%20%3E*[FileMeta]
-
+.. _umldiagram2: http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/edit/%5BAssignment%5D++1-assignmentgroups%20%3E*%5BAssignmentGroup%5D,%20%5BAssignmentGroup%5D++1-deliveries%20%3E*%5BDelivery%5D,%20%5BAssignmentGroup%5D++1-deadlines%20%3E*%5BDeadline%5D,%20%5BDelivery%5D++1-feedback%20%3E0..1%5BFeedback%5D,%20%5BDelivery%5D++1-filemetas%20%3E*%5BFileMeta%5D,%20%5BDeadline%5D++1-deliveries%20%3E*%5BDelivery%5D
 
 Functions and attributes
 #########################################################
