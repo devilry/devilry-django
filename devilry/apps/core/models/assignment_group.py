@@ -28,8 +28,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     .. attribute:: candidates
 
-        A django ``RelatedManager`` that holds the :class:`candidates
-        <Candidate>` on this group.
+        A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>` on this group.
 
     .. attribute:: examiners
 
