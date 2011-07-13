@@ -60,6 +60,12 @@ RESTful API
 * :ref:`restful`
 * :ref:`public_restful_api`
 * :ref:`public_restful_api_examples`
+* Check out the Wiki_ for community docs such as:
+    * How to create a RESTful client in *your* programming language.
+    * How to set up a development environment to test/*play with* the RESTful
+      API on your local machine.
+
+.. _Wiki: https://github.com/devilry/devilry-django/wiki/RESTful-web-service-API---community-docs
 
 
 Integration with the ExtJS javascript library
