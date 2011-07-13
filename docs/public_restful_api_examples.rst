@@ -25,5 +25,5 @@ IFI scenario
 Another example, this one using a structure that should be familiar to people
 from University of Oslo. Furthermore, this example shows how to use **filters**.
 
-.. literalinclude:: /../devilryclient/restfulclient/examples/duckburghexample.py
+.. literalinclude:: /../devilryclient/restfulclient/examples/ifiscenario.py
     :language: python
