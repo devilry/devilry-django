@@ -210,6 +210,12 @@ class IndexItem(object):
     def __unicode__(self):
         return self.TPL.format(pageref=self.page.ref, **self.__dict__)
 
+    def __cmp__(self, other):
+        """ Ordering: search, read, create, update, delete """
+        if self.httpmethod == 'DELETE':
+            return 1
+        return cmp(self.httpmethod+self.url, other.httpmethod+other.url)
+
 
 class IndexPageItem(object):
     TPL = '''
@@ -239,7 +245,7 @@ class IndexPageItem(object):
     def __unicode__(self):
         return self.TPL.format(simplifiedclsname=self.simplifiedclsname,
                                modelclsname=self.modelclsname,
-                               indexitems='\n    '.join(unicode(i) for i in self.indexitems))
+                               indexitems='\n    '.join(unicode(i) for i in sorted(self.indexitems)))
 
     def iterpages(self):
         for indexitem in self.indexitems:
