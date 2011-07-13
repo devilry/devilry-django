@@ -14,9 +14,9 @@ Public RESTful API
 APIs
 ********
 
-* :ref:`restful_apiadministrator`
-* :ref:`restful_apiexaminer`
-* :ref:`restful_apistudent`
+* :ref:`restful_apiadministrator` --- Perform actions that require *administrator* permissions.
+* :ref:`restful_apiexaminer` --- Perform actions that require *examiner* permissions.
+* :ref:`restful_apistudent` --- Perform actions that require *student* permissions.
 
 
 
