@@ -70,5 +70,5 @@ Success response details
 
 As long as the {{doc.model_verbose_name}} is created without an error, the
 response is *HTTP 201* with the requested data in the body. The result always
-contains the request data with the *id* field added, however it may have been
-changed due to logic performed on the server before saving.
+contains the request data with the *id* field added, however some values may
+have been changed due to logic performed on the server before saving.

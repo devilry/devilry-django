@@ -178,23 +178,31 @@ On success
 Example
 ------------------------
 
+*note that the is wrong in the example. The id is always unique. However, the
+example is generated from a non-varying dataset.*
+
 .. code-block:: javascript
 
     200 OK
 
-    [
-        { {% for info in doc.resultfields %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
-          {% endif %}{% endfor %} },
-        { {% for info in doc.resultfields %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
-          {% endif %}{% endfor %} },
-        ...
-    ]
+    {
+        total: 20,
+        items: [
+            { {% for info in doc.resultfields %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
+              {% endif %}{% endfor %} },
+            { {% for info in doc.resultfields %}{{ info.fieldname }}: {{info.valueexample|safe}}{% if not forloop.last %},
+              {% endif %}{% endfor %} },
+            ...
+        ]
+    }
 
 
 Success response details
 ------------------------
 
-Responds with HTTP code *200* and a *JSON encoded* list of results. Each result in the
+Responds with HTTP code *200* and a *JSON encoded* dict containing the list of
+results and the *total* number of items found before applying ``limit`` and
+``start``. Each result in the
 list is a JSON object where the *key* is a fieldname and the associated value is
 the *value* for that field. The result always contains the following fields:
 

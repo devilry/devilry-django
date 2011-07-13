@@ -47,7 +47,10 @@ def field_to_restfultype(field):
     if isinstance(field, fields.related.AutoField):
         return 'Integer', 15
     elif isinstance(field, fields.CharField):
-        return 'String', '"myvalue"'
+        if field.name == 'short_name':
+            return 'String', '"my_example001_value"'
+        else:
+            return 'String', '"My example value"'
     elif isinstance(field, fields.TextField):
         return 'String', '"myvalue"'
     elif isinstance(field, fields.BooleanField):
