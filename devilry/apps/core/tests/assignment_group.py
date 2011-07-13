@@ -81,12 +81,15 @@ class TestAssignmentGroup(TestCase, TestHelper):
         #                   self.inf1100_looong_assignment1_g3.get_candidates())
         cands = self.inf1100_looong_assignment1_g3.candidates.all()
         cand0 = cands[0]
-        cand0.candidate_id = "1"
+        cand0.candidate_id = "2"
+        cand0.update_identifier(True)
         cand0.save()
         cand1 = cands[1]
-        cand1.candidate_id = "4"
+        cand1.candidate_id = "5"
+        cand1.update_identifier(True)
         cand1.save()
-        self.assertEquals('1, 4', self.inf1100_looong_assignment1_g3.get_candidates())
+        ag = AssignmentGroup.objects.get(id=self.inf1100_looong_assignment1_g3.id)
+        self.assertEquals('2, 5', ag.get_candidates())
 
     def test_get_examiners(self):
         self.assertEquals('examiner1, examiner2, examiner3', self.inf1100_looong_assignment1_g3.get_examiners())

@@ -11,6 +11,7 @@ from node import Node
 from period import Period
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
+from candidate import Candidate
 from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
 from model_utils import Etag, EtagMismatchException
@@ -106,10 +107,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     parentnode = models.ForeignKey(Period, related_name='assignments',
                                    verbose_name=_('Period'))
     etag = models.DateTimeField(auto_now_add=True)
-    publishing_time = models.DateTimeField(
-            verbose_name=_("Publishing time"))
+    publishing_time = models.DateTimeField(verbose_name=_("Publishing time"),
+                                           help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
     anonymous = models.BooleanField(default=False,
-            verbose_name=_("Anonymous"))
+                                    verbose_name=_("Anonymous"),
+                                    help_text=_('Specifies if this assignment is anonymous.'))
     students_can_see_points = models.BooleanField(default=True,
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
@@ -184,6 +186,27 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         for group in self.assignmentgroups.iterator():
             group.scaled_points = group._get_scaled_points()
             group.save()
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            # Only when assignment already exists in the database
+            self.update_candidates_identifer()
+        super(Assignment, self).save(*args, **kwargs)
+
+    def update_candidates_identifer(self):
+        """ If the anonymous flag is changed, update the identifer on all
+        the candidates on this assignment.
+        """
+        # Get current value stored in the db
+        db_assignment = Assignment.objects.get(id=self.id)
+        # No change, so return
+        if self.anonymous == db_assignment.anonymous:
+            return
+        # Get all candidates on assignmentgroups for this assignment
+        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
+        for cand in candidates: 
+            cand.update_identifier(self.anonymous)
+            cand.save()
 
     #TODO delete this?
     #def save(self, *args, **kwargs):

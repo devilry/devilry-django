@@ -1,7 +1,9 @@
 from django.test import TestCase
 from devilry.apps.core import testhelper
 from ..utils import modelinstance_to_dict
-from devilry.simplified import FieldSpec
+
+from ..fieldspec import FieldSpec
+from ..filterspec import FilterSpecs, FilterSpec, PatternFilterSpec
 
 
 class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
@@ -62,3 +64,55 @@ class TestSimplifiedUtils(TestCase, testhelper.TestHelper):
         self.assertEquals(modeldict2[_assignment_long], self.inf101_fall11_a2.long_name)
         self.assertEquals(modeldict2[_assignment_short], self.inf101_fall11_a2.short_name)
         self.assertEquals(modeldict2[_assignment_id], self.inf101_fall11_a2.id)
+
+    def test_fieldspec(self):
+        fs1 = FieldSpec('value1', 'value2', group1=['groupval1', 'groupval2'])
+        fs2 = FieldSpec('value3', 'value4', group1=['groupval3', 'groupval4'])
+
+        # this should be fine. fs3 should be a brand new instance
+        fs3 = fs1 + fs2
+        self.assertFalse(fs1 is fs2)
+        self.assertFalse(fs1 is fs3)
+        self.assertFalse(fs2 is fs3)
+
+        # Try adding fieldspecs with duplicate fields
+        fs4 = FieldSpec('value1')
+        with self.assertRaises(ValueError):
+            fs3 + fs4
+
+        # now with a duplicate value within the field_group
+        fs5 = FieldSpec('value4', group1=['groupval1'])
+        with self.assertRaises(ValueError):
+            fs3 + fs5
+
+    def test_filterspecs(self):
+        f1 = FilterSpecs(FilterSpec('hello'),
+                         PatternFilterSpec('test.*'),
+                         FilterSpec('world'))
+        with self.assertRaises(ValueError):
+            f1 = FilterSpecs(FilterSpec('hello'),
+                             FilterSpec('hello'))
+        with self.assertRaises(ValueError):
+            f1 = FilterSpecs(FilterSpec('hello'),
+                             PatternFilterSpec('he.*'))
+
+    def test_filterspecs_copy(self):
+        f1 = FilterSpecs(FilterSpec('hello'),
+                         PatternFilterSpec('test.*'),
+                         FilterSpec('world'))
+        f2 = FilterSpecs(FilterSpec('cruel'),
+                         FilterSpec('stuff'),
+                         PatternFilterSpec('^(hello)+__world'))
+        fmerge = f1 + f2
+        self.assertEquals(set(fmerge.filterspecs.keys()), set(('hello', 'world', 'cruel', 'stuff')))
+        self.assertEquals(len(fmerge.patternfilterspecs), 2)
+        self.assertEquals(fmerge.patternfilterspecs[0].fieldname, 'test.*')
+        self.assertEquals(fmerge.patternfilterspecs[1].fieldname, '^(hello)+__world')
+
+    def test_filterspecs_copy_error(self):
+        with self.assertRaises(ValueError):
+            fmerge = FilterSpecs(FilterSpec('hello')) + FilterSpecs(FilterSpec('hello'))
+        with self.assertRaises(ValueError):
+            fmerge = FilterSpecs(PatternFilterSpec('hello')) + FilterSpecs(PatternFilterSpec('hello'))
+        with self.assertRaises(ValueError):
+            fmerge = FilterSpecs(PatternFilterSpec('hello')) + FilterSpecs(FilterSpec('hello'))

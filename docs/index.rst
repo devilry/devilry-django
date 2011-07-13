@@ -19,7 +19,11 @@
     utils.devilry_email
 
     administrator.simplified
+    metabases.simplified
+    examiner.simplified
+    student.simplified
     public_restful_api
+    public_restful_api_examples
 
 
 ======================================================================
@@ -46,6 +50,8 @@ Simplified API
 
 * :ref:`simplified`
 * :ref:`Administrator <apps.administrator.simplified>`
+* :ref:`Examiner <apps.examiner.simplified>`
+* :ref:`Student <apps.student.simplified>`
 
 
 RESTful API
@@ -53,6 +59,7 @@ RESTful API
 
 * :ref:`restful`
 * :ref:`public_restful_api`
+* :ref:`public_restful_api_examples`
 
 
 Integration with the ExtJS javascript library

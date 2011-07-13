@@ -13,27 +13,35 @@ class TestCandidate(TestCase, TestHelper):
                  subjects=["inf1100"],
                  periods=["autumn"],
                  assignments=["assignment1"],
-                 assignmentgroups=["g1:candidate(student1)"])
-        # self.cand = Candidate(student=self.student1, candidate_id="1",
-        #                       assignment_group=self.inf1100_autumn_assignment1_g1)
+                 assignmentgroups=["g1:candidate(student1;5)"])
 
+    def test_update_identifier(self):
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        candidate.update_identifier(True)
+        self.assertEquals(candidate.identifier, candidate.candidate_id)
+        candidate.update_identifier(False)
+        self.assertEquals(candidate.identifier, candidate.student.username)
+ 
     def test_non_anonymous(self):
-        self.assertEquals(self.inf1100_autumn_assignment1_g1.candidates.all()[0].get_identifier(), "student1")
-
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        self.assertEquals(candidate.identifier, candidate.student.username)
+   
     def test_anonymous(self):
+        cands = self.inf1100_autumn_assignment1_g1.candidates.all()
         self.inf1100_autumn_assignment1.anonymous = True
         self.inf1100_autumn_assignment1.save()
-        self.assertEquals(self.inf1100_autumn_assignment1_g1.candidates.all()[0].get_identifier(), str(self.student1.id))
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        self.assertEquals(candidate.identifier, candidate.candidate_id)
 
     def test_etag_update(self):
         etag = datetime.now()
-        obj = self.inf1100
-        #obj.candidate_id = "Test_ID"
-        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
+        candidate = self.inf1100_autumn_assignment1_g1.candidates.all()[0]
+        candidate.identifier = "Test_ID"
+        self.assertRaises(EtagMismatchException, candidate.etag_update, etag)
         try:
-            obj.etag_update(etag)
+            candidate.etag_update(etag)
         except EtagMismatchException as e:
             # Should not raise exception
-            obj.etag_update(e.etag)
-        #obj2 = Candidate.objects.get(id=obj.id)
-        #self.assertEquals(obj2.candidate_id, "Test_ID")
+            candidate.etag_update(e.etag)
+        candidate_db = Candidate.objects.get(id=candidate.id)
+        self.assertEquals(candidate_db.identifier, "Test_ID")

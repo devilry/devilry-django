@@ -3,6 +3,25 @@ proves useful outside this module, they should me moved to ``devilry.utils``. ""
 from django.db.models.fields.related import ForeignKey
 
 
+def get_clspath(cls):
+    return '{0}.{1}'.format(cls.__module__, cls.__name__)
+
+def get_field_from_fieldname(modelcls, fieldname, fkfield_as_idfield=False):
+    def _recurse_get_modelfield(modelcls, path):
+        pathseg = path.pop(0)
+        field = modelcls._meta.get_field_by_name(pathseg)[0]
+        if isinstance(field, ForeignKey):
+            parentmodel = field.related.parent_model
+            if len(path) == 0:
+                if fkfield_as_idfield:
+                    return _recurse_get_modelfield(parentmodel, ['id'])
+                return field
+            return _recurse_get_modelfield(parentmodel, path)
+        else:
+            return field
+    return _recurse_get_modelfield(modelcls, fieldname.split('__'))
+
+
 def _get_instanceattr(instance, fieldname):
     fieldvalue = getattr(instance, fieldname)
     field = instance.__class__._meta.get_field_by_name(fieldname)[0]

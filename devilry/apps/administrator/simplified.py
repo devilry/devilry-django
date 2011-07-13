@@ -3,239 +3,136 @@ from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            FilterSpecs, FilterSpec, ForeignFilterSpec, PatternFilterSpec)
 from ..core import models
 
+from ..student.simplifiedmetabases import (SimplifiedNodeMetaMixin, SimplifiedSubjectMetaMixin,
+                                           SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
+                                           SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
+                                           SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,
+                                           SimplifiedFileMetaMetaMixin)
+
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
 
 
-
 class CanSaveBase(SimplifiedModelApi):
+    """ Mixin class extended by many of the classes in the Simplified API for Administrator """
     @classmethod
     def write_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to the given
+        ``obj``, and raise ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A object of the type this method is used in.
+        :throws PermissionDenied:
+        """
         if not obj.can_save(user):
             raise PermissionDenied()
 
     @classmethod
     def read_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to ``obj``, and raise
+        ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: An object of the type this method is used in.
+        :throws PermissionDenied:
+        """
         if not obj.can_save(user):
             raise PermissionDenied()
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
+        """ Returns all objects of this type that matches arguments
+        given in ``\*\*kwargs`` where ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :param \*\*kwargs: A dict containing search-parameters.
+        :rtype: a django queryset
+        """
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
 
 @simplified_modelapi
 class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
-    class Meta:
-        model = models.Node
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode')
-        searchfields = FieldSpec('short_name', 'long_name')
+    class Meta(SimplifiedNodeMetaMixin):
+        """ Defines what methods an Administrator can use on a Node object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
-        filters = FilterSpecs(FilterSpec('parentnode'),
-                              FilterSpec('short_name'),
-                              FilterSpec('long_name'),
-                              PatternFilterSpec('parentnode__*short_name'),
-                              PatternFilterSpec('parentnode__*long_name'),
-                              PatternFilterSpec('parentnode__*id'))
 
     @classmethod
     def create_searchqryset(cls, user):
-        qryset = models.Node.where_is_admin_or_superadmin(user)
-        return qryset
+        """ Returns all node-objects where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
+        return models.Node.where_is_admin_or_superadmin(user)
 
 
 @simplified_modelapi
 class SimplifiedSubject(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
-    class Meta:
-        model = models.Subject
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode')
-        searchfields = FieldSpec('short_name', 'long_name')
+    class Meta(SimplifiedSubjectMetaMixin):
+        """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
-        filters = FilterSpecs(FilterSpec('parentnode'),
-                              FilterSpec('short_name'),
-                              FilterSpec('long_name'),
-                              ForeignFilterSpec('parentnode', # Node
-                                                FilterSpec('paretnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
 class SimplifiedPeriod(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
-    class Meta:
-        model = models.Period
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode',
-                                 'start_time', 'end_time',
-                                 subject = ['parentnode__short_name', 'parentnode__long_name'])
-        searchfields = FieldSpec('short_name', 'long_name', 'parentnode__short_name',
-                                 'parentnode__long_name')
+    class Meta(SimplifiedPeriodMetaMixin):
+        """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
-        filters = FilterSpecs(FilterSpec('parentnode'),
-                              FilterSpec('short_name'),
-                              FilterSpec('long_name'),
-                              ForeignFilterSpec('parentnode', # Subject
-                                                FilterSpec('paretnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
 class SimplifiedAssignment(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
-    class Meta:
-        model = models.Assignment
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode', 'publishing_time',
-                                 period = ['parentnode__short_name',
-                                           'parentnode__long_name',
-                                           'parentnode__parentnode'],
-                                 subject = ['parentnode__parentnode__short_name',
-                                            'parentnode__parentnode__long_name'],
-                                 pointfields = ['anonymous', 'must_pass', 'maxpoints',
-                                                'attempts'])
-        searchfields = FieldSpec('short_name', 'long_name',
-                                 'parentnode__short_name',
-                                 'parentnode__long_name',
-                                 'parentnode__parentnode__short_name',
-                                 'parentnode__parentnode__long_name')
+    class Meta(SimplifiedAssignmentMetaMixin):
+        """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
-        filters = FilterSpecs(FilterSpec('parentnode'),
-                              FilterSpec('short_name'),
-                              FilterSpec('long_name'),
-                              ForeignFilterSpec('parentnode', # Period
-                                                FilterSpec('paretnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')),
-                              ForeignFilterSpec('parentnode__parentnode', # Subject
-                                                FilterSpec('paretnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
 class SimplifiedAssignmentGroup(CanSaveBase):
-    class Meta:
-        model = models.AssignmentGroup
-        resultfields = FieldSpec('id', 'name', 'is_open', 'status', 'parentnode',
-                                 users=['examiners__username', 'candidates__identifier'],
-                                 assignment=['parentnode__long_name',
-                                             'parentnode__short_name'],
-                                 period=['parentnode__parentnode',
-                                         'parentnode__parentnode__long_name',
-                                         'parentnode__parentnode__short_name'],
-                                 subject=['parentnode__parentnode__parentnode',
-                                          'parentnode__parentnode__parentnode__long_name',
-                                          'parentnode__parentnode__parentnode__short_name']
-                                 )
-        searchfields = FieldSpec('name',
-                                 'examiners__username',
-                                 'candidates__identifier',
-                                 # assignment
-                                 'parentnode__long_name',
-                                 'parentnode__short_name',
-                                 # period
-                                 'parentnode__parentnode__long_name',
-                                 'parentnode__parentnode__short_name',
-                                 # subject
-                                 'parentnode__parentnode__parentnode__long_name',
-                                 'parentnode__parentnode__parentnode__short_name',
-                                 )
+    """ Simplified wrapper for
+    :class:`devilry.apps.core.models.AssignmentGroup`. """
+    class Meta(SimplifiedAssignmentGroupMetaMixin):
+        """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
-        filters = FilterSpecs(FilterSpec('id'),
-                              FilterSpec('parentnode'),
-                              FilterSpec('short_name'),
-                              FilterSpec('long_name'),
-                              ForeignFilterSpec('parentnode', # Assignment
-                                                FilterSpec('paretnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')),
-                              ForeignFilterSpec('parentnode__parentnode', # Period
-                                                FilterSpec('paretnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')),
-                              ForeignFilterSpec('parentnode__parentnode__parentnode', # Subject
-                                                FilterSpec('parentnode'),
-                                                FilterSpec('short_name'),
-                                                FilterSpec('long_name')))
 
 
 @simplified_modelapi
 class SimplifiedDelivery(CanSaveBase):
-    class Meta:
-        model = models.Delivery
-        resultfields = FieldSpec('id', 'number', 'time_of_delivery', 'assignment_group',
-                                 assignment_group=['assignment_group', 'assignment_group__name'],
-                                 assignment=['assignment_group__parentnode',
-                                             'assignment_group__parentnode__long_name',
-                                             'assignment_group__parentnode__short_name'],
-                                 period=['assignment_group__parentnode__parentnode',
-                                         'assignment_group__parentnode__parentnode__long_name',
-                                         'assignment_group__parentnode__parentnode__short_name'],
-                                 subject=['assignment_group__parentnode__parentnode__parentnode',
-                                          'assignment_group__parentnode__parentnode__parentnode__long_name',
-                                          'assignment_group__parentnode__parentnode__parentnode__short_name'])
-        searchfields = FieldSpec('number',
-                                 # assignmentgroup
-                                 'assignment_group__name',
-                                 'assignment_group__examiners__username',
-                                 'assignment_group__candidates__identifier',
-                                 'assignment_group__examiners__username',
-                                 'assignment_group__candidates__identifier',
-                                 # assignment
-                                 'assignment_group__parentnode__long_name',
-                                 'assignment_group__parentnode__short_name',
-                                 # period
-                                 'assignment_group__parentnode__parentnode__long_name',
-                                 'assignment_group__parentnode__parentnode__short_name',
-                                 # subject
-                                 'assignment_group__parentnode__parentnode__parentnode__long_name',
-                                 'assignment_group__parentnode__parentnode__parentnode__short_name')
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
+    class Meta(SimplifiedDeliveryMetaMixin):
+        """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
         methods = ['search', 'read']
 
 
 @simplified_modelapi
 class SimplifiedStaticFeedback(SimplifiedModelApi):
-    class Meta:
-        _subject_long     = 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'
-        _subject_short    = 'delivery__assignment_group__parentnode__parentnode__parentnode__short_name'
-        _subject_id       = 'delivery__assignment_group__parentnode__parentnode__parentnode__id'
-
-        _period_long      = 'delivery__assignment_group__parentnode__parentnode__long_name'
-        _period_short     = 'delivery__assignment_group__parentnode__parentnode__short_name'
-        _period_id        = 'delivery__assignment_group__parentnode__parentnode__id'
-
-        _assignment_long  = 'delivery__assignment_group__parentnode__long_name'
-        _assignment_short = 'delivery__assignment_group__parentnode__short_name'
-        _assignment_id    = 'delivery__assignment_group__parentnode__id'
-
-        _delivery_time    = 'delivery__time_of_delivery'
-        _delivery_number  = 'delivery__number'
-        _delivery_delivered_by = 'delivery__delivered_by'
-        _delivery_after_deadline = 'delivery__after_deadline'
-
-        model = models.StaticFeedback
-        resultfields = FieldSpec('id', 'grade', 'points', 'is_passing_grade',
-                                 period=[_period_short, _period_long, _period_id],
-                                 subject=[_subject_long, _subject_short, _subject_id],
-                                 assignment=[_assignment_short, _assignment_long, _assignment_id],
-                                 delivery=[_delivery_time, _delivery_number, ])
-        searchfields = FieldSpec(_subject_short,
-                                 _subject_long,
-                                 _period_short,
-                                 _period_long,
-                                 _assignment_long,
-                                 _assignment_short,
-                                 _delivery_number,
-                                 )
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
+    class Meta(SimplifiedStaticFeedbackMetaMixin):
+        """ Defines what methods an Administrator can use on a StaticFeedback object using the Simplified API """
         methods = ['search', 'read']
 
     @classmethod
     def create_searchqryset(cls, user):
+        """ Returns all StaticFeedback-objects where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
     def read_authorize(cls, user, obj):
+        """ Checks if the given ``user`` is an administrator for the given
+        StaticFeedback ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A StaticFeedback object
+        :throws PermissionDenied:
+        """
         #TODO: Replace when issue #141 is resolved!
         if not user.is_superuser:
             if not obj.delivery.assignment_group.is_admin(user):
@@ -244,45 +141,29 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
 
 @simplified_modelapi
 class SimplifiedDeadline(SimplifiedModelApi):
-    class Meta:
-
-        subject = ['assignment_group__parentnode__parentnode__parentnode',
-                   'assignment_group__parentnode__parentnode__parentnode__long_name',
-                   'assignment_group__parentnode__parentnode__parentnode__short_name']
-        period = ['assignment_group__parentnode__parentnode',
-                  'assignment_group__parentnode__parentnode__long_name',
-                  'assignment_group__parentnode__parentnode__short_name']
-        assignment = ['assignment_group__parentnode',
-                      'assignment_group__parentnode__long_name',
-                      'assignment_group__parentnode__short_name']
-        assignmentgroup = ['assignment_group',
-                           'assignment_group__candidates__identifier',
-                           'assignment_group__examiners__username',
-                           'assignment_group__status']
-
-        model = models.Deadline
-        resultfields = FieldSpec('id', 'status', 'deadline', 'text',
-                                 'deliveries_available_before_deadline',
-                                 'feedbacks_published', 'is_head',
-                                 assignmentgroup=assignmentgroup,
-                                 assignment=assignment,
-                                 period=period,
-                                 subject=subject
-                                 )
-        searchfields = FieldSpec('status', 'deadline',
-                                 subject[1], subject[2],
-                                 period[1], period[2],
-                                 assignment[1], assignment[2],
-                                 assignmentgroup[1], assignmentgroup[2], assignmentgroup[3]
-                                 )
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
+    class Meta(SimplifiedDeadlineMetaMixin):
+        """ Defines what methods an Administrator can use on a Deadline object using the Simplified API """
         methods = ['search', 'read', 'create', 'delete']
 
     @classmethod
     def create_searchqryset(cls, user):
+        """ Returns all Deadline-objects where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
     def read_authorize(cls, user_obj, obj):
+        """ Checks if the given ``user`` is an administrator for the given
+        Deadline ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A Deadline object.
+        :throws PermissionDenied:
+        """
         #TODO: Replace when issue #141 is resolved!
         if not user_obj.is_superuser:
             if not obj.assignment_group.is_admin(user_obj):
@@ -290,45 +171,43 @@ class SimplifiedDeadline(SimplifiedModelApi):
 
     @classmethod
     def write_authorize(cls, user_obj, obj):
+        """ Checks if the given ``user`` can save changes to the
+        AssignmentGroup of the given Deadline ``obj``, and raises
+        ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A Deadline object.
+        :throws PermissionDenied:
+        """
         if not obj.assignment_group.can_save(user_obj):
             raise PermissionDenied()
 
 
 @simplified_modelapi
 class SimplifiedFileMeta(SimplifiedModelApi):
-    class Meta:
-        model = models.FileMeta
-        resultfields = FieldSpec('filename', 'size', 'id',
-                                 subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
-                                          'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                                          'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
-                                 period=['delivery__assignment_group__parentnode__parentnode__long_name',
-                                         'delivery__assignment_group__parentnode__parentnode__short_name',
-                                         'delivery__assignment_group__parentnode__parentnode__id'],
-                                 assignment=['delivery__assignment_group__parentnode__long_name',
-                                             'delivery__assignment_group__parentnode__short_name',
-                                             'delivery__assignment_group__parentnode__id']
-                                 )
-        searchfields = FieldSpec(
-            # delivery__delivered_by
-            'delivery__assignment_group__parentnode__parentnode__parentnode__long_name',  # subject
-            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',  # subject
-            'delivery__assignment_group__parentnode__parentnode__long_name',  # period
-            'delivery__assignment_group__parentnode__parentnode__short_name',  # period
-            'delivery__assignment_group__parentnode__long_name',  # assignment
-            'delivery__assignment_group__parentnode__short_name',  # assignment
-            'delivery__assignment_group__candidates__identifier',  # assignment
-            'delivery__assignment_group__examiners__username',  # assignmen
-            )
-
+    """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
+    class Meta(SimplifiedFileMetaMetaMixin):
+        """ Defines what methods an Administrator can use on a FileMeta object using the Simplified API """
         methods = ['search', 'read']
 
     @classmethod
     def create_searchqryset(cls, user):
+        """ Returns all FileMeta-objects where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
     def read_authorize(cls, user_obj, obj):
+        """ Checks if the given ``user`` is an administrator for the given
+        FileMeta ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A FileMeta object.
+        :throws PermissionDenied:
+        """
         #TODO: Replace when issue #141 is resolved!
         if not user_obj.is_superuser:
             if not obj.delivery.assignment_group.is_admin(user_obj):
