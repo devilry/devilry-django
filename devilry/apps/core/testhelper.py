@@ -22,6 +22,9 @@ class TestHelper(object):
     This class helps generate test data.
     """
 
+    class IllegalTypeException(Exception):
+        pass
+
     objects_created = 0
 
     def refresh_var(self, obj):
@@ -37,7 +40,7 @@ class TestHelper(object):
         su.save()
         vars(self)[name] = su
 
-    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False):
+    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True):
         """
         :param assignmentgroup: Expects either a Delivery object or a
         string path to an assignmentgroup. This is a mandatory parameter.
@@ -60,8 +63,26 @@ class TestHelper(object):
         elif type(assignmentgroup) == str:
             group = self.get_object_from_path(assignmentgroup)
 
-        # Fetch the first User of the candidates
-        delivery = group.deliveries.create(delivered_by=group.candidates.all()[0].student, successful=False)
+        # Get the user/candidate to deliver
+        delivered_by_to_use = None
+        if delivered_by:
+            if type(delivered_by) == User:
+                for can in group.candidates.all():
+                    if can.student.username == delivered_by.username:
+                        delivered_by_to_use = can
+                        break
+            elif type(delivered_by) == Candidate:
+                for can in group.candidates.all():
+                    if can.student.username == delivered_by.student.username:
+                        delivered_by_to_use = can
+                        break
+            else:
+                raise IllegalTypeException("delivered_by must be either a User or a Candidate.")         
+        else:
+            delivered_by_to_use = group.candidates.all()[0]
+
+        # Create the delivery
+        delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
 
         # add files if there are any
         for filename in files.keys():
@@ -72,7 +93,7 @@ class TestHelper(object):
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
 #            print delivery.time_of_delivery
 
-        delivery.successful = True
+        delivery.successful = successful
         delivery.clean()
         delivery.save()
         # add it to the groups delivery list
@@ -425,7 +446,8 @@ class TestHelper(object):
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate_name)))
             cand = group.candidates.order_by('-id')[0]
             cand.candidate_id = cid if cid != None else str(cand.student.id)
-            cand.clean()
+            cand.update_identifier(parentnode.anonymous)
+            cand.full_clean()
             cand.save()
 
         for examiner in extras['examiner']:

@@ -4,16 +4,10 @@ from django.utils.formats import date_format
 from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models import Q, Max
-from django.contrib.auth.models import User
 
-from abstract_is_admin import AbstractIsAdmin
-from abstract_is_examiner import AbstractIsExaminer
-from abstract_is_candidate import AbstractIsCandidate
-from node import Node
 from deadline import Deadline
-from assignment_group import AssignmentGroup
 from filemeta import FileMeta
-
+from ..models import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node, AssignmentGroup
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
@@ -90,7 +84,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     # Fields set by user
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     successful = models.BooleanField(blank=True, default=False)
-    delivered_by = models.ForeignKey(User) # TODO: should be candidate!
+    delivered_by = models.ForeignKey("Candidate")
 
     def delivered_too_late(self):
         """ Compares the deadline and time of delivery.

@@ -372,7 +372,7 @@ class TestTestHelper(TestCase):
         self.assertEquals(Delivery.objects.all().count(), 3)
         self.assertEquals(d1.time_of_delivery.date(), datetime.today().date())
         self.assertEquals(d1.number, 1)
-        self.assertEquals(d1.delivered_by, self.ti.zakia)
+        self.assertEquals(d1.delivered_by, self.ti.inf1000_first_oblig1_g1.candidates.all()[0])
         self.assertFalse(d1.after_deadline)
 
         self.assertEquals(d2.filemetas.all().count(), 1)
