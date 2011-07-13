@@ -8,6 +8,8 @@ class LoginError(Exception):
 
 def login(url, **logindata):
     """
+    Send a login request to the given login ``url``, and return the login cookie.
+
     :param url: Url of the login form.
     :param logindata: The required login data (usually username and
         password). With the devilry login form, this is::
@@ -15,6 +17,9 @@ def login(url, **logindata):
             {'user':'myuser', 'password':'mysecret'}
 
         However it may be something else (on custom login solutions).
+
+    :return: The login cookie as a string on success.
+    :throw: LoginError if the login fails.
     """
     parsedurl = urlparse(url)
     host = parsedurl.netloc
