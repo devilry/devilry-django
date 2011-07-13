@@ -54,7 +54,7 @@ def field_to_restfultype(field):
     elif isinstance(field, fields.IntegerField):
         return 'Integer', '20'
     elif isinstance(field, fields.DateTimeField):
-        return 'DateTime string (YYYY-MM-DD hh:mm:ss)', '2010-02-22 22:32:10'
+        return 'DateTime string (YYYY-MM-DD hh:mm:ss)', '"2010-02-22 22:32:10"'
     elif isinstance(field, fields.related.ManyToManyField) or isinstance(field, fields.related.RelatedObject):
         return 'Comma-separated list', '"this, is, an, example"'
     else:
@@ -93,6 +93,7 @@ class Docstring(object):
         self.search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups)
         self.searchfields = self._create_fieldinfolist(simplified._meta.searchfields.always_available_fields)
         self.resultfields = self._create_fieldinfolist(simplified._meta.resultfields.always_available_fields)
+        self.editablefields = self._create_fieldinfolist(simplified._meta.editablefields)
         self._create_filter_docattrs()
 
         self.context = Context(dict(doc=self))
