@@ -55,6 +55,7 @@
 <span id="devilry-apps-core-models"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.core.models</span></tt> &#8212; Devilry core datastructure<a class="headerlink" href="#devilry-apps-core-models-devilry-core-datastructure" title="Permalink to this headline">¶</a></h1>
 <img alt="_images/devilry.core.models.1.png" src="_images/devilry.core.models.1.png" />
 <img alt="_images/devilry.core.models.2.png" src="_images/devilry.core.models.2.png" />
+<p>(edit the images <a class="reference external" href="http://yuml.me/diagram/plain;dir:LR;scale:80;/class/edit/[Node]++1-subjects&gt;*[Subject],[Node]++0-child-nodes&gt;*[Node],[Subject]++1-periods&gt;*[Period],[Period]++1-assignments&gt;*[Assignment],[Assignment]++1-assignmentgroups&gt;*[AssignmentGroup]">umldiagram1</a> and <a class="reference external" href="http://yuml.me/diagram/scruffy/class/edit/%5BAssignmentGroup%5D++1-deliveries%20%3E*%5BDelivery%5D,%20%5BAssignmentGroup%5D++1-deadlines%20%3E*%5BDeadline%5D,%20%5BAssignmentGroup%5D++1-candidates%20%3E*%5BCandidate%5D,%20%5BDelivery%5D++1-staticfeedbacks%20%3E*%5BStaticFeedback%5D,%20%5BDelivery%5D++1-filemetas%20%3E*%5BFileMeta%5D,%20%5BDeadline%5D++1-deliveries%20%3E*%5BDelivery%5D,%20%5BDelivery%5D++1-delivered_by%20%3E1%5BCandidate%5D">umldiagram2</a> using yuml.me)</p>
 <div class="section" id="module-devilry.apps.core.models.model_utils">
 <span id="functions-and-attributes"></span><h2>Functions and attributes<a class="headerlink" href="#module-devilry.apps.core.models.model_utils" title="Permalink to this headline">¶</a></h2>
 <dl class="attribute">
@@ -1117,7 +1118,7 @@ Delivery was uploaded.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Delivery.deadline_tag">
 <tt class="descname">deadline_tag</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Delivery.deadline_tag" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey">django.db.models.ForeignKey</a> pointing to the Deadline for this Delivery.</p>
+<dd><p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#foreignkey">django.db.models.ForeignKey</a> pointing to the <a class="reference internal" href="#deadline">Deadline</a> for this Delivery.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1154,13 +1155,13 @@ was delived after deadline..</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Delivery.filemetas">
 <tt class="descname">filemetas</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Delivery.filemetas" title="Permalink to this definition">¶</a></dt>
-<dd><p>A set of filemetas for this delivery.</p>
+<dd><p>A set of <a class="reference internal" href="#filemeta">FileMeta</a> for this delivery.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Delivery.feedbacks">
 <tt class="descname">feedbacks</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Delivery.feedbacks" title="Permalink to this definition">¶</a></dt>
-<dd><p>A set of <tt class="xref py py-class docutils literal"><span class="pre">StaticFeedback</span></tt> on this delivery.</p>
+<dd><p>A set of <a class="reference internal" href="#staticfeedback">StaticFeedback</a> on this delivery.</p>
 </dd></dl>
 
 <dl class="method">
