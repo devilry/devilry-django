@@ -10,8 +10,6 @@
     restful
     extjshelpers
 
-    designdetails
-
     utils.assignmentgroup
     utils.ordereddict
     utils.delivery_collection
@@ -33,7 +31,7 @@ Devilry developer documentation overview
 Core
 ######################################################################
 
-* **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>` | :ref:`designdetails`
+* **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
 
 
