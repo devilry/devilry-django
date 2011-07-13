@@ -1,11 +1,11 @@
 from devilryclient.restfulclient import (login,
-                                      RestfulFactory,
-                                      RestfulError,
-                                      HttpResponseNotFound,
-                                      HttpResponseBadRequest,
-                                      HttpResponseUnauthorized,
-                                      HttpResponseForbidden,
-                                      JsonDecodeError)
+                                         RestfulFactory,
+                                         RestfulError,
+                                         HttpResponseNotFound,
+                                         HttpResponseBadRequest,
+                                         HttpResponseUnauthorized,
+                                         HttpResponseForbidden,
+                                         JsonDecodeError)
 
 
 devilry_url = 'http://localhost:8000'
@@ -23,7 +23,7 @@ SimplifiedAssignmentGroup = restful_factory.make("administrator/restfulsimplifie
 
 
 """ ####################################################
-                    SEARCH / GET 
+                    SEARCH / GET
 #################################################### """
 
 def all_search():
@@ -33,7 +33,7 @@ def all_search():
 
     print 'Every subject in the system, ordered _descending_ by short_name:'
     for subject in SimplifiedSubject.search(logincookie, orderby=['-short_name'])['items']:
-        print '  ', subject['short_name'], ':', subject['long_name']    
+        print '  ', subject['short_name'], ':', subject['long_name']
 
     print 'Every Period in the system'
     for period in SimplifiedPeriod.search(logincookie)['items']:
@@ -42,63 +42,63 @@ def all_search():
     print 'Every Assignment in the system'
     for assignment in SimplifiedAssignment.search(logincookie)['items']:
         print '  ', assignment['short_name'], ':', assignment['long_name']
-        
+
     # print 'Every Assignment in the system'
     # for assignmentgroup in SimplifiedAssignmentGroup.search(logincookie)['items']:
         # print '  ', assignmentgroup['status'], ':', assignmentgroup['is_open']
-    
+
 
 """ ####################################################
-                    CREATE / POST 
+                    CREATE / POST
 #################################################### """
 print "System Status - Initial"
 all_search()
 
 
 print "Create a new Node with no parentnode - Donald Duck University"
-donald = SimplifiedNode.create(logincookie, short_name='donald', 
-                                long_name='Donald Duck University', 
-                                parentnode=None)
+donald = SimplifiedNode.create(logincookie, short_name='donald',
+                               long_name='Donald Duck University',
+                               parentnode=None)
 
 print "Create a new Subject mac1110"
-mac1110 = SimplifiedSubject.create(logincookie, short_name='mac1110', 
-                                    long_name='Introduction in how to maintain a nearly bursting Money Bin', 
-                                    parentnode=donald['id'])
+mac1110 = SimplifiedSubject.create(logincookie, short_name='mac1110',
+                                   long_name='Introduction in how to maintain a nearly bursting Money Bin',
+                                   parentnode=donald['id'])
 
 print "Create a new Period in mac1110"
-mac1110v2011 = SimplifiedPeriod.create(logincookie, short_name='v2011', 
-                                        long_name='V2011',
-                                        parentnode=mac1110['id'], 
-                                        start_time='2011-01-01 00:00:01',
-                                        end_time='2011-06-01 15:00:00')
+mac1110v2011 = SimplifiedPeriod.create(logincookie, short_name='v2011',
+                                       long_name='V2011',
+                                       parentnode=mac1110['id'],
+                                       start_time='2011-01-01 00:00:01',
+                                       end_time='2011-06-01 15:00:00')
 
 print "System Status - After CREATE/POST"
 all_search()
 
 
 """ ####################################################
-                    UPDATE / PUT 
+                    UPDATE / PUT
 #################################################### """
 
 
 print "Change information about Donald Duck University"
-gladgander = SimplifiedNode.update(logincookie, donald['id'], 
-                                    short_name='gander', 
-                                    long_name='Gladstone Gander University')
+gladgander = SimplifiedNode.update(logincookie, donald['id'],
+                                   short_name='gander',
+                                   long_name='Gladstone Gander University')
 
 print "Redefine mac1110"
 mac5110 = SimplifiedSubject.update(logincookie, mac1110['id'],
-                            short_name='mac5110',
-                            long_name='Advanced Money Swimming',
-                            parentnode=gladgander['id'])
-                                    
+                                   short_name='mac5110',
+                                   long_name='Advanced Money Swimming',
+                                   parentnode=gladgander['id'])
+
 print "System Status - After UPDATE/PUT"
 all_search()
 
 """ ####################################################
-                    DELETE / DELETE 
+                    DELETE / DELETE
 #################################################### """
- 
+
 
 print "Delete Period"
 SimplifiedPeriod.delete(logincookie, mac1110v2011['id'])
@@ -108,6 +108,6 @@ SimplifiedNode.delete(logincookie, gladgander['id'])
 
 print "System Status - After DELETE/DELETE"
 all_search()
-    
-    
-    
+
+
+

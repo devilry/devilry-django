@@ -144,10 +144,11 @@ class FilterSpecs(object):
         """
         Validate the given filters and translate them into a Django query.
 
-        :param filters: A list of filters on the following format::
+        :param filters:
+            A list of filters on the following format::
 
-            [{'field': 'myfieldname', 'comp': '>', 'value': 30},
-             {'field': 'myotherfieldname', 'comp': '=', 'value': 'myname'}]
+                [{'field': 'myfieldname', 'comp': '>', 'value': 30},
+                 {'field': 'myotherfieldname', 'comp': '=', 'value': 'myname'}]
 
         :throws FilterValidationError: If any of the ``filters`` are not in the
                 filterspecs.
