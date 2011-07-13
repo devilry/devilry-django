@@ -48,3 +48,9 @@ Example
     {
         id: 10
     }
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`

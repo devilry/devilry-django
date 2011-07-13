@@ -83,3 +83,10 @@ As long as the {{doc.model_verbose_name}} is updated without an error, the
 response is *HTTP 201* with the requested data in the body.  The result always
 contains the data you sent in to the update method, however some values may
 have been changed due to logic performed on the server before saving.
+
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`.

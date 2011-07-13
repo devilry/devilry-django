@@ -220,3 +220,10 @@ the *value* for that field. The result always contains the following fields:
 However, there may be more fields if specified with the ``result_fieldgroups``
 request parameter.
 {% endif %}
+
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`.
