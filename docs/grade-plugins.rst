@@ -5,6 +5,9 @@
 Grade plugins
 =============
 
+**WARNING**: OUTDATED docs. This will be updated for the new *grade editors*.
+
+
 A grade plugin is a way to plug-in custom grade-handling. We will explain how
 to create a grade plugin by explaining the most simple grade plugin used in
 Devilry, ``devilry.apps.grade_default``. ``grade_default`` simply allows for
@@ -29,13 +32,13 @@ functions.
 The view
 ########
 
-Next we have to create a view which examiners can use to give feedback using
-this plugin. To make grade-plugins as flexible as possible, the grade-plugin
-gets complete control of the view for the entire feedback. This means that the
-view has to create a complete view for creating a new
-:class:`devilry.apps.core.models.Feedback`. This is a lot of work, so we provide
-some :ref:`shortcuts <grade-plugins-feedback-view>` which makes
-it possible for our view to look a simple as this (*gradeviews.py*):
+.. Next we have to create a view which examiners can use to give feedback using
+    this plugin. To make grade-plugins as flexible as possible, the grade-plugin
+    gets complete control of the view for the entire feedback. This means that the
+    view has to create a complete view for creating a new
+    :class:`devilry.apps.core.models.Feedback`. This is a lot of work, so we provide
+    some :ref:`shortcuts <grade-plugins-feedback-view>` which makes
+    it possible for our view to look a simple as this (*gradeviews.py*):
 
 TODO: New example
 

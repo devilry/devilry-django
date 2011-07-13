@@ -10,6 +10,8 @@
     restful
     extjshelpers
 
+    grade-plugins
+
     utils.assignmentgroup
     utils.ordereddict
     utils.delivery_collection
@@ -72,15 +74,6 @@ Integration with the ExtJS javascript library
 * :ref:`extjshelpers`
 
 
-Indices and tables
-######################################################################
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
-
 Utils
 ######################################################################
 
@@ -90,4 +83,11 @@ Utils
 * :ref:`devilry.utils.groupnodes`
 * :ref:`devilry.utils.delivery_collection`
 
+
+Indices and tables
+######################################################################
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
