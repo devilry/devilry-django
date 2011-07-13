@@ -19,6 +19,9 @@
     utils.devilry_email
 
     administrator.simplified
+    metabases.simplified
+    examiner.simplified
+    student.simplified
     public_restful_api
 
 
@@ -46,6 +49,8 @@ Simplified API
 
 * :ref:`simplified`
 * :ref:`Administrator <apps.administrator.simplified>`
+* :ref:`Examiner <apps.examiner.simplified>`
+* :ref:`Student <apps.student.simplified>`
 
 
 RESTful API

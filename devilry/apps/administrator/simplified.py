@@ -13,6 +13,7 @@ __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'Simplifie
 
 
 class CanSaveBase(SimplifiedModelApi):
+    """ Mixin class extended by many of the classes in the Simplified API for Administrator """
     @classmethod
     def write_authorize(cls, user, obj):
         """ Check if the given ``user`` can save changes to the given
@@ -53,6 +54,7 @@ class CanSaveBase(SimplifiedModelApi):
 class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
     class Meta(SimplifiedNodeMetaMixin):
+        """ Defines what methods an Administrator can use on a Node object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
     @classmethod
@@ -69,6 +71,7 @@ class SimplifiedNode(CanSaveBase):
 class SimplifiedSubject(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
+        """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
 
@@ -76,6 +79,7 @@ class SimplifiedSubject(CanSaveBase):
 class SimplifiedPeriod(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
+        """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
 
@@ -83,6 +87,7 @@ class SimplifiedPeriod(CanSaveBase):
 class SimplifiedAssignment(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
+        """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
 
@@ -91,6 +96,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     """ Simplified wrapper for
     :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
+        """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
 
 
@@ -98,6 +104,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
 class SimplifiedDelivery(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
+        """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
         methods = ['search', 'read']
 
 
@@ -105,6 +112,7 @@ class SimplifiedDelivery(CanSaveBase):
 class SimplifiedStaticFeedback(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedStaticFeedbackMetaMixin):
+        """ Defines what methods an Administrator can use on a StaticFeedback object using the Simplified API """
         methods = ['search', 'read']
 
     @classmethod
@@ -135,6 +143,7 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
 class SimplifiedDeadline(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
     class Meta(SimplifiedDeadlineMetaMixin):
+        """ Defines what methods an Administrator can use on a Deadline object using the Simplified API """
         methods = ['search', 'read', 'create', 'delete']
 
     @classmethod
@@ -178,6 +187,7 @@ class SimplifiedDeadline(SimplifiedModelApi):
 class SimplifiedFileMeta(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
     class Meta(SimplifiedFileMetaMetaMixin):
+        """ Defines what methods an Administrator can use on a FileMeta object using the Simplified API """
         methods = ['search', 'read']
 
     @classmethod
