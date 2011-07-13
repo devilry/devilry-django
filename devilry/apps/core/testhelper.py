@@ -434,6 +434,7 @@ class TestHelper(object):
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate_name)))
             cand = group.candidates.order_by('-id')[0]
             cand.candidate_id = cid if cid != None else str(cand.student.id)
+            cand.update_identifier(parentnode.anonymous)
             cand.full_clean()
             cand.save()
 
