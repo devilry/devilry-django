@@ -6,7 +6,7 @@ from devilryclient.restfulclient import (login,
                                       HttpResponseUnauthorized,
                                       HttpResponseForbidden,
                                       JsonDecodeError)
-
+from uiodata import subjects
 
 devilry_url = 'http://localhost:8000'
 login_url = '{0}/authenticate/login'.format(devilry_url)
@@ -21,23 +21,55 @@ SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/"
 SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassignment/")
 SimplifiedAssignmentGroup = restful_factory.make("administrator/restfulsimplifiedassignmentgroup/")
 
-
-def load_matnat_ifi_nodes():
-    #Create a new node with no parent
-    SimplifiedNode.create(logincookie, short_name='matnat', long_name='Matematisk Naturvitenskapelig Fakultet', parentnode=None)
-
-    #Find MatNats id
-    allnodes = SimplifiedNode.search(logincookie)['items']
-    matnat = [node for node in allnodes if node['short_name'] == 'matnat']
-    id = matnat[0]['id']
-
-    #Create a new Node(IFI) under MatNat
-    SimplifiedNode.create(logincookie, short_name='ifi', long_name='Institutt for informatikk', parentnode=id)
+uio = {}
+matnat = {}
+ifi = {}
 
 
+def all_search():
+    print 'Every node in the system:'
+    for node in SimplifiedNode.search(logincookie)['items']:
+        print '  ', node['short_name'], ':', node['long_name']
+
+    print 'Every subject in the system, ordered _descending_ by short_name:'
+    for subject in SimplifiedSubject.search(logincookie, orderby=['-short_name'])['items']:
+        print '  ', subject['short_name'], ':', subject['long_name']
+
+    print 'Every Period in the system'
+    for period in SimplifiedPeriod.search(logincookie)['items']:
+        print '  ', period['short_name'], ':', period['long_name']
+
+
+def create_uio_matnat_ifi_nodes():
+    print "CREATE UIO/MATNAT/IFI"
+    global uio, matnat, ifi 
+    uio = SimplifiedNode.create(logincookie, short_name='uio', long_name='Universitetet i Oslo', parentnode=None) 
+    matnat = SimplifiedNode.create(logincookie, short_name='matnat', long_name='Matematisk Naturvitenskapelig Fakultet', parentnode=uio['id'])
+    ifi = SimplifiedNode.create(logincookie, short_name='ifi', long_name='Institutt for informatikk', parentnode=matnat['id'])
+
+def create_subjects_and_period():
+    print "CREATE SUBJECTS"
+    for subject in subjects:
+        item = SimplifiedSubject.create(logincookie, short_name=subject['short_name'], long_name=subject['long_name'], parentnode=ifi['id'])
+        SimplifiedPeriod.create(logincookie, short_name='h2011', 
+                                long_name='H2011',
+                                parentnode=item['id'], 
+                                start_time='2011-08-01 00:00:01',
+                                end_time='2011-12-01 15:00:00')
+    
+def search_with_filtering():
+    pass
+    
+def delete_uio():
+    SimplifiedNode.delete(logincookie, uio['id'])
+    
 if __name__ == '__main__':
-    load_matnat_ifi_nodes()
-    #Delete MatNat IFI will as lo be trashed
-    SimplifiedNode.delete(logincookie, id)
+    #create_uio_matnat_ifi_nodes()
+    for item in subjects:
+        print item
+    create_uio_matnat_ifi_nodes()
+    create_subjects()
+    all_search()
+    delete_uio()
 
 

@@ -22,8 +22,9 @@ SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassi
 SimplifiedAssignmentGroup = restful_factory.make("administrator/restfulsimplifiedassignmentgroup/")
 
 
-""" #### SEARCH #### """
-
+""" ####################################################
+                    SEARCH / GET 
+#################################################### """
 
 def all_search():
     print 'Every node in the system:'
@@ -47,28 +48,63 @@ def all_search():
         # print '  ', assignmentgroup['status'], ':', assignmentgroup['is_open']
     
 
-""" #### CREATE #### """
+""" ####################################################
+                    CREATE / POST 
+#################################################### """
 
+print "System Status - Initial"
 all_search()
 
-#Create a new Node
-SimplifiedNode.create(logincookie, short_name='donald', long_name='Donald Duck University', parentnode=None)
+print "Create a new Node with no parentnode - Donald Duck University"
+donald = SimplifiedNode.create(logincookie, short_name='donald', 
+                                long_name='Donald Duck University', 
+                                parentnode=None)
+
+print "Create a new Subject mac1110"
+mac1110 = SimplifiedSubject.create(logincookie, short_name='mac1110', 
+                                    long_name='Introduction in how to maintain a nearly bursting Money Bin', 
+                                    parentnode=donald['id'])
+
+print "Create a new Period in mac1110"
+mac1110v2011 = SimplifiedPeriod.create(logincookie, short_name='v2011', 
+                                        long_name='V2011',
+                                        parentnode=mac1110['id'], 
+                                        start_time='2011-01-01 00:00:01',
+                                        end_time='2011-06-01 15:00:00')
+
+print "System Status - After CREATE/POST"
+all_search()
 
 
+""" ####################################################
+                    UPDATE / PUT 
+#################################################### """
 
+print "Change information about Donald Duck University"
+gladgander = SimplifiedNode.update(logincookie, donald['id'], 
+                                    short_name='gander', 
+                                    long_name='Gladstone Gander University')
 
-#Create a new node with no parent
-# SimplifiedNode.create(logincookie, short_name='matnat', long_name='Matematisk Naturvitenskapelig Fakultet', parentnode=None)
+print "Redefine mac1110"
+mac5110 = SimplifiedSubject.update(logincookie, mac1110['id'],
+                            short_name='mac5110',
+                            long_name='Advanced Money Swimming',
+                            parentnode=gladgander['id'])
+                                    
+print "System Status - After UPDATE/PUT"
+all_search()
 
-#Find MatNats id
-# allnodes = SimplifiedNode.search(logincookie)['items']
-# matnat = [node for node in allnodes if node['short_name'] == 'matnat']
-# id = matnat[0]['id']
+""" ####################################################
+                    DELETE / DELETE 
+#################################################### """
+ 
 
-#Create a new Node(IFI) under MatNat
-# SimplifiedNode.create(logincookie, short_name='ifi', long_name='Institutt for informatikk', parentnode=id)
+print "Delete Period"
+SimplifiedPeriod.delete(logincookie, mac1110v2011['id'])
 
-#Delete MatNat IFI will aslo be trashed
-# SimplifiedNode.delete(logincookie, id)
+print "Delete Gladstone Ganders university"
+SimplifiedNode.delete(logincookie, gladgander['id'])
 
-#Create a new Node
+print "System Status - After DELETE/DELETE"
+all_search()
+
