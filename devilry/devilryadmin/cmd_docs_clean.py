@@ -3,6 +3,8 @@
 
 from shutil import rmtree
 from common import get_docs_buildrootdir
+from os.path import exists
 
 
-rmtree(get_docs_buildrootdir())
+if exists(get_docs_buildrootdir()):
+    rmtree(get_docs_buildrootdir())
