@@ -23,6 +23,7 @@
     examiner.simplified
     student.simplified
     public_restful_api
+    public_restful_api_examples
 
 
 ======================================================================
@@ -58,6 +59,7 @@ RESTful API
 
 * :ref:`restful`
 * :ref:`public_restful_api`
+* :ref:`public_restful_api_examples`
 
 
 Integration with the ExtJS javascript library
