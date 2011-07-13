@@ -17,6 +17,17 @@ class FieldSpec(object):
         self.always_available_fields = always_available_fields
         self.additional_fieldgroups = additional_fieldgroups
 
+    def all_aslist(self):
+        """
+        Get all fields in always_available_fields and in additional_fieldgroups.
+        """
+        return self.aslist(fieldgroups=self.additional_aslist())
+
+    def iterfieldnames(self):
+        """
+        Iterate over all fieldnames in this FieldSpec.
+        """
+        return self.all_aslist().__iter__()
 
     def aslist(self, fieldgroups=None):
         """ Get the fields in ``always_available_fields`` and all
@@ -61,3 +72,39 @@ class FieldSpec(object):
                     break
         return local_fieldgroups
 
+    def __add__(self, other):
+        """
+        Adds two FieldSpec instances to a new FieldSpec instance.
+        Raises an error if any values are already defined
+        """
+        new_fields = []
+        new_fieldgroups = {}
+
+        # copy the self's fields first
+        for val in self.always_available_fields:
+            if val in new_fields:
+                raise ValueError("%s already in always_available_fields" % val)
+            new_fields.append(val)
+
+        # then copy the others' fields
+        for val in other.always_available_fields:
+            if val in new_fields:
+                raise ValueError("%s already in always_available_fields" % val)
+            new_fields.append(val)
+
+        # then self's field_groups
+        for key, val in self.additional_fieldgroups.items():
+            new_fieldgroups[key] = []
+            for v in val:
+                if v in new_fieldgroups[key]:
+                    raise ValueError("%s already in additional_fieldgroups['%s']" % (v, key))
+                new_fieldgroups[key].append(v)
+
+        # then self's field_groups
+        for key, val in other.additional_fieldgroups.items():
+            for v in val:
+                if v in new_fieldgroups[key]:
+                    raise ValueError("%s already in additional_fieldgroups['%s']" % (v, key))
+                new_fieldgroups[key].append(v)
+
+        return FieldSpec(*new_fields, **new_fieldgroups)

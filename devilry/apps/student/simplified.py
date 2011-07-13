@@ -1,233 +1,96 @@
-from ...simplified import (simplified_modelapi, SimplifiedModelApi,
-                           PermissionDenied, FieldSpec)
-from ..core import models
+from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
+from simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedPeriodMetaMixin,
+                                 SimplifiedAssignmentMetaMixin, SimplifiedAssignmentGroupMetaMixin,
+                                 SimplifiedDeadlineMetaMixin, SimplifiedDeliveryMetaMixin,
+                                 SimplifiedStaticFeedbackMetaMixin, SimplifiedFileMetaMetaMixin)
 
 
 class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
+    """ Mixin class extended by all classes in the Simplified API for Student using the Simplified API """
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
+        """ Returns all objects of this type that matches arguments
+        given in ``\*\*kwargs`` where ``user`` is a student.
+
+        :param user: A django user object.
+        :param \*\*kwargs: A dict containing search-parameters.
+        :rtype: a django queryset
+        """
         return cls._meta.model.published_where_is_candidate(user)
 
     @classmethod
     def read_authorize(cls, user, obj):
+        """ Checks if the given ``user`` is an student in the given
+        ``obj``, and raises ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: An object of the type this method is used in.
+        :throws PermissionDenied:
+        """
         if not obj.published_where_is_candidate(user).filter(id=obj.id):
             raise PermissionDenied()
 
 
 @simplified_modelapi
 class SimplifiedFileMeta(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-    class Meta:
-        model = models.FileMeta
-        resultfields = FieldSpec('filename', 'size', 'id',
-                                 subject=['delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
-                                            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                                            'delivery__assignment_group__parentnode__parentnode__parentnode__id'],
-                                 period=['delivery__assignment_group__parentnode__parentnode__long_name',
-                                         'delivery__assignment_group__parentnode__parentnode__short_name',
-                                         'delivery__assignment_group__parentnode__parentnode__id'],
-                                 assignment=['delivery__assignment_group__parentnode__long_name',
-                                             'delivery__assignment_group__parentnode__short_name',
-                                             'delivery__assignment_group__parentnode__id']
-                                 )
-        searchfields = FieldSpec(
-            # delivery__delivered_by
-            'delivery__assignment_group__parentnode__parentnode__parentnode__long_name',  # subject
-            'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',  # subject
-            'delivery__assignment_group__parentnode__parentnode__long_name',  # period
-            'delivery__assignment_group__parentnode__parentnode__short_name',  # period
-            'delivery__assignment_group__parentnode__long_name',  # assignment
-            'delivery__assignment_group__parentnode__short_name',  # assignment
-            )
-
+    """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
+    class Meta(SimplifiedFileMetaMetaMixin):
+        """ Defines what methods a Student can use on a FileMeta object using the Simplified API """
         methods = ['search', 'read', 'create']
 
 
 @simplified_modelapi
 class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
-    class Meta:
-        model = models.Deadline
-        resultfields = FieldSpec('text', 'deadline', 'assignment_group', 'status', 'feedbacks_published', 'id',
-                                 subject=['assignment_group__parentnode__parentnode__parentnode__long_name',
-                                          'assignment_group__parentnode__parentnode__parentnode__short_name',
-                                            'assignment_group__parentnode__parentnode__parentnode__id'],
-                                 period=['assignment_group__parentnode__parentnode__long_name',
-                                         'assignment_group__parentnode__parentnode__short_name',
-                                         'assignment_group__parentnode__parentnode__id'],
-                                 assignment=['assignment_group__parentnode__long_name',
-                                             'assignment_group__parentnode__short_name',
-                                             'assignment_group__parentnode__id']
-                                 )
-        searchfields = FieldSpec(
-            #'delivered_by',
-            'assignment_group__parentnode__short_name',  # Name of assignment
-            'assignment_group__parentnode__long_name',  # Name of assignment
-            'assignment_group__parentnode__parentnode__short_name',  # Name of period
-            'assignment_group__parentnode__parentnode__long_name',  # Name of period
-            'assignment_group__parentnode__parentnode__parentnode__short_name',  # Name of subject
-            'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
-            )  # What should search() search from
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
+    class Meta(SimplifiedDeadlineMetaMixin):
+        """ Defines what methods a Student can use on a Deadline object using the Simplified API """
         methods = ['search', 'read']
 
 
 @simplified_modelapi
 class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-
-    class Meta:
-
-        _subject_long     = 'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'
-        _subject_short    = 'delivery__assignment_group__parentnode__parentnode__parentnode__short_name'
-        _subject_id       = 'delivery__assignment_group__parentnode__parentnode__parentnode__id'
-
-        _period_long      = 'delivery__assignment_group__parentnode__parentnode__long_name'
-        _period_short     = 'delivery__assignment_group__parentnode__parentnode__short_name'
-        _period_id        = 'delivery__assignment_group__parentnode__parentnode__id'
-
-        _assignment_long  = 'delivery__assignment_group__parentnode__long_name'
-        _assignment_short = 'delivery__assignment_group__parentnode__short_name'
-        _assignment_id    = 'delivery__assignment_group__parentnode__id'
-
-        _delivery_time    = 'delivery__time_of_delivery'
-        _delivery_number  = 'delivery__number'
-        _delivery_delivered_by = 'delivery__delivered_by'
-        _delivery_after_deadline = 'delivery__after_deadline'
-
-        model = models.StaticFeedback
-        resultfields = FieldSpec('id', 'grade', 'points', 'is_passing_grade',
-                                 period=[_period_short, _period_long, _period_id],
-                                 subject=[_subject_long, _subject_short, _subject_id],
-                                 assignment=[_assignment_short, _assignment_long, _assignment_id],
-                                 delivery=[_delivery_time, _delivery_number, ])
-        searchfields = FieldSpec(_subject_short,
-                                 _subject_long,
-                                 _period_short,
-                                 _period_long,
-                                 _assignment_long,
-                                 _assignment_short,
-                                 _delivery_number,
-                                 )
+    """ Simplified wrapper for :class:`devilry.apps.core.models.StaticFeedback`. """
+    class Meta(SimplifiedStaticFeedbackMetaMixin):
+        """ Defines what methods a Student can use on a StaticFeedback object using the Simplified API """
         methods = ['search', 'read']
 
 
 @simplified_modelapi
 class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-
-    class Meta:
-
-        _subject_long     = 'assignment_group__parentnode__parentnode__parentnode__long_name'
-        _subject_short    = 'assignment_group__parentnode__parentnode__parentnode__short_name'
-        _subject_id       = 'assignment_group__parentnode__parentnode__parentnode__id'
-
-        _period_long      = 'assignment_group__parentnode__parentnode__long_name'
-        _period_short     = 'assignment_group__parentnode__parentnode__short_name'
-        _period_id        = 'assignment_group__parentnode__parentnode__id'
-
-        _assignment_long  = 'assignment_group__parentnode__long_name'
-        _assignment_short = 'assignment_group__parentnode__short_name'
-        _assignment_id    = 'assignment_group__parentnode__id'
-
-        model = models.Delivery
-        resultfields = FieldSpec('id', 'time_of_delivery', 'number',
-                                 period=[_period_short, _period_long, _period_id],
-                                 subject=[_subject_long, _subject_short, _subject_id],
-                                 assignment=[_assignment_short, _assignment_long, _assignment_id])
-        searchfields = FieldSpec(
-            _subject_short,
-            _subject_long,
-            _period_short,
-            _period_long,
-            _assignment_long,
-            _assignment_short,
-            )
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
+    class Meta(SimplifiedDeliveryMetaMixin):
+        """ Defines what methods a Student can use on a Delivery object using the Simplified API """
         methods = ['search', 'read', 'delete']
 
 
 @simplified_modelapi
 class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-
-    class Meta:
-
-        _subject_long     = 'parentnode__parentnode__parentnode__long_name'
-        _subject_short    = 'parentnode__parentnode__parentnode__short_name'
-        _subject_id       = 'parentnode__parentnode__parentnode__id'
-
-        _period_long      = 'parentnode__parentnode__long_name'
-        _period_short     = 'parentnode__parentnode__short_name'
-        _period_id        = 'parentnode__parentnode__id'
-
-        _assignment_long  = 'parentnode__long_name'
-        _assignment_short = 'parentnode__short_name'
-        _assignment_id    = 'parentnode__id'
-
-        model = models.AssignmentGroup
-        resultfields = FieldSpec(_assignment_long, _assignment_short, _assignment_id,
-                                 period=[_period_short, _period_long, _period_id],
-                                 subject=[_subject_long, _subject_short, _subject_id],
-                                 assignment=[_assignment_short, _assignment_long, _assignment_id])
-        searchfields = FieldSpec(
-            _subject_short,
-            _subject_long,
-            _period_short,
-            _period_long,
-            _assignment_long,
-            _assignment_short,
-            )
+    """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
+    class Meta(SimplifiedAssignmentGroupMetaMixin):
+        """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
         methods = ['search', 'read', 'create']
 
 
 @simplified_modelapi
 class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-
-    class Meta:
-
-        _subject_long     = 'parentnode__parentnode__long_name'
-        _subject_short    = 'parentnode__parentnode__short_name'
-        _subject_id       = 'parentnode__parentnode__id'
-
-        _period_long      = 'parentnode__long_name'
-        _period_short     = 'parentnode__short_name'
-        _period_id        = 'parentnode__id'
-
-        _assignment_long  = 'long_name'
-        _assignment_short = 'short_name'
-        _assignment_id    = 'id'
-
-        model = models.Assignment
-        resultfields = FieldSpec(_assignment_long, _assignment_short, _assignment_id,
-                                 period=[_period_short, _period_long, _period_id],
-                                 subject=[_subject_long, _subject_short, _subject_id])
-        searchfields = FieldSpec(
-            _subject_short,
-            _subject_long,
-            _period_short,
-            _period_long,
-            _assignment_short,
-            _assignment_long
-            )
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
+    class Meta(SimplifiedAssignmentMetaMixin):
+        """ Defines what methods a Student can use on an Assignment object using the Simplified API """
         methods = ['search', 'read']
 
 
 @simplified_modelapi
 class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-
-    class Meta:
-        _subject_long     = 'parentnode__long_name'
-        _subject_short    = 'parentnode__short_name'
-        _subject_id       = 'parentnode__id'
-
-        model = models.Period
-        resultfields = FieldSpec('long_name', 'short_name', 'id',
-                                 subject=[_subject_long, _subject_short, _subject_id])
-        searchfields = FieldSpec('long_name', 'short_name', 'id',
-                                 _subject_long, _subject_short)
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
+    class Meta(SimplifiedPeriodMetaMixin):
+        """ Defines what methods a Student can use on a Period object using the Simplified API """
         methods = ['search', 'read']
 
 
 @simplified_modelapi
 class SimplifiedSubject(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
-
-    class Meta:
-        model = models.Subject
-        resultfields = FieldSpec('id', 'short_name', 'long_name', 'parentnode__id')
-        searchfields = FieldSpec('short_name', 'long_name')
+    """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
+    class Meta(SimplifiedSubjectMetaMixin):
+        """ Defines what methods a Student can use on a Subject object using the Simplified API """
         methods = ['search', 'read']

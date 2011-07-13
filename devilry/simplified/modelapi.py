@@ -1,7 +1,7 @@
-from django.db.models.fields import AutoField
+from django.db.models.fields import AutoField, FieldDoesNotExist
 
 from qryresultwrapper import QryResultWrapper
-from utils import modelinstance_to_dict
+from utils import modelinstance_to_dict, get_field_from_fieldname, get_clspath
 from exceptions import PermissionDenied
 from filterspec import FilterSpecs
 
@@ -84,17 +84,13 @@ class SimplifiedModelApi(object):
     @classmethod
     def handle_fieldgroups(cls, user,
                            result_fieldgroups, search_fieldgroups,
-                           **validatedfilters):
+                           filters):
         """
         Can be overridden to change fieldgroups before they are sent into the
         QryResultWrapper. For example, if certain fieldgroups contain
         senstive data for anonymous assignments, we can add those fieldgroups
         if a filter for a specific assignment is provided in ``filters`` and
         that assignment is not anonymous.
-
-        :param validatedfilters:
-            Filters which are applied to the QuerySet returned by
-            :meth:`create_searchqryset`. Do **NOT** change this.
 
         :return: (result_fieldgroups, search_fieldgroups)
         """
@@ -112,7 +108,8 @@ class SimplifiedModelApi(object):
     @classmethod
     def _create_search_qryresultwrapper(cls, user,
                                        result_fieldgroups, search_fieldgroups,
-                                       **validatedfilters):
+                                       filters,
+                                       filterqry):
         """
         :param validatedfilters:
             Filters which are applied to the QuerySet returned by
@@ -121,11 +118,11 @@ class SimplifiedModelApi(object):
         :return: A :class:`QryResultWrapper`.
         """
         qryset = cls.create_searchqryset(user)
-        qryset = qryset.filter(**validatedfilters)
+        qryset = qryset.filter(filterqry)
         result_fieldgroups, search_fieldgroups = cls.handle_fieldgroups(user,
                                                                         result_fieldgroups,
                                                                         search_fieldgroups,
-                                                                        **validatedfilters)
+                                                                        filters)
         resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
         searchfields = cls._meta.searchfields.aslist(search_fieldgroups)
         result = QryResultWrapper(resultfields, searchfields, qryset)
@@ -168,8 +165,6 @@ class SimplifiedModelApi(object):
         """
         obj = cls._readauth_get(user, idorkw) # authorization in cls._readauth_get
         resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
-        #if hasattr(cls, 'filter_read_resultfields'):
-            #resultfields = cls.filter_read_resultfields(user, obj, resultfields)
         return modelinstance_to_dict(obj, resultfields)
 
     @classmethod
@@ -229,7 +224,7 @@ class SimplifiedModelApi(object):
     def search(cls, user,
                query = '', start = 0, limit = 50, orderby = None,
                result_fieldgroups=None, search_fieldgroups=None,
-               **filters):
+               filters={}):
         """ Search for objects.
 
         :param query:
@@ -257,18 +252,15 @@ class SimplifiedModelApi(object):
             Available values are the fieldgroups in
             ``Meta.searchfields.additional_fieldgroups``.
         :param filters:
-            Filters which are applied to the QuerySet returned by
-            :meth:`create_searchqryset`. These filters are validated
-            by :meth:`devilry.simplified.FilterSpecs.validate` before
-            they are applied.
+            List of filters that can be parsed by :meth:`devilry.simplified.FilterSpec.parse`.
 
         :return: The result of the search.
         :rtype: QryResultWrapper
         """
-        cls._meta.filters.validate(filters) # NOTE: This _must_ be before filters are sent on to user specified methods to ensure the filters are validated.
+        filterqry = cls._meta.filters.parse(filters)
         result = cls._create_search_qryresultwrapper(user,
                                                     result_fieldgroups, search_fieldgroups,
-                                                    **filters)
+                                                    filters, filterqry)
         orderby = orderby or cls._meta.ordering
         result._query_order_and_limit(query = query,
                                     start = start,
@@ -277,6 +269,20 @@ class SimplifiedModelApi(object):
         return result
 
 
+class SimplifiedConfigError(Exception):
+    """
+    Raised when :func:`simplified_modelapi` discovers a configuration error.
+    """
+
+
+def _validate_fieldnameiterator(cls, attribute, fieldnameiterator):
+    for fieldname in fieldnameiterator.iterfieldnames():
+        try:
+            get_field_from_fieldname(cls._meta.model, fieldname)
+        except FieldDoesNotExist, e:
+            raise SimplifiedConfigError('{0}.{1}: Invalid field name: {2}.'.format(get_clspath(cls),
+                                                                                   attribute,
+                                                                                   fieldname))
 
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
@@ -353,13 +359,12 @@ def simplified_modelapi(cls):
     _require_metaattr(cls, 'model')
     _require_metaattr(cls, 'methods')
     _require_metaattr(cls, 'resultfields')
+    _validate_fieldnameiterator(cls, 'Meta.resultfields', cls._meta.resultfields)
     _require_metaattr(cls, 'searchfields')
+    _validate_fieldnameiterator(cls, 'Meta.searchfields', cls._meta.searchfields)
     _create_meta_ediablefields(cls)
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
-
-    if not hasattr(cls._meta, 'filters'):
-        cls._meta.filters = FilterSpecs()
 
     # Dynamically remove create(), read(), insecure_read_model(), update(), delete() if not supported
     cls._all_crud_methods = ('create', 'read', 'insecure_read_model', 'update', 'delete')
@@ -369,4 +374,9 @@ def simplified_modelapi(cls):
 
     for method in cls._all_crud_methods:
         setattr(cls, 'supports_{0}'.format(method), method in cls._meta.methods)
+
+    if hasattr(cls._meta, 'filters'):
+        _validate_fieldnameiterator(cls, 'Meta.filters', cls._meta.filters)
+    else:
+        cls._meta.filters = FilterSpecs()
     return cls

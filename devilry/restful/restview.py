@@ -1,9 +1,8 @@
 from functools import wraps
 from django.core.urlresolvers import reverse
 from django.views.generic import View
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.conf.urls.defaults import url
-from django.contrib.auth.decorators import login_required
 
 from serializers import serialize, SerializableResult
 
@@ -13,6 +12,15 @@ def extjshacks(f):
     def wrapper(self, request, *args, **kwargs):
         self.use_extjshacks = bool(request.META.get('HTTP_X_DEVILRY_USE_EXTJS', False))
         return f(self, request, *args, **kwargs)
+    return wrapper
+
+def forbidden_if_no_authenticated(f):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return f(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
     return wrapper
 
 class RestfulView(View):
@@ -37,7 +45,7 @@ class RestfulView(View):
         The view is wrapped by :func:`django.contrib.auth.decorators.login_required`.
         """
         return url(r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$'.format(urlprefix=cls._meta.urlprefix),
-            login_required(cls.as_view()),
+            forbidden_if_no_authenticated(cls.as_view()),
             name=cls._meta.urlname)
 
     @classmethod
