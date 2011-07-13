@@ -19,24 +19,53 @@ UPDATE_DOCS = '''Update a {{doc.model_verbose_name}}.
 '''
 DELETE_DOCS = '''Delete a {{doc.model_verbose_name}}.
 '''
-SEARCH_DOCS = '''Search for {{doc.model_verbose_name_plural}}.
+SEARCH_DOCS = '''Search for {{doc.model_verbose_name_plural}}. The underlying
+data model searched is :class:`{{doc.modelclspath}}`
+
+The request parameters (below) all modify the result of the search. They are
+applied in the following order:
+
+    1. The ``query`` is executed.
+    2. The result of the query is filtered through the ``filters``.
+    3. The result of the filtering is ordered as specified in ``orderby``.
+    4. The result of the ordering is limited by ``start`` and ``limit``.
 
 
-Parameters
-##########
+
+
+Optional request parameters
+###########################
 
 
 query
 -----
-A string to search for.
+A string to search for. If this is empty or not given, all
+{{doc.model_verbose_name_plural}} that the authenticated user has access to is
+returned.
+
+If the string is not empty, the ``query``-string is split on whitespace,
+resulting in a list of words. Every *word* in the list is searched for
+*case-insensitive* matches within the following fields:
+
+    {% for info in doc.searchfields %}
+        {{ info.fieldname }}
+            Actual location of the field:
+                :class:`{{info.modelclspath}}`
+            About the field:
+                {{ info.help_text|safe }}
+            Type
+                {{ info.fieldtype }}
+    {% endfor %}
+
 
 
 {% if doc.filters %}
 
 filters
----------------
+-------
 
-A list of filters, where each filter is a map with the following entries:
+Filters can be used to perform complex queries. The ``filters`` parameter is a
+list of filters, where each filter is a map with the following entries:
 
     field
         A field name.
@@ -55,8 +84,10 @@ Example:
 {% if doc.filters.filterspecs %}
 {% for fs in doc.filterspecs %}
     {{ fs.filterspec.fieldname }}
+        Actual location of the field:
+            :class:`{{fs.modelclspath}}`
         About the field:
-            {{ fs.help_text|safe|default:"MISSING HELP TEXT" }}
+            {{ fs.help_text|safe }}
         Type
             {{ fs.fieldtype }}
         Supported comparison operators:
@@ -78,7 +109,6 @@ orderby
 -------
 List of fieldnames. Order the result by these fields.
 Fieldnames can be prefixed by ``'-'`` for descending ordering.
-Example: TODO generate ordeby example.
 
 start
 -----
@@ -92,11 +122,22 @@ Limit results to this number of items. Defaults to ``50``.
 {% if doc.result_fieldgroups %}
 result_fieldgroups
 ------------------
-Adds additional fields to each item in the result.
-{{doc.result_fieldgroups}}
+A list of group names. Each group adds an additional set of fields to the
+results of the search. The following group names are available:
+{% for fieldgroup in doc.result_fieldgroups %}
+    {{ fieldgroup.fieldgroup }}
+        *Expands to the following fields:*
+        {% for info in fieldgroup.fieldinfolist %}
+            {{ info.fieldname }}
+                Actual location of the field:
+                    :class:`{{info.modelclspath}}`
+                About the field:
+                    {{ info.help_text|safe }}
+                Type
+                    {{ info.fieldtype }}
+        {% endfor %}
+{% endfor %}
 
-The fields are documented in :class:`{{doc.modelmodulename}}.{{doc.modelclsname}}`.
-Follow fields containing ``__`` through the corrensponding related attributes.
 {% endif %}
 
 
@@ -104,43 +145,98 @@ Follow fields containing ``__`` through the corrensponding related attributes.
 {% if doc.search_fieldgroups %}
 search_fieldgroups
 ------------------
-Adds additional fields which are searched for the ``query`` string.
-
-{{doc.search_fieldgroups}}
-
-The fields are documented in :class:`{{doc.modelmodulename}}.{{doc.modelclsname}}`.
-Follow fields containing ``__`` through the corrensponding related attributes.
+A list of group names. Each group adds an additional set of fields to be
+searched using the ``query``. The following group names are available:
+{% for fieldgroup in doc.search_fieldgroups %}
+    {{ fieldgroup.fieldgroup }}
+        *Expands to the following fields:*
+        {% for info in fieldgroup.fieldinfolist %}
+            {{ info.fieldname }}
+                Actual location of the field:
+                    :class:`{{info.modelclspath}}`
+                About the field:
+                    {{ info.help_text|safe }}
+                Type
+                    {{ info.fieldtype }}
+        {% endfor %}
+{% endfor %}
 {% endif %}
 
 
 
-Return
-######
+Response
+########
 
-TODO: Autogenereate return example(s) containing fields.
+On success
+----------
+
+Responds with HTTP code *200* and a *JSON encoded* list of results. Each result in the
+list is a JSON object where the *key* is a fieldname and the associated value is
+the *value* for that field. The result always contains the following fields:
+
+    {% for info in doc.resultfields %}
+        {{ info.fieldname }}
+            Actual location of the field:
+                :class:`{{info.modelclspath}}`
+            About the field:
+                {{ info.help_text|safe }}
+            Type
+                {{ info.fieldtype }}
+    {% endfor %}
+
+{% if doc.result_fieldgroups %}
+However, there may be more fields if specified with the ``result_fieldgroups``
+request parameter.
+{% endif %}
 
 
+
+
+
+{% comment %}
 Notes for non-standard extensions
 #################################
 
 TODO: getdata_in_qrystring and X-header
+{% endcomment %}
 '''
+
+
+def get_model_clspath(model):
+    modelclsname = model.__name__
+    modelmodulename = model.__module__
+    if modelmodulename.endswith('.' + modelclsname.lower()):
+        modelmodulename = modelmodulename.rsplit('.', 1)[0]
+    return '{0}.{1}'.format(modelmodulename, modelclsname)
 
 
 def field_to_restfultype(field):
     if isinstance(field, fields.related.AutoField):
         return 'Integer', 15
     elif isinstance(field, fields.CharField):
-        return 'String', 'myvalue'
+        return 'String', '"myvalue"'
+    elif isinstance(field, fields.TextField):
+        return 'String', '"myvalue"'
+    elif isinstance(field, fields.BooleanField):
+        return 'Boolean', 'true'
+    elif isinstance(field, fields.IntegerField):
+        return 'Integer', '20'
+    elif isinstance(field, fields.DateTimeField):
+        return 'DateTime string (YYYY-MM-DD hh:mm:ss)', '2010-02-22 22:32:10'
+    elif isinstance(field, fields.related.ManyToManyField) or isinstance(field, fields.related.RelatedObject):
+        return 'Comma-separated list', '"this, is, an, example"'
     else:
-        raise ValueError('Unsupported field type.')
+        raise ValueError('Unsupported field type: {0}'.format(type(field)))
 
 def field_to_help_text(field):
-    help_text = field.help_text
     if isinstance(field, fields.related.AutoField):
-        help_text = 'Autogenerated identifier.'
-    elif not help_text or help_text.strip() == '':
+        return 'Autogenerated identifier.'
+    elif isinstance(field, fields.related.ManyToManyField) or isinstance(field, fields.related.RelatedObject):
+        return 'List of many values.'
+    help_text = field.help_text
+    if not help_text or help_text.strip() == '':
         raise ValueError('Missing help for: {0}.{1}'.format(get_clspath(field.model), field.name))
+    return help_text
 
 
 class Docstring(object):
@@ -154,28 +250,40 @@ class Docstring(object):
         self.modelmodulename = model.__module__
         if self.modelmodulename.endswith('.' + self.modelclsname.lower()):
             self.modelmodulename = self.modelmodulename.rsplit('.', 1)[0]
-        self.modelclspath = '{0}.{1}'.format(self.modelmodulename, self.modelclsname)
+        self.modelclspath = get_model_clspath(model)
         self.model_verbose_name = model._meta.verbose_name
         self.model_verbose_name_plural = model._meta.verbose_name_plural
         self.model = model
 
         self.result_fieldgroups = self._create_fieldgroup_overview(simplified._meta.resultfields.additional_fieldgroups)
         self.search_fieldgroups = self._create_fieldgroup_overview(simplified._meta.searchfields.additional_fieldgroups)
+        self.searchfields = self._create_fieldinfolist(simplified._meta.searchfields.always_available_fields)
+        self.resultfields = self._create_fieldinfolist(simplified._meta.resultfields.always_available_fields)
         self._create_filter_docattrs()
 
         self.context = Context(dict(doc=self))
+
+    def _create_fieldnamelist(self, fieldnames):
+        return ', '.join('``{0}``'.format(fieldname) for fieldname in fieldnames)
+
+
+    def _fieldinfo_dict(self, field):
+        modelclspath = get_model_clspath(field.model)
+        help_text = field_to_help_text(field)
+        fieldtype, valueexample = field_to_restfultype(field)
+        return dict(help_text=help_text,
+                    fieldtype=fieldtype,
+                    modelclspath=modelclspath,
+                    valueexample=valueexample)
 
     def _create_filter_docattrs(self):
         self.filters = self.restfulcls._meta.simplified._meta.filters
         self.filterspecs = []
         for filterspec in sorted(self.filters.filterspecs.values(), key=lambda s: s.fieldname):
             field = self._get_field(filterspec.fieldname)
-            help_text = field_to_help_text(field)
-            fieldtype, valueexample = field_to_restfultype(field)
-            self.filterspecs.append(dict(filterspec=filterspec,
-                                         help_text=help_text,
-                                         fieldtype=fieldtype,
-                                         valueexample=valueexample))
+            fs = self._fieldinfo_dict(field)
+            fs['filterspec'] = filterspec
+            self.filterspecs.append(fs)
 
         self.patternfilterspecs = sorted(self.filters.patternfilterspecs, key=lambda s: s.fieldname)
         self._create_filter_example()
@@ -188,7 +296,7 @@ class Docstring(object):
             compindex = randint(0, len(supported_comp)-1)
             example = '{{field:"{0}", comp:"{1}", value:{2}}}'.format(filterspec.fieldname,
                                                                 supported_comp[compindex],
-                                                                repr(fs['valueexample']))
+                                                                fs['valueexample'])
             filterexample.append(example)
         filterexample = '[{0}]'.format(',\n '.join(filterexample))
         self.filterexample = self._indent(filterexample, '        ')
@@ -196,15 +304,20 @@ class Docstring(object):
     def _indent(self, value, indent):
         return '\n'.join('{0}{1}'.format(indent, line) for line in value.split('\n'))
 
+    def _create_fieldinfolist(self, fieldnames):
+        infolist = []
+        for fieldname in fieldnames:
+            info = self._fieldinfo_dict(self._get_field(fieldname))
+            info['fieldname'] = fieldname
+            infolist.append(info)
+        return infolist
 
     def _create_fieldgroup_overview(self, fieldgroups):
-        if not fieldgroups:
-            return ''
-        result = ['Available values are:', '']
+        result = []
         for fieldgroup, fieldgroupfields in fieldgroups.iteritems():
-            result.append(fieldgroup)
-            result.append('    Expands to the following fields: ' + ', '.join(fieldgroupfields))
-        return '\n    '.join(result)
+            result.append(dict(fieldgroup=fieldgroup,
+                               fieldinfolist=self._create_fieldinfolist(fieldgroupfields)))
+        return result
 
     def get_first_para(self):
         return str(self).split('\n\n')[0].replace('\n', ' ')
