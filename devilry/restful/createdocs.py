@@ -19,8 +19,9 @@ UPDATE_DOCS = '''Update a {{doc.model_verbose_name}}.
 '''
 DELETE_DOCS = '''Delete a {{doc.model_verbose_name}}.
 '''
-SEARCH_DOCS = '''Search for {{doc.model_verbose_name_plural}}. The underlying
-data model searched is :class:`{{doc.modelclspath}}`
+SEARCH_DOCS = '''Search for {{doc.model_verbose_name_plural}}.
+
+The underlying data model searched is :class:`{{doc.modelclspath}}`
 
 The request parameters (below) all modify the result of the search. They are
 applied in the following order:
@@ -31,11 +32,28 @@ applied in the following order:
     4. The result of the ordering is limited by ``start`` and ``limit``.
 
 
+Request example
+###############
+
+.. code-block:: javascript
+
+    {{doc.httpmethod}} {{doc.itemurl}}
+
+    {
+        query: 'a query string',
+        filters: {{ doc.filterexample_for_overview|safe }},
+        orderby: ['list', 'of', '-fieldnames', 'to', 'order', 'by'],
+        start: 10,
+        limit: 100
+    }
+
 
 
 Optional request parameters
 ###########################
 
+Optional request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.
 
 query
 -----
@@ -240,9 +258,11 @@ def field_to_help_text(field):
 
 
 class Docstring(object):
-    def __init__(self, docstring, restfulcls):
+    def __init__(self, docstring, restfulcls, httpmethod, itemurl):
         self.docstring = Template(docstring)
         self.restfulcls = restfulcls
+        self.httpmethod = httpmethod
+        self.itemurl = itemurl
         simplified = restfulcls._meta.simplified
         model = simplified._meta.model
 
@@ -300,6 +320,7 @@ class Docstring(object):
             filterexample.append(example)
         filterexample = '[{0}]'.format(',\n '.join(filterexample))
         self.filterexample = self._indent(filterexample, '        ')
+        self.filterexample_for_overview = self._indent(filterexample, '                     ').lstrip()
 
     def _indent(self, value, indent):
         return '\n'.join('{0}{1}'.format(indent, line) for line in value.split('\n'))
@@ -472,7 +493,8 @@ class RestfulDocs(object):
                     itemurl = '{0}id'.format(url)
                 else:
                     itemurl = url
-                indexitems.append(IndexItem(refprefix, methodname, httpmethod, itemurl, Docstring(docs, restfulcls)))
+                indexitems.append(IndexItem(refprefix, methodname, httpmethod, itemurl,
+                                            Docstring(docs, restfulcls, httpmethod, itemurl)))
             yield IndexPageItem(restfulcls, indexitems)
 
     def restfulmanager_docs_to_rstfiles(self, directory, indexpageitem):
