@@ -110,7 +110,7 @@ letters, &#8216;_&#8217; and &#8216;-&#8216;.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.BaseNode.long_name">
 <tt class="descname">long_name</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.BaseNode.long_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield">django.db.models.CharField</a> with max 100 characters. Gives a longer 
+<dd><p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield">django.db.models.CharField</a> with max 100 characters. Gives a longer
 description than <a class="reference internal" href="#devilry.apps.core.models.model_utils.BaseNode.short_name" title="devilry.apps.core.models.model_utils.BaseNode.short_name"><tt class="xref py py-attr docutils literal"><span class="pre">short_name</span></tt></a>.</p>
 </dd></dl>
 
@@ -272,7 +272,7 @@ node-hierarchy:</p>
 <dt id="devilry.apps.core.models.Node">
 <em class="property">class </em><tt class="descclassname">devilry.apps.core.models.</tt><tt class="descname">Node</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.basenode.BaseNode</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.model_utils.Etag</span></tt></p>
-<p>This class is typically used to represent a hierarchy of institutions, 
+<p>This class is typically used to represent a hierarchy of institutions,
 faculties and departments.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Node.parentnode">
@@ -322,42 +322,6 @@ For a list of direct child nodes, use atribute child_nodes instead.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.Node.get_by_path_kw">
-<em class="property">classmethod </em><tt class="descname">get_by_path_kw</tt><big>(</big><em>pathlist</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node.get_by_path_kw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used by <tt class="xref py py-meth docutils literal"><span class="pre">get_by_path()</span></tt> to create the required kwargs for
-Node.objects.get(). Might be a starting point for more sophisticated
-queries including paths. Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ifi</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">Node</span><span class="o">.</span><span class="n">get_by_path_kw</span><span class="p">([</span><span class="s">&#39;uio&#39;</span><span class="p">,</span> <span class="s">&#39;ifi&#39;</span><span class="p">]))</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pathlist</strong> &#8211; A list of node-names, like <tt class="docutils literal"><span class="pre">['uio',</span> <span class="pre">'ifi']</span></tt>.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.Node.get_by_path">
-<em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Node.get_by_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a node by path.</p>
-<p>Raises <tt class="xref py py-exc docutils literal"><span class="pre">Node.DoesNotExist</span></tt> if the query does not match.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211; The path to a Node, like <tt class="docutils literal"><span class="pre">'uio.ifi'</span></tt>.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A Node-object.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -397,25 +361,6 @@ the node hierarchy for every unique path.</p>
 <dt id="devilry.apps.core.models.model_utils.Subject.periods">
 <tt class="descname">periods</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Subject.periods" title="Permalink to this definition">¶</a></dt>
 <dd><p>A set of periods for this subject</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.Subject.get_by_path">
-<em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Subject.get_by_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a Subject by path.</p>
-<p>Only matches on <a class="reference internal" href="#devilry.apps.core.models.model_utils.Subject.short_name" title="devilry.apps.core.models.model_utils.Subject.short_name"><tt class="xref py py-attr docutils literal"><span class="pre">short_name</span></tt></a> for subjects because it is
-guaranteed to be unique.</p>
-<p>Raises <tt class="xref py py-exc docutils literal"><span class="pre">Subject.DoesNotExist</span></tt> if the query does not match.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; The <a class="reference internal" href="#devilry.apps.core.models.model_utils.Subject.short_name" title="devilry.apps.core.models.model_utils.Subject.short_name"><tt class="xref py py-attr docutils literal"><span class="pre">short_name</span></tt></a> of a subject.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A Subject-object.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -470,25 +415,6 @@ node.</p>
 <dt id="devilry.apps.core.models.model_utils.Period.assignments">
 <tt class="descname">assignments</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Period.assignments" title="Permalink to this definition">¶</a></dt>
 <dd><p>A set of assignments for this period</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.Period.get_by_path">
-<em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Period.get_by_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a Period by path.</p>
-<p>Raises <tt class="xref py py-exc docutils literal"><span class="pre">Period.DoesNotExist</span></tt> if the query does not match.
-Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the path does not contain exactly two
-path-elements (uses <a class="reference internal" href="#devilry.apps.core.models.model_utils.splitpath" title="devilry.apps.core.models.model_utils.splitpath"><tt class="xref py py-func docutils literal"><span class="pre">splitpath()</span></tt></a>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; The path to a Period, like <tt class="docutils literal"><span class="pre">'inf1100.spring09'</span></tt>.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A Period-object.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -627,25 +553,6 @@ feedbacks. See also <a class="reference internal" href="#devilry.apps.core.model
 <tt class="descname">update_candidates_identifer</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.update_candidates_identifer" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the anonymous flag is changed, update the identifer on all
 the candidates on this assignment.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="devilry.apps.core.models.Assignment.get_by_path">
-<em class="property">classmethod </em><tt class="descname">get_by_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.get_by_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a Assignment by path.</p>
-<p>Raises <tt class="xref py py-exc docutils literal"><span class="pre">Assignment.DoesNotExist</span></tt> if the query does not match.
-Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the path does not contain exactly three
-path-elements (uses <a class="reference internal" href="#devilry.apps.core.models.model_utils.splitpath" title="devilry.apps.core.models.model_utils.splitpath"><tt class="xref py py-func docutils literal"><span class="pre">splitpath()</span></tt></a>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; The path to a Assignment, like <tt class="docutils literal"><span class="pre">'inf1100.spring09.oblig1'</span></tt>.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A Assignment-object.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
