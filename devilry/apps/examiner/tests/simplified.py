@@ -510,4 +510,4 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestBase):
             rendered_view='<html></html>'
             )
         created_pk = SimplifiedStaticFeedback.create(self.firstExam, **feedbackDict)
-        print models.StaticFeedback.objects.get(pk=created_pk)
+        # TODO: test results

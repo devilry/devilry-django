@@ -164,15 +164,3 @@ class TestAssignment(TestCase, TestHelper):
 
     def test_get_path(self):
         self.assertEquals(self.inf1100_looong_assignment1.get_path(), 'inf1100.looong.assignment1')
-
-    def test_get_full_path(self):
-        self.assertEquals(self.inf1100_looong_assignment1.get_full_path(),
-                          'uio.ifi.inf1100.looong.assignment1')
-
-    def test_get_by_path(self):
-        self.assertEquals(
-                Assignment.get_by_path('inf1100.looong.assignment1').short_name,
-                'assignment1')
-        self.assertRaises(Assignment.DoesNotExist, Assignment.get_by_path,
-                'does.not.exist')
-        self.assertRaises(ValueError, Assignment.get_by_path, 'does.not')

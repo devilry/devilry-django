@@ -159,6 +159,8 @@ def require_djangoproject():
         printWarning(warning)
         chdir(devpath)
 
+def forwardable_args():
+    return argv[1:]
 
 def printWarning(warning):
     width = 80

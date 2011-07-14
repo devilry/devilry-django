@@ -10,7 +10,7 @@ from model_utils import Etag, EtagMismatchException
 
 class Node(models.Model, BaseNode, Etag):
     """
-    This class is typically used to represent a hierarchy of institutions, 
+    This class is typically used to represent a hierarchy of institutions,
     faculties and departments.
 
 
@@ -27,10 +27,10 @@ class Node(models.Model, BaseNode, Etag):
     .. attribute:: child_nodes
 
         A set of child_nodes for this node
- 
+
     .. attribute:: subjects
 
-        A set of subjects for this node 
+        A set of subjects for this node
     """
     short_name = ShortNameField()
     long_name = LongNameField()
@@ -59,10 +59,6 @@ class Node(models.Model, BaseNode, Etag):
         else:
             return self.short_name
 
-    def get_full_path(self):
-        return self.get_path()
-    get_full_path.short_description = BaseNode.get_full_path.short_description
-    
     def iter_childnodes(self):
         """
         Recursively iterates over all child nodes, and their child nodes.
@@ -93,7 +89,7 @@ class Node(models.Model, BaseNode, Etag):
         greater_than_count = 1
         if self.id == None:
             greater_than_count = 0
-            
+
         if self.parentnode:
             if Node.objects.filter(short_name=self.short_name).\
                    filter(parentnode__pk=self.parentnode.id).count() > greater_than_count:
@@ -125,32 +121,3 @@ class Node(models.Model, BaseNode, Etag):
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(pk__in=cls._get_nodepks_where_isadmin(user_obj))
-
-    @classmethod
-    def get_by_path_kw(cls, pathlist):
-        """ Used by :meth:`get_by_path` to create the required kwargs for
-        Node.objects.get(). Might be a starting point for more sophisticated
-        queries including paths. Example::
-
-            ifi = Node.objects.get(**Node.get_by_path_kw(['uio', 'ifi']))
-
-        :param pathlist: A list of node-names, like ``['uio', 'ifi']``.
-        """
-        kw = {}
-        key = 'short_name'
-        for short_name in reversed(pathlist):
-            kw[key] = short_name
-            key = 'parentnode__' + key
-        return kw
-
-    @classmethod
-    def get_by_path(cls, path):
-        """ Get a node by path.
-
-        Raises :exc:`Node.DoesNotExist` if the query does not match.
-        
-        :param path: The path to a Node, like ``'uio.ifi'``.
-        :type path: str
-        :return: A Node-object.
-        """
-        return Node.objects.get(**Node.get_by_path_kw(path.split('.')))

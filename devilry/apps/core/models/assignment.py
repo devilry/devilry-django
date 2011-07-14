@@ -251,24 +251,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_examiner(cls, user_obj):
         return Q(assignmentgroups__examiners=user_obj)
 
-    @classmethod
-    def get_by_path(self, path):
-        """ Get a Assignment by path.
-
-        Raises :exc:`Assignment.DoesNotExist` if the query does not match.
-        Raises :exc:`ValueError` if the path does not contain exactly three
-        path-elements (uses :func:`splitpath`).
-        
-        :param path:
-            The path to a Assignment, like ``'inf1100.spring09.oblig1'``.
-        :return: A Assignment-object.
-        """
-        subject, period, assignment = splitpath(path, expected_len=3)
-        return Assignment.objects.get(
-                parentnode__parentnode__short_name=subject,
-                parentnode__short_name=period,
-                short_name=assignment)
-
     def assignment_groups_where_is_examiner(self, user_obj):
         """ Get all assignment groups within this assignment where the given
         ``user_obj`` is examiner.

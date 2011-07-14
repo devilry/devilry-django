@@ -135,22 +135,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         #else:
             #return cls.not_ended_where_is_admin(user_obj)
 
-    @classmethod
-    def get_by_path(self, path):
-        """ Get a Period by path.
-
-        Raises :exc:`Period.DoesNotExist` if the query does not match.
-        Raises :exc:`ValueError` if the path does not contain exactly two
-        path-elements (uses :func:`splitpath`).
-        
-        :param path: The path to a Period, like ``'inf1100.spring09'``.
-        :return: A Period-object.
-        """
-        subject, period = splitpath(path, expected_len=2)
-        return Period.objects.get(
-                parentnode__short_name=subject,
-                short_name=period)
-
     def clean(self, *args, **kwargs):
         """Validate the period.
 

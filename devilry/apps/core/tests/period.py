@@ -49,11 +49,6 @@ class TestPeriod(TestCase, TestHelper):
         self.inf1100_looong.start_time = datetime(2012, 1, 1)
         self.assertRaises(ValidationError, self.inf1100_looong.clean)
 
-    def test_get_by_path(self):
-        self.assertEquals(Period.get_by_path('inf1100.old').short_name, 'old')
-        self.assertRaises(Period.DoesNotExist, Period.get_by_path, 'does.notexist')
-        self.assertRaises(ValueError, Period.get_by_path, 'does.not.exist')
-
     def test_where_is_examiner(self):
         q = Period.where_is_examiner(self.examiner1).order_by('short_name')
         self.assertEquals(q.count(), 2)
