@@ -5,7 +5,7 @@ from os.path import join, exists
 from os import environ, mkdir
 from devilryclient.restfulclient import login
 from devilryclient.restfulclient import RestfulFactory
-from devilryclient.utils import logging_startup, findconffolder
+from devilryclient.utils import logging_startup, findconffolder, create_folder
 
 #Arguments for logging
 args = sys.argv[1:]
@@ -23,44 +23,60 @@ SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
 SimplifiedSubject = restful_factory.make("administrator/restfulsimplifiedsubject/")
 SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
 SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassignment/")
+SimplifiedAssignmentGroup = restful_factory.make("administrator/restfulsimplifiedassignmentgroup/")
+SimplifiedDelivery = restful_factory.make("administrator/restfulsimplifieddelivery/")
 
-subjects = SimplifiedSubject.search(logincookie, query='duck')['items']
 
-#cfgfile = open(
+#find all nodes where the user is examiner 
+nodes = SimplifiedNode.search(logincookie, query='')['items']
 
 devilry_path = findconffolder()
 
-#path to dir where delivery data is to be stored
-#devilry_path = join(environ['HOME'], 'devilry', 'devdata')
-#devilry_path = 
+#traverse nodes and create folders for each subject, period... if they don't already exist
+#Problem: subject has no resultfield parentnode_short_name
+for n in nodes:
+    node_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
+    subjects = SimplifiedSubject.search(logincookie, filters=node_filters)['items']
 
-#periods = ['fall01', 'spring01']
+    for s in subjects:
+        subject_path = create_folder(s, devilry_path, 'short_name')
 
-#traverse subjects and create folders for each subject and period if they don't already exist
-for s in subjects:
-    #TODO put this in a utility function to avoid repetition
-    subj_path = join(devilry_path, s['short_name'])
-    if not exists(subj_path):
-        logging.debug('INFO: Creating {}'.format(subj_path))
-        mkdir(subj_path)
+        sub_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
+                #, {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
+        periods = SimplifiedPeriod.search(logincookie, result_fieldgroups=['subject'], filters=sub_filters)['items']
+        
+        for p in periods:
+            period_path = create_folder(p, subject_path, 'short_name')
 
-    filters = [{'field':"parentnode__short_name", "comp":"icontains", "value":s["short_name"]}]
-    periods = SimplifiedPeriod.search(logincookie, filters=filters)['items']
-    
-    for p in periods:
-        period_path = join(subj_path, p['short_name'])
-        if not exists(period_path):
-            logging.debug('INFO: Creating {}'.format(period_path))
-            mkdir(period_path)
+            ass_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":p['short_name']},
+                    {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
+                    #, {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
+            assignments = SimplifiedAssignment.search(logincookie,result_fieldgroups=['subject', 'period'], filters=ass_filters)['items']
+
+            for a in assignments:
+                assignment_path = create_folder(a, period_path, 'short_name')
+
+                ag_filters = [{'field':"parentnode__short_name", "comp":"icontains", "value":a["short_name"]},
+                        {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":p['short_name']},
+                    {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
+                assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, result_fieldgroups=['subject', 'period', 'assignment'], filters=ag_filters)['items']
+
+                for ag in assignmentgroups:
+                    ag_path = create_folder(ag, assignment_path, 'id')
+                    
+                    #can't go further because delivery does not support filters
+
+                    """
+
+                    delivery_filters = [{'field':"parentnode__id", "comp":"icontains", "value":ag["id"]},
+                            {'field':"parentnode__parentnode__short_name", "comp":"icontains", "value":a["short_name"]},
+                        {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":p['short_name']},
+                    {'field':"parentnode__parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
 
 
-        filters = [{'field':"parentnode__short_name", "comp":"icontains", "value":p["short_name"]}]
-        assignments = SimplifiedAssignment.search(logincookie, filters=filters)['items']
-
-        for a in assignments:
-            assignment_path = join(period_path, a['short_name'])
-            if not exists(assignment_path):
-                logging.debug('INFO: Creating {}'.format(assignment_path))
-                mkdir(assignment_path)
-
-
+                    #filters = [{'field':"assignment_group__id", comp:"iexact", "value":ag["id"]}]
+                    #print filters
+                    #deliveries = SimplifiedDelivery.search(logincookie, filters=filters)['items']
+                    #deliveries = SimplifiedDelivery.search(logincookie, query="")
+                    #print deliveries
+                    """
