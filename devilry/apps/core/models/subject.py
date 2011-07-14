@@ -57,20 +57,6 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
             return Q(admins__pk=user_obj.pk) \
                 | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
-    @classmethod
-    def get_by_path(self, path):
-        """ Get a Subject by path.
-
-        Only matches on :attr:`short_name` for subjects because it is
-        guaranteed to be unique.
-
-        Raises :exc:`Subject.DoesNotExist` if the query does not match.
-        
-        :param path: The :attr:`short_name` of a subject.
-        :return: A Subject-object.
-        """
-        return Subject.objects.get(short_name=path)
-
     def get_path(self):
         """ Only returns :attr:`short_name` for subject since it is
         guaranteed to be unique. """

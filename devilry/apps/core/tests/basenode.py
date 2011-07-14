@@ -23,7 +23,7 @@ class TestBaseNode(TestCase, TestHelper):
             l.sort()
             return ', '.join(l)
         self.assertEquals(self.uio.get_admins(), 'uioadmin')
-        self.assertEquals(split_and_sort(self.ifi.get_admins()),
+        self.assertEquals(split_and_sort(self.uio_ifi.get_admins()),
                 'ifiadmin, ifitechsupport')
 
     def test_can_save(self):
