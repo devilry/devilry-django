@@ -18,8 +18,8 @@ class TestTestHelper(TestCase):
 
         # check relations between them
         self.assertEquals(self.ti.uio.parentnode, None)
-        self.assertEquals(self.ti.ifi.parentnode, self.ti.uio)
-        self.assertTrue(self.ti.ifi in self.ti.uio.child_nodes.all())
+        self.assertEquals(self.ti.uio_ifi.parentnode, self.ti.uio)
+        self.assertTrue(self.ti.uio_ifi in self.ti.uio.child_nodes.all())
 
     def test_many_root_nodes(self):
         self.ti.add(nodes='uio.ifi')
@@ -27,8 +27,8 @@ class TestTestHelper(TestCase):
 
         # check relations between them
         self.assertEquals(self.ti.uio.parentnode, None)
-        self.assertEquals(self.ti.ifi.parentnode, self.ti.uio)
-        self.assertTrue(self.ti.ifi in self.ti.uio.child_nodes.all())
+        self.assertEquals(self.ti.uio_ifi.parentnode, self.ti.uio)
+        self.assertTrue(self.ti.uio_ifi in self.ti.uio.child_nodes.all())
 
     def test_single_nodes(self):
         self.ti.add(nodes='uio')
@@ -54,11 +54,11 @@ class TestTestHelper(TestCase):
 
         # assert that they are both admins
         self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
-        self.assertTrue(self.ti.mortend in self.ti.ifi.admins.all())
+        self.assertTrue(self.ti.mortend in self.ti.uio_ifi.admins.all())
 
         # assert that uio has ifi as a child node and ifi has uio as parent
-        self.assertTrue(self.ti.ifi in self.ti.uio.child_nodes.all())
-        self.assertEquals(self.ti.ifi.parentnode, self.ti.uio)
+        self.assertTrue(self.ti.uio_ifi in self.ti.uio.child_nodes.all())
+        self.assertEquals(self.ti.uio_ifi.parentnode, self.ti.uio)
         self.assertEquals(self.ti.uio.parentnode, None)
 
     def test_nodes_and_one_admin(self):
@@ -69,7 +69,7 @@ class TestTestHelper(TestCase):
 
         # mortend = User.objects.get(username='mortend')
         # ifi = Node.objects.get(short_name='ifi')
-        self.assertTrue(self.ti.mortend in self.ti.ifi.admins.all())
+        self.assertTrue(self.ti.mortend in self.ti.uio_ifi.admins.all())
 
     def test_subject(self):
         self.ti.add(nodes='ifi:admin(mortend)',
@@ -281,11 +281,11 @@ class TestTestHelper(TestCase):
 
         # assert that all the expected nodes are created
         self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
-        self.assertTrue(self.ti.mortend in self.ti.ifi.admins.all())
+        self.assertTrue(self.ti.mortend in self.ti.uio_ifi.admins.all())
         self.assertTrue(self.ti.stein in self.ti.inf1000.admins.all())
         self.assertTrue(self.ti.steing in self.ti.inf1000.admins.all())
         self.assertEquals(self.ti.uio, Node.objects.get(short_name='uio'))
-        self.assertEquals(self.ti.ifi, Node.objects.get(short_name='ifi'))
+        self.assertEquals(self.ti.uio_ifi, Node.objects.get(short_name='ifi'))
         self.assertEquals(self.ti.inf1000, Subject.objects.get(short_name='inf1000'))
         self.assertEquals(self.ti.inf1000_fall01, Period.objects.get(short_name='fall01'))
 
