@@ -49,13 +49,6 @@ class TestSubject(TestCase, TestHelper):
     def test_get_path(self):
         self.assertEquals(self.inf1100.get_path(), 'inf1100')
 
-    def test_get_full_path(self):
-        self.assertEquals(self.inf1100.get_full_path(), 'uio.ifi.inf1100')
-
-    def test_get_by_path(self):
-        self.assertEquals(Subject.get_by_path('inf1100').short_name, 'inf1100')
-        self.assertRaises(Subject.DoesNotExist, Subject.get_by_path, 'doesnotexist')
-
     def test_where_is_examiner(self):
         examiner1 = User.objects.get(username='examiner1')
         q = Subject.where_is_examiner(examiner1)
