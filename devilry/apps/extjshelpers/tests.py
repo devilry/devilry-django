@@ -30,7 +30,7 @@ class SimplifiedUser(object):
         model = User
         resultfields = FieldSpec('id', 'first', 'last', 'email', 'score',
                                  textfields=['introtext', 'text'])
-        searchfields = FieldSpec('short_name', 'long_name')
+        searchfields = FieldSpec('first', 'last')
         methods = []
 
 
