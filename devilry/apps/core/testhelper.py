@@ -237,7 +237,7 @@ class TestHelper(object):
         node.full_clean()
         node.save()
 
-        vars(self)[node.short_name] = node
+        vars(self)[node.get_path().replace('.', '_')] = node
         self.objects_created += 1
         return node
 
