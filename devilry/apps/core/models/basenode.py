@@ -66,6 +66,11 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         return self.parentnode.is_admin(user_obj)
 
     def can_save(self, user_obj):
+        """
+        Check if the current user can save the current object. Unlike is_admin,
+        this method returns true for superusers, and if this is a new object (id=None),
+        we check if the user is admin on any parent.
+        """
         if user_obj.is_superuser:
             return True
         if self.id == None:
