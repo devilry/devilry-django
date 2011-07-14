@@ -18,7 +18,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
 
     .. attribute:: long_name
 
-        A django.db.models.CharField_ with max 100 characters. Gives a longer 
+        A django.db.models.CharField_ with max 100 characters. Gives a longer
         description than :attr:`short_name`.
     """
 
@@ -26,17 +26,21 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         return self.get_path()
 
     def get_path(self):
+        """ Get the unique path to this node.
+
+        :return:
+            A ``'.'`` separated list containing the short_name of this
+            node and every parentnode required to make this path unique. For
+            everything from Subject and down, this is up to subject, and for Node,
+            this is up to a Node with ``parentnode==None``.
+        """
         return self.parentnode.get_path() + "." + self.short_name
     get_path.short_description = _('Path')
-    
-    def get_full_path(self):
-        return self.parentnode.get_full_path() + "." + self.short_name
-    get_full_path.short_description = _('Unique Path')
-    
+
     def get_admins(self):
         """ Get a string with the username of all administrators on this node
         separated by comma and a space like: ``"uioadmin, superuser"``.
-        
+
         Note that admins on parentnode(s) is not included.
         """
         return u', '.join([u.username for u in self.admins.all()])
@@ -44,7 +48,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
 
     def is_admin(self, user_obj):
         """ Check if the given user is admin on this node or any parentnode.
-        
+
         :param user_obj: A django.contrib.auth.models.User_ object.
         :rtype: bool
         """

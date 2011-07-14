@@ -59,10 +59,6 @@ class Node(models.Model, BaseNode, Etag):
         else:
             return self.short_name
 
-    def get_full_path(self):
-        return self.get_path()
-    get_full_path.short_description = BaseNode.get_full_path.short_description
-    
     def iter_childnodes(self):
         """
         Recursively iterates over all child nodes, and their child nodes.
