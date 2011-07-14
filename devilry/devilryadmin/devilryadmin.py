@@ -15,7 +15,7 @@ if __name__ == '__main__':
         print
         print 'Where command is one of:'
         for cmdname in commandnames:
-            print ' - {0:<24} {1}'.format(cmdname, gethelp(cmdname))
+            print ' - {0:<30} {1}'.format(cmdname, gethelp(cmdname))
         raise SystemExit()
 
     if len(argv) < 2:

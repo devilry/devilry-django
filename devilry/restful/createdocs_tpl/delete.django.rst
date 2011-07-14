@@ -1,6 +1,8 @@
 Delete a {{doc.model_verbose_name}}.
 
 The underlying data model where the item is deleted from is defined in :class:`{{doc.modelclspath}}`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`{{doc.simplifiedclspath}}.delete`.
 
 
 ********

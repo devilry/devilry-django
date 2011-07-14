@@ -29,8 +29,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
    .. attribute:: deliveries
 
-        A django ``RelatedManager`` that holds the :class:`deliveries
-        <Delivery>` on this group.
+        A django ``RelatedManager`` that holds the :class:`deliveries <devilry.apps.core.models.Delivery>` on this group.
 
    .. attribute:: status
 

@@ -9,7 +9,7 @@ class Candidate(models.Model, Etag):
     """
     .. attribute:: assignment_group
 
-        The :class:`AssignmentGroup` where this groups belongs.
+        The `AssignmentGroup`_ where this groups belongs.
 
     .. attribute:: student
 

@@ -16,9 +16,10 @@ class TestDelivery(TestCase, TestHelper):
                                    "g2:candidate(student2):examiner(examiner2)",
                                    "g3:candidate(student3,student2):examiner(examiner1,examiner2,examiner3)",
                                    "g4:candidate(student4):examiner(examiner3)"])
-        self.inf1100_period1_assignment1_g1.deliveries.create(delivered_by=self.student1, successful=False)
-        self.inf1100_period1_assignment1_g2.deliveries.create(delivered_by=self.student2, successful=False)
-        self.inf1100_period1_assignment1_g3.deliveries.create(delivered_by=self.student3, successful=False)
+        self.goodFile = {"good.py": "print awesome"}
+        self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
 
     def test_where_is_admin(self):
         teacher1 = User.objects.get(username='teacher1')
@@ -26,36 +27,29 @@ class TestDelivery(TestCase, TestHelper):
 
     def test_delivery(self):
         assignmentgroup = self.inf1100_period1_assignment1_g3
-        d = assignmentgroup.deliveries.create(delivered_by=self.student1, successful=False)
+        d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
         self.assertEquals(d.assignment_group, assignmentgroup)
-        self.assertFalse(d.successful)
-        d.successful = True
-        d.save()
+        self.assertTrue(d.successful)
         self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 2)
 
-        d2 = assignmentgroup.deliveries.create(delivered_by=self.student1, successful=True)
-        self.assertTrue(d2.successful)
-        self.assertEquals(d2.number, 3)
-        d2.save()
-
         # TODO find a graceful way to handle this error:
-        d2.number = 2
-        self.assertRaises(IntegrityError, d2.save)
+        d.number = 1
+        self.assertRaises(IntegrityError, d.save)
 
     def test_published_where_is_candidate(self):
         # Add 2 on g1
-        self.inf1100_period1_assignment1_g1.deliveries.create(delivered_by=self.student1, successful=False)
-        self.inf1100_period1_assignment1_g1.deliveries.create(delivered_by=self.student1, successful=False)
+        d = self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
+        d = self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         # Add 3 on g2
-        self.inf1100_period1_assignment1_g2.deliveries.create(delivered_by=self.student2, successful=False)
-        self.inf1100_period1_assignment1_g2.deliveries.create(delivered_by=self.student2, successful=False)
-        self.inf1100_period1_assignment1_g2.deliveries.create(delivered_by=self.student2, successful=False)
+        d = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        d = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        d = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
         # Add 2 on g3
-        self.inf1100_period1_assignment1_g3.deliveries.create(delivered_by=self.student3, successful=False)
-        self.inf1100_period1_assignment1_g3.deliveries.create(delivered_by=self.student3, successful=False)
-        
+        d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
+        d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
+
         self.assertEquals(Delivery.published_where_is_candidate(self.student1).count(), 3)
         self.assertEquals(Delivery.published_where_is_candidate(self.student2).count(), 7)
         self.assertEquals(Delivery.published_where_is_candidate(self.student3).count(), 3)

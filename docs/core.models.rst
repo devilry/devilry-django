@@ -9,15 +9,14 @@
 .. currentmodule:: devilry.apps.core.models
 
 
-.. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment]
-.. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Node]++1-subjects>*[Subject], [Node]++0-child-nodes>*[Node], [Subject]++1-periods>*[Period], [Period]++1-assignments>*[Assignment]
-.. http://yuml.me/diagram/scruffy;dir:LR;scale:80;/class/[Assignment]++1-assignmentgroups >*[AssignmentGroup], [AssignmentGroup]++1-deliveries >*[Delivery], [AssignmentGroup]++1-deadlines >*[Deadline], [Delivery]++1-feedback >0..1[Feedback], [Delivery]++1-filemetas >*[FileMeta]
-
-
 .. image:: images/devilry.core.models.1.png
 
 .. image:: images/devilry.core.models.2.png
 
+(edit the images umldiagram1_ and umldiagram2_ using yuml.me)
+
+.. _umldiagram1: http://yuml.me/diagram/plain;dir:LR;scale:80;/class/edit/[Node]++1-subjects >*[Subject], [Node]++0-child-nodes >*[Node], [Subject]++1-periods >*[Period], [Period]++1-assignments >*[Assignment], [Assignment]++1-assignmentgroups >*[AssignmentGroup]
+.. _umldiagram2: http://yuml.me/diagram/scruffy/class/edit/%5BAssignmentGroup%5D++1-deliveries%20%3E*%5BDelivery%5D,%20%5BAssignmentGroup%5D++1-deadlines%20%3E*%5BDeadline%5D,%20%5BAssignmentGroup%5D++1-candidates%20%3E*%5BCandidate%5D,%20%5BDelivery%5D++1-staticfeedbacks%20%3E*%5BStaticFeedback%5D,%20%5BDelivery%5D++1-filemetas%20%3E*%5BFileMeta%5D,%20%5BDeadline%5D++1-deliveries%20%3E*%5BDelivery%5D,%20%5BDelivery%5D++1-delivered_by%20%3E1%5BCandidate%5D
 
 Functions and attributes
 #########################################################
