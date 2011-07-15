@@ -66,6 +66,8 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
     def test_search_exact_number_of_results(self):
         qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=4)
         self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 4)
         with self.assertRaises(InvalidNumberOfResults):
             SimplifiedNode.search(self.admin1, exact_number_of_results=3)
         with self.assertRaises(InvalidNumberOfResults):

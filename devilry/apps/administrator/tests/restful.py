@@ -30,6 +30,27 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
                                   'parentnode': None
                                  })
 
+    def test_search_exact_number_of_results(self):
+        self.add(nodes='uni.fys.stuff') # adds fys and stuff
+        url = RestfulSimplifiedNode.get_rest_url()
+
+        r = self.client.get(url, data={'getdata_in_qrystring': True})
+        self.assertEquals(r.status_code, 200)
+        data = json.loads(r.content)
+        items = data['items']
+        self.assertEquals(len(items), 3)
+
+        r = self.client.get(url, data={'getdata_in_qrystring': True, 'exact_number_of_results': 1})
+        self.assertEquals(r.status_code, 400)
+
+        # Note that this fails because we want the restful API to be type safe
+        # (I.E. a parameter should not be both None and an int). Therefore, we
+        # should just exclude exact_number_of_results from the query parameters
+        # instead of sending it a None.
+        r = self.client.get(url, data={'getdata_in_qrystring': True, 'exact_number_of_results': None})
+        self.assertEquals(r.status_code, 400)
+
+
     def test_create(self):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
         url = RestfulSimplifiedNode.get_rest_url(self.uni.id)

@@ -1,7 +1,6 @@
 from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
 
-from ..simplified import PermissionDenied
-from ..simplified.filterspec import FilterValidationError
+from ..simplified import PermissionDenied, SimplifiedException
 from restview import RestfulView
 from serializers import serializers, SerializableResult
 from readform import ReadForm
@@ -98,24 +97,6 @@ class ModelRestfulView(RestfulView):
                                   'send GET data as a querystring? In that case, add '
                                   'getdata_in_qrystring=1 to your querystring.'.format(e)))
 
-    #def _cleanfilters(self, cleaned_data, fromGET, getdata):
-        #cleanedfilterdata = {}
-        #for filterop, filtervalue in getdata.iteritems():
-            #if self.use_extjshacks and filterop == '_dc':
-                #continue
-            #if self.use_extjshacks and filterop == 'page':
-                #continue
-            #if filterop == 'getdata_in_qrystring':
-                #continue
-            #if filterop in cleaned_data:
-                #continue
-            #filtervalue = unicode(filtervalue)
-            #if filtervalue.isdigit():
-                #filtervalue = int(filtervalue)
-            #cleanedfilterdata[filterop] = filtervalue
-        #return cleanedfilterdata
-
-
     def crud_search(self, request):
         """ Maps to the ``search`` method of the simplified class. """
         try:
@@ -126,11 +107,9 @@ class ModelRestfulView(RestfulView):
         form = self.__class__.SearchForm(getdata)
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            #cleanedfilterdata = self._cleanfilters(cleaned_data, fromGET, getdata)
-            #cleaned_data.update(**cleanedfilterdata)
             try:
                 qryresultwrapper = self._meta.simplified.search(self.request.user, **cleaned_data)
-            except FilterValidationError, e:
+            except SimplifiedException, e:
                 return ErrorMsgSerializableResult(str(e),
                                                   httpresponsecls=HttpResponseBadRequest)
 
