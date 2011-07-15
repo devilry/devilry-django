@@ -116,7 +116,7 @@ def findconffolder():
     cwd = os.getcwd()
     while cwd != environ["HOME"]:  
         if exists(join(cwd, '.devilry')):
-            return cwd
+            return join(cwd, '.devilry')
         else:
             cwd = dirname(cwd)
 
