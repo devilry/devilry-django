@@ -249,7 +249,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                     parentnode = self.inf110_firstsem_a2.parentnode)
 
         pk = SimplifiedAssignment.update(self.admin1,
-                            idorkw = self.inf110_firstsem_a2.id,
+                            pk = self.inf110_firstsem_a2.id,
                             **kw)
         update_res = models.Assignment.objects.get(pk=pk)
 
@@ -257,7 +257,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         self.assertEquals(self.inf110_firstsem_a2.short_name, 'a2')
 
         update_res = SimplifiedAssignment.update(self.admin1,
-                                                 idorkw=self.inf110_firstsem_a2.id,
+                                                 pk=self.inf110_firstsem_a2.id,
                                                  short_name = 'test110')
         self.refresh_var(self.inf110_firstsem_a2)
         self.assertEquals(self.inf110_firstsem_a2.short_name, 'test110')
@@ -270,16 +270,16 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         #test that a student cannot change an assignment
         self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(inf110Student)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.update(self.inf110Student, idorkw=self.inf110_firstsem_a2.id, **kw)
+            SimplifiedAssignment.update(self.inf110Student, pk=self.inf110_firstsem_a2.id, **kw)
 
         #test that an administrator cannot change assignment for the wrong course
         self.add_to_path('uni;inf101:admin(inf101Admin)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.update(self.inf101Admin, idorkw=self.inf110_firstsem_a2.id, **kw)
+            SimplifiedAssignment.update(self.inf101Admin, pk=self.inf110_firstsem_a2.id, **kw)
 
         #test that a course-administrator can change assignments for his/her course..
         self.add_to_path('uni;inf110:admin(inf110Admin)')
-        SimplifiedAssignment.update(self.inf110Admin, idorkw=self.inf110_firstsem_a2.id, **kw)
+        SimplifiedAssignment.update(self.inf110Admin, pk=self.inf110_firstsem_a2.id, **kw)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf110.firstsem.a1:admin(testadmin)')
