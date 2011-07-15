@@ -60,6 +60,11 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
             SimplifiedNode.search(self.admin1,
                                   filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
 
+    #def test_search_exact_number_of_results(self):
+        #qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=4)
+        #self.assertEquals(len(qrywrap), 4)
+        #self.assertRaises(
+
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
@@ -284,15 +289,6 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf110.firstsem.a1:admin(testadmin)')
         SimplifiedAssignment.delete(self.testadmin, self.inf110_firstsem_a1.id)
-
-        with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.delete(self.testadmin, self.inf110_firstsem_a1.id)
-
-    def test_delete_asnodeadmin_by_short_name(self):
-        self.add_to_path('uni;inf110.firstsem.a1:admin(testadmin)')
-        SimplifiedAssignment.delete(self.testadmin, dict(short_name = 'a1',
-            parentnode__short_name = 'firstsem',
-            parentnode__parentnode__short_name = 'inf110'))
 
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignment.delete(self.testadmin, self.inf110_firstsem_a1.id)
