@@ -205,6 +205,23 @@ class SimplifiedDeliveryMetaMixin(object):
                              # subject
                              'assignment_group__parentnode__parentnode__parentnode__short_name',
                              'assignment_group__parentnode__parentnode__parentnode__long_name')
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('assignment_group'),
+                          ForeignFilterSpec('assignment_group',  # AssignmentGroup
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('name')),
+                          ForeignFilterSpec('assignment_group__parentnode',  # Assignment
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode',  # Period
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode__parentnode',  # Subject
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')))
 
 
 class SimplifiedStaticFeedbackMetaMixin(object):

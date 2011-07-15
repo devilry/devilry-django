@@ -76,6 +76,12 @@ class TestSimplifiedSubject(SimplifiedStudentTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedSubject.read(self.thirdStud, self.inf101.id)
 
+    def test_filters(self):
+        filters = [{'field': 'short_name', 'comp': 'exact', 'value': 'inf110'}]
+        search_res = SimplifiedSubject.search(self.firstStud, filters=filters)
+        expected_res = modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist())
+        self.assertEquals(search_res[0], expected_res)
+
 
 class TestSimplifiedPeriod(SimplifiedStudentTestBase):
 
@@ -398,6 +404,21 @@ class TestSimplifiedDelivery(SimplifiedStudentTestBase):
 
         with self.assertRaises(PermissionDenied):
             SimplifiedDelivery.read(self.admin, self.inf101_firstsem_a1_g1_deliveries[0].id)
+
+    def test_filters(self):
+        # filter for all deliveries done in an assignment called
+        # 'a1'. There should be 2 results, one from inf101 and the
+        # other from inf110
+        filters = [{'field': 'assignment_group__parentnode__short_name', 'comp': 'iexact', 'value': 'a1'}]
+        search_res = SimplifiedDelivery.search(self.firstStud, filters=filters)
+        expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0],
+                                              SimplifiedDelivery._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf110_secondsem_a1_g1_deliveries[0],
+                                              SimplifiedDelivery._meta.resultfields.aslist())]
+
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
 
 
 class TestSimplifiedStaticFeedback(SimplifiedStudentTestBase):
