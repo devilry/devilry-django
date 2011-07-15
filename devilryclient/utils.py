@@ -1,7 +1,8 @@
 from os.path import dirname, join, exists
-from os import listdir, environ
+from os import listdir, environ, mkdir
 from subprocess import call
 import sys, logging, argparse, os
+from devilryclient.restfulclient import RestfulFactory
 
 def helloworld():
     print "Hello world"
@@ -23,7 +24,6 @@ def getcmdinfo(cmd):
     :return: Available info on cmd
     """
     path = join(getpluginsdir(), cmd)
-    #print path
     return "bla bla"
 
 def getcommandlist():
@@ -110,9 +110,11 @@ def logging_startup(args):
     return args.otherargs
 
 def findconffolder():
+    """
+    :return: The path of the .devilry folder containing config-file
+    """
     cwd = os.getcwd()
     while cwd != environ["HOME"]:  
-        print cwd
         if exists(join(cwd, '.devilry')):
             return cwd
         else:
@@ -121,10 +123,23 @@ def findconffolder():
     raise ValueError(".devirly not found")
 
 #TODO
-def make_restful():
-    pass
+def restful_setup():
+    restful_factory = RestfulFactory("http://localhost:8000/")
+    SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
+    SimplifiedSubject = restful_factory.make("administrator/restfulsimplifiedsubject/")
+    SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
+    SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassignment/")
+    return [SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment]
+
 
 #TODO
-def create_folder(parent):
-    pass
-
+def create_folder(node, parent_path, folder_name):
+    """
+    :param folder_name: A string representing the node attribute which the folder should be named after
+    """
+    path = join(parent_path, str(node[folder_name]))
+    if not exists(path):
+        logging.debug('INFO: Creating {}'.format(path))
+        mkdir(path)
+    return path
+     
