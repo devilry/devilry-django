@@ -45,26 +45,35 @@ class SimplifiedModelApi(object):
     """
     @classmethod
     def write_authorize(cls, user, obj):
+        """ Check if the given user has write (update/create) permission on the given obj.
+
+        Defaults to raising :exc:NotImplementedError
+
+        :raise PermissionDenied: If the given user do not have write permission on the given obj.
+        """
         raise NotImplementedError()
 
     @classmethod
     def read_authorize(cls, user, obj):
+        """ Check if the given user has read permission on the given obj.
+
+        Defaults to ``cls.write_authorize(user, obj)``
+
+        :raise PermissionDenied: If the given user do not have read permission on the given obj.
+        """
         cls.write_authorize(user, obj)
 
     @classmethod
-    def _getwrapper(cls, idorkw):
-        if isinstance(idorkw, dict):
-            kw = idorkw
-        else:
-            kw = dict(pk=idorkw)
+    def _getwrapper(cls, pk):
+        kw = dict(pk=pk)
         try:
             return cls._meta.model.objects.get(**kw)
         except cls._meta.model.DoesNotExist, e:
             raise PermissionDenied() # Raise permission denied instead of "does not exist" to make it impossible to "brute force" query for existing items
 
     @classmethod
-    def _writeauth_get(cls, user, idorkw):
-        obj = cls._getwrapper(idorkw)
+    def _writeauth_get(cls, user, pk):
+        obj = cls._getwrapper(pk)
         cls.write_authorize(user, obj)
         return obj
 
@@ -76,8 +85,8 @@ class SimplifiedModelApi(object):
             setattr(obj, fieldname, value)
 
     @classmethod
-    def _readauth_get(cls, user, idorkw):
-        obj = cls._getwrapper(idorkw)
+    def _readauth_get(cls, user, pk):
+        obj = cls._getwrapper(pk)
         cls.read_authorize(user, obj)
         return obj
 
@@ -148,13 +157,13 @@ class SimplifiedModelApi(object):
         return obj.pk
 
     @classmethod
-    def read(cls, user, idorkw, result_fieldgroups=[]):
+    def read(cls, user, pk, result_fieldgroups=[]):
         """ Read the requested item and return a dict with the fields specified
         in ``Meta.resultfields`` and additional fields specified in
         ``result_fieldgroups``.
 
         :param user: Django user object.
-        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :param pk: Id of object or kwargs to the get method of the configured model.
         :param result_fieldgroups:
             Fieldgroups from the additional_fieldgroups specified in
             ``result_fieldgroups``.
@@ -163,29 +172,16 @@ class SimplifiedModelApi(object):
             If the given user does not have permission to view this object, or
             if the object does not exist.
         """
-        obj = cls._readauth_get(user, idorkw) # authorization in cls._readauth_get
+        obj = cls._readauth_get(user, pk) # authorization in cls._readauth_get
         resultfields = cls._meta.resultfields.aslist(result_fieldgroups)
         return modelinstance_to_dict(obj, resultfields)
 
     @classmethod
-    def insecure_read_model(cls, user, idorkw):
-        """ Read the requested item and return a django model object.
-
-        :param user: Django user object.
-        :param idorkw: Id of object or kwargs to the get method of the configured model.
-
-        :throws PermissionDenied:
-            If the given user does not have permission to
-            view this object, or if the object does not exist.
-        """
-        return cls._writeauth_get(user, idorkw)
-
-    @classmethod
-    def update(cls, user, idorkw, **field_values):
+    def update(cls, user, pk, **field_values):
         """ Update the given object.
 
         :param user: Django user object.
-        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :param pk: Id of object or kwargs to the get method of the configured model.
         :param: field_values: The values to set on the given object.
 
         :return: The primary key of the updated object.
@@ -194,7 +190,7 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if any of the ``field_values``
             is not in ``cls._meta.editablefields``.
         """
-        obj = cls._getwrapper(idorkw)
+        obj = cls._getwrapper(pk)
         cls._set_values(obj, field_values)
         # Important to write authorize after _set_values in case any attributes
         # used in write_authorize is changed by _set_values.
@@ -204,18 +200,18 @@ class SimplifiedModelApi(object):
         return obj.pk
 
     @classmethod
-    def delete(cls, user, idorkw):
+    def delete(cls, user, pk):
         """ Delete the given object.
 
         :param user: Django user object.
-        :param idorkw: Id of object or kwargs to the get method of the configured model.
+        :param pk: Id of object or kwargs to the get method of the configured model.
 
         :return: The primary key of the deleted object.
         :throws PermissionDenied:
             If the given user does not have permission to delete this object, or
             if the object does not exist.
         """
-        obj = cls._writeauth_get(user, idorkw) # authorization in cls._writeauth_get
+        obj = cls._writeauth_get(user, pk) # authorization in cls._writeauth_get
         pk = obj.pk
         obj.delete()
         return pk
@@ -297,9 +293,10 @@ def simplified_modelapi(cls):
 
                 - create
                 - read
-                - insecure_read_model
                 - update
                 - delete
+                - search
+
         resultfields
             A :class:`FieldSpec` which defines what fields to
             return from ``read()`` and ``search()``. **Required**.
@@ -341,8 +338,6 @@ def simplified_modelapi(cls):
             Boolean variable: is ``'create'`` in ``_meta.methods``.
         supports_read
             Boolean variable: is ``'read'`` in ``_meta.methods``.
-        supports_insecure_read_model
-            Boolean variable: is ``'insecure_read_model'`` in ``_meta.methods``.
         supports_update
             Boolean variable: is ``'update'`` in ``_meta.methods``.
         supports_delete
@@ -366,8 +361,8 @@ def simplified_modelapi(cls):
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
 
-    # Dynamically remove create(), read(), insecure_read_model(), update(), delete() if not supported
-    cls._all_crud_methods = ('create', 'read', 'insecure_read_model', 'update', 'delete')
+    # Dynamically remove create(), read(), update(), delete() if not supported
+    cls._all_crud_methods = ('create', 'read', 'update', 'delete')
     for method in cls._all_crud_methods:
         if not method in cls._meta.methods:
             setattr(cls, method, None)
