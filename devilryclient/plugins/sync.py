@@ -23,17 +23,14 @@ restful_factory = RestfulFactory("http://localhost:8000/")
 SimplifiedSubject = restful_factory.make("examiner/restfulsimplifiedsubject/")
 SimplifiedPeriod = restful_factory.make("examiner/restfulsimplifiedperiod/")
 SimplifiedAssignment = restful_factory.make("examiner/restfulsimplifiedassignment/")
-
-#assignmentgroup does not work! when using SimplifiedAssignmentGroup to search later it fails
-#think this has something to do with the url.
 SimplifiedAssignmentGroup = restful_factory.make("examiner/restfulsimplifiedassignmentgroup/")
 SimplifiedDelivery = restful_factory.make("examiner/restfulsimplifieddelivery/")
-
+SimplifiedDeadline = restful_factory.make("examiner/restfulsimplifieddeadline/")
+SimplifiedStaticFeedback = restful_factory.make("examiner/restfulsimplifiedstaticfeedback/")
 
 #find all nodes where the user is examiner 
 #nodes = SimplifiedNode.search(logincookie, query='')['items']
 
-print SimplifiedAssignmentGroup
 
 devilry_path = dirname(findconffolder())
 
@@ -42,7 +39,6 @@ devilry_path = dirname(findconffolder())
 #for n in nodes:
 #    node_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
 subjects = SimplifiedSubject.search(logincookie, query='')['items']
-print subjects
 
 for s in subjects:
     subject_path = create_folder(s, devilry_path, 'short_name')
@@ -50,8 +46,6 @@ for s in subjects:
     sub_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
             #, {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
     periods = SimplifiedPeriod.search(logincookie, result_fieldgroups=['subject'], filters=sub_filters)['items']
-    print
-    print periods
     
     for p in periods:
         period_path = create_folder(p, subject_path, 'short_name')
@@ -60,8 +54,6 @@ for s in subjects:
                 {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
                 #, {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
         assignments = SimplifiedAssignment.search(logincookie,result_fieldgroups=['subject', 'period'], filters=ass_filters)['items']
-        print
-        print assignments
 
         for a in assignments:
             assignment_path = create_folder(a, period_path, 'short_name')
@@ -69,15 +61,26 @@ for s in subjects:
             ag_filters = [{'field':"parentnode__short_name", "comp":"icontains", "value":a["short_name"]},
                     {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":p['short_name']},
                 {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
-            #assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, result_fieldgroups=['subject', 'period', 'assignment'], filters=ag_filters)['items']
-            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie)['items']
-
-            print
-            print assignmentgroups
-
+            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, result_fieldgroups=['subject', 'period', 'assignment'], filters=ag_filters)['items']
+            #assignmentgroups = SimplifiedAssignmentGroup.search(logincookie)['items']
             for ag in assignmentgroups:
                 ag_path = create_folder(ag, assignment_path, 'id')
-                
+              
+                #TODO add filers
+                deliveries = SimplifiedDelivery.search(logincookie)['items']
+
+                for d in deliveries:
+                    print d['time_of_delivery']
+                    delivery_path = create_folder(d, ag_path, 'number')
+                    
+                    #TODO add filters
+                    deadlines = SimplifiedDeadline.search(logincookie)['items']
+                    for dead in deadlines:
+                        pass
+
+                feedbacks = SimplifiedStaticFeedback.search(logincookie)['items']
+                for f in feedbacks:
+                    pass
                 #can't go further because delivery does not support filters
 
                 
