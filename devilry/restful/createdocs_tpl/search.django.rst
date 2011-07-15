@@ -108,6 +108,15 @@ Example:
 
 {%endif%}
 
+
+exact_number_of_results
+-----------------------
+If given, this must be a positive integer (including 0), which specifies the exact number of
+expected results. This enables searches that you know should fail if they do not get this
+exact number of results, such as filtering for a User by unique username
+instead of its numeric ID (where you should expect exactly one result).
+
+
 orderby
 -------
 List of fieldnames. Order the result by these fields.

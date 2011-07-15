@@ -7,6 +7,11 @@ from devilryclient.utils import logging_startup
 args = sys.argv[1:]
 otherargs = logging_startup(args) #otherargs has commandspecific args
 
+if len(otherargs) < 2:
+    logging.warning('Not enough input arguments!')
+    logging.warning('Usage: init url filename')
+    sys.exit(0)
+
 url = otherargs[0]
 #TODO check that url is gyldig devilry url
 
@@ -31,4 +36,6 @@ Config.set('devilrydir', 'path', '{}'.format(dirpath))
 
 Config.write(cfgfile)
 cfgfile.close()
+
+
 

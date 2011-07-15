@@ -11,7 +11,7 @@ except:
     showhelp()
     raise SystemExit()
 
-print logging_startup(args)
+logging_startup(args)
 
 logging.info('Hello!')
 execute(command, args)

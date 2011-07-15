@@ -10,11 +10,6 @@ returned from methods in the classes in the Simplified API
 Simplified Meta 
 ===============
 
-Node
-#########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin
-    :inherited-members: 
-
 Subject
 #########################################################
 .. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin

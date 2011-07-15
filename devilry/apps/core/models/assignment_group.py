@@ -145,13 +145,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                          verbose_name = _('Status'),
                                          help_text = _('Status number.'))
 
-    # Caches for fields in the last feedback
-    points = models.PositiveIntegerField(default=0,
-            help_text=_('Final number of points for this group. This '\
-                'number is controlled by the grade plugin, and should not '\
-                'be changed manually.'))
     scaled_points = models.FloatField(default=0.0)
-    is_passing_grade = models.BooleanField(default=False)
+    feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
 
     class Meta:

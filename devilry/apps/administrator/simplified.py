@@ -3,7 +3,7 @@ from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            FilterSpecs, FilterSpec, ForeignFilterSpec, PatternFilterSpec)
 from ..core import models
 
-from ..student.simplifiedmetabases import (SimplifiedNodeMetaMixin, SimplifiedSubjectMetaMixin,
+from ..student.simplifiedmetabases import (SimplifiedSubjectMetaMixin,
                                            SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
                                            SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
                                            SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,
@@ -50,12 +50,31 @@ class CanSaveBase(SimplifiedModelApi):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
 
+
 @simplified_modelapi
 class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
-    class Meta(SimplifiedNodeMetaMixin):
-        """ Defines what methods an Administrator can use on a Node object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+    class Meta:
+        """ Defines the CRUD+S methods, the django model to be used, resultfields returned by
+        search and which fields can be used to search for a Node object
+        using the Simplified API """
+
+        methods = ['create', 'read', 'update', 'delete', 'search']
+
+        model = models.Node
+        resultfields = FieldSpec('id',
+                                 'parentnode',
+                                 'short_name',
+                                 'long_name')
+        searchfields = FieldSpec('short_name',
+                                 'long_name')
+        filters = FilterSpecs(FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'),
+                              PatternFilterSpec('^(parentnode__)+short_name$'),
+                              PatternFilterSpec('^(parentnode__)+long_name$'),
+                              PatternFilterSpec('^(parentnode__)+id$'))
+
 
     @classmethod
     def create_searchqryset(cls, user):
@@ -66,13 +85,27 @@ class SimplifiedNode(CanSaveBase):
         """
         return models.Node.where_is_admin_or_superadmin(user)
 
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given node contains no childnodes or subjects.
+        """
+        return obj.subjects.all().count() == 0 and obj.child_nodes.all().count() == 0
+
 
 @simplified_modelapi
 class SimplifiedSubject(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
         """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given subject contains no periods
+        """
+        return obj.periods.all().count() == 0
 
 
 @simplified_modelapi
@@ -80,7 +113,14 @@ class SimplifiedPeriod(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given period contains no assignments
+        """
+        return obj.assignments.all().count() == 0
 
 
 @simplified_modelapi
@@ -88,8 +128,14 @@ class SimplifiedAssignment(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given assignment contains no assignmentgroups.
+        """
+        return obj.assignmentgroups.all().count() == 0
 
 @simplified_modelapi
 class SimplifiedAssignmentGroup(CanSaveBase):
@@ -97,7 +143,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
 
 @simplified_modelapi

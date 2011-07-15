@@ -2,25 +2,6 @@ from ..core import models
 from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
-class SimplifiedNodeMetaMixin(object):
-    """ Defines the django model to be used, resultfields returned by
-    search and which fields can be used to search for a Node object
-    using the Simplified API """
-    model = models.Node
-    resultfields = FieldSpec('id',
-                             'parentnode',
-                             'short_name',
-                             'long_name')
-    searchfields = FieldSpec('short_name',
-                             'long_name')
-    filters = FilterSpecs(FilterSpec('parentnode'),
-                          FilterSpec('short_name'),
-                          FilterSpec('long_name'),
-                          PatternFilterSpec('^(parentnode__)+short_name$'),
-                          PatternFilterSpec('^(parentnode__)+long_name$'),
-                          PatternFilterSpec('^(parentnode__)+id$'))
-
-
 class SimplifiedSubjectMetaMixin(object):
     """ Defines the django model to be used, resultfields returned by
     search and which fields can be used to search for a Subject object
@@ -224,6 +205,23 @@ class SimplifiedDeliveryMetaMixin(object):
                              # subject
                              'assignment_group__parentnode__parentnode__parentnode__short_name',
                              'assignment_group__parentnode__parentnode__parentnode__long_name')
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('assignment_group'),
+                          ForeignFilterSpec('assignment_group',  # AssignmentGroup
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('name')),
+                          ForeignFilterSpec('assignment_group__parentnode',  # Assignment
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode',  # Period
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode__parentnode',  # Subject
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')))
 
 
 class SimplifiedStaticFeedbackMetaMixin(object):
