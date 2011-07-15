@@ -69,7 +69,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelA
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
-        methods = ['search', 'read', 'create']
+        methods = ['search', 'read']
 
 
 @simplified_modelapi
