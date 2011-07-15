@@ -1,6 +1,8 @@
 import re
 from django.db.models import Q
 
+from exceptions import FilterValidationError
+
 
 COMP_TO_DJANGO_MAP = {'exact': 'exact',
                       'iexact': 'exact',
@@ -25,9 +27,6 @@ def _in_both(lstA, lstB):
     return None
 
 
-class FilterValidationError(Exception):
-    """ Raised when an invalid filter is given to
-    :meth:`devilry.simplified.SimplifiedModelApi.search`. """
 
 class FilterSpec(object):
     """ Specifies that a specific field can be filtered, and what *comp* it can
