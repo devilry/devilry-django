@@ -49,7 +49,6 @@ EMAIL_FILE_PATH = join(this_dir, 'email_log')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 
-DEVILRY_STATIC_ROOT = join(dirname(dirname(this_dir)), 'static') # ../../static/
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 
