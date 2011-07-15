@@ -15,10 +15,8 @@ Student
     student_restfulsimplifiedassignment_details_search
     student_restfulsimplifiedassignmentgroup_details_read
     student_restfulsimplifiedassignmentgroup_details_search
-    student_restfulsimplifiedassignmentgroup_details_create
     student_restfulsimplifieddelivery_details_read
     student_restfulsimplifieddelivery_details_search
-    student_restfulsimplifieddelivery_details_delete
     student_restfulsimplifieddeadline_details_read
     student_restfulsimplifieddeadline_details_search
     student_restfulsimplifiedstaticfeedback_details_read
@@ -135,11 +133,6 @@ AssignmentGroup
         <th><a href="student_restfulsimplifiedassignmentgroup_details_read.html">GET&nbsp;/student/restfulsimplifiedassignmentgroup/<span class="restfulid">id</span></a></th>
         <td>Retrieve a assignment group.</td>
     </tr>
-    
-    <tr>
-        <th><a href="student_restfulsimplifiedassignmentgroup_details_create.html">POST&nbsp;/student/restfulsimplifiedassignmentgroup/</a></th>
-        <td>Create a assignment group.</td>
-    </tr>
         </tbody>
     </table>
 
@@ -167,11 +160,6 @@ Delivery
     <tr>
         <th><a href="student_restfulsimplifieddelivery_details_read.html">GET&nbsp;/student/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
         <td>Retrieve a Delivery.</td>
-    </tr>
-    
-    <tr>
-        <th><a href="student_restfulsimplifieddelivery_details_delete.html">DELETE&nbsp;/student/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
-        <td>Delete a Delivery.</td>
     </tr>
         </tbody>
     </table>

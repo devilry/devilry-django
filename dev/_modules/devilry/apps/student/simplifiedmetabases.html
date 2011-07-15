@@ -253,6 +253,23 @@
                              <span class="c"># subject</span>
                              <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
                              <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>  <span class="c"># AssignmentGroup</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Assignment</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Period</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
 
 </div>
 <div class="viewcode-block" id="SimplifiedStaticFeedbackMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedStaticFeedbackMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
