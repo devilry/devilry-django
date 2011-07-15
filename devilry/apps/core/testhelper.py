@@ -650,7 +650,7 @@ class TestHelper(object):
 
         # add 4 assignments to inf101 and inf110 in fall and spring
         self.add(nodes='uni',
-                 subjects=['inf101', 'inf110'],
+                 subjects=['cs101', 'cs110'],
                  periods=['fall11', 'spring11'],
                  assignments=['a1', 'a2'])
 
