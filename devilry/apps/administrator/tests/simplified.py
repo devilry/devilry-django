@@ -4,10 +4,13 @@ import re
 from django.test import TestCase
 
 
-from ....simplified import PermissionDenied, FilterValidationError
+from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
 from ....simplified.utils import modelinstance_to_dict
 from ...core import models, testhelper
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline, SimplifiedStaticFeedback, SimplifiedFileMeta
+from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
+                          SimplifiedAssignment, SimplifiedAssignmentGroup,
+                          SimplifiedDeadline, SimplifiedStaticFeedback,
+                          SimplifiedFileMeta)
 
 
 testhelper.TestHelper.set_memory_deliverystore()
@@ -60,10 +63,15 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
             SimplifiedNode.search(self.admin1,
                                   filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
 
-    #def test_search_exact_number_of_results(self):
-        #qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=4)
-        #self.assertEquals(len(qrywrap), 4)
-        #self.assertRaises(
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=4)
+        self.assertEquals(len(qrywrap), 4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedNode.search(self.admin1, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedNode.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedNode.search(self.admin1, exact_number_of_results=0)
 
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):

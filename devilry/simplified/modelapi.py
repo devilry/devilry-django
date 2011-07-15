@@ -2,7 +2,7 @@ from django.db.models.fields import AutoField, FieldDoesNotExist
 
 from qryresultwrapper import QryResultWrapper
 from utils import modelinstance_to_dict, get_field_from_fieldname, get_clspath
-from exceptions import PermissionDenied
+from exceptions import PermissionDenied, InvalidNumberOfResults
 from filterspec import FilterSpecs
 
 
@@ -220,7 +220,7 @@ class SimplifiedModelApi(object):
     def search(cls, user,
                query = '', start = 0, limit = 50, orderby = None,
                result_fieldgroups=None, search_fieldgroups=None,
-               filters={}):
+               filters={}, exact_number_of_results=None):
         """ Search for objects.
 
         :param query:
@@ -249,6 +249,10 @@ class SimplifiedModelApi(object):
             ``Meta.searchfields.additional_fieldgroups``.
         :param filters:
             List of filters that can be parsed by :meth:`devilry.simplified.FilterSpec.parse`.
+        :param exact_number_of_results:
+            Expect this exact number of results. If unspecified (``None``),
+            this check is not performed. If the check fails,
+            :exc:`devilry.simplified.InvalidNumberOfResults` is raised.
 
         :return: The result of the search.
         :rtype: QryResultWrapper
@@ -262,6 +266,12 @@ class SimplifiedModelApi(object):
                                     start = start,
                                     limit = limit,
                                     orderby = orderby)
+        if exact_number_of_results != None:
+            resultcount = len(result)
+            if exact_number_of_results != resultcount:
+                raise InvalidNumberOfResults('Expected {exact_number_of_results}, '
+                                             'got {resultcount}.'.format(resultcount = resultcount,
+                                                                         exact_number_of_results=exact_number_of_results))
         return result
 
 
