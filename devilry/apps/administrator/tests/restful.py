@@ -146,7 +146,7 @@ class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelp
 
 
 class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper):
-    pekerkjede = RestfulSimplifiedSubject
+    simplifiedcls = RestfulSimplifiedSubject
     resultfields = SimplifiedSubject._meta.resultfields
 
     def setUp(self):
@@ -156,7 +156,7 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         self.client.login(username="admin1", password="test")
     
     def test_search(self):
-        url = self.pekerkjede.get_rest_url()
+        url = self.simplifiedcls.get_rest_url()
         r = self.client.get(url, data={'getdata_in_qrystring': True})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
@@ -165,7 +165,7 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
 
     def test_create(self):
         self.assertEquals(models.Subject.objects.filter(short_name='inf011').count(), 0)
-        url = self.pekerkjede.get_rest_url()
+        url = self.simplifiedcls.get_rest_url()
         data = dict(short_name='inf011', long_name='inf011 - Moro med Programmering',
                     parentnode=self.inf101.id)
         r = self.client.post(url, data=json.dumps(data),
@@ -181,14 +181,14 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
 
     def test_create_errors(self):
         self.assertEquals(models.Subject.objects.filter(short_name='inf011').count(), 0)
-        url = self.pekerkjede.get_rest_url()
+        url = self.simplifiedcls.get_rest_url()
         data = dict(short_name='inf011', long_name='inf011 - Moro med Programmering')
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         self.assertEquals(r.status_code, 400)
 
     def test_update(self):
-        url = self.pekerkjede.get_rest_url(self.inf101.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101.id)
         data = dict(short_name='inf101', long_name='inf101 - Ikke Moro med Programmering',
                     parentnode=self.inf101.id)
         r = self.client.put(url, data=json.dumps(data),
@@ -202,7 +202,7 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         self.assertEquals(fromdb.parentnode.id, self.inf101.id)
 
     def test_update_errors(self):
-        url = self.pekerkjede.get_rest_url(self.inf101.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101.id)
         data = dict(short_name='InF001', long_name='inf101 - Ikke Moro med Programmering',
                     parentnode=self.inf101.id)
         r = self.client.put(url, data=json.dumps(data),
@@ -213,14 +213,14 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
             errormessages = []))
 
     def test_delete(self):
-        url = self.pekerkjede.get_rest_url(self.inf101.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101.id)
         self.assertEquals(models.Subject.objects.filter(short_name='inf101').count(), 1)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
 
     def test_delete_permission_denied(self):
         self.add_to_path('uni;inf101.fall11')
-        url = self.pekerkjede.get_rest_url(self.inf101.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101.id)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 403) # 403 is permission denied
 
@@ -229,14 +229,14 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         self.client.login(username='grandma', password='test')
 
         self.add_to_path('uni;inf101.fall11')
-        url = self.pekerkjede.get_rest_url(self.inf101.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101.id)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
         self.assertEquals(models.Subject.objects.filter(short_name='inf101').count(), 0)
 
 
 class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
-    pekerkjede = RestfulSimplifiedPeriod
+    simplifiedcls = RestfulSimplifiedPeriod
     resultfields = SimplifiedPeriod._meta.resultfields
 
     def setUp(self):
@@ -247,7 +247,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         self.client.login(username="admin1", password="test")
     
     def test_search(self):
-        url = self.pekerkjede.get_rest_url()
+        url = self.simplifiedcls.get_rest_url()
         r = self.client.get(url, data={'getdata_in_qrystring': True})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
@@ -256,7 +256,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
 
     def test_create(self):
         self.assertEquals(models.Period.objects.filter(short_name='h2010').count(), 0)
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
         data = dict(short_name='h2010', long_name='H2010',
                     parentnode=self.inf101_v2011.id, start_time='2011-07-12 04:22:48',
                     end_time='2011-07-12 04:22:48')
@@ -273,7 +273,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
 
     def test_create_errors(self):
         self.assertEquals(models.Period.objects.filter(short_name='h2010').count(), 0)
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
         data = dict(short_name='h2010', long_name='H2010',
                     parentnode=self.inf101_v2011.id, start_time='2011-07-12 04:22:48')
         r = self.client.post(url, data=json.dumps(data),
@@ -281,7 +281,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         self.assertEquals(r.status_code, 400)
 
     def test_update(self):
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
 
         data = dict(short_name='v2011', long_name='V2011',
                     parentnode=self.inf101_v2011.id, start_time='2011-07-12 04:22:48',
@@ -297,7 +297,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         self.assertEquals(fromdb.parentnode.id, self.inf101_v2011.id)
 
     def test_update_errors(self):
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
         data = dict(short_name='v2011', long_name='V2011',
                     parentnode=self.inf101_v2011.id)
         r = self.client.put(url, data=json.dumps(data),
@@ -309,7 +309,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
             errormessages = []))
 
     def test_delete(self):
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
         self.assertEquals(models.Period.objects.filter(short_name='v2011').count(), 2)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
@@ -317,7 +317,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
 
     def test_delete_permission_denied(self):
         self.add_to_path('uni;inf101.v2011.a1') # Adds an assignment, which should make it impossible for a normal admin to delete
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 403)
 
@@ -325,14 +325,14 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         self.create_superuser('grandma') # Same as test_delete_permission_denied, but as superuser
         self.client.login(username='grandma', password='test')
         self.add_to_path('uni;inf101.fall11.a1')
-        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        url = self.simplifiedcls.get_rest_url(self.inf101_v2011.id)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
 
 
 
 class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
-    pekerkjede = RestfulSimplifiedAssignmentGroup
+    simplifiedcls = RestfulSimplifiedAssignmentGroup
     resultfields = SimplifiedAssignmentGroup._meta.resultfields
 
     def setUp(self):
@@ -355,7 +355,7 @@ class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.Tes
         self.client.login(username="admin1", password="test")
 
     def test_search(self):
-        url = self.pekerkjede.get_rest_url()
+        url = self.simplifiedcls.get_rest_url()
         r = self.client.get(url, data={'getdata_in_qrystring': True})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
