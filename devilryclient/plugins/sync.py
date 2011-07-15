@@ -5,7 +5,7 @@ from os.path import join, exists
 from os import environ, mkdir
 from devilryclient.restfulclient import login
 from devilryclient.restfulclient import RestfulFactory
-from devilryclient.utils import logging_startup, findconffolder, create_folder
+from devilryclient.utils import logging_startup, findconffolder, create_folder, Session
 
 #Arguments for logging
 args = sys.argv[1:]
@@ -13,8 +13,11 @@ otherargs = logging_startup(args) #otherargs has commandspecific args
 logging.debug('hello from sync.py')
 
 #TODO put this in login.py
-logincookie = login('http://localhost:8000/authenticate/login',
-        username='grandma', password='test')
+# logincookie = login('http://localhost:8000/authenticate/login',
+#         username='grandma', password='test')
+
+session = Session()
+logincookie = session.get_session_cookie()
 
 
 #TODO put this in a utility function
@@ -29,6 +32,7 @@ SimplifiedDelivery = restful_factory.make("administrator/restfulsimplifieddelive
 
 #find all nodes where the user is examiner 
 nodes = SimplifiedNode.search(logincookie, query='')['items']
+
 
 devilry_path = findconffolder()
 
