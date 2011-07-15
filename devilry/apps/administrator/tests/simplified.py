@@ -4,10 +4,13 @@ import re
 from django.test import TestCase
 
 
-from ....simplified import PermissionDenied, FilterValidationError
+from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
 from ....simplified.utils import modelinstance_to_dict
 from ...core import models, testhelper
-from ..simplified import SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedDeadline, SimplifiedStaticFeedback, SimplifiedFileMeta
+from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
+                          SimplifiedAssignment, SimplifiedAssignmentGroup,
+                          SimplifiedDeadline, SimplifiedStaticFeedback,
+                          SimplifiedFileMeta)
 
 
 testhelper.TestHelper.set_memory_deliverystore()
@@ -17,6 +20,8 @@ testhelper.TestHelper.set_memory_deliverystore()
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 
     def setUp(self):
+        self.create_superuser('superadminuser')
+
         # create a base structure
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
@@ -59,6 +64,18 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         with self.assertRaises(FilterValidationError):
             SimplifiedNode.search(self.admin1,
                                   filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=4)
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedNode.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedNode.search(self.admin1, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedNode.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedNode.search(self.admin1, exact_number_of_results=0)
 
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):
@@ -288,17 +305,8 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignment.delete(self.testadmin, self.inf110_firstsem_a1.id)
 
-    def test_delete_asnodeadmin_by_short_name(self):
-        self.add_to_path('uni;inf110.firstsem.a1:admin(testadmin)')
-        SimplifiedAssignment.delete(self.testadmin, dict(short_name = 'a1',
-            parentnode__short_name = 'firstsem',
-            parentnode__parentnode__short_name = 'inf110'))
-
-        with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.delete(self.testadmin, self.inf110_firstsem_a1.id)
-
     def test_delete_assuperadmin(self):
-        SimplifiedAssignment.delete(self.admin1, self.inf110_firstsem_a1.id)
+        SimplifiedAssignment.delete(self.superadminuser, self.inf110_firstsem_a1.id)
 
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignment.delete(self.admin1, self.inf110_firstsem_a1.id)
