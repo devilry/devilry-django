@@ -95,6 +95,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
        feedbacks. See also :attr:`Deadline.feedbacks_published`.
     """
 
+    TYPE_ONLY_ELECTRONIC = 0
+    TYPE_MIXED = 1
+    TYPE_NO_ELECTRONIC = 2
+    
     class Meta:
         app_label = 'core'
         verbose_name = _('Assignment')
@@ -167,6 +171,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                                  'avalable to the students immediately? If not, an '
                                                                  'administrator have to publish feedbacks '
                                                                  'manually.'))
+    delivery_types = models.PositiveIntegerField(default=TYPE_ONLY_ELECTRONIC,
+            verbose_name = _("Type of deliveries"),
+            help_text=_('This option controls if this assignment accepts only '
+                        'electronic deliveries, or accepts other kinds as well.'))
     
     @classmethod
     def q_published(cls, old=True, active=True):

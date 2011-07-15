@@ -61,7 +61,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods a Student can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read', 'delete']
+        methods = ['search', 'read']
 
 
 @simplified_modelapi
@@ -69,7 +69,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelA
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
-        methods = ['search', 'read', 'create']
+        methods = ['search', 'read']
 
 
 @simplified_modelapi

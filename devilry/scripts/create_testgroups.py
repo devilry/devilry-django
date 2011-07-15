@@ -125,8 +125,8 @@ if __name__ == "__main__":
                 logging.info("Created user %s." % username)
 
     def autocreate_delivery(group):
-        student = group.candidates.all()[0].student
-        delivery = group.deliveries.create(delivered_by=student, successful=True)
+        cand = group.candidates.all()[0]
+        delivery = group.deliveries.create(delivered_by=cand, successful=True)
         delivery.add_file('helloworld.txt', ['hello cruel world'])
         delivery.add_file('helloworld.py', ['print "hello world"'])
         delivery.add_file('helloworld.java', [
