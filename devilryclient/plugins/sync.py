@@ -5,7 +5,7 @@ from os.path import join, exists, dirname
 from os import environ, mkdir
 from devilryclient.restfulclient import login
 from devilryclient.restfulclient import RestfulFactory
-from devilryclient.utils import logging_startup, findconffolder, create_folder
+from devilryclient.utils import logging_startup, findconffolder, create_folder, Session
 
 #Arguments for logging
 args = sys.argv[1:]
@@ -13,9 +13,11 @@ otherargs = logging_startup(args) #otherargs has commandspecific args
 logging.debug('hello from sync.py')
 
 #TODO put this in login.py
-logincookie = login('http://localhost:8000/authenticate/login',
-        username='examiner1', password='test')
+# logincookie = login('http://localhost:8000/authenticate/login',
+#         username='grandma', password='test')
 
+session = Session()
+logincookie = session.get_session_cookie()
 
 #TODO put this in a utility function
 restful_factory = RestfulFactory("http://localhost:8000/")
@@ -32,7 +34,12 @@ SimplifiedStaticFeedback = restful_factory.make("examiner/restfulsimplifiedstati
 #nodes = SimplifiedNode.search(logincookie, query='')['items']
 
 
+<<<<<<< HEAD
+
+devilry_path = findconffolder()
+=======
 devilry_path = dirname(findconffolder())
+>>>>>>> refs/remotes/devilry/master
 
 #traverse nodes and create folders for each subject, period... if they don't already exist
 #Problem: subject has no resultfield parentnode_short_name
