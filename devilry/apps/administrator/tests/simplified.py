@@ -88,18 +88,6 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
                     #self.clarabelle, self.duckburgh.id,
                     #short_name=None, long_name=None)
 
-    #def test_insecure_read_model(self):
-        #node = SimplifiedNode.insecure_read_model(self.clarabelle, idorkw=self.univ.id)
-        #node = SimplifiedNode.insecure_read_model(self.grandma, self.univ.id) # superuser allowed
-        #node = SimplifiedNode.insecure_read_model(self.grandma, dict(short_name=self.univ.short_name))
-        #self.assertEquals(node.short_name, 'univ')
-        #node = SimplifiedNode.insecure_read_model(self.grandma, idorkw=self.univ.id)
-        #self.assertEquals(node.short_name, 'univ')
-
-    #def test_insecure_read_model_security(self):
-        #with self.assertRaises(PermissionDenied):
-            #node = SimplifiedNode.insecure_read_model(self.daisy, self.univ.id)
-
     #def test_update(self):
         #self.assertEquals(self.duckburgh.short_name, 'duckburgh')
         #self.assertEquals(self.duckburgh.long_name, 'Duckburgh')
@@ -216,19 +204,6 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
         #self.assertEquals(0,
                 #models.Node.where_is_admin_or_superadmin(self.daisy).count())
 
-    #def test_insecure_read_model(self):
-        #subject = SimplifiedSubject.insecure_read_model(self.clarabelle, idorkw=self.duck1100.id)
-        #subject = SimplifiedSubject.insecure_read_model(self.clarabelle, self.duck1100.id)
-        #self.assertEquals(subject.short_name, 'duck1100')
-        #subject = SimplifiedSubject.insecure_read_model(self.clarabelle,
-                #dict(short_name=self.duck1100.short_name))
-        #self.assertEquals(subject.short_name, 'duck1100')
-
-    #def test_insecure_read_model_security(self):
-        #subject = SimplifiedSubject.insecure_read_model(self.grandma, self.duck1100.id) # superuser allowed
-        #with self.assertRaises(PermissionDenied):
-            #node = SimplifiedSubject.insecure_read_model(self.daisy, self.duck1100.id)
-
     #def test_read(self):
         #subject = SimplifiedSubject.read(self.grandma, self.duck1100.id)
         #self.assertEquals(subject, dict(
@@ -343,22 +318,6 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
         #period = SimplifiedPeriod.read(self.grandma, self.duck1100_h01_core.id)
         #with self.assertRaises(PermissionDenied):
             #period = SimplifiedPeriod.read(self.daisy, self.duck1100_h01_core.id)
-
-    #def test_insecure_read_model(self):
-        #period = SimplifiedPeriod.insecure_read_model(self.clarabelle,
-                #idorkw=self.duck1100_h01_core.id)
-        #self.assertEquals(period.short_name, 'spring01')
-        #period = SimplifiedPeriod.insecure_read_model(self.clarabelle,
-                #dict(short_name=self.duck1100_h01_core.short_name,
-                    #parentnode__short_name = 'duck1100'))
-        #self.assertEquals(period.short_name, 'spring01')
-
-    #def test_insecure_read_model_security(self):
-        #period = SimplifiedPeriod.insecure_read_model(self.grandma, 
-                #self.duck1100_h01_core.id) # superuser allowed
-        #with self.assertRaises(PermissionDenied):
-            #period = SimplifiedPeriod.insecure_read_model(self.daisy,
-                    #self.duck1100_h01_core.id)
 
 
     #def test_create(self):
@@ -533,22 +492,6 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         self.add_to_path('uni;inf110.firstsem.a2:admin(testPerson)')
         SimplifiedAssignment.read(self.testPerson, self.inf110_firstsem_a2.id)
 
-
-    def test_insecure_read_model(self):
-        read_res = SimplifiedAssignment.insecure_read_model(self.admin1, self.inf101_firstsem_a1.id)
-        expected_res = self.inf101_firstsem_a1
-
-        self.assertEquals(read_res, expected_res)
-
-    def test_insecure_read_model_security(self):
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
-
-        with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.insecure_read_model(self.testPerson,
-                    self.inf110_firstsem_a2.id)
-
-        self.add_to_path('uni;inf110.firstsem.a2:admin(testPerson)')
-        SimplifiedAssignment.insecure_read_model(self.testPerson, self.inf110_firstsem_a2.id)
 
     def test_search(self):
         self.allExtras = SimplifiedAssignment._meta.resultfields.additional_aslist()

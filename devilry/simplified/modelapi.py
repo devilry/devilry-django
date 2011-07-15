@@ -168,19 +168,6 @@ class SimplifiedModelApi(object):
         return modelinstance_to_dict(obj, resultfields)
 
     @classmethod
-    def insecure_read_model(cls, user, idorkw):
-        """ Read the requested item and return a django model object.
-
-        :param user: Django user object.
-        :param idorkw: Id of object or kwargs to the get method of the configured model.
-
-        :throws PermissionDenied:
-            If the given user does not have permission to
-            view this object, or if the object does not exist.
-        """
-        return cls._writeauth_get(user, idorkw)
-
-    @classmethod
     def update(cls, user, idorkw, **field_values):
         """ Update the given object.
 
@@ -297,9 +284,10 @@ def simplified_modelapi(cls):
 
                 - create
                 - read
-                - insecure_read_model
                 - update
                 - delete
+                - search
+
         resultfields
             A :class:`FieldSpec` which defines what fields to
             return from ``read()`` and ``search()``. **Required**.
@@ -341,8 +329,6 @@ def simplified_modelapi(cls):
             Boolean variable: is ``'create'`` in ``_meta.methods``.
         supports_read
             Boolean variable: is ``'read'`` in ``_meta.methods``.
-        supports_insecure_read_model
-            Boolean variable: is ``'insecure_read_model'`` in ``_meta.methods``.
         supports_update
             Boolean variable: is ``'update'`` in ``_meta.methods``.
         supports_delete
@@ -366,8 +352,8 @@ def simplified_modelapi(cls):
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
 
-    # Dynamically remove create(), read(), insecure_read_model(), update(), delete() if not supported
-    cls._all_crud_methods = ('create', 'read', 'insecure_read_model', 'update', 'delete')
+    # Dynamically remove create(), read(), update(), delete() if not supported
+    cls._all_crud_methods = ('create', 'read', 'update', 'delete')
     for method in cls._all_crud_methods:
         if not method in cls._meta.methods:
             setattr(cls, method, None)

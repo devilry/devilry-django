@@ -58,7 +58,7 @@ class SimplifiedNode(CanSaveBase):
         search and which fields can be used to search for a Node object
         using the Simplified API """
 
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
         model = models.Node
         resultfields = FieldSpec('id',
@@ -90,7 +90,7 @@ class SimplifiedSubject(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
         """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
 
 @simplified_modelapi
@@ -98,7 +98,7 @@ class SimplifiedPeriod(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
 
 @simplified_modelapi
@@ -106,7 +106,7 @@ class SimplifiedAssignment(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
 
 @simplified_modelapi
@@ -115,7 +115,7 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
-        methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+        methods = ['create', 'read', 'update', 'delete', 'search']
 
 
 @simplified_modelapi
