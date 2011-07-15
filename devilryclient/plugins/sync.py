@@ -70,7 +70,7 @@ for s in subjects:
                     {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":p['short_name']},
                 {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
             #assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, result_fieldgroups=['subject', 'period', 'assignment'], filters=ag_filters)['items']
-            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie)
+            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie)['items']
 
             print
             print assignmentgroups
