@@ -64,6 +64,14 @@ class SimplifiedModelApi(object):
         cls.write_authorize(user, obj)
 
     @classmethod
+    def is_empty(cls, obj):
+        """ Check if the given obj is empty. Defaults to returning ``False``.
+
+        Can be implemented in subclasses to enable superadmins to recursively delete the ``obj``.
+        """
+        return False
+
+    @classmethod
     def _getwrapper(cls, pk):
         kw = dict(pk=pk)
         try:
@@ -208,10 +216,14 @@ class SimplifiedModelApi(object):
 
         :return: The primary key of the deleted object.
         :throws PermissionDenied:
-            If the given user does not have permission to delete this object, or
-            if the object does not exist.
+            If the given user does not have permission to delete this object,
+            if the object does not exist, or if the user does not have permission
+            to recursively delete this objects and all its children.
         """
         obj = cls._writeauth_get(user, pk) # authorization in cls._writeauth_get
+        if not cls.is_empty(obj):
+            if not user.is_superuser:
+                raise PermissionDenied()
         pk = obj.pk
         obj.delete()
         return pk

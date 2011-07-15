@@ -155,9 +155,10 @@ class ModelRestfulView(RestfulView):
 
     def crud_delete(self, request, id):
         """ Maps to the ``delete`` method of the simplified class. """
-        self._meta.simplified.delete(request.user, id)
         try:
-            data = self._extjswrapshortcut(dict(id=id))
-            return SerializableResult(data)
+            self._meta.simplified.delete(request.user, id)
         except PermissionDenied, e:
             return ForbiddenSerializableResult()
+        else:
+            data = self._extjswrapshortcut(dict(id=id))
+            return SerializableResult(data)

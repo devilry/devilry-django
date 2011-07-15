@@ -20,6 +20,8 @@ testhelper.TestHelper.set_memory_deliverystore()
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 
     def setUp(self):
+        self.create_superuser('superadminuser')
+
         # create a base structure
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
@@ -304,7 +306,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
             SimplifiedAssignment.delete(self.testadmin, self.inf110_firstsem_a1.id)
 
     def test_delete_assuperadmin(self):
-        SimplifiedAssignment.delete(self.admin1, self.inf110_firstsem_a1.id)
+        SimplifiedAssignment.delete(self.superadminuser, self.inf110_firstsem_a1.id)
 
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignment.delete(self.admin1, self.inf110_firstsem_a1.id)

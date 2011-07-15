@@ -14,13 +14,13 @@ testhelper.TestHelper.set_memory_deliverystore()
 
 class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def setUp(self):
-        self.add(nodes='uni:admin(admin1)')
+        self.add(nodes='uni:admin(admin1).fys')
         self.client = Client()
         self.client.login(username="admin1", password="test")
 
     def test_search(self):
         url = RestfulSimplifiedNode.get_rest_url()
-        r = self.client.get(url, data={'getdata_in_qrystring': True})
+        r = self.client.get(url, data={'getdata_in_qrystring': True, 'orderby':json.dumps(['-short_name'])})
         self.assertEquals(r.status_code, 200)
         data = json.loads(r.content)
         first = data['items'][0]
@@ -31,7 +31,7 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
                                  })
 
     def test_search_exact_number_of_results(self):
-        self.add(nodes='uni.fys.stuff') # adds fys and stuff
+        self.add(nodes='uni.fys.stuff') # adds stuff
         url = RestfulSimplifiedNode.get_rest_url()
 
         r = self.client.get(url, data={'getdata_in_qrystring': True})
@@ -98,10 +98,23 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
             errormessages = []))
 
     def test_delete(self):
+        url = RestfulSimplifiedNode.get_rest_url(self.uni_fys.id) # fys has no children
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(r.status_code, 200)
+
+    def test_delete_permission_denied(self):
         url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
         self.assertEquals(models.Node.objects.filter(id=self.uni.id).count(), 1)
         r = self.client.delete(url, content_type='application/json')
-        self.assertEquals(models.Node.objects.filter(id=self.uni.id).count(), 0)
+        self.assertEquals(r.status_code, 403) # 403 is Permission denied
+
+    def test_delete_as_superuser(self):
+        self.create_superuser('grandma') # Same as test_delete_permission_denied, however as superuser
+        self.client.login(username='grandma', password='test')
+        url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
+        self.assertEquals(models.Node.objects.filter(id=self.uni.id).count(), 1)
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(r.status_code, 200)
 
 
 class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelper):
@@ -154,7 +167,7 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         self.assertEquals(models.Subject.objects.filter(short_name='inf011').count(), 0)
         url = self.pekerkjede.get_rest_url()
         data = dict(short_name='inf011', long_name='inf011 - Moro med Programmering',
-                    parentnode=self.uni.id)
+                    parentnode=self.inf101.id)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         self.assertEquals(r.status_code, 201)
@@ -163,7 +176,7 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         fromdb = models.Subject.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'inf011')
         self.assertEquals(fromdb.long_name, 'inf011 - Moro med Programmering')
-        self.assertEquals(fromdb.parentnode.id, self.uni.id)
+        self.assertEquals(fromdb.parentnode.id, self.inf101.id)
         # print "\n\n", fromdb.parentnode, "\n\n"
 
     def test_create_errors(self):
@@ -175,9 +188,9 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         self.assertEquals(r.status_code, 400)
 
     def test_update(self):
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101.id)
         data = dict(short_name='inf101', long_name='inf101 - Ikke Moro med Programmering',
-                    parentnode=self.uni.id)
+                    parentnode=self.inf101.id)
         r = self.client.put(url, data=json.dumps(data),
                 content_type='application/json')
         self.assertEquals(r.status_code, 200)
@@ -186,22 +199,37 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         fromdb = models.Subject.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'inf101')
         self.assertEquals(fromdb.long_name, 'inf101 - Ikke Moro med Programmering')
-        self.assertEquals(fromdb.parentnode.id, self.uni.id)
+        self.assertEquals(fromdb.parentnode.id, self.inf101.id)
 
     def test_update_errors(self):
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101.id)
         data = dict(short_name='InF001', long_name='inf101 - Ikke Moro med Programmering',
-                    parentnode=self.uni.id)
+                    parentnode=self.inf101.id)
         r = self.client.put(url, data=json.dumps(data),
                             content_type='application/json')
         response = json.loads(r.content)
         self.assertEquals(response, dict(
             fielderrors = {u'short_name': [u"Can only contain numbers, lowercase letters, '_' and '-'. "]},
             errormessages = []))
-    
+
     def test_delete(self):
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101.id)
         self.assertEquals(models.Subject.objects.filter(short_name='inf101').count(), 1)
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(r.status_code, 200)
+
+    def test_delete_permission_denied(self):
+        self.add_to_path('uni;inf101.fall11')
+        url = self.pekerkjede.get_rest_url(self.inf101.id)
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(r.status_code, 403) # 403 is permission denied
+
+    def test_delete_as_superuser(self):
+        self.create_superuser('grandma')
+        self.client.login(username='grandma', password='test')
+
+        self.add_to_path('uni;inf101.fall11')
+        url = self.pekerkjede.get_rest_url(self.inf101.id)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
         self.assertEquals(models.Subject.objects.filter(short_name='inf101').count(), 0)
@@ -228,9 +256,9 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
 
     def test_create(self):
         self.assertEquals(models.Period.objects.filter(short_name='h2010').count(), 0)
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
         data = dict(short_name='h2010', long_name='H2010',
-                    parentnode=self.uni.id, start_time='2011-07-12 04:22:48',
+                    parentnode=self.inf101_v2011.id, start_time='2011-07-12 04:22:48',
                     end_time='2011-07-12 04:22:48')
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
@@ -240,23 +268,23 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         fromdb = models.Period.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'h2010')
         self.assertEquals(fromdb.long_name, 'H2010')
-        self.assertEquals(fromdb.parentnode.id, self.uni.id)
+        self.assertEquals(fromdb.parentnode.id, self.inf101_v2011.id)
         # print "\n\n", fromdb.parentnode, "\n\n"
 
     def test_create_errors(self):
         self.assertEquals(models.Period.objects.filter(short_name='h2010').count(), 0)
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
         data = dict(short_name='h2010', long_name='H2010',
-                    parentnode=self.uni.id, start_time='2011-07-12 04:22:48')
+                    parentnode=self.inf101_v2011.id, start_time='2011-07-12 04:22:48')
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         self.assertEquals(r.status_code, 400)
 
     def test_update(self):
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
 
         data = dict(short_name='v2011', long_name='V2011',
-                    parentnode=self.uni.id, start_time='2011-07-12 04:22:48',
+                    parentnode=self.inf101_v2011.id, start_time='2011-07-12 04:22:48',
                     end_time='2011-07-12 04:22:48')
         r = self.client.put(url, data=json.dumps(data),
                 content_type='application/json')
@@ -266,12 +294,12 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
         fromdb = models.Period.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'v2011')
         self.assertEquals(fromdb.long_name, 'V2011')
-        self.assertEquals(fromdb.parentnode.id, self.uni.id)
+        self.assertEquals(fromdb.parentnode.id, self.inf101_v2011.id)
 
     def test_update_errors(self):
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
         data = dict(short_name='v2011', long_name='V2011',
-                    parentnode=self.uni.id)
+                    parentnode=self.inf101_v2011.id)
         r = self.client.put(url, data=json.dumps(data),
                             content_type='application/json')
         response = json.loads(r.content)
@@ -279,13 +307,27 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
             fielderrors = {u'start_time': [u'This field is required.'],
                            u'end_time': [u'This field is required.']},
             errormessages = []))
-    
+
     def test_delete(self):
-        url = self.pekerkjede.get_rest_url(self.uni.id)
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
         self.assertEquals(models.Period.objects.filter(short_name='v2011').count(), 2)
         r = self.client.delete(url, content_type='application/json')
         self.assertEquals(r.status_code, 200)
         self.assertEquals(models.Period.objects.filter(short_name='v2011').count(), 1)
+
+    def test_delete_permission_denied(self):
+        self.add_to_path('uni;inf101.v2011.a1') # Adds an assignment, which should make it impossible for a normal admin to delete
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(r.status_code, 403)
+
+    def test_delete_as_superuser(self):
+        self.create_superuser('grandma') # Same as test_delete_permission_denied, but as superuser
+        self.client.login(username='grandma', password='test')
+        self.add_to_path('uni;inf101.fall11.a1')
+        url = self.pekerkjede.get_rest_url(self.inf101_v2011.id)
+        r = self.client.delete(url, content_type='application/json')
+        self.assertEquals(r.status_code, 200)
 
 
 

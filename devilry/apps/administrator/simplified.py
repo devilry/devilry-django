@@ -50,6 +50,7 @@ class CanSaveBase(SimplifiedModelApi):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
 
+
 @simplified_modelapi
 class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
@@ -84,6 +85,13 @@ class SimplifiedNode(CanSaveBase):
         """
         return models.Node.where_is_admin_or_superadmin(user)
 
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given node contains no childnodes or subjects.
+        """
+        return obj.subjects.all().count() == 0 and obj.child_nodes.all().count() == 0
+
 
 @simplified_modelapi
 class SimplifiedSubject(CanSaveBase):
@@ -91,6 +99,13 @@ class SimplifiedSubject(CanSaveBase):
     class Meta(SimplifiedSubjectMetaMixin):
         """ Defines what methods an Administrator can use on a Subject object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given subject contains no periods
+        """
+        return obj.periods.all().count() == 0
 
 
 @simplified_modelapi
@@ -100,6 +115,13 @@ class SimplifiedPeriod(CanSaveBase):
         """ Defines what methods an Administrator can use on a Period object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
 
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given period contains no assignments
+        """
+        return obj.assignments.all().count() == 0
+
 
 @simplified_modelapi
 class SimplifiedAssignment(CanSaveBase):
@@ -108,6 +130,12 @@ class SimplifiedAssignment(CanSaveBase):
         """ Defines what methods an Administrator can use on an Assignment object using the Simplified API """
         methods = ['create', 'read', 'update', 'delete', 'search']
 
+    @classmethod
+    def is_empty(cls, obj):
+        """
+        Return ``True`` if the given assignment contains no assignmentgroups.
+        """
+        return obj.assignmentgroups.all().count() == 0
 
 @simplified_modelapi
 class SimplifiedAssignmentGroup(CanSaveBase):
