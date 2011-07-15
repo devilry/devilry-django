@@ -78,9 +78,9 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;=&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
@@ -211,9 +211,9 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;=&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -354,6 +354,13 @@ list of filters, where each filter is a map with the following entries:</p>
 </dd>
 </dl>
 </div></blockquote>
+</div>
+<div class="section" id="exact-number-of-results">
+<h4>exact_number_of_results<a class="headerlink" href="#exact-number-of-results" title="Permalink to this headline">¶</a></h4>
+<p>If given, this must be a positive integer (including 0), which specifies the exact number of
+expected results. This enables searches that you know should fail if they do not get this
+exact number of results, such as filtering for a User by unique username
+instead of its numeric ID (where you should expect exactly one result).</p>
 </div>
 <div class="section" id="orderby">
 <h4>orderby<a class="headerlink" href="#orderby" title="Permalink to this headline">¶</a></h4>
@@ -623,6 +630,7 @@ request parameter.</p>
 <li><a class="reference internal" href="#optional-request-parameters">Optional request parameters</a><ul>
 <li><a class="reference internal" href="#query">query</a></li>
 <li><a class="reference internal" href="#filters">filters</a></li>
+<li><a class="reference internal" href="#exact-number-of-results">exact_number_of_results</a></li>
 <li><a class="reference internal" href="#orderby">orderby</a></li>
 <li><a class="reference internal" href="#start">start</a></li>
 <li><a class="reference internal" href="#limit">limit</a></li>

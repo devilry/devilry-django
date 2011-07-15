@@ -246,12 +246,13 @@
     <dt><a href="core.models.html#devilry.apps.core.models.FileMeta">FileMeta (class in devilry.apps.core.models)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Delivery.filemetas">filemetas (devilry.apps.core.models.model_utils.Delivery attribute)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.FileMeta.filename">filename (devilry.apps.core.models.model_utils.FileMeta attribute)</a></dt>
+    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.filenames">filenames (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="core.models.html#devilry.apps.core.models.model_utils.Assignment.filenames">filenames (devilry.apps.core.models.model_utils.Assignment attribute)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.FileNotFoundError">FileNotFoundError</a></dt>
     <dt><a href="simplified.html#devilry.simplified.FilterSpec">FilterSpec (class in devilry.simplified)</a></dt>
     <dt><a href="simplified.html#devilry.simplified.FilterSpecs">FilterSpecs (class in devilry.simplified)</a></dt>
+    <dt><a href="simplified.html#devilry.simplified.FilterValidationError">FilterValidationError</a></dt>
     <dt><a href="simplified.html#devilry.simplified.ForeignFilterSpec">ForeignFilterSpec (class in devilry.simplified)</a></dt>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.FsDeliveryStore">FsDeliveryStore (class in devilry.apps.core.deliverystore)</a></dt>
 </dl></td>
@@ -322,15 +323,36 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.insecure_read_model">insecure_read_model() (devilry.apps.administrator.simplified.SimplifiedAssignment class method)</a></dt>
-    <dd><dl>
-      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.insecure_read_model">(devilry.apps.administrator.simplified.SimplifiedAssignmentGroup class method)</a></dt>
-      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.insecure_read_model">(devilry.apps.administrator.simplified.SimplifiedNode class method)</a></dt>
-      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.insecure_read_model">(devilry.apps.administrator.simplified.SimplifiedPeriod class method)</a></dt>
-      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.insecure_read_model">(devilry.apps.administrator.simplified.SimplifiedSubject class method)</a></dt>
-      <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.insecure_read_model">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
-  </dl></dd>
+    <dt><a href="simplified.html#devilry.simplified.InvalidNumberOfResults">InvalidNumberOfResults</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.Period.is_active">is_active() (devilry.apps.core.models.Period method)</a></dt>
+    <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.is_empty">is_empty() (devilry.apps.administrator.simplified.SimplifiedAssignment class method)</a></dt>
+    <dd><dl>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.is_empty">(devilry.apps.administrator.simplified.SimplifiedAssignmentGroup class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.is_empty">(devilry.apps.administrator.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery.is_empty">(devilry.apps.administrator.simplified.SimplifiedDelivery class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.is_empty">(devilry.apps.administrator.simplified.SimplifiedFileMeta class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.is_empty">(devilry.apps.administrator.simplified.SimplifiedNode class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.is_empty">(devilry.apps.administrator.simplified.SimplifiedPeriod class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.is_empty">(devilry.apps.administrator.simplified.SimplifiedStaticFeedback class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.is_empty">(devilry.apps.administrator.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignment.is_empty">(devilry.apps.examiner.simplified.SimplifiedAssignment class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.is_empty">(devilry.apps.examiner.simplified.SimplifiedAssignmentGroup class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.is_empty">(devilry.apps.examiner.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.is_empty">(devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedFileMeta.is_empty">(devilry.apps.examiner.simplified.SimplifiedFileMeta class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedPeriod.is_empty">(devilry.apps.examiner.simplified.SimplifiedPeriod class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.is_empty">(devilry.apps.examiner.simplified.SimplifiedStaticFeedback class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedSubject.is_empty">(devilry.apps.examiner.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignment.is_empty">(devilry.apps.student.simplified.SimplifiedAssignment class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignmentGroup.is_empty">(devilry.apps.student.simplified.SimplifiedAssignmentGroup class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDeadline.is_empty">(devilry.apps.student.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.is_empty">(devilry.apps.student.simplified.SimplifiedDelivery class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedFileMeta.is_empty">(devilry.apps.student.simplified.SimplifiedFileMeta class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod.is_empty">(devilry.apps.student.simplified.SimplifiedPeriod class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedStaticFeedback.is_empty">(devilry.apps.student.simplified.SimplifiedStaticFeedback class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedSubject.is_empty">(devilry.apps.student.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.is_empty">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
+  </dl></dd>
     <dt><a href="core.models.html#devilry.apps.core.models.AssignmentGroup.is_examiner">is_examiner() (devilry.apps.core.models.AssignmentGroup method)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.AssignmentGroup.is_open">is_open (devilry.apps.core.models.model_utils.AssignmentGroup attribute)</a></dt>
     <dt><a href="core.models.html#devilry.apps.core.models.model_utils.StaticFeedback.is_passing_grade">is_passing_grade (devilry.apps.core.models.model_utils.StaticFeedback attribute)</a></dt>
@@ -396,7 +418,6 @@
       <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin attribute)</a></dt>
       <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin attribute)</a></dt>
       <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin attribute)</a></dt>
-      <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin attribute)</a></dt>
       <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin attribute)</a></dt>
       <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin attribute)</a></dt>
       <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin.model">(devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin attribute)</a></dt>
@@ -540,6 +561,7 @@
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod.read_authorize">(devilry.apps.student.simplified.SimplifiedPeriod class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedStaticFeedback.read_authorize">(devilry.apps.student.simplified.SimplifiedStaticFeedback class method)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedSubject.read_authorize">(devilry.apps.student.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.read_authorize">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
   </dl></dd>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.read_open">read_open() (devilry.apps.core.deliverystore.DeliveryStoreInterface method)</a></dt>
     <dt><a href="grade-plugins.html#devilry.apps.core.gradeplugin.Registry.register">register() (devilry.apps.core.gradeplugin.Registry method)</a></dt>
@@ -651,23 +673,23 @@
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.Meta">(class in devilry.apps.student.simplified)</a></dt>
   </dl></dd>
     <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin">SimplifiedDeliveryMetaMixin (class in devilry.apps.student.simplifiedmetabases)</a></dt>
+    <dt><a href="simplified.html#devilry.simplified.SimplifiedException">SimplifiedException</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta">SimplifiedFileMeta (class in devilry.apps.administrator.simplified)</a></dt>
     <dd><dl>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedFileMeta">(class in devilry.apps.examiner.simplified)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedFileMeta">(class in devilry.apps.student.simplified)</a></dt>
   </dl></dd>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.Meta">SimplifiedFileMeta.Meta (class in devilry.apps.administrator.simplified)</a></dt>
     <dd><dl>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedFileMeta.Meta">(class in devilry.apps.examiner.simplified)</a></dt>
       <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedFileMeta.Meta">(class in devilry.apps.student.simplified)</a></dt>
   </dl></dd>
-</dl></td>
-  <td style="width: 33%" valign="top"><dl>
     <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin">SimplifiedFileMetaMetaMixin (class in devilry.apps.student.simplifiedmetabases)</a></dt>
     <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi">SimplifiedModelApi (class in devilry.simplified)</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode">SimplifiedNode (class in devilry.apps.administrator.simplified)</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.Meta">SimplifiedNode.Meta (class in devilry.apps.administrator.simplified)</a></dt>
-    <dt><a href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin">SimplifiedNodeMetaMixin (class in devilry.apps.student.simplifiedmetabases)</a></dt>
     <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod">SimplifiedPeriod (class in devilry.apps.administrator.simplified)</a></dt>
     <dd><dl>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedPeriod">(class in devilry.apps.examiner.simplified)</a></dt>
@@ -771,11 +793,28 @@
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.write_authorize">(devilry.apps.administrator.simplified.SimplifiedAssignmentGroup class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.write_authorize">(devilry.apps.administrator.simplified.SimplifiedDeadline class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery.write_authorize">(devilry.apps.administrator.simplified.SimplifiedDelivery class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.write_authorize">(devilry.apps.administrator.simplified.SimplifiedFileMeta class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.write_authorize">(devilry.apps.administrator.simplified.SimplifiedNode class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.write_authorize">(devilry.apps.administrator.simplified.SimplifiedPeriod class method)</a></dt>
+      <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.write_authorize">(devilry.apps.administrator.simplified.SimplifiedStaticFeedback class method)</a></dt>
       <dt><a href="administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.write_authorize">(devilry.apps.administrator.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignment.write_authorize">(devilry.apps.examiner.simplified.SimplifiedAssignment class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.write_authorize">(devilry.apps.examiner.simplified.SimplifiedAssignmentGroup class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.write_authorize">(devilry.apps.examiner.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDelivery.write_authorize">(devilry.apps.examiner.simplified.SimplifiedDelivery class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedFileMeta.write_authorize">(devilry.apps.examiner.simplified.SimplifiedFileMeta class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedPeriod.write_authorize">(devilry.apps.examiner.simplified.SimplifiedPeriod class method)</a></dt>
       <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.write_authorize">(devilry.apps.examiner.simplified.SimplifiedStaticFeedback class method)</a></dt>
+      <dt><a href="examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedSubject.write_authorize">(devilry.apps.examiner.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignment.write_authorize">(devilry.apps.student.simplified.SimplifiedAssignment class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignmentGroup.write_authorize">(devilry.apps.student.simplified.SimplifiedAssignmentGroup class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDeadline.write_authorize">(devilry.apps.student.simplified.SimplifiedDeadline class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.write_authorize">(devilry.apps.student.simplified.SimplifiedDelivery class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedFileMeta.write_authorize">(devilry.apps.student.simplified.SimplifiedFileMeta class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedPeriod.write_authorize">(devilry.apps.student.simplified.SimplifiedPeriod class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedStaticFeedback.write_authorize">(devilry.apps.student.simplified.SimplifiedStaticFeedback class method)</a></dt>
+      <dt><a href="student.simplified.html#devilry.apps.student.simplified.SimplifiedSubject.write_authorize">(devilry.apps.student.simplified.SimplifiedSubject class method)</a></dt>
+      <dt><a href="simplified.html#devilry.simplified.SimplifiedModelApi.write_authorize">(devilry.simplified.SimplifiedModelApi class method)</a></dt>
   </dl></dd>
     <dt><a href="core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.write_open">write_open() (devilry.apps.core.deliverystore.DeliveryStoreInterface method)</a></dt>
 </dl></td>

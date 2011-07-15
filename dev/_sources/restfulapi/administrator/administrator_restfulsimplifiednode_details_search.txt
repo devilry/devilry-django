@@ -32,8 +32,8 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"long_name", comp:"<", value:"My example value"},
-                      {field:"parentnode", comp:"=>", value:15},
+        filters: [{field:"long_name", comp:"startswith", value:"My example value"},
+                      {field:"parentnode", comp:"iexact", value:15},
                       {field:"short_name", comp:">", value:"my_example001_value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name"],
         start: 10,
@@ -97,8 +97,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"long_name", comp:"<", value:"My example value"},
-         {field:"parentnode", comp:"=>", value:15},
+        [{field:"long_name", comp:"startswith", value:"My example value"},
+         {field:"parentnode", comp:"iexact", value:15},
          {field:"short_name", comp:">", value:"my_example001_value"}]
 
 Nodes can be filtered on the following *fields*:
@@ -152,6 +152,15 @@ Nodes can be filtered on the following *fields*:
     
 
 
+
+
+
+exact_number_of_results
+-----------------------
+If given, this must be a positive integer (including 0), which specifies the exact number of
+expected results. This enables searches that you know should fail if they do not get this
+exact number of results, such as filtering for a User by unique username
+instead of its numeric ID (where you should expect exactly one result).
 
 
 orderby

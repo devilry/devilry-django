@@ -51,7 +51,7 @@
                            <span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">ForeignFilterSpec</span><span class="p">,</span> <span class="n">PatternFilterSpec</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">models</span>
 
-<span class="kn">from</span> <span class="nn">..student.simplifiedmetabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedNodeMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">..student.simplifiedmetabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
                                            <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span>
                                            <span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">,</span>
                                            <span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">,</span>
@@ -98,12 +98,31 @@
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 
 
+
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedNode"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedNode</span><span class="p">(</span><span class="n">CanSaveBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Node`. &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="SimplifiedNode.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedNodeMetaMixin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a Node object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="SimplifiedNode.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Defines the CRUD+S methods, the django model to be used, resultfields returned by</span>
+<span class="sd">        search and which fields can be used to search for a Node object</span>
+<span class="sd">        using the Simplified API &quot;&quot;&quot;</span>
+
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Node</span>
+        <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                              <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                              <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">),</span>
+                              <span class="n">PatternFilterSpec</span><span class="p">(</span><span class="s">&#39;^(parentnode__)+short_name$&#39;</span><span class="p">),</span>
+                              <span class="n">PatternFilterSpec</span><span class="p">(</span><span class="s">&#39;^(parentnode__)+long_name$&#39;</span><span class="p">),</span>
+                              <span class="n">PatternFilterSpec</span><span class="p">(</span><span class="s">&#39;^(parentnode__)+id$&#39;</span><span class="p">))</span>
+
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedNode.create_searchqryset"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
@@ -113,6 +132,13 @@
 <span class="sd">        :rtype: a django queryset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedNode.is_empty"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return ``True`` if the given node contains no childnodes or subjects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">subjects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">child_nodes</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -120,7 +146,14 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Subject`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedSubject.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a Subject object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedSubject.is_empty"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedSubject.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return ``True`` if the given subject contains no periods</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">periods</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -128,7 +161,14 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Period`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedPeriod.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedPeriodMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a Period object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedPeriod.is_empty"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return ``True`` if the given period contains no assignments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">assignments</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -136,8 +176,14 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedAssignment.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on an Assignment object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
-
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedAssignment.is_empty"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return ``True`` if the given assignment contains no assignmentgroups.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">assignmentgroups</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
 </div></div>
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedAssignmentGroup"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedAssignmentGroup</span><span class="p">(</span><span class="n">CanSaveBase</span><span class="p">):</span>
@@ -145,7 +191,7 @@
 <span class="sd">    :class:`devilry.apps.core.models.AssignmentGroup`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedAssignmentGroup.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;insecure_read_model&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>

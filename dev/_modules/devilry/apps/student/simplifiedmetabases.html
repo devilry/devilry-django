@@ -50,25 +50,6 @@
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">FieldSpec</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">PatternFilterSpec</span><span class="p">,</span> <span class="n">ForeignFilterSpec</span>
 
 
-<div class="viewcode-block" id="SimplifiedNodeMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedNodeMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedNodeMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
-<span class="sd">    search and which fields can be used to search for a Node object</span>
-<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Node</span>
-    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
-    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
-    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
-                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
-                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">),</span>
-                          <span class="n">PatternFilterSpec</span><span class="p">(</span><span class="s">&#39;^(parentnode__)+short_name$&#39;</span><span class="p">),</span>
-                          <span class="n">PatternFilterSpec</span><span class="p">(</span><span class="s">&#39;^(parentnode__)+long_name$&#39;</span><span class="p">),</span>
-                          <span class="n">PatternFilterSpec</span><span class="p">(</span><span class="s">&#39;^(parentnode__)+id$&#39;</span><span class="p">))</span>
-
-</div>
 <div class="viewcode-block" id="SimplifiedSubjectMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedSubjectMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
 <span class="sd">    search and which fields can be used to search for a Subject object</span>

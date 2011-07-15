@@ -203,6 +203,13 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 </dl>
 </div></blockquote>
 </div>
+<div class="section" id="exact-number-of-results">
+<h4>exact_number_of_results<a class="headerlink" href="#exact-number-of-results" title="Permalink to this headline">¶</a></h4>
+<p>If given, this must be a positive integer (including 0), which specifies the exact number of
+expected results. This enables searches that you know should fail if they do not get this
+exact number of results, such as filtering for a User by unique username
+instead of its numeric ID (where you should expect exactly one result).</p>
+</div>
 <div class="section" id="orderby">
 <h4>orderby<a class="headerlink" href="#orderby" title="Permalink to this headline">¶</a></h4>
 <p>List of fieldnames. Order the result by these fields.
@@ -468,6 +475,7 @@ request parameter.</p>
 <li><a class="reference internal" href="#request-example">Request example</a></li>
 <li><a class="reference internal" href="#optional-request-parameters">Optional request parameters</a><ul>
 <li><a class="reference internal" href="#query">query</a></li>
+<li><a class="reference internal" href="#exact-number-of-results">exact_number_of_results</a></li>
 <li><a class="reference internal" href="#orderby">orderby</a></li>
 <li><a class="reference internal" href="#start">start</a></li>
 <li><a class="reference internal" href="#limit">limit</a></li>

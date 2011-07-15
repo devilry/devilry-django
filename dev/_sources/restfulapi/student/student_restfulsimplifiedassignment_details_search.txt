@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"long_name", comp:"contains", value:"My example value"},
-                      {field:"parentnode", comp:"icontains", value:15},
-                      {field:"parentnode__long_name", comp:"exact", value:"My example value"}],
+        filters: [{field:"long_name", comp:"startswith", value:"My example value"},
+                      {field:"parentnode", comp:"exact", value:15},
+                      {field:"parentnode__long_name", comp:"icontains", value:"My example value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name", "publishing_time"],
         start: 10,
         limit: 100
@@ -129,9 +129,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"long_name", comp:"contains", value:"My example value"},
-         {field:"parentnode", comp:"icontains", value:15},
-         {field:"parentnode__long_name", comp:"exact", value:"My example value"}]
+        [{field:"long_name", comp:"startswith", value:"My example value"},
+         {field:"parentnode", comp:"exact", value:15},
+         {field:"parentnode__long_name", comp:"icontains", value:"My example value"}]
 
 Assignments can be filtered on the following *fields*:
 
@@ -229,6 +229,15 @@ Assignments can be filtered on the following *fields*:
 
 
 
+
+
+
+exact_number_of_results
+-----------------------
+If given, this must be a positive integer (including 0), which specifies the exact number of
+expected results. This enables searches that you know should fail if they do not get this
+exact number of results, such as filtering for a User by unique username
+instead of its numeric ID (where you should expect exactly one result).
 
 
 orderby
