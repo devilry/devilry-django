@@ -3,7 +3,7 @@ from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            FilterSpecs, FilterSpec, ForeignFilterSpec, PatternFilterSpec)
 from ..core import models
 
-from ..student.simplifiedmetabases import (SimplifiedNodeMetaMixin, SimplifiedSubjectMetaMixin,
+from ..student.simplifiedmetabases import (SimplifiedSubjectMetaMixin,
                                            SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
                                            SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
                                            SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,
@@ -53,9 +53,27 @@ class CanSaveBase(SimplifiedModelApi):
 @simplified_modelapi
 class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
-    class Meta(SimplifiedNodeMetaMixin):
-        """ Defines what methods an Administrator can use on a Node object using the Simplified API """
+    class Meta:
+        """ Defines the CRUD+S methods, the django model to be used, resultfields returned by
+        search and which fields can be used to search for a Node object
+        using the Simplified API """
+
         methods = ['create', 'insecure_read_model', 'read', 'update', 'delete', 'search']
+
+        model = models.Node
+        resultfields = FieldSpec('id',
+                                 'parentnode',
+                                 'short_name',
+                                 'long_name')
+        searchfields = FieldSpec('short_name',
+                                 'long_name')
+        filters = FilterSpecs(FilterSpec('parentnode'),
+                              FilterSpec('short_name'),
+                              FilterSpec('long_name'),
+                              PatternFilterSpec('^(parentnode__)+short_name$'),
+                              PatternFilterSpec('^(parentnode__)+long_name$'),
+                              PatternFilterSpec('^(parentnode__)+id$'))
+
 
     @classmethod
     def create_searchqryset(cls, user):

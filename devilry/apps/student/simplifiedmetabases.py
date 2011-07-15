@@ -2,25 +2,6 @@ from ..core import models
 from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
-class SimplifiedNodeMetaMixin(object):
-    """ Defines the django model to be used, resultfields returned by
-    search and which fields can be used to search for a Node object
-    using the Simplified API """
-    model = models.Node
-    resultfields = FieldSpec('id',
-                             'parentnode',
-                             'short_name',
-                             'long_name')
-    searchfields = FieldSpec('short_name',
-                             'long_name')
-    filters = FilterSpecs(FilterSpec('parentnode'),
-                          FilterSpec('short_name'),
-                          FilterSpec('long_name'),
-                          PatternFilterSpec('^(parentnode__)+short_name$'),
-                          PatternFilterSpec('^(parentnode__)+long_name$'),
-                          PatternFilterSpec('^(parentnode__)+id$'))
-
-
 class SimplifiedSubjectMetaMixin(object):
     """ Defines the django model to be used, resultfields returned by
     search and which fields can be used to search for a Subject object
