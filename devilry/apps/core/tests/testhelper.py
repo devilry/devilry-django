@@ -390,7 +390,7 @@ class TestTestHelper(TestCase):
         # add a late delivery
         d5 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g2, files=file2, after_last_deadline=True)
         # and assert that it's really delivered after the deadline
-        self.assertGreater(d5.time_of_delivery.date(), d5.deadline_tag.deadline.date())   # self.ti.inf1000_second_oblig1.publishing_time)
+        self.assertGreater(d5.time_of_delivery.date(), d5.deadline.deadline.date())   # self.ti.inf1000_second_oblig1.publishing_time)
         self.assertTrue(d5.delivered_too_late())
 
         # check that all the created deliveries have the status

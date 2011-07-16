@@ -77,10 +77,10 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(delivery__assignment_group__parentnode__admins=user_obj) | \
-                Q(delivery__assignment_group__parentnode__parentnode__admins=user_obj) | \
-                Q(delivery__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-                Q(delivery__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
+                Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
+                Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+                Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -88,16 +88,16 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         Returns a django.models.Q object matching Deliveries where
         the given student is candidate.
         """
-        return Q(delivery__assignment_group__candidates__student=user_obj)
+        return Q(delivery__deadline__assignment_group__candidates__student=user_obj)
 
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(delivery__assignment_group__parentnode__publishing_time__lt = now)
+        q = Q(delivery__deadline__assignment_group__parentnode__publishing_time__lt = now)
         if not active:
-            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__gte = now)
         if not old:
-            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt = now)
+            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__lt = now)
         return q
 
     @classmethod
@@ -106,12 +106,12 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         Returns a django.models.Q object matching Feedbacks where
         the given student is candidate.
         """
-        return Q(delivery__assignment_group__examiners=user_obj)
+        return Q(delivery__deadline__assignment_group__examiners=user_obj)
 
     def _publish_if_allowed(self):
-        assignment = self.delivery.assignment_group.parentnode
+        assignment = self.delivery.deadline.assignment_group.parentnode
         if assignment.examiners_publish_feedbacks_directly:
-            deadline = self.delivery.deadline_tag
+            deadline = self.delivery.deadline
             deadline.feedbacks_published = True
             deadline.save()
 
@@ -124,10 +124,10 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
 
 def update_deadline_and_assignmentgroup_status(delivery):
-    delivery.deadline_tag._update_status()
-    delivery.deadline_tag.save()
-    delivery.assignment_group._update_status()
-    delivery.assignment_group.save()
+    delivery.deadline._update_status()
+    delivery.deadline.save()
+    delivery.deadline.assignment_group._update_status()
+    delivery.deadline.assignment_group.save()
 
 def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']

@@ -28,9 +28,10 @@ class TestDelivery(TestCase, TestHelper):
     def test_delivery(self):
         assignmentgroup = self.inf1100_period1_assignment1_g3
         d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
-        self.assertEquals(d.assignment_group, assignmentgroup)
-        self.assertTrue(d.successful)
-        self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertEquals(d.deadline.assignment_group, assignmentgroup)
+        #self.assertEquals(d.assignment_group, assignmentgroup)
+        #self.assertTrue(d.successful)
+        #self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 2)
 
