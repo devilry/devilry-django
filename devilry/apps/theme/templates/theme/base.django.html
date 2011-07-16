@@ -44,20 +44,25 @@
 
     <body>
         <header>
+            <div id="heading">
+                <h1>
+                    {% trans "Devilry" %}
+                </h1>
+                <a href="http://devilry.org" id="projectlink">http://devilry.org</a>
+            </div>
+            <div id="version">
+                <span class="text">Version</span>
+                <span class="number">1.0-beta</span>
+                <span class="codename"> &mdash; Miss piggy</span>
+            </div>
+
             <div id='authenticated-user-bar'>
                 <span id='authenticated-user-info'>
-                    Welcome {{ user.username }}
+                    {{ user.username }}
                 </span>
                 | <a id='logout-link' href='{% url logout %}'>Log out</a>
             </div>
-            <h1>
-                {% trans "Devilry" %}
-            </h1>
-            <div id="version">
-                <span id="number">1.0-beta</span>
-                <span id="codename">Miss piggy</span>
-            </div>
-            <a href="http://devilry.org" id="projectlink">http://devilry.org</a>
+
             <nav class="{% block nav-class %}{% endblock %}">
                 <ul>
                     <li class="student-navitem"><a href="#">{% trans "Student" %}</a></li>

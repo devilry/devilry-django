@@ -9,34 +9,17 @@ body>header {
     background-color: #000; color: #fff;
 }
 
-/**
- *
- * Header userinfo/logout
- *
- */
-body>header>#authenticated-user-bar {
-    float: left;
-    padding-top: 20px;
-    padding-left: 20px;
-    color: #aaa;
-}
-body>header>#authenticated-user-bar>a#logout-link {
-    color: #aaa;
-}
-body>header>#authenticated-user-bar>a#logout-link:visited {
-    color: #aaa;
-}
-body>header>#authenticated-user-bar>a#logout-link:hover {
-    color: #fff;
-}
 
 /**
  *
  * Heading
  *
  */
-body>header h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
-body>header a#projectlink {
+body>header>#heading {
+    float: right;
+}
+body>header>#heading>h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
+body>header>#heading>a#projectlink {
 	display: block;
 	margin: 0 20px 5px 20px;
 	text-decoration: none;
@@ -44,19 +27,59 @@ body>header a#projectlink {
 	text-align: right;
     color: #a00;
 }
+
+
+/**
+ *
+ * Version
+ *
+ *
+ */
 body>header>#version {
-	margin: 0 20px 5px 20px;
+	/*margin: 0 20px 5px 20px;*/
+    top: 24px;
+    left: 35%;
+    -webkit-transform: rotate(10deg);
+    -moz-transform: rotate(10deg);
+    transform: rotate(10deg);
 	text-decoration: none;
-	font-size: 0.8em;
-	text-align: right;
-}
-body>header>#version>span#number {
+	font-size: 16px;
     font-weight: bold;
+	text-align: right;
+    position: absolute;
+    color: #444;
+    font-family: "Arial Black", sans-serif;
 }
-body>header>#version span#codename {
+/*body>header>#version>span.number {*/
+    /*font-weight: bold;*/
+/*}*/
+body>header>#version span.codename {
     font-style: italic;
 }
 
+
+
+/**
+ *
+ * Header userinfo/logout
+ *
+ */
+body>header>#authenticated-user-bar {
+    padding-top: 20px;
+    padding-left: 20px;
+    color: #ccc;
+    font-size: 0.8em;
+}
+body>header>#authenticated-user-bar>a#logout-link {
+    color: #fff;
+    font-weight: bold;
+}
+body>header>#authenticated-user-bar>a#logout-link:visited {
+    color: #fff;
+}
+body>header>#authenticated-user-bar>a#logout-link:hover {
+    color: #fff;
+}
 
 
 /**
@@ -65,7 +88,8 @@ body>header>#version span#codename {
  *
  */
 body>header>nav {
-    background-color: #111;
+    margin-top: 20px;
+    /*background-color: #111;*/
 }
 body>header>nav ul {
 	margin: 0 0 0 20px;
