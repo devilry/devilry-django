@@ -246,8 +246,8 @@ class TestAssignmentGroup(TestCase, TestHelper):
 #        deadline_plus10 = Deadline.objects.get(deadline=time_plus10)
 #        
 #        # Was assigned the correct deadline
-#        self.assertEquals(delivery1.deadline_tag.id, deadline_plus5.id)
-#        self.assertEquals(delivery2.deadline_tag.id, deadline_plus5.id)
+#        self.assertEquals(delivery1.deadline.id, deadline_plus5.id)
+#        self.assertEquals(delivery2.deadline.id, deadline_plus5.id)
 #        
 #        self.assertEquals(deadline_min10.status, AssignmentGroup.NO_DELIVERIES)
 #        self.assertEquals(deadline_min5.status, AssignmentGroup.NO_DELIVERIES)
