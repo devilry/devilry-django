@@ -1,0 +1,69 @@
+{% extends "theme/base.django.html" %}
+{% load extjs %}
+
+{% block title %}Devilry examiner interface{% endblock %}
+
+
+{% block nav-class %}examiner{% endblock %}
+
+
+{% block headextra %}
+
+<script>
+
+    {% for RestfulCls in restfulclasses %}
+        {{ RestfulCls|extjs_combobox_model }}
+    {% endfor %}
+
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
+    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
+
+    Ext.require('devilry.administrator.SearchWidget');
+    Ext.onReady(function() {
+        var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
+            renderTo: 'searchwidget',
+            searchResultItems: [{
+                xtype: 'administratorsearchresults',
+                title: 'Assignments',
+                store: assignmentstore,
+                editorurlprefix: '',
+                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Assignment groups',
+                store: assignmentgroupstore,
+                editorurlprefix: '',
+                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Deliveries',
+                store: deliverystore,
+                editorurlprefix: '',
+                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'administratorsearchresults',
+                title: 'Deadlines',
+                store: deadlinestore,
+                editorurlprefix: '',
+                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }]
+        });
+        searchwidget.loadInitialValues();
+        searchwidget.focusOnSearchfield();
+    });
+
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+<div id='searchwidget'></div>
+<p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
+have permission to view or edit. Searching for a user will find any item
+related to that user, and searching for a subject will find anything related to
+that subject.</p>
+{% endblock %}
