@@ -31,6 +31,11 @@ class Node(models.Model, BaseNode, Etag):
     .. attribute:: subjects
 
         A set of subjects for this node
+
+    .. attribute:: etag
+
+       A DateTimeField containing the etag for this object.
+
     """
     short_name = ShortNameField()
     long_name = LongNameField()

@@ -58,6 +58,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
        A set of `StaticFeedback`_ on this delivery.
 
+    .. attribute:: etag
+
+       A DateTimeField containing the etag for this object.
+
     """
     status_mapping = (
         _("Not corrected"),
