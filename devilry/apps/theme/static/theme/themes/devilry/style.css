@@ -199,12 +199,12 @@ body>#main {
     color: #111;
 }
 
-/* The overlay of disabled ExtJS forms. */
-.x-item-disabled {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-    opacity: 1.0 !important;
-}
+
+/**
+ *
+ * SearchWidget
+ *
+ */
 
 .searchfield {
     font-size: 30px;
@@ -216,8 +216,62 @@ body>#main {
 .search-popup-panel {
     box-shadow: 0 3px 8px #888;
 }
+.searchresults-row>.links {
+    float: right;
+    font-size: 12px;
+    font-weight: bold;
+}
+.searchwidget-help {
+    padding: 4px 15px 15px 15px !important;
+    color: #444;
+    font-size: 0.9em;
+    width: 600px;
+}
 
 
+
+/**
+ *
+ * Make <a> look like a button
+ *
+ */
+
+a.button {
+    display: inline-block;
+    padding: 5px 10px 6px;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 3px #999;
+    text-shadow: 1px 1px 1px #000;
+    position: relative;
+    cursor: pointer;
+}
+a.button:hover {
+    border: 1px solid #999;
+}
+a.good-button {
+    background-color: #88CC00;
+    color: #F7FFE5;
+}
+a.warning-button {
+    background-color: #CC4400;
+    color: #FFEEE5;
+}
+a.neutral-button {
+    background-color: #08c;
+    color: #E5F7FF;
+}
+
+
+
+/**
+ *
+ * Icons
+ *
+ */
 
 .icon-delete-16 { background-image: url(icons/16x16/delete.png); }
 .icon-edit-16 { background-image: url(icons/16x16/edit.png); }
@@ -230,6 +284,16 @@ body>#main {
 .icon-save-32 { background-image: url(icons/32x32/save.png); }
 .icon-save-32 { background-image: url(icons/32x32/save.png); }
 .icon-add-32 { background-image: url(icons/32x32/add.png); }
+
+
+
+
+/**
+ *
+ * Forms
+ *
+ *
+ */
 
 .errorlist .x-panel-header-text {
     color: #BB0000;
@@ -245,12 +309,13 @@ body>#main {
     padding: 15px;
 }
 
-.searchwidget-help {
-    padding: 4px 15px 15px 15px !important;
-    color: #444;
-    font-size: 0.9em;
-    width: 600px;
-}
+
+
+/**
+ *
+ * Tooltips
+ *
+ */
 
 .tooltip-title {
     margin-bottom: 5px;
@@ -259,6 +324,13 @@ body>#main {
 .tooltip-title span.tooltip-title-current-item {
     font-weight: bold;
 }
+
+.x-item-disabled { /* The overlay of disabled ExtJS forms. */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1.0 !important;
+}
+
 
 
 /**

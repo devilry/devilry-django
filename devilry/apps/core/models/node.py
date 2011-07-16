@@ -26,11 +26,11 @@ class Node(models.Model, BaseNode, Etag):
 
     .. attribute:: child_nodes
 
-        A set of child_nodes for this node
+        A set of child_nodes of type `Node`_ for this node
 
     .. attribute:: subjects
 
-        A set of subjects for this node
+        A set of :class:`subjects <devilry.apps.core.models.Subject>` for this node
 
     .. attribute:: etag
 

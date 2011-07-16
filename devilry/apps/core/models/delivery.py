@@ -13,17 +13,12 @@ from ..models import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, N
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
-    .. attribute:: assignment_group
-
-        A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
-        that handed in the Delivery.
-
     .. attribute:: time_of_delivery
 
         A django.db.models.DateTimeField_ that holds the date and time the
         Delivery was uploaded.
 
-    .. attribute:: deadline_tag
+    .. attribute:: deadline
 
        A django.db.models.ForeignKey_ pointing to the `Deadline`_ for this Delivery.
 
@@ -52,11 +47,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     .. attribute:: filemetas
 
-        A set of `FileMeta`_ for this delivery.
+        A set of :class:`filemetas <devilry.apps.core.models.FileMeta>` for this delivery.
 
     .. attribute:: feedbacks
 
-       A set of `StaticFeedback`_ on this delivery.
+       A set of :class:`feedbacks <devilry.apps.core.models.StaticFeedback>` on this delivery.
 
     .. attribute:: etag
 
@@ -88,18 +83,15 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             verbose_name = _("Type of deliveries"),
             help_text=_('This option controls if this assignment accepts only '
                         'electronic deliveries, or accepts other kinds as well.'))
-
     # Fields automatically 
     time_of_delivery = models.DateTimeField(auto_now_add=True,
                                            help_text=_('Holds the date and time the Delivery was uploaded.'))
-    deadline_tag = models.ForeignKey(Deadline, related_name='deliveries')
+    deadline = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField(
         help_text=_('The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
                     'unique within the assignment-group.'))
-
     # Fields set by user
-    assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
     successful = models.BooleanField(blank=True, default=False)
     delivered_by = models.ForeignKey("Candidate")
 
@@ -110,9 +102,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """ Compares the deadline and time of delivery.
         If time_of_delivery is greater than the deadline, return True.
         """
-        if self.deadline_tag.is_head:
+        if self.deadline.is_head:
             return False
-        return self.time_of_delivery > self.deadline_tag.deadline
+        return self.time_of_delivery > self.deadline.deadline
     after_deadline = property(delivered_too_late)
 
     class Meta:
@@ -120,7 +112,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         verbose_name = _('Delivery')
         verbose_name_plural = _('Deliveries')
         ordering = ['-time_of_delivery']
-        unique_together = ('assignment_group', 'number')
+        #unique_together = ('assignment_group', 'number')
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -128,29 +120,29 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Returns a django.models.Q object matching Deliveries where
         the given student is candidate.
         """
-        return Q(assignment_group__candidates__student=user_obj)
+        return Q(deadline__assignment_group__candidates__student=user_obj)
     
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(assignment_group__parentnode__publishing_time__lt = now)
+        q = Q(deadline__assignment_group__parentnode__publishing_time__lt = now)
         if not active:
-            q &= ~Q(assignment_group__parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__gte = now)
         if not old:
-            q &= ~Q(assignment_group__parentnode__parentnode__end_time__lt = now)
+            q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__lt = now)
         return q
 
     
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(assignment_group__parentnode__admins=user_obj) | \
-                Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
-                Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return Q(deadline__assignment_group__parentnode__admins=user_obj) | \
+                Q(deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
+                Q(deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+                Q(deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(assignment_group__examiners=user_obj)
+        return Q(deadline__assignment_group__examiners=user_obj)
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
@@ -221,7 +213,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 #self.get_status_number()]
 
     def _set_number(self):
-        m = Delivery.objects.filter(assignment_group=self.assignment_group).aggregate(Max('number'))
+        m = Delivery.objects.filter(deadline__assignment_group=self.deadline.assignment_group).aggregate(Max('number'))
         self.number = (m['number__max'] or 0) + 1
 
     def save(self, *args, **kwargs):
@@ -231,20 +223,20 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         #self.time_of_delivery = datetime.now()
         if self.id == None:
-            self.deadline_tag = self.assignment_group.get_active_deadline()
+            #self.deadline = self.assignment_group.get_active_deadline()
             self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s - %s (%s)' % (self.assignment_group, self.number,
+        return u'%s - %s (%s)' % (self.deadline__assignment_group, self.number,
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
 def update_deadline_and_assignmentgroup_status(delivery):
-    delivery.deadline_tag._update_status()
-    delivery.deadline_tag.save()
-    delivery.assignment_group._update_status()
-    delivery.assignment_group.save()
+    delivery.deadline._update_status()
+    delivery.deadline.save()
+    delivery.deadline.assignment_group._update_status()
+    delivery.deadline.assignment_group.save()
 
 def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
     delivery = kwargs['instance']

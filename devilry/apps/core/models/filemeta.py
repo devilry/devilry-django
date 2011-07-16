@@ -75,27 +75,27 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(delivery__assignment_group__parentnode__publishing_time__lt=now)
+        q = Q(delivery__deadline__assignment_group__parentnode__publishing_time__lt=now)
         if not active:
-            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__gte=now)
+            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__gte=now)
         if not old:
-            q &= ~Q(delivery__assignment_group__parentnode__parentnode__end_time__lt=now)
+            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__lt=now)
         return q
 
     @classmethod
     def q_is_candidate(cls, user_obj):
-        return Q(delivery__assignment_group__candidates__identifier=user_obj)
+        return Q(delivery__deadline__assignment_group__candidates__identifier=user_obj)
 
     @classmethod
     def q_is_examiner(cls, user_obj):
-        return Q(delivery__assignment_group__examiners=user_obj)
+        return Q(delivery__deadline__assignment_group__examiners=user_obj)
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(delivery__assignment_group__parentnode__admins=user_obj) | \
-            Q(delivery__assignment_group__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return self.filename

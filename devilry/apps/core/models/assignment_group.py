@@ -27,7 +27,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     .. attribute:: candidates
 
-        A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>` on this group.
+        A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>`
+        on this group.
 
     .. attribute:: examiners
 
@@ -39,13 +40,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
 
-    .. attribute:: deliveries
-
-        A set of deliveries for this assignmentgroup 
-
     .. attribute:: deadlines
 
-        A set of deadlines for this assignmentgroup 
+        A django ``RelatedManager`` that holds the :class:`deadlines <devilry.apps.core.models.Deadline>`
+        on this group.
 
     .. attribute:: status
 
@@ -136,7 +134,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True,
-                           help_text=_('An optional name for the group. Typically used a project name on project assignments.'))
+                           help_text=_('An optional name for the group. Typically used a project '\
+                                       'name on project assignments.'))
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
