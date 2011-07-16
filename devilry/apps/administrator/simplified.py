@@ -181,7 +181,7 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
         """
         #TODO: Replace when issue #141 is resolved!
         if not user.is_superuser:
-            if not obj.delivery.assignment_group.is_admin(user):
+            if not obj.delivery.deadline.assignment_group.is_admin(user):
                 raise PermissionDenied()
 
 
@@ -256,5 +256,5 @@ class SimplifiedFileMeta(SimplifiedModelApi):
         """
         #TODO: Replace when issue #141 is resolved!
         if not user_obj.is_superuser:
-            if not obj.delivery.assignment_group.is_admin(user_obj):
+            if not obj.delivery.deadline.assignment_group.is_admin(user_obj):
                 raise PermissionDenied()

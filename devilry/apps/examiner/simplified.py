@@ -114,7 +114,7 @@ class SimplifiedStaticFeedback(PublishedWhereIsExaminerMixin):
         :param obj: A StaticFeedback-object.
         :throws PermissionDenied:
         """
-        if not obj.delivery.assignment_group.is_examiner(user):
+        if not obj.delivery.deadline.assignment_group.is_examiner(user):
             raise PermissionDenied()
 
 
@@ -137,6 +137,9 @@ class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
         if not obj.assignment_group.is_examiner(user):
             raise PermissionDenied()
 
+    @classmethod
+    def is_empty(cls, obj):
+        return obj.deliveries.count() == 0
 
 @simplified_modelapi
 class SimplifiedFileMeta(PublishedWhereIsExaminerMixin):

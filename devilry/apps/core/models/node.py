@@ -26,7 +26,7 @@ class Node(models.Model, BaseNode, Etag):
 
     .. attribute:: child_nodes
 
-        A set of child_nodes for this node
+        A set of child_nodes of type `Node`_ for this node
 
     .. attribute:: subjects
 
