@@ -1,10 +1,10 @@
 /** A grid containing search results.
  *
- * @xtype administratorsearchresults
+ * @xtype searchresults
  * */
-Ext.define('devilry.administrator.SearchResults', {
+Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.administratorsearchresults',
+    alias: 'widget.searchresults',
     config: {
         /**
          * @cfg
@@ -26,7 +26,7 @@ Ext.define('devilry.administrator.SearchResults', {
             //title: false,
             hideHeaders: true,
             columns: [{
-                header: 'Nodes', dataIndex: 'long_name', flex: 1,
+                header: 'Items', dataIndex: 'id', flex: 1,
                 renderer: this.formatRowWrapper
             }],
             dockedItems: [{

@@ -1,10 +1,10 @@
 /** A textfield for searching.
  *
- * @xtype administratormultisearchfield
+ * @xtype multisearchfield
  * */
-Ext.define('devilry.administrator.MultiSearchField', {
+Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
     extend: 'Ext.form.field.Text',
-    alias: 'widget.administratormultisearchfield',
+    alias: 'widget.multisearchfield',
 
     initComponent: function() {
         var me = this;

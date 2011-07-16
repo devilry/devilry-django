@@ -1,6 +1,6 @@
 /**
- * Search widget with a {@link devilry.administrator.MultiSearchField} on top
- * and results in a {@link devilry.administrator.MultiSearchResults} below.
+ * Search widget with a {@link devilry.extjshelpers.searchwidget.MultiSearchField} on top
+ * and results in a {@link devilry.extjshelpers.searchwidget.MultiSearchResults} below.
  *
  *     Search: ______________
  *    
@@ -18,24 +18,24 @@
  *     |                    |
  *     +--------------------+
  *
- * @xtype administratorsearchwidget
- * @cfg {[Object]} searchResultItems Item list forwarded to the item config of {@link devilry.administrator.MultiSearchResults}
+ * @xtype searchwidget
+ * @cfg {[Object]} searchResultItems Item list forwarded to the item config of {@link devilry.extjshelpers.searchwidget.MultiSearchResults}
  * */
-Ext.define('devilry.administrator.SearchWidget', {
+Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     extend: 'Ext.container.Container',
-    alias: 'widget.administratorsearchwidget',
+    alias: 'widget.searchwidget',
     requires: [
-        'devilry.administrator.SearchResults',
-        'devilry.administrator.MultiSearchField',
-        'devilry.administrator.MultiSearchResults'
+        'devilry.extjshelpers.searchwidget.SearchResults',
+        'devilry.extjshelpers.searchwidget.MultiSearchField',
+        'devilry.extjshelpers.searchwidget.MultiSearchResults'
     ],
 
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'administratormultisearchfield'
+                xtype: 'multisearchfield'
             }, {
-                xtype: 'administratormultisearchresults',
+                xtype: 'multisearchresults',
                 items: this.searchResultItems
             }]
         });
