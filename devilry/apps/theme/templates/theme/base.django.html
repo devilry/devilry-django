@@ -58,11 +58,11 @@
                 <span id="codename">Miss piggy</span>
             </div>
             <a href="http://devilry.org" id="projectlink">http://devilry.org</a>
-            <nav>
+            <nav class="{% block nav-class %}{% endblock %}">
                 <ul>
-                    <li><a href="#">{% trans "Student" %}</a></li>
-                    <li><a href="{% url examiner %}">{% trans "Examiner" %}</a></li>
-                    <li><a href="{% url administrator %}">{% trans "Administrator" %}</a></li>
+                    <li class="student-navitem"><a href="#">{% trans "Student" %}</a></li>
+                    <li class="examiner-navitem"><a href="{% url examiner %}">{% trans "Examiner" %}</a></li>
+                    <li class="administrator-navitem"><a href="{% url administrator %}">{% trans "Administrator" %}</a></li>
                 </ul>
             </nav>
         </header>
