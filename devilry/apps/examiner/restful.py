@@ -1,5 +1,6 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
 from ..extjshelpers import extjs_restful_modelapi
+from ..student import restfulmetabases
 from simplified import (SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
@@ -41,6 +42,9 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
         simplified = SimplifiedAssignment
         foreignkey_fields = {'parentnode': RestfulSimplifiedPeriod}
 
+    class ExtjsModelMeta(restfulmetabases.AssignmentExtjsModelMeta):
+        """ Metadata for javascript. """
+
 
 @examiner_restful.register
 @extjs_restful_modelapi
@@ -50,6 +54,9 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
         simplified = SimplifiedAssignmentGroup
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
 
+    class ExtjsModelMeta(restfulmetabases.AssignmentGroupExtjsModelMeta):
+        """ Metadata for javascript. """
+
 
 @examiner_restful.register
 @extjs_restful_modelapi
@@ -58,6 +65,9 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDelivery
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
+
+    class ExtjsModelMeta(restfulmetabases.DeliveryExtjsModelMeta):
+        """ Metadata for javascript. """
 
 
 @examiner_restful.register
