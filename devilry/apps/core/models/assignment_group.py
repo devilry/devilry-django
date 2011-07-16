@@ -16,7 +16,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
     Represents a student or a group of students. 
 
-
     .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
@@ -67,12 +66,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         contains ``"Corrected"``. This is because the student should never
         know about unpublished feedback.
 
-    .. attribute:: points
-
-        The number of points this group got on their latest published
-        delivery. This fields is only updated when a published feedback
-        is saved.
-
     .. attribute:: scaled_points
 
         The :attr:`points` of this group scaled according to
@@ -81,6 +74,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Calculated as: `float(pointscale)/maxpoints * points`.
 
         **Note:** This field is a cache for the calculation above.
+
+    .. attribute:: feedback
+
+       The last `StaticFeedback`_ on the last delivery on this assignmentgroup.
+
+    .. attribute:: etag
+
+       A DateTimeField containing the etag for this object.
 
     .. attribute:: NO_DELIVERIES
 
@@ -144,7 +145,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                          choices = enumerate(status_mapping),
                                          verbose_name = _('Status'),
                                          help_text = _('Status number.'))
-
     scaled_points = models.FloatField(default=0.0)
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)

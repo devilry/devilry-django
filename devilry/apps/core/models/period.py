@@ -44,8 +44,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     .. attribute:: assignments
 
         A set of assignments for this period 
-    """
 
+    .. attribute:: etag
+
+       A DateTimeField containing the etag for this object.
+
+    """
     class Meta:
         app_label = 'core'
         verbose_name = _('Period')

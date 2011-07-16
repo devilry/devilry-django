@@ -47,6 +47,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         If this boolean field is ``True``, the student can see all
         :class:`StaticFeedback` objects associated with this Deadline through a
         :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
+
     """
     status = models.PositiveIntegerField(default = 0,
                                          choices = enumerate(AssignmentGroup.status_mapping),
@@ -60,7 +61,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     is_head = models.BooleanField(default=False)
     deliveries_available_before_deadline = models.BooleanField(default=False)
     feedbacks_published = models.BooleanField(default=False,
-                                             help_text=_('If this ``True``, the student can see all StaticFeedbacks associated with this Deadline'))
+                                              help_text=_('If this is ``True``, the student can see all '\
+                                                          'StaticFeedbacks associated with this Deadline'))
 
     class Meta:
         app_label = 'core'
