@@ -25,37 +25,65 @@
                 xtype: 'searchresults',
                 title: 'Nodes',
                 store: nodestore,
-                editorurlprefix: '{% url administrator-editors-node %}',
+                links: [{
+                    title: 'Edit',
+                    urlprefix: '{% url administrator-editors-node %}',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Subjects',
                 store: subjectstore,
-                editorurlprefix: '{% url administrator-editors-subject %}',
+                links: [{
+                    title: 'Edit',
+                    urlprefix: '{% url administrator-editors-subject %}',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Periods',
                 store: periodstore,
-                editorurlprefix: '{% url administrator-editors-period %}',
+                links: [{
+                    title: 'Statistics',
+                    urlprefix: '#',
+                    cssclass: 'button neutral-button'
+                }, {
+                    title: 'Edit',
+                    urlprefix: '{% url administrator-editors-period %}',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                editorurlprefix: '{% url administrator-editors-assignment %}',
+                links: [{
+                    title: 'Edit',
+                    urlprefix: '{% url administrator-editors-assignment %}',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                editorurlprefix: '{% url administrator-editors-assignmentgroup %}',
+                links: [{
+                    title: 'Edit',
+                    urlprefix: '{% url administrator-editors-assignmentgroup %}',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Delivery',
                 store: deliverystore,
-                editorurlprefix: '{% url administrator-editors-delivery %}',
+                links: [{
+                    title: 'Edit',
+                    urlprefix: '{% url administrator-editors-delivery %}',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });

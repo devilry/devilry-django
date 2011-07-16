@@ -23,26 +23,42 @@
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                editorurlprefix: '',
+                links: [{
+                    title: 'Overview',
+                    urlprefix: '#',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                editorurlprefix: '',
+                links: [{
+                    title: 'All deliveries',
+                    urlprefix: '#',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
-            }, {
-                xtype: 'searchresults',
-                title: 'Deliveries',
-                store: deliverystore,
-                editorurlprefix: '',
-                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Deadlines',
                 store: deadlinestore,
-                editorurlprefix: '',
+                links: [{
+                    title: 'Show deliveries',
+                    urlprefix: '#',
+                    cssclass: 'button good-button'
+                }],
                 rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'searchresults',
+                title: 'Deliveries',
+                store: deliverystore,
+                links: [{
+                    title: 'Create feedback',
+                    urlprefix: '#',
+                    cssclass: 'button good-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
         searchwidget.loadInitialValues();
