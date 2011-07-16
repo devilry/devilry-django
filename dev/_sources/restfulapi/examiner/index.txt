@@ -15,12 +15,12 @@ Examiner
     examiner_restfulsimplifiedassignment_details_search
     examiner_restfulsimplifiedassignmentgroup_details_read
     examiner_restfulsimplifiedassignmentgroup_details_search
-    examiner_restfulsimplifieddelivery_details_read
-    examiner_restfulsimplifieddelivery_details_search
     examiner_restfulsimplifieddeadline_details_read
     examiner_restfulsimplifieddeadline_details_search
     examiner_restfulsimplifieddeadline_details_create
     examiner_restfulsimplifieddeadline_details_delete
+    examiner_restfulsimplifieddelivery_details_read
+    examiner_restfulsimplifieddelivery_details_search
     examiner_restfulsimplifiedstaticfeedback_details_read
     examiner_restfulsimplifiedstaticfeedback_details_search
     examiner_restfulsimplifiedstaticfeedback_details_create
@@ -140,34 +140,6 @@ AssignmentGroup
 
 
 
-Delivery
--------------------------------------------------------------------------
-
-.. raw:: html
-
-    <table class="restfulindex">
-        <thead>
-            <tr>
-                <th>Resource</th>
-                <td>Description</td>
-            </tr>
-        </thead>
-        <tbody>
-            
-    <tr>
-        <th><a href="examiner_restfulsimplifieddelivery_details_search.html">GET&nbsp;/examiner/restfulsimplifieddelivery/</a></th>
-        <td>Search for Deliveries.</td>
-    </tr>
-    
-    <tr>
-        <th><a href="examiner_restfulsimplifieddelivery_details_read.html">GET&nbsp;/examiner/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
-        <td>Retrieve a Delivery.</td>
-    </tr>
-        </tbody>
-    </table>
-
-
-
 Deadline
 -------------------------------------------------------------------------
 
@@ -200,6 +172,34 @@ Deadline
     <tr>
         <th><a href="examiner_restfulsimplifieddeadline_details_delete.html">DELETE&nbsp;/examiner/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
         <td>Delete a Deadline.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Delivery
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="examiner_restfulsimplifieddelivery_details_search.html">GET&nbsp;/examiner/restfulsimplifieddelivery/</a></th>
+        <td>Search for Deliveries.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="examiner_restfulsimplifieddelivery_details_read.html">GET&nbsp;/examiner/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Delivery.</td>
     </tr>
         </tbody>
     </table>

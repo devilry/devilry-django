@@ -63,13 +63,13 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <p>The request parameters (below) all modify the result of the search. They are
 applied in the following order:</p>
 <blockquote>
-<ol class="arabic simple">
+<div><ol class="arabic simple">
 <li>The <tt class="docutils literal"><span class="pre">query</span></tt> is executed.</li>
 <li>The result of the query is filtered through the <tt class="docutils literal"><span class="pre">filters</span></tt>.</li>
 <li>The result of the filtering is ordered as specified in <tt class="docutils literal"><span class="pre">orderby</span></tt>.</li>
 <li>The result of the ordering is limited by <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">limit</span></tt>.</li>
 </ol>
-</blockquote>
+</div></blockquote>
 <div class="section" id="request">
 <h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="request-example">
@@ -99,7 +99,7 @@ returned.</p>
 resulting in a list of words. Every <em>word</em> in the list is searched for
 <em>case-insensitive</em> matches within the following fields:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -181,7 +181,7 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="exact-number-of-results">
 <h4>exact_number_of_results<a class="headerlink" href="#exact-number-of-results" title="Permalink to this headline">¶</a></h4>
@@ -209,11 +209,11 @@ the values from <em>start</em> to <em>start+limit</em>. Start defalts to <tt cla
 <p>A list of group names. Each group adds an additional set of fields to the
 results of the search. The following group names are available:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>delivery</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>delivery__time_of_delivery</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -245,12 +245,12 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>assignment</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>delivery__deadline__assignment_group__parentnode__id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -282,12 +282,12 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>period</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>delivery__deadline__assignment_group__parentnode__parentnode__id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -319,12 +319,12 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>subject</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -356,10 +356,10 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -404,7 +404,7 @@ results and the <em>total</em> number of items found before applying <tt class="
 list is a JSON object where the <em>key</em> is a fieldname and the associated value is
 the <em>value</em> for that field. The result always contains the following fields:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -476,7 +476,7 @@ the <em>value</em> for that field. The result always contains the following fiel
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>However, there may be more fields if specified with the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>
 request parameter.</p>
 </div>
@@ -573,7 +573,7 @@ request parameter.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

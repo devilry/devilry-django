@@ -25,7 +25,7 @@
     <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
     <link rel="up" title="Examiner" href="index.html" />
     <link rel="next" title="GET /examiner/restfulsimplifieddelivery/" href="examiner_restfulsimplifieddelivery_details_search.html" />
-    <link rel="prev" title="GET /examiner/restfulsimplifiedassignmentgroup/" href="examiner_restfulsimplifiedassignmentgroup_details_search.html" /> 
+    <link rel="prev" title="DELETE /examiner/restfulsimplifieddeadline/id" href="examiner_restfulsimplifieddeadline_details_delete.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="examiner_restfulsimplifieddelivery_details_search.html" title="GET /examiner/restfulsimplifieddelivery/"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="examiner_restfulsimplifiedassignmentgroup_details_search.html" title="GET /examiner/restfulsimplifiedassignmentgroup/"
+          <a href="examiner_restfulsimplifieddeadline_details_delete.html" title="DELETE /examiner/restfulsimplifieddeadline/id"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
@@ -94,11 +94,11 @@ request body as shown in the example above.</p>
 <p>A list of group names. Each group adds an additional set of fields to the
 resulting data. The following group names are available:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>assignment</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group__parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -130,12 +130,12 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>subject</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group__parentnode__parentnode__parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -167,12 +167,12 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>period</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group__parentnode__parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -204,12 +204,12 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>assignment_group</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -231,10 +231,10 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -262,7 +262,7 @@ resulting data. The following group names are available:</p>
 response is <em>HTTP 200</em> with the requested data in the body.
 The result always contains the following fields:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -314,7 +314,7 @@ The result always contains the following fields:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>However, there may be more fields if specified with the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>
 request parameter.</p>
 </div>
@@ -361,8 +361,8 @@ request parameter.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="examiner_restfulsimplifiedassignmentgroup_details_search.html"
-                        title="previous chapter">GET /examiner/restfulsimplifiedassignmentgroup/</a></p>
+  <p class="topless"><a href="examiner_restfulsimplifieddeadline_details_delete.html"
+                        title="previous chapter">DELETE /examiner/restfulsimplifieddeadline/id</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="examiner_restfulsimplifieddelivery_details_search.html"
                         title="next chapter">GET /examiner/restfulsimplifieddelivery/</a></p>
@@ -401,7 +401,7 @@ request parameter.</p>
           <a href="examiner_restfulsimplifieddelivery_details_search.html" title="GET /examiner/restfulsimplifieddelivery/"
              >next</a> |</li>
         <li class="right" >
-          <a href="examiner_restfulsimplifiedassignmentgroup_details_search.html" title="GET /examiner/restfulsimplifiedassignmentgroup/"
+          <a href="examiner_restfulsimplifieddeadline_details_delete.html" title="DELETE /examiner/restfulsimplifieddeadline/id"
              >previous</a> |</li>
         <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
           <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
@@ -410,7 +410,7 @@ request parameter.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

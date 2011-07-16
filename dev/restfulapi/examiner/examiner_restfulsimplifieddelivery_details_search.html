@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
     <link rel="up" title="Examiner" href="index.html" />
-    <link rel="next" title="GET /examiner/restfulsimplifieddeadline/id" href="examiner_restfulsimplifieddeadline_details_read.html" />
+    <link rel="next" title="GET /examiner/restfulsimplifiedstaticfeedback/id" href="examiner_restfulsimplifiedstaticfeedback_details_read.html" />
     <link rel="prev" title="GET /examiner/restfulsimplifieddelivery/id" href="examiner_restfulsimplifieddelivery_details_read.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examiner_restfulsimplifieddeadline_details_read.html" title="GET /examiner/restfulsimplifieddeadline/id"
+          <a href="examiner_restfulsimplifiedstaticfeedback_details_read.html" title="GET /examiner/restfulsimplifiedstaticfeedback/id"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="examiner_restfulsimplifieddelivery_details_read.html" title="GET /examiner/restfulsimplifieddelivery/id"
@@ -63,13 +63,13 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <p>The request parameters (below) all modify the result of the search. They are
 applied in the following order:</p>
 <blockquote>
-<ol class="arabic simple">
+<div><ol class="arabic simple">
 <li>The <tt class="docutils literal"><span class="pre">query</span></tt> is executed.</li>
 <li>The result of the query is filtered through the <tt class="docutils literal"><span class="pre">filters</span></tt>.</li>
 <li>The result of the filtering is ordered as specified in <tt class="docutils literal"><span class="pre">orderby</span></tt>.</li>
 <li>The result of the ordering is limited by <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">limit</span></tt>.</li>
 </ol>
-</blockquote>
+</div></blockquote>
 <div class="section" id="request">
 <h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="request-example">
@@ -79,8 +79,8 @@ applied in the following order:</p>
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
     <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}],</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;=&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-number&quot;</span><span class="p">,</span> <span class="s2">&quot;time_of_delivery&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
@@ -101,7 +101,7 @@ returned.</p>
 resulting in a list of words. Every <em>word</em> in the list is searched for
 <em>case-insensitive</em> matches within the following fields:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>number</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -203,14 +203,14 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="filters">
 <h4>filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h4>
 <p>Filters can be used to perform complex queries. The <tt class="docutils literal"><span class="pre">filters</span></tt> parameter is a
 list of filters, where each filter is a map with the following entries:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>field</dt>
 <dd>A field name.</dd>
 <dt>comp</dt>
@@ -218,18 +218,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dt>value</dt>
 <dd>The value to filter on.</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;=&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">}]</span>
 </pre></div>
 </div>
-</blockquote>
+</div></blockquote>
 <p>Deliveries can be filtered on the following <em>fields</em>:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -387,7 +387,7 @@ list of filters, where each filter is a map with the following entries:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="exact-number-of-results">
 <h4>exact_number_of_results<a class="headerlink" href="#exact-number-of-results" title="Permalink to this headline">¶</a></h4>
@@ -415,11 +415,11 @@ the values from <em>start</em> to <em>start+limit</em>. Start defalts to <tt cla
 <p>A list of group names. Each group adds an additional set of fields to the
 results of the search. The following group names are available:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>assignment</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group__parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -451,12 +451,12 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>subject</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group__parentnode__parentnode__parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -488,12 +488,12 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>period</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group__parentnode__parentnode</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -525,12 +525,12 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>assignment_group</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>deadline__assignment_group</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -552,10 +552,10 @@ results of the search. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -596,7 +596,7 @@ results and the <em>total</em> number of items found before applying <tt class="
 list is a JSON object where the <em>key</em> is a fieldname and the associated value is
 the <em>value</em> for that field. The result always contains the following fields:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -648,7 +648,7 @@ the <em>value</em> for that field. The result always contains the following fiel
 </dl>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>However, there may be more fields if specified with the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>
 request parameter.</p>
 </div>
@@ -700,8 +700,8 @@ request parameter.</p>
   <p class="topless"><a href="examiner_restfulsimplifieddelivery_details_read.html"
                         title="previous chapter">GET /examiner/restfulsimplifieddelivery/id</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="examiner_restfulsimplifieddeadline_details_read.html"
-                        title="next chapter">GET /examiner/restfulsimplifieddeadline/id</a></p>
+  <p class="topless"><a href="examiner_restfulsimplifiedstaticfeedback_details_read.html"
+                        title="next chapter">GET /examiner/restfulsimplifiedstaticfeedback/id</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/restfulapi/examiner/examiner_restfulsimplifieddelivery_details_search.txt"
@@ -734,7 +734,7 @@ request parameter.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examiner_restfulsimplifieddeadline_details_read.html" title="GET /examiner/restfulsimplifieddeadline/id"
+          <a href="examiner_restfulsimplifiedstaticfeedback_details_read.html" title="GET /examiner/restfulsimplifiedstaticfeedback/id"
              >next</a> |</li>
         <li class="right" >
           <a href="examiner_restfulsimplifieddelivery_details_read.html" title="GET /examiner/restfulsimplifieddelivery/id"
@@ -746,7 +746,7 @@ request parameter.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

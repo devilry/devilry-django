@@ -59,13 +59,13 @@ common needs. It is a API which lends itself naturally to be exposed
 as a RESTful web service API. This API is the public interface for devilry in any
 language and platform:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>RESTful web services</li>
 <li>javascript</li>
 <li>serverside python</li>
 <li>client libraries using the RESTful web API.</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p>This means that a developer who has played around with the javascript in the
 Devilry templates, can use the same API if he or she wants to develop a
 serverside addon or a command-line script using the official devilry python
@@ -300,11 +300,8 @@ fields in any of the <tt class="docutils literal"><span class="pre">fieldgroups<
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fieldgroups</strong> &#8211; Tuple/list of fieldgroups. Fieldgroups are keys in
-<tt class="docutils literal"><span class="pre">additional_fieldgroups</span></tt> (see __init__).</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fieldgroups</strong> &#8211; Tuple/list of fieldgroups. Fieldgroups are keys in
+<tt class="docutils literal"><span class="pre">additional_fieldgroups</span></tt> (see __init__).</td>
 </tr>
 </tbody>
 </table>
@@ -341,20 +338,20 @@ containing <tt class="docutils literal"><span class="pre">__</span></tt>.</p>
 <p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have an inner class named <tt class="docutils literal"><span class="pre">Meta</span></tt> with
 the following attributes:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>model</dt>
 <dd>Then Django model. <strong>Required</strong>.</dd>
 <dt>methods</dt>
 <dd><p class="first">A list of supported CRUD+S methods. <strong>Required</strong>. Legal values are:</p>
 <blockquote class="last">
-<ul class="simple">
+<div><ul class="simple">
 <li>create</li>
 <li>read</li>
 <li>update</li>
 <li>delete</li>
 <li>search</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt>resultfields</dt>
 <dd>A <a class="reference internal" href="#devilry.simplified.FieldSpec" title="devilry.simplified.FieldSpec"><tt class="xref py py-class docutils literal"><span class="pre">FieldSpec</span></tt></a> which defines what fields to
@@ -378,10 +375,10 @@ all fields in <tt class="docutils literal"><span class="pre">editablefields</spa
 <dd>A <a class="reference internal" href="#devilry.simplified.FilterSpecs" title="devilry.simplified.FilterSpecs"><tt class="xref py py-class docutils literal"><span class="pre">devilry.simplified.FilterSpecs</span></tt></a> limiting the possible
 filters to perform. Defaults to an empty <tt class="docutils literal"><span class="pre">FilterSpec</span></tt>.</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have the following methods for handling permissions:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>read_authorize</dt>
 <dd>Authorization method used for each call to <tt class="docutils literal"><span class="pre">read()</span></tt>.</dd>
 <dt>write_authorize</dt>
@@ -391,10 +388,10 @@ method except for <tt class="docutils literal"><span class="pre">read()</span></
 <dd>Method used to create the queryset filtered in search().
 Required if <tt class="docutils literal"><span class="pre">&quot;search&quot;</span></tt> is in <tt class="docutils literal"><span class="pre">Meta.methods</span></tt>.</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>The decorator adds the following attributes to <tt class="docutils literal"><span class="pre">cls</span></tt>:</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>_meta</dt>
 <dd>Alias for the Meta class (above).</dd>
 <dt>supports_create</dt>
@@ -406,7 +403,7 @@ Required if <tt class="docutils literal"><span class="pre">&quot;search&quot;</s
 <dt>supports_delete</dt>
 <dd>Boolean variable: is <tt class="docutils literal"><span class="pre">'delete'</span></tt> in <tt class="docutils literal"><span class="pre">_meta.methods</span></tt>.</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd></dl>
 
 <dl class="class">
@@ -422,22 +419,16 @@ Required if <tt class="docutils literal"><span class="pre">&quot;search&quot;</s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>user</strong> &#8211; Django user object.</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> &#8211; Django user object.</td>
 </tr>
-<tr class="field"><th class="field-name">Field_values :</th><td class="field-body"><p class="first">The values to set on the given object.</p>
-</td>
+<tr class="field"><th class="field-name">Field_values :</th><td class="field-body">The values to set on the given object.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The primary key of the newly created object.</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The primary key of the newly created object.</td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user does not have permission to edit this object,
 if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
-is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
-</td>
+is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -475,7 +466,7 @@ is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefield
 </td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object,
+<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to delete this object,
 if the object does not exist, or if the user does not have permission
 to recursively delete this objects and all its children.</p>
 </td>
@@ -528,7 +519,7 @@ in <tt class="docutils literal"><span class="pre">Meta.resultfields</span></tt> 
 </td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
+<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to view this object, or
 if the object does not exist.</p>
 </td>
 </tr>
@@ -546,7 +537,7 @@ if the object does not exist.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">If the given user do not have read permission on the given obj.</td>
+<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have read permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -617,7 +608,7 @@ this check is not performed. If the check fails,
 </td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws PermissionDenied:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
+<tr class="field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the given user does not have permission to edit this object,
 if the object does not exist, or if any of the <tt class="docutils literal"><span class="pre">field_values</span></tt>
 is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefields</span></tt>.</p>
 </td>
@@ -636,7 +627,7 @@ is not in <tt class="docutils literal"><span class="pre">cls._meta.editablefield
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name" colspan="2">Raises PermissionDenied:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
+<tr class="field"><td>&nbsp;</td><td class="field-body">If the given user do not have write permission on the given obj.</td>
 </tr>
 </tbody>
 </table>
@@ -665,20 +656,16 @@ that PatternFilterSpec are not validated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filters</strong> &#8211; <p>A list of filters on the following format:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filters</strong> &#8211; <p>A list of filters on the following format:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">[{</span><span class="s">&#39;field&#39;</span><span class="p">:</span> <span class="s">&#39;myfieldname&#39;</span><span class="p">,</span> <span class="s">&#39;comp&#39;</span><span class="p">:</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
  <span class="p">{</span><span class="s">&#39;field&#39;</span><span class="p">:</span> <span class="s">&#39;myotherfieldname&#39;</span><span class="p">,</span> <span class="s">&#39;comp&#39;</span><span class="p">:</span> <span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="s">&#39;myname&#39;</span><span class="p">}]</span>
 </pre></div>
 </div>
-</li>
-</ul>
 </td>
 </tr>
 <tr class="field"><th class="field-name" colspan="2">Throws FilterValidationError:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first last">If any of the <tt class="docutils literal"><span class="pre">filters</span></tt> are not in the
-filterspecs.</p>
-</td>
+<tr class="field"><td>&nbsp;</td><td class="field-body">If any of the <tt class="docutils literal"><span class="pre">filters</span></tt> are not in the
+filterspecs.</td>
 </tr>
 </tbody>
 </table>
@@ -828,7 +815,7 @@ each fieldname in <tt class="docutils literal"><span class="pre">fieldnames</spa
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
