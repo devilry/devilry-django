@@ -21,24 +21,14 @@
             renderTo: 'searchwidget',
             searchResultItems: [{
                 xtype: 'searchresults',
-                title: 'Assignments',
-                store: assignmentstore,
+                title: 'Deliveries',
+                store: deliverystore,
                 links: [{
-                    title: 'Overview',
+                    title: 'Create feedback',
                     urlprefix: '#',
                     cssclass: 'button good-button'
                 }],
-                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignment groups',
-                store: assignmentgroupstore,
-                links: [{
-                    title: 'All deliveries',
-                    urlprefix: '#',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
                 title: 'Deadlines',
@@ -51,14 +41,24 @@
                 rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
-                title: 'Deliveries',
-                store: deliverystore,
+                title: 'Assignment groups',
+                store: assignmentgroupstore,
                 links: [{
-                    title: 'Create feedback',
+                    title: 'All deliveries',
                     urlprefix: '#',
                     cssclass: 'button good-button'
                 }],
-                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'searchresults',
+                title: 'Assignments',
+                store: assignmentstore,
+                links: [{
+                    title: 'Overview',
+                    urlprefix: '#',
+                    cssclass: 'button good-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
         searchwidget.loadInitialValues();

@@ -86,6 +86,6 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     loadInitialValues: function() {
-        //this.search("3580");
+        this.search("3580");
     }
 });

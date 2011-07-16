@@ -8,7 +8,23 @@ class AssignmentExtjsModelMeta:
 class AssignmentGroupExtjsModelMeta:
     """ Metadata for AssignmentGroup javascript. """
     combobox_fieldgroups = ['assignment', 'period', 'subject']
-    combobox_tpl = ('<div class="important">{parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__short_name}.{parentnode__short_name} (group id: {id})</div>')
+    combobox_tpl = ('<div class="important">Group id: {id}'
+                        #'<tpl for="candidates__identifier">, {.}</tpl>'
+                    '</div>'
+                    '<div class="unimportant">'
+                        '{parentnode__parentnode__parentnode__short_name}.'
+                        '{parentnode__parentnode__short_name}.'
+                        '{parentnode__short_name}</div>')
+    combobox_displayfield = 'id'
+
+class DeadlineExtjsModelMeta:
+    """ Metadata for Deadline javascript. """
+    combobox_fieldgroups = ['assignment', 'period', 'subject']
+    combobox_tpl = ('<div class="important">{deadline:date("Y-m-d H:i:s")}</div>'
+                    '<div class="unimportant">'
+                        '{assignment_group__parentnode__parentnode__parentnode__short_name}.'
+                        '{assignment_group__parentnode__parentnode__short_name}.'
+                        '{assignment_group__parentnode__short_name} - Group id: {id}</div>')
     combobox_displayfield = 'id'
 
 
@@ -17,11 +33,11 @@ class DeliveryExtjsModelMeta:
     combobox_fieldgroups = ['assignment', 'period', 'subject',
                             'assignment_group']
     combobox_tpl = ('<div class="important">Delivery: {number} '
-                    '(group: {assignment_group__id}'
-                    '<tpl if="assignment_group__name"> &ndash; {assignment_group__name}</tpl>'
-                    '<tpl for="assignment_group__candidates__identifier">, {.}</tpl>'
-                    ')</div>'
-                    '<div class="unimportant">{assignment_group__parentnode__parentnode__parentnode__short_name}'
-                    '.{assignment_group__parentnode__parentnode__short_name}.'
-                    '{assignment_group__parentnode__short_name}</div>')
+                        '<tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl>'
+                        #'<tpl for="deadline__assignment_group__candidates__identifier">, {.}</tpl>'
+                    '</div>'
+                    '<div class="unimportant">'
+                        '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.'
+                        '{deadline__assignment_group__parentnode__parentnode__short_name}.'
+                        '{deadline__assignment_group__parentnode__short_name} &mdash; Group id: {id}</div>')
     combobox_displayfield = 'id'

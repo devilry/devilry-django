@@ -53,6 +53,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             '   </tpl></div>' +
             '   <div>{dataview}</div>' +
             '</div>');
+        console.log(record.data);
         return tpl.apply({
             dataview: dataview,
             links: this.links,
