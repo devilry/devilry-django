@@ -20,34 +20,22 @@
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
     var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
 
-    Ext.require('devilry.administrator.SearchWidget');
+    Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
     Ext.onReady(function() {
-        var searchwidget = Ext.create('devilry.administrator.SearchWidget', {
+        var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
             renderTo: 'searchwidget',
             searchResultItems: [{
-                xtype: 'administratorsearchresults',
-                title: 'Assignments',
-                store: assignmentstore,
-                editorurlprefix: '',
-                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
-            }, {
-                xtype: 'administratorsearchresults',
+                xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
                 editorurlprefix: '',
                 rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
-                xtype: 'administratorsearchresults',
+                xtype: 'searchresults',
                 title: 'Deliveries',
                 store: deliverystore,
                 editorurlprefix: '',
                 rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
-            }, {
-                xtype: 'administratorsearchresults',
-                title: 'Deadlines',
-                store: deadlinestore,
-                editorurlprefix: '',
-                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }]
         });
         searchwidget.loadInitialValues();
