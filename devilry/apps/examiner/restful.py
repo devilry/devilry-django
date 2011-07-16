@@ -1,4 +1,5 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
+from ..extjshelpers import extjs_restful_modelapi
 from simplified import (SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
@@ -16,6 +17,7 @@ examiner_restful = RestfulManager()
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedSubject(ModelRestfulView):
     class Meta:
@@ -23,6 +25,7 @@ class RestfulSimplifiedSubject(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedPeriod(ModelRestfulView):
     class Meta:
@@ -31,6 +34,7 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedAssignment(ModelRestfulView):
     class Meta:
@@ -39,6 +43,7 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
@@ -47,6 +52,7 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
@@ -55,6 +61,7 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedDeadline(ModelRestfulView):
     class Meta:
@@ -63,6 +70,7 @@ class RestfulSimplifiedDeadline(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedStaticFeedback(ModelRestfulView):
     class Meta:
@@ -71,6 +79,7 @@ class RestfulSimplifiedStaticFeedback(ModelRestfulView):
 
 
 @examiner_restful.register
+@extjs_restful_modelapi
 @restful_modelapi
 class RestfulSimplifiedFileMeta(ModelRestfulView):
     class Meta:
