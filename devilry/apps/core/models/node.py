@@ -30,7 +30,7 @@ class Node(models.Model, BaseNode, Etag):
 
     .. attribute:: subjects
 
-        A set of subjects for this node
+        A set of :class:`subjects <devilry.apps.core.models.Subject>` for this node
 
     .. attribute:: etag
 
