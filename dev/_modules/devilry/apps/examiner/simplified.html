@@ -162,7 +162,7 @@
 <span class="sd">        :param obj: A StaticFeedback-object.</span>
 <span class="sd">        :throws PermissionDenied:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
 
 </div></div>
@@ -184,8 +184,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
-
-</div></div>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">deliveries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+</div>
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedFileMeta"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedFileMeta">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedFileMeta</span><span class="p">(</span><span class="n">PublishedWhereIsExaminerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. &quot;&quot;&quot;</span>
@@ -231,7 +234,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>

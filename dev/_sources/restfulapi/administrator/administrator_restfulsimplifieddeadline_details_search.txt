@@ -332,7 +332,7 @@ the *value* for that field. The result always contains the following fields:
             Actual location of the field:
                 :class:`devilry.apps.core.models.Deadline`
             About the field:
-                If this ``True``, the student can see all StaticFeedbacks associated with this Deadline
+                If this is ``True``, the student can see all StaticFeedbacks associated with this Deadline
             Type
                 Boolean
     

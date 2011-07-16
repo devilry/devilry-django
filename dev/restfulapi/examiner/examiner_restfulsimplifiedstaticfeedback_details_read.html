@@ -94,11 +94,11 @@ request body as shown in the example above.</p>
 <p>A list of group names. Each group adds an additional set of fields to the
 resulting data. The following group names are available:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>delivery</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>delivery__time_of_delivery</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -130,13 +130,13 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </dd>
 <dt>assignment</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<div><dl class="docutils">
-<dt>delivery__assignment_group__parentnode__id</dt>
+<dl class="docutils">
+<dt>delivery__deadline__assignment_group__parentnode__id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
@@ -146,7 +146,7 @@ resulting data. The following group names are available:</p>
 <dd>Integer</dd>
 </dl>
 </dd>
-<dt>delivery__assignment_group__parentnode__short_name</dt>
+<dt>delivery__deadline__assignment_group__parentnode__short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
@@ -156,7 +156,7 @@ resulting data. The following group names are available:</p>
 <dd>String</dd>
 </dl>
 </dd>
-<dt>delivery__assignment_group__parentnode__long_name</dt>
+<dt>delivery__deadline__assignment_group__parentnode__long_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
@@ -167,13 +167,13 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </dd>
 <dt>period</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<div><dl class="docutils">
-<dt>delivery__assignment_group__parentnode__parentnode__id</dt>
+<dl class="docutils">
+<dt>delivery__deadline__assignment_group__parentnode__parentnode__id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
@@ -183,7 +183,7 @@ resulting data. The following group names are available:</p>
 <dd>Integer</dd>
 </dl>
 </dd>
-<dt>delivery__assignment_group__parentnode__parentnode__short_name</dt>
+<dt>delivery__deadline__assignment_group__parentnode__parentnode__short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
@@ -193,7 +193,7 @@ resulting data. The following group names are available:</p>
 <dd>String</dd>
 </dl>
 </dd>
-<dt>delivery__assignment_group__parentnode__parentnode__long_name</dt>
+<dt>delivery__deadline__assignment_group__parentnode__parentnode__long_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
@@ -204,13 +204,13 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </dd>
 <dt>subject</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
-<div><dl class="docutils">
-<dt>delivery__assignment_group__parentnode__parentnode__parentnode__id</dt>
+<dl class="docutils">
+<dt>delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
@@ -220,7 +220,7 @@ resulting data. The following group names are available:</p>
 <dd>Integer</dd>
 </dl>
 </dd>
-<dt>delivery__assignment_group__parentnode__parentnode__parentnode__short_name</dt>
+<dt>delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
@@ -230,7 +230,7 @@ resulting data. The following group names are available:</p>
 <dd>String</dd>
 </dl>
 </dd>
-<dt>delivery__assignment_group__parentnode__parentnode__parentnode__long_name</dt>
+<dt>delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
@@ -241,10 +241,10 @@ resulting data. The following group names are available:</p>
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </div>
 </div>
 </div>
@@ -274,7 +274,7 @@ resulting data. The following group names are available:</p>
 response is <em>HTTP 200</em> with the requested data in the body.
 The result always contains the following fields:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -346,7 +346,7 @@ The result always contains the following fields:</p>
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 <p>However, there may be more fields if specified with the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>
 request parameter.</p>
 </div>
@@ -442,7 +442,7 @@ request parameter.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>

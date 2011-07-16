@@ -62,7 +62,7 @@ resulting data. The following group names are available:
     assignment
         *Expands to the following fields:*
         
-            delivery__assignment_group__parentnode__id
+            delivery__deadline__assignment_group__parentnode__id
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
                 About the field:
@@ -70,7 +70,7 @@ resulting data. The following group names are available:
                 Type
                     Integer
         
-            delivery__assignment_group__parentnode__short_name
+            delivery__deadline__assignment_group__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
                 About the field:
@@ -78,7 +78,7 @@ resulting data. The following group names are available:
                 Type
                     String
         
-            delivery__assignment_group__parentnode__long_name
+            delivery__deadline__assignment_group__parentnode__long_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
                 About the field:
@@ -90,7 +90,7 @@ resulting data. The following group names are available:
     period
         *Expands to the following fields:*
         
-            delivery__assignment_group__parentnode__parentnode__id
+            delivery__deadline__assignment_group__parentnode__parentnode__id
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
@@ -98,7 +98,7 @@ resulting data. The following group names are available:
                 Type
                     Integer
         
-            delivery__assignment_group__parentnode__parentnode__short_name
+            delivery__deadline__assignment_group__parentnode__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
@@ -106,7 +106,7 @@ resulting data. The following group names are available:
                 Type
                     String
         
-            delivery__assignment_group__parentnode__parentnode__long_name
+            delivery__deadline__assignment_group__parentnode__parentnode__long_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
@@ -118,7 +118,7 @@ resulting data. The following group names are available:
     subject
         *Expands to the following fields:*
         
-            delivery__assignment_group__parentnode__parentnode__parentnode__id
+            delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
                 About the field:
@@ -126,7 +126,7 @@ resulting data. The following group names are available:
                 Type
                     Integer
         
-            delivery__assignment_group__parentnode__parentnode__parentnode__short_name
+            delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
                 About the field:
@@ -134,7 +134,7 @@ resulting data. The following group names are available:
                 Type
                     String
         
-            delivery__assignment_group__parentnode__parentnode__parentnode__long_name
+            delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
                 About the field:

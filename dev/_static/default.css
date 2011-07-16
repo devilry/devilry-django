@@ -4,7 +4,7 @@
  *
  * Sphinx stylesheet -- default theme.
  *
- * :copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2010 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -114,7 +114,6 @@ div.sphinxsidebar input {
 }
 
 
-
 /* -- hyperlink styles ------------------------------------------------------ */
 
 a {
@@ -140,11 +139,6 @@ a.external {
 a.external:hover {
    text-decoration: none;
    border-bottom: none;
-}
-
-a.external:visited {
-    text-decoration: none;
-    border-bottom: 1px dashed #6E0840;
 }
 
 

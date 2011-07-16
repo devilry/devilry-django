@@ -63,13 +63,13 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <p>The request parameters (below) all modify the result of the search. They are
 applied in the following order:</p>
 <blockquote>
-<div><ol class="arabic simple">
+<ol class="arabic simple">
 <li>The <tt class="docutils literal"><span class="pre">query</span></tt> is executed.</li>
 <li>The result of the query is filtered through the <tt class="docutils literal"><span class="pre">filters</span></tt>.</li>
 <li>The result of the filtering is ordered as specified in <tt class="docutils literal"><span class="pre">orderby</span></tt>.</li>
 <li>The result of the ordering is limited by <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">limit</span></tt>.</li>
 </ol>
-</div></blockquote>
+</blockquote>
 <div class="section" id="request">
 <h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="request-example">
@@ -78,9 +78,9 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;short_name&quot;</span><span class="p">,</span> <span class="s2">&quot;long_name&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
@@ -101,7 +101,7 @@ returned.</p>
 resulting in a list of words. Every <em>word</em> in the list is searched for
 <em>case-insensitive</em> matches within the following fields:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>short_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -123,14 +123,14 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </div>
 <div class="section" id="filters">
 <h4>filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h4>
 <p>Filters can be used to perform complex queries. The <tt class="docutils literal"><span class="pre">filters</span></tt> parameter is a
 list of filters, where each filter is a map with the following entries:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>field</dt>
 <dd>A field name.</dd>
 <dt>comp</dt>
@@ -138,18 +138,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dt>value</dt>
 <dd>The value to filter on.</dd>
 </dl>
-</div></blockquote>
+</blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
-</div></blockquote>
+</blockquote>
 <p>Subjects can be filtered on the following <em>fields</em>:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>long_name</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -223,7 +223,7 @@ list of filters, where each filter is a map with the following entries:</p>
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </div>
 <div class="section" id="exact-number-of-results">
 <h4>exact_number_of_results<a class="headerlink" href="#exact-number-of-results" title="Permalink to this headline">¶</a></h4>
@@ -283,7 +283,7 @@ results and the <em>total</em> number of items found before applying <tt class="
 list is a JSON object where the <em>key</em> is a fieldname and the associated value is
 the <em>value</em> for that field. The result always contains the following fields:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>id</dt>
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
@@ -325,7 +325,7 @@ the <em>value</em> for that field. The result always contains the following fiel
 </dl>
 </dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </div>
 </div>
 <div class="section" id="on-error">
@@ -420,7 +420,7 @@ the <em>value</em> for that field. The result always contains the following fiel
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>

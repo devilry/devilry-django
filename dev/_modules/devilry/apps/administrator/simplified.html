@@ -229,7 +229,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c">#TODO: Replace when issue #141 is resolved!</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
 
 </div></div>
@@ -304,7 +304,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c">#TODO: Replace when issue #141 is resolved!</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span></div></div>
 </pre></div>
 
@@ -345,7 +345,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>

@@ -227,46 +227,47 @@
     <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
                              <span class="s">&#39;number&#39;</span><span class="p">,</span>
                              <span class="s">&#39;time_of_delivery&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>
-                             <span class="n">assignment_group</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>
-                                               <span class="s">&#39;assignment_group__name&#39;</span><span class="p">],</span>
-                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__parentnode&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
-                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__parentnode__parentnode&#39;</span><span class="p">,</span>
-                                     <span class="s">&#39;assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                                     <span class="s">&#39;assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
-                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">])</span>
+                             <span class="s">&#39;deadline&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>
+                             <span class="n">assignment_group</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>
+                                               <span class="s">&#39;deadline__assignment_group__name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">])</span>
     <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;number&#39;</span><span class="p">,</span>
                              <span class="c"># assignmentgroup</span>
-                             <span class="s">&#39;assignment_group__name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;assignment_group__examiners__username&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;assignment_group__candidates__identifier&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__examiners__username&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__candidates__identifier&#39;</span><span class="p">,</span>
                              <span class="c"># assignment</span>
-                             <span class="s">&#39;assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>
                              <span class="c"># period</span>
-                             <span class="s">&#39;assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
                              <span class="c"># subject</span>
-                             <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">)</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">)</span>
     <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
-                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">),</span>
-                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>  <span class="c"># AssignmentGroup</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>  <span class="c"># AssignmentGroup</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)),</span>
-                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Assignment</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Assignment</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
-                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Period</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Period</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
-                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
@@ -283,27 +284,27 @@
                              <span class="s">&#39;saved_by&#39;</span><span class="p">,</span>
                              <span class="s">&#39;delivery&#39;</span><span class="p">,</span>
                              <span class="s">&#39;rendered_view&#39;</span><span class="p">,</span>
-                             <span class="c">#&#39;delivery__assignment_group__examiners__username&#39;,</span>
-                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
-                                     <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                                     <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
-                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
-                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__assignment_group__parentnode__id&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;delivery__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;delivery__assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="c">#&#39;delivery__deadline__assignment_group__examiners__username&#39;,</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__id&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
                              <span class="n">delivery</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__time_of_delivery&#39;</span><span class="p">,</span>
                                        <span class="s">&#39;delivery__number&#39;</span><span class="p">,</span>
                                        <span class="s">&#39;delivery__delivered_by&#39;</span><span class="p">])</span>
-    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;delivery__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;delivery__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>
                              <span class="s">&#39;delivery__number&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;delivery__assignment_group__examiners__username&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__examiners__username&#39;</span><span class="p">,</span>
                              <span class="p">)</span>
 
 </div>
@@ -315,23 +316,23 @@
     <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span>
                              <span class="s">&#39;size&#39;</span><span class="p">,</span>
                              <span class="s">&#39;id&#39;</span><span class="p">,</span>
-                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                                      <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
-                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
-                                     <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
-                                     <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
-                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__assignment_group__parentnode__id&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;delivery__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
-                                         <span class="s">&#39;delivery__assignment_group__parentnode__long_name&#39;</span><span class="p">])</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__id&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">])</span>
     <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span>
-        <span class="s">&#39;delivery__assignment_group__candidates__identifier&#39;</span><span class="p">,</span>  <span class="c"># student in assignment_group</span>
-        <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># subject</span>
-        <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># subject</span>
-        <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
-        <span class="s">&#39;delivery__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
-        <span class="s">&#39;delivery__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
-        <span class="s">&#39;delivery__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__candidates__identifier&#39;</span><span class="p">,</span>  <span class="c"># student in assignment_group</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># subject</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># subject</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
         <span class="p">)</span></div>
 </pre></div>
 
@@ -372,7 +373,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>

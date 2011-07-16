@@ -32,10 +32,10 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignment_group", comp:"<=", value:15},
-                      {field:"assignment_group__name", comp:">", value:"My example value"},
-                      {field:"assignment_group__parentnode", comp:"contains", value:15}],
-        orderby: ["id", "-number", "time_of_delivery", "assignment_group"],
+        filters: [{field:"deadline__assignment_group", comp:">", value:15},
+                      {field:"deadline__assignment_group__name", comp:"contains", value:"My example value"},
+                      {field:"deadline__assignment_group__parentnode", comp:"exact", value:15}],
+        orderby: ["id", "-number", "time_of_delivery", "deadline", "deadline__assignment_group"],
         start: 10,
         limit: 100
     }
@@ -67,7 +67,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 Integer
     
-        assignment_group__name
+        deadline__assignment_group__name
             Actual location of the field:
                 :class:`devilry.apps.core.models.AssignmentGroup`
             About the field:
@@ -75,7 +75,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        assignment_group__examiners__username
+        deadline__assignment_group__examiners__username
             Actual location of the field:
                 :class:`devilry.apps.core.models.AssignmentGroup`
             About the field:
@@ -83,7 +83,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 Comma-separated list
     
-        assignment_group__candidates__identifier
+        deadline__assignment_group__candidates__identifier
             Actual location of the field:
                 :class:`devilry.apps.core.models.Candidate`
             About the field:
@@ -91,7 +91,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 Comma-separated list
     
-        assignment_group__parentnode__short_name
+        deadline__assignment_group__parentnode__short_name
             Actual location of the field:
                 :class:`devilry.apps.core.models.Assignment`
             About the field:
@@ -99,7 +99,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        assignment_group__parentnode__long_name
+        deadline__assignment_group__parentnode__long_name
             Actual location of the field:
                 :class:`devilry.apps.core.models.Assignment`
             About the field:
@@ -107,7 +107,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        assignment_group__parentnode__parentnode__short_name
+        deadline__assignment_group__parentnode__parentnode__short_name
             Actual location of the field:
                 :class:`devilry.apps.core.models.Period`
             About the field:
@@ -115,7 +115,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        assignment_group__parentnode__parentnode__long_name
+        deadline__assignment_group__parentnode__parentnode__long_name
             Actual location of the field:
                 :class:`devilry.apps.core.models.Period`
             About the field:
@@ -123,7 +123,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        assignment_group__parentnode__parentnode__parentnode__short_name
+        deadline__assignment_group__parentnode__parentnode__parentnode__short_name
             Actual location of the field:
                 :class:`devilry.apps.core.models.Subject`
             About the field:
@@ -131,7 +131,7 @@ resulting in a list of words. Every *word* in the list is searched for
             Type
                 String
     
-        assignment_group__parentnode__parentnode__parentnode__long_name
+        deadline__assignment_group__parentnode__parentnode__parentnode__long_name
             Actual location of the field:
                 :class:`devilry.apps.core.models.Subject`
             About the field:
@@ -161,14 +161,14 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignment_group", comp:"<=", value:15},
-         {field:"assignment_group__name", comp:">", value:"My example value"},
-         {field:"assignment_group__parentnode", comp:"contains", value:15}]
+        [{field:"deadline__assignment_group", comp:">", value:15},
+         {field:"deadline__assignment_group__name", comp:"contains", value:"My example value"},
+         {field:"deadline__assignment_group__parentnode", comp:"exact", value:15}]
 
 Deliveries can be filtered on the following *fields*:
 
 
-    assignment_group
+    deadline__assignment_group
         Actual location of the field:
             :class:`devilry.apps.core.models.AssignmentGroup`
         About the field:
@@ -178,7 +178,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__name
+    deadline__assignment_group__name
         Actual location of the field:
             :class:`devilry.apps.core.models.AssignmentGroup`
         About the field:
@@ -188,7 +188,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode
+    deadline__assignment_group__parentnode
         Actual location of the field:
             :class:`devilry.apps.core.models.Assignment`
         About the field:
@@ -198,7 +198,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__long_name
+    deadline__assignment_group__parentnode__long_name
         Actual location of the field:
             :class:`devilry.apps.core.models.Assignment`
         About the field:
@@ -208,7 +208,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode
+    deadline__assignment_group__parentnode__parentnode
         Actual location of the field:
             :class:`devilry.apps.core.models.Period`
         About the field:
@@ -218,7 +218,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode__parentnode__long_name
+    deadline__assignment_group__parentnode__parentnode__parentnode__long_name
         Actual location of the field:
             :class:`devilry.apps.core.models.Subject`
         About the field:
@@ -228,7 +228,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode__parentnode__parentnode
+    deadline__assignment_group__parentnode__parentnode__parentnode__parentnode
         Actual location of the field:
             :class:`devilry.apps.core.models.Node`
         About the field:
@@ -238,7 +238,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode__parentnode__parentnode__long_name
+    deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__long_name
         Actual location of the field:
             :class:`devilry.apps.core.models.Node`
         About the field:
@@ -248,7 +248,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode__parentnode__parentnode__parentnode
+    deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__parentnode
         Actual location of the field:
             :class:`devilry.apps.core.models.Node`
         About the field:
@@ -258,7 +258,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode__parentnode__parentnode__short_name
+    deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__short_name
         Actual location of the field:
             :class:`devilry.apps.core.models.Node`
         About the field:
@@ -268,7 +268,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__parentnode__parentnode__short_name
+    deadline__assignment_group__parentnode__parentnode__parentnode__short_name
         Actual location of the field:
             :class:`devilry.apps.core.models.Subject`
         About the field:
@@ -278,7 +278,7 @@ Deliveries can be filtered on the following *fields*:
         Supported comparison operators:
             ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
 
-    assignment_group__parentnode__short_name
+    deadline__assignment_group__parentnode__short_name
         Actual location of the field:
             :class:`devilry.apps.core.models.Assignment`
         About the field:
@@ -335,7 +335,7 @@ results of the search. The following group names are available:
     assignment
         *Expands to the following fields:*
         
-            assignment_group__parentnode
+            deadline__assignment_group__parentnode
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
                 About the field:
@@ -343,7 +343,7 @@ results of the search. The following group names are available:
                 Type
                     Integer
         
-            assignment_group__parentnode__short_name
+            deadline__assignment_group__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
                 About the field:
@@ -351,7 +351,7 @@ results of the search. The following group names are available:
                 Type
                     String
         
-            assignment_group__parentnode__long_name
+            deadline__assignment_group__parentnode__long_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Assignment`
                 About the field:
@@ -363,7 +363,7 @@ results of the search. The following group names are available:
     subject
         *Expands to the following fields:*
         
-            assignment_group__parentnode__parentnode__parentnode
+            deadline__assignment_group__parentnode__parentnode__parentnode
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
                 About the field:
@@ -371,7 +371,7 @@ results of the search. The following group names are available:
                 Type
                     Integer
         
-            assignment_group__parentnode__parentnode__parentnode__short_name
+            deadline__assignment_group__parentnode__parentnode__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
                 About the field:
@@ -379,7 +379,7 @@ results of the search. The following group names are available:
                 Type
                     String
         
-            assignment_group__parentnode__parentnode__parentnode__long_name
+            deadline__assignment_group__parentnode__parentnode__parentnode__long_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Subject`
                 About the field:
@@ -391,7 +391,7 @@ results of the search. The following group names are available:
     period
         *Expands to the following fields:*
         
-            assignment_group__parentnode__parentnode
+            deadline__assignment_group__parentnode__parentnode
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
@@ -399,7 +399,7 @@ results of the search. The following group names are available:
                 Type
                     Integer
         
-            assignment_group__parentnode__parentnode__short_name
+            deadline__assignment_group__parentnode__parentnode__short_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
@@ -407,7 +407,7 @@ results of the search. The following group names are available:
                 Type
                     String
         
-            assignment_group__parentnode__parentnode__long_name
+            deadline__assignment_group__parentnode__parentnode__long_name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
@@ -419,7 +419,7 @@ results of the search. The following group names are available:
     assignment_group
         *Expands to the following fields:*
         
-            assignment_group
+            deadline__assignment_group
                 Actual location of the field:
                     :class:`devilry.apps.core.models.AssignmentGroup`
                 About the field:
@@ -427,7 +427,7 @@ results of the search. The following group names are available:
                 Type
                     Integer
         
-            assignment_group__name
+            deadline__assignment_group__name
                 Actual location of the field:
                     :class:`devilry.apps.core.models.AssignmentGroup`
                 About the field:
@@ -469,11 +469,13 @@ example is generated from a non-varying dataset.*
             { id: 15,
               number: 20,
               time_of_delivery: "2010-02-22 22:32:10",
-              assignment_group: 15 },
+              deadline: 15,
+              deadline__assignment_group: 15 },
             { id: 15,
               number: 20,
               time_of_delivery: "2010-02-22 22:32:10",
-              assignment_group: 15 },
+              deadline: 15,
+              deadline__assignment_group: 15 },
             ...
         ]
     }
@@ -513,7 +515,15 @@ the *value* for that field. The result always contains the following fields:
             Type
                 DateTime string (YYYY-MM-DD hh:mm:ss)
     
-        assignment_group
+        deadline
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Deadline`
+            About the field:
+                Autogenerated identifier.
+            Type
+                Integer
+    
+        deadline__assignment_group
             Actual location of the field:
                 :class:`devilry.apps.core.models.AssignmentGroup`
             About the field:

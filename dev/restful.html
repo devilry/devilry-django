@@ -123,16 +123,16 @@ interface for a simplified class (see <a class="reference internal" href="simpli
 <p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have an inner class named <tt class="docutils literal"><span class="pre">Meta</span></tt> with
 the following required attributes:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>simplified</dt>
 <dd>A <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> class.</dd>
 </dl>
-</div></blockquote>
+</blockquote>
 <p>The decorator automatically decorates <tt class="docutils literal"><span class="pre">cls</span></tt> with
 <a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
 <p>The decorator adds the following attributes to <tt class="docutils literal"><span class="pre">cls</span></tt>:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>_meta</dt>
 <dd>Alias for the Meta class (above).</dd>
 <dt>supports_*</dt>
@@ -144,7 +144,7 @@ to the <tt class="docutils literal"><span class="pre">search()</span></tt> metho
 <dd>A Django model form that can be used to validate and edit the model
 specified in <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> specified in <tt class="docutils literal"><span class="pre">_meta.simplfied._meta.model</span></tt>.</dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -155,7 +155,7 @@ conjunction to create a RESTful web service with a CRUD+S interface.</p>
 <p>Adds the <tt class="docutils literal"><span class="pre">_meta</span></tt> attribute to the decorated class. The <tt class="docutils literal"><span class="pre">_meta</span></tt>
 attribute has the following attributes:</p>
 <blockquote>
-<div><dl class="docutils">
+<dl class="docutils">
 <dt>urlprefix</dt>
 <dd>The url prefix used for the url created by
 <a class="reference internal" href="#devilry.restful.RestfulView.create_rest_url" title="devilry.restful.RestfulView.create_rest_url"><tt class="xref py py-meth docutils literal"><span class="pre">RestfulView.create_rest_url()</span></tt></a>.  This is always:
@@ -165,7 +165,7 @@ attribute has the following attributes:</p>
 <a class="reference internal" href="#devilry.restful.RestfulView.create_rest_url" title="devilry.restful.RestfulView.create_rest_url"><tt class="xref py py-meth docutils literal"><span class="pre">RestfulView.create_rest_url()</span></tt></a>. This is the full python
 dot-path to <tt class="docutils literal"><span class="pre">cls</span></tt> with <tt class="docutils literal"><span class="pre">.</span></tt> replaced by <tt class="docutils literal"><span class="pre">-</span></tt>.</dd>
 </dl>
-</div></blockquote>
+</blockquote>
 </dd></dl>
 
 <dl class="class">
@@ -309,7 +309,10 @@ and rather use <tt class="xref py py-class docutils literal"><span class="pre">d
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restapi</strong> &#8211; A subclass of <a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.RestfulView</span></tt></a>.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>restapi</strong> &#8211; A subclass of <a class="reference internal" href="#devilry.restful.RestfulView" title="devilry.restful.RestfulView"><tt class="xref py py-class docutils literal"><span class="pre">devilry.restful.RestfulView</span></tt></a>.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -387,7 +390,7 @@ and rather use <tt class="xref py py-class docutils literal"><span class="pre">d
     </div>
     <div class="footer">
         &copy; Copyright 2011, The Devilry Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>
 </html>
