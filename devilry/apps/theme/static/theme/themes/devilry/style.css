@@ -197,12 +197,12 @@ body>#main {
     color: #111;
 }
 
-/* The overlay of disabled ExtJS forms. */
-.x-item-disabled {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-    opacity: 1.0 !important;
-}
+
+/**
+ *
+ * SearchWidget
+ *
+ */
 
 .searchfield {
     font-size: 30px;
@@ -214,8 +214,20 @@ body>#main {
 .search-popup-panel {
     box-shadow: 0 3px 8px #888;
 }
+.searchwidget-help {
+    padding: 4px 15px 15px 15px !important;
+    color: #444;
+    font-size: 0.9em;
+    width: 600px;
+}
 
 
+
+/**
+ *
+ * Icons
+ *
+ */
 
 .icon-delete-16 { background-image: url(icons/16x16/delete.png); }
 .icon-edit-16 { background-image: url(icons/16x16/edit.png); }
@@ -228,6 +240,16 @@ body>#main {
 .icon-save-32 { background-image: url(icons/32x32/save.png); }
 .icon-save-32 { background-image: url(icons/32x32/save.png); }
 .icon-add-32 { background-image: url(icons/32x32/add.png); }
+
+
+
+
+/**
+ *
+ * Forms
+ *
+ *
+ */
 
 .errorlist .x-panel-header-text {
     color: #BB0000;
@@ -243,12 +265,13 @@ body>#main {
     padding: 15px;
 }
 
-.searchwidget-help {
-    padding: 4px 15px 15px 15px !important;
-    color: #444;
-    font-size: 0.9em;
-    width: 600px;
-}
+
+
+/**
+ *
+ * Tooltips
+ *
+ */
 
 .tooltip-title {
     margin-bottom: 5px;
@@ -257,6 +280,13 @@ body>#main {
 .tooltip-title span.tooltip-title-current-item {
     font-weight: bold;
 }
+
+.x-item-disabled { /* The overlay of disabled ExtJS forms. */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1.0 !important;
+}
+
 
 
 /**
