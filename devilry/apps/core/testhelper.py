@@ -79,8 +79,8 @@ class TestHelper(object):
             delivered_by_to_use = group.candidates.all()[0]
 
         # Create the delivery
-        delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
-
+        #delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
+        delivery = group.get_active_deadline().deliveries.create(delivered_by=delivered_by_to_use, successful=False)
         # add files if there are any
         for filename in files.keys():
             delivery.add_file(filename, files[filename])
@@ -141,7 +141,7 @@ class TestHelper(object):
         # if the path led to an AssignmentGroup, get that groups
         # latest delivery
         if type(delivery) == AssignmentGroup:
-            delivery = delivery.deliveries.all().order_by('time_of_delivery')[0]
+            delivery = delivery.get_active_deadline().deliveries.all().order_by('time_of_delivery')[0]
 
         # if none of the above, expect we were given a Delivery
         if not type(delivery) == Delivery:
@@ -153,11 +153,11 @@ class TestHelper(object):
 
         # get the examiner
         if not examiner:
-            examiner = delivery.assignment_group.examiners.all()[0]
+            examiner = delivery.deadline.assignment_group.examiners.all()[0]
 
         # get the timestamp
         if not timestamp:
-            timestamp = delivery.assignment_group.get_active_deadline().deadline
+            timestamp = delivery.deadline.assignment_group.get_active_deadline().deadline
 
         # create the feedback
         feedback = StaticFeedback(saved_by=examiner, delivery=delivery, grade=verdict['grade'],
@@ -171,10 +171,10 @@ class TestHelper(object):
             raise
 
         # add it to the groups feedbacks list
-        varname = (delivery.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   delivery.assignment_group.parentnode.parentnode.short_name + '_' +             # period_
-                   delivery.assignment_group.parentnode.short_name + '_' +                        # assignment_
-                   delivery.assignment_group.name + '_feedbacks')
+        varname = (delivery.deadline.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   delivery.deadline.assignment_group.parentnode.parentnode.short_name + '_' +             # period_
+                   delivery.deadline.assignment_group.parentnode.short_name + '_' +                        # assignment_
+                   delivery.deadline.assignment_group.name + '_feedbacks')
 
         if varname in vars(self).keys():
             vars(self)[varname].append(feedback)
@@ -461,6 +461,12 @@ class TestHelper(object):
                    parentnode.parentnode.short_name + '_' +             # period_
                    parentnode.short_name + '_' +                        # assignment_
                    group_name] = group
+
+        # create the default deadline, deadline0, variable
+        vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   parentnode.parentnode.short_name + '_' +             # period_
+                   parentnode.short_name + '_' +                        # assignment_
+                   group_name + '_deadline0'] = group.deadlines.all()[0]
         return group
 
     def _do_the_assignmentgroups(self, assignments, assignmentgroups_list):

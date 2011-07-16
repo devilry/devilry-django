@@ -37,7 +37,7 @@ class TestDelivery(TestCase, TestHelper):
 
         # TODO find a graceful way to handle this error:
         d.number = 1
-        self.assertRaises(IntegrityError, d.save)
+        self.assertRaises(IntegrityError, d.save())
 
     def test_published_where_is_candidate(self):
         # Add 2 on g1
