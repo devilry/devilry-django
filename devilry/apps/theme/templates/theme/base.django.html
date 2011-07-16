@@ -65,7 +65,7 @@
 
             <nav class="{% block nav-class %}{% endblock %}">
                 <ul>
-                    <li class="student-navitem"><a href="#">{% trans "Student" %}</a></li>
+                    <li class="student-navitem"><a href="{% url student %}">{% trans "Student" %}</a></li>
                     <li class="examiner-navitem"><a href="{% url examiner %}">{% trans "Examiner" %}</a></li>
                     <li class="administrator-navitem"><a href="{% url administrator %}">{% trans "Administrator" %}</a></li>
                 </ul>
