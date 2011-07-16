@@ -12,14 +12,14 @@ DATABASES = {
                          'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
                          'PORT': '',             # Set to empty string for default. Not used with sqlite3.
                         },
-             "postgres": {
-                          'ENGINE': 'postgresql_psycopg2',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-                          'NAME': 'devilry',
-                          'USER': 'devilrydev',
-                          'PASSWORD': 'secret',
-                          'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-                          'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-                         }
+             #"postgres": {
+                          #'ENGINE': 'postgresql_psycopg2',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+                          #'NAME': 'devilry',
+                          #'USER': 'devilrydev',
+                          #'PASSWORD': 'secret',
+                          #'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+                          #'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+                         #}
 }
 
 INSTALLED_APPS = INSTALLED_APPS + [

@@ -56,6 +56,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     .. attribute:: is_passing_grade
 
         Boolean is passing grade?
+
     """
     delivery = models.ForeignKey(Delivery, related_name='feedbacks')
     rendered_view = models.TextField(help_text=_('A rendered HTML version of the feedback, containing '
@@ -68,8 +69,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                                                      'is immutable, this never changes.'))
     saved_by = models.ForeignKey(User, blank=False, null=False,
                                  help_text=_('The user (examiner) who saved this feedback'))
-
-
     class Meta:
         app_label = 'core'
         verbose_name = _('Static feedback')

@@ -93,8 +93,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
        Should feedbacks published by examiners be made avalable to the
        students immediately? If not, an administrator have to publish
        feedbacks. See also :attr:`Deadline.feedbacks_published`.
-    """
+       
+    .. attribute:: etag
 
+       A DateTimeField containing the etag for this object.
+
+    """
     TYPE_ONLY_ELECTRONIC = 0
     TYPE_MIXED = 1
     TYPE_NO_ELECTRONIC = 2
