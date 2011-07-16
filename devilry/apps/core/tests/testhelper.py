@@ -215,16 +215,6 @@ class TestTestHelper(TestCase):
         self.assertEquals(self.ti.inf1000_spring01.assignments.filter(short_name='oblig2').count(), 1)
         self.assertEquals(self.ti.inf1000_fall01.assignments.filter(short_name='oblig2').count(), 0)
 
-    def test_wrong_input(self):
-        self.ti.add()
-
-        # assert that nothing was created
-        self.assertEquals(self.ti.objects_created, 0)
-
-        self.ti.add(subjects=['inf1010'])
-        # assert that nothing was created
-        self.assertEquals(self.ti.objects_created, 0)
-
     def test_deadlines(self):
         self.ti.add(nodes="uio.ifi",
                     subjects=["inf1000", "inf1100"],
@@ -522,3 +512,54 @@ class TestTestHelper(TestCase):
         self.assertEquals(self.ti.someUser, User.objects.get(username='someUser'))
         with self.assertRaises(Exception):
             self.ti.create_user('cotryti')
+
+    def test_new_deadline_variables(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1:anon(true)', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia;aikaz):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        # check that deadline variables work as expected
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deadlines[0],
+                          self.ti.inf1000_first_oblig1_g1_deadline1)
+
+        # add a new deadline and check that a new variable is created
+        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d2')
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deadlines[1],
+                          self.ti.inf1000_first_oblig1_g1_deadline2)
+
+    def test_new_delivery_variables(self):
+        self.ti.add(nodes='uio.ifi',
+                    subjects=['inf1000'],
+                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
+                    assignments=['oblig1:anon(true)', 'oblig2:pub(10)'],
+                    assignmentgroups=['g1:candidate(zakia;aikaz):examiner(cotryti)',
+                                      'g2:candidate(nataliib):examiner(jose)'],
+                    deadlines=['d1:ends(10):text(First deadline)'])
+
+        # add a delivery
+        self.ti.add_delivery(self.ti.inf1000_first_oblig1_g1)
+
+        # and assert that the new variable is created
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[0],
+                          self.ti.inf1000_first_oblig1_g1_deadline1_delivery1)
+
+        # add another
+        self.ti.add_delivery(self.ti.inf1000_first_oblig1_g1)
+
+        # and assert that the new variable is created
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[1],
+                          self.ti.inf1000_first_oblig1_g1_deadline1_delivery2)
+
+        # add a new deadline, and a delivery to that
+        self.ti.add_to_path('uio.ifi;inf1000.first.oblig1.g1.d2:ends(12)')
+        self.ti.add_delivery(self.ti.inf1000_first_oblig1_g1)
+
+        # whats interesting here is that the variable:
+        #   self.ti.inf1000_first_oblig1_g1_deadline2_delivery1
+        # exists. Note that its the first delivery on the second deadline
+        self.assertEquals(self.ti.inf1000_first_oblig1_g1_deliveries[2],
+                          self.ti.inf1000_first_oblig1_g1_deadline2_delivery1)

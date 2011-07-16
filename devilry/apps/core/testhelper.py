@@ -13,7 +13,6 @@ class TestHelper(object):
     class IllegalTypeException(Exception):
         pass
 
-
     @classmethod
     def set_memory_deliverystore(cls):
         FileMeta.deliverystore = MemoryDeliveryStore()
@@ -94,15 +93,26 @@ class TestHelper(object):
         delivery.full_clean()
         delivery.save()
         # add it to the groups delivery list
-        varname = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   group.parentnode.parentnode.short_name + '_' +             # period_
-                   group.parentnode.short_name + '_' +                        # assignment_
-                   group.name + '_deliveries')
+        prefix = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                  group.parentnode.parentnode.short_name + '_' +             # period_
+                  group.parentnode.short_name + '_' +                        # assignment_
+                  group.name + '_')
+        varname = prefix + 'deliveries'
         if varname in vars(self).keys():
             vars(self)[varname].append(delivery)
         else:
             vars(self)[varname] = [delivery]
 
+        # adds a variable with the name formatted as:
+        #    subject_period_assignment_group_deadline<X>_delivery<Y>
+        # where X is the deadline the delivery belongs to, and Y is
+        # a number that starts at 1 and increments for each new delivery
+
+        # subtract 1, because all assignmentgroups get a default
+        # deadline when created
+        prefix = prefix + 'deadline' + str(group.deadlines.count() - 1) + '_'
+        deadline_num = group.get_active_deadline().deliveries.count()
+        vars(self)[prefix + 'delivery' + str(deadline_num)] = delivery
         return delivery
 
     def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
@@ -515,6 +525,17 @@ class TestHelper(object):
             vars(self)[vardict].append(deadline)
         else:
             vars(self)[vardict] = [deadline]
+
+        # Create a variable with the name formatted as:
+        #    subject_period_assignment_group_deadline<X> where X
+        #    starts at 1 and increments for each deadline added to
+        #    this group
+        vars(self)[prefix + 'deadline' + str(len(vars(self)[vardict]))] = deadline
+
+        # check if the default deadline, deadline0, variable exists
+        default_deadline_var = prefix + 'deadline0'
+        if default_deadline_var not in vars(self).keys():
+            vars(self)[default_deadline_var] = parentnode.deadlines.order_by('deadline')[0]
 
         return deadline
 
