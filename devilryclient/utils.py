@@ -168,6 +168,7 @@ class Session(object):
     class LoginError(Exception):
         """Raised on login error"""
 
+    @classmethod
     def get_session_cookie(self):
         if exists(join(findconffolder(), 'session')):
             session = open(join(findconffolder(), 'session'), 'r')
@@ -177,6 +178,7 @@ class Session(object):
         else:
             return self.login()
 
+    @classmethod
     def login(self):
 
         confdir = findconffolder()
