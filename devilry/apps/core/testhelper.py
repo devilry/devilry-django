@@ -5,16 +5,6 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
 from deliverystore import MemoryDeliveryStore
 
 
-# TODO:
-# raise error when trying to give roles to nodes that dont support it?
-#
-# Example:
-#
-# subjects don't have candidates, so trying to create a subject with
-# `add(subjects=['inf1010:candidates(bendiko)'])` doesn't fail, it
-# just doesn't add any users at all.
-
-
 class TestHelper(object):
     """
     This class helps generate test data.
@@ -23,7 +13,6 @@ class TestHelper(object):
     class IllegalTypeException(Exception):
         pass
 
-    objects_created = 0
 
     @classmethod
     def set_memory_deliverystore(cls):
@@ -86,7 +75,7 @@ class TestHelper(object):
                         delivered_by_to_use = can
                         break
             else:
-                raise IllegalTypeException("delivered_by must be either a User or a Candidate.")         
+                raise self.IllegalTypeException("delivered_by must be either a User or a Candidate.")
         else:
             delivered_by_to_use = group.candidates.all()[0]
 
@@ -114,7 +103,6 @@ class TestHelper(object):
         else:
             vars(self)[varname] = [delivery]
 
-        self.objects_created += 1
         return delivery
 
     def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
@@ -183,7 +171,6 @@ class TestHelper(object):
         else:
             vars(self)[varname] = [feedback]
 
-        self.objects_created += 1
         return feedback
 
     def _parse_extras(self, text, allowed_extras=[]):
@@ -214,7 +201,6 @@ class TestHelper(object):
         except:
             user = User.objects.get(username=name)
         vars(self)[user.username] = user
-        self.objects_created += 1
         return user
 
 #######
@@ -238,7 +224,6 @@ class TestHelper(object):
         node.save()
 
         vars(self)[node.get_path().replace('.', '_')] = node
-        self.objects_created += 1
         return node
 
     def _do_the_nodes(self, nodes):
@@ -287,7 +272,6 @@ class TestHelper(object):
         subject.save()
 
         vars(self)[subject.short_name] = subject
-        self.objects_created += 1
         return subject
 
     def _do_the_subjects(self, node, subject_list):
@@ -341,7 +325,6 @@ class TestHelper(object):
         period.save()
 
         vars(self)[parentnode.short_name + '_' + period.short_name] = period
-        self.objects_created += 1
         return period
 
     def _do_the_periods(self, subjects, periods_list):
@@ -402,7 +385,6 @@ class TestHelper(object):
         vars(self)[parentnode.parentnode.short_name + '_' +  # subject
                    parentnode.short_name + '_' +             # period
                    assignment.short_name] = assignment
-        self.objects_created += 1
         return assignment
 
     def _do_the_assignments(self, periods, assignments_list):
@@ -469,7 +451,6 @@ class TestHelper(object):
                    parentnode.parentnode.short_name + '_' +             # period_
                    parentnode.short_name + '_' +                        # assignment_
                    group_name] = group
-        self.objects_created += 1
         return group
 
     def _do_the_assignmentgroups(self, assignments, assignmentgroups_list):
@@ -535,7 +516,6 @@ class TestHelper(object):
         else:
             vars(self)[vardict] = [deadline]
 
-        self.objects_created += 1
         return deadline
 
     def _do_the_deadlines(self, assignmentgroups, deadlines_list):
