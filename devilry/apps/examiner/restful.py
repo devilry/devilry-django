@@ -9,7 +9,7 @@ __all__ = ('RestfulSimplifiedSubject',
            'RestfulSimplifiedPeriod', 'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
            'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
-           'RestfulStaticFeedback')
+           'RestfulSimplifiedStaticFeedback')
 
 
 examiner_restful = RestfulManager()
