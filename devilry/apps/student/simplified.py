@@ -33,7 +33,7 @@ class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedFileMeta(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedFileMeta(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
     class Meta(SimplifiedFileMetaMetaMixin):
         """ Defines what methods a Student can use on a FileMeta object using the Simplified API """
@@ -49,7 +49,7 @@ class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.StaticFeedback`. """
     class Meta(SimplifiedStaticFeedbackMetaMixin):
         """ Defines what methods a Student can use on a StaticFeedback object using the Simplified API """
@@ -57,7 +57,7 @@ class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelAp
 
 
 @simplified_modelapi
-class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods a Student can use on a Delivery object using the Simplified API """
@@ -65,7 +65,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
@@ -73,7 +73,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelA
 
 
 @simplified_modelapi
-class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
         """ Defines what methods a Student can use on an Assignment object using the Simplified API """
@@ -81,7 +81,7 @@ class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
         """ Defines what methods a Student can use on a Period object using the Simplified API """
@@ -89,7 +89,7 @@ class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedSubject(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedSubject(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
         """ Defines what methods a Student can use on a Subject object using the Simplified API """
