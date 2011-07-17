@@ -158,7 +158,10 @@ class SimplifiedDeadlineMetaMixin(object):
                                      'assignment_group__parentnode__parentnode__long_name'],
                              assignment=['assignment_group__parentnode__id',
                                          'assignment_group__parentnode__short_name',
-                                         'assignment_group__parentnode__long_name']
+                                         'assignment_group__parentnode__long_name'],
+                             assignment_group=['assignment_group__name'],
+                             assignment_group_users=['assignment_group__examiners__username',
+                                                     'assignment_group__candidates__identifier']
                              )
     searchfields = FieldSpec(
         'assignment_group__candidates__identifier',
