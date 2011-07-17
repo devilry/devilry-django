@@ -99,6 +99,7 @@ class QryResultWrapper(object):
         self._insecure_django_qryset = self._insecure_django_qryset.order_by(*orderby_filtered)
 
     def _query_order_and_limit(self, query='', limit=50, start=0, orderby=[]):
+        query = query.strip()
         if query:
             q = self._create_q(query)
             self._insecure_django_qryset = self._insecure_django_qryset.filter(q)
