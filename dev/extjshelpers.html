@@ -168,36 +168,9 @@ Uses <a class="reference internal" href="#devilry.apps.extjshelpers.storeintegra
 
 </div>
 </div>
-<div class="section" id="module-devilry.apps.extjshelpers">
-<span id="low-level-api"></span><h2>Low-level API<a class="headerlink" href="#module-devilry.apps.extjshelpers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-devilry.apps.extjshelpers.modelintegration">
+<span id="low-level-api-for-filters"></span><h2>Low-level API for filters<a class="headerlink" href="#module-devilry.apps.extjshelpers.modelintegration" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="devilry.apps.extjshelpers.extjs_restful_modelapi">
-<tt class="descclassname">devilry.apps.extjshelpers.</tt><tt class="descname">extjs_restful_modelapi</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#devilry.apps.extjshelpers.extjs_restful_modelapi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for, and adds defaults for the extjs specific inner meta class, ExtjsModelMeta.</p>
-<p>ExtjsModelMeta can have the following attributes:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>combobox_displayfield</dt>
-<dd>When this object is used in a combobox (search, foreign-key, ...),
-the combobox need a field, <tt class="docutils literal"><span class="pre">displayField</span></tt>, to show after the an item has been
-selected (when not showing a dropdown). This attribute species
-a field name in the resultdata from
-<a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> to use as
-<tt class="docutils literal"><span class="pre">displayField</span></tt> for comboboxes. Defaults to <tt class="docutils literal"><span class="pre">'id'</span></tt>.</dd>
-<dt>combobox_fieldgroups</dt>
-<dd>Species the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt> to send to
-<a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> when querying
-for data in a combobox (see combobox_displayfield for more details
-on comboboxes). Defaults to an empty list.</dd>
-<dt>combobox_tpl</dt>
-<dd>Species the <tt class="docutils literal"><span class="pre">Ext.XTemplate</span></tt> (an extjs class) template to use for each item in
-the combobox dropdown (see <tt class="docutils literal"><span class="pre">combobox_displayfield</span></tt> parameter for more details
-on comboboxes). Defaults to <tt class="docutils literal"><span class="pre">'{combobox_displayfield}'</span></tt>.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<span class="target" id="module-devilry.apps.extjshelpers.modelintegration"></span><dl class="function">
 <dt id="devilry.apps.extjshelpers.modelintegration.get_extjs_modelname">
 <tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">get_extjs_modelname</tt><big>(</big><em>restfulcls</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#get_extjs_modelname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.get_extjs_modelname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the ExtJS model name for the given restful class.
@@ -276,6 +249,37 @@ which is documented in <a class="reference internal" href="restful.html#devilry.
 </dd></dl>
 
 </div>
+<div class="section" id="extensions-to-the-restful-api">
+<h2>Extensions to the RESTful API<a class="headerlink" href="#extensions-to-the-restful-api" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="restful.html#restful"><em>Low level RESTful web service API</em></a>.</p>
+<span class="target" id="module-devilry.apps.extjshelpers"></span><dl class="function">
+<dt id="devilry.apps.extjshelpers.extjs_restful_modelapi">
+<tt class="descclassname">devilry.apps.extjshelpers.</tt><tt class="descname">extjs_restful_modelapi</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#devilry.apps.extjshelpers.extjs_restful_modelapi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for, and adds defaults for the extjs specific inner meta class, ExtjsModelMeta.</p>
+<p>ExtjsModelMeta can have the following attributes:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>combobox_displayfield</dt>
+<dd>When this object is used in a combobox (search, foreign-key, ...),
+the combobox need a field, <tt class="docutils literal"><span class="pre">displayField</span></tt>, to show after the an item has been
+selected (when not showing a dropdown). This attribute species
+a field name in the resultdata from
+<a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> to use as
+<tt class="docutils literal"><span class="pre">displayField</span></tt> for comboboxes. Defaults to <tt class="docutils literal"><span class="pre">'id'</span></tt>.</dd>
+<dt>combobox_fieldgroups</dt>
+<dd>Species the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt> to send to
+<a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> when querying
+for data in a combobox (see combobox_displayfield for more details
+on comboboxes). Defaults to an empty list.</dd>
+<dt>combobox_tpl</dt>
+<dd>Species the <tt class="docutils literal"><span class="pre">Ext.XTemplate</span></tt> (an extjs class) template to use for each item in
+the combobox dropdown (see <tt class="docutils literal"><span class="pre">combobox_displayfield</span></tt> parameter for more details
+on comboboxes). Defaults to <tt class="docutils literal"><span class="pre">'{combobox_displayfield}'</span></tt>.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -296,7 +300,8 @@ which is documented in <a class="reference internal" href="restful.html#devilry.
 <li><a class="reference internal" href="#extjs-foreignkeys">extjs_foreignkeys</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-devilry.apps.extjshelpers">Low-level API</a></li>
+<li><a class="reference internal" href="#module-devilry.apps.extjshelpers.modelintegration">Low-level API for filters</a></li>
+<li><a class="reference internal" href="#extensions-to-the-restful-api">Extensions to the RESTful API</a></li>
 </ul>
 </li>
 </ul>

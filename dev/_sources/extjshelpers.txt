@@ -80,10 +80,17 @@ extjs_foreignkeys
 .. autofunction:: devilry.apps.extjshelpers.templatetags.extjs.extjs_foreignkeys
 
 
-Low-level API
+Low-level API for filters
 ===========================
 
-.. automodule:: devilry.apps.extjshelpers
 .. automodule:: devilry.apps.extjshelpers.modelintegration
 .. automodule:: devilry.apps.extjshelpers.storeintegration
 .. automodule:: devilry.apps.extjshelpers.formintegration
+
+
+Extensions to the RESTful API
+=============================
+
+See :ref:`restful`.
+
+.. automodule:: devilry.apps.extjshelpers
