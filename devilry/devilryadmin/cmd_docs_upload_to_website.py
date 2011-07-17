@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Upload the current docs/.build/html/ to the dev/ directory of the gh-pages branch of devilry/devilry-django
+# Upload the current docs/.build/html/ to the dev/ directory of the gh-pages branch of devilry/devilry-django. Depends on "docs" and "jsdocs -c -b".
 
 
 #!/usr/bin/env python
@@ -21,7 +21,10 @@ from os.path import join
 from shutil import rmtree, copytree
 from tempfile import mkdtemp
 
-from common import get_docs_buildhtml_dir
+from common import get_docs_buildhtml_dir, depends, Command
+
+depends(Command('docs'),
+        Command('jsdocs', '-c', '-b'))
 
 
 repo_rw_url = 'git@github.com:devilry/devilry-django.git'
