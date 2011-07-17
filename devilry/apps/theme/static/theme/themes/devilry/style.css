@@ -187,17 +187,14 @@ body>#main {
     line-height: 1.2em;
 }
 
-
-/* .x-layer are floating ExtJS items */
-#main .unimportant .x-layer .important {
-    font-size: 0.9em;
-    color: #444;
-}
-#main .important, .x-layer .important {
-    font-size: 1.1em;
+#main dt {
+    padding-top: 6px;
     font-weight: bold;
-    color: #111;
 }
+#main dd {
+    margin-left: 15px;
+}
+
 
 
 /**
@@ -329,6 +326,29 @@ a.neutral-button {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
     opacity: 1.0 !important;
+}
+
+
+
+/*
+ *
+ * General purpose style classes
+ *
+ */
+
+/* .x-layer are floating ExtJS items */
+#main .unimportant .x-layer .important {
+    font-size: 0.9em;
+    color: #444;
+}
+#main .important, .x-layer .important {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #111;
+}
+
+span.error {
+    color: #a00;
 }
 
 
