@@ -7,17 +7,46 @@
 # which is used in many tests.
 #################################################################
 
+from sys import exit
 from subprocess import call
 from os.path import join
+
 from common import (getscriptsdir, require_djangoproject,
                     append_pythonexec_to_command, depends, Command,
                     DevilryAdmArgumentParser)
+
+
+
+parser = DevilryAdmArgumentParser(description='Process some integers.')
+parser.add_argument('-s', '--numstudents', type=int, default=2,
+                    help='Number of students on each assignment (defaults to 2).')
+parser.add_argument('-e', '--numexaminers', type=int, default=1,
+                    help='Number of examiners on each assignment (defaults to 1).')
+parser.add_argument('-d', '--duckburghusers', action='store_true',
+                    help='Load duckburgh users.')
+parser.add_argument('--completionlist', action='store_true',
+                   help='Print completionlist for bash completion.')
+args = parser.parse_args()
+
+if args.completionlist:
+    print "--numstudents --numexaminers --duckburghusers"
+    exit(0)
+
 
 require_djangoproject()
 depends(Command('init_exampledb'),
         Command('load_grandmauser'),
         Command('load_duckburghusers'))
+if args.duckburghusers:
+    depends(Command('load_duckburghusers'))
 
+
+
+
+
+
+scriptsdir = getscriptsdir()
+create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
 
 def create_testgroups(path, numstudents, numexaminers, subject_long_name,
                       period_long_name, always_one_delivery, assignments):
@@ -40,21 +69,6 @@ def create_testgroups(path, numstudents, numexaminers, subject_long_name,
         #print "args: ", args
         call(append_pythonexec_to_command(args))
 
-
-
-scriptsdir = getscriptsdir()
-create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
-parser = DevilryAdmArgumentParser(description='Process some integers.')
-parser.add_argument('-s', '--numstudents', type=int, default=2,
-                    help='Number of students on each assignment (defaults to 2).')
-parser.add_argument('-e', '--numexaminers', type=int, default=1,
-                    help='Number of examiners on each assignment (defaults to 1).')
-parser.add_argument('-d', '--duckburghusers', action='store_true',
-                    help='Load duckburgh users.')
-args = parser.parse_args()
-
-if args.duckburghusers:
-    depends(Command('load_duckburghusers'))
 
 
 # Duck 1100
