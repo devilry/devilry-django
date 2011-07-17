@@ -57,8 +57,44 @@
         });
         searchwidget.loadInitialValues();
         searchwidget.focusOnSearchfield();
-    });
 
+
+            var fileuploadpanel = Ext.create('Ext.form.Panel', {
+            title: 'Fucking upload',
+            width: 600,
+            frame: true,
+            renderTo: 'fileuploadpanel',
+            items: [{
+                xtype: 'fileuploadfield',
+                name: 'photo',
+                fieldLabel: 'Delivery',
+                labelWidth: 50,
+                msgTarget: 'side',
+                allowBlank: true,
+                anchor: '100%',
+                buttonText: 'Browse Files...'
+            }],
+            buttons: [{
+                text: 'Deliver!',
+                handler: function(a, b) {
+                         Ext.Msg.alert('Success', 'Not really, nothing ever happened with your file'); 
+                    <!-- var form = this.up('form').getForm(); -->
+                    <!-- if(form.isValid()){ -->
+                    <!--     form.submit({ -->
+                    <!--         url: '#', -->
+                    <!--         waitMsg: 'Uploading your photo...', -->
+                    <!--         success: function(fp, o) { -->
+                    <!--             Ext.Msg.alert('Success', 'Your photo "' + o.result.file + '" has been uploaded.'); -->
+                    <!--         } -->
+                    <!--     }); -->
+                    <!-- } -->
+                }
+            }]
+        });
+
+
+
+    });
 
 </script>
 
@@ -71,4 +107,5 @@
 have permission to view or edit. Searching for a user will find any item
 related to that user, and searching for a subject will find anything related to
 that subject. YOU MAY EVEN SEARCH FOR YOUR MOTHER!</p>
+<div id='fileuploadpanel'></div>
 {% endblock %}
