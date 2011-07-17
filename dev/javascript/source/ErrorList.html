@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.ErrorList', {
+    extend: 'Ext.panel.Panel',
+    title: 'Errors',
+    cls: 'errorlist',
+    bodyCls: 'errorlist-body',
+    hidden: true,
+    margin: {
+        bottom: 15
+    },
+
+    addError: function(error) {
+        this.add({
+            xtype: 'component',
+            html: Ext.String.format('&lt;p class=&quot;errorlist-item&quot;&gt;{0}&lt;/p&gt;', error)
+        });
+        this.show();
+    },
+
+    clearErrors: function() {
+        this.removeAll();
+        this.hide();
+    }
+});
+</pre>
+</body>
+</html>

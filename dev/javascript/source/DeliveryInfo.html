@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='devilry-extjshelpers-DeliveryInfo'>/** Panel to show Delivery info, such as:
+</span> *
+ *  - Files
+ *  - Time of delivery
+ *
+ * @xtype deliveryinfo
+ */
+Ext.define('devilry.extjshelpers.DeliveryInfo', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.deliveryinfo',
+    title: 'Delivery',
+    html: '',
+    tpl: Ext.create('Ext.XTemplate',
+        '&lt;dl&gt;',
+        '   &lt;dt&gt;Files&lt;/dt&gt;',
+        '   &lt;tpl if=&quot;filemetas.length == 0&quot;&gt;',
+        '       &lt;dd&gt;&lt;em&gt;No files delivered&lt;/em&gt;&lt;/dd&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;tpl if=&quot;filemetas.length &amp;gt; 0&quot;&gt;',
+        '       &lt;dd&gt;&lt;ul&gt;&lt;tpl for=&quot;filemetas&quot;&gt;',
+        '           &lt;li&gt;{data.filename}&lt;/li&gt;',
+        '       &lt;/tpl&gt;&lt;/ul&gt;&lt;/dd&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;tpl if=&quot;filemetas.errors&quot;&gt;',
+        '       &lt;dd&gt;&lt;span class=&quot;error&quot;&gt;Error while loading files&lt;/span&gt;&lt;/dd&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;tpl if=&quot;!filemetas&quot;&gt;',
+        '       &lt;dd&gt;&lt;em&gt;loading...&lt;/em&gt;&lt;/dd&gt;',
+        '   &lt;/tpl&gt;',
+        '   &lt;dt&gt;Time of delivery&lt;/dt&gt;',
+        '   &lt;dd&gt;{delivery.time_of_delivery:date}&lt;/dd&gt;',
+        '&lt;/dl&gt;'
+    ),
+
+    config: {
+<span id='devilry-extjshelpers-DeliveryInfo-cfg-filemetastore'>        /**
+</span>         * @cfg
+         * RestfulSimplifiedFileMeta store. __Required__.
+         */
+        filemetastore: undefined,
+
+<span id='devilry-extjshelpers-DeliveryInfo-cfg-delivery'>        /**
+</span>         * @cfg
+         * Delivery object as returned from loading it by id as a model.
+         */
+        delivery: undefined
+    },
+
+    loadFileMetas: function() {
+        var me = this;
+        var store = this.filemetastore;
+        store.proxy.extraParams.filters = Ext.JSON.encode([
+            {field: 'delivery', comp:'exact', value: this.delivery.id}
+        ]);
+        store.load(function(filemetarecords, operation, success) {
+            if(success) {
+                me.createBody(filemetarecords);
+            } else {
+                me.createBody({errors: true});
+            }
+        });
+    },
+
+    createBody: function(filemetas) {
+        var html = this.tpl.apply({
+            delivery: this.delivery,
+            filemetas: filemetas
+        });
+        this.update(html);
+    },
+
+    initComponent: function() {
+        this.callParent(arguments);
+        this.createBody(false);
+        this.loadFileMetas();
+    }
+});
+</pre>
+</body>
+</html>

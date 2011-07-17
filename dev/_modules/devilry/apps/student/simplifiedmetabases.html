@@ -319,6 +319,7 @@
     <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span>
                              <span class="s">&#39;size&#39;</span><span class="p">,</span>
                              <span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery&#39;</span><span class="p">,</span>
                              <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
                                       <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
                                       <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
@@ -336,7 +337,12 @@
         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;size&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;delivery&#39;</span><span class="p">))</span></div>
 </pre></div>
 
           </div>
