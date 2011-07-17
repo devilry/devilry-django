@@ -32,8 +32,8 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"deadline__assignment_group", comp:"startswith", value:15},
-                      {field:"deadline__assignment_group__name", comp:"<", value:"My example value"},
+        filters: [{field:"deadline__assignment_group", comp:"contains", value:15},
+                      {field:"deadline__assignment_group__name", comp:"endswith", value:"My example value"},
                       {field:"deadline__assignment_group__parentnode", comp:"<=", value:15}],
         orderby: ["id", "-number", "time_of_delivery", "deadline", "deadline__assignment_group"],
         start: 10,
@@ -161,8 +161,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"deadline__assignment_group", comp:"startswith", value:15},
-         {field:"deadline__assignment_group__name", comp:"<", value:"My example value"},
+        [{field:"deadline__assignment_group", comp:"contains", value:15},
+         {field:"deadline__assignment_group__name", comp:"endswith", value:"My example value"},
          {field:"deadline__assignment_group__parentnode", comp:"<=", value:15}]
 
 Deliveries can be filtered on the following *fields*:
