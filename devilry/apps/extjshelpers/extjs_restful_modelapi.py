@@ -15,7 +15,7 @@ def extjs_restful_modelapi(cls):
             Species the ``result_fieldgroups`` to send to
             :meth:`devilry.simplified.SimplifiedModelApi.search` when querying
             for data in a combobox (see combobox_displayfield for more details
-            on comboboxes).
+            on comboboxes). Defaults to an empty list.
         combobox_tpl
             Species the ``Ext.XTemplate`` (an extjs class) template to use for each item in
             the combobox dropdown (see ``combobox_displayfield`` parameter for more details
@@ -29,7 +29,7 @@ def extjs_restful_modelapi(cls):
     if not hasattr(cls._extjsmodelmeta, 'combobox_displayfield'):
         cls._extjsmodelmeta.combobox_displayfield = 'id'
     if not hasattr(cls._extjsmodelmeta, 'combobox_fieldgroups'):
-        cls._extjsmodelmeta.combobox_fieldgroups = {}
+        cls._extjsmodelmeta.combobox_fieldgroups = []
     if not hasattr(cls._extjsmodelmeta, 'combobox_tpl'):
         cls._extjsmodelmeta.combobox_tpl = '{' + cls._extjsmodelmeta.combobox_displayfield + '}'
 
