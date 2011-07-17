@@ -27,7 +27,8 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     requires: [
         'devilry.extjshelpers.searchwidget.SearchResults',
         'devilry.extjshelpers.searchwidget.MultiSearchField',
-        'devilry.extjshelpers.searchwidget.MultiSearchResults'
+        'devilry.extjshelpers.searchwidget.MultiSearchResults',
+        'devilry.extjshelpers.SearchStringParser'
     ],
 
     initComponent: function() {
@@ -71,21 +72,32 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     search: function(value) {
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', value);
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
             var store = searchresults.store;
-            store.proxy.extraParams.query = value;
+            store.proxy.extraParams.query = parsedSearch.nonFilterValues;
+            store.proxy.extraParams.filters = Ext.JSON.encode(parsedSearch.filters);
+            //console.log(store.proxy.extraParams);
             store.load(function(records, operation, success) {
-                if(store.data.items.length == 0) {
-                    searchresults.hide();
+                if(success) {
+                    console.log(success);
+                    if(store.data.items.length == 0) {
+                        searchresults.hide();
+                    } else {
+                        searchresults.show();
+                    }
                 } else {
-                    searchresults.show();
+                    searchresults.hide();
                 }
             });
         });
     },
 
     loadInitialValues: function() {
-        this.search("3580");
+        var value = 'type:deadline deadline__assignment_group:16 3580';
+        //var value = '3580';
+        this.getSearchField().setValue(value);
+        //this.search(value);
     }
 });
