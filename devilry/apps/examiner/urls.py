@@ -7,4 +7,5 @@ from views import MainView
 urlpatterns = patterns('devilry.apps.examiner',
                        url(r'^$', login_required(MainView.as_view()), name='examiner'),
                       )
+
 urlpatterns += examiner_restful

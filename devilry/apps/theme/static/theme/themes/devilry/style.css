@@ -147,7 +147,9 @@ body>header>nav.examiner {
 body>header>nav.administrator {
     border-bottom: 10px solid #CC4400;
 }
-
+body>header>nav.student {
+    border-bottom: 10px solid #88CC00;
+}
 
 
 
