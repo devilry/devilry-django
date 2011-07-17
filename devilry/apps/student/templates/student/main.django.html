@@ -19,12 +19,23 @@
     var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
     var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
+    var listingdeadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:10 }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
             renderTo: 'searchwidget',
             searchResultItems: [{
+                xtype: 'searchresults',
+                title: 'Deadlines',
+                store: deadlinestore,
+                links: [{
+                    title: 'Deliver',
+                    urlprefix: '#',
+                    cssclass: 'button good-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
