@@ -10,7 +10,7 @@ def extjs_restful_modelapi(cls):
             selected (when not showing a dropdown). This attribute species
             a field name in the resultdata from
             :meth:`devilry.simplified.SimplifiedModelApi.search` to use as
-            ``displayField`` for comboboxes.
+            ``displayField`` for comboboxes. Defaults to ``'id'``.
         combobox_fieldgroups
             Species the ``result_fieldgroups`` to send to
             :meth:`devilry.simplified.SimplifiedModelApi.search` when querying
@@ -19,7 +19,7 @@ def extjs_restful_modelapi(cls):
         combobox_tpl
             Species the ``Ext.XTemplate`` (an extjs class) template to use for each item in
             the combobox dropdown (see ``combobox_displayfield`` parameter for more details
-            on comboboxes).
+            on comboboxes). Defaults to ``'{combobox_displayfield}'``.
     """
     if not hasattr(cls, "ExtjsModelMeta"):
         class ExtjsModelMeta:
