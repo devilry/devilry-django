@@ -271,6 +271,7 @@ class SimplifiedFileMetaMetaMixin(object):
     resultfields = FieldSpec('filename',
                              'size',
                              'id',
+                             'delivery',
                              subject=['delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id',
                                       'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
                                       'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name'],
@@ -289,3 +290,8 @@ class SimplifiedFileMetaMetaMixin(object):
         'delivery__deadline__assignment_group__parentnode__short_name',  # assignment
         'delivery__deadline__assignment_group__parentnode__long_name',  # assignment
         )
+
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('filename'),
+                          FilterSpec('size'),
+                          FilterSpec('delivery'))
