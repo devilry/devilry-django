@@ -66,6 +66,10 @@ pre {
     border-right: none;
 }
 
+blockquote>div>dl.docutils>dt { /* The first DT should be bold, but the others are italic */
+    font-style: normal;
+    font-weight: bold;
+}
 blockquote dl.docutils dt {
     font-style: italic;
 }
