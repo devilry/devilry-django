@@ -37,11 +37,26 @@ def _iter_fields(simplifiedcls, result_fieldgroups):
 
 
 def get_extjs_modelname(restfulcls):
+    """
+    Get the ExtJS model name for the given restful class.
+    Generated from the module name and class name of
+    ``restfulcls._meta.simplified``
+    """
     simplified = restfulcls._meta.simplified
     return '{module}.{name}'.format(module=simplified.__module__, name=simplified.__name__)
 
 
 def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
+    """
+    Create an extjs model from the given restful class.
+
+    :param restfulcls: A class defined using the :ref:`RESTful API <restful>`.
+    :param result_fieldgroups:
+        ``result_fieldgroups`` is added as additional parameters to the proxy,
+        which means that the parameter is forwarded to
+        :meth:`devilry.simplified.SimplifiedModelApi.search` on the server after
+        passing through validations in the RESTful wrapper.
+    """
     modelfields = []
     for fieldname, field in _iter_fields(restfulcls._meta.simplified,
                                          result_fieldgroups):
@@ -80,5 +95,8 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
 
 
 def restfulcls_to_extjscomboboxmodel(restfulcls):
-    """ Create a extjs model using the ``restfulcls.ExtjsModelMeta.combobox_fieldgroups`` """
+    """ Shortcut for::
+
+        restfulcls_to_extjsmodel(restfulcls, restfulcls._extjsmodelmeta.combobox_fieldgroups)
+    """
     return restfulcls_to_extjsmodel(restfulcls, restfulcls._extjsmodelmeta.combobox_fieldgroups)
