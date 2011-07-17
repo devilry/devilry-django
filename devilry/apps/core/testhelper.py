@@ -230,6 +230,9 @@ class TestHelper(object):
         for admin in users['admin']:
             node.admins.add(self._create_or_add_user(admin))
 
+        if users['ln']:
+            node.long_name = users['ln'][0]
+
         node.full_clean()
         node.save()
 
@@ -252,7 +255,7 @@ class TestHelper(object):
             except ValueError:
                 node_name = n
                 extras_arg = None
-            users = self._parse_extras(extras_arg, ['admin'])
+            users = self._parse_extras(extras_arg, ['admin', 'ln'])
             new_node = self._create_or_add_node(prev_node, node_name, users)
             prev_node = new_node
         return new_node
