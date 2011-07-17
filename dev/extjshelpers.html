@@ -183,16 +183,16 @@ the combobox need a field, <tt class="docutils literal"><span class="pre">displa
 selected (when not showing a dropdown). This attribute species
 a field name in the resultdata from
 <a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> to use as
-<tt class="docutils literal"><span class="pre">displayField</span></tt> for comboboxes.</dd>
+<tt class="docutils literal"><span class="pre">displayField</span></tt> for comboboxes. Defaults to <tt class="docutils literal"><span class="pre">'id'</span></tt>.</dd>
 <dt>combobox_fieldgroups</dt>
 <dd>Species the <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt> to send to
 <a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> when querying
 for data in a combobox (see combobox_displayfield for more details
-on comboboxes).</dd>
+on comboboxes). Defaults to an empty list.</dd>
 <dt>combobox_tpl</dt>
 <dd>Species the <tt class="docutils literal"><span class="pre">Ext.XTemplate</span></tt> (an extjs class) template to use for each item in
 the combobox dropdown (see <tt class="docutils literal"><span class="pre">combobox_displayfield</span></tt> parameter for more details
-on comboboxes).</dd>
+on comboboxes). Defaults to <tt class="docutils literal"><span class="pre">'{combobox_displayfield}'</span></tt>.</dd>
 </dl>
 </div></blockquote>
 </dd></dl>
