@@ -1,0 +1,21 @@
+{% extends "examiner/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+
+<script>
+    var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }};
+
+    Ext.onReady(function() {
+    });
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+
+{% endblock %}
