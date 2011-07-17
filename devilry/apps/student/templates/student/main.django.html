@@ -43,6 +43,12 @@
                 rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
             }, {
                 xtype: 'searchresults',
+                title: 'Assignments',
+                store: assignmentstore,
+                editorurlprefix: '',
+                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'searchresults',
                 title: 'Deliveries',
                 store: deliverystore,
                 editorurlprefix: '',
