@@ -11,4 +11,7 @@ class MainView(TemplateView):
         for restclsname in restful.__all__:
             context[restclsname] = getattr(restful, restclsname)
         context['restfulclasses'] = [getattr(restful, restclsname) for restclsname in restful.__all__]
+
+        #print restful.RestfulSimplifiedAssignment._meta.simplified._meta.model.objects.all()
+        
         return context
