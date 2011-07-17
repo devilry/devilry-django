@@ -81,7 +81,6 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
             //console.log(store.proxy.extraParams);
             store.load(function(records, operation, success) {
                 if(success) {
-                    console.log(success);
                     if(store.data.items.length == 0) {
                         searchresults.hide();
                     } else {
