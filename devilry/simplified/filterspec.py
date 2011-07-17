@@ -32,7 +32,7 @@ class FilterSpec(object):
     """ Specifies that a specific field can be filtered, and what *comp* it can
     use. """
     def __init__(self, fieldname, supported_comp=('exact', 'iexact',
-                                                 '<', '>', '<=', '=>',
+                                                 '<', '>', '<=', '>=',
                                                  'contains', 'icontains',
                                                  'startswith', 'endswith')):
         """
