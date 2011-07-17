@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"long_name", comp:"contains", value:"My example value"},
-                      {field:"parentnode", comp:"=>", value:15},
-                      {field:"short_name", comp:"startswith", value:"my_example001_value"}],
+        filters: [{field:"long_name", comp:"<=", value:"My example value"},
+                      {field:"parentnode", comp:"exact", value:15},
+                      {field:"short_name", comp:"icontains", value:"my_example001_value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name"],
         start: 10,
         limit: 100
@@ -97,9 +97,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"long_name", comp:"contains", value:"My example value"},
-         {field:"parentnode", comp:"=>", value:15},
-         {field:"short_name", comp:"startswith", value:"my_example001_value"}]
+        [{field:"long_name", comp:"<=", value:"My example value"},
+         {field:"parentnode", comp:"exact", value:15},
+         {field:"short_name", comp:"icontains", value:"my_example001_value"}]
 
 Nodes can be filtered on the following *fields*:
 
@@ -112,7 +112,7 @@ Nodes can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     parentnode
         Actual location of the field:
@@ -122,7 +122,7 @@ Nodes can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     short_name
         Actual location of the field:
@@ -132,7 +132,7 @@ Nodes can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
 
 
@@ -140,15 +140,15 @@ Nodes can be filtered on the following *fields*:
     
         ``^(parentnode__)+id$``
             Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
     
         ``^(parentnode__)+long_name$``
             Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
     
         ``^(parentnode__)+short_name$``
             Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
     
 
 

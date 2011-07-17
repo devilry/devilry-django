@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"deadline__assignment_group", comp:"<=", value:15},
-                      {field:"deadline__assignment_group__name", comp:"<", value:"My example value"},
-                      {field:"deadline__assignment_group__parentnode", comp:">", value:15}],
+        filters: [{field:"deadline__assignment_group", comp:"exact", value:15},
+                      {field:"deadline__assignment_group__name", comp:">", value:"My example value"},
+                      {field:"deadline__assignment_group__parentnode", comp:"<", value:15}],
         orderby: ["id", "-number", "time_of_delivery", "deadline", "deadline__assignment_group"],
         start: 10,
         limit: 100
@@ -161,9 +161,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"deadline__assignment_group", comp:"<=", value:15},
-         {field:"deadline__assignment_group__name", comp:"<", value:"My example value"},
-         {field:"deadline__assignment_group__parentnode", comp:">", value:15}]
+        [{field:"deadline__assignment_group", comp:"exact", value:15},
+         {field:"deadline__assignment_group__name", comp:">", value:"My example value"},
+         {field:"deadline__assignment_group__parentnode", comp:"<", value:15}]
 
 Deliveries can be filtered on the following *fields*:
 
@@ -176,7 +176,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__name
         Actual location of the field:
@@ -186,7 +186,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode
         Actual location of the field:
@@ -196,7 +196,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__long_name
         Actual location of the field:
@@ -206,7 +206,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode
         Actual location of the field:
@@ -216,7 +216,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode__parentnode__long_name
         Actual location of the field:
@@ -226,7 +226,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode__parentnode__parentnode
         Actual location of the field:
@@ -236,7 +236,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__long_name
         Actual location of the field:
@@ -246,7 +246,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__parentnode
         Actual location of the field:
@@ -256,7 +256,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__short_name
         Actual location of the field:
@@ -266,7 +266,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__parentnode__parentnode__short_name
         Actual location of the field:
@@ -276,7 +276,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     deadline__assignment_group__parentnode__short_name
         Actual location of the field:
@@ -286,7 +286,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             String
         Supported comparison operators:
-            ``startswith``, ``=>``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
     id
         Actual location of the field:
@@ -296,7 +296,7 @@ Deliveries can be filtered on the following *fields*:
         Type
             Integer
         Supported comparison operators:
-            ``startswith``, ``<=``, ``=>``, ``icontains``, ``iexact``, ``endswith``, ``contains``, ``exact``, ``<``, ``>``.
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
 
 
 
