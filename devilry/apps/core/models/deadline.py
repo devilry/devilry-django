@@ -147,5 +147,9 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         return q
 
     @classmethod
+    def q_is_candidate(cls, user_obj):
+        return Q(assignment_group__candidates__student=user_obj)
+
+    @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignment_group__examiners=user_obj)
