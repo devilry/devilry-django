@@ -121,11 +121,14 @@ JSON, which means that our class returns JSON unless the HTTP request contains a
 <a class="reference internal" href="#devilry.restful.restful_modelapi" title="devilry.restful.restful_modelapi"><tt class="xref py py-class docutils literal"><span class="pre">restful_modelapi</span></tt></a>-decorator to autogenerate a RESTful
 interface for a simplified class (see <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a>).</p>
 <p>The <tt class="docutils literal"><span class="pre">cls</span></tt> must have an inner class named <tt class="docutils literal"><span class="pre">Meta</span></tt> with
-the following required attributes:</p>
+the following attributes:</p>
 <blockquote>
 <div><dl class="docutils">
 <dt>simplified</dt>
-<dd>A <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> class.</dd>
+<dd>A <a class="reference internal" href="simplified.html#simplified"><em>Simplified API</em></a> class. <strong>Required</strong>.</dd>
+<dt>foreignkey_fields</dt>
+<dd>A dictionary mapping foreign key fields to RESTful classes
+that contains the data for the foreign key field.</dd>
 </dl>
 </div></blockquote>
 <p>The decorator automatically decorates <tt class="docutils literal"><span class="pre">cls</span></tt> with

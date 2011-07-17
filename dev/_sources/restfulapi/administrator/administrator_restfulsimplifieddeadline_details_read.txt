@@ -33,7 +33,7 @@ Another example, this one uses the optional *result_fieldgroups* parameter.
     GET /administrator/restfulsimplifieddeadline/id
 
     {
-        result_fieldgroups: ["assignment", "period", "subject"]
+        result_fieldgroups: ["assignment", "assignment_group", "assignment_group_users", "period", "subject"]
     }
 
 
@@ -85,6 +85,38 @@ resulting data. The following group names are available:
                     A longer name, more descriptive than "Short name". This is the name visible to students.
                 Type
                     String
+        
+
+    assignment_group
+        *Expands to the following fields:*
+        
+            assignment_group__name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.AssignmentGroup`
+                About the field:
+                    An optional name for the group. Typically used a project name on project assignments.
+                Type
+                    String
+        
+
+    assignment_group_users
+        *Expands to the following fields:*
+        
+            assignment_group__examiners__username
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.AssignmentGroup`
+                About the field:
+                    List of many values.
+                Type
+                    Comma-separated list
+        
+            assignment_group__candidates__identifier
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Candidate`
+                About the field:
+                    List of many values.
+                Type
+                    Comma-separated list
         
 
     period

@@ -72,7 +72,7 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">GET</span> <span class="o">/</span><span class="nx">examiner</span><span class="o">/</span><span class="nx">restfulsimplifieddeadline</span><span class="o">/</span><span class="nx">id</span>
 
 <span class="p">{</span>
-    <span class="nx">result_fieldgroups</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;assignment&quot;</span><span class="p">,</span> <span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">]</span>
+    <span class="nx">result_fieldgroups</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;assignment&quot;</span><span class="p">,</span> <span class="s2">&quot;assignment_group&quot;</span><span class="p">,</span> <span class="s2">&quot;assignment_group_users&quot;</span><span class="p">,</span> <span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -127,6 +127,50 @@ resulting data. The following group names are available:</p>
 <dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
 <dt>Type</dt>
 <dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>assignment_group</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>assignment_group__name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>An optional name for the group. Typically used a project name on project assignments.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>assignment_group_users</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>assignment_group__examiners__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>Comma-separated list</dd>
+</dl>
+</dd>
+<dt>assignment_group__candidates__identifier</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>Comma-separated list</dd>
 </dl>
 </dd>
 </dl>
