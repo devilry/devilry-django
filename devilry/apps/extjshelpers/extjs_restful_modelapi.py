@@ -1,5 +1,7 @@
 def extjs_restful_modelapi(cls):
     """
+    Decorator for RESTful classes.
+
     Checks for, and adds defaults for the extjs specific inner meta class, ExtjsModelMeta.
 
     ExtjsModelMeta can have the following attributes:
