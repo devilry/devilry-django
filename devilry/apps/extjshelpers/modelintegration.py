@@ -95,7 +95,8 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
 
 
 def restfulcls_to_extjscomboboxmodel(restfulcls):
-    """ Shortcut for::
+    """
+    Shortcut for::
 
         restfulcls_to_extjsmodel(restfulcls, restfulcls._extjsmodelmeta.combobox_fieldgroups)
     """

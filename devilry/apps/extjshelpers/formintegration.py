@@ -18,7 +18,7 @@ def restfulcls_to_extjsformitems(restfulcls):
     These form items are generated from ``editablefields`` in the :ref:`Simplified
     class <simplified>` which the given ``restfulcls`` contains.
 
-    ``editablefields`` is documented in :ref:`devilry.simplified.simplified_modelapi`.
+    ``editablefields`` is documented in :func:`devilry.simplified.simplified_modelapi`.
     """
     js = '[\n    {0}\n]'.format(',\n    '.join(_iter_editfields(restfulcls)))
     return js
