@@ -16,6 +16,20 @@
         layout: 'border',
         requires: ['devilry.extjshelpers.DeliveryInfo'],
 
+        config: {
+            /**
+            * @cfg
+            * RestfulSimplifiedFileMeta store. __Required__.
+            */
+            filemetastore: undefined,
+
+            /**
+            * @cfg
+            * Delivery object as returned from loading it by id as a model.
+            */
+            delivery: undefined
+        },
+
         initComponent: function() {
             Ext.apply(this, {
                 items: [{
@@ -24,7 +38,17 @@
                     html: 'Top navigation'
                 }, {
                     region: 'center',
-                    html: 'Hello world'
+                    //html: 'Hello world'
+                    items: [{
+                        xtype: 'container',
+                        padding: 20,
+                        loader: {
+                            url: this.editorurl,
+                            renderer: 'component',
+                            autoLoad: true,
+                            loadMask: true
+                        }
+                    }]
                 }, {
                     region: 'east',
                     width: 150,
@@ -47,7 +71,8 @@
                 Ext.create('devilry.examiner.Feedback', {
                     renderTo: 'feedbackeditor',
                     delivery: delivery.data,
-                    filemetastore: {{ RestfulSimplifiedFileMeta|extjs_store }}
+                    filemetastore: {{ RestfulSimplifiedFileMeta|extjs_store }},
+                    editorurl: '{% url gradeeditors-approved %}'
                 });
             }
         });

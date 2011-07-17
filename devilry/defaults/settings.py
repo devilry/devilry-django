@@ -27,6 +27,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry.apps.examiner',
                   'devilry.apps.administrator',
                   'devilry.apps.authenticate',
+                  'devilry.apps.gradeeditors',
 
                   # Not apps, but here for django to discover them:
                   'devilry.simplified']
