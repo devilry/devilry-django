@@ -73,7 +73,6 @@ class ModelRestfulView(RestfulView):
     def _create_or_replace(self, instance=None):
         data = serializers.deserialize(self.comformat, self.request.raw_post_data)
         form = self.__class__.EditForm(data, instance=instance)
-        result = None
         if form.is_valid():
             try:
                 if instance == None:
