@@ -5,5 +5,10 @@
     xtype: 'panel',
     title: 'Feedback text',
     margin: {top: 20},
-    items: []
+    layout: 'fit',
+    items: [{
+        xtype: 'textarea',
+        width: 600,
+        height: 400
+    }]
 }]
