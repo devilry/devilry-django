@@ -80,7 +80,6 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         });
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
-            searchresults.hide();
             searchresults.search(parsedSearch);
         });
     },

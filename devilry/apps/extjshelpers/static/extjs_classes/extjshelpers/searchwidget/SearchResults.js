@@ -101,6 +101,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     search: function(parsedSearch) {
         if(parsedSearch.type && parsedSearch.type != this.filterconfig.type) {
+            this.hide();
             return;
         }
         this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams, this.filterconfig.shortcuts);
