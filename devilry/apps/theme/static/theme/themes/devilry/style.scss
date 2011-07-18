@@ -241,6 +241,11 @@ header {
             margin: 20px;
             .searchresultitem {
                 padding: 10px;
+                border: 4px solid transparent;
+                &:hover {
+                    border: 4px solid $goodcolor_bg;
+                    background-color: $goodcolor_fg;
+                }
             }
         }
     }
