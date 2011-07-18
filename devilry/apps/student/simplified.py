@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
 from simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedPeriodMetaMixin,
                                  SimplifiedAssignmentMetaMixin, SimplifiedAssignmentGroupMetaMixin,
@@ -61,7 +63,16 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods a Student can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ['search', 'read', 'create']
+        editablefields = ['successful']
+
+    @classmethod
+    def post_full_clean(cls, user, obj):
+        if not obj.id == None:
+            raise ValueError('BUG: Students should only have create permission on Delivery')
+        obj.time_of_delivery = datetime.now()
+        obj.delivered_by = user
+        #obj.deadline = obj.assignment_group.get_active_deadline()
 
 
 @simplified_modelapi

@@ -13,7 +13,7 @@
             id: 'editor',
             renderTo: 'editorcontainer',
             supports_delete: {{ RestfulSimplifiedClass.supports_delete|yesno:"true,false" }},
-            model: {{ RestfulSimplifiedClass|get_extjsname_from_class}},
+            model: {{ RestfulSimplifiedClass|extjs_modelname}},
             editformitems: {{ RestfulSimplifiedClass|extjs_form_items}},
             foreignkeys: {{ RestfulSimplifiedClass|extjs_foreignkeys }}
         });

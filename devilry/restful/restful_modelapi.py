@@ -44,10 +44,13 @@ def restful_modelapi(cls):
     interface for a simplified class (see :ref:`simplified`).
 
     The ``cls`` must have an inner class named ``Meta`` with
-    the following required attributes:
+    the following attributes:
 
         simplified
-            A :ref:`simplified` class.
+            A :ref:`simplified` class. **Required**.
+        foreignkey_fields
+            A dictionary mapping foreign key fields to RESTful classes
+            that contains the data for the foreign key field.
 
     The decorator automatically decorates ``cls`` with
     :func:`restful_api`.

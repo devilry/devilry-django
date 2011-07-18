@@ -6,8 +6,6 @@
             {% block title %}{{ page_title|default:"Devilry" }}{% endblock %}
         </title>
 
-        <link rel="stylesheet" href="{{ DEVILRY_THEME_URL }}/reset.css"
-            type="text/css" media="screen" charset="utf-8"/>
         <link rel="stylesheet" href="{{DEVILRY_THEME_URL }}/style.css"
             type="text/css" media="screen" charset="utf-8"/>
 
@@ -36,6 +34,7 @@
             };
         </script>
         <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/restoverrides.js"></script>
+        <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
 
 
 
