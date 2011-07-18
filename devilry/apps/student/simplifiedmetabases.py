@@ -172,6 +172,23 @@ class SimplifiedDeadlineMetaMixin(object):
         'assignment_group__parentnode__parentnode__parentnode__short_name',  # Name of subject
         'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
         )
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('deadline'),
+                          FilterSpec('assignment_group'),
+                          ForeignFilterSpec('assignment_group',  # AssignmentGroup
+                                            FilterSpec('name'),
+                          ForeignFilterSpec('assignment_group__parentnode',  # Assignment
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode',  # Period
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode',  # Subject
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')))
 
 
 class SimplifiedDeliveryMetaMixin(object):
