@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import logging, sys
+import logging, sys, ConfigParser
 from os.path import join, exists, dirname
 from os import environ, mkdir
 from devilryclient.restfulclient import login
@@ -12,72 +12,74 @@ args = sys.argv[1:]
 otherargs = logging_startup(args) #otherargs has commandspecific args
 logging.debug('hello from sync.py')
 
-#TODO put this in login.py
-# logincookie = login('http://localhost:8000/authenticate/login',
-#         username='grandma', password='test')
-
 session = Session()
+#TODO get_session_cookie not working, find out why
 logincookie = session.get_session_cookie()
 
+logincookie = login('http://localhost:8000/authenticate/login',
+         username='examiner2', password='test')
+
+confdir = findconffolder()
+conf = ConfigParser.ConfigParser()
+conf.read(join(confdir, 'config'))
+
+url = conf.get('URL', 'url')
+print url
+
 #TODO put this in a utility function
-restful_factory = RestfulFactory("http://localhost:8000/")
-#SimplifiedNode = restful_factory.make("examiner/restfulsimplifiednode/")
-SimplifiedSubject = restful_factory.make("examiner/restfulsimplifiedsubject/")
-SimplifiedPeriod = restful_factory.make("examiner/restfulsimplifiedperiod/")
-SimplifiedAssignment = restful_factory.make("examiner/restfulsimplifiedassignment/")
-SimplifiedAssignmentGroup = restful_factory.make("examiner/restfulsimplifiedassignmentgroup/")
-SimplifiedDelivery = restful_factory.make("examiner/restfulsimplifieddelivery/")
-SimplifiedDeadline = restful_factory.make("examiner/restfulsimplifieddeadline/")
-SimplifiedStaticFeedback = restful_factory.make("examiner/restfulsimplifiedstaticfeedback/")
+restful_factory = RestfulFactory(url)
 
-#find all nodes where the user is examiner 
-#nodes = SimplifiedNode.search(logincookie, query='')['items']
+SimplifiedSubject = restful_factory.make("/examiner/restfulsimplifiedsubject/")
+SimplifiedPeriod = restful_factory.make("/examiner/restfulsimplifiedperiod/")
+SimplifiedAssignment = restful_factory.make("/examiner/restfulsimplifiedassignment/")
+SimplifiedAssignmentGroup = restful_factory.make("/examiner/restfulsimplifiedassignmentgroup/")
+SimplifiedDelivery = restful_factory.make("/examiner/restfulsimplifieddelivery/")
+SimplifiedDeadline = restful_factory.make("/examiner/restfulsimplifieddeadline/")
+SimplifiedStaticFeedback = restful_factory.make("/examiner/restfulsimplifiedstaticfeedback/")
 
-
-<<<<<<< HEAD
-
-devilry_path = findconffolder()
-=======
 devilry_path = dirname(findconffolder())
->>>>>>> refs/remotes/devilry/master
 
-#traverse nodes and create folders for each subject, period... if they don't already exist
-#Problem: subject has no resultfield parentnode_short_name
-#for n in nodes:
-#    node_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
 subjects = SimplifiedSubject.search(logincookie, query='')['items']
 
 for s in subjects:
     subject_path = create_folder(s, devilry_path, 'short_name')
-
-    sub_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
-            #, {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
+    sub_filters = [{'field':"parentnode", "comp":"exact", "value":s["id"]}]
     periods = SimplifiedPeriod.search(logincookie, result_fieldgroups=['subject'], filters=sub_filters)['items']
     
     for p in periods:
         period_path = create_folder(p, subject_path, 'short_name')
-
-        ass_filters = [{'field':"parentnode__short_name", "comp":"iexact", "value":p['short_name']},
-                {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
-                #, {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":n["short_name"]}]
-        assignments = SimplifiedAssignment.search(logincookie,result_fieldgroups=['subject', 'period'], filters=ass_filters)['items']
+        ass_filters = [{'field':"parentnode", "comp":"exact", "value":p["id"]}]
+        assignments = SimplifiedAssignment.search(logincookie,
+                    result_fieldgroups=['subject', 'period'], 
+                    filters=ass_filters)['items']
 
         for a in assignments:
             assignment_path = create_folder(a, period_path, 'short_name')
 
-            ag_filters = [{'field':"parentnode__short_name", "comp":"icontains", "value":a["short_name"]},
-                    {'field':"parentnode__parentnode__short_name", "comp":"iexact", "value":p['short_name']},
-                {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
-            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, result_fieldgroups=['subject', 'period', 'assignment'], filters=ag_filters)['items']
-            #assignmentgroups = SimplifiedAssignmentGroup.search(logincookie)['items']
+            ag_filters = [{'field':"parentnode", "comp":"exact", "value":a["id"]}]
+
+            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, 
+                            result_fieldgroups=['period', 'assignment'], 
+                            filters=ag_filters)['items']
+            
             for ag in assignmentgroups:
                 ag_path = create_folder(ag, assignment_path, 'id')
-              
-                #TODO add filers
-                deliveries = SimplifiedDelivery.search(logincookie)['items']
+                deadline_filters = [{'field':'assignment_group', 'comp':'exact', 'value':ag['id']}]
+                deadlines = SimplifiedDeadline.search(logincookie, 
+                            result_fieldgroups=['period', 'assignment', 'assignment_group'],
+                            filters=deadline_filters)['items']
+                print deadlines
+                
+                """
+                #TODO delivery has no parentnode
+                #delivery_filters = [{'field':"parentnode", "comp":"exact", "value":ag["id"]}]
+                       
+                deliveries = SimplifiedDelivery.search(logincookie, 
+                            result_fieldgroups=['subject', 'period', 'assignment', 'asignment_group'],
+                            filters=delivery_filters)['items']
 
                 for d in deliveries:
-                    print d['time_of_delivery']
+                    print d
                     delivery_path = create_folder(d, ag_path, 'number')
                     
                     #TODO add filters
@@ -89,17 +91,4 @@ for s in subjects:
                 for f in feedbacks:
                     pass
                 #can't go further because delivery does not support filters
-
-                
-
-#ok                delivery_filters = [{'field':"parentnode__id", "comp":"icontains", "value":ag["id"]},
-#                        {'field':"parentnode__parentnode__short_name", "comp":"icontains", "value":a["short_name"]},
-#                    {'field':"parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":p['short_name']},
-#                {'field':"parentnode__parentnode__parentnode__parentnode__short_name", "comp":"iexact", "value":s["short_name"]}]
-
-                #filters = [{'field':"assignment_group__id", comp:"iexact", "value":ag["id"]}]
-                #print filters
-                #deliveries = SimplifiedDelivery.search(logincookie, filters=filters)['items']
-                #deliveries = SimplifiedDelivery.search(logincookie, query="")
-                #print deliveries
-                
+                """
