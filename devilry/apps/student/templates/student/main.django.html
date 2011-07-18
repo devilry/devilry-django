@@ -31,7 +31,7 @@
                 store: deadlinestore,
                 links: [{
                     title: 'Deliver',
-                    urlprefix: '#',
+                    urlprefix: 'add-delivery/',
                     cssclass: 'button good-button'
                 }],
                 rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
@@ -58,6 +58,17 @@
         searchwidget.loadInitialValues();
         searchwidget.focusOnSearchfield();
 
+    var msg = function(title, msg) {
+        Ext.Msg.show({
+            title: title,
+            msg: msg,
+            minWidth: 200,
+            modal: true,
+            icon: Ext.Msg.INFO,
+            buttons: Ext.Msg.OK
+        });
+    };
+
 
             var fileuploadpanel = Ext.create('Ext.form.Panel', {
             title: 'Fucking upload',
@@ -72,12 +83,13 @@
                 msgTarget: 'side',
                 allowBlank: true,
                 anchor: '100%',
+                emptyText: 'Select files...',
                 buttonText: 'Browse Files...'
             }],
             buttons: [{
                 text: 'Deliver!',
                 handler: function(a, b) {
-                         Ext.Msg.alert('Success', 'Not really, nothing ever happened with your file'); 
+                         msg('Success', 'Not really, nothing ever happened with your file');
                     <!-- var form = this.up('form').getForm(); -->
                     <!-- if(form.isValid()){ -->
                     <!--     form.submit({ -->
@@ -107,5 +119,4 @@
 have permission to view or edit. Searching for a user will find any item
 related to that user, and searching for a subject will find anything related to
 that subject. YOU MAY EVEN SEARCH FOR YOUR MOTHER!</p>
-<div id='fileuploadpanel'></div>
 {% endblock %}
