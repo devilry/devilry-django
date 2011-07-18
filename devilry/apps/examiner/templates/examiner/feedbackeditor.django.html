@@ -1,0 +1,99 @@
+{% extends "examiner/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+
+<script>
+    var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
+    {{ RestfulSimplifiedFileMeta|extjs_model }};
+
+    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
+
+    Ext.define('FeedbackEditorGlobals', {
+        staticfeedbackmodelname: {{ RestfulSimplifiedStaticFeedback|extjs_modelname }},
+        deliveryid: {{ deliveryid }}
+    });
+    var feedbackeditorGlobals = Ext.create('FeedbackEditorGlobals');
+
+
+    Ext.define('devilry.examiner.Feedback', {
+        extend: 'Ext.panel.Panel',
+        width: 800,
+        height: 600,
+        layout: 'border',
+        alias: 'widget.examinerfeedback',
+        requires: ['devilry.extjshelpers.DeliveryInfo'],
+
+        config: {
+            /**
+            * @cfg
+            * RestfulSimplifiedFileMeta store. __Required__.
+            */
+            filemetastore: undefined,
+
+            /**
+            * @cfg
+            * Delivery object as returned from loading it by id as a model.
+            */
+            delivery: undefined
+        },
+
+        initComponent: function() {
+            Ext.apply(this, {
+                items: [{
+                    region: 'north',
+                    height: 40,
+                    html: 'Top navigation'
+                }, {
+                    region: 'center',
+                    //html: 'Hello world'
+                    items: [{
+                        xtype: 'container',
+                        padding: 20,
+                        loader: {
+                            url: this.editorurl,
+                            renderer: 'component',
+                            autoLoad: true,
+                            loadMask: true
+                        }
+                    }]
+                }, {
+                    region: 'east',
+                    width: 150,
+                    xtype: 'deliveryinfo',
+                    collapsible: true,   // make collapsible
+                    titleCollapse: true, // click anywhere on title to collapse.
+                    delivery: this.delivery,
+                    filemetastore: this.filemetastore
+                }],
+            });
+
+            this.callParent(arguments);
+        }
+    });
+
+    Ext.onReady(function() {
+        deliverymodel.load({{ deliveryid }}, {
+            success: function(delivery) {
+                //console.log(delivery.data);
+                Ext.create('devilry.examiner.Feedback', {
+                    renderTo: 'feedbackeditor',
+                    delivery: delivery.data,
+                    filemetastore: {{ RestfulSimplifiedFileMeta|extjs_store }},
+                    editorurl: '{% url gradeeditors-approved %}'
+                });
+            }
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div id="feedbackeditor"></div>
+
+{% endblock %}

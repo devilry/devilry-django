@@ -158,7 +158,10 @@ class SimplifiedDeadlineMetaMixin(object):
                                      'assignment_group__parentnode__parentnode__long_name'],
                              assignment=['assignment_group__parentnode__id',
                                          'assignment_group__parentnode__short_name',
-                                         'assignment_group__parentnode__long_name']
+                                         'assignment_group__parentnode__long_name'],
+                             assignment_group=['assignment_group__name'],
+                             assignment_group_users=['assignment_group__examiners__username',
+                                                     'assignment_group__candidates__identifier']
                              )
     searchfields = FieldSpec(
         'assignment_group__candidates__identifier',
@@ -169,6 +172,21 @@ class SimplifiedDeadlineMetaMixin(object):
         'assignment_group__parentnode__parentnode__parentnode__short_name',  # Name of subject
         'assignment_group__parentnode__parentnode__parentnode__long_name'  # Name of subject
         )
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('deadline'),
+                          FilterSpec('assignment_group'),
+                          ForeignFilterSpec('assignment_group__parentnode',  # Assignment
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode',  # Period
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('assignment_group__parentnode__parentnode__parentnode',  # Subject
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')))
 
 
 class SimplifiedDeliveryMetaMixin(object):
@@ -179,32 +197,50 @@ class SimplifiedDeliveryMetaMixin(object):
     resultfields = FieldSpec('id',
                              'number',
                              'time_of_delivery',
-                             'assignment_group',
-                             assignment_group=['assignment_group',
-                                               'assignment_group__name'],
-                             assignment=['assignment_group__parentnode',
-                                         'assignment_group__parentnode__short_name',
-                                         'assignment_group__parentnode__long_name'],
-                             period=['assignment_group__parentnode__parentnode',
-                                     'assignment_group__parentnode__parentnode__short_name',
-                                     'assignment_group__parentnode__parentnode__long_name'],
-                             subject=['assignment_group__parentnode__parentnode__parentnode',
-                                      'assignment_group__parentnode__parentnode__parentnode__short_name',
-                                      'assignment_group__parentnode__parentnode__parentnode__long_name'])
+                             'deadline',
+                             'deadline__assignment_group',
+                             assignment_group=['deadline__assignment_group',
+                                               'deadline__assignment_group__name'],
+                             assignment=['deadline__assignment_group__parentnode',
+                                         'deadline__assignment_group__parentnode__short_name',
+                                         'deadline__assignment_group__parentnode__long_name'],
+                             period=['deadline__assignment_group__parentnode__parentnode',
+                                     'deadline__assignment_group__parentnode__parentnode__short_name',
+                                     'deadline__assignment_group__parentnode__parentnode__long_name'],
+                             subject=['deadline__assignment_group__parentnode__parentnode__parentnode',
+                                      'deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                      'deadline__assignment_group__parentnode__parentnode__parentnode__long_name'])
     searchfields = FieldSpec('number',
                              # assignmentgroup
-                             'assignment_group__name',
-                             'assignment_group__examiners__username',
-                             'assignment_group__candidates__identifier',
+                             'deadline__assignment_group__name',
+                             'deadline__assignment_group__examiners__username',
+                             'deadline__assignment_group__candidates__identifier',
                              # assignment
-                             'assignment_group__parentnode__short_name',
-                             'assignment_group__parentnode__long_name',
+                             'deadline__assignment_group__parentnode__short_name',
+                             'deadline__assignment_group__parentnode__long_name',
                              # period
-                             'assignment_group__parentnode__parentnode__short_name',
-                             'assignment_group__parentnode__parentnode__long_name',
+                             'deadline__assignment_group__parentnode__parentnode__short_name',
+                             'deadline__assignment_group__parentnode__parentnode__long_name',
                              # subject
-                             'assignment_group__parentnode__parentnode__parentnode__short_name',
-                             'assignment_group__parentnode__parentnode__parentnode__long_name')
+                             'deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
+                             'deadline__assignment_group__parentnode__parentnode__parentnode__long_name')
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('deadline__assignment_group'),
+                          ForeignFilterSpec('deadline__assignment_group',  # AssignmentGroup
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('name')),
+                          ForeignFilterSpec('deadline__assignment_group__parentnode',  # Assignment
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode__parentnode',  # Period
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')),
+                          ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode__parentnode__parentnode',  # Subject
+                                            FilterSpec('parentnode'),
+                                            FilterSpec('short_name'),
+                                            FilterSpec('long_name')))
 
 
 class SimplifiedStaticFeedbackMetaMixin(object):
@@ -218,27 +254,27 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'saved_by',
                              'delivery',
                              'rendered_view',
-                             #'delivery__assignment_group__examiners__username',
-                             period=['delivery__assignment_group__parentnode__parentnode__id',
-                                     'delivery__assignment_group__parentnode__parentnode__short_name',
-                                     'delivery__assignment_group__parentnode__parentnode__long_name'],
-                             subject=['delivery__assignment_group__parentnode__parentnode__parentnode__id',
-                                      'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                                      'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'],
-                             assignment=['delivery__assignment_group__parentnode__id',
-                                         'delivery__assignment_group__parentnode__short_name',
-                                         'delivery__assignment_group__parentnode__long_name'],
+                             #'delivery__deadline__assignment_group__examiners__username',
+                             period=['delivery__deadline__assignment_group__parentnode__parentnode__id',
+                                     'delivery__deadline__assignment_group__parentnode__parentnode__short_name',
+                                     'delivery__deadline__assignment_group__parentnode__parentnode__long_name'],
+                             subject=['delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id',
+                                      'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                      'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name'],
+                             assignment=['delivery__deadline__assignment_group__parentnode__id',
+                                         'delivery__deadline__assignment_group__parentnode__short_name',
+                                         'delivery__deadline__assignment_group__parentnode__long_name'],
                              delivery=['delivery__time_of_delivery',
                                        'delivery__number',
                                        'delivery__delivered_by'])
-    searchfields = FieldSpec('delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                             'delivery__assignment_group__parentnode__parentnode__parentnode__long_name',
-                             'delivery__assignment_group__parentnode__parentnode__short_name',
-                             'delivery__assignment_group__parentnode__parentnode__long_name',
-                             'delivery__assignment_group__parentnode__short_name',
-                             'delivery__assignment_group__parentnode__long_name',
+    searchfields = FieldSpec('delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
+                             'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name',
+                             'delivery__deadline__assignment_group__parentnode__parentnode__short_name',
+                             'delivery__deadline__assignment_group__parentnode__parentnode__long_name',
+                             'delivery__deadline__assignment_group__parentnode__short_name',
+                             'delivery__deadline__assignment_group__parentnode__long_name',
                              'delivery__number',
-                             'delivery__assignment_group__examiners__username',
+                             'delivery__deadline__assignment_group__examiners__username',
                              )
 
 
@@ -250,21 +286,27 @@ class SimplifiedFileMetaMetaMixin(object):
     resultfields = FieldSpec('filename',
                              'size',
                              'id',
-                             subject=['delivery__assignment_group__parentnode__parentnode__parentnode__id',
-                                      'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',
-                                      'delivery__assignment_group__parentnode__parentnode__parentnode__long_name'],
-                             period=['delivery__assignment_group__parentnode__parentnode__id',
-                                     'delivery__assignment_group__parentnode__parentnode__short_name',
-                                     'delivery__assignment_group__parentnode__parentnode__long_name'],
-                             assignment=['delivery__assignment_group__parentnode__id',
-                                         'delivery__assignment_group__parentnode__short_name',
-                                         'delivery__assignment_group__parentnode__long_name'])
+                             'delivery',
+                             subject=['delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id',
+                                      'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
+                                      'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name'],
+                             period=['delivery__deadline__assignment_group__parentnode__parentnode__id',
+                                     'delivery__deadline__assignment_group__parentnode__parentnode__short_name',
+                                     'delivery__deadline__assignment_group__parentnode__parentnode__long_name'],
+                             assignment=['delivery__deadline__assignment_group__parentnode__id',
+                                         'delivery__deadline__assignment_group__parentnode__short_name',
+                                         'delivery__deadline__assignment_group__parentnode__long_name'])
     searchfields = FieldSpec(
-        'delivery__assignment_group__candidates__identifier',  # student in assignment_group
-        'delivery__assignment_group__parentnode__parentnode__parentnode__short_name',  # subject
-        'delivery__assignment_group__parentnode__parentnode__parentnode__long_name',  # subject
-        'delivery__assignment_group__parentnode__parentnode__short_name',  # period
-        'delivery__assignment_group__parentnode__parentnode__long_name',  # period
-        'delivery__assignment_group__parentnode__short_name',  # assignment
-        'delivery__assignment_group__parentnode__long_name',  # assignment
+        'delivery__deadline__assignment_group__candidates__identifier',  # student in assignment_group
+        'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name',  # subject
+        'delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name',  # subject
+        'delivery__deadline__assignment_group__parentnode__parentnode__short_name',  # period
+        'delivery__deadline__assignment_group__parentnode__parentnode__long_name',  # period
+        'delivery__deadline__assignment_group__parentnode__short_name',  # assignment
+        'delivery__deadline__assignment_group__parentnode__long_name',  # assignment
         )
+
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('filename'),
+                          FilterSpec('size'),
+                          FilterSpec('delivery'))

@@ -4,20 +4,31 @@ from devilry.defaults.settings import *
 this_dir = dirname(abspath(__file__))
 
 DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': join(this_dir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
-        'USER': '',             # Not used with sqlite3.
-        'PASSWORD': '',         # Not used with sqlite3.
-        'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-    }
+             "default": {
+                         'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+                         'NAME': join(this_dir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+                         'USER': '',             # Not used with sqlite3.
+                         'PASSWORD': '',         # Not used with sqlite3.
+                         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+                         'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+                        },
+             #"postgres": {
+                          #'ENGINE': 'postgresql_psycopg2',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+                          #'NAME': 'devilry',
+                          #'USER': 'devilrydev',
+                          #'PASSWORD': 'secret',
+                          #'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+                          #'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+                         #}
 }
 
-INSTALLED_APPS = INSTALLED_APPS + [
-    'devilry.projects.dev.apps.tutorialstats',
-    'devilry.utils',
-    'devilry.simplified']
+INSTALLED_APPS += [
+                   'devilry.projects.dev.apps.tutorialstats',
+
+                   # Not apps, but here for the Django test system to discover them:
+                   'devilry.utils',
+                   'devilry.restful',
+                   'devilry.simplified']
 
 
 INTERNAL_IPS = ["127.0.0.1"]
@@ -41,7 +52,6 @@ EMAIL_FILE_PATH = join(this_dir, 'email_log')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 
-DEVILRY_STATIC_ROOT = join(dirname(dirname(this_dir)), 'static') # ../../static/
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 

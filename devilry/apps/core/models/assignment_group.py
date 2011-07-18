@@ -16,7 +16,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
     Represents a student or a group of students. 
 
-
     .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
@@ -28,7 +27,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     .. attribute:: candidates
 
-        A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>` on this group.
+        A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>`
+        on this group.
 
     .. attribute:: examiners
 
@@ -40,13 +40,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         A django.db.models.BooleanField_ that tells you if the group can add
         deliveries or not.
 
-    .. attribute:: deliveries
-
-        A set of deliveries for this assignmentgroup 
-
     .. attribute:: deadlines
 
-        A set of deadlines for this assignmentgroup 
+        A django ``RelatedManager`` that holds the :class:`deadlines <devilry.apps.core.models.Deadline>`
+        on this group.
 
     .. attribute:: status
 
@@ -67,12 +64,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         contains ``"Corrected"``. This is because the student should never
         know about unpublished feedback.
 
-    .. attribute:: points
-
-        The number of points this group got on their latest published
-        delivery. This fields is only updated when a published feedback
-        is saved.
-
     .. attribute:: scaled_points
 
         The :attr:`points` of this group scaled according to
@@ -81,6 +72,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Calculated as: `float(pointscale)/maxpoints * points`.
 
         **Note:** This field is a cache for the calculation above.
+
+    .. attribute:: feedback
+
+       The last `StaticFeedback`_ on the last delivery on this assignmentgroup.
+
+    .. attribute:: etag
+
+       A DateTimeField containing the etag for this object.
 
     .. attribute:: NO_DELIVERIES
 
@@ -135,7 +134,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True,
-                           help_text=_('An optional name for the group. Typically used a project name on project assignments.'))
+                           help_text=_('An optional name for the group. Typically used a project '\
+                                       'name on project assignments.'))
     examiners = models.ManyToManyField(User, blank=True,
             related_name="examiners")
     is_open = models.BooleanField(blank=True, default=True,
@@ -144,7 +144,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                          choices = enumerate(status_mapping),
                                          verbose_name = _('Status'),
                                          help_text = _('Status number.'))
-
     scaled_points = models.FloatField(default=0.0)
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
