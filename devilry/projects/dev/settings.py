@@ -27,7 +27,7 @@ INSTALLED_APPS += [
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
-                   #'devilry.restful',
+                   'devilry.restful',
                    'devilry.simplified']
 
 
