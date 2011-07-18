@@ -115,7 +115,7 @@ AssignmentGroup
 Deadline
 #########################################################
 
-Each :class:`AssignmentGroup` have zero or more deadlines.
+Each `AssignmentGroup`_ have zero or more deadlines.
 
 .. autoclass:: devilry.apps.core.models.Deadline
 

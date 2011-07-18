@@ -14,10 +14,12 @@ from node import Node
 
 
 class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
-    """
+    """ A deadline on an `AssignmentGroup`_. A deadline contains zero or more
+    `deliveries <Delivery>`_, the time of the deadline and an optional text.
+
     .. attribute:: assignment_group
 
-        The assignment group where the deadline is registered.
+        The `AssignmentGroup`_ where the deadline is registered.
 
     .. attribute:: deadline
 
@@ -27,11 +29,11 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
         A optional deadline text.
 
-   .. attribute:: deliveries
+    .. attribute:: deliveries
 
-        A django ``RelatedManager`` that holds the :class:`deliveries <devilry.apps.core.models.Delivery>` on this group.
+        A django ``RelatedManager`` that holds the `deliveries <Delivery>`_ on this group.
 
-   .. attribute:: status
+    .. attribute:: status
 
         The status of this deadline. The data can be deduces from other data in the database, but
         since this requires complex queries, we store it as a integer
@@ -42,7 +44,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             2. Corrected, not published
             3. Corrected and published
 
-    .. attribute:: feedbacks_published
+     .. attribute:: feedbacks_published
 
         If this boolean field is ``True``, the student can see all
         :class:`StaticFeedback` objects associated with this Deadline through a
