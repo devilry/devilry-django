@@ -93,7 +93,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         //var value = 'type:delivery assignment__short_name:week1';
         //var value = 'type:delivery group:'
         //var value = 'type:delivery deadline__assignment_group__parentnode__parentnode__short_name:duck3580';
-        //var value = '3580';
+        //var value = '1100';
         //this.setSearchValue(value);
     }
 });
