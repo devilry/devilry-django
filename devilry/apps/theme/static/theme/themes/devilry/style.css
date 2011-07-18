@@ -125,14 +125,14 @@ body>header>nav a:visited {
     /*color: */
 /*}*/
 
-body>header>nav>ul>li.examiner-navitem a {
-    background-color: #08c;
-    color: #E5F7FF;
-    font-weight: bold;
-}
 body>header>nav>ul>li.student-navitem a {
     background-color: #88CC00;
     color: #F7FFE5;
+    font-weight: bold;
+}
+body>header>nav>ul>li.examiner-navitem a {
+    background-color: #08c;
+    color: #E5F7FF;
     font-weight: bold;
 }
 body>header>nav>ul>li.administrator-navitem a {
@@ -141,14 +141,14 @@ body>header>nav>ul>li.administrator-navitem a {
     font-weight: bold;
 }
 
+body>header>nav.student {
+    border-bottom: 10px solid #88CC00;
+}
 body>header>nav.examiner {
     border-bottom: 10px solid #08c;
 }
 body>header>nav.administrator {
     border-bottom: 10px solid #CC4400;
-}
-body>header>nav.student {
-    border-bottom: 10px solid #88CC00;
 }
 
 
