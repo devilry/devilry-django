@@ -92,7 +92,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                     'incremented within each AssignmentGroup, starting from 1. Always '
                     'unique within the assignment-group.'))
     # Fields set by user
-    successful = models.BooleanField(blank=True, default=False)
+    successful = models.BooleanField(blank=True, default=False,
+                                    help_text=_('Has the delivery and all its files been uploaded successfully?'))
     delivered_by = models.ForeignKey("Candidate")
 
     # Only used when this is aliasing an earlier delivery, delivery_type == TYPE_ALIAS
