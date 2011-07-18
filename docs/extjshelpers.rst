@@ -26,7 +26,17 @@ extjs_model
 
 .. code-block:: javascript
 
+    // Create a variable with the extjsmodel class definition
     var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
+
+    // Often you will rather define a model and use it later with the
+    // extjs_modelname filter (or a combination of both approaches)
+    {{ RestfulSimplifiedDelivery|extjs_model }};
+    var deliverymodelname = {{ RestfulSimplifiedDelivery|extjs_modelname }};
+    var delivery = Ext.create(deliverymodelname, {
+        // Data needed to create a delivery ...
+    });
+    
 
 .. autofunction:: devilry.apps.extjshelpers.templatetags.extjs.extjs_model
 
