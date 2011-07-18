@@ -103,12 +103,27 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
 
     applyShortcuts: function(shortcuts) {
         var localfilters = Ext.clone(this.filters);
+        var me = this;
         Ext.each(this.filters, function(filter, index) {
-            if(shortcuts.hasOwnProperty(filter.field)) {
-                //console.log(filter);
-                localfilters[index].field = shortcuts[filter.field];
+            var fieldnameFromFilter = me.applyFirstMatchingShortcut(shortcuts, filter.field);
+            if(fieldnameFromFilter) {
+                localfilters[index].field = fieldnameFromFilter;
             }
+            //console.log(localfilters[index].field);
         });
         return localfilters;
+    },
+
+    applyFirstMatchingShortcut: function(shortcuts, fieldname) {
+        var realFieldname = undefined;
+        Ext.Object.each(shortcuts, function(shortcut, replacement) {
+            var startswithShortcut = new RegExp("^" + shortcut);
+            if(fieldname.match(startswithShortcut)) {
+                realFieldname = fieldname.replace(startswithShortcut, replacement);
+                return false;
+            }
+        });
+        return realFieldname;
+        
     }
 });
