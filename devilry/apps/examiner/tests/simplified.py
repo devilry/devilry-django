@@ -501,13 +501,10 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestBase):
             SimplifiedStaticFeedback.read(self.firstExam, self.inf101_secondsem_a1_g2_feedbacks[0].id)
 
     def test_create(self):
-        feedbackDict = dict(
-            saved_by=self.firstExam,
-            delivery=self.inf101_firstsem_a2_g1_deliveries[0],
-            grade='B',
-            points=80,
-            is_passing_grade=True,
-            rendered_view='<html></html>'
-            )
-        created_pk = SimplifiedStaticFeedback.create(self.firstExam, **feedbackDict)
+        created_pk = SimplifiedStaticFeedback.create(self.firstExam,
+                                                     delivery=self.inf101_firstsem_a2_g1_deliveries[0],
+                                                     grade='B',
+                                                     points=80,
+                                                     is_passing_grade=True,
+                                                     rendered_view='<html></html>')
         # TODO: test results
