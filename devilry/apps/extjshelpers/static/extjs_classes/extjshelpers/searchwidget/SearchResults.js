@@ -105,7 +105,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             return;
         }
         this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams, this.filterconfig.shortcuts);
-        console.log(this.store.proxy.extraParams);
+        //console.log(this.store.proxy.extraParams);
         this.loadStore();
     },
 

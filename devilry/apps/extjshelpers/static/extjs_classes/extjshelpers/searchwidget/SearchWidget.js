@@ -70,9 +70,9 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         this.getResultContainer().alignTo(this.getSearchField(), 'bl', [15, 0]);
     },
 
-    //hideResults: function() {
-        //this.getResultContainer().hide();
-    //},
+    hideResults: function() {
+        this.getResultContainer().hide();
+    },
 
     search: function(value) {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
@@ -93,7 +93,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         //var value = 'type:delivery assignment__short_name:week1';
         //var value = 'type:delivery group:'
         //var value = 'type:delivery deadline__assignment_group__parentnode__parentnode__short_name:duck3580';
-        var value = '3580';
-        this.setSearchValue(value);
+        //var value = '3580';
+        //this.setSearchValue(value);
     }
 });
