@@ -64,11 +64,11 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods a Student can use on a Delivery object using the Simplified API """
         methods = ['search', 'read', 'create']
-        editablefields = []
+        editablefields = ['successful']
 
     @classmethod
     def post_full_clean(cls, user, obj):
-        if obj.id == None:
+        if not obj.id == None:
             raise ValueError('BUG: Students should only have create permission on Delivery')
         obj.time_of_delivery = datetime.now()
         obj.delivered_by = user
