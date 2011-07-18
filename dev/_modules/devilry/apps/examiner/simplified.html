@@ -152,7 +152,15 @@
         <span class="c"># Examiners need a few more fields than is given by</span>
         <span class="c"># default in SimplifiedStaticFeedbackMetaMixin. Addition them in!</span>
         <span class="n">resultfields</span> <span class="o">=</span> <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="o">.</span><span class="n">resultfields</span> <span class="o">+</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;points&#39;</span><span class="p">)</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;grade&#39;</span><span class="p">,</span> <span class="s">&#39;is_passing_grade&#39;</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">,</span>
+                          <span class="s">&#39;rendered_view&#39;</span><span class="p">,</span> <span class="s">&#39;delivery&#39;</span><span class="p">]</span>
 </div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;BUG: Examiners should only have create permission on StaticFeedback.&#39;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">saved_by</span> <span class="o">=</span> <span class="n">user</span>
+
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedStaticFeedback.write_authorize"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Checks if the given ``user`` is an examiner in the given</span>

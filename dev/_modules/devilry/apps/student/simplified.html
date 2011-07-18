@@ -112,11 +112,11 @@
 <div class="viewcode-block" id="SimplifiedDelivery.Meta"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods a Student can use on a Delivery object using the Simplified API &quot;&quot;&quot;</span>
         <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">]</span>
-        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;successful&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">post_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;BUG: Students should only have create permission on Delivery&#39;</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">time_of_delivery</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">delivered_by</span> <span class="o">=</span> <span class="n">user</span>

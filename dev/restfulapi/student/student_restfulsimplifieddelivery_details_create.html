@@ -68,7 +68,7 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">POST</span> <span class="o">/</span><span class="nx">student</span><span class="o">/</span><span class="nx">restfulsimplifieddelivery</span><span class="o">/</span>
 
 <span class="p">{</span>
-
+    <span class="nx">successful</span><span class="o">:</span> <span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -77,6 +77,17 @@ The <a class="reference internal" href="../../simplified.html#simplified"><em>Si
 <h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
 <p>The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.</p>
+<div class="section" id="successful">
+<h4>successful<a class="headerlink" href="#successful" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Has the delivery and all its files been uploaded successfully?</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
+</dl>
+</div>
 </div>
 </div>
 <div class="section" id="response">
@@ -88,6 +99,7 @@ request body as shown in the example above.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="mi">201</span> <span class="nx">CREATED</span>
 
 <span class="p">{</span>
+    <span class="nx">successful</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
@@ -119,7 +131,10 @@ have been changed due to logic performed on the server before saving.</p>
 <li><a class="reference internal" href="#">POST /student/restfulsimplifieddelivery/</a><ul>
 <li><a class="reference internal" href="#request">Request</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#required-request-parameters">Required request parameters</a></li>
+<li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
+<li><a class="reference internal" href="#successful">successful</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#response">Response</a><ul>

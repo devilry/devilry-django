@@ -1350,15 +1350,6 @@ that assignment is not anonymous.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedStaticFeedback.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.post_full_clean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
-before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
-<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
-validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
-</dd></dl>
-
-<dl class="classmethod">
 <dt id="devilry.apps.examiner.simplified.SimplifiedStaticFeedback.read">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>pk</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the requested item and return a dict with the fields specified

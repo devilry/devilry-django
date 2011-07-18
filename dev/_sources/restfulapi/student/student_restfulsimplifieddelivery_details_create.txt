@@ -25,7 +25,7 @@ Example
     POST /student/restfulsimplifieddelivery/
 
     {
-        
+        successful: true
     }
 
 
@@ -35,6 +35,17 @@ Required request parameters
 The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.
 
+
+
+successful
+--------------------------------------------------
+
+Actual location of the field:
+    :class:`devilry.apps.core.models.Delivery`
+About the field:
+    Has the delivery and all its files been uploaded successfully?
+Type
+    Boolean
 
 
 
@@ -54,6 +65,7 @@ Example
     201 CREATED
 
     {
+        successful: true,
         id: 15
     }
 
