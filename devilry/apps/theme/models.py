@@ -1,3 +1,1 @@
-from django.db import models
-
-# Create your models here.
+# Only here to make Django see this as an app.
