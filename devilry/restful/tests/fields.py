@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from .. import fields
 
 
-class TestRestfilFields(TestCase):
+class TestRestfulFields(TestCase):
     def testIntegerWithFallbackField(self):
         intfield = fields.IntegerWithFallbackField(fallbackvalue=10)
         self.assertEquals(intfield.clean(''), 10)
