@@ -146,6 +146,17 @@ class SimplifiedModelApi(object):
         return result
 
     @classmethod
+    def post_full_clean(cls, user, obj):
+        """
+        Invoked after the user has been authorize by :meth:`write_authorize` and
+        before ``obj.full_clean()`` in :meth:`create` and :meth:`update`.
+
+        Override this to set custom/generated values on ``obj`` before it is
+        validated and saved. The default does nothing ``obj``.
+        """
+
+
+    @classmethod
     def create(cls, user, **field_values):
         """ Create the given object.
 
@@ -160,6 +171,7 @@ class SimplifiedModelApi(object):
         obj =  cls._meta.model()
         cls._set_values(obj, field_values)
         cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+        cls.post_full_clean(user, obj)
         obj.full_clean()
         obj.save()
         return obj.pk
@@ -203,6 +215,7 @@ class SimplifiedModelApi(object):
         # Important to write authorize after _set_values in case any attributes
         # used in write_authorize is changed by _set_values.
         cls.write_authorize(user, obj)
+        cls.post_full_clean(user, obj)
         obj.full_clean()
         obj.save()
         return obj.pk

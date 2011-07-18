@@ -28,15 +28,16 @@ class TestDelivery(TestCase, TestHelper):
     def test_delivery(self):
         assignmentgroup = self.inf1100_period1_assignment1_g3
         d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
-        self.assertEquals(d.assignment_group, assignmentgroup)
-        self.assertTrue(d.successful)
-        self.assertEquals(d.assignment_group, assignmentgroup)
+        self.assertEquals(d.deadline.assignment_group, assignmentgroup)
+        #self.assertEquals(d.assignment_group, assignmentgroup)
+        #self.assertTrue(d.successful)
+        #self.assertEquals(d.assignment_group, assignmentgroup)
         self.assertTrue(d.successful)
         self.assertEquals(d.number, 2)
 
         # TODO find a graceful way to handle this error:
         d.number = 1
-        self.assertRaises(IntegrityError, d.save)
+        self.assertRaises(IntegrityError, d.save())
 
     def test_published_where_is_candidate(self):
         # Add 2 on g1

@@ -1,0 +1,407 @@
+@import "reset";
+
+$goodcolor_bg: #77B300;
+$goodcolor_hoverbg: #88CC00;
+$goodcolor_fg: #F7FFE5;
+$neutralcolor_bg: #0077B3;
+$neutralcolor_hoverbg: #0088CC;
+$neutralcolor_fg: #E5F7FF;
+$warningcolor_bg: #CC4400;
+$warningcolor_hoverbg: #E64D00;
+$warningcolor_fg: #FFEEE5;
+
+$studentcolor_bg: $goodcolor_bg;
+$studentcolor_hoverbg: $goodcolor_hoverbg;
+$studentcolor_fg: $goodcolor_fg;
+$examinercolor_bg: $neutralcolor_bg;
+$examinercolor_hoverbg: $neutralcolor_hoverbg;
+$examinercolor_fg: $neutralcolor_fg;
+$administratorcolor_bg: $warningcolor_bg;
+$administratorcolor_hoverbg: $warningcolor_hoverbg;
+$administratorcolor_fg: $warningcolor_fg;
+
+body {
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #222;
+}
+
+
+@mixin navitemlink($bg, $fg, $hoverbg) {
+    background-color: $bg;
+    color: $fg;
+    &:hover {
+        background-color: $hoverbg;
+    }
+}
+
+header {
+    background-color: #000; color: #fff;
+
+    /**
+     *
+     * Heading
+     *
+     */
+    >#heading {
+        float: right;
+    }
+    >#heading>h1 {font-size: 2.0em; padding: 20px 20px 5px 20px; text-align: right;}
+    >#heading>a#projectlink {
+        display: block;
+        margin: 0 20px 5px 20px;
+        text-decoration: none;
+        font-size: 0.8em;
+        text-align: right;
+        color: #a00;
+    }
+
+    /**
+     *
+     * Version
+     *
+     *
+     */
+    >#version {
+        /*margin: 0 20px 5px 20px;*/
+        top: 24px;
+        left: 35%;
+        -webkit-transform: rotate(10deg);
+        -moz-transform: rotate(10deg);
+        transform: rotate(10deg);
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: right;
+        position: absolute;
+        color: #444;
+        font-family: "Arial Black", sans-serif;
+    }
+    /*>#version>span.number {*/
+        /*font-weight: bold;*/
+    /*}*/
+    >#version span.codename {
+        font-style: italic;
+    }
+
+
+
+    /**
+     *
+     * Header userinfo/logout
+     *
+     */
+    >#authenticated-user-bar {
+        padding-top: 20px;
+        padding-left: 20px;
+        color: #ccc;
+        font-size: 0.8em;
+    }
+    >#authenticated-user-bar>a#logout-link {
+        color: #fff;
+        font-weight: bold;
+    }
+    >#authenticated-user-bar>a#logout-link:visited {
+        color: #fff;
+    }
+    >#authenticated-user-bar>a#logout-link:hover {
+        color: #fff;
+    }
+
+
+    /**
+     *
+     * Header navigation bar
+     *
+     */
+    >nav {
+        margin-top: 20px;
+        
+        ul {
+            margin: 0 0 0 20px;
+            padding: 0;
+        }
+        li {
+            display: inline-block;
+            margin: 0 10px 0 0;
+            padding: 0;
+        }
+
+
+        li a {
+            text-decoration: none;
+            display: block;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 10px 20px;
+            font-size: 1.0em;
+            font-weight: normal;
+            color: #08C;
+            border-radius: 14px 6px 0 0;
+            font-weight: bold;
+        }
+
+        li.student-navitem a {
+            @include navitemlink($studentcolor_bg, $studentcolor_fg, $studentcolor_hoverbg);
+        }
+        li.examiner-navitem a {
+            @include navitemlink($examinercolor_bg, $examinercolor_fg, $examinercolor_hoverbg);
+        }
+        li.administrator-navitem a {
+            @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
+        }
+    }
+
+    /* Color the bottom border of the header with the color of the current section. */
+    >nav.student {
+        border-bottom: 10px solid $studentcolor_bg;
+    }
+    >nav.examiner {
+        border-bottom: 10px solid $examinercolor_bg;
+    }
+    >nav.administrator {
+        border-bottom: 10px solid $administratorcolor_bg;
+    }
+}
+
+
+
+
+
+
+/**
+ *
+ * Main (dynamic) content
+ *
+ */
+
+#main {
+	padding: 20px;
+    background-color: #f8f8f8;
+
+    h2 {
+        font-size: 1.4em;
+        margin: 20px 0 15px 0;
+    }
+    a {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #0B5A9D;
+    }
+    a:visited {
+        color: #6E0840;
+    }
+    strong {
+        font-weight: bold;
+    }
+    em {
+        font-style: italic;
+    }
+
+    p {
+        padding: 5px 0;
+        line-height: 1.2em;
+    }
+
+    dt {
+        padding-top: 6px;
+        font-weight: bold;
+    }
+    dd {
+        margin-left: 15px;
+    }
+}
+
+
+
+/**
+ *
+ * SearchWidget
+ *
+ */
+
+.searchfield {
+    font-size: 18px;
+    line-height: normal !important;
+    height: auto !important;
+    padding: 7px !important;
+    border-radius: 15px;
+}
+.search-popup-panel {
+    box-shadow: 0 3px 8px #888;
+}
+.searchresults-row>.links {
+    float: right;
+    font-size: 12px;
+    font-weight: bold;
+}
+.searchwidget-help {
+    padding: 4px 15px 15px 15px !important;
+    color: #444;
+    font-size: 0.9em;
+    width: 600px;
+}
+
+
+
+/**
+ *
+ * Make <a> look like a button
+ *
+ */
+
+a.button {
+    display: inline-block;
+    padding: 5px 10px 6px;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 3px #999;
+    text-shadow: 1px 1px 1px #000;
+    position: relative;
+    cursor: pointer;
+    &:hover {
+        border: 1px solid #999;
+    }
+}
+
+@mixin specialbutton($bg, $fg, $hoverbg) {
+    background-color: $bg;
+    color: $fg;
+    &:hover {
+        background-color: $hoverbg;
+    }
+}
+a.good-button {
+    @include specialbutton($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
+}
+a.neutral-button {
+    @include specialbutton($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+}
+a.warning-button {
+    @include specialbutton($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+
+
+
+/**
+ *
+ * Icons
+ *
+ */
+
+.icon-delete-16 { background-image: url(icons/16x16/delete.png); }
+.icon-edit-16 { background-image: url(icons/16x16/edit.png); }
+.icon-save-16 { background-image: url(icons/16x16/save.png); }
+.icon-save-16 { background-image: url(icons/16x16/save.png); }
+.icon-add-16 { background-image: url(icons/16x16/add.png); }
+
+.icon-delete-32 { background-image: url(icons/32x32/delete.png); }
+.icon-edit-32 { background-image: url(icons/32x32/edit.png); }
+.icon-save-32 { background-image: url(icons/32x32/save.png); }
+.icon-save-32 { background-image: url(icons/32x32/save.png); }
+.icon-add-32 { background-image: url(icons/32x32/add.png); }
+
+
+
+
+/**
+ *
+ * Forms
+ *
+ *
+ */
+
+.errorlist {
+    .x-panel-header-text {
+        color: #BB0000;
+    }
+    .errorlist-body {
+        padding: 15px;
+    }
+    p.errorlist-item {
+        color: #BB0000;
+    }
+}
+.editform .editform-body {
+    padding: 15px;
+}
+
+
+
+/**
+ *
+ * Tooltips
+ *
+ */
+
+.tooltip-title {
+    margin-bottom: 5px;
+    font-size: 1.2em;
+
+    span.tooltip-title-current-item {
+        font-weight: bold;
+    }
+}
+
+.x-item-disabled { /* The overlay of disabled ExtJS forms. */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1.0 !important;
+}
+
+
+
+/*
+ *
+ * General purpose style classes
+ *
+ */
+
+/* .x-layer are floating ExtJS items */
+#main .unimportant .x-layer .important {
+    font-size: 0.9em;
+    color: #444;
+}
+#main .important, .x-layer .important {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #111;
+}
+
+span.error {
+    color: #a00;
+}
+
+
+
+/**
+ *
+ * Footer
+ *
+ */
+
+footer {
+	text-align: right;
+	clear: both;
+	padding: 20px;
+	text-align: center;
+	border-top-style: solid;
+	border-top-width: 1px;
+	color: #D4D2CE;
+	border-top-color: 1px solid #ECEBE9;
+	background-color: #fff;
+
+    a {
+        color: #D4D2CE;
+    }
+    a:hover {
+        color: #776B5F;
+    }
+    a:visited {
+        color: #D4D2CE;
+    }
+}

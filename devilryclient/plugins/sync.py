@@ -16,6 +16,10 @@ session = Session()
 #TODO get_session_cookie not working, find out why
 logincookie = session.get_session_cookie()
 
+#TODO put this in login.py
+# logincookie = login('http://localhost:8000/authenticate/login',
+#         username='grandma', password='test')
+
 logincookie = login('http://localhost:8000/authenticate/login',
          username='examiner2', password='test')
 

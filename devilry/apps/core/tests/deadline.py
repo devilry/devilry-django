@@ -17,7 +17,7 @@ class TestDeadline(TestCase, TestHelper):
         self.delivery = self.add_delivery("inf1100.period1.assignment1.group1", self.goodFile)
         self.feedback = self.add_feedback(self.delivery, verdict=self.okVerdict)        
         # ..._assignment1.examiners_publish_feedbacks_directly is True by default
-        self.assertTrue(Deadline.objects.get(id=self.feedback.delivery.deadline_tag.id).feedbacks_published)
+        self.assertTrue(Deadline.objects.get(id=self.feedback.delivery.deadline.id).feedbacks_published)
 
     def test_dont_publish_feedbacks_directly(self):
         self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1)')
@@ -27,4 +27,4 @@ class TestDeadline(TestCase, TestHelper):
 
         self.delivery = self.add_delivery("inf1100.period1.assignment1.group1", self.goodFile)
         self.feedback = self.add_feedback(self.delivery, verdict=self.okVerdict)        
-        self.assertFalse(Deadline.objects.get(id=self.feedback.delivery.deadline_tag.id).feedbacks_published)
+        self.assertFalse(Deadline.objects.get(id=self.feedback.delivery.deadline.id).feedbacks_published)

@@ -5,16 +5,6 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
 from deliverystore import MemoryDeliveryStore
 
 
-# TODO:
-# raise error when trying to give roles to nodes that dont support it?
-#
-# Example:
-#
-# subjects don't have candidates, so trying to create a subject with
-# `add(subjects=['inf1010:candidates(bendiko)'])` doesn't fail, it
-# just doesn't add any users at all.
-
-
 class TestHelper(object):
     """
     This class helps generate test data.
@@ -22,8 +12,6 @@ class TestHelper(object):
 
     class IllegalTypeException(Exception):
         pass
-
-    objects_created = 0
 
     @classmethod
     def set_memory_deliverystore(cls):
@@ -86,13 +74,13 @@ class TestHelper(object):
                         delivered_by_to_use = can
                         break
             else:
-                raise IllegalTypeException("delivered_by must be either a User or a Candidate.")         
+                raise self.IllegalTypeException("delivered_by must be either a User or a Candidate.")
         else:
             delivered_by_to_use = group.candidates.all()[0]
 
         # Create the delivery
-        delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
-
+        #delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
+        delivery = group.get_active_deadline().deliveries.create(delivered_by=delivered_by_to_use, successful=False)
         # add files if there are any
         for filename in files.keys():
             delivery.add_file(filename, files[filename])
@@ -105,16 +93,26 @@ class TestHelper(object):
         delivery.full_clean()
         delivery.save()
         # add it to the groups delivery list
-        varname = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   group.parentnode.parentnode.short_name + '_' +             # period_
-                   group.parentnode.short_name + '_' +                        # assignment_
-                   group.name + '_deliveries')
+        prefix = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                  group.parentnode.parentnode.short_name + '_' +             # period_
+                  group.parentnode.short_name + '_' +                        # assignment_
+                  group.name + '_')
+        varname = prefix + 'deliveries'
         if varname in vars(self).keys():
             vars(self)[varname].append(delivery)
         else:
             vars(self)[varname] = [delivery]
 
-        self.objects_created += 1
+        # adds a variable with the name formatted as:
+        #    subject_period_assignment_group_deadline<X>_delivery<Y>
+        # where X is the deadline the delivery belongs to, and Y is
+        # a number that starts at 1 and increments for each new delivery
+
+        # subtract 1, because all assignmentgroups get a default
+        # deadline when created
+        prefix = prefix + 'deadline' + str(group.deadlines.count() - 1) + '_'
+        deadline_num = group.get_active_deadline().deliveries.count()
+        vars(self)[prefix + 'delivery' + str(deadline_num)] = delivery
         return delivery
 
     def add_feedback(self, delivery=None, verdict=None, examiner=None, timestamp=None):
@@ -143,7 +141,7 @@ class TestHelper(object):
         # if the path led to an AssignmentGroup, get that groups
         # latest delivery
         if type(delivery) == AssignmentGroup:
-            delivery = delivery.deliveries.all().order_by('time_of_delivery')[0]
+            delivery = delivery.get_active_deadline().deliveries.all().order_by('time_of_delivery')[0]
 
         # if none of the above, expect we were given a Delivery
         if not type(delivery) == Delivery:
@@ -155,11 +153,11 @@ class TestHelper(object):
 
         # get the examiner
         if not examiner:
-            examiner = delivery.assignment_group.examiners.all()[0]
+            examiner = delivery.deadline.assignment_group.examiners.all()[0]
 
         # get the timestamp
         if not timestamp:
-            timestamp = delivery.assignment_group.get_active_deadline().deadline
+            timestamp = delivery.deadline.assignment_group.get_active_deadline().deadline
 
         # create the feedback
         feedback = StaticFeedback(saved_by=examiner, delivery=delivery, grade=verdict['grade'],
@@ -173,17 +171,16 @@ class TestHelper(object):
             raise
 
         # add it to the groups feedbacks list
-        varname = (delivery.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   delivery.assignment_group.parentnode.parentnode.short_name + '_' +             # period_
-                   delivery.assignment_group.parentnode.short_name + '_' +                        # assignment_
-                   delivery.assignment_group.name + '_feedbacks')
+        varname = (delivery.deadline.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   delivery.deadline.assignment_group.parentnode.parentnode.short_name + '_' +             # period_
+                   delivery.deadline.assignment_group.parentnode.short_name + '_' +                        # assignment_
+                   delivery.deadline.assignment_group.name + '_feedbacks')
 
         if varname in vars(self).keys():
             vars(self)[varname].append(feedback)
         else:
             vars(self)[varname] = [feedback]
 
-        self.objects_created += 1
         return feedback
 
     def _parse_extras(self, text, allowed_extras=[]):
@@ -214,7 +211,6 @@ class TestHelper(object):
         except:
             user = User.objects.get(username=name)
         vars(self)[user.username] = user
-        self.objects_created += 1
         return user
 
 #######
@@ -238,7 +234,6 @@ class TestHelper(object):
         node.save()
 
         vars(self)[node.get_path().replace('.', '_')] = node
-        self.objects_created += 1
         return node
 
     def _do_the_nodes(self, nodes):
@@ -287,7 +282,6 @@ class TestHelper(object):
         subject.save()
 
         vars(self)[subject.short_name] = subject
-        self.objects_created += 1
         return subject
 
     def _do_the_subjects(self, node, subject_list):
@@ -341,7 +335,6 @@ class TestHelper(object):
         period.save()
 
         vars(self)[parentnode.short_name + '_' + period.short_name] = period
-        self.objects_created += 1
         return period
 
     def _do_the_periods(self, subjects, periods_list):
@@ -402,7 +395,6 @@ class TestHelper(object):
         vars(self)[parentnode.parentnode.short_name + '_' +  # subject
                    parentnode.short_name + '_' +             # period
                    assignment.short_name] = assignment
-        self.objects_created += 1
         return assignment
 
     def _do_the_assignments(self, periods, assignments_list):
@@ -469,7 +461,12 @@ class TestHelper(object):
                    parentnode.parentnode.short_name + '_' +             # period_
                    parentnode.short_name + '_' +                        # assignment_
                    group_name] = group
-        self.objects_created += 1
+
+        # create the default deadline, deadline0, variable
+        vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+                   parentnode.parentnode.short_name + '_' +             # period_
+                   parentnode.short_name + '_' +                        # assignment_
+                   group_name + '_deadline0'] = group.deadlines.all()[0]
         return group
 
     def _do_the_assignmentgroups(self, assignments, assignmentgroups_list):
@@ -535,7 +532,17 @@ class TestHelper(object):
         else:
             vars(self)[vardict] = [deadline]
 
-        self.objects_created += 1
+        # Create a variable with the name formatted as:
+        #    subject_period_assignment_group_deadline<X> where X
+        #    starts at 1 and increments for each deadline added to
+        #    this group
+        vars(self)[prefix + 'deadline' + str(len(vars(self)[vardict]))] = deadline
+
+        # check if the default deadline, deadline0, variable exists
+        default_deadline_var = prefix + 'deadline0'
+        if default_deadline_var not in vars(self).keys():
+            vars(self)[default_deadline_var] = parentnode.deadlines.order_by('deadline')[0]
+
         return deadline
 
     def _do_the_deadlines(self, assignmentgroups, deadlines_list):

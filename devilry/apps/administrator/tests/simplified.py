@@ -16,7 +16,6 @@ from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
 testhelper.TestHelper.set_memory_deliverystore()
 
 
-
 class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
 
     def setUp(self):
@@ -43,7 +42,6 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
     def setUp(self):
         self.add(nodes='uni:admin(admin1).mat.inf')
         self.add(nodes='uni.fys')
-
 
     def test_search_filters(self):
         qrywrap = SimplifiedNode.search(self.admin1)
@@ -90,7 +88,6 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                                              SimplifiedAssignment._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
-
     def test_read_period(self):
         # do a read with all extras
         read_res = SimplifiedAssignment.read(self.admin1,
@@ -126,7 +123,6 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
         self.add_to_path('uni;inf110.firstsem.a2:admin(testPerson)')
         SimplifiedAssignment.read(self.testPerson, self.inf110_firstsem_a2.id)
-
 
     def test_search(self):
         self.allExtras = SimplifiedAssignment._meta.resultfields.additional_aslist()
@@ -172,7 +168,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         # search with query
         search_res = SimplifiedAssignment.search(self.admin1, query='a1')
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
-                        modelinstance_to_dict(self.inf101_secondsem_a1,SimplifiedAssignment._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101_secondsem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_firstsem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
                         modelinstance_to_dict(self.inf110_secondsem_a1, SimplifiedAssignment._meta.resultfields.aslist())]
 
@@ -191,7 +187,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf110_firstsem_a2,
                                               SimplifiedAssignment._meta.resultfields.aslist(self.allExtras))]
 
-        self.assertEquals(search_res.count(), len(expected_res)) 
+        self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
@@ -225,7 +221,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
     def test_create(self):
         kw = dict(
-                long_name = 'Test',
+                long_name='Test',
                 parentnode = self.inf110_firstsem_a2.parentnode,
                 publishing_time = self.inf110_firstsem_a2.publishing_time)
 
@@ -240,7 +236,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
     def test_create_security(self):
         kw = dict(
-                long_name = 'Test',
+                long_name='Test',
                 parentnode = self.inf110_firstsem_a2.parentnode,
                 publishing_time = self.inf110_firstsem_a2.publishing_time)
 

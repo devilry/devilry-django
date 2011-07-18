@@ -33,12 +33,15 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
         to avoid the overhead of having to recurse all the way to the top of
         the node hierarchy for every unique path.
 
-
     .. attribute:: periods
 
-        A set of periods for this subject 
-    """
+        A set of :class:`periods <devilry.apps.core.models.Period>` for this subject.
 
+    .. attribute:: etag
+
+       A DateTimeField containing the etag for this object.
+
+    """
     class Meta:
         app_label = 'core'
         verbose_name = _('Subject')

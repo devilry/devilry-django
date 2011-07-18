@@ -409,7 +409,7 @@ class TestSimplifiedDelivery(SimplifiedStudentTestBase):
         # filter for all deliveries done in an assignment called
         # 'a1'. There should be 2 results, one from inf101 and the
         # other from inf110
-        filters = [{'field': 'assignment_group__parentnode__short_name', 'comp': 'iexact', 'value': 'a1'}]
+        filters = [{'field': 'deadline__assignment_group__parentnode__short_name', 'comp': 'iexact', 'value': 'a1'}]
         search_res = SimplifiedDelivery.search(self.firstStud, filters=filters)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0],
                                               SimplifiedDelivery._meta.resultfields.aslist()),

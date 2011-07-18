@@ -1,6 +1,6 @@
 /**
- * Search widget with a {@link devilry.administrator.MultiSearchField} on top
- * and results in a {@link devilry.administrator.MultiSearchResults} below.
+ * Search widget with a {@link devilry.extjshelpers.searchwidget.MultiSearchField} on top
+ * and results in a {@link devilry.extjshelpers.searchwidget.MultiSearchResults} below.
  *
  *     Search: ______________
  *    
@@ -18,24 +18,25 @@
  *     |                    |
  *     +--------------------+
  *
- * @xtype administratorsearchwidget
- * @cfg {[Object]} searchResultItems Item list forwarded to the item config of {@link devilry.administrator.MultiSearchResults}
+ * @xtype searchwidget
+ * @cfg {[Object]} searchResultItems Item list forwarded to the item config of {@link devilry.extjshelpers.searchwidget.MultiSearchResults}
  * */
-Ext.define('devilry.administrator.SearchWidget', {
+Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     extend: 'Ext.container.Container',
-    alias: 'widget.administratorsearchwidget',
+    alias: 'widget.searchwidget',
     requires: [
-        'devilry.administrator.SearchResults',
-        'devilry.administrator.MultiSearchField',
-        'devilry.administrator.MultiSearchResults'
+        'devilry.extjshelpers.searchwidget.SearchResults',
+        'devilry.extjshelpers.searchwidget.MultiSearchField',
+        'devilry.extjshelpers.searchwidget.MultiSearchResults',
+        'devilry.extjshelpers.SearchStringParser'
     ],
 
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'administratormultisearchfield'
+                xtype: 'multisearchfield'
             }, {
-                xtype: 'administratormultisearchresults',
+                xtype: 'multisearchresults',
                 items: this.searchResultItems
             }]
         });
@@ -71,21 +72,31 @@ Ext.define('devilry.administrator.SearchWidget', {
     },
 
     search: function(value) {
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', value);
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
             var store = searchresults.store;
-            store.proxy.extraParams.query = value;
+            store.proxy.extraParams.query = parsedSearch.nonFilterValues;
+            store.proxy.extraParams.filters = Ext.JSON.encode(parsedSearch.filters);
+            //console.log(store.proxy.extraParams);
             store.load(function(records, operation, success) {
-                if(store.data.items.length == 0) {
-                    searchresults.hide();
+                if(success) {
+                    if(store.data.items.length == 0) {
+                        searchresults.hide();
+                    } else {
+                        searchresults.show();
+                    }
                 } else {
-                    searchresults.show();
+                    searchresults.hide();
                 }
             });
         });
     },
 
     loadInitialValues: function() {
-        //this.search("3580");
+        //var value = 'type:deadline deadline__assignment_group:16 3580';
+        //var value = '3580';
+        //this.getSearchField().setValue(value);
+        //this.search(value);
     }
 });

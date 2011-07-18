@@ -1,0 +1,80 @@
+{% extends "examiner/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+
+<script>
+
+    {% for RestfulCls in restfulclasses %}
+        {{ RestfulCls|extjs_combobox_model }}
+    {% endfor %}
+
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
+    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
+
+    Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
+    Ext.onReady(function() {
+        var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
+            renderTo: 'searchwidget',
+            searchResultItems: [{
+                xtype: 'searchresults',
+                title: 'Deliveries',
+                store: deliverystore,
+                links: [{
+                    title: 'Create feedback',
+                    urlprefix: 'create-feedback/',
+                    cssclass: 'button good-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'searchresults',
+                title: 'Deadlines',
+                store: deadlinestore,
+                links: [{
+                    title: 'Show deliveries',
+                    urlprefix: '#',
+                    cssclass: 'button neutral-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'searchresults',
+                title: 'Assignment groups',
+                store: assignmentgroupstore,
+                links: [{
+                    title: 'All deliveries',
+                    urlprefix: '#',
+                    cssclass: 'button neutral-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }, {
+                xtype: 'searchresults',
+                title: 'Assignments',
+                store: assignmentstore,
+                links: [{
+                    title: 'Overview',
+                    urlprefix: '#',
+                    cssclass: 'button neutral-button'
+                }],
+                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+            }]
+        });
+        searchwidget.loadInitialValues();
+        searchwidget.focusOnSearchfield();
+    });
+
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+<div id='searchwidget'></div>
+<p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
+have permission to view or edit. Searching for a user will find any item
+related to that user, and searching for a subject will find anything related to
+that subject.</p>
+{% endblock %}

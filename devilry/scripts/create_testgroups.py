@@ -125,25 +125,25 @@ if __name__ == "__main__":
                 logging.info("Created user %s." % username)
 
     def autocreate_delivery(group):
-        student = group.candidates.all()[0].student
-        delivery = group.deliveries.create(delivered_by=student, successful=True)
+        active_deadline = group.get_active_deadline()
+
+        cand = group.candidates.all()[0]
+        delivery = active_deadline.deliveries.create(delivered_by=cand, successful=True)
         delivery.add_file('helloworld.txt', ['hello cruel world'])
         delivery.add_file('helloworld.py', ['print "hello world"'])
         delivery.add_file('helloworld.java', [
             '// Too much code for a sane "hello world"'])
 
-        active_deadline = group.get_active_deadline().deadline
-        others = delivery.assignment_group.deliveries.all().order_by(
-                "-number")
+        others = Delivery.objects.filter(deadline__assignment_group=group).order_by("-number")
         if others.count() == 1:
-            if active_deadline < datetime.now():
+            if active_deadline.deadline < datetime.now():
                 if randint(0, 100) <= 5:
                     # 5% chance to get the first delivery after the deadline
                     offset = timedelta(minutes=-randint(1, 20))
                 else:
                     offset = timedelta(hours=randint(0, 15),
                             minutes=randint(0, 59))
-                delivery.time_of_delivery = active_deadline - offset
+                delivery.time_of_delivery = active_deadline.deadline - offset
             else:
                 # Deadline is in the future. Deliver a random time before
                 # "now". They can not deliver more than 5 deliveries (see
@@ -169,8 +169,8 @@ if __name__ == "__main__":
         return d
 
     def autocreate_feedback(delivery, points, published):
-        assignment = delivery.assignment_group.parentnode
-        examiner = delivery.assignment_group.examiners.all()[0]
+        assignment = delivery.deadline.assignment_group.parentnode
+        examiner = delivery.deadline.assignment_group.examiners.all()[0]
         feedback = delivery.feedbacks.create(rendered_view="Some text here:)",
                                              saved_by=examiner, points=points,
                                              grade="g{0}".format(points),
@@ -295,7 +295,7 @@ if __name__ == "__main__":
     examiners_per_group = opt.examiners_per_group
     grade_maxpoints = opt.grade_maxpoints
     always_one_delivery = opt.always_one_delivery
-    print always_one_delivery
+    #print always_one_delivery
 
     if not opt.gradeplugin:
         raise SystemExit("--grade-plugin is required. Possible values: %s" %
