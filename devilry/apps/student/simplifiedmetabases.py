@@ -175,8 +175,6 @@ class SimplifiedDeadlineMetaMixin(object):
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('deadline'),
                           FilterSpec('assignment_group'),
-                          ForeignFilterSpec('assignment_group',  # AssignmentGroup
-                                            FilterSpec('name'),
                           ForeignFilterSpec('assignment_group__parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
