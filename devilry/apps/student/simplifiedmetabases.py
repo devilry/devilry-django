@@ -233,11 +233,11 @@ class SimplifiedDeliveryMetaMixin(object):
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
-                          ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode__parentnode',  # Period
+                          ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode',  # Period
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')),
-                          ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode__parentnode__parentnode',  # Subject
+                          ForeignFilterSpec('deadline__assignment_group__parentnode__parentnode__parentnode',  # Subject
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
                                             FilterSpec('long_name')))
