@@ -170,6 +170,15 @@ that assignment is not anonymous.</p>
 </dd></dl>
 
 <dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedNode.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="devilry.apps.administrator.simplified.SimplifiedNode.read">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedNode.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>pk</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedNode.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the requested item and return a dict with the fields specified
@@ -431,6 +440,15 @@ that assignment is not anonymous.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedSubject.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedSubject.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -698,6 +716,15 @@ that assignment is not anonymous.</p>
 </dd></dl>
 
 <dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="devilry.apps.administrator.simplified.SimplifiedPeriod.read">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>pk</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedPeriod.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the requested item and return a dict with the fields specified
@@ -959,6 +986,15 @@ that assignment is not anonymous.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignment.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignment.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -1225,6 +1261,15 @@ that assignment is not anonymous.</p>
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -1532,6 +1577,15 @@ that assignment is not anonymous.</p>
 </dd></dl>
 
 <dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="devilry.apps.administrator.simplified.SimplifiedDeadline.read">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>pk</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDeadline.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the requested item and return a dict with the fields specified
@@ -1670,6 +1724,15 @@ that assignment is not anonymous.</p>
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedDelivery.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedDelivery.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -1874,6 +1937,15 @@ that assignment is not anonymous.</p>
 </dd></dl>
 
 <dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">read</tt><big>(</big><em>user</em>, <em>pk</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the requested item and return a dict with the fields specified
@@ -2044,6 +2116,15 @@ that assignment is not anonymous.</p>
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
 <p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.administrator.simplified.SimplifiedFileMeta.post_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.administrator.simplified.SimplifiedFileMeta.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
+before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
+validated and saved. The default does nothing <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">

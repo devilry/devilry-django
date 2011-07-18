@@ -46,6 +46,8 @@
           <div class="body">
             
   <h1>Source code for devilry.apps.student.simplified</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">PermissionDenied</span>
 <span class="kn">from</span> <span class="nn">simplifiedmetabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span>
                                  <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">,</span>
@@ -109,9 +111,18 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedDelivery.Meta"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedDelivery.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods a Student can use on a Delivery object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">]</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">[]</span>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;BUG: Students should only have create permission on Delivery&#39;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">time_of_delivery</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">delivered_by</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="c">#obj.deadline = obj.assignment_group.get_active_deadline()</span>
 
-</div></div>
+</div>
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedAssignmentGroup"><a class="viewcode-back" href="../../../../student.simplified.html#devilry.apps.student.simplified.SimplifiedAssignmentGroup">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedAssignmentGroup</span><span class="p">(</span><span class="n">PublishedWhereIsCandidateMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. &quot;&quot;&quot;</span>

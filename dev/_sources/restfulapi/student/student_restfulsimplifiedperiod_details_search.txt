@@ -32,7 +32,7 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"long_name", comp:"contains", value:"My example value"},
+        filters: [{field:"long_name", comp:"icontains", value:"My example value"},
                       {field:"parentnode", comp:"exact", value:15},
                       {field:"parentnode__long_name", comp:"exact", value:"My example value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name", "start_time", "end_time"],
@@ -113,7 +113,7 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"long_name", comp:"contains", value:"My example value"},
+        [{field:"long_name", comp:"icontains", value:"My example value"},
          {field:"parentnode", comp:"exact", value:15},
          {field:"parentnode__long_name", comp:"exact", value:"My example value"}]
 

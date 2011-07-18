@@ -17,6 +17,7 @@ Student
     student_restfulsimplifiedassignmentgroup_details_search
     student_restfulsimplifieddelivery_details_read
     student_restfulsimplifieddelivery_details_search
+    student_restfulsimplifieddelivery_details_create
     student_restfulsimplifieddeadline_details_read
     student_restfulsimplifieddeadline_details_search
     student_restfulsimplifiedstaticfeedback_details_read
@@ -160,6 +161,11 @@ Delivery
     <tr>
         <th><a href="student_restfulsimplifieddelivery_details_read.html">GET&nbsp;/student/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
         <td>Retrieve a Delivery.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="student_restfulsimplifieddelivery_details_create.html">POST&nbsp;/student/restfulsimplifieddelivery/</a></th>
+        <td>Create a Delivery.</td>
     </tr>
         </tbody>
     </table>

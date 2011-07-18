@@ -64,7 +64,16 @@ is available as a template variable as <tt class="docutils literal"><span class=
 <a class="reference internal" href="restful.html#restful"><em>RESTful class</em></a> in place of <tt class="docutils literal"><span class="pre">RestfulSimplifiedDelivery</span></tt>.</p>
 <div class="section" id="extjs-model">
 <h3>extjs_model<a class="headerlink" href="#extjs-model" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">deliverymodel</span> <span class="o">=</span> <span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span> <span class="p">}};</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="c1">// Create a variable with the extjsmodel class definition</span>
+<span class="kd">var</span> <span class="nx">deliverymodel</span> <span class="o">=</span> <span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span> <span class="p">}};</span>
+
+<span class="c1">// Often you will rather define a model and use it later with the</span>
+<span class="c1">// extjs_modelname filter (or a combination of both approaches)</span>
+<span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span> <span class="p">}};</span>
+<span class="kd">var</span> <span class="nx">deliverymodelname</span> <span class="o">=</span> <span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_modelname</span> <span class="p">}};</span>
+<span class="kd">var</span> <span class="nx">delivery</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">deliverymodelname</span><span class="p">,</span> <span class="p">{</span>
+    <span class="c1">// Data needed to create a delivery ...</span>
+<span class="p">});</span>
 </pre></div>
 </div>
 <dl class="function">
