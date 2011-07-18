@@ -78,7 +78,7 @@ class ModelRestfulView(RestfulView):
             if instance == None:
                 id = self._meta.simplified.create(self.request.user, **form.cleaned_data)
             else:
-                id = self._meta.simplified.update(self.request.user, **form.cleaned_data)
+                id = self._meta.simplified.update(self.request.user, instance.pk, **form.cleaned_data)
             data['id'] = id
             result = self._extjswrapshortcut(data)
             if instance == None:
