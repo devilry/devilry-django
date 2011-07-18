@@ -221,9 +221,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Set :attr:`number` automatically to one greater than what is was last and
         add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
         """
-        #self.time_of_delivery = datetime.now()
         if self.id == None:
-            #self.deadline = self.assignment_group.get_active_deadline()
             self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
