@@ -77,6 +77,75 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         with self.assertRaises(InvalidNumberOfResults):
             SimplifiedNode.search(self.admin1, exact_number_of_results=0)
 
+    def test_delete_asnodeadmin(self):
+        #TODO - can a normal admin for a node delete?
+        # according to simplified.modelapi -> no he/she/it can't..  
+        SimplifiedNode.delete(self.admin1, self.uni.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.delete(self.admin1, self.uni.id)
+
+    def test_delete_assuperadmin(self):
+        self.create_superuser('superadminuser')
+        SimplifiedNode.delete(self.superadminuser, self.uni.id)
+        
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.delete(self.superadminuser, self.uni.id)
+
+    def test_delete_noperm(self):
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.delete(self.secondStud, self.uni.id)
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.delete(self.exam1, self.uni.id)
+
+class TestSimplifiedSubject(SimplifiedAdminTestBase):
+    def setUp(self):
+        super(TestSimplifiedSubject,self).setUp()
+
+    def test_delete_asnodeadmin(self):
+        self.add_to_path('uni;inf101:admin(testadmin)')
+        SimplifiedSubject.delete(self.testadmin, self.inf101.id)
+        
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.delete(self.testadmin, self.inf101.id)
+
+    def test_delete_assuperadmin(self):
+        SimplifiedSubject.delete(self.superadminuser, self.inf101.id)
+        
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.delete(self.superadminuser, self.inf101.id)
+
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.delete(self.firstStud, self.inf101.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.delete(self.exam1, self.inf101.id)
+        
+class TestSimplifiedPeriod(SimplifiedAdminTestBase):
+    def setUp(self):
+        super(TestSimplifiedPeriod, self).setUp()
+
+    def test_delete_asnodeadmin(self):
+        self.add_to_path('uni;inf101.firstSem:admin(testadmin)')
+        SimplifiedPeriod.delete(self.testadmin, self.inf101.firstSem.id)
+        
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.delete(self.testadmin, self.inf101.firstSem.id)
+
+    def test_delete_assuperadmin(self):
+        SimplifiedPeriod.delete(self.superadminuser, self.inf101.firstSem.id)
+        
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.delete(self.superadminuser, self.inf101.firstSem.id)
+
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.delete(self.firstStud, self.inf101.firstSem.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.delete(self.exam1, self.inf101.firstSem.id)
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
@@ -398,6 +467,30 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         # We know secondStud hasn't signed up for firstsem.inf101.
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.read(self.secondStud, self.inf101_firstsem_a1_g1.id)
+    
+    def test_delete_asnodeadmin(self):
+        self.add_to_path('uni;inf101.firstsem:admin(testadmin)')
+        SimplifiedAssignmentGroup.delete(self.testadmin, self.inf101_firstsem_a1_g1.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.delete(self.testadmin,
+                    self.inf101_firstsem_a1_g1.id)
+
+    def test_delete_assuperadmin(self):
+        SimplifiedAssignmentGroup.delete(self.superadminuser,
+                self.inf101_firstsem_a1_g1.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.delete(self.superadminuser,
+                    self.inf101_firstsem_a1_g1.id)
+
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.delete(self.firstStud,
+                    self.inf101_firstsem_a1_g1.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.delete(self.exam2, self.inf101_firstsem_a1_g1.id)
 
 
 class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
@@ -660,6 +753,17 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                                   deadline=self.inf110_secondsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
                                   text='Last shot!')
 
+    def test_delete_asnodeadmin(self):
+        #TODO - complete this
+        pass
+
+    def test_delete_assuperadmin(self):
+        #TODO - complete this
+        pass
+
+    def test_delete_noperm(self):
+        #TODO - complete this
+        pass
 
 class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
 
