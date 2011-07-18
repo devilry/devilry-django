@@ -6,7 +6,15 @@
 
 <script>
     var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
-    var filemetamodel = {{ RestfulSimplifiedFileMeta|extjs_model }};
+    {{ RestfulSimplifiedFileMeta|extjs_model }};
+
+    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
+
+    Ext.define('FeedbackEditorGlobals', {
+        staticfeedbackmodelname: {{ RestfulSimplifiedStaticFeedback|extjs_modelname }},
+        deliveryid: {{ deliveryid }}
+    });
+    var feedbackeditorGlobals = Ext.create('FeedbackEditorGlobals');
 
 
     Ext.define('devilry.examiner.Feedback', {
@@ -14,6 +22,7 @@
         width: 800,
         height: 600,
         layout: 'border',
+        alias: 'widget.examinerfeedback',
         requires: ['devilry.extjshelpers.DeliveryInfo'],
 
         config: {
@@ -67,7 +76,7 @@
     Ext.onReady(function() {
         deliverymodel.load({{ deliveryid }}, {
             success: function(delivery) {
-                console.log(delivery.data);
+                //console.log(delivery.data);
                 Ext.create('devilry.examiner.Feedback', {
                     renderTo: 'feedbackeditor',
                     delivery: delivery.data,

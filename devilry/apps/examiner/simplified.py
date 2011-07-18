@@ -104,6 +104,14 @@ class SimplifiedStaticFeedback(PublishedWhereIsExaminerMixin):
         # Examiners need a few more fields than is given by
         # default in SimplifiedStaticFeedbackMetaMixin. Addition them in!
         resultfields = SimplifiedStaticFeedbackMetaMixin.resultfields + FieldSpec('points')
+        editablefields = ['grade', 'is_passing_grade', 'points',
+                          'rendered_view', 'delivery']
+
+    @classmethod
+    def post_full_clean(cls, user, obj):
+        if not obj.id == None:
+            raise ValueError('BUG: Examiners should only have create permission on StaticFeedback.')
+        obj.saved_by = user
 
     @classmethod
     def write_authorize(cls, user, obj):

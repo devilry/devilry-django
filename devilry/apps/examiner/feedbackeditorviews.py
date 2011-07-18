@@ -2,7 +2,8 @@ from django.views.generic import View
 from django.shortcuts import render
 
 
-from restful import RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta
+from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
+                     RestfulSimplifiedStaticFeedback)
 
 
 class FeedbackEditorView(View):
@@ -11,4 +12,5 @@ class FeedbackEditorView(View):
                       'examiner/feedbackeditor.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
+                       'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
                        'deliveryid': deliveryid})
