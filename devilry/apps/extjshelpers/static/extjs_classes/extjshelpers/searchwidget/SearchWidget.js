@@ -95,8 +95,8 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
 
     loadInitialValues: function() {
         //var value = 'type:deadline deadline__assignment_group:16 3580';
-        //var value = '3580';
-        //this.getSearchField().setValue(value);
+        var value = '3580';
+        this.getSearchField().setValue(value);
         //this.search(value);
     }
 });
