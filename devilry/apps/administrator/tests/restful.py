@@ -54,7 +54,7 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def test_create(self):
         self.assertEquals(models.Node.objects.filter(short_name='testnode').count(), 0)
         url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
-        data = dict(short_name='testnode', long_name='Test SimplifiedNode', parentnode=None)
+        data = dict(short_name='testnode', long_name='Test SimplifiedNode', parentnode=self.uni.id)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         self.assertEquals(r.status_code, 201)
@@ -63,11 +63,11 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
         fromdb = models.Node.objects.get(id=response['id'])
         self.assertEquals(fromdb.short_name, 'testnode')
         self.assertEquals(fromdb.long_name, 'Test SimplifiedNode')
-        self.assertEquals(fromdb.parentnode, None)
+        self.assertEquals(fromdb.parentnode.id, self.uni.id)
 
     def test_create_errors(self):
         url = RestfulSimplifiedNode.get_rest_url(self.uni.id)
-        data = dict(short_name='uniV', long_name='Univ', parentnode=None)
+        data = dict(short_name='uniV', long_name='Univ', parentnode=self.uni.id)
         r = self.client.post(url, data=json.dumps(data),
                 content_type='application/json')
         self.assertEquals(r.status_code, 400)
