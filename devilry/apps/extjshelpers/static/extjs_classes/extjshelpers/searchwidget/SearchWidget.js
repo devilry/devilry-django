@@ -82,7 +82,9 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     loadInitialValues: function() {
-        var value = 'type:delivery deadline__assignment_group:>:33 3580';
+        //var value = 'type:delivery deadline__assignment_group:>:33 3580';
+        var value = 'type:delivery group:>:33 3580';
+        //var value = 'type:delivery deadline__assignment_group__parentnode__parentnode__short_name:duck3580';
         //var value = '3580';
         this.getSearchField().setValue(value);
         //this.search(value);

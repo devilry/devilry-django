@@ -82,7 +82,7 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
     },
 
 
-    applyToExtraParams: function(extraParams) {
+    applyToExtraParams: function(extraParams, shortcuts) {
         if(!extraParams) {
             extraParams = new Object();
         }
@@ -90,8 +90,25 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
             extraParams.query = this.query;
         }
         if(this.filters) {
-            extraParams.filters = Ext.JSON.encode(this.filters);
+            var localfilters;
+            if(shortcuts) {
+                localfilters = this.applyShortcuts(shortcuts);
+            } else {
+                localfilters = this.filters;
+            }
+            extraParams.filters = Ext.JSON.encode(localfilters);
         }
         return extraParams;
+    },
+
+    applyShortcuts: function(shortcuts) {
+        var localfilters = Ext.clone(this.filters);
+        Ext.each(this.filters, function(filter, index) {
+            if(shortcuts.hasOwnProperty(filter.field)) {
+                //console.log(filter);
+                localfilters[index].field = shortcuts[filter.field];
+            }
+        });
+        return localfilters;
     }
 });

@@ -100,13 +100,11 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
 
     search: function(parsedSearch) {
-        this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams);
-        //console.log(this.store.proxy.extraParams);
-        console.log(parsedSearch.type);
-        console.log(this.filterconfig);
         if(parsedSearch.type && parsedSearch.type != this.filterconfig.type) {
             return;
         }
+        this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams, this.filterconfig.shortcuts);
+        console.log(this.store.proxy.extraParams.filters);
         this.loadStore();
     },
 
