@@ -22,10 +22,13 @@ DATABASES = {
                          #}
 }
 
-INSTALLED_APPS = INSTALLED_APPS + [
-    'devilry.projects.dev.apps.tutorialstats',
-    'devilry.utils',
-    'devilry.simplified']
+INSTALLED_APPS += [
+                   'devilry.projects.dev.apps.tutorialstats',
+
+                   # Not apps, but here for the Django test system to discover them:
+                   'devilry.utils',
+                   #'devilry.restful',
+                   'devilry.simplified']
 
 
 INTERNAL_IPS = ["127.0.0.1"]
