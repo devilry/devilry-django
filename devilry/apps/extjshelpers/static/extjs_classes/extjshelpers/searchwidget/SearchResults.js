@@ -66,46 +66,18 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     handleStoreLoadSuccess: function(records) {
         var me = this;
-        Ext.each(records, function(record) {
-            me.addRecord(record);
+        Ext.each(records, function(record, index) {
+            me.addRecord(record, index);
         });
     },
 
-    addRecord: function(record) {
-        console.log(record);
-        this.add({
+    addRecord: function(record, index) {
+        var searchresultitem = Ext.clone(this.resultitemConfig);
+        Ext.apply(searchresultitem, {
             xtype: 'searchresultitem',
-            tpl: this.rowformattpl,
-            record: record
+            recorddata: record.data,
+            even: index%2 != 0
         });
+        this.add(searchresultitem);
     }
-
-
-    /*
-    formatRowWrapper: function(value, p, record) {
-        return this.formatRow(record);
-    },
-
-    formatRow: function(record) {
-        var datatpl = Ext.create('Ext.XTemplate', this.rowformattpl);
-        var dataview = datatpl.apply(record.data);
-        var tpl = Ext.create('Ext.XTemplate', 
-            '<div class="searchresults-row">' +
-            '   <input type="hidden" name="{idprefix}-recordid" value="{record.data.id}" />' +
-            '   <div class="links"><tpl for="links">' +
-            '       <a class="{cssclass}" ' +
-            //'           onclick="devilry.extjshelpers.searchwidget.SearchResults.onButtonClick(this, \'{urlprefix}\'); return false;"' +
-            '           href="{urlprefix}{parent.record.data.id}">{title}</a>' +
-            '   </tpl></div>' +
-            '   <div>{dataview}</div>' +
-            '</div>');
-
-        return tpl.apply({
-            dataview: dataview,
-            links: this.links,
-            idprefix: this.id,
-            record: record
-        });
-    },
-    */
 });

@@ -23,42 +23,37 @@
                 xtype: 'searchresults',
                 title: 'Deliveries',
                 store: deliverystore,
-                links: [{
-                    title: 'Create feedback',
-                    urlprefix: 'create-feedback/',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Create feedback',
+                        clickLinkTpl: 'create-feedback/{id}'
+                    },
+                    menuitems: [{
+                        text: 'View delivery'
+                    }]
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Deadlines',
                 store: deadlinestore,
-                links: [{
-                    title: 'Show deliveries',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                links: [{
-                    title: 'All deliveries',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                links: [{
-                    title: 'Overview',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
             }]
         });
         searchwidget.loadInitialValues();
