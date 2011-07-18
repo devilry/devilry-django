@@ -75,8 +75,11 @@ class ModelRestfulView(RestfulView):
         form = self.__class__.EditForm(data, instance=instance)
         result = None
         if form.is_valid():
-            form.save()
-            data['id'] = form.instance.id
+            if instance == None:
+                id = self._meta.simplified.create(self.request.user, **form.cleaned_data)
+            else:
+                id = self._meta.simplified.update(self.request.user, **form.cleaned_data)
+            data['id'] = id
             result = self._extjswrapshortcut(data)
             if instance == None:
                 return SerializableResult(result, httpresponsecls=HttpResponseCreated)
