@@ -1,17 +1,39 @@
 @import "reset";
 
-$goodcolorbg: #88CC00;
-$goodcolorfg: #F7FFE5;
-$neutralcolorbg: #08c;
-$neutralcolorfg: #E5F7FF;
-$warningcolorbg: #CC4400;
-$warningcolorfg: #FFEEE5;
+$goodcolor_bg: #77B300;
+$goodcolor_hoverbg: #88CC00;
+$goodcolor_fg: #F7FFE5;
+$neutralcolor_bg: #0077B3;
+$neutralcolor_hoverbg: #0088CC;
+$neutralcolor_fg: #E5F7FF;
+$warningcolor_bg: #B33C00;
+$warningcolor_hoverbg: #CC4400;
+$warningcolor_fg: #FFEEE5;
+
+$studentcolor_bg: $goodcolor_bg;
+$studentcolor_hoverbg: $goodcolor_hoverbg;
+$studentcolor_fg: $goodcolor_fg;
+$examinercolor_bg: $neutralcolor_bg;
+$examinercolor_hoverbg: $neutralcolor_hoverbg;
+$examinercolor_fg: $neutralcolor_fg;
+$administratorcolor_bg: $warningcolor_bg;
+$administratorcolor_hoverbg: $warningcolor_hoverbg;
+$administratorcolor_fg: $warningcolor_fg;
 
 body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
 	font-size: 12px;
 	background-color: #fff;
 	color: #222;
+}
+
+
+@mixin navitemlink($bg, $fg, $hoverbg) {
+    background-color: $bg;
+    color: $fg;
+    &:hover {
+        background-color: $hoverbg;
+    }
 }
 
 header {
@@ -107,7 +129,7 @@ header {
         }
 
 
-        a {
+        li a {
             text-decoration: none;
             display: block;
             margin-left: 0;
@@ -117,34 +139,29 @@ header {
             font-weight: normal;
             color: #08C;
             border-radius: 14px 6px 0 0;
+            font-weight: bold;
         }
 
         li.student-navitem a {
-            background-color: $goodcolorbg;
-            color: $goodcolorfg;
-            font-weight: bold;
+            @include navitemlink($studentcolor_bg, $studentcolor_fg, $studentcolor_hoverbg);
         }
         li.examiner-navitem a {
-            background-color: $neutralcolorbg;
-            color: $neutralcolorfg;
-            font-weight: bold;
+            @include navitemlink($examinercolor_bg, $examinercolor_fg, $examinercolor_hoverbg);
         }
         li.administrator-navitem a {
-            background-color: $warningcolorbg;
-            color: $warningcolorfg;
-            font-weight: bold;
+            @include navitemlink($administratorcolor_bg, $administratorcolor_fg, $administratorcolor_hoverbg);
         }
     }
 
     /* Color the bottom border of the header with the color of the current section. */
     >nav.student {
-        border-bottom: 10px solid $goodcolorbg;
+        border-bottom: 10px solid $studentcolor_bg;
     }
     >nav.examiner {
-        border-bottom: 10px solid $neutralcolorbg;
+        border-bottom: 10px solid $examinercolor_bg;
     }
     >nav.administrator {
-        border-bottom: 10px solid $warningcolorbg;
+        border-bottom: 10px solid $administratorcolor_bg;
     }
 }
 
@@ -246,22 +263,26 @@ a.button {
     text-shadow: 1px 1px 1px #000;
     position: relative;
     cursor: pointer;
-
     &:hover {
         border: 1px solid #999;
     }
 }
-a.good-button {
-    background-color: #88CC00;
-    color: #F7FFE5;
+
+@mixin specialbutton($bg, $fg, $hoverbg) {
+    background-color: $bg;
+    color: $fg;
+    &:hover {
+        background-color: $hoverbg;
+    }
 }
-a.warning-button {
-    background-color: #CC4400;
-    color: #FFEEE5;
+a.good-button {
+    @include specialbutton($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
 }
 a.neutral-button {
-    background-color: #08c;
-    color: #E5F7FF;
+    @include specialbutton($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
+}
+a.warning-button {
+    @include specialbutton($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
 }
 
 
