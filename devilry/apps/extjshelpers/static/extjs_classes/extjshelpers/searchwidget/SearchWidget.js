@@ -32,12 +32,15 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     ],
 
     initComponent: function() {
+        this.multisearchresultid = this.id + "-multisearchresults"; 
         Ext.apply(this, {
             items: [{
                 xtype: 'multisearchfield'
             }, {
                 xtype: 'multisearchresults',
-                items: this.searchResultItems
+                items: this.searchResultItems,
+                id: this.multisearchresultid, // We need to use an id because it may be floating.
+                searchWidget: this
             }]
         });
 
@@ -45,7 +48,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     getSearchField: function() {
-        return this.items.items[0];
+        return this.down('multisearchfield');
     },
 
     focusOnSearchfield: function() {
@@ -59,7 +62,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
      * container. */
     getResultContainer: function() {
         //return this.items.items[1];
-        return Ext.getCmp('floating-searchresult');
+        return Ext.getCmp(this.multisearchresultid);
     },
 
     showResults: function() {
@@ -77,16 +80,21 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         });
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
+            searchresults.hide();
             searchresults.search(parsedSearch);
         });
     },
 
+    setSearchValue: function(value) {
+        this.getSearchField().setValue(value);
+    },
+
     loadInitialValues: function() {
         //var value = 'type:delivery deadline__assignment_group:>:33 3580';
-        var value = 'type:delivery assignment__short_name:week1';
+        //var value = 'type:delivery assignment__short_name:week1';
+        //var value = 'type:delivery group:'
         //var value = 'type:delivery deadline__assignment_group__parentnode__parentnode__short_name:duck3580';
-        //var value = '3580';
-        this.getSearchField().setValue(value);
-        //this.search(value);
+        var value = '3580';
+        this.setSearchValue(value);
     }
 });

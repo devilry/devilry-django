@@ -13,7 +13,6 @@
     var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
     var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
-    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
     Ext.onReady(function() {
@@ -22,15 +21,14 @@
             searchResultItems: [{
                 xtype: 'searchresults',
                 title: 'Deliveries',
+                store: deliverystore,
                 filterconfig: {
                     type: 'delivery',
                     shortcuts: {
                         assignment: 'deadline__assignment_group__parentnode',
                         group: 'deadline__assignment_group',
-                        assignmentgroup: 'deadline__assignment_group'
                     }
                 },
-                store: deliverystore,
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
@@ -43,24 +41,25 @@
                 }
             }, {
                 xtype: 'searchresults',
-                title: 'Deadlines',
-                store: deadlinestore,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
-                }
-            }, {
-                xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
                 resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery group:{id}'
+                    },
                 }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
                 resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery assignment:{id}'
+                    },
                 }
             }]
         });

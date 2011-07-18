@@ -10,5 +10,9 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchResults', {
     alias: 'widget.multisearchresults',
     id: 'floating-searchresult',
     floating: true,
-    cls: 'multisearchresults multisearchresults-floating'
+    cls: 'multisearchresults multisearchresults-floating',
+    
+    config: {
+        searchWidget: undefined
+    }
 });

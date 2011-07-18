@@ -76,16 +76,40 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResultItem', {
             xtype: 'button'
         });
         if(config.clickLinkTpl) {
-            var tpl = Ext.create('Ext.XTemplate', config.clickLinkTpl);
-            var url = tpl.apply(this.recorddata);
-            Ext.apply(config, {
-                listeners: {
-                    click: function() {
-                        window.location = url;
-                    }
-                }
-            });
+            this.applyClickLinkButton(config);
+        } else if(config.clickFilter) {
+            this.applyClickFilterButton(config);
         }
         return config;
+    },
+
+    applyClickLinkButton: function(config) {
+        var tpl = Ext.create('Ext.XTemplate', config.clickLinkTpl);
+        var url = tpl.apply(this.recorddata);
+        Ext.apply(config, {
+            listeners: {
+                click: function() {
+                    window.location = url;
+                }
+            }
+        });
+    },
+
+    applyClickFilterButton: function(config) {
+        var tpl = Ext.create('Ext.XTemplate', config.clickFilter);
+        var filter = tpl.apply(this.recorddata);
+        var me = this;
+        Ext.apply(config, {
+            listeners: {
+                click: function() {
+                    var searchwidget = me.getSearchWidget();
+                    searchwidget.setSearchValue(filter);
+                }
+            }
+        });
+    },
+
+    getSearchWidget: function() {
+        return this.up('multisearchresults').getSearchWidget();
     }
 });
