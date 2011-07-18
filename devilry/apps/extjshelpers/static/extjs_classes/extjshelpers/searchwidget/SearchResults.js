@@ -14,6 +14,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.searchresults',
     requires: ['devilry.extjshelpers.searchwidget.SearchResultItem'],
+    cls: 'searchresults',
     config: {
         /**
          * @cfg
@@ -44,13 +45,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     initComponent: function() {
         Ext.apply(this, {
-            width: 570,
-            margin: {
-                top: 20
-            },
-            //height: 150,
             frame: false,
-            //title: false,
             hideHeaders: true
         });
         this.callParent(arguments);

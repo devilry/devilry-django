@@ -10,5 +10,5 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchResults', {
     alias: 'widget.multisearchresults',
     id: 'floating-searchresult',
     floating: true,
-    cls: 'search-popup-panel'
+    cls: 'multisearchresults multisearchresults-floating'
 });

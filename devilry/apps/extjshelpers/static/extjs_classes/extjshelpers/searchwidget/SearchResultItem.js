@@ -5,6 +5,7 @@
 Ext.define('devilry.extjshelpers.searchwidget.SearchResultItem', {
     extend: 'Ext.container.Container',
     alias: 'widget.searchresultitem',
+    cls: 'searchresultitem',
     config: {
         /**
          * @cfg

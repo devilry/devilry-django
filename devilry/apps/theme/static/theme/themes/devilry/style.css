@@ -240,13 +240,16 @@ header {
   padding: 7px !important;
   border-radius: 15px; }
 
-.search-popup-panel {
-  box-shadow: 0 3px 8px #888; }
-
-.searchresults-row > .links {
-  float: right;
-  font-size: 12px;
-  font-weight: bold; }
+.multisearchresults {
+  width: 570px; }
+  .multisearchresults > .x-panel-body {
+    background-color: #fff;
+    border: 3px solid #111;
+    border-radius: 0 0 14px 6px; }
+    .multisearchresults > .x-panel-body .searchresults {
+      margin: 20px; }
+      .multisearchresults > .x-panel-body .searchresults .searchresultitem {
+        padding: 10px; }
 
 .searchwidget-help {
   padding: 4px 15px 15px 15px !important;
