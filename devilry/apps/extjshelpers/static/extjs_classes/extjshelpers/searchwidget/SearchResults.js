@@ -15,6 +15,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
     alias: 'widget.searchresults',
     requires: ['devilry.extjshelpers.searchwidget.SearchResultItem'],
     cls: 'searchresults',
+    hidden: true,
     config: {
         /**
          * @cfg
@@ -40,7 +41,22 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
          * @cfg
          * Formatting template for the text rendered for each result item. _Required_.
          */
-        rowformattpl: undefined
+        rowformattpl: undefined,
+
+        filterconfig: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        var filterconfig = {
+            type: undefined,
+            shortcuts: new Object()
+        };
+        if(this.filterconfig) {
+            Ext.apply(filterconfig, this.filterconfig);
+        }
+        this.filterconfig = filterconfig;
+        return this;
     },
 
     initComponent: function() {
@@ -61,10 +77,11 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
     },
 
     handleStoreLoadFailure: function() {
-        console.log('Failed to load store'); // TODO Better error handling
+        //console.log('Failed to load store'); // TODO Better error handling
     },
 
     handleStoreLoadSuccess: function(records) {
+        this.removeAll();
         var me = this;
         Ext.each(records, function(record, index) {
             me.addRecord(record, index);
@@ -76,8 +93,35 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
         Ext.apply(searchresultitem, {
             xtype: 'searchresultitem',
             recorddata: record.data,
-            even: index%2 != 0
+            recordindex: index
         });
         this.add(searchresultitem);
+    },
+
+
+    search: function(parsedSearch) {
+        this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams);
+        //console.log(this.store.proxy.extraParams);
+        console.log(parsedSearch.type);
+        console.log(this.filterconfig);
+        if(parsedSearch.type && parsedSearch.type != this.filterconfig.type) {
+            return;
+        }
+        this.loadStore();
+    },
+
+    loadStore: function() {
+        var me = this;
+        this.store.load(function(records, operation, success) {
+            if(success) {
+                if(me.store.data.items.length == 0) {
+                    me.hide();
+                } else {
+                    me.show();
+                }
+            } else {
+                me.hide();
+            }
+        });
     }
 });

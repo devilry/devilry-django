@@ -12,7 +12,12 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResultItem', {
          * @cfg
          * ``Ext.XTemplate`` formatting template for the text content. _Required_.
          */
-        tpl: '{id}'
+        tpl: undefined,
+
+        recorddata: undefined,
+        recordindex: undefined,
+        defaultbutton: undefined,
+        menuitems: undefined
     },
     layout: {
         type: 'hbox',
@@ -21,7 +26,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResultItem', {
 
 
     initComponent: function() {
-        if(this.even) {
+        if(this.recordindex % 2 != 0) {
             this.addCls('searchresultitem-even');
         }
 

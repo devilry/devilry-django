@@ -67,35 +67,23 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         this.getResultContainer().alignTo(this.getSearchField(), 'bl', [15, 0]);
     },
 
-    hideResults: function() {
-        this.getResultContainer().hide();
-    },
+    //hideResults: function() {
+        //this.getResultContainer().hide();
+    //},
 
     search: function(value) {
-        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', value);
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+            searchstring: value
+        });
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
-            var store = searchresults.store;
-            store.proxy.extraParams.query = parsedSearch.nonFilterValues;
-            store.proxy.extraParams.filters = Ext.JSON.encode(parsedSearch.filters);
-            //console.log(store.proxy.extraParams);
-            store.load(function(records, operation, success) {
-                if(success) {
-                    if(store.data.items.length == 0) {
-                        searchresults.hide();
-                    } else {
-                        searchresults.show();
-                    }
-                } else {
-                    searchresults.hide();
-                }
-            });
+            searchresults.search(parsedSearch);
         });
     },
 
     loadInitialValues: function() {
-        //var value = 'type:deadline deadline__assignment_group:16 3580';
-        var value = '3580';
+        var value = 'type:delivery deadline__assignment_group:>:33 3580';
+        //var value = '3580';
         this.getSearchField().setValue(value);
         //this.search(value);
     }
