@@ -35,7 +35,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
 
     .. attribute:: periods
 
-        A set of periods for this subject 
+        A set of :class:`periods <devilry.apps.core.models.Period>` for this subject.
 
     .. attribute:: etag
 

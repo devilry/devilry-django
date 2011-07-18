@@ -73,10 +73,16 @@ class ModelRestfulView(RestfulView):
     def _create_or_replace(self, instance=None):
         data = serializers.deserialize(self.comformat, self.request.raw_post_data)
         form = self.__class__.EditForm(data, instance=instance)
-        result = None
         if form.is_valid():
-            form.save()
-            data['id'] = form.instance.id
+            try:
+                if instance == None:
+                    id = self._meta.simplified.create(self.request.user, **form.cleaned_data)
+                else:
+                    id = self._meta.simplified.update(self.request.user, instance.pk, **form.cleaned_data)
+            except PermissionDenied:
+                return ForbiddenSerializableResult()
+
+            data['id'] = id
             result = self._extjswrapshortcut(data)
             if instance == None:
                 return SerializableResult(result, httpresponsecls=HttpResponseCreated)

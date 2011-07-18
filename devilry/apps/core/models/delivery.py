@@ -13,11 +13,6 @@ from ..models import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, N
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
-    .. attribute:: assignment_group
-
-        A django.db.models.ForeignKey_ pointing to the `AssignmentGroup`_
-        that handed in the Delivery.
-
     .. attribute:: time_of_delivery
 
         A django.db.models.DateTimeField_ that holds the date and time the
@@ -52,11 +47,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     .. attribute:: filemetas
 
-        A set of `FileMeta`_ for this delivery.
+        A set of :class:`filemetas <devilry.apps.core.models.FileMeta>` for this delivery.
 
     .. attribute:: feedbacks
 
-       A set of `StaticFeedback`_ on this delivery.
+       A set of :class:`feedbacks <devilry.apps.core.models.StaticFeedback>` on this delivery.
 
     .. attribute:: etag
 
@@ -88,7 +83,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             verbose_name = _("Type of deliveries"),
             help_text=_('This option controls if this assignment accepts only '
                         'electronic deliveries, or accepts other kinds as well.'))
-
     # Fields automatically 
     time_of_delivery = models.DateTimeField(auto_now_add=True,
                                            help_text=_('Holds the date and time the Delivery was uploaded.'))
@@ -97,10 +91,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         help_text=_('The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
                     'unique within the assignment-group.'))
-
     # Fields set by user
-    #assignment_group = models.ForeignKey(AssignmentGroup, related_name='deliveries')
-    successful = models.BooleanField(blank=True, default=False)
+    successful = models.BooleanField(blank=True, default=False,
+                                    help_text=_('Has the delivery and all its files been uploaded successfully?'))
     delivered_by = models.ForeignKey("Candidate")
 
     # Only used when this is aliasing an earlier delivery, delivery_type == TYPE_ALIAS
@@ -229,14 +222,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Set :attr:`number` automatically to one greater than what is was last and
         add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
         """
-        #self.time_of_delivery = datetime.now()
         if self.id == None:
-            #self.deadline = self.assignment_group.get_active_deadline()
             self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s - %s (%s)' % (self.deadline__assignment_group, self.number,
+        return u'%s - %s (%s)' % (self.deadline.assignment_group, self.number,
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 

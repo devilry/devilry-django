@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
 from simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedPeriodMetaMixin,
                                  SimplifiedAssignmentMetaMixin, SimplifiedAssignmentGroupMetaMixin,
@@ -33,7 +35,7 @@ class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedFileMeta(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedFileMeta(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
     class Meta(SimplifiedFileMetaMetaMixin):
         """ Defines what methods a Student can use on a FileMeta object using the Simplified API """
@@ -49,7 +51,7 @@ class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
 
 
 @simplified_modelapi
-class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.StaticFeedback`. """
     class Meta(SimplifiedStaticFeedbackMetaMixin):
         """ Defines what methods a Student can use on a StaticFeedback object using the Simplified API """
@@ -57,15 +59,24 @@ class SimplifiedStaticFeedback(PublishedWhereIsCandidateMixin, SimplifiedModelAp
 
 
 @simplified_modelapi
-class SimplifiedDelivery(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods a Student can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ['search', 'read', 'create']
+        editablefields = ['successful']
+
+    @classmethod
+    def post_full_clean(cls, user, obj):
+        if not obj.id == None:
+            raise ValueError('BUG: Students should only have create permission on Delivery')
+        obj.time_of_delivery = datetime.now()
+        obj.delivered_by = user
+        #obj.deadline = obj.assignment_group.get_active_deadline()
 
 
 @simplified_modelapi
-class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods a Student can use on an AssignmentGroup object using the Simplified API """
@@ -73,7 +84,7 @@ class SimplifiedAssignmentGroup(PublishedWhereIsCandidateMixin, SimplifiedModelA
 
 
 @simplified_modelapi
-class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedAssignment(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
     class Meta(SimplifiedAssignmentMetaMixin):
         """ Defines what methods a Student can use on an Assignment object using the Simplified API """
@@ -81,7 +92,7 @@ class SimplifiedAssignment(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedPeriod(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Period`. """
     class Meta(SimplifiedPeriodMetaMixin):
         """ Defines what methods a Student can use on a Period object using the Simplified API """
@@ -89,7 +100,7 @@ class SimplifiedPeriod(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
 
 
 @simplified_modelapi
-class SimplifiedSubject(PublishedWhereIsCandidateMixin, SimplifiedModelApi):
+class SimplifiedSubject(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Subject`. """
     class Meta(SimplifiedSubjectMetaMixin):
         """ Defines what methods a Student can use on a Subject object using the Simplified API """

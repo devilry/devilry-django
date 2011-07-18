@@ -9,7 +9,7 @@ COMP_TO_DJANGO_MAP = {'exact': 'exact',
                       '<': 'lt',
                       '>': 'gt',
                       '<=': 'lte',
-                      '=>': 'gte',
+                      '>=': 'gte',
                       'contains': 'contains',
                       'icontains': 'icontains',
                       'startswith': 'startswith',
@@ -32,7 +32,7 @@ class FilterSpec(object):
     """ Specifies that a specific field can be filtered, and what *comp* it can
     use. """
     def __init__(self, fieldname, supported_comp=('exact', 'iexact',
-                                                 '<', '>', '<=', '=>',
+                                                 '<', '>', '<=', '>=',
                                                  'contains', 'icontains',
                                                  'startswith', 'endswith')):
         """

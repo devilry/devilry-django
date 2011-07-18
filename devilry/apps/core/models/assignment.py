@@ -49,7 +49,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     .. attribute:: assignmentgroups
 
-        A set of the :class:`AssignmentGroup` for this assignment.
+        A set of :class:`assignmentgroups <devilry.apps.core.models.AssignmentGroup>` for this assignment
 
     .. attribute:: filenames
     
