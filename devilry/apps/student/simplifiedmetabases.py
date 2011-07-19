@@ -252,6 +252,7 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'grade',
                              'is_passing_grade',
                              'saved_by',
+                             'save_timestamp',
                              'delivery',
                              'rendered_view',
                              #'delivery__deadline__assignment_group__examiners__username',
