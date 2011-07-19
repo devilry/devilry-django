@@ -1,0 +1,89 @@
+{% extends "theme/base.django.html" %}
+{% load extjs %}
+
+{% block title %}Devilry student interface{% endblock %}
+
+
+{% block nav-class %}student{% endblock %}
+
+
+{% block headextra %}
+<script>
+  var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
+
+
+    Ext.onReady(function ()
+    {
+        var msg = function (title, msg)
+            {
+                Ext.Msg.show(
+                {
+                    title: title,
+                    msg: msg,
+                    minWidth: 200,
+                    modal: true,
+                    icon: Ext.Msg.INFO,
+                    buttons: Ext.Msg.OK
+                });
+            };
+
+  
+
+
+        var fileuploadpanel = Ext.create('Ext.panel.Panel', {
+            title: 'Velkommen til deadlineid: {{ deadlineid }}',
+            width: 600,
+            renderTo: 'fileuploadpanel',
+            items: [
+            {
+                xtype: 'panel',
+                title: 'Info about Deadline',
+                height: 100,
+                width: '100%'
+            }, {
+                xtype: 'panel',
+                title: 'Upload a Delivery',
+                width: '100%',
+                items: [
+                {
+                    xtype: 'form',
+                    width: '100%',
+                    bodyPadding: 10,
+                    frame: true,
+                    items: [
+                    {
+                        xtype: 'fileuploadfield',
+                        name: 'photo',
+                        fieldLabel: 'Delivery',
+                        labelWidth: 50,
+                        width: '100%',
+                        anchor: '100%',
+                        msgTarget: 'side',
+                        allowBlank: true,
+                        emptyText: 'Select files...',
+                        buttonText: 'Browse files...'
+                    }],
+                    buttons: [
+                    {
+                        text: 'Deliver!',
+                        handler: function (a, b)
+                        {
+                            msg('Success', 'Not really, nothing ever happened with your file');
+
+                        }
+                    }]
+
+                }]
+
+            }]
+
+        });
+
+    });
+</script>
+
+{% endblock %}
+
+{% block main %}
+<div id='fileuploadpanel'></div>
+{% endblock %}

@@ -32,12 +32,15 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     ],
 
     initComponent: function() {
+        this.multisearchresultid = this.id + "-multisearchresults"; 
         Ext.apply(this, {
             items: [{
                 xtype: 'multisearchfield'
             }, {
                 xtype: 'multisearchresults',
-                items: this.searchResultItems
+                items: this.searchResultItems,
+                id: this.multisearchresultid, // We need to use an id because it may be floating.
+                searchWidget: this
             }]
         });
 
@@ -45,7 +48,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     getSearchField: function() {
-        return this.items.items[0];
+        return this.down('multisearchfield');
     },
 
     focusOnSearchfield: function() {
@@ -59,7 +62,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
      * container. */
     getResultContainer: function() {
         //return this.items.items[1];
-        return Ext.getCmp('floating-searchresult');
+        return Ext.getCmp(this.multisearchresultid);
     },
 
     showResults: function() {
@@ -72,31 +75,25 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     search: function(value) {
-        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', value);
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+            searchstring: value
+        });
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
-            var store = searchresults.store;
-            store.proxy.extraParams.query = parsedSearch.nonFilterValues;
-            store.proxy.extraParams.filters = Ext.JSON.encode(parsedSearch.filters);
-            //console.log(store.proxy.extraParams);
-            store.load(function(records, operation, success) {
-                if(success) {
-                    if(store.data.items.length == 0) {
-                        searchresults.hide();
-                    } else {
-                        searchresults.show();
-                    }
-                } else {
-                    searchresults.hide();
-                }
-            });
+            searchresults.search(parsedSearch);
         });
     },
 
+    setSearchValue: function(value) {
+        this.getSearchField().setValue(value);
+    },
+
     loadInitialValues: function() {
-        //var value = 'type:deadline deadline__assignment_group:16 3580';
-        //var value = '3580';
-        //this.getSearchField().setValue(value);
-        //this.search(value);
+        //var value = 'type:delivery deadline__assignment_group:>:33 3580';
+        //var value = 'type:delivery assignment__short_name:week1';
+        //var value = 'type:delivery group:'
+        //var value = 'type:delivery deadline__assignment_group__parentnode__parentnode__short_name:duck3580';
+        //var value = '1100';
+        //this.setSearchValue(value);
     }
 });

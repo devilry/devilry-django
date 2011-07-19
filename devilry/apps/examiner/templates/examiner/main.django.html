@@ -13,7 +13,6 @@
     var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
     var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
-    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
     Ext.onReady(function() {
@@ -23,42 +22,45 @@
                 xtype: 'searchresults',
                 title: 'Deliveries',
                 store: deliverystore,
-                links: [{
-                    title: 'Create feedback',
-                    urlprefix: 'create-feedback/',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
-            }, {
-                xtype: 'searchresults',
-                title: 'Deadlines',
-                store: deadlinestore,
-                links: [{
-                    title: 'Show deliveries',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: {
+                    type: 'delivery',
+                    shortcuts: {
+                        assignment: 'deadline__assignment_group__parentnode',
+                        group: 'deadline__assignment_group',
+                    }
+                },
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Create feedback',
+                        clickLinkTpl: 'create-feedback/{id}'
+                    },
+                    menuitems: [{
+                        text: 'View delivery'
+                    }]
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                links: [{
-                    title: 'All deliveries',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery group:{id}'
+                    },
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                links: [{
-                    title: 'Overview',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery assignment:{id}'
+                    },
+                }
             }]
         });
         searchwidget.loadInitialValues();
