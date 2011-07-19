@@ -56,6 +56,8 @@ class FilterSpec(object):
         except KeyError, e:
             raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
         else:
+            if isinstance(value, basestring) and value.strip() == '':
+                return None
             if not comp in self.supported_comp:
                 raise FilterValidationError('Invalid filter: {0}. {1} is not a supported "comp".'.format(filterdict, comp))
             djangocomp = COMP_TO_DJANGO_MAP[comp]
@@ -137,7 +139,7 @@ class FilterSpecs(object):
             for patternfilterpec in self.patternfilterspecs:
                 if patternfilterpec.matches(fieldname):
                     return patternfilterpec
-            raise KeyError()
+            raise
 
     def parse(self, filters):
         """
@@ -156,13 +158,17 @@ class FilterSpecs(object):
         for filterdict in filters:
             try:
                 fieldname = filterdict['field']
-                filterspec = self.find_filterspec(fieldname)
             except KeyError, e:
                 raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
-            except TypeError, e:
-                raise FilterValidationError('Invalid filter: {0}'.format(filterdict))
+
+            try:
+                filterspec = self.find_filterspec(fieldname)
+            except KeyError, e:
+                raise FilterValidationError('Invalid filter fieldname {0} in: {1}.'.format(fieldname, filterdict))
             else:
-                qry &= filterspec.to_django_qry(filterdict)
+                qrysegment = filterspec.to_django_qry(filterdict)
+                if qrysegment != None:
+                    qry &= filterspec.to_django_qry(filterdict)
         return qry
 
     def __add__(self, other):
