@@ -25,7 +25,7 @@ class AddDeliveryView(View):
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
-                       'deliveryid': deliveryid,
+                       'deadlineid': deliveryid,
                        'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
                       )
                       
