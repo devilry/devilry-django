@@ -29,30 +29,34 @@
                 xtype: 'searchresults',
                 title: 'Deadlines',
                 store: deadlinestore,
-                links: [{
-                    title: 'Deliver',
-                    urlprefix: 'add-delivery/',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Deliver',
+                        clickLinkTpl: 'add-delivery/{id}'
+                    }
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                editorurlprefix: '',
-                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                editorurlprefix: '',
-                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Deliveries',
                 store: deliverystore,
-                editorurlprefix: '',
-                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
             }]
         });
         searchwidget.loadInitialValues();
