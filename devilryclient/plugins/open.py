@@ -3,6 +3,7 @@
 from devilryclient.utils import findconffolder
 from os.path import dirname, join
 from os import getcwd
+import platform
 from ConfigParser import ConfigParser
 from urlparse import urljoin
 from subprocess import call
@@ -18,15 +19,20 @@ class DevilryClientOpen(object):
         self.server = self.conf.get('resources', 'url')
 
     def open(self):
-        context = getcwd().replace(self.root_dir, '')
+        context = 'examiner' + getcwd().replace(self.root_dir, '')
         url = urljoin(self.server, context)
 
-        # TODO: if on macos, use 'open'
-        # TODO: if on windows, use 'start', with som shuffling of the
-        # arguments
-        cmd = 'xdg-opensdf'
+        # find out what os is running
+        if platform.system() == 'Darwin':
+            cmd = 'open'
+        elif platform.system() == 'Windows':
+            cmd = 'start'
+        else:
+            cmd = 'xdg-open'
+
         try:
-            call([cmd, url])
+            #call([cmd, url])
+            print [cmd, url]
         except OSError:
             print "Unable to run program: {cmd}".format(cmd=cmd)
             print "URL for current context: {url}".format(url=url)
