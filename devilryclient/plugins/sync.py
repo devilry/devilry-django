@@ -52,7 +52,7 @@ class PullFromServer(object):
             #add subject to tree dictionary
             self.tree[subject['short_name']] = {}
 
-            subject_path = create_folder(subject, devilry_path, 'short_name')
+            subject_path = create_folder(join(devilry_path, subject['short_name']))
             #search for this subjects periods
             period_filters = [{'field':'parentnode',
                                 'comp':'exact',
@@ -68,7 +68,7 @@ class PullFromServer(object):
             #add period to tree dictionary
             self.tree[subject][period['short_name']] = {}
 
-            period_path = create_folder(period, subject_path, 'short_name')
+            period_path = create_folder(join(subject_path, period['short_name']))
             assignment_filters = [{'field':'parentnode',
                                    'comp':'exact',
                                    'value':period['id']}]
@@ -83,7 +83,7 @@ class PullFromServer(object):
             period = path[-1]
             subject = path[-2]
             self.tree[subject][period][assignment['short_name']] = {}
-            assignment_path = create_folder(assignment, period_path, 'short_name')
+            assignment_path = create_folder(join(period_path, assignment['short_name']))
 
             a_group_filters = [{'field':'parentnode',
                                 'comp':'exact',
@@ -102,7 +102,7 @@ class PullFromServer(object):
             subject = path[-3]
             self.tree[subject][period][assignment][str(assignment_group['id'])] = {}
 
-            assignment_group_path = create_folder(assignment_group, assignment_path, 'id')
+            assignment_group_path = create_folder(join(assignment_path, str(assignment_group['id'])))
             deadline_filters = [{'field':'assignment_group',
                                  'comp':'exact',
                                  'value':assignment_group['id']}]
@@ -112,6 +112,7 @@ class PullFromServer(object):
             self.add_deadlines(assignment_group_path, deadlines)
 
     def add_deadlines(self, assignment_group_path, deadlines):
+        #TODO fix format of deadline
         for deadline in deadlines:
             path = assignment_group_path.split(sep)
             group = path[-1]
@@ -120,7 +121,7 @@ class PullFromServer(object):
             subject = path[-4]
             self.tree[subject][period][assignment][group][deadline['deadline']] = {}
 
-            deadline_path = create_folder(deadline, assignment_group_path, 'deadline')
+            deadline_path = create_folder(join(assignment_group_path, deadline['deadline']))
             delivery_filters = [{'field':'deadline',
                                  'comp':'exact',
                                  'value':deadline['id']}]
@@ -140,17 +141,21 @@ class PullFromServer(object):
             subject = path[-5]
             self.tree[subject][period][assignment][group][deadline][str(delivery['id'])] = {}
 
-            delivery_path = create_folder(delivery, deadline_path, 'id')
+
+            #TODO this does not work! the id of assignmentgroup is added instead
+            delivery_path = create_folder(join(deadline_path, str(delivery['id'])))
 
             devilryfolder = findconffolder()
             treefile = open(join(devilryfolder, 'metadata'), 'w')
             treefile.write(str(self.tree))
             treefile.close()
+            #TODO add filemeta and create a feedback.txt file
             #filemeta
             #make feedback.txt file
 
     def is_late(self, delivery):
-        #print delivery
+        #TODO
+        #print delivery['deadline']
         return False
 
 if __name__ == '__main__':

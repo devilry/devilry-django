@@ -135,23 +135,10 @@ def findconffolder():
 
     raise ValueError(".devirly not found")
 
-
-# #TODO
-# def restful_setup():
-#     restful_factory = RestfulFactory("http://localhost:8000/")
-#     SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
-#     SimplifiedSubject = restful_factory.make("administrator/restfulsimplifiedsubject/")
-#     SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
-#     SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassignment/")
-#     return [SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment]
-
-
-#TODO
-def create_folder(node, parent_path, folder_name):
+def create_folder(path):
     """
     :param folder_name: A string representing the node attribute which the folder should be named after
     """
-    path = join(parent_path, str(node[folder_name]))
     if not exists(path):
         logging.debug('INFO: Creating {}'.format(path))
         mkdir(path)
