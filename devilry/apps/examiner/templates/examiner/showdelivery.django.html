@@ -31,14 +31,16 @@
             */
             filemetastore: undefined,
 
-            /**
-            * @cfg
-            * Delivery object as returned from loading it by id as a model.
-            */
-            delivery: undefined
+            deliveryid: undefined
         },
 
         initComponent: function() {
+            var deliveryInfo = Ext.create('devilry.extjshelpers.DeliveryInfo', {
+                filemetastore: this.filemetastore
+            });
+
+            this.mainFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo');
+
             Ext.apply(this, {
                 items: [{
                     region: 'north',
@@ -47,34 +49,43 @@
                 }, {
                     region: 'center',
                     //html: 'Hello world'
-                    items: [{
-                        xtype: 'staticfeedbackinfo',
-                    }]
+                    items: [this.mainFeedback]
                 }, {
                     region: 'east',
                     width: 150,
-                    xtype: 'deliveryinfo',
+                    xtype: 'panel',
                     collapsible: true,   // make collapsible
                     titleCollapse: true, // click anywhere on title to collapse.
-                    delivery: this.delivery,
-                    filemetastore: this.filemetastore
+                    items: [deliveryInfo]
                 }],
             });
 
             this.callParent(arguments);
+
+            Ext.ModelManager.getModel({{ RestfulSimplifiedDelivery|extjs_modelname }}).load(this.deliveryid, {
+                success: function(deliveryrecord) {
+                    deliveryInfo.setDelivery(deliveryrecord.data);
+                }
+            });
+
+            var me = this;
+            Ext.data.StoreManager.lookup(this.staticfeedbackstoreid).load({
+                callback: function(records, operation, success) {
+                    //console.log(success);
+                    //console.log(records);
+                    me.mainFeedback.setStaticFeedback(records[0].data);
+                },
+
+            });
         }
     });
 
     Ext.onReady(function() {
-        Ext.ModelManager.getModel({{ RestfulSimplifiedDelivery|extjs_modelname }}).load({{ deliveryid }}, {
-            success: function(delivery) {
-                Ext.create('devilry.examiner.ShowDelivery', {
-                    renderTo: 'showdelivery',
-                    delivery: delivery.data,
-                    filemetastore: Ext.data.StoreManager.lookup({{ RestfulSimplifiedFileMeta|extjs_storeid }}),
-                    staticfeedbackstore: Ext.data.StoreManager.lookup({{ RestfulSimplifiedStaticFeedback|extjs_storeid }})
-                });
-            }
+        Ext.create('devilry.examiner.ShowDelivery', {
+            renderTo: 'showdelivery',
+            deliveryid: {{ deliveryid }},
+            filemetastore: Ext.data.StoreManager.lookup({{ RestfulSimplifiedFileMeta|extjs_storeid }}),
+            staticfeedbackstoreid: {{ RestfulSimplifiedStaticFeedback|extjs_storeid }}
         });
     });
 

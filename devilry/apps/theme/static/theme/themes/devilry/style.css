@@ -387,6 +387,26 @@ a.warning-button {
 span.error {
   color: #a00; }
 
+table.verticalinfotable {
+  border-collapse: collapse;
+  border: 1px solid #D4D2CE;
+  margin: 15px 0 15px 0; }
+  table.verticalinfotable thead th {
+    text-align: left;
+    font-weight: bold;
+    font-style: normal;
+    /*background-color: #ECEBE9;*/ }
+  table.verticalinfotable th {
+    text-align: right;
+    font-weight: normal;
+    font-style: italic;
+    background-color: #ECEBE9; }
+  table.verticalinfotable td, table.verticalinfotable th {
+    padding: 2px 6px;
+    border: 1px solid #D4D2CE; }
+  table.verticalinfotable td {
+    background-color: #fff; }
+
 /**
  *
  * Footer

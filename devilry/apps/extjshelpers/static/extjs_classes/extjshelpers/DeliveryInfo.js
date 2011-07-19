@@ -10,6 +10,7 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deliveryinfo',
     title: 'Delivery',
+    cls: 'widget-deliveryinfo',
     html: '',
     tpl: Ext.create('Ext.XTemplate',
         '<dl>',
@@ -38,41 +39,41 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
          * @cfg
          * RestfulSimplifiedFileMeta store. __Required__.
          */
-        filemetastore: undefined,
-
-        /**
-         * @cfg
-         * Delivery object as returned from loading it by id as a model.
-         */
-        delivery: undefined
+        filemetastore: undefined
     },
 
-    loadFileMetas: function() {
+    initComponent: function() {
+        if(this.delivery) {
+            this.setDelivery(this.delivery);
+        }
+        this.callParent(arguments);
+    },
+
+    loadFileMetas: function(delivery) {
         var me = this;
         var store = this.filemetastore;
         store.proxy.extraParams.filters = Ext.JSON.encode([
-            {field: 'delivery', comp:'exact', value: this.delivery.id}
+            {field: 'delivery', comp:'exact', value: delivery.id}
         ]);
         store.load(function(filemetarecords, operation, success) {
             if(success) {
-                me.createBody(filemetarecords);
+                me.createBody(delivery, filemetarecords);
             } else {
-                me.createBody({errors: true});
+                me.createBody(delivery, {errors: true});
             }
         });
     },
 
-    createBody: function(filemetas) {
+    createBody: function(delivery, filemetas) {
         var html = this.tpl.apply({
-            delivery: this.delivery,
+            delivery: delivery,
             filemetas: filemetas
         });
         this.update(html);
     },
 
-    initComponent: function() {
-        this.callParent(arguments);
-        this.createBody(false);
-        this.loadFileMetas();
+    setDelivery: function(delivery) {
+        this.createBody(delivery, false);
+        this.loadFileMetas(delivery);
     }
 });

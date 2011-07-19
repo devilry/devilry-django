@@ -6,20 +6,29 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.staticfeedbackinfo',
     title: 'Feedback',
-
-    config: {
-        /**
-         * @cfg
-         * StaticFeedbackInfo record as returned from loading it by id as a model.
-         */
-        staticfeedback: undefined
-    },
+    cls: 'widget-staticfeedbackinfo',
+    tpl: Ext.create('Ext.XTemplate',
+        '<table class="verticalinfotable">',
+        '   <tr>',
+        '       <th>Grade</th>',
+        '       <td>{grade}</td>',
+        '   </tr>',
+        '       <th>Points</th>',
+        '       <td>{points}</td>',
+        '   </tr>',
+        '       <th>Is passing grade?</th>',
+        '       <td>{is_passing_grade}</td>',
+        '   </tr>',
+        '</table>',
+        '<div class="rendered_view">{rendered_view}<div>'
+    ),
 
     initComponent: function() {
-        Ext.apply(this, {
-            
-        });
-
         this.callParent(arguments);
+    },
+
+    setStaticFeedback: function(feedback) {
+        console.log(feedback);
+        this.update(this.tpl.apply(feedback));
     }
 });
