@@ -62,52 +62,6 @@
         searchwidget.loadInitialValues();
         searchwidget.focusOnSearchfield();
 
-    var msg = function(title, msg) {
-        Ext.Msg.show({
-            title: title,
-            msg: msg,
-            minWidth: 200,
-            modal: true,
-            icon: Ext.Msg.INFO,
-            buttons: Ext.Msg.OK
-        });
-    };
-
-
-            var fileuploadpanel = Ext.create('Ext.form.Panel', {
-            title: 'Fucking upload',
-            width: 600,
-            frame: true,
-            renderTo: 'fileuploadpanel',
-            items: [{
-                xtype: 'fileuploadfield',
-                name: 'photo',
-                fieldLabel: 'Delivery',
-                labelWidth: 50,
-                msgTarget: 'side',
-                allowBlank: true,
-                anchor: '100%',
-                emptyText: 'Select files...',
-                buttonText: 'Browse Files...'
-            }],
-            buttons: [{
-                text: 'Deliver!',
-                handler: function(a, b) {
-                         msg('Success', 'Not really, nothing ever happened with your file');
-                    <!-- var form = this.up('form').getForm(); -->
-                    <!-- if(form.isValid()){ -->
-                    <!--     form.submit({ -->
-                    <!--         url: '#', -->
-                    <!--         waitMsg: 'Uploading your photo...', -->
-                    <!--         success: function(fp, o) { -->
-                    <!--             Ext.Msg.alert('Success', 'Your photo "' + o.result.file + '" has been uploaded.'); -->
-                    <!--         } -->
-                    <!--     }); -->
-                    <!-- } -->
-                }
-            }]
-        });
-
 
 
     });

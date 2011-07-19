@@ -11,6 +11,7 @@
 <script>
   var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
 
+
     Ext.onReady(function ()
     {
         var msg = function (title, msg)
@@ -25,6 +26,8 @@
                     buttons: Ext.Msg.OK
                 });
             };
+
+  
 
 
         var fileuploadpanel = Ext.create('Ext.panel.Panel', {
