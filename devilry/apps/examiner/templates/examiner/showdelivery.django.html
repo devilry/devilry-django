@@ -5,7 +5,7 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedDelivery|extjs_model }};
+    {{ RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }};
     {{ RestfulSimplifiedFileMeta|extjs_model }};
     {{ RestfulSimplifiedStaticFeedback|extjs_model }};
 
@@ -25,6 +25,14 @@
             'devilry.extjshelpers.StaticFeedbackGrid'
         ],
 
+        headingTpl: Ext.create('Ext.XTemplate',
+            '<div class="treeheader">',
+            '   <div class="level1">{deadline__assignment_group__parentnode__parentnode__parentnode__long_name}</div>',
+            '   <div class="level2">{deadline__assignment_group__parentnode__parentnode__long_name}</div>',
+            '   <div class="level3">{deadline__assignment_group__parentnode__long_name}</div>',
+            '<div>'
+        ),
+
         config: {
             /**
             * @cfg
@@ -36,6 +44,8 @@
         },
 
         initComponent: function() {
+            var me = this;
+
             var deliveryInfo = Ext.create('devilry.extjshelpers.DeliveryInfo', {
                 filemetastore: this.filemetastore
             });
@@ -43,18 +53,33 @@
             var feedbackeditorstore = Ext.data.StoreManager.lookup(this.staticfeedbackstoreid);
             feedbackeditorstore.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
             var mainFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo');
+            var mainHeader = Ext.create('Ext.Component');
+
+
+            var createButton = Ext.create('Ext.button.Button', {
+                text: 'Modify feedback',
+                margin: {top: 20},
+                scale: 'large',
+                hidden: true,
+                listeners: {
+                    click: function() {
+                        var createurl = Ext.String.format('../create-feedback/{0}', me.delivery.id);
+                        window.location = createurl;
+                    }
+                }
+            });
 
             Ext.apply(this, {
                 items: [{
                     region: 'north',
-                    height: 40,
-                    html: 'Top navigation'
+                    height: 66,
+                    xtype: 'container',
+                    items: [mainHeader]
                 }, {
                     region: 'center',
-                    //html: 'Hello world'
                     items: [mainFeedback]
                 }, {
-                    region: 'east',
+                    region: 'west',
                     width: 220,
                     xtype: 'panel',
                     collapsible: true,   // make collapsible
@@ -68,7 +93,7 @@
                                 mainFeedback.setStaticFeedback(record.data);
                             }
                         }
-                    }]
+                    }, createButton]
                 }],
             });
 
@@ -77,10 +102,12 @@
             Ext.ModelManager.getModel({{ RestfulSimplifiedDelivery|extjs_modelname }}).load(this.deliveryid, {
                 success: function(deliveryrecord) {
                     deliveryInfo.setDelivery(deliveryrecord.data);
+                    mainHeader.update(me.headingTpl.apply(deliveryrecord.data));
+                    me.delivery = deliveryrecord.data;
+                    createButton.show();
                 }
             });
 
-            var me = this;
             feedbackeditorstore.load({
                 callback: function(records, operation, success) {
                     mainFeedback.setStaticFeedback(records[0].data);

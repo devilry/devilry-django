@@ -401,7 +401,6 @@ span.error {
 table.verticalinfotable {
 	border-collapse:collapse;
 	border: 1px solid #D4D2CE;
-	margin: 15px 0 15px 0;
     thead th {
         text-align: left;
         font-weight: bold;
@@ -420,6 +419,22 @@ table.verticalinfotable {
     }
     td {
         background-color: #fff;
+    }
+}
+
+.widget-staticfeedbackinfo table.verticalinfotable {
+    float: right;
+}
+
+.treeheader {
+    .level1 {
+        font-size: 1.6em;
+    }
+    .level2 {
+        font-size: 1.4em;
+    }
+    .level3 {
+        font-size: 1.2em;
     }
 }
 
