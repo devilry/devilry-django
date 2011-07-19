@@ -45,34 +45,35 @@ devilry_path = dirname(findconffolder())
 
 subjects = SimplifiedSubject.search(logincookie, query='')['items']
 
-for s in subjects:
-    subject_path = create_folder(s, devilry_path, 'short_name')
-    sub_filters = [{'field':"parentnode", "comp":"exact", "value":s["id"]}]
-    periods = SimplifiedPeriod.search(logincookie, result_fieldgroups=['subject'], filters=sub_filters)['items']
+for subject in subjects:
+    subject_path = create_folder(subject, devilry_path, 'short_name')
+    subject_filters = [{'field':"parentnode", "comp":"exact", "value":subject["id"]}]
+    periods = SimplifiedPeriod.search(logincookie, result_fieldgroups=['subject'], filters=subject_filters)['items']
     
-    for p in periods:
-        period_path = create_folder(p, subject_path, 'short_name')
-        ass_filters = [{'field':"parentnode", "comp":"exact", "value":p["id"]}]
+    for period in periods:
+        period_path = create_folder(period, subject_path, 'short_name')
+        assignment_filters = [{'field':"parentnode", "comp":"exact", "value":period["id"]}]
         assignments = SimplifiedAssignment.search(logincookie,
                     result_fieldgroups=['subject', 'period'], 
-                    filters=ass_filters)['items']
+                    filters=assignment_filters)['items']
 
-        for a in assignments:
-            assignment_path = create_folder(a, period_path, 'short_name')
+        for assignment in assignments:
+            assignment_path = create_folder(assignment, period_path, 'short_name')
 
-            ag_filters = [{'field':"parentnode", "comp":"exact", "value":a["id"]}]
+            a_group_filters = [{'field':"parentnode", "comp":"exact", "value":assignment["id"]}]
 
             assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, 
                             result_fieldgroups=['period', 'assignment'], 
-                            filters=ag_filters)['items']
+                            filters=a_group_filters)['items']
             
-            for ag in assignmentgroups:
-                ag_path = create_folder(ag, assignment_path, 'id')
-                deadline_filters = [{'field':'assignment_group', 'comp':'exact', 'value':ag['id']}]
+            for a_group in assignmentgroups:
+                a_group_path = create_folder(a_group, assignment_path, 'id')
+                deadline_filters = [{'field':'assignment_group', 'comp':'exact', 'value':a_group['id']}]
                 deadlines = SimplifiedDeadline.search(logincookie, 
                             result_fieldgroups=['period', 'assignment', 'assignment_group'],
                             filters=deadline_filters)['items']
-                print deadlines
+                for deadline in deadlines:
+                    print deadline
                 
                 """
                 #TODO delivery has no parentnode
