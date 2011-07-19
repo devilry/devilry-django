@@ -1,0 +1,90 @@
+{% extends "examiner/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+
+<script>
+    {{ RestfulSimplifiedDelivery|extjs_model }};
+    {{ RestfulSimplifiedFileMeta|extjs_model }};
+    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
+
+    {{ RestfulSimplifiedFileMeta|extjs_store }};
+    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
+
+
+    Ext.define('devilry.examiner.ShowDelivery', {
+        extend: 'Ext.panel.Panel',
+        width: 800,
+        height: 600,
+        layout: 'border',
+        alias: 'widget.examinerfeedback',
+        requires: [
+            'devilry.extjshelpers.DeliveryInfo',
+            'devilry.extjshelpers.StaticFeedbackInfo'
+        ],
+
+        config: {
+            /**
+            * @cfg
+            * RestfulSimplifiedFileMeta store. __Required__.
+            */
+            filemetastore: undefined,
+
+            /**
+            * @cfg
+            * Delivery object as returned from loading it by id as a model.
+            */
+            delivery: undefined
+        },
+
+        initComponent: function() {
+            Ext.apply(this, {
+                items: [{
+                    region: 'north',
+                    height: 40,
+                    html: 'Top navigation'
+                }, {
+                    region: 'center',
+                    //html: 'Hello world'
+                    items: [{
+                        xtype: 'staticfeedbackinfo',
+                    }]
+                }, {
+                    region: 'east',
+                    width: 150,
+                    xtype: 'deliveryinfo',
+                    collapsible: true,   // make collapsible
+                    titleCollapse: true, // click anywhere on title to collapse.
+                    delivery: this.delivery,
+                    filemetastore: this.filemetastore
+                }],
+            });
+
+            this.callParent(arguments);
+        }
+    });
+
+    Ext.onReady(function() {
+        Ext.ModelManager.getModel({{ RestfulSimplifiedDelivery|extjs_modelname }}).load({{ deliveryid }}, {
+            success: function(delivery) {
+                Ext.create('devilry.examiner.ShowDelivery', {
+                    renderTo: 'showdelivery',
+                    delivery: delivery.data,
+                    filemetastore: Ext.data.StoreManager.lookup({{ RestfulSimplifiedFileMeta|extjs_storeid }}),
+                    staticfeedbackstore: Ext.data.StoreManager.lookup({{ RestfulSimplifiedStaticFeedback|extjs_storeid }})
+                });
+            }
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div id="showdelivery"></div>
+
+{% endblock %}
