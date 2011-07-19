@@ -21,7 +21,8 @@
         alias: 'widget.examinerfeedback',
         requires: [
             'devilry.extjshelpers.DeliveryInfo',
-            'devilry.extjshelpers.StaticFeedbackInfo'
+            'devilry.extjshelpers.StaticFeedbackInfo',
+            'devilry.extjshelpers.StaticFeedbackGrid'
         ],
 
         config: {
@@ -39,7 +40,9 @@
                 filemetastore: this.filemetastore
             });
 
-            this.mainFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo');
+            var feedbackeditorstore = Ext.data.StoreManager.lookup(this.staticfeedbackstoreid);
+            feedbackeditorstore.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
+            var mainFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo');
 
             Ext.apply(this, {
                 items: [{
@@ -49,14 +52,23 @@
                 }, {
                     region: 'center',
                     //html: 'Hello world'
-                    items: [this.mainFeedback]
+                    items: [mainFeedback]
                 }, {
                     region: 'east',
-                    width: 150,
+                    width: 220,
                     xtype: 'panel',
                     collapsible: true,   // make collapsible
                     titleCollapse: true, // click anywhere on title to collapse.
-                    items: [deliveryInfo]
+                    split: true,
+                    items: [deliveryInfo, {
+                        xtype: 'staticfeedbackgrid',
+                        store: feedbackeditorstore,
+                        listeners: {
+                            itemclick: function(view, record) {
+                                mainFeedback.setStaticFeedback(record.data);
+                            }
+                        }
+                    }]
                 }],
             });
 
@@ -69,11 +81,9 @@
             });
 
             var me = this;
-            Ext.data.StoreManager.lookup(this.staticfeedbackstoreid).load({
+            feedbackeditorstore.load({
                 callback: function(records, operation, success) {
-                    //console.log(success);
-                    //console.log(records);
-                    me.mainFeedback.setStaticFeedback(records[0].data);
+                    mainFeedback.setStaticFeedback(records[0].data);
                 },
 
             });

@@ -19,6 +19,10 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
         '       <th>Is passing grade?</th>',
         '       <td>{is_passing_grade}</td>',
         '   </tr>',
+        '   </tr>',
+        '       <th>Feedback save time</th>',
+        '       <td>{save_timestamp:date}</td>',
+        '   </tr>',
         '</table>',
         '<div class="rendered_view">{rendered_view}<div>'
     ),
@@ -28,7 +32,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     },
 
     setStaticFeedback: function(feedback) {
-        console.log(feedback);
         this.update(this.tpl.apply(feedback));
     }
 });
