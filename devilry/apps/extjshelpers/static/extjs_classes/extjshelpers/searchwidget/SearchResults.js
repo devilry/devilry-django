@@ -119,7 +119,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             this.getPreviousPageButton().show();
         }
         this.getNextPageButton().hide();
-        if(visibleOnCurrentPage == this.store.pageSize) {
+        if(visibleOnCurrentPage == this.store.pageSize && (from+visibleOnCurrentPage) != this.store.getTotalCount()) {
             this.getNextPageButton().show();
         }
     },
