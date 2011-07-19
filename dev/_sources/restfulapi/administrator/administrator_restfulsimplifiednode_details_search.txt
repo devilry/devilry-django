@@ -33,8 +33,8 @@ Request example
     {
         query: 'a query string',
         filters: [{field:"long_name", comp:"iexact", value:"My example value"},
-                      {field:"parentnode", comp:">", value:15},
-                      {field:"short_name", comp:"exact", value:"my_example001_value"}],
+                      {field:"parentnode", comp:"exact", value:15},
+                      {field:"short_name", comp:"icontains", value:"my_example001_value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name"],
         start: 10,
         limit: 100
@@ -98,8 +98,8 @@ Example:
     .. code-block:: javascript
 
         [{field:"long_name", comp:"iexact", value:"My example value"},
-         {field:"parentnode", comp:">", value:15},
-         {field:"short_name", comp:"exact", value:"my_example001_value"}]
+         {field:"parentnode", comp:"exact", value:15},
+         {field:"short_name", comp:"icontains", value:"my_example001_value"}]
 
 Nodes can be filtered on the following *fields*:
 

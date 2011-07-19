@@ -1247,6 +1247,23 @@ the given student is candidate.</p>
 <em class="property">class </em><tt class="descclassname">devilry.apps.core.models.</tt><tt class="descname">FileMeta</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.FileMeta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.abstract_is_candidate.AbstractIsCandidate</span></tt></p>
 <p>Represents the metadata for a file belonging to a <a class="reference internal" href="#delivery">Delivery</a>.</p>
+<p>A file meta is just information about a single file, which is stored in a
+<a class="reference internal" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="devilry.apps.core.models.model_utils.FileMeta.deliverystore"><tt class="xref py py-attr docutils literal"><span class="pre">deliverystore</span></tt></a>. Use the <a class="reference internal" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="devilry.apps.core.models.model_utils.FileMeta.deliverystore"><tt class="xref py py-attr docutils literal"><span class="pre">deliverystore</span></tt></a> to manage the file
+stored in its physical location. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">filemeta</span> <span class="o">=</span> <span class="n">FileMeta</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">filemeta</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filemeta</span><span class="p">):</span>
+    <span class="n">filemeta</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filemeta</span><span class="p">)</span>
+
+<span class="c"># Write or read just as with the builtin open()</span>
+<span class="n">fobj</span> <span class="o">=</span> <span class="n">filemeta</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">write_open</span><span class="p">(</span><span class="n">filemeta</span><span class="p">)</span>
+<span class="n">fobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Hello&#39;</span><span class="p">)</span>
+<span class="n">fobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;World&#39;</span><span class="p">)</span>
+<span class="n">fobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">fobj</span> <span class="o">=</span> <span class="n">filemeta</span><span class="o">.</span><span class="n">deliverystore</span><span class="o">.</span><span class="n">read_open</span><span class="p">(</span><span class="n">filemeta</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">fobj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="core.deliverystore.html#devilry-apps-core-deliverystore"><em>DeliveryStore</em></a> for more details on deliverystores.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.FileMeta.delivery">
 <tt class="descname">delivery</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.FileMeta.delivery" title="Permalink to this definition">¶</a></dt>
@@ -1269,15 +1286,8 @@ the given feedback.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.FileMeta.deliverystore">
 <tt class="descname">deliverystore</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="Permalink to this definition">¶</a></dt>
-<dd><p>The current <a class="reference internal" href="core.deliverystore.html#devilry-apps-core-deliverystore"><em>DeliveryStore</em></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.FileMeta.remove_file">
-<tt class="descname">remove_file</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.FileMeta.remove_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the file using the
-<tt class="xref py py-meth docutils literal"><span class="pre">remove()</span></tt>-method
-of the <a class="reference internal" href="#devilry.apps.core.models.model_utils.FileMeta.deliverystore" title="devilry.apps.core.models.model_utils.FileMeta.deliverystore"><tt class="xref py py-attr docutils literal"><span class="pre">deliverystore</span></tt></a>.</p>
+<dd><p>The current <a class="reference internal" href="core.deliverystore.html#devilry-apps-core-deliverystore"><em>DeliveryStore</em></a>.
+<em>Class variable</em>.</p>
 </dd></dl>
 
 </dd></dl>

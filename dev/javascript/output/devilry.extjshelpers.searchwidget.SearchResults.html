@@ -3,7 +3,7 @@
 <h1>Class <a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults'>devilry.extjshelpers.searchwidget.SearchResults</a></h1>
 <table cellspacing='0'>
 
-<tr><td class='label'>Extends:</td><td class='hd-info'>Ext.grid.Panel</td></tr>
+<tr><td class='label'>Extends:</td><td class='hd-info'>Ext.panel.Panel</td></tr>
 
 <tr><td class='label'>Defined In:</td><td class='hd-info'><a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults'>SearchResults.js</a></td></tr>
 
@@ -12,7 +12,16 @@
 
 
 </table>
-<div class='description'><p>A grid containing search results.</p>
+<div class='description'><p>A panel containing multiple search results under a common title and store.</p>
+
+<pre><code> ------------------------
+ | title                |
+ ------------------------
+ | result 1             |
+ | result 2             |
+ | result 3             |
+ -----------------------|
+</code></pre>
 </div>
 <div class='hr'></div>
 <a id='devilry.extjshelpers.searchwidget.SearchResults-configs'></a>
@@ -21,11 +30,32 @@
 <tr><th colspan='2' class='sig-header'>Config Options</th><th class='msource-header'>Defined By</th></tr>
       <tr class='config-row expandable '>
         <td class='micon'><a href='#expand' class='exi'>&nbsp;</a></td>
-        <td class='sig'><a id='devilry.extjshelpers.searchwidget.SearchResults-editorurlprefix'></a><b><a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-editorurlprefix'>editorurlprefix</a></b> : String<div class='mdesc'><div class='short'>Editor url prefix (Required). The editor url for a specific
+        <td class='sig'><a id='devilry.extjshelpers.searchwidget.SearchResults-editorurlprefix'></a><b><a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-editorurlprefix'>editorurlprefix</a></b> : Object<div class='mdesc'><div class='short'>Editor url prefix (Required). The editor url for a specific
 item is editorurlprefix+id. Note that this means that edi...</div><div class='long'><p>Editor url prefix (<strong>Required</strong>). The editor url for a specific
 item is <code>editorurlprefix+id</code>. Note that this means that editorurlprefix <em>must</em>
-end with <code>/</code>.</p>
+end with <code>/</code>. <em>Required</em>.</p>
 </div></div></td>
+        <td class='msource'>SearchResults</td>
+      </tr>
+
+      <tr class='config-row  '>
+        <td class='micon'><a href='#expand' class='exi'>&nbsp;</a></td>
+        <td class='sig'><a id='devilry.extjshelpers.searchwidget.SearchResults-rowformattpl'></a><b><a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-rowformattpl'>rowformattpl</a></b> : Object<div class='mdesc'><p>Formatting template for the text rendered for each result item. <em>Required</em>.</p>
+</div></td>
+        <td class='msource'>SearchResults</td>
+      </tr>
+
+      <tr class='config-row  '>
+        <td class='micon'><a href='#expand' class='exi'>&nbsp;</a></td>
+        <td class='sig'><a id='devilry.extjshelpers.searchwidget.SearchResults-store'></a><b><a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-store'>store</a></b> : Object<div class='mdesc'><p>The <code>Ext.data.store</code> where the results are loaded from. <em>Required</em>.</p>
+</div></td>
+        <td class='msource'>SearchResults</td>
+      </tr>
+
+      <tr class='config-row  '>
+        <td class='micon'><a href='#expand' class='exi'>&nbsp;</a></td>
+        <td class='sig'><a id='devilry.extjshelpers.searchwidget.SearchResults-title'></a><b><a href='source/SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-title'>title</a></b> : Object<div class='mdesc'><p>Title of these search results. <em>Required</em>.</p>
+</div></td>
         <td class='msource'>SearchResults</td>
       </tr>
 

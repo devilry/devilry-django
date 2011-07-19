@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-StaticFeedbackInfo'>/** Panel to show StaticFeedback info:
+</span> *
+ * @xtype staticfeedbackinfo
+ */
+Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.staticfeedbackinfo',
+    title: 'Feedback',
+    cls: 'widget-staticfeedbackinfo',
+    tpl: Ext.create('Ext.XTemplate',
+        '&lt;table class=&quot;verticalinfotable&quot;&gt;',
+        '   &lt;tr&gt;',
+        '       &lt;th&gt;Grade&lt;/th&gt;',
+        '       &lt;td&gt;{grade}&lt;/td&gt;',
+        '   &lt;/tr&gt;',
+        '       &lt;th&gt;Points&lt;/th&gt;',
+        '       &lt;td&gt;{points}&lt;/td&gt;',
+        '   &lt;/tr&gt;',
+        '       &lt;th&gt;Is passing grade?&lt;/th&gt;',
+        '       &lt;td&gt;{is_passing_grade}&lt;/td&gt;',
+        '   &lt;/tr&gt;',
+        '   &lt;/tr&gt;',
+        '       &lt;th&gt;Feedback save time&lt;/th&gt;',
+        '       &lt;td&gt;{save_timestamp:date}&lt;/td&gt;',
+        '   &lt;/tr&gt;',
+        '&lt;/table&gt;',
+        '&lt;div class=&quot;rendered_view&quot;&gt;{rendered_view}&lt;div&gt;'
+    ),
+
+    initComponent: function() {
+        this.callParent(arguments);
+    },
+
+    setStaticFeedback: function(feedback) {
+        this.update(this.tpl.apply(feedback));
+    }
+});
+</pre>
+</body>
+</html>
