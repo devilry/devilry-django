@@ -1,32 +1,30 @@
 #!/usr/bin/env python
 
-import logging, sys, ConfigParser
+import logging
+import sys
 from os.path import join, exists, dirname
 from os import environ, mkdir
-from devilryclient.restfulclient import login
-from devilryclient.restfulclient import RestfulFactory
-from devilryclient.utils import logging_startup, findconffolder, create_folder, Session
+#from devilryclient.restfulclient import login
+from devilryclient.restfulclient.restfulfactory import RestfulFactory
+from devilryclient.utils import logging_startup, findconffolder, create_folder
 
 #Arguments for logging
 args = sys.argv[1:]
-otherargs = logging_startup(args) #otherargs has commandspecific args
+otherargs = logging_startup(args)  # otherargs has commandspecific args
 logging.debug('hello from sync.py')
 
-session = Session()
-#TODO get_session_cookie not working, find out why
-logincookie = session.get_session_cookie()
-
-#TODO put this in login.py
-# logincookie = login('http://localhost:8000/authenticate/login',
-#         username='grandma', password='test')
-
-logincookie = login('http://localhost:8000/authenticate/login',
-         username='examiner2', password='test')
+#TODO put this in a utility function
+restful_factory = RestfulFactory("http://localhost:8000/")
+#SimplifiedNode = restful_factory.make("examiner/restfulsimplifiednode/")
+SimplifiedSubject = restful_factory.make("examiner/restfulsimplifiedsubject/")
+SimplifiedPeriod = restful_factory.make("examiner/restfulsimplifiedperiod/")
+SimplifiedAssignment = restful_factory.make("examiner/restfulsimplifiedassignment/")
 
 confdir = findconffolder()
 conf = ConfigParser.ConfigParser()
 conf.read(join(confdir, 'config'))
 
+<<<<<<< HEAD
 url = conf.get('URL', 'url')
 print url
 
@@ -43,33 +41,41 @@ SimplifiedStaticFeedback = restful_factory.make("/examiner/restfulsimplifiedstat
 
 devilry_path = dirname(findconffolder())
 
-subjects = SimplifiedSubject.search(logincookie, query='')['items']
+subjects = SimplifiedSubject.search(query='')['items']
 
 for subject in subjects:
     subject_path = create_folder(subject, devilry_path, 'short_name')
-    subject_filters = [{'field':"parentnode", "comp":"exact", "value":subject["id"]}]
-    periods = SimplifiedPeriod.search(logincookie, result_fieldgroups=['subject'], filters=subject_filters)['items']
+    subject_filters = [{'field':'parentnode',
+                        'comp':'exact',
+                        'value':subject['id']}]
+    periods = SimplifiedPeriod.search(result_fieldgroups=['subject'], filters=subject_filters)['items']
     
     for period in periods:
         period_path = create_folder(period, subject_path, 'short_name')
-        assignment_filters = [{'field':"parentnode", "comp":"exact", "value":period["id"]}]
-        assignments = SimplifiedAssignment.search(logincookie,
+        assignment_filters = [{'field':'parentnode',
+                               'comp':'exact',
+                               'value':period['id']}]
+        assignments = SimplifiedAssignment.search(
                     result_fieldgroups=['subject', 'period'], 
                     filters=assignment_filters)['items']
 
         for assignment in assignments:
             assignment_path = create_folder(assignment, period_path, 'short_name')
 
-            a_group_filters = [{'field':"parentnode", "comp":"exact", "value":assignment["id"]}]
+            a_group_filters = [{'field':'parentnode',
+                                'comp':'exact',
+                                'value':assignment['id']}]
 
-            assignmentgroups = SimplifiedAssignmentGroup.search(logincookie, 
+            assignmentgroups = SimplifiedAssignmentGroup.search( 
                             result_fieldgroups=['period', 'assignment'], 
                             filters=a_group_filters)['items']
             
             for a_group in assignmentgroups:
                 a_group_path = create_folder(a_group, assignment_path, 'id')
-                deadline_filters = [{'field':'assignment_group', 'comp':'exact', 'value':a_group['id']}]
-                deadlines = SimplifiedDeadline.search(logincookie, 
+                deadline_filters = [{'field':'assignment_group',
+                                     'comp':'exact',
+                                     'value':a_group['id']}]
+                deadlines = SimplifiedDeadline.search( 
                             result_fieldgroups=['period', 'assignment', 'assignment_group'],
                             filters=deadline_filters)['items']
                 for deadline in deadlines:
