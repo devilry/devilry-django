@@ -24,7 +24,8 @@ class DeadlineExtjsModelMeta:
                     '<div class="unimportant">'
                         '{assignment_group__parentnode__parentnode__parentnode__short_name}.'
                         '{assignment_group__parentnode__parentnode__short_name}.'
-                        '{assignment_group__parentnode__short_name} - Group id: {id}</div>')
+                        '{assignment_group__parentnode__short_name}'
+                        '&mdash; Group id: {assignment_group}</div>')
     combobox_displayfield = 'id'
 
 
@@ -39,5 +40,6 @@ class DeliveryExtjsModelMeta:
                     '<div class="unimportant">'
                         '{deadline__assignment_group__parentnode__parentnode__parentnode__short_name}.'
                         '{deadline__assignment_group__parentnode__parentnode__short_name}.'
-                        '{deadline__assignment_group__parentnode__short_name} &mdash; Group id: {id}</div>')
+                        '{deadline__assignment_group__parentnode__short_name} '
+                        '&mdash; Group id: {deadline__assignment_group}</div>')
     combobox_displayfield = 'id'
