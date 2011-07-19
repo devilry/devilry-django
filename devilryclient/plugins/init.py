@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
-import sys, os, logging, ConfigParser
-from os.path import dirname, abspath, join
+import sys
+import os
+import logging
+import ConfigParser
+from os.path import join
 from devilryclient.utils import logging_startup
 
 args = sys.argv[1:]
-otherargs = logging_startup(args) #otherargs has commandspecific args
+otherargs = logging_startup(args) # otherargs has commandspecific args
 
 if len(otherargs) < 2:
     logging.warning('Not enough input arguments!')
@@ -29,13 +32,10 @@ except OSError:
     print logging.warning('Could not setup because directory already exists')
     raise SystemExit()
 
-Config.add_section('URL')
-Config.set('URL', 'url', '{}'.format(url))
+Config.add_section('resources')
+Config.set('resources', 'url', '{}'.format(url))
 Config.add_section('devilrydir')
 Config.set('devilrydir', 'path', '{}'.format(dirpath))
 
 Config.write(cfgfile)
 cfgfile.close()
-
-
-
