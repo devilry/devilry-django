@@ -5,7 +5,7 @@ from simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedPeriodMet
                                  SimplifiedAssignmentMetaMixin, SimplifiedAssignmentGroupMetaMixin,
                                  SimplifiedDeadlineMetaMixin, SimplifiedDeliveryMetaMixin,
                                  SimplifiedStaticFeedbackMetaMixin, SimplifiedFileMetaMetaMixin)
-
+from restfulmetabases import DeadlineExtjsModelMeta
 
 class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
     """ Mixin class extended by all classes in the Simplified API for Student using the Simplified API """
