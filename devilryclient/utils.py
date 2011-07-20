@@ -177,5 +177,3 @@ def is_late(delivery):
     deadline_time = delivery['deadline__deadline']
     delivery_time = delivery['time_of_delivery']
     return delivery_time > deadline_time
-
-#TODO check if {} tree exists
