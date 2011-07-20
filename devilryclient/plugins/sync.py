@@ -167,24 +167,28 @@ class PullFromServer(object):
                     result_fieldgroups=['period', 'assignment', 'assignment_group'],
                     filters=file_filters)
             
-            self.tree[subject][period][assignment][group][deadline][str(delivery['id'])] = {}
+            self.tree[subject][period][assignment][group][deadline][str(delivery['number'])] = {}
 
             self.add_files(delivery_path, files)
 
     def add_files(self, delivery_path, files):
         path = delivery_path.split(sep)
+        delivery = path[-1]
         deadline = path[-2]
         group = path[-3]
         assignment = path[-4]
         period = path[-5]
         subject = path[-6]
-        self.tree[subject][period][assignment][group][deadline]['.meta'] = {}
-        self.tree[subject][period][assignment][group][deadline]['.meta']['query_result'] = files
+        self.tree[subject][period][assignment][group][deadline][delivery]['.meta'] = {}
+        self.tree[subject][period][assignment][group][deadline][delivery]['.meta']['query_result'] = files
 
         file_path = create_folder(join(delivery_path, 'files'))
+        self.tree[subject][period][assignment][group][deadline][delivery]['files'] = []
         for file in files['items']:
             f = open(join(file_path, file['filename']), 'w')
             f.close()
+
+            self.tree[subject][period][assignment][group][deadline][delivery]['files'].append(file['filename'])
 
         devilryfolder = findconffolder()
         treefile = open(join(devilryfolder, 'metadata'), 'w')
