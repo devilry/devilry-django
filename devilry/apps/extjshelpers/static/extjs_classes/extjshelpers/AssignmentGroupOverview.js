@@ -42,7 +42,7 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 width: 220,
                 xtype: 'panel',
                 collapsible: true,   // make collapsible
-                titleCollapse: true, // click anywhere on title to collapse.
+                //titleCollapse: true, // click anywhere on title to collapse.
                 split: true,
                 items: [{
                     xtype: 'assignmentgroupinfo',

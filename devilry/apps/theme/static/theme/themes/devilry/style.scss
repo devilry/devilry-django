@@ -422,6 +422,15 @@ table.verticalinfotable {
     }
 }
 
+div.warning {
+    background-color: $warningcolor_bg;
+    color: $warningcolor_fg;
+    border: 2px solid #333;
+    border-radius: $radiussize_big;
+    padding: 20px;
+    margin: 20px 0 20px 0;
+}
+
 .widget-staticfeedbackinfo {
     .widget-staticfeedbackinfo-feedbackview {
         $padding: 20px;

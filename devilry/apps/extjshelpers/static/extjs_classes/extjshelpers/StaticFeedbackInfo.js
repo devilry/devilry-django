@@ -25,6 +25,17 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
         '       <td>{save_timestamp:date}</td>',
         '   </tr>',
         '</table>',
+        '<tpl if="!isactive">',
+        '   <div class="warning">',
+        '       <strong>This is not the active feedback.</strong>',
+        '       When an examiner publish a feedback, the feedback is ',
+        '       stored forever. When an examiner needs to modify a feedback, ',
+        '       they create a new feedback. Therefore, you see more than ',
+        '       one feedback in the menu above. Unless there is something ',
+        '       wrong with the latest feedback, you should not have to ',
+        '       read this feedback',
+        '   </div>',
+        '</tpl>',
         '<div class="rendered_view">{rendered_view}<div>'
     ),
 
@@ -33,7 +44,7 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     },
 
     constructor: function(config) {
-        this.addEvents('afterStoreLoad');
+        this.addEvents('afterStoreLoadMoreThanZero');
         return this.callParent([config]);
     },
     
@@ -86,14 +97,7 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                         me.bodyWithNoFeedback();
                     }
                     else {
-                        var first = records[0].data;
-                        me.feedbackSelector.setRawValue(first.save_timestamp);
-                        if(records.length >= 1) {
-                            me.feedbackSelector.show();
-                        } else {
-                        }
-                        me.setStaticFeedback(first);
-                        me.fireEvent('afterStoreLoad');
+                        me.bodyWithFeedback(records);
                     }
                 }
             }
@@ -108,24 +112,44 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
         return this.dockedItems.items[0];
     },
 
-    setStaticFeedback: function(feedback) {
-        this.setBody({
-            xtype: 'component',
-            cls: this.cls + '-feedbackview',
-            html: this.tpl.apply(feedback)
-        });
-    },
-
     setBody: function(content) {
         this.removeAll();
         this.add(content);
     },
 
+    setStaticFeedback: function(feedback) {
+        var first = this.store.data.items[0].data.id;
+        var tpldata = {isactive: first==feedback.id};
+        Ext.apply(tpldata, feedback);
+        this.setBody({
+            xtype: 'component',
+            cls: this.cls + '-feedbackview',
+            html: this.tpl.apply(tpldata)
+        });
+    },
+
+    bodyWithFeedback: function(records) {
+        var first = records[0].data;
+        this.feedbackSelector.setRawValue(first.save_timestamp);
+        if(records.length > 1) {
+            this.getToolbar().show();
+            this.feedbackSelector.show();
+        } else {
+        }
+        this.setStaticFeedback(first);
+        this.fireEvent('afterStoreLoadMoreThanZero');
+    },
+
     bodyWithNoFeedback: function() {
+        me.getToolbar().hide();
         this.setBody({
             xtype: 'component',
             cls: 'no-feedback',
             html: 'No feedback yet'
         });
+    },
+
+    getToolbar: function() {
+        return this.down('toolbar');
     }
 });

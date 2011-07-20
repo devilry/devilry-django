@@ -406,6 +406,14 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
+div.warning {
+  background-color: #cc4400;
+  color: #ffeee5;
+  border: 2px solid #333;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 20px 0 20px 0; }
+
 .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
   padding: 20px; }
   .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {

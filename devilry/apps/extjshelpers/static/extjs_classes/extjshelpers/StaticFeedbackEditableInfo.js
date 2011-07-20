@@ -25,13 +25,15 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
                 }
             }
         });
-        this.addListener('afterStoreLoad', function() {
-            me.down('toolbar').add(me.createButton);
+        this.addListener('afterStoreLoadMoreThanZero', function() {
+            me.getToolbar().add(me.createButton);
+            me.getToolbar().show();
         });
         this.callParent(arguments);
     },
 
     loadFeedbackEditor: function() {
+        this.getToolbar().hide();
         this.setBody({
             xtype: 'container',
             loader: {
@@ -51,7 +53,7 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
             html: '<p>No feedback</p><p class="unimportant">Click to create feedback</p>',
             listeners: {
                 render: function() {
-                    this.getEl().addListener('click', me.loadFeedbackEditor, me);
+                    this.getEl().addListener('mouseup', me.loadFeedbackEditor, me);
                 }
             }
         });
