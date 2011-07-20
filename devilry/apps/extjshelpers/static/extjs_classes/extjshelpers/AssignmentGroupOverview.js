@@ -45,7 +45,8 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 titleCollapse: true, // click anywhere on title to collapse.
                 split: true,
                 items: [{
-                    xtype: 'assignmentgroupinfo'
+                    xtype: 'assignmentgroupinfo',
+                    assignmentgroupid: this.assignmentgroupid
                 }]
             }, {
                 region: 'center',
@@ -80,18 +81,26 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
         var me = this;
         Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery').load(deliveryid, {
             scope: me,
-            success: me.onLoadDelivery
+            success: me.setDelivery
         });
     },
 
-    onLoadDelivery: function(deliveryrecord) {
-        var centerArea = Ext.getCmp(this.centerAreaId);
-        centerArea.removeAll();
-        centerArea.add({
-            xtype: 'deliveryinfo',
-            assignmentid: this.assignmentid,
-            delivery: deliveryrecord.data
-        });
+    setDelivery: function(deliveryrecord) {
+        if(deliveryrecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
+            var centerArea = Ext.getCmp(this.centerAreaId);
+            centerArea.removeAll();
+            centerArea.add({
+                xtype: 'deliveryinfo',
+                assignmentid: this.assignmentid,
+                delivery: deliveryrecord.data
+            });
+        } else {
+            var errormsg = Ext.String.format(
+                'Invalid deliveryid: {0}. Must be a delivery made by AssignmentGroup: {1}',
+                deliveryrecord.id,
+                this.assignmentgroupid);
+            console.error(errormsg);
+        }
     },
 
     handleNoDeliveryInQuerystring: function() {

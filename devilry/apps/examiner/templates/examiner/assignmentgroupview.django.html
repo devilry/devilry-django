@@ -6,13 +6,18 @@
 
 <script>
     {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
-    {{ RestfulSimplifiedDelivery|extjs_model }};
-    {{ RestfulSimplifiedFileMeta|extjs_model }};
-    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
 
-    {{ RestfulSimplifiedFileMeta|extjs_store }};
+    {{ RestfulSimplifiedDeadline|extjs_model }};
+    {{ RestfulSimplifiedDeadline|extjs_store }};
+
+    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
+    {{ RestfulSimplifiedDelivery|extjs_store }};
+
+    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
     {{ RestfulSimplifiedStaticFeedback|extjs_store }};
 
+    {{ RestfulSimplifiedFileMeta|extjs_model }};
+    {{ RestfulSimplifiedFileMeta|extjs_store }};
 
 
     Ext.require('devilry.extjshelpers.AssignmentGroupOverview');
