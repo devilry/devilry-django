@@ -6,6 +6,7 @@ import logging
 import argparse
 import os
 #from devilryclient.restfulclient import RestfulFactory
+from ConfigParser import ConfigParser
 
 
 def helloworld():
@@ -143,3 +144,10 @@ def create_folder(path):
         logging.debug('INFO: Creating {}'.format(path))
         mkdir(path)
     return path
+
+
+def get_config():
+    """Return a ConfigParser object that can be used immediately"""
+    config = ConfigParser()
+    config.read(join(findconffolder(), 'config'))
+    return config
