@@ -164,3 +164,14 @@ def get_config():
     config = ConfigParser()
     config.read(join(findconffolder(), 'config'))
     return config
+
+
+def get_metadata():
+    """Try to fetch .devilry/metadata. Raise an exception if it
+    doesn't exist"""
+
+    conf_dir = findconffolder()
+
+    metadata_f = open(join(conf_dir, 'metadata'), 'r')
+    metadata = eval(metadata_f.read())
+    return metadata
