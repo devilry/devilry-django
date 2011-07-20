@@ -151,3 +151,21 @@ def get_config():
     config = ConfigParser()
     config.read(join(findconffolder(), 'config'))
     return config
+
+def deadline_format(deadline):
+    deadline = deadline.replace(':', '-')
+    deadline = deadline.replace(' ', '_')
+    return deadline
+
+
+def is_late(delivery):
+    """
+    Check if delivery is delivered after the deadline
+    """
+    deadline_time = delivery['deadline__deadline']
+    delivery_time = delivery['time_of_delivery']
+    return delivery_time > deadline_time
+
+#TODO check if {} tree exists
+
+
