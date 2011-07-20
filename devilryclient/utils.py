@@ -168,4 +168,12 @@ def is_late(delivery):
 
 #TODO check if {} tree exists
 
+def get_metadata():
+    """Try to fetch .devilry/metadata. Raise an exception if it
+    doesn't exist"""
 
+    conf_dir = findconffolder()
+
+    metadata_f = open(join(conf_dir, 'metadata'), 'r')
+    metadata = eval(metadata_f.read())
+    return metadata
