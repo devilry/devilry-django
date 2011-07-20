@@ -36,10 +36,6 @@ class PullFromServer(object):
         self.SimplifiedFileMeta = restful_factory.make("/examiner/restfulsimplifiedfilemeta/")
 
         self.tree = {}
-        #self.num_groups = 0
-        #self.num_subjects = 0
-        #self.num_deliveries = 0
-        #self.num_feedbacks = 0
 
     def add_start(self):
         #start creating directories recursively
@@ -96,8 +92,8 @@ class PullFromServer(object):
                             filters=a_group_filters)
             
             self.tree[subject][period][assignment['short_name']] = {}
-            self.tree[subject][period]['meta'] = {}
-            self.tree[subject][period]['meta']['query_result'] = assignment_groups         
+            self.tree[subject][period]['.meta'] = {}
+            self.tree[subject][period]['.meta']['query_result'] = assignment_groups         
             
             self.add_assignmentgroups(assignment_path, assignment_groups['items'])
 
@@ -117,8 +113,8 @@ class PullFromServer(object):
                         filters=deadline_filters)
             
             self.tree[subject][period][assignment][str(assignment_group['id'])] = {}
-            self.tree[subject][period][assignment]['meta'] = {}
-            self.tree[subject][period][assignment]['meta']['query_result'] = deadlines
+            self.tree[subject][period][assignment]['.meta'] = {}
+            self.tree[subject][period][assignment]['.meta']['query_result'] = deadlines
 
             self.add_deadlines(assignment_group_path, deadlines['items'])
 
@@ -142,8 +138,8 @@ class PullFromServer(object):
                         filters=delivery_filters)
             
             self.tree[subject][period][assignment][group][deadlinetime] = {}
-            self.tree[subject][period][assignment][group]['meta'] = {}
-            self.tree[subject][period][assignment][group]['meta']['query_result'] = deliveries
+            self.tree[subject][period][assignment][group]['.meta'] = {}
+            self.tree[subject][period][assignment][group]['.meta']['query_result'] = deliveries
 
             self.add_deliveries(deadline_path, deliveries['items'])
 
@@ -166,8 +162,8 @@ class PullFromServer(object):
                     filters=file_filters)
             
             self.tree[subject][period][assignment][group][deadline][str(delivery['id'])] = {}
-            self.tree[subject][period][assignment][group][deadline]['meta'] = {}
-            self.tree[subject][period][assignment][group][deadline]['meta']['query_result'] = files
+            self.tree[subject][period][assignment][group][deadline]['.meta'] = {}
+            self.tree[subject][period][assignment][group][deadline]['.meta']['query_result'] = files
 
             self.add_files(delivery_path, files['items'])
 
