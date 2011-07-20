@@ -19,6 +19,11 @@
     }],
 
     buttons: [{
+        text: 'Cancel',
+        handler: function() {
+            var assignmentgroupoverview = this.up('assignmentgroupoverview');
+        }
+    }, {
         text: 'Publish feedback',
         handler: function() {
             if (this.up('form').getForm().isValid()) {
