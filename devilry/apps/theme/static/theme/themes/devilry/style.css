@@ -249,7 +249,7 @@ header {
     .multisearchresults > .x-panel-body .searchresults {
       margin: 20px; }
       .multisearchresults > .x-panel-body .searchresults .searchresultitem {
-        padding: 10px;
+        padding: 4px;
         border: 4px solid transparent; }
         .multisearchresults > .x-panel-body .searchresults .searchresultitem:hover {
           border: 4px solid #77b300;

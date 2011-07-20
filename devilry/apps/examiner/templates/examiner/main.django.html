@@ -35,9 +35,6 @@
                         text: 'View',
                         clickLinkTpl: 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
                     }
-                    //menuitems: [{
-                        //text: 'View delivery'
-                    //}]
                 }
             }, {
                 xtype: 'searchresults',
@@ -54,7 +51,7 @@
                     defaultbutton: {
                         text: 'Show deliveries',
                         clickFilter: 'type:delivery group:{id}'
-                    },
+                    }
                 }
             }, {
                 xtype: 'searchresults',
@@ -63,9 +60,13 @@
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
-                        text: 'Show assignments',
+                        text: 'Show groups',
                         clickFilter: 'type:group assignment:{id}'
                     },
+                    menuitems: [{
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery assignment:{id}'
+                    }]
                 }
             }]
         });
