@@ -12,6 +12,9 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     title: 'Delivery',
     cls: 'widget-deliveryinfo',
     html: '',
+    requires: [
+        'devilry.extjshelpers.StaticFeedbackEditableInfo'
+    ],
     tpl: Ext.create('Ext.XTemplate',
         '<dl>',
         '   <dt>Files</dt>',
@@ -37,43 +40,51 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     config: {
         /**
          * @cfg
-         * RestfulSimplifiedFileMeta store. __Required__.
          */
-        filemetastore: undefined
+        delivery: undefined,
+        assignmentid: undefined
     },
 
     initComponent: function() {
-        if(this.delivery) {
-            this.setDelivery(this.delivery);
-        }
+        this.initFeedbackComponent();
+        this.deliveryInfo = Ext.create('Ext.Component');
+        Ext.apply(this, {
+            items: [this.deliveryInfo, this.feedbackInfo]
+        });
+        this.createBody(false);
+        this.loadFileMetas();
         this.callParent(arguments);
     },
 
-    loadFileMetas: function(delivery) {
+    loadFileMetas: function() {
         var me = this;
-        var store = this.filemetastore;
+        var filemetastoreid = 'devilry.apps.examiner.simplified.SimplifiedFileMetaStore';
+        var store = Ext.data.StoreManager.lookup(filemetastoreid);
         store.proxy.extraParams.filters = Ext.JSON.encode([
-            {field: 'delivery', comp:'exact', value: delivery.id}
+            {field: 'delivery', comp:'exact', value: this.delivery.id}
         ]);
         store.load(function(filemetarecords, operation, success) {
             if(success) {
-                me.createBody(delivery, filemetarecords);
+                me.createBody(filemetarecords);
             } else {
-                me.createBody(delivery, {errors: true});
+                me.createBody({errors: true});
             }
         });
     },
 
-    createBody: function(delivery, filemetas) {
+    createBody: function(filemetas) {
         var html = this.tpl.apply({
-            delivery: delivery,
+            delivery: this.delivery,
             filemetas: filemetas
         });
-        this.update(html);
+        this.deliveryInfo.update(html);
     },
 
-    setDelivery: function(delivery) {
-        this.createBody(delivery, false);
-        this.loadFileMetas(delivery);
+    initFeedbackComponent: function() {
+        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
+        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
+            deliveryid: this.delivery.id,
+            assignmentid: this.assignmentid
+        });
     }
 });

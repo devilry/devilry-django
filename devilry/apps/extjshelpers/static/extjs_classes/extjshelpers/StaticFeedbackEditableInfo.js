@@ -6,21 +6,21 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
     extend: 'devilry.extjshelpers.StaticFeedbackInfo',
     alias: 'widget.staticfeedbackeditableinfo',
 
+    config: {
+        assignmentid: undefined
+    },
+
     constructor: function(config) {
-        this.addEvents('clickNewFeedback');
         return this.callParent([config]);
     },
 
     initComponent: function() {
-
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'New feedback',
             margin: {left: 5},
-            hidden: true,
             listeners: {
                 click: function() {
-                    //me.fireEvent('clickNewFeedback');
                     me.loadFeedbackEditor();
                 }
             }
@@ -36,28 +36,17 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
         this.callParent(arguments);
     },
 
-    showNewFeedbackButton: function(assignmentid) {
-        this.assignmentid = assignmentid;
-        this.createButton.show();
-    },
-
-
     loadFeedbackEditor: function() {
         this.hideViewTools();
-        this.removeAll();
-        this.add({
+        this.setBody({
             xtype: 'container',
             loader: {
-                url: Ext.String.format('/gradeeditors/load-grade-editor/{0}', this.assignmentid),
+                url: Ext.String.format('/static/gradeeditors/approved.js'),
                 renderer: 'component',
                 autoLoad: true,
                 loadMask: true
             }
         });
-    },
-
-    loadFeedbackViewer: function() {
-        this.loadStore();
     },
 
     hideViewTools: function() {
@@ -68,4 +57,18 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
         this.createButton.show();
         this.feedbackSelector.show();
     },
+
+    bodyWithNoFeedback: function() {
+        var me = this;
+        this.setBody({
+            xtype: 'component',
+            cls: 'no-feedback-editable',
+            html: '<p>No feedback</p><p class="unimportant">Click to create feedback</p>',
+            listeners: {
+                render: function() {
+                    this.getEl().addListener('click', me.loadFeedbackEditor, me);
+                }
+            }
+        });
+    }
 });

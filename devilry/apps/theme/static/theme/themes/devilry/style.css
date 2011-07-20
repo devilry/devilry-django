@@ -375,11 +375,11 @@ a.warning-button {
  *
  */
 /* .x-layer are floating ExtJS items */
-#main .unimportant .x-layer .important {
-  font-size: 0.9em;
+.unimportant {
+  font-size: 0.8em;
   color: #444; }
 
-#main .important, .x-layer .important {
+.important {
   font-size: 1.1em;
   font-weight: bold;
   color: #111; }
@@ -410,6 +410,16 @@ table.verticalinfotable {
   padding: 20px; }
   .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
     margin: 0 auto 20px auto; }
+.widget-staticfeedbackinfo .no-feedback, .widget-staticfeedbackinfo .no-feedback-editable {
+  padding: 40px;
+  text-align: center;
+  font-size: 2.0em; }
+.widget-staticfeedbackinfo .no-feedback-editable {
+  cursor: pointer;
+  border: 4px solid transparent; }
+  .widget-staticfeedbackinfo .no-feedback-editable:hover {
+    border: 4px solid #77b300;
+    background-color: #f7ffe5; }
 
 .treeheader .level1 {
   font-size: 1.6em; }

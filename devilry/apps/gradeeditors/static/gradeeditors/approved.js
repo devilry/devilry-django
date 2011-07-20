@@ -28,7 +28,6 @@
         text: 'Publish feedback',
         handler: function() {
             if (this.up('form').getForm().isValid()) {
-                var assignmentgroupoverview = this.up('assignmentgroupoverview');
                 var staticfeedbackeditableinfo = this.up('staticfeedbackeditableinfo');
 
                 var approved = Ext.getCmp('approved-checkbox').getValue();
@@ -39,7 +38,7 @@
                     is_passing_grade: approved,
                     points: approved? 1: 0,
                     rendered_view: Ext.String.format('<pre>{0}</pre>', feedbacktext),
-                    delivery: assignmentgroupoverview.deliveryid
+                    delivery: staticfeedbackeditableinfo.deliveryid
                 });
 
                 staticfeedback.save({
@@ -48,8 +47,9 @@
                         console.log(response.data);
                         staticfeedbackeditableinfo.loadFeedbackViewer()
                     },
-                    failure: function() {
+                    failure: function(response) {
                         console.log("Error!");
+                        console.log(response);
                     }
                 });
             }

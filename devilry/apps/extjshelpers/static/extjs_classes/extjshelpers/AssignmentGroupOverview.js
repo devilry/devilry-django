@@ -6,9 +6,7 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
     alias: 'widget.assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.DeliveryInfo',
-        'devilry.extjshelpers.AssignmentGroupInfo',
-        'devilry.extjshelpers.StaticFeedbackEditableInfo',
-        'devilry.extjshelpers.StaticFeedbackGrid'
+        'devilry.extjshelpers.AssignmentGroupInfo'
     ],
 
     headingTpl: Ext.create('Ext.XTemplate',
@@ -27,41 +25,11 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
         assignmentgroupid: undefined
     },
 
-    initFeedbackComponent: function() {
-        var staticfeedbackstoreid = 'devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore';
-        var staticfeedbackstore = Ext.data.StoreManager.lookup(staticfeedbackstoreid);
-        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
-        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
-            store: staticfeedbackstore,
-            deliveryid: 16
-        });
-
-        var me = this;
-        this.feedbackInfo.addListener('clickNewFeedback', function() {
-            var assignmentid = me.delivery.deadline__assignment_group__parentnode;
-            me.setCenterAreaContent({
-                xtype: 'container',
-                loader: {
-                    url: Ext.String.format('/gradeeditors/load-grade-editor/{0}', assignmentid),
-                    renderer: 'component',
-                    autoLoad: true,
-                    loadMask: true
-                }
-            });
-        });
-    },
 
     initComponent: function() {
         var me = this;
         this.centerAreaId = this.id + '-center';
-        this.initFeedbackComponent();
-        
-
         this.mainHeader = Ext.create('Ext.Component');
-        var filemetastoreid = 'devilry.apps.examiner.simplified.SimplifiedFileMetaStore';
-        this.deliveryInfo = Ext.create('devilry.extjshelpers.DeliveryInfo', {
-            filemetastore: Ext.data.StoreManager.lookup(filemetastoreid)
-        });
 
         Ext.apply(this, {
             items: [{
@@ -82,7 +50,7 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
             }, {
                 region: 'center',
                 id: this.centerAreaId,
-                items: [this.deliveryInfo, this.feedbackInfo]
+                items: []
             }],
         });
         this.callParent(arguments);
@@ -98,10 +66,14 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
     onLoadAssignmentGroup: function(assignmentgrouprecord) {
         assignmentgroup = assignmentgrouprecord.data;
         this.mainHeader.update(this.headingTpl.apply(assignmentgroup));
-        var assignmentid = assignmentgroup.parentnode;
-        this.feedbackInfo.showNewFeedbackButton(assignmentid);
+        this.assignmentid = assignmentgroup.parentnode;
+        //this.feedbackInfo.showNewFeedbackButton(assignmentid);
         var query = Ext.Object.fromQueryString(window.location.search);
-        this.loadDelivery(query.deliveryid);
+        if(query.deliveryid == undefined) {
+            this.handleNoDeliveryInQuerystring();
+        } else {
+            this.loadDelivery(query.deliveryid);
+        }
     },
 
     loadDelivery: function(deliveryid) {
@@ -113,13 +85,16 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
     },
 
     onLoadDelivery: function(deliveryrecord) {
-        this.deliveryInfo.setDelivery(deliveryrecord.data);
-        this.delivery = deliveryrecord.data;
-    },
-
-    setCenterAreaContent: function(content) {
         var centerArea = Ext.getCmp(this.centerAreaId);
         centerArea.removeAll();
-        centerArea.add(content);
+        centerArea.add({
+            xtype: 'deliveryinfo',
+            assignmentid: this.assignmentid,
+            delivery: deliveryrecord.data
+        });
+    },
+
+    handleNoDeliveryInQuerystring: function() {
+        console.log('no delivery selected');
     }
 });

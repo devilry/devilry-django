@@ -277,6 +277,8 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery__number',
                              'delivery__deadline__assignment_group__examiners__username',
                              )
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('delivery'))
 
 
 class SimplifiedFileMetaMetaMixin(object):

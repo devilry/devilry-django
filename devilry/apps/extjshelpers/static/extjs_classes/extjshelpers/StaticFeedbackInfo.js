@@ -29,7 +29,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     ),
 
     config: {
-        store: undefined,
         deliveryid: undefined
     },
 
@@ -42,22 +41,25 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
         this.callParent(arguments);
 
         var me = this;
+        var staticfeedbackstoreid = 'devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore';
+        var staticfeedbackstore = Ext.data.StoreManager.lookup(staticfeedbackstoreid);
+        this.store = staticfeedbackstore;
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
-        this.store.proxy.extraParams.filter = Ext.JSON.encode({
-            field:'delivery',
-            comp:'exact',
-            value:this.deliveryid
-        });
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'delivery',
+            comp: 'exact',
+            value: this.deliveryid
+        }]);
 
         this.storeLoadedOnce = false;
         this.feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
-            //fieldLabel: 'history',
             store: this.store,
             displayField: 'save_timestamp',
             valueField: 'id',
             autoSelect: true,
             width: 320,
             forceSelection: true,
+            hidden: true,
             editable: false,
 
             listeners: {
@@ -65,6 +67,10 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                     me.setStaticFeedback(staticfeedbackrecord[0].data);
                 }
             }
+        });
+
+        this.addListener('render', function() { // Header is not available until it is rendered
+            me.getHeader().add(this.feedbackSelector);
         });
 
         this.feedbackView = Ext.create('Ext.container.Container', {
@@ -80,15 +86,15 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
             callback: function(records, operation, successful) {
                 if(successful) {
                     if(records.length == 0) {
+                        me.bodyWithNoFeedback();
                     }
                     else {
                         var first = records[0].data;
-                        var header = me.getHeader();
                         if(records.length > 1) {
-                            if(!me.storeLoadedOnce) {
-                                header.add(me.feedbackSelector);
-                            }
                             me.feedbackSelector.setRawValue(first.save_timestamp);
+                            me.feedbackSelector.show();
+                        } else {
+                            me.feedbackSelector.hide();
                         }
                         me.setStaticFeedback(first);
                         me.fireEvent('afterStoreLoad');
@@ -108,11 +114,23 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     },
 
     setStaticFeedback: function(feedback) {
-        this.removeAll();
-        this.add({
+        this.setBody({
             xtype: 'component',
             cls: this.cls + '-feedbackview',
             html: this.tpl.apply(feedback)
         });
     },
+
+    setBody: function(content) {
+        this.removeAll();
+        this.add(content);
+    },
+
+    bodyWithNoFeedback: function() {
+        this.setBody({
+            xtype: 'component',
+            cls: 'no-feedback',
+            html: 'No feedback yet'
+        });
+    }
 });
