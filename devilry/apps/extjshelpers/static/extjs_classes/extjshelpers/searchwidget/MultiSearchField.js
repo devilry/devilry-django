@@ -24,7 +24,11 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
 
                 /* TODO: Wait for 0.2 sec or something before searhing on change. */
                 change: function(field, newValue, oldValue) {
-                    me.ownerCt.search(newValue);
+                    if(Ext.String.trim(newValue) == "") {
+                        me.ownerCt.hideResults();
+                    } else {
+                        me.ownerCt.search(newValue);
+                    }
                 }
             }
         });
