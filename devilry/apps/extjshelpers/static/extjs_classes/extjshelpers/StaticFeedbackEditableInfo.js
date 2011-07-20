@@ -30,8 +30,7 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
         this.callParent(arguments);
     },
 
-    showNewFeedbackButton: function(assignmentid) {
-        this.assignmentid = assignmentid;
+    showNewFeedbackButton: function() {
         this.createButton.show();
     }
 });

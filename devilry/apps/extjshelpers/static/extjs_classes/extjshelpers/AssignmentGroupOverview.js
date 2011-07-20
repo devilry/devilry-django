@@ -3,7 +3,7 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
     width: 800,
     height: 600,
     layout: 'border',
-    alias: 'widget.examinerfeedback',
+    alias: 'widget.assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.DeliveryInfo',
         //'devilry.extjshelpers.StaticFeedbackInfo',
@@ -39,11 +39,11 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
 
         var me = this;
         this.feedbackInfo.addListener('clickNewFeedback', function() {
-            console.log('hei');
+            var assignmentid = me.delivery.deadline__assignment_group__parentnode;
             me.setCenterAreaContent({
                 xtype: 'container',
                 loader: {
-                    url: me.editorurl,
+                    url: Ext.String.format('/gradeeditors/load-grade-editor/{0}', assignmentid),
                     renderer: 'component',
                     autoLoad: true,
                     loadMask: true
@@ -90,8 +90,7 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 deliveryInfo.setDelivery(deliveryrecord.data);
                 mainHeader.update(me.headingTpl.apply(deliveryrecord.data));
                 me.delivery = deliveryrecord.data;
-                var assignmentid = me.delivery.deadline__assignment_group__parentnode;
-                me.feedbackInfo.showNewFeedbackButton(assignmentid);
+                me.feedbackInfo.showNewFeedbackButton();
             }
         });
     },

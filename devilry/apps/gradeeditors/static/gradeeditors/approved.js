@@ -22,18 +22,19 @@
         text: 'Publish feedback',
         handler: function() {
             if (this.up('form').getForm().isValid()) {
-                // In a real application, this would submit the form to the configured url
-                // this.up('form').getForm().submit();
-                //var feedback = this.up('examinerfeedback');
+                var assignmentgroupoverview = this.up('assignmentgroupoverview');
+
                 var approved = Ext.getCmp('approved-checkbox').getValue();
                 var feedbacktext = Ext.getCmp('feedback-text').getValue();
-                var staticfeedback = Ext.create(feedbackeditorGlobals.staticfeedbackmodelname, {
+
+                var staticfeedback = Ext.create('devilry.apps.examiner.simplified.SimplifiedStaticFeedback', {
                     grade: approved? "Approved": "Not approved",
                     is_passing_grade: approved,
                     points: approved? 1: 0,
                     rendered_view: Ext.String.format('<pre>{0}</pre>', feedbacktext),
-                    delivery: feedbackeditorGlobals.deliveryid
+                    delivery: assignmentgroupoverview.deliveryid
                 });
+
                 staticfeedback.save({
                     success: function(response) {
                         console.log("Success");

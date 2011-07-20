@@ -427,8 +427,7 @@ table.verticalinfotable {
         $padding: 20px;
         padding: $padding;
         table.verticalinfotable {
-            float: right;
-            margin: 0 0 $padding $padding;
+            margin: 0 auto $padding auto;
         }
     }
 }

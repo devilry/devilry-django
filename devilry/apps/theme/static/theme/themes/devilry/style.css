@@ -409,8 +409,7 @@ table.verticalinfotable {
 .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
   padding: 20px; }
   .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
-    float: right;
-    margin: 0 0 20px 20px; }
+    margin: 0 auto 20px auto; }
 
 .treeheader .level1 {
   font-size: 1.6em; }
