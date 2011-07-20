@@ -25,20 +25,22 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
         */
         filemetastoreid: undefined,
         deliveryid: undefined,
-        deliverymodelname: undefined
+        deliverymodelname: undefined,
+        staticfeedbackstoreid: undefined
     },
 
     initComponent: function() {
         var me = this;
+        //this.centerAreaId = this.id + '-center';
+        var staticfeedbackstore = Ext.data.StoreManager.lookup(this.staticfeedbackstoreid);
+        this.currentlyShownFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
+            store: staticfeedbackstore
+        });
 
+        var mainHeader = Ext.create('Ext.Component');
         var deliveryInfo = Ext.create('devilry.extjshelpers.DeliveryInfo', {
             filemetastore: Ext.data.StoreManager.lookup(this.filemetastoreid)
         });
-
-        var feedbackeditorstore = Ext.data.StoreManager.lookup(this.staticfeedbackstoreid);
-        feedbackeditorstore.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
-        var mainFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo');
-        var mainHeader = Ext.create('Ext.Component');
 
 
         var createButton = Ext.create('Ext.button.Button', {
@@ -62,7 +64,14 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 items: [mainHeader]
             }, {
                 region: 'center',
-                items: [mainFeedback]
+                //id: this.centerAreaId,
+                //title: 'Feedback',
+                //tbar: [{
+                    //xtype: 'staticfeedbackhistorymenu',
+                    //text: 'hei',
+                    //store: staticfeedbackstore
+                //}],
+                items: [me.currentlyShownFeedback]
             }, {
                 region: 'west',
                 width: 220,
@@ -70,18 +79,19 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 collapsible: true,   // make collapsible
                 titleCollapse: true, // click anywhere on title to collapse.
                 split: true,
-                items: [deliveryInfo, {
-                    xtype: 'staticfeedbackgrid',
-                    store: feedbackeditorstore,
-                    listeners: {
-                        itemclick: function(view, record) {
-                            mainFeedback.setStaticFeedback(record.data);
-                        }
-                    }
-                }, createButton]
+                items: [deliveryInfo,
+                //{
+                    //xtype: 'staticfeedbackgrid',
+                    //store: staticfeedbackstore,
+                    //listeners: {
+                        //itemclick: function(view, record) {
+                            //me.currentlyShownFeedback.setStaticFeedback(record.data);
+                        //}
+                    //}
+                //},
+                createButton]
             }],
         });
-
         this.callParent(arguments);
 
         Ext.ModelManager.getModel(this.deliverymodelname).load(this.deliveryid, {
@@ -93,11 +103,16 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
             }
         });
 
-        feedbackeditorstore.load({
-            callback: function(records, operation, success) {
-                mainFeedback.setStaticFeedback(records[0].data);
-            },
+        //staticfeedbackstore.load({
+            //callback: function(records, operation, success) {
+                //me.currentlyShownFeedback.setStaticFeedback(records[0].data);
+            //},
+        //});
+    },
 
-        });
-    }
+    //setCenterAreaContent: function(content) {
+        //var centerArea = Ext.getCmp(this.centerAreaId);
+        //centerArea.removeAll();
+        //centerArea.add(content);
+    //}
 });
