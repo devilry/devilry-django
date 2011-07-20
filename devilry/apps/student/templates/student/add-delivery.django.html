@@ -76,7 +76,10 @@
                     url: '/student/add-delivery/fileupload/33',
                     waitMsg: 'Uploading your photo...',
                     success: function(fp, o) {
-                        Ext.Msg.alert('Success', 'Your photo "' + o.result.file + '" has been uploaded.');
+                        Ext.Msg.alert('Success', 'File "' + o.result.file + '" has been uploaded.');
+                    },
+                    failure: function(fp, o) {
+                       Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
                     }
                 });
             }

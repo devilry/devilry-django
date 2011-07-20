@@ -42,9 +42,11 @@ class FileUploadView(View):
     #                   )
 
     def post(self, request, deliveryid):
-        print "#", request.FILES['dendrofil'].size, "#"
-        filen = request.FILES['dendrofil'].read()
-        print filen
-        print dir(filen)
-        return HttpResponse("{success: true, file: null}")
-                      
+
+        if 'dendrofil' in request.FILES:
+            print "#", request.FILES['dendrofil'].size, "#"
+            filen = request.FILES['dendrofil'].read()
+            print filen
+            return HttpResponse("{success: true, file: null}")
+        else:
+            return HttpResponse("{success: false, file: null}")
