@@ -68,7 +68,10 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             hideHeaders: true,
             minButtonWidth: 0,
 
-            fbar: [{
+            tbar: [{
+                xtype: 'box',
+                flex: 1
+            }, {
                 xtype: 'button',
                 text: '<',
                 id: this.id + '-pageswitch-prevbtn',
