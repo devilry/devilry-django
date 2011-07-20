@@ -1,4 +1,4 @@
-/** Panel to show StaticFeedback info:
+/** Panel to show StaticFeedback info.
  *
  * @xtype staticfeedbackinfo
  */
@@ -32,6 +32,10 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
         store: undefined
     },
 
+    constructor: function(config) {
+        this.addEvents('afterStoreLoad');
+        return this.callParent([config]);
+    },
     
     initComponent: function() {
         var me = this;
@@ -53,17 +57,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                 }
             }
         });
-        var createButton = Ext.create('Ext.button.Button', {
-            text: 'New feedback',
-            //hidden: true,
-            margin: {left: 5},
-            listeners: {
-                click: function() {
-                    var createurl = Ext.String.format('../create-feedback/{0}', me.deliveryid);
-                    window.location = createurl;
-                }
-            }
-        });
 
         this.feedbackView = Ext.create('Ext.Component', {
             cls: this.cls + '-feedbackview'
@@ -81,17 +74,21 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                     }
                     else {
                         var first = records[0].data;
-                        var header = me.dockedItems.items[0];
+                        var header = me.getHeader();
                         if(records.length > 1) {
                             header.add(feedbackSelector);
                             feedbackSelector.setRawValue(first.save_timestamp);
                         }
-                        header.add(createButton);
                         me.setStaticFeedback(first);
+                        me.fireEvent('afterStoreLoad');
                     }
                 }
             }
         });
+    },
+
+    getHeader: function() {
+        return this.dockedItems.items[0];
     },
 
     setStaticFeedback: function(feedback) {

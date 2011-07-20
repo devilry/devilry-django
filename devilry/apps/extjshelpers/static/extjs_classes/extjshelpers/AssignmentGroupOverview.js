@@ -6,7 +6,8 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
     alias: 'widget.examinerfeedback',
     requires: [
         'devilry.extjshelpers.DeliveryInfo',
-        'devilry.extjshelpers.StaticFeedbackInfo',
+        //'devilry.extjshelpers.StaticFeedbackInfo',
+        'devilry.extjshelpers.StaticFeedbackEditableInfo',
         'devilry.extjshelpers.StaticFeedbackGrid'
     ],
 
@@ -29,13 +30,33 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
         staticfeedbackstoreid: undefined
     },
 
-    initComponent: function() {
-        var me = this;
-        //this.centerAreaId = this.id + '-center';
+    initFeedbackComponent: function() {
         var staticfeedbackstore = Ext.data.StoreManager.lookup(this.staticfeedbackstoreid);
-        this.currentlyShownFeedback = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
+        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
+        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
             store: staticfeedbackstore
         });
+
+        var me = this;
+        this.feedbackInfo.addListener('clickNewFeedback', function() {
+            console.log('hei');
+            me.setCenterAreaContent({
+                xtype: 'container',
+                loader: {
+                    url: me.editorurl,
+                    renderer: 'component',
+                    autoLoad: true,
+                    loadMask: true
+                }
+            });
+        });
+    },
+
+    initComponent: function() {
+        var me = this;
+        this.centerAreaId = this.id + '-center';
+        this.initFeedbackComponent();
+        
 
         var mainHeader = Ext.create('Ext.Component');
         var deliveryInfo = Ext.create('devilry.extjshelpers.DeliveryInfo', {
@@ -50,7 +71,8 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 items: [mainHeader]
             }, {
                 region: 'center',
-                items: [me.currentlyShownFeedback]
+                id: this.centerAreaId,
+                items: [this.feedbackInfo]
             }, {
                 region: 'west',
                 width: 220,
@@ -68,13 +90,15 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 deliveryInfo.setDelivery(deliveryrecord.data);
                 mainHeader.update(me.headingTpl.apply(deliveryrecord.data));
                 me.delivery = deliveryrecord.data;
+                var assignmentid = me.delivery.deadline__assignment_group__parentnode;
+                me.feedbackInfo.showNewFeedbackButton(assignmentid);
             }
         });
     },
 
-    //setCenterAreaContent: function(content) {
-        //var centerArea = Ext.getCmp(this.centerAreaId);
-        //centerArea.removeAll();
-        //centerArea.add(content);
-    //}
+    setCenterAreaContent: function(content) {
+        var centerArea = Ext.getCmp(this.centerAreaId);
+        centerArea.removeAll();
+        centerArea.add(content);
+    }
 });
