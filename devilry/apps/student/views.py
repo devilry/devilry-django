@@ -1,5 +1,7 @@
 from django.views.generic import (TemplateView, View)
 from django.shortcuts import render
+from django.http import HttpResponse
+import datetime
 
 import restful
 
@@ -28,4 +30,21 @@ class AddDeliveryView(View):
                        'deadlineid': deliveryid,
                        'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
                       )
+
+class FileUploadView(View):
+    # def get(self, request, deliveryid):
+    #     return render(request, 'student/add-delivery.django.html',
+    #                   {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
+    #                    'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
+    #                    'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
+    #                    'deadlineid': deliveryid,
+    #                    'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
+    #                   )
+
+    def post(self, request, deliveryid):
+        print "#", request.FILES['dendrofil'].size, "#"
+        filen = request.FILES['dendrofil'].read()
+        print filen
+        print dir(filen)
+        return HttpResponse("{success: true, file: null}")
                       
