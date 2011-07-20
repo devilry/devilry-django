@@ -406,8 +406,11 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
-.widget-staticfeedbackinfo table.verticalinfotable {
-  float: right; }
+.widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
+  padding: 20px; }
+  .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
+    float: right;
+    margin: 0 0 20px 20px; }
 
 .treeheader .level1 {
   font-size: 1.6em; }

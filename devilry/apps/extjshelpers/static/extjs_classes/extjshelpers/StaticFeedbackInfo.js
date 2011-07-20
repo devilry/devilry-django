@@ -28,19 +28,22 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
         '<div class="rendered_view">{rendered_view}<div>'
     ),
 
+    config: {
+        store: undefined
+    },
+
     
     initComponent: function() {
         var me = this;
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
-        //this.store.load();
 
         var feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
-            fieldLabel: 'Feedback history',
+            //fieldLabel: 'history',
             store: this.store,
             displayField: 'save_timestamp',
             valueField: 'id',
             autoSelect: true,
-            width: 440,
+            width: 320,
             forceSelection: true,
             editable: false,
 
@@ -50,24 +53,48 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                 }
             }
         });
+        var createButton = Ext.create('Ext.button.Button', {
+            text: 'New feedback',
+            //hidden: true,
+            margin: {left: 5},
+            listeners: {
+                click: function() {
+                    var createurl = Ext.String.format('../create-feedback/{0}', me.deliveryid);
+                    window.location = createurl;
+                }
+            }
+        });
+
+        this.feedbackView = Ext.create('Ext.Component', {
+            cls: this.cls + '-feedbackview'
+        });
 
         Ext.apply(this, {
-            tbar: [feedbackSelector]
+            items: [this.feedbackView]
         });
         this.callParent(arguments);
 
         this.store.load({
             callback: function(records, operation, successful) {
                 if(successful) {
-                    var first = records[0].data;
-                    feedbackSelector.setRawValue(first.save_timestamp);
-                    me.setStaticFeedback(first);
+                    if(records.length == 0) {
+                    }
+                    else {
+                        var first = records[0].data;
+                        var header = me.dockedItems.items[0];
+                        if(records.length > 1) {
+                            header.add(feedbackSelector);
+                            feedbackSelector.setRawValue(first.save_timestamp);
+                        }
+                        header.add(createButton);
+                        me.setStaticFeedback(first);
+                    }
                 }
             }
         });
     },
 
     setStaticFeedback: function(feedback) {
-        this.update(this.tpl.apply(feedback));
+        this.feedbackView.update(this.tpl.apply(feedback));
     }
 });

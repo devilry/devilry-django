@@ -422,8 +422,15 @@ table.verticalinfotable {
     }
 }
 
-.widget-staticfeedbackinfo table.verticalinfotable {
-    float: right;
+.widget-staticfeedbackinfo {
+    .widget-staticfeedbackinfo-feedbackview {
+        $padding: 20px;
+        padding: $padding;
+        table.verticalinfotable {
+            float: right;
+            margin: 0 0 $padding $padding;
+        }
+    }
 }
 
 .treeheader {

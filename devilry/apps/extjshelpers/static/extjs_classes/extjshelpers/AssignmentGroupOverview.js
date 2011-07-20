@@ -42,20 +42,6 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
             filemetastore: Ext.data.StoreManager.lookup(this.filemetastoreid)
         });
 
-
-        var createButton = Ext.create('Ext.button.Button', {
-            text: 'Modify feedback',
-            margin: {top: 20},
-            scale: 'large',
-            hidden: true,
-            listeners: {
-                click: function() {
-                    var createurl = Ext.String.format('../create-feedback/{0}', me.delivery.id);
-                    window.location = createurl;
-                }
-            }
-        });
-
         Ext.apply(this, {
             items: [{
                 region: 'north',
@@ -64,13 +50,6 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 items: [mainHeader]
             }, {
                 region: 'center',
-                //id: this.centerAreaId,
-                //title: 'Feedback',
-                //tbar: [{
-                    //xtype: 'staticfeedbackhistorymenu',
-                    //text: 'hei',
-                    //store: staticfeedbackstore
-                //}],
                 items: [me.currentlyShownFeedback]
             }, {
                 region: 'west',
@@ -79,17 +58,7 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 collapsible: true,   // make collapsible
                 titleCollapse: true, // click anywhere on title to collapse.
                 split: true,
-                items: [deliveryInfo,
-                //{
-                    //xtype: 'staticfeedbackgrid',
-                    //store: staticfeedbackstore,
-                    //listeners: {
-                        //itemclick: function(view, record) {
-                            //me.currentlyShownFeedback.setStaticFeedback(record.data);
-                        //}
-                    //}
-                //},
-                createButton]
+                items: [deliveryInfo]
             }],
         });
         this.callParent(arguments);
@@ -99,15 +68,8 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 deliveryInfo.setDelivery(deliveryrecord.data);
                 mainHeader.update(me.headingTpl.apply(deliveryrecord.data));
                 me.delivery = deliveryrecord.data;
-                createButton.show();
             }
         });
-
-        //staticfeedbackstore.load({
-            //callback: function(records, operation, success) {
-                //me.currentlyShownFeedback.setStaticFeedback(records[0].data);
-            //},
-        //});
     },
 
     //setCenterAreaContent: function(content) {
