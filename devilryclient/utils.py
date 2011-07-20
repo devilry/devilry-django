@@ -136,23 +136,10 @@ def findconffolder():
 
     raise ValueError(".devirly not found")
 
-
-# #TODO
-# def restful_setup():
-#     restful_factory = RestfulFactory("http://localhost:8000/")
-#     SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
-#     SimplifiedSubject = restful_factory.make("administrator/restfulsimplifiedsubject/")
-#     SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
-#     SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassignment/")
-#     return [SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment]
-
-
-#TODO
-def create_folder(node, parent_path, folder_name):
+def create_folder(path):
     """
     :param folder_name: A string representing the node attribute which the folder should be named after
     """
-    path = join(parent_path, str(node[folder_name]))
     if not exists(path):
         logging.debug('INFO: Creating {}'.format(path))
         mkdir(path)
@@ -175,3 +162,20 @@ def get_metadata():
     metadata_f = open(join(conf_dir, 'metadata'), 'r')
     metadata = eval(metadata_f.read())
     return metadata
+
+
+def deadline_format(deadline):
+    deadline = deadline.replace(':', '-')
+    deadline = deadline.replace(' ', '_')
+    return deadline
+
+
+def is_late(delivery):
+    """
+    Check if delivery is delivered after the deadline
+    """
+    deadline_time = delivery['deadline__deadline']
+    delivery_time = delivery['time_of_delivery']
+    return delivery_time > deadline_time
+
+#TODO check if {} tree exists
