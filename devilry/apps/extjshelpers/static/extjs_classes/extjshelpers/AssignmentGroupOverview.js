@@ -90,7 +90,8 @@ Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
                 deliveryInfo.setDelivery(deliveryrecord.data);
                 mainHeader.update(me.headingTpl.apply(deliveryrecord.data));
                 me.delivery = deliveryrecord.data;
-                me.feedbackInfo.showNewFeedbackButton();
+                var assignmentid = me.delivery.deadline__assignment_group__parentnode;
+                me.feedbackInfo.showNewFeedbackButton(assignmentid);
             }
         });
     },

@@ -38,10 +38,13 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     },
     
     initComponent: function() {
+        this.callParent(arguments);
+
         var me = this;
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
 
-        var feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
+        this.storeLoadedOnce = false;
+        this.feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
             //fieldLabel: 'history',
             store: this.store,
             displayField: 'save_timestamp',
@@ -58,15 +61,15 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
             }
         });
 
-        this.feedbackView = Ext.create('Ext.Component', {
+        this.feedbackView = Ext.create('Ext.container.Container', {
             cls: this.cls + '-feedbackview'
         });
 
-        Ext.apply(this, {
-            items: [this.feedbackView]
-        });
-        this.callParent(arguments);
+        this.loadStore();
+    },
 
+    loadStore: function() {
+        var me = this;
         this.store.load({
             callback: function(records, operation, successful) {
                 if(successful) {
@@ -76,15 +79,22 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                         var first = records[0].data;
                         var header = me.getHeader();
                         if(records.length > 1) {
-                            header.add(feedbackSelector);
-                            feedbackSelector.setRawValue(first.save_timestamp);
+                            if(!me.storeLoadedOnce) {
+                                header.add(me.feedbackSelector);
+                            }
+                            me.feedbackSelector.setRawValue(first.save_timestamp);
                         }
                         me.setStaticFeedback(first);
                         me.fireEvent('afterStoreLoad');
+                        me.storeLoadedOnce = true;
                     }
                 }
             }
         });
+    },
+
+    loadFeedbackViewer: function() {
+        this.loadStore();
     },
 
     getHeader: function() {
@@ -92,6 +102,11 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     },
 
     setStaticFeedback: function(feedback) {
-        this.feedbackView.update(this.tpl.apply(feedback));
-    }
+        this.removeAll();
+        this.add({
+            xtype: 'component',
+            cls: this.cls + '-feedbackview',
+            html: this.tpl.apply(feedback)
+        });
+    },
 });

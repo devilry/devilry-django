@@ -14,20 +14,22 @@
             xtype: 'textarea',
             id: 'feedback-text',
             width: 600,
-            height: 400
+            height: 300
         }]
     }],
 
     buttons: [{
         text: 'Cancel',
         handler: function() {
-            var assignmentgroupoverview = this.up('assignmentgroupoverview');
+            var staticfeedbackeditableinfo = this.up('staticfeedbackeditableinfo');
+            staticfeedbackeditableinfo.loadFeedbackViewer();
         }
     }, {
         text: 'Publish feedback',
         handler: function() {
             if (this.up('form').getForm().isValid()) {
                 var assignmentgroupoverview = this.up('assignmentgroupoverview');
+                var staticfeedbackeditableinfo = this.up('staticfeedbackeditableinfo');
 
                 var approved = Ext.getCmp('approved-checkbox').getValue();
                 var feedbacktext = Ext.getCmp('feedback-text').getValue();
@@ -44,6 +46,7 @@
                     success: function(response) {
                         console.log("Success");
                         console.log(response.data);
+                        staticfeedbackeditableinfo.loadFeedbackViewer()
                     },
                     failure: function() {
                         console.log("Error!");
