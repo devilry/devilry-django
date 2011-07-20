@@ -46,8 +46,15 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     },
 
     initComponent: function() {
-        this.initFeedbackComponent();
         this.deliveryInfo = Ext.create('Ext.Component');
+
+        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
+        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
+            deliveryid: this.delivery.id,
+            assignmentid: this.assignmentid
+        });
+
+
         Ext.apply(this, {
             items: [this.deliveryInfo, this.feedbackInfo]
         });
@@ -78,13 +85,5 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
             filemetas: filemetas
         });
         this.deliveryInfo.update(html);
-    },
-
-    initFeedbackComponent: function() {
-        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
-        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
-            deliveryid: this.delivery.id,
-            assignmentid: this.assignmentid
-        });
     }
 });

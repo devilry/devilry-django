@@ -26,18 +26,12 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
             }
         });
         this.addListener('afterStoreLoad', function() {
-            if(!me.storeLoadedOnce) {
-                this.getHeader().add(me.createButton);
-            }
-            if(this.assignmentid) {
-                this.showViewTools();
-            }
+            me.down('toolbar').add(me.createButton);
         });
         this.callParent(arguments);
     },
 
     loadFeedbackEditor: function() {
-        this.hideViewTools();
         this.setBody({
             xtype: 'container',
             loader: {
@@ -47,15 +41,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
                 loadMask: true
             }
         });
-    },
-
-    hideViewTools: function() {
-        this.createButton.hide();
-        this.feedbackSelector.hide();
-    },
-    showViewTools: function() {
-        this.createButton.show();
-        this.feedbackSelector.show();
     },
 
     bodyWithNoFeedback: function() {

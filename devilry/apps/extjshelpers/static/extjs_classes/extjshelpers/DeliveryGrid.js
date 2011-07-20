@@ -9,7 +9,7 @@ Ext.define('devilry.extjshelpers.DeliveryGrid', {
     hideHeaders: true, // Hide column header
 
     rowTpl: Ext.create('Ext.XTemplate',
-        '{number}. {time_of_delivery:date} (id:15)'
+        '{number}. {time_of_delivery:date} (id:{id})'
     ),
 
     columns: [{

@@ -38,7 +38,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     },
     
     initComponent: function() {
-        this.callParent(arguments);
 
         var me = this;
         var staticfeedbackstoreid = 'devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore';
@@ -51,7 +50,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
             value: this.deliveryid
         }]);
 
-        this.storeLoadedOnce = false;
         this.feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
             store: this.store,
             displayField: 'save_timestamp',
@@ -69,14 +67,13 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
             }
         });
 
-        this.addListener('render', function() { // Header is not available until it is rendered
-            me.getHeader().add(this.feedbackSelector);
+        Ext.apply(this, {
+            tbar: [{
+                xtype: 'box',
+                flex: 1
+            }, this.feedbackSelector]
         });
-
-        this.feedbackView = Ext.create('Ext.container.Container', {
-            cls: this.cls + '-feedbackview'
-        });
-
+        this.callParent(arguments);
         this.loadStore();
     },
 
@@ -90,15 +87,13 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
                     }
                     else {
                         var first = records[0].data;
-                        if(records.length > 1) {
-                            me.feedbackSelector.setRawValue(first.save_timestamp);
+                        me.feedbackSelector.setRawValue(first.save_timestamp);
+                        if(records.length >= 1) {
                             me.feedbackSelector.show();
                         } else {
-                            me.feedbackSelector.hide();
                         }
                         me.setStaticFeedback(first);
                         me.fireEvent('afterStoreLoad');
-                        me.storeLoadedOnce = true;
                     }
                 }
             }
