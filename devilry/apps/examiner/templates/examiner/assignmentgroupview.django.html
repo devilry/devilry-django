@@ -5,7 +5,8 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,assignment_group" }};
+    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    {{ RestfulSimplifiedDelivery|extjs_model }};
     {{ RestfulSimplifiedFileMeta|extjs_model }};
     {{ RestfulSimplifiedStaticFeedback|extjs_model }};
 
@@ -17,11 +18,8 @@
     Ext.require('devilry.extjshelpers.AssignmentGroupOverview');
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.AssignmentGroupOverview', {
-            renderTo: 'showdelivery',
-            deliveryid: {{ deliveryid }},
-            deliverymodelname: {{ RestfulSimplifiedDelivery|extjs_modelname }},
-            filemetastoreid: {{ RestfulSimplifiedFileMeta|extjs_storeid }},
-            staticfeedbackstoreid: {{ RestfulSimplifiedStaticFeedback|extjs_storeid }}
+            renderTo: 'maincontent',
+            assignmentgroupid: {{ assignmentgroupid }}
         });
     });
 
@@ -32,6 +30,6 @@
 
 {% block main %}
 
-<div id="showdelivery"></div>
+<div id="maincontent"></div>
 
 {% endblock %}

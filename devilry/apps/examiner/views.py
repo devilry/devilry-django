@@ -15,11 +15,11 @@ class MainView(TemplateView):
         return context
 
 
-class ShowDeliveryView(View):
-    def get(self, request, deliveryid):
+class AssignmentGroupView(View):
+    def get(self, request, assignmentgroupid):
+        indata = {'assignmentgroupid': assignmentgroupid }
+        for restclsname in restful.__all__:
+            indata[restclsname] = getattr(restful, restclsname)
         return render(request,
-                      'examiner/showdelivery.django.html',
-                      {'RestfulSimplifiedDelivery': restful.RestfulSimplifiedDelivery,
-                       'RestfulSimplifiedFileMeta': restful.RestfulSimplifiedFileMeta,
-                       'RestfulSimplifiedStaticFeedback': restful.RestfulSimplifiedStaticFeedback,
-                       'deliveryid': deliveryid})
+                      'examiner/assignmentgroupview.django.html',
+                       indata)

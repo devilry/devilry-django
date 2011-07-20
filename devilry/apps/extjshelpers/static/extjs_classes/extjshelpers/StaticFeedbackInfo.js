@@ -29,7 +29,8 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
     ),
 
     config: {
-        store: undefined
+        store: undefined,
+        deliveryid: undefined
     },
 
     constructor: function(config) {
@@ -42,6 +43,11 @@ Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
 
         var me = this;
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
+        this.store.proxy.extraParams.filter = Ext.JSON.encode({
+            field:'delivery',
+            comp:'exact',
+            value:this.deliveryid
+        });
 
         this.storeLoadedOnce = false;
         this.feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
