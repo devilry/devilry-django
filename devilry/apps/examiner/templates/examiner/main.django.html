@@ -32,17 +32,23 @@
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
-                        text: 'Create feedback',
-                        clickLinkTpl: 'create-feedback/{id}'
-                    },
-                    menuitems: [{
-                        text: 'View delivery'
-                    }]
+                        text: 'View',
+                        clickLinkTpl: 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
+                    }
+                    //menuitems: [{
+                        //text: 'View delivery'
+                    //}]
                 }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
+                filterconfig: {
+                    type: 'group',
+                    shortcuts: {
+                        assignment: 'parentnode'
+                    }
+                },
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
@@ -57,8 +63,8 @@
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
-                        text: 'Show deliveries',
-                        clickFilter: 'type:delivery assignment:{id}'
+                        text: 'Show assignments',
+                        clickFilter: 'type:group assignment:{id}'
                     },
                 }
             }]
