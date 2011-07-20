@@ -2,8 +2,15 @@
  * compatible with our RESTful filters.
  * */
 Ext.define('devilry.extjshelpers.SearchStringParser', {
+    filterToStringTpl: Ext.create('Ext.XTemplate', '{field}:{comp}:{value}'),
+    toStringTpl: Ext.create('Ext.XTemplate',
+        '<tpl if="type">type:{type} </tpl>',
+        '<tpl if="filters">{filters} </tpl>',
+        '{query}'),
     config: {
-        searchstring: undefined
+        searchstring: undefined,
+        pageSizeWithType: 10,
+        pageSizeWithoutType: 3
     },
 
     constructor: function(config) {
@@ -13,6 +20,27 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         this.type = undefined;
         this.parseSearchString();
         return this;
+    },
+
+    toString: function() {
+        return Ext.String.trim(this.toStringTpl.apply({
+            query: this.query,
+            filters: this.filtersToString(),
+            type: this.type
+        }));
+    },
+
+    filtersToString: function() {
+        var filterstring = "";
+        var me = this;
+        Ext.each(this.filters, function(filter) {
+            filterstring += me.filterToString(filter) + ' ';
+        });
+        return Ext.String.trim(filterstring);
+    },
+
+    filterToString: function(filter) {
+        return this.filterToStringTpl.apply(filter);
     },
 
     isInt: function(value) {
@@ -81,6 +109,13 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         //console.log(this.filters);
     },
 
+    applyPageSizeToStore: function(store) {
+        if(this.type) {
+            store.pageSize = this.pageSizeWithType;
+        } else {
+            store.pageSize = this.pageSizeWithoutType;
+        }
+    },
 
     applyToExtraParams: function(extraParams, shortcuts) {
         if(!extraParams) {
@@ -124,6 +159,5 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
             }
         });
         return realFieldname;
-        
     }
 });

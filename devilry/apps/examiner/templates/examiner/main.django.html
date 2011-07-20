@@ -10,9 +10,9 @@
         {{ RestfulCls|extjs_combobox_model }}
     {% endfor %}
 
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
     Ext.onReady(function() {

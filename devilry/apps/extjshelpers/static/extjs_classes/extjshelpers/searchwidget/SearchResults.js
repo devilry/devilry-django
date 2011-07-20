@@ -63,12 +63,24 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     initComponent: function() {
         var me = this;
+
+        this.showmorebutton = Ext.create('Ext.button.Button', {
+            text: 'Show more',
+            listeners: {
+                click: function() {
+                    me.getSearchWidget().modifySearch({
+                        type: me.filterconfig.type
+                    });
+                }
+            }
+        });
+
         Ext.apply(this, {
             frame: false,
             hideHeaders: true,
             minButtonWidth: 0,
 
-            tbar: [{
+            tbar: [this.showmorebutton, {
                 xtype: 'box',
                 flex: 1
             }, {
@@ -82,7 +94,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
                 }
             }, {
                 xtype: 'component',
-                html: 'something',
+                html: '',
                 id: this.id + '-pageswitch-label'
             }, {
                 xtype: 'button',
@@ -105,6 +117,10 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
                 me.handleStoreLoadFailure();
             }
         });
+    },
+
+    getSearchWidget: function() {
+        return this.up('multisearchresults').getSearchWidget();
     },
 
     updatePageSwitcher: function() {
@@ -165,7 +181,12 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             return;
         }
         this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams, this.filterconfig.shortcuts);
-        //console.log(this.store.proxy.extraParams);
+        parsedSearch.applyPageSizeToStore(this.store);
+        if(parsedSearch.type) {
+            this.enableStandaloneMode();
+        } else {
+            this.enableSharingMode();
+        }
         this.loadStore();
     },
 
@@ -182,5 +203,23 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
                 me.hide();
             }
         });
+    },
+
+    /**
+     * @private
+     *
+     * Used when this SearchResults is the only one beeing displayed.
+     */
+    enableStandaloneMode: function() {
+        this.showmorebutton.hide();
+    },
+
+    /**
+     * @private
+     *
+     * Used when this SearchResults is beeing displayed in a box with many other SearchResults.
+     */
+    enableSharingMode: function() {
+        this.showmorebutton.show();
     }
 });

@@ -78,10 +78,16 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
             searchstring: value
         });
+        this.currentParsedSearch = parsedSearch;
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
             searchresults.search(parsedSearch);
         });
+    },
+
+    modifySearch: function(properties) {
+        Ext.apply(this.currentParsedSearch, properties);
+        this.setSearchValue(this.currentParsedSearch.toString());
     },
 
     setSearchValue: function(value) {
