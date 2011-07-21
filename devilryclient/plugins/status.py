@@ -48,10 +48,9 @@
 #
 """
 
-from devilryclient.utils import findconffolder
+from devilryclient.utils import findconffolder, get_config, get_metadata
 from os.path import dirname, join, sep, exists
 from os import listdir
-from ConfigParser import ConfigParser
 import sys
 
 
@@ -74,140 +73,156 @@ class DevilryClientStatus(object):
 
         self.conf_dir = findconffolder()
         self.root_dir = dirname(self.conf_dir)
+        self.conf = get_config()
+        self.metadata = get_metadata()
 
         # Read stuff from .devilry/config
-        self.conf = ConfigParser()
-        self.conf.read(join(self.conf_dir, 'config'))
         self.user = self.conf.get('resources', 'user')
         self.server = self.conf.get('resources', 'url')
 
         self.soi = soi
         self.aoi = aoi
 
-        # The tree that will hold links to all the feedbacks
-        self.tree = {}
-        self.num_groups = 0
-        self.num_subjects = 0
-        self.num_deliveries = 0
-        self.num_feedbacks = 0
-
     def run(self):
         self.collect_data()
         self.display()
 
-    def collect_from_subjects(self, directory):
-        for subject in listdir(directory):
-            # skip the .devilry folder
-            if subject.startswith('.'):
-                continue
+    def traverse_tree(self, node, sub_tree, depth):
 
-            # check if soi is set, and skip any that are'nt the soi
-            if self.soi != None and self.soi != subject:
-                continue
+        if node == '.meta':
+            return
 
-            # .num_deliveries will keep track of how many deliveres
-            # has been done in this subject
-            self.tree[subject] = {'.num_deliveries': 0}
-            self.num_subjects += 1
+        if node == 'files':
+            print depth * "  ", sub_tree
+            return
 
-            # Go deeper
-            self.collect_from_periods(join(directory, subject))
+        # if self.soi != None and self.soi != node and depth == 0:
+        #     return
 
-    def collect_from_periods(self, directory):
-        for period in listdir(directory):
-            # we're not really interested in periods, but we need to
-            # traverse them
-            self.collect_from_assignments(join(directory, period))
+        print depth * "  ", node
 
-    def collect_from_assignments(self, directory):
-        # find out which subject we're currently in period is the last
-        # element, subject the second last
-        path = directory.split(sep)
-        subject = path[-2]
-        for assignment in listdir(directory):
-            # check if aoi is set, and skip any that are'nt the aoi
-            if self.aoi != None and self.aoi != assignment:
-                continue
-
-            # .num_deliveries will keep track of how many deliveries
-            # have been done in this assignment
-            self.tree[subject][assignment] = {}
-            # Go even deeper
-            self.collect_from_assignmentgroups(join(directory, assignment))
-
-    def collect_from_assignmentgroups(self, directory):
-        path = directory.split(sep)
-        subject = path[-3]
-        assignment = path[-1]
-        for group in listdir(directory):
-            self.tree[subject][assignment][group] = {}
-            # Not deep enough!
-            ## should we have deadlines directories?
-            self.collect_from_deadlines(join(directory, group))
-            # or just skip straight to deliveries?
-            # self.collect_from_deliveries(join(directory, group))
-
-    def collect_from_deadlines(self, directory):
-        for delivery in listdir(directory):
-            # We dont care about deadlines
-            self.collect_from_deliveries(join(directory, delivery))
-
-    def collect_from_deliveries(self, directory):
-        path = directory.split(sep)
-        subject = path[-4]
-        assignment = path[-2]
-        group = path[-1]
-        for delivery in listdir(directory):
-            self.tree[subject][assignment][group] = {}
-            self.tree[subject]['.num_deliveries'] += 1
-            # Deeper! We must go deeper!
-            self.collect_from_feedbacks(join(directory, delivery))
-
-    def collect_from_feedbacks(self, directory):
-        path = directory.split(sep)
-        subject = path[-5]
-        assignment = path[-3]
-        group = path[-2]
-        delivery = path[-1]
-        if exists(join(directory, 'feedback.rst')):
-            self.num_feedbacks += 1
-            self.tree[subject][assignment][group][delivery] = join(directory, 'feedback.rst')
+        for key in sub_tree.keys():
+            self.traverse_tree(key, sub_tree[key], depth + 1)
 
     def collect_data(self):
-        # start the recursive decent into the directory tree
-        self.collect_from_subjects(self.root_dir)
+        for key in self.metadata.keys():
+            self.traverse_tree(key, self.metadata[key], 0)
 
     def display(self):
-        print '#'
-        print "# Devilry server: {user}@{server}".format(user=self.user, server=self.server,)
-        print '#'
-        print "# Deliveries to correct: {num_deliveries}".format(num_deliveries=self.num_deliveries)
-        print "#             remaining: {num_remaining}".format(num_remaining=self.num_deliveries -
-                                                                self.num_feedbacks)
+        pass
+    #     print '#'
+    #     print "# Devilry server: {user}@{server}".format(user=self.user, server=self.server,)
+    #     print '#'
+    #     print "# Deliveries to correct: {num_deliveries}".format(num_deliveries=self.num_deliveries)
+    #     print "#             remaining: {num_remaining}".format(num_remaining=self.num_deliveries -
+    #                                                             self.num_feedbacks)
 
-        if self.num_deliveries > 0:
-            print '#'
-            print '# Not corrected:'
+    #     if self.num_deliveries > 0:
+    #         print '#'
+    #         print '# Not corrected:'
 
-        for subject in sorted(self.tree.keys()):
+    #     for subject in sorted(self.tree.keys()):
 
-            if self.tree[subject]['.num_deliveries'] == 0:
-                continue  # skip subjects with no deliveries
+    #         if self.tree[subject]['.num_deliveries'] == 0:
+    #             continue  # skip subjects with no deliveries
 
-            print "#  {subject}:".format(subject=subject)
+    #         print "#  {subject}:".format(subject=subject)
 
-            for assignment in sorted(self.tree[subject].keys()):
-                # if assignment.startswith('.'):
-                #     continue  # meta-variable
+    #         for assignment in sorted(self.tree[subject].keys()):
+    #             # if assignment.startswith('.'):
+    #             #     continue  # meta-variable
 
-                print "#    {assignment}:".format(assignment=assignment)
+    #             print "#    {assignment}:".format(assignment=assignment)
 
-                for group in sorted(self.tree[subject][assignment].keys()):
-                    if len(self.tree[subject][assignment][group].keys()) > 0:
-                        print "#      {group}".format(group=group)
-        print '#'
+    #             for group in sorted(self.tree[subject][assignment].keys()):
+    #                 if len(self.tree[subject][assignment][group].keys()) > 0:
+    #                     print "#      {group}".format(group=group)
+    #     print '#'
 
-        print self.tree
+    #     print self.tree
+
+    # def collect_from_subjects(self, directory):
+    #     for subject in listdir(directory):
+    #         # skip the .devilry folder
+    #         if subject.startswith('.'):
+    #             continue
+
+    #         # check if soi is set, and skip any that are'nt the soi
+    #         if self.soi != None and self.soi != subject:
+    #             continue
+
+    #         # .num_deliveries will keep track of how many deliveres
+    #         # has been done in this subject
+    #         self.tree[subject] = {'.num_deliveries': 0}
+    #         self.num_subjects += 1
+
+    #         # Go deeper
+    #         self.collect_from_periods(join(directory, subject))
+
+    # def collect_from_periods(self, directory):
+    #     for period in listdir(directory):
+    #         # we're not really interested in periods, but we need to
+    #         # traverse them
+    #         self.collect_from_assignments(join(directory, period))
+
+    # def collect_from_assignments(self, directory):
+    #     # find out which subject we're currently in period is the last
+    #     # element, subject the second last
+    #     path = directory.split(sep)
+    #     subject = path[-2]
+    #     for assignment in listdir(directory):
+    #         # check if aoi is set, and skip any that are'nt the aoi
+    #         if self.aoi != None and self.aoi != assignment:
+    #             continue
+
+    #         # .num_deliveries will keep track of how many deliveries
+    #         # have been done in this assignment
+    #         self.tree[subject][assignment] = {}
+    #         # Go even deeper
+    #         self.collect_from_assignmentgroups(join(directory, assignment))
+
+    # def collect_from_assignmentgroups(self, directory):
+    #     path = directory.split(sep)
+    #     subject = path[-3]
+    #     assignment = path[-1]
+    #     for group in listdir(directory):
+    #         self.tree[subject][assignment][group] = {}
+    #         # Not deep enough!
+    #         ## should we have deadlines directories?
+    #         self.collect_from_deadlines(join(directory, group))
+    #         # or just skip straight to deliveries?
+    #         # self.collect_from_deliveries(join(directory, group))
+
+    # def collect_from_deadlines(self, directory):
+    #     for delivery in listdir(directory):
+    #         # We dont care about deadlines
+    #         self.collect_from_deliveries(join(directory, delivery))
+
+    # def collect_from_deliveries(self, directory):
+    #     path = directory.split(sep)
+    #     subject = path[-4]
+    #     assignment = path[-2]
+    #     group = path[-1]
+    #     for delivery in listdir(directory):
+    #         self.tree[subject][assignment][group] = {}
+    #         self.tree[subject]['.num_deliveries'] += 1
+    #         # Deeper! We must go deeper!
+    #         self.collect_from_feedbacks(join(directory, delivery))
+
+    # def collect_from_feedbacks(self, directory):
+    #     path = directory.split(sep)
+    #     subject = path[-5]
+    #     assignment = path[-3]
+    #     group = path[-2]
+    #     delivery = path[-1]
+    #     if exists(join(directory, 'feedback.rst')):
+    #         self.num_feedbacks += 1
+    #         self.tree[subject][assignment][group][delivery] = join(directory, 'feedback.rst')
+
+    # def collect_data(self):
+    #     # start the recursive decent into the directory tree
+    #     self.collect_from_subjects(self.root_dir)
+
 
 if __name__ == '__main__':
     DevilryClientStatus(*sys.argv[1:]).run()

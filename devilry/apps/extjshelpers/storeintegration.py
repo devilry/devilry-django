@@ -1,5 +1,14 @@
 from modelintegration import get_extjs_modelname, restfulcls_to_extjsmodel
 
+def get_extjs_storeid(restfulcls):
+    """
+    Get the ExtJS store id for the given restful class.
+    Generated from the store id and class name of
+    ``restfulcls._meta.simplified``
+    """
+    simplified = restfulcls._meta.simplified
+    return '{module}.{name}Store'.format(module=simplified.__module__, name=simplified.__name__)
+
 def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
                             pagesize=None):
     """
@@ -21,9 +30,12 @@ def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
         jspagesize = ' pageSize: {0},'.format(pagesize)
     else:
         jspagesize = ''
+
+
     return """Ext.create('Ext.data.Store', {{
             model: {model},
+            id: '{id}',
             remoteFilter: true,
             remoteSort: true,{jspagesize}
             autoSync: true
-        }})""".format(model=model, jspagesize=jspagesize)
+        }})""".format(model=model, id=get_extjs_storeid(restfulcls), jspagesize=jspagesize)

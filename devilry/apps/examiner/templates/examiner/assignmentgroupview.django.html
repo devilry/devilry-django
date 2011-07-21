@@ -1,0 +1,40 @@
+{% extends "examiner/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+
+<script>
+    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+
+    {{ RestfulSimplifiedDeadline|extjs_model }};
+    {{ RestfulSimplifiedDeadline|extjs_store }};
+
+    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
+    {{ RestfulSimplifiedDelivery|extjs_store }};
+
+    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
+    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
+
+    {{ RestfulSimplifiedFileMeta|extjs_model }};
+    {{ RestfulSimplifiedFileMeta|extjs_store }};
+
+
+    Ext.require('devilry.extjshelpers.AssignmentGroupOverview');
+    Ext.onReady(function() {
+        Ext.create('devilry.extjshelpers.AssignmentGroupOverview', {
+            renderTo: 'maincontent',
+            assignmentgroupid: {{ assignmentgroupid }}
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div id="maincontent"></div>
+
+{% endblock %}

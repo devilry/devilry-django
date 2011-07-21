@@ -10,7 +10,11 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deliveryinfo',
     title: 'Delivery',
+    cls: 'widget-deliveryinfo',
     html: '',
+    requires: [
+        'devilry.extjshelpers.StaticFeedbackEditableInfo'
+    ],
     tpl: Ext.create('Ext.XTemplate',
         '<dl>',
         '   <dt>Files</dt>',
@@ -36,20 +40,33 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     config: {
         /**
          * @cfg
-         * RestfulSimplifiedFileMeta store. __Required__.
          */
-        filemetastore: undefined,
+        delivery: undefined,
+        assignmentid: undefined
+    },
 
-        /**
-         * @cfg
-         * Delivery object as returned from loading it by id as a model.
-         */
-        delivery: undefined
+    initComponent: function() {
+        this.deliveryInfo = Ext.create('Ext.Component');
+
+        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
+        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
+            deliveryid: this.delivery.id,
+            assignmentid: this.assignmentid
+        });
+
+
+        Ext.apply(this, {
+            items: [this.deliveryInfo, this.feedbackInfo]
+        });
+        this.createBody(false);
+        this.loadFileMetas();
+        this.callParent(arguments);
     },
 
     loadFileMetas: function() {
         var me = this;
-        var store = this.filemetastore;
+        var filemetastoreid = 'devilry.apps.examiner.simplified.SimplifiedFileMetaStore';
+        var store = Ext.data.StoreManager.lookup(filemetastoreid);
         store.proxy.extraParams.filters = Ext.JSON.encode([
             {field: 'delivery', comp:'exact', value: this.delivery.id}
         ]);
@@ -67,12 +84,6 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
             delivery: this.delivery,
             filemetas: filemetas
         });
-        this.update(html);
-    },
-
-    initComponent: function() {
-        this.callParent(arguments);
-        this.createBody(false);
-        this.loadFileMetas();
+        this.deliveryInfo.update(html);
     }
 });

@@ -30,50 +30,48 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResultItem', {
             this.addCls('searchresultitem-even');
         }
 
-        var buttonitems = [];
-        if(this.defaultbutton) {
-            buttonitems.push(this.configureDefaultButton(this.defaultbutton));
-        }
-        if(this.menuitems) {
-            buttonitems.push({
-                xtype: 'button',
-                text: 'More actions',
-                margin: {top: 2},
-                menu: this.menuitems
-            });
-        }
-
         var template = Ext.create('Ext.XTemplate', this.tpl);
-        Ext.apply(this, {
-            items: [{
-                xtype: 'component',
-                flex: 4,
-                html: template.apply(this.recorddata)
-            }, {
-                xtype: 'container',
-                flex: 0,
+        var items = [{
+            xtype: 'component',
+            flex: 4,
+            html: template.apply(this.recorddata)
+        }];
 
-                frame: false,
-                height: 65,
-                width: 140,
-                //style: {"background-color": "red"},
-                padding: {
-                    left: 20 // Avoid text pressing against buttons
-                },
-                layout: {
-                    type:'vbox',
-                    padding:'5',
-                    align:'stretch'
-                },
-                items: buttonitems
-            }]
-        });
+        var button = this.defaultbutton;
+        if(this.defaultbutton) {
+            if(this.menuitems) {
+                this.configureClickable(button, 'splitbutton');
+                button.menu = {
+                    items: this.configureMenuItems()
+                }
+            } else {
+                this.configureClickable(button, 'button');
+            }
+
+            Ext.apply(button, {
+                minWidth: 100,
+                margin: {left: 20}
+            });
+            items.push(button);
+        }
+
+        Ext.apply(this, {items: items});
         this.callParent(arguments);
     },
 
-    configureDefaultButton: function(config) {
+
+    configureMenuItems: function() {
+        var me = this;
+        Ext.each(this.menuitems, function(menuitem) {
+            me.configureClickable(menuitem);
+        });
+        return this.menuitems;
+    },
+
+    configureClickable: function(config, xtype) {
         Ext.apply(config, {
-            xtype: 'button'
+            xtype: xtype,
+            scale: 'medium'
         });
         if(config.clickLinkTpl) {
             this.applyClickLinkButton(config);
