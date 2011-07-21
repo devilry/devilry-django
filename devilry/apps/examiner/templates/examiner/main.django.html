@@ -57,6 +57,9 @@
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
+                filterconfig: {
+                    type: 'assignment'
+                },
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
