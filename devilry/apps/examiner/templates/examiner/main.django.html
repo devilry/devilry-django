@@ -15,6 +15,7 @@
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
+    Ext.require('devilry.extjshelpers.searchwidget.FilterConfigDefaults');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
             renderTo: 'searchwidget',
@@ -22,13 +23,7 @@
                 xtype: 'searchresults',
                 title: 'Deliveries',
                 store: deliverystore,
-                filterconfig: {
-                    type: 'delivery',
-                    shortcuts: {
-                        assignment: 'deadline__assignment_group__parentnode',
-                        group: 'deadline__assignment_group',
-                    }
-                },
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
@@ -40,12 +35,7 @@
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                filterconfig: {
-                    type: 'group',
-                    shortcuts: {
-                        assignment: 'parentnode'
-                    }
-                },
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
@@ -57,9 +47,7 @@
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                filterconfig: {
-                    type: 'assignment'
-                },
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {

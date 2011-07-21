@@ -12,7 +12,5 @@ urlpatterns = patterns('devilry.apps.administrator',
                        editorviews.NodeEditor.create_url(),
                        editorviews.SubjectEditor.create_url(),
                        editorviews.PeriodEditor.create_url(),
-                       editorviews.AssignmentEditor.create_url(),
-                       editorviews.AssignmentGroupEditor.create_url(),
-                       editorviews.DeliveryEditor.create_url())
+                       editorviews.AssignmentEditor.create_url())
 urlpatterns += administrator_restful

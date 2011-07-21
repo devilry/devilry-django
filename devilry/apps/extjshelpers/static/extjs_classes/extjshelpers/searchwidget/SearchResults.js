@@ -49,6 +49,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     constructor: function(config) {
         this.callParent([config]);
+        this.initConfig(config);
         var filterconfig = {
             type: undefined,
             shortcuts: new Object()
