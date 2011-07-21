@@ -1,10 +1,10 @@
 /** A textfield for searching.
  *
- * @xtype multisearchfield
  * */
-Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
+Ext.define('devilry.extjshelpers.SearchField', {
     extend: 'Ext.form.field.Text',
-    alias: 'widget.multisearchfield',
+    alias: 'widget.searchfield',
+    fieldCls: 'widget-searchfield',
 
     config: {
         /**
@@ -26,10 +26,7 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            width: 600,
-            fieldCls: 'searchfield',
             emptyText: 'Search for anything...',
-
             listeners: {
                 scope: this,
                 specialKey: function(field, e) {

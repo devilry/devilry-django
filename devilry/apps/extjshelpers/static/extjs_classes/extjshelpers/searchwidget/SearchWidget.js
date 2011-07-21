@@ -18,15 +18,14 @@
  *     |                    |
  *     +--------------------+
  *
- * @xtype searchwidget
- * @cfg {[Object]} searchResultItems Item list forwarded to the item config of {@link devilry.extjshelpers.searchwidget.MultiSearchResults}
  * */
 Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     extend: 'Ext.container.Container',
     alias: 'widget.searchwidget',
+    cls: 'widget-searchwidget',
     requires: [
+        'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.searchwidget.SearchResults',
-        'devilry.extjshelpers.searchwidget.MultiSearchField',
         'devilry.extjshelpers.searchwidget.MultiSearchResults',
         'devilry.extjshelpers.SearchStringParser'
     ],
@@ -49,7 +48,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         this.multisearchresultid = this.id + "-multisearchresults";
         Ext.apply(this, {
             items: [{
-                xtype: 'multisearchfield'
+                xtype: 'searchfield'
             }, {
                 xtype: 'multisearchresults',
                 items: this.searchResultItems,
@@ -74,7 +73,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     },
 
     getSearchField: function() {
-        return this.down('multisearchfield');
+        return this.down('searchfield');
     },
 
     focusOnSearchfield: function() {
