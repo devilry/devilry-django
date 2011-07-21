@@ -22,7 +22,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         * @cfg
         * AssignmentGroup id.
         */
-        assignmentgroupid: undefined
+        assignmentgroupid: undefined,
+
+        /**
+         * @cfg {Ext.data.Model} AssignmentGroup model.
+         */
+        assignmentgroupmodel: undefined,
+
+        /**
+         * @cfg {Ext.data.Model} Delivery model.
+         */
+        deliverymodel: undefined
     },
 
 
@@ -46,7 +56,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 split: true,
                 items: [{
                     xtype: 'assignmentgroupinfo',
-                    assignmentgroupid: this.assignmentgroupid
+                    assignmentgroupid: this.assignmentgroupid,
+                    deliverymodel: this.deliverymodel
                 }]
             }, {
                 region: 'center',
@@ -57,8 +68,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.callParent(arguments);
 
 
-        var assignmentgroupmodel = Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup');
-        assignmentgroupmodel.load(this.assignmentgroupid, {
+        this.assignmentgroupmodel.load(this.assignmentgroupid, {
             scope: me,
             success: me.onLoadAssignmentGroup
         });
@@ -79,7 +89,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
     loadDelivery: function(deliveryid) {
         var me = this;
-        Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery').load(deliveryid, {
+        this.deliverymodel.load(deliveryid, {
             scope: me,
             success: me.setDelivery
         });

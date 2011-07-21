@@ -13,7 +13,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     ],
 
     config: {
-        assignmentgroupid: undefined
+        /**
+        * @cfg
+        * AssignmentGroup id.
+        */
+        assignmentgroupid: undefined,
+
+        /**
+         * @cfg {Ext.data.Model} Delivery model.
+         */
+        deliverymodel: undefined
     },
 
     initComponent: function() {
@@ -47,7 +56,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     addDeadline:function(deadline) {
         this.add({
             xtype: 'deadlineinfo',
-            deadline: deadline
+            deadline: deadline,
+            deliverymodel: this.deliverymodel
         });
     }
 });

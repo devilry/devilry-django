@@ -1,6 +1,6 @@
 /** AssignmentGroup info.
  *
- * Lists DeadlineInfo and info about the AssignmentGroup.
+ * Lists DeadlineListing and info about the AssignmentGroup.
  *
  * @xtype assignmentgroupinfo
  */
@@ -13,14 +13,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     ],
 
     config: {
-        assignmentgroupid: undefined
+        /**
+        * @cfg
+        * AssignmentGroup id.
+        */
+        assignmentgroupid: undefined,
+
+        /**
+         * @cfg {Ext.data.Model} Delivery model.
+         */
+        deliverymodel: undefined
     },
 
     initComponent: function() {
         Ext.apply(this, {
             items: [{
                 xtype: 'deadlinelisting',
-                assignmentgroupid: this.assignmentgroupid
+                assignmentgroupid: this.assignmentgroupid,
+                deliverymodel: this.deliverymodel
             }]
         });
         this.callParent(arguments);

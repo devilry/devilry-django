@@ -24,7 +24,9 @@
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'maincontent',
-            assignmentgroupid: {{ assignmentgroupid }}
+            assignmentgroupid: {{ assignmentgroupid }},
+            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup'),
+            deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery')
         });
     });
 

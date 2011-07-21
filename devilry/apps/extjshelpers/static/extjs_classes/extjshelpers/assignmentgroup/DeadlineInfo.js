@@ -15,12 +15,22 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
     titleTpl: Ext.create('Ext.XTemplate', '{deadline:date}'),
 
     config: {
-        deadline: undefined
+        /**
+         * @cfg
+         * The deadline data. The data attribute of a record returned from
+         * loading the deadline from a store or model.
+         */
+        deadline: undefined,
+
+        /**
+         * @cfg {Ext.data.Model} Delivery model.
+         */
+        deliverymodel: undefined
     },
     
     initComponent: function() {
         var deliverystore = Ext.create('Ext.data.Store', {
-            model: 'devilry.apps.examiner.simplified.SimplifiedDelivery',
+            model: this.deliverymodel,
             remoteFilter: true,
             remoteSort: true,
             autoSync: true,
