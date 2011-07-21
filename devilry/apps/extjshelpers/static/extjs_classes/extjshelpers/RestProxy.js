@@ -19,8 +19,7 @@
  *               extend: 'Ext.data.Model',
  *               requires: ['devilry.extjshelpers.RestProxy'],
  *               fields: [...],
- *               proxy: {{
- *                   type: 'devilryrestproxy',
+                 proxy: Ext.create('devilry.extjshelpers.RestProxy', {
  *                   ...
  *               }
  *     });

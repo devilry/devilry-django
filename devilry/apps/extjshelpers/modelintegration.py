@@ -72,8 +72,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
             requires: ['devilry.extjshelpers.RestProxy'],
             fields: {modelfields},
             idProperty: '{idprop}',
-            proxy: {{
-                type: 'devilryrestproxy',
+            proxy: Ext.create('devilry.extjshelpers.RestProxy', {{
                 url: '{resturl}',
                 extraParams: {{
                     getdata_in_qrystring: true,
@@ -87,7 +86,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[]):
                 writer: {{
                     type: 'json'
                 }}
-            }}
+            }})
         }})""".format(modelname = get_extjs_modelname(restfulcls),
                       modelfields = json.dumps(modelfields),
                       idprop = 'id', # TODO: metaoption
