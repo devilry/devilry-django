@@ -40,13 +40,13 @@ class PullFromServer(object):
     def add_start(self):
         #start creating directories recursively
         devilry_path = dirname(findconffolder())
-        subjects = self.SimplifiedSubject.search(query='')['items']
+        subjects = self.SimplifiedSubject.search(query='')
         self.add_subjects(devilry_path, subjects)
 
     def add_subjects(self, devilry_path, subjects):
         self.tree['.meta'] = {}
         self.tree['.meta']['query_result'] = subjects
-        for subject in subjects:
+        for subject in subjects['items']:
             subject_path = create_folder(join(devilry_path, subject['short_name']))
             #search for this subjects periods
             period_filters = [{'field':'parentnode',
@@ -89,7 +89,7 @@ class PullFromServer(object):
                                 'value':assignment['id']}]
 
             assignment_groups = self.SimplifiedAssignmentGroup.search( 
-                            result_fieldgroups=['period', 'assignment'], 
+                            result_fieldgroups=['period', 'assignment', 'users'], 
                             filters=a_group_filters)
             
             self.tree[subject][period][assignment['short_name']] = {}
@@ -159,6 +159,7 @@ class PullFromServer(object):
         self.tree[subject][period][assignment][group][deadline]['.meta']['query_result'] = deliveries
         for delivery in deliveries['items']:
             late = is_late(delivery)
+            #TODO fix late deliveries
             delivery_path = create_folder(join(deadline_path, str(delivery['number'])))
             file_filters = [{'field':'delivery',
                              'comp':'exact',
@@ -184,11 +185,11 @@ class PullFromServer(object):
 
         file_path = create_folder(join(delivery_path, 'files'))
         self.tree[subject][period][assignment][group][deadline][delivery]['files'] = []
-        for file in files['items']:
-            f = open(join(file_path, file['filename']), 'w')
+        for delivery_file in files['items']:
+            f = open(join(file_path, delivery_file['filename']), 'w')
             f.close()
 
-            self.tree[subject][period][assignment][group][deadline][delivery]['files'].append(file['filename'])
+            self.tree[subject][period][assignment][group][deadline][delivery]['files'].append(delivery_file['filename'])
 
         devilryfolder = findconffolder()
         treefile = open(join(devilryfolder, 'metadata'), 'w')
