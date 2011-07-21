@@ -121,8 +121,7 @@
 <span class="s">            requires: [&#39;devilry.extjshelpers.RestProxy&#39;],</span>
 <span class="s">            fields: {modelfields},</span>
 <span class="s">            idProperty: &#39;{idprop}&#39;,</span>
-<span class="s">            proxy: {{</span>
-<span class="s">                type: &#39;devilryrestproxy&#39;,</span>
+<span class="s">            proxy: Ext.create(&#39;devilry.extjshelpers.RestProxy&#39;, {{</span>
 <span class="s">                url: &#39;{resturl}&#39;,</span>
 <span class="s">                extraParams: {{</span>
 <span class="s">                    getdata_in_qrystring: true,</span>
@@ -136,7 +135,7 @@
 <span class="s">                writer: {{</span>
 <span class="s">                    type: &#39;json&#39;</span>
 <span class="s">                }}</span>
-<span class="s">            }}</span>
+<span class="s">            }})</span>
 <span class="s">        }})&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span> <span class="o">=</span> <span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">),</span>
                       <span class="n">modelfields</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modelfields</span><span class="p">),</span>
                       <span class="n">idprop</span> <span class="o">=</span> <span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="c"># TODO: metaoption</span>

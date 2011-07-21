@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"delivery", comp:"endswith", value:15},
-                      {field:"filename", comp:"startswith", value:"My example value"},
-                      {field:"id", comp:">", value:15}],
+        filters: [{field:"delivery", comp:">", value:15},
+                      {field:"filename", comp:"<=", value:"My example value"},
+                      {field:"id", comp:"startswith", value:15}],
         orderby: ["filename", "-size", "id", "delivery"],
         start: 10,
         limit: 100
@@ -137,9 +137,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"delivery", comp:"endswith", value:15},
-         {field:"filename", comp:"startswith", value:"My example value"},
-         {field:"id", comp:">", value:15}]
+        [{field:"delivery", comp:">", value:15},
+         {field:"filename", comp:"<=", value:"My example value"},
+         {field:"id", comp:"startswith", value:15}]
 
 FileMetas can be filtered on the following *fields*:
 
