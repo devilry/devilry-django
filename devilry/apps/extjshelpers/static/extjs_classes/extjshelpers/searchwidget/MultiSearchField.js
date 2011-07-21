@@ -9,11 +9,18 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
     config: {
         /**
          * @cfg
-         * Delay before a search is performed in milliseconds. Defaults to 300.
+         * Delay before a search is performed in milliseconds. Defaults to 500.
          * The search is not performed if the user changes the input text before
          * ``searchdelay`` is over.
          */
-        searchdelay: 300
+        searchdelay: 500
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+        this.addEvents('emptyInput');
+        this.addEvents('newInput');
     },
 
     initComponent: function() {
@@ -24,6 +31,7 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
             emptyText: 'Search for anything...',
 
             listeners: {
+                scope: this,
                 specialKey: function(field, e) {
                     me.handleSpecialKey(e);
                 },
@@ -36,10 +44,16 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
         this.callParent(arguments);
     },
 
-    searchIfLatest: function(value) {
+    triggerSearch: function(value) {
         var currentValue = this.getValue();
-        if(value == currentValue) {
-            this.ownerCt.search(value);
+        var noNewInput = value == currentValue;
+        if(noNewInput) {
+            if(Ext.String.trim(currentValue) == "") {
+                this.ownerCt.hideResults();
+            } else {
+                console.log(value);
+                this.ownerCt.search(value);
+            }
         }
     },
 
@@ -52,13 +66,9 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
     },
 
     handleChange: function(newValue) {
-        if(Ext.String.trim(newValue) == "") {
-            this.ownerCt.hideResults();
-        } else {
-            var me = this;
-            Ext.Function.defer(function() {
-                me.searchIfLatest(newValue);
-            }, this.searchdelay);
-        }
+        var me = this;
+        Ext.Function.defer(function() {
+            me.triggerSearch(newValue);
+        }, this.searchdelay);
     }
 });
