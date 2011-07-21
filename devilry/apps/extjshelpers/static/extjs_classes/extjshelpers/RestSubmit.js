@@ -1,6 +1,8 @@
 /**
  * Restful submit with support for HTTP error codes and PUT, POST, DELETE and
- * GET. Usage:
+ * GET. This is achieved in cooperation with {@link devilry.extjshelpers.RestProxy}.
+ *
+ * # Usage
  *
  *      myform.getForm().doAction('devilryrestsubmit', {...});
  * 
@@ -8,6 +10,16 @@
  *
  *      myform.getForm().submit({...});
  * 
+ * Just remember require this class with:
+ *
+ *      requires: ['devilry.extjshelpers.RestSubmit']
+ *
+ * or
+ *
+ *      Ext.require('devilry.extjshelpers.RestSubmit');
+ *
+ * # See also
+ * {@link devilry.extjshelpers.RestProxy}.
  * */
 Ext.define('devilry.extjshelpers.RestSubmit', {
     extend: 'Ext.form.action.Submit',
