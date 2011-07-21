@@ -88,9 +88,9 @@ class PullFromServer(object):
                                 'comp':'exact',
                                 'value':assignment['id']}]
 
-            assignment_groups = self.SimplifiedAssignmentGroup.search(
-                result_fieldgroups=['period', 'assignment', 'users'],
-                filters=a_group_filters)
+            assignment_groups = self.SimplifiedAssignmentGroup.search( 
+                            result_fieldgroups=['period', 'assignment', 'users'], 
+                            filters=a_group_filters)
 
             self.tree[subject][period][assignment['short_name']] = {}
             self.add_assignmentgroups(assignment_path, assignment_groups)
@@ -125,9 +125,12 @@ class PullFromServer(object):
 
         self.tree[subject][period][assignment][group]['.meta'] = {}
         self.tree[subject][period][assignment][group]['.meta']['query_result'] = deadlines
+        number = 1 #number for tagging the deadlines
         for deadline in deadlines['items']:
             #format deadline
             deadlinetime = deadline_format(deadline['deadline'])
+            deadlinetime = '{}_{}'.format(number, deadlinetime)
+            number += 1
 
             path = assignment_group_path.split(sep)
             group = path[-1]
@@ -140,7 +143,7 @@ class PullFromServer(object):
                                  'comp':'exact',
                                  'value':deadline['id']}]
             deliveries = self.SimplifiedDelivery.search(
-                result_fieldgroups=['period', 'assignment', 'assignment_group'],
+                result_fieldgroups=['period', 'assignment', 'assignment_group', 'deadline'],
                 filters=delivery_filters)
 
             self.tree[subject][period][assignment][group][deadlinetime] = {}
@@ -158,8 +161,12 @@ class PullFromServer(object):
         self.tree[subject][period][assignment][group][deadline]['.meta'] = {}
         self.tree[subject][period][assignment][group][deadline]['.meta']['query_result'] = deliveries
         for delivery in deliveries['items']:
-            late = is_late(delivery)
-            delivery_path = create_folder(join(deadline_path, str(delivery['number'])))
+            #tag late deliveries
+            if is_late(delivery):
+                name = '{}_late'.format(str(delivery['number']))
+            else:
+                name = str(delivery['number'])
+            delivery_path = create_folder(join(deadline_path, name))
             file_filters = [{'field':'delivery',
                              'comp':'exact',
                              'value':delivery['id']}]
@@ -184,11 +191,11 @@ class PullFromServer(object):
 
         file_path = create_folder(join(delivery_path, 'files'))
         self.tree[subject][period][assignment][group][deadline][delivery]['files'] = []
-        for file in files['items']:
-            f = open(join(file_path, file['filename']), 'w')
+        for delivery_file in files['items']:
+            f = open(join(file_path, delivery_file['filename']), 'w')
             f.close()
 
-            self.tree[subject][period][assignment][group][deadline][delivery]['files'].append(file['filename'])
+            self.tree[subject][period][assignment][group][deadline][delivery]['files'].append(delivery_file['filename'])
 
         devilryfolder = findconffolder()
         treefile = open(join(devilryfolder, 'metadata'), 'w')

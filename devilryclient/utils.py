@@ -79,6 +79,7 @@ def execute(command, args):
     :param args: Additional arguments
     """
     logging.warning('Hello from utils.py')
+    #TODO should not search for .py files
     path = join(getpluginsdir(), command + ".py")
     if exists(path):
         commands = pathwithargs(path, args)
@@ -210,8 +211,10 @@ def get_metadata_from_path(path, metadata=None):
 
 
 def deadline_format(deadline):
-    deadline = deadline.replace(':', '-')
+    deadline = deadline.replace(':', '')
+    deadline = deadline.replace('-', '')
     deadline = deadline.replace(' ', '_')
+    deadline = deadline[:-2]
     return deadline
 
 
