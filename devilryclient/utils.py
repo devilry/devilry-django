@@ -1,4 +1,4 @@
-from os.path import dirname, join, exists
+from os.path import dirname, join, exists, sep
 from os import listdir, environ, mkdir
 from subprocess import call
 import sys
@@ -136,6 +136,7 @@ def findconffolder():
 
     raise ValueError(".devirly not found")
 
+
 def create_folder(path):
     """
     :param folder_name: A string representing the node attribute which the folder should be named after
@@ -161,7 +162,51 @@ def get_metadata():
 
     metadata_f = open(join(conf_dir, 'metadata'), 'r')
     metadata = eval(metadata_f.read())
+    metadata_f.close()
     return metadata
+
+
+def save_metadata(metadata):
+    conf_dir = findconffolder()
+    metadata_f = open(join(conf_dir, 'metadata'), 'w')
+    metadata_f.write(str(metadata))
+    metadata_f.close()
+
+
+def get_metadata_from_path(path, metadata=None):
+    """Given a path, find the the context the path belongs to, and
+    the metadata for that level.
+
+    :return: (context, metadata)
+    """
+    root_dir = dirname(findconffolder())
+    split_path = path.replace(root_dir, '').split(sep)
+
+    # might be a plugin already fetched the metadata, so no need to
+    # fetch it again
+    if not metadata:
+        metadata = get_metadata()
+
+    # alias split_path to something shorter
+    p = split_path
+    d = len(split_path)  # d for depth
+
+    if d == 1:
+        return metadata
+    elif d == 2:
+        return metadata[p[1]]
+    elif d == 3:
+        return metadata[p[1]][p[2]]
+    elif d == 4:
+        return metadata[p[1]][p[2]][p[3]]
+    elif d == 5:
+        return metadata[p[1]][p[2]][p[3]][p[4]]
+    elif d == 6:
+        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]]
+    elif d == 7:
+        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]]
+    else:
+        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]][p[7]]
 
 
 def deadline_format(deadline):
