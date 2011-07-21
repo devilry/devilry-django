@@ -166,8 +166,10 @@ def get_metadata():
 
 
 def deadline_format(deadline):
-    deadline = deadline.replace(':', '-')
+    deadline = deadline.replace(':', '')
+    deadline = deadline.replace('-', '')
     deadline = deadline.replace(' ', '_')
+    deadline = deadline[:-2]
     return deadline
 
 

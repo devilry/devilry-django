@@ -88,17 +88,10 @@ class PullFromServer(object):
                                 'comp':'exact',
                                 'value':assignment['id']}]
 
-<<<<<<< HEAD
             assignment_groups = self.SimplifiedAssignmentGroup.search( 
                             result_fieldgroups=['period', 'assignment', 'users'], 
                             filters=a_group_filters)
-            
-=======
-            assignment_groups = self.SimplifiedAssignmentGroup.search(
-                result_fieldgroups=['period', 'assignment', 'users'],
-                filters=a_group_filters)
 
->>>>>>> 267e001347b108b23bf074b19d3fde6798102bda
             self.tree[subject][period][assignment['short_name']] = {}
             self.add_assignmentgroups(assignment_path, assignment_groups)
 
@@ -134,8 +127,9 @@ class PullFromServer(object):
         self.tree[subject][period][assignment][group]['.meta']['query_result'] = deadlines
         for deadline in deadlines['items']:
             #format deadline
+            #TODO tag with number and drop -'s
             deadlinetime = deadline_format(deadline['deadline'])
-
+            deadlinetime = '{}_{}'.format(deadline['number'], deadlinetime)
             path = assignment_group_path.split(sep)
             group = path[-1]
             assignment = path[-2]
@@ -147,7 +141,7 @@ class PullFromServer(object):
                                  'comp':'exact',
                                  'value':deadline['id']}]
             deliveries = self.SimplifiedDelivery.search(
-                result_fieldgroups=['period', 'assignment', 'assignment_group'],
+                result_fieldgroups=['period', 'assignment', 'assignment_group', 'deadline'],
                 filters=delivery_filters)
 
             self.tree[subject][period][assignment][group][deadlinetime] = {}
@@ -165,9 +159,12 @@ class PullFromServer(object):
         self.tree[subject][period][assignment][group][deadline]['.meta'] = {}
         self.tree[subject][period][assignment][group][deadline]['.meta']['query_result'] = deliveries
         for delivery in deliveries['items']:
-            late = is_late(delivery)
-            #TODO fix late deliveries
-            delivery_path = create_folder(join(deadline_path, str(delivery['number'])))
+            #tag late deliveries
+            if is_late(delivery):
+                name = '{}_late'.format(str(delivery['number']))
+            else:
+                name = str(delivery['number'])
+            delivery_path = create_folder(join(deadline_path, name))
             file_filters = [{'field':'delivery',
                              'comp':'exact',
                              'value':delivery['id']}]
