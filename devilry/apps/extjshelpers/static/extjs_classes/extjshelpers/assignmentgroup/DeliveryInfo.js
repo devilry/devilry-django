@@ -6,14 +6,14 @@
  *
  * @xtype deliveryinfo
  */
-Ext.define('devilry.extjshelpers.DeliveryInfo', {
+Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deliveryinfo',
     title: 'Delivery',
     cls: 'widget-deliveryinfo',
     html: '',
     requires: [
-        'devilry.extjshelpers.StaticFeedbackEditableInfo'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo'
     ],
     tpl: Ext.create('Ext.XTemplate',
         '<dl>',
@@ -48,8 +48,8 @@ Ext.define('devilry.extjshelpers.DeliveryInfo', {
     initComponent: function() {
         this.deliveryInfo = Ext.create('Ext.Component');
 
-        //this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackInfo', {
-        this.feedbackInfo = Ext.create('devilry.extjshelpers.StaticFeedbackEditableInfo', {
+        //this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
+        this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
             deliveryid: this.delivery.id,
             assignmentid: this.assignmentid
         });

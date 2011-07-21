@@ -2,8 +2,8 @@
  *
  * @xtype staticfeedbackeditableinfo
  */
-Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
-    extend: 'devilry.extjshelpers.StaticFeedbackInfo',
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
+    extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
     alias: 'widget.staticfeedbackeditableinfo',
 
     config: {

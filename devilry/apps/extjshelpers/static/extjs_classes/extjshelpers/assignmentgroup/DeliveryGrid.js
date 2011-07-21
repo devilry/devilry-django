@@ -2,7 +2,7 @@
  *
  * @xtype deliverygrid
  */
-Ext.define('devilry.extjshelpers.DeliveryGrid', {
+Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliverygrid',
     cls: 'widget-deliverygrid',

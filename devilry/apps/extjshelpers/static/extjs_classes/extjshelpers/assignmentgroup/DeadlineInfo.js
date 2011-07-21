@@ -4,13 +4,13 @@
  *
  * @xtype deadlineinfo
  */
-Ext.define('devilry.extjshelpers.DeadlineInfo', {
+Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deadlineinfo',
     cls: 'widget-deadlineinfo',
     margin: {bottom: 20},
     requires: [
-        'devilry.extjshelpers.DeliveryGrid'
+        'devilry.extjshelpers.assignmentgroup.DeliveryGrid'
     ],
     titleTpl: Ext.create('Ext.XTemplate', '{deadline:date}'),
 

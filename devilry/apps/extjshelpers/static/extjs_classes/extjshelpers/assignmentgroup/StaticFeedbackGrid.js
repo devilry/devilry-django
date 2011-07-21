@@ -2,7 +2,7 @@
  *
  * @xtype staticfeedbackgrid
  */
-Ext.define('devilry.extjshelpers.StaticFeedbackGrid', {
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.staticfeedbackgrid',
     cls: 'widget-staticfeedbackgrid',

@@ -20,9 +20,9 @@
     {{ RestfulSimplifiedFileMeta|extjs_store }};
 
 
-    Ext.require('devilry.extjshelpers.AssignmentGroupOverview');
+    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
     Ext.onReady(function() {
-        Ext.create('devilry.extjshelpers.AssignmentGroupOverview', {
+        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'maincontent',
             assignmentgroupid: {{ assignmentgroupid }}
         });

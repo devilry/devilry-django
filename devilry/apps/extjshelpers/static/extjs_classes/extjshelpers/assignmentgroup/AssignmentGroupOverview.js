@@ -1,12 +1,12 @@
-Ext.define('devilry.extjshelpers.AssignmentGroupOverview', {
+Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
     width: 1000,
     height: 800,
     layout: 'border',
     alias: 'widget.assignmentgroupoverview',
     requires: [
-        'devilry.extjshelpers.DeliveryInfo',
-        'devilry.extjshelpers.AssignmentGroupInfo'
+        'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo'
     ],
 
     headingTpl: Ext.create('Ext.XTemplate',

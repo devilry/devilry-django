@@ -2,7 +2,7 @@
  *
  * @xtype staticfeedbackinfo
  */
-Ext.define('devilry.extjshelpers.StaticFeedbackInfo', {
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.staticfeedbackinfo',
     cls: 'widget-staticfeedbackinfo',

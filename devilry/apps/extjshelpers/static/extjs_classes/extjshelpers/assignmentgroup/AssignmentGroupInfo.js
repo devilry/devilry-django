@@ -4,12 +4,12 @@
  *
  * @xtype assignmentgroupinfo
  */
-Ext.define('devilry.extjshelpers.AssignmentGroupInfo', {
+Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupinfo',
     cls: 'widget-assignmentgroupinfo',
     requires: [
-        'devilry.extjshelpers.DeadlineListing'
+        'devilry.extjshelpers.assignmentgroup.DeadlineListing'
     ],
 
     config: {

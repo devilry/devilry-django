@@ -4,12 +4,12 @@
  *
  * @xtype deadlinelisting
  */
-Ext.define('devilry.extjshelpers.DeadlineListing', {
+Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     extend: 'Ext.container.Container',
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
     requires: [
-        'devilry.extjshelpers.DeadlineInfo'
+        'devilry.extjshelpers.assignmentgroup.DeadlineInfo'
     ],
 
     config: {
