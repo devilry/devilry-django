@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>POST /administrator/restfulsimplifiedperiod/ &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Administrator" href="index.html" />
+    <link rel="next" title="PUT /administrator/restfulsimplifiedperiod/id" href="administrator_restfulsimplifiedperiod_details_update.html" />
+    <link rel="prev" title="GET /administrator/restfulsimplifiedperiod/" href="administrator_restfulsimplifiedperiod_details_search.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifiedperiod_details_update.html" title="PUT /administrator/restfulsimplifiedperiod/id"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifiedperiod_details_search.html" title="GET /administrator/restfulsimplifiedperiod/"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="post-administrator-restfulsimplifiedperiod">
+<span id="administrator-restfulsimplifiedperiod-details-create"></span><h1>POST /administrator/restfulsimplifiedperiod/<a class="headerlink" href="#post-administrator-restfulsimplifiedperiod" title="Permalink to this headline">¶</a></h1>
+<p>Create a Period.</p>
+<p>The underlying data model where the item is created is defined in
+<a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a>.
+The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
+<a class="reference internal" href="../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedPeriod.create" title="devilry.apps.administrator.simplified.SimplifiedPeriod.create"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedPeriod.create()</span></tt></a>.</p>
+<div class="section" id="request">
+<h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">POST</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifiedperiod</span><span class="o">/</span>
+
+<span class="p">{</span>
+    <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">start_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+    <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
+    <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">end_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="required-request-parameters">
+<h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The following request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.</p>
+<div class="section" id="long-name">
+<h4>long_name<a class="headerlink" href="#long-name" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</div>
+<div class="section" id="start-time">
+<h4>start_time<a class="headerlink" href="#start-time" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</div>
+<div class="section" id="short-name">
+<h4>short_name<a class="headerlink" href="#short-name" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</div>
+<div class="section" id="parentnode">
+<h4>parentnode<a class="headerlink" href="#parentnode" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
+<div class="section" id="end-time">
+<h4>end_time<a class="headerlink" href="#end-time" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Period" title="devilry.apps.core.models.Period"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Period</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Start time and end time defines when the period is active.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="on-success">
+<h3>On success<a class="headerlink" href="#on-success" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="mi">201</span> <span class="nx">CREATED</span>
+
+<span class="p">{</span>
+    <span class="nx">long_name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">start_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+    <span class="nx">short_name</span><span class="o">:</span> <span class="s2">&quot;my_example001_value&quot;</span><span class="p">,</span>
+    <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">end_time</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+    <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="success-response-details">
+<h4>Success response details<a class="headerlink" href="#success-response-details" title="Permalink to this headline">¶</a></h4>
+<p>As long as the Period is created without an error, the
+response is <em>HTTP 201</em> with the requested data in the body. The result always
+contains the request data with the <em>id</em> field added, however some values may
+have been changed due to logic performed on the server before saving.</p>
+</div>
+</div>
+<div class="section" id="on-error">
+<h3>On error<a class="headerlink" href="#on-error" title="Permalink to this headline">¶</a></h3>
+<p>On errors, we respond with one of the <a class="reference internal" href="../../public_restful_api.html#restful-api-error-statuscodes"><em>HTTP Error status codes</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">POST /administrator/restfulsimplifiedperiod/</a><ul>
+<li><a class="reference internal" href="#request">Request</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
+<li><a class="reference internal" href="#long-name">long_name</a></li>
+<li><a class="reference internal" href="#start-time">start_time</a></li>
+<li><a class="reference internal" href="#short-name">short_name</a></li>
+<li><a class="reference internal" href="#parentnode">parentnode</a></li>
+<li><a class="reference internal" href="#end-time">end_time</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#on-success">On success</a><ul>
+<li><a class="reference internal" href="#id1">Example</a></li>
+<li><a class="reference internal" href="#success-response-details">Success response details</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#on-error">On error</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="administrator_restfulsimplifiedperiod_details_search.html"
+                        title="previous chapter">GET /administrator/restfulsimplifiedperiod/</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="administrator_restfulsimplifiedperiod_details_update.html"
+                        title="next chapter">PUT /administrator/restfulsimplifiedperiod/id</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/restfulapi/administrator/administrator_restfulsimplifiedperiod_details_create.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifiedperiod_details_update.html" title="PUT /administrator/restfulsimplifiedperiod/id"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifiedperiod_details_search.html" title="GET /administrator/restfulsimplifiedperiod/"
+             >previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" >Administrator</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+/* vim: ft=css
+ */
+
+@import url("default.css");
+
+body {
+    font-size: 12px;
+}
+
+h1 {
+    margin: 2px 0 15px 0 !important;
+    padding: 0 !important;
+}
+
+
+div.sphinxsidebar {
+    width: 250px !important;
+    overflow: hidden;
+}
+div.bodywrapper {
+    margin-left: 250px !important;
+}
+
+
+div.body>div.section>div.section {
+    margin-top: 20px;
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 15px 0 15px 0;    
+    box-shadow: 2px 2px 5px #aaa;
+    padding: 15px;
+}
+div.body>div.section>div.section>h2 {
+    border: none;
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+div.body>div.section>div.section>div.section>h3, div.body>div.section>div.section>div.section>div.section>h4 {
+    border: none;
+    margin: 20px 0 15px 0;
+    padding: 0;
+}
+
+div.body>div.section>div.section>div.section>h3 {
+    border-bottom: 1px solid #d8d8d8;
+}
+
+div.body>div.section>div.section>div.section>div.section>h4 {
+    font-weight: bold;
+    border: none;
+}
+
+tr.field {
+    border: 1px solid #d8d8d8;
+}
+th.field-name {
+    background-color: #f8f8f8 !important;
+}
+td.field-body {
+}
+
+pre {
+    border: 1px solid #d8d8d8;
+    border-left: none;
+    border-right: none;
+}
+
+blockquote>div>dl.docutils>dt { /* The first DT should be bold, but the others are italic */
+    font-style: normal;
+    font-weight: bold;
+}
+blockquote dl.docutils dt {
+    font-style: italic;
+}
+
+
+
+table.restfulindex {
+    border-collapse: collapse;
+    background-color: transparent;
+}
+table.restfulindex th, table.restfulindex td {
+    background-color: transparent;
+    border-width: 0;
+}
+table.restfulindex th {
+    padding: 10px 25px 10px 0;
+}
+table.restfulindex td {
+    padding: 10px 0 10px 25px;
+}
+
+table.restfulindex thead th, table.restfulindex thead td {
+    font-weight: bold;
+    border-top: 1px solid #d8d8d8;
+    border-bottom: 1px solid #d8d8d8;
+}
+table.restfulindex tbody th, table.restfulindex tbody td {
+    border-bottom: 1px solid #d8d8d8;
+    font-weight: normal;
+    vertical-align: top;
+}
+span.restfulid {
+    font-weight: bold;
+}

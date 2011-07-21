@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>POST /administrator/restfulsimplifieddeadline/ &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Administrator" href="index.html" />
+    <link rel="next" title="DELETE /administrator/restfulsimplifieddeadline/id" href="administrator_restfulsimplifieddeadline_details_delete.html" />
+    <link rel="prev" title="GET /administrator/restfulsimplifieddeadline/" href="administrator_restfulsimplifieddeadline_details_search.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifieddeadline_details_delete.html" title="DELETE /administrator/restfulsimplifieddeadline/id"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifieddeadline_details_search.html" title="GET /administrator/restfulsimplifieddeadline/"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Administrator</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="post-administrator-restfulsimplifieddeadline">
+<span id="administrator-restfulsimplifieddeadline-details-create"></span><h1>POST /administrator/restfulsimplifieddeadline/<a class="headerlink" href="#post-administrator-restfulsimplifieddeadline" title="Permalink to this headline">¶</a></h1>
+<p>Create a Deadline.</p>
+<p>The underlying data model where the item is created is defined in
+<a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a>.
+The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
+<a class="reference internal" href="../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.create" title="devilry.apps.administrator.simplified.SimplifiedDeadline.create"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.administrator.simplified.SimplifiedDeadline.create()</span></tt></a>.</p>
+<div class="section" id="request">
+<h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">POST</span> <span class="o">/</span><span class="nx">administrator</span><span class="o">/</span><span class="nx">restfulsimplifieddeadline</span><span class="o">/</span>
+
+<span class="p">{</span>
+    <span class="nx">status</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+    <span class="nx">deadline</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+    <span class="nx">feedbacks_published</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">assignment_group</span><span class="o">:</span> <span class="mi">15</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="required-request-parameters">
+<h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The following request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.</p>
+<div class="section" id="status">
+<h4>status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Status number.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
+<div class="section" id="text">
+<h4>text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>An optional text to show to students and examiners.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</div>
+<div class="section" id="deadline">
+<h4>deadline<a class="headerlink" href="#deadline" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The time of the deadline.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</div>
+<div class="section" id="feedbacks-published">
+<h4>feedbacks_published<a class="headerlink" href="#feedbacks-published" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>If this is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the student can see all StaticFeedbacks associated with this Deadline</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
+</dl>
+</div>
+<div class="section" id="assignment-group">
+<h4>assignment_group<a class="headerlink" href="#assignment-group" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="on-success">
+<h3>On success<a class="headerlink" href="#on-success" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="mi">201</span> <span class="nx">CREATED</span>
+
+<span class="p">{</span>
+    <span class="nx">status</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+    <span class="nx">deadline</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
+    <span class="nx">feedbacks_published</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">assignment_group</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="success-response-details">
+<h4>Success response details<a class="headerlink" href="#success-response-details" title="Permalink to this headline">¶</a></h4>
+<p>As long as the Deadline is created without an error, the
+response is <em>HTTP 201</em> with the requested data in the body. The result always
+contains the request data with the <em>id</em> field added, however some values may
+have been changed due to logic performed on the server before saving.</p>
+</div>
+</div>
+<div class="section" id="on-error">
+<h3>On error<a class="headerlink" href="#on-error" title="Permalink to this headline">¶</a></h3>
+<p>On errors, we respond with one of the <a class="reference internal" href="../../public_restful_api.html#restful-api-error-statuscodes"><em>HTTP Error status codes</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">POST /administrator/restfulsimplifieddeadline/</a><ul>
+<li><a class="reference internal" href="#request">Request</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
+<li><a class="reference internal" href="#status">status</a></li>
+<li><a class="reference internal" href="#text">text</a></li>
+<li><a class="reference internal" href="#deadline">deadline</a></li>
+<li><a class="reference internal" href="#feedbacks-published">feedbacks_published</a></li>
+<li><a class="reference internal" href="#assignment-group">assignment_group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#on-success">On success</a><ul>
+<li><a class="reference internal" href="#id1">Example</a></li>
+<li><a class="reference internal" href="#success-response-details">Success response details</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#on-error">On error</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="administrator_restfulsimplifieddeadline_details_search.html"
+                        title="previous chapter">GET /administrator/restfulsimplifieddeadline/</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="administrator_restfulsimplifieddeadline_details_delete.html"
+                        title="next chapter">DELETE /administrator/restfulsimplifieddeadline/id</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/restfulapi/administrator/administrator_restfulsimplifieddeadline_details_create.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifieddeadline_details_delete.html" title="DELETE /administrator/restfulsimplifieddeadline/id"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="administrator_restfulsimplifieddeadline_details_search.html" title="GET /administrator/restfulsimplifieddeadline/"
+             >previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" >Administrator</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.student.simplifiedmetabases &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.student.simplifiedmetabases</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">FieldSpec</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">PatternFilterSpec</span><span class="p">,</span> <span class="n">ForeignFilterSpec</span>
+
+
+<div class="viewcode-block" id="SimplifiedSubjectMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedSubjectMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for a Subject object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Subject</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;long_name&#39;</span><span class="p">,</span>
+                             <span class="p">)</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;long_name&#39;</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">,</span>  <span class="c"># Node</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedPeriodMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedPeriodMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for a Period object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Period</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;start_time&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;end_time&#39;</span><span class="p">,</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">])</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedAssignmentMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedAssignmentMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for an Assignment object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Assignment</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;publishing_time&#39;</span><span class="p">,</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;parentnode__parentnode&#39;</span><span class="p">],</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">pointfields</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;anonymous&#39;</span><span class="p">,</span>
+                                          <span class="s">&#39;must_pass&#39;</span><span class="p">,</span>
+                                          <span class="s">&#39;maxpoints&#39;</span><span class="p">,</span>
+                                          <span class="s">&#39;attempts&#39;</span><span class="p">])</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__parentnode__long_name&#39;</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">),</span>
+                          <span class="c"># Period</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="c"># Subject</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode__parentnode&#39;</span><span class="p">,</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedAssignmentGroupMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedAssignmentGroupMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for an AssignmentGroup object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AssignmentGroup</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;is_open&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;status&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode&#39;</span><span class="p">,</span>
+                             <span class="n">users</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;examiners__username&#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;candidates__identifier&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;parentnode__long_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;parentnode__short_name&#39;</span><span class="p">],</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;parentnode__parentnode&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;parentnode__parentnode__short_name&#39;</span><span class="p">],</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">]</span>
+                             <span class="p">)</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;examiners__username&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;candidates__identifier&#39;</span><span class="p">,</span>
+                             <span class="c"># assignment</span>
+                             <span class="s">&#39;parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="c"># period</span>
+                             <span class="s">&#39;parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="c"># subject</span>
+                             <span class="s">&#39;parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">,</span>  <span class="c"># Assignment</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Period</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedDeadlineMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedDeadlineMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for a Deadline object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Deadline</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;text&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;status&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;feedbacks_published&#39;</span><span class="p">,</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__parentnode__id&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment_group</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment_group_users</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;assignment_group__examiners__username&#39;</span><span class="p">,</span>
+                                                     <span class="s">&#39;assignment_group__candidates__identifier&#39;</span><span class="p">]</span>
+                             <span class="p">)</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span>
+        <span class="s">&#39;assignment_group__candidates__identifier&#39;</span><span class="p">,</span>
+        <span class="s">&#39;assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># Name of assignment</span>
+        <span class="s">&#39;assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># Name of assignment</span>
+        <span class="s">&#39;assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># Name of period</span>
+        <span class="s">&#39;assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># Name of period</span>
+        <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># Name of subject</span>
+        <span class="s">&#39;assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span>  <span class="c"># Name of subject</span>
+        <span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Assignment</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Period</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedDeliveryMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedDeliveryMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for a Delivery object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Delivery</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;number&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;time_of_delivery&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline&#39;</span><span class="p">,</span>
+                             <span class="n">deadline</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span> <span class="s">&#39;deadline__deadline&#39;</span><span class="p">],</span>
+                             <span class="n">assignment_group</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>
+                                               <span class="s">&#39;deadline__assignment_group__name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">])</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;number&#39;</span><span class="p">,</span>
+                             <span class="c"># assignmentgroup</span>
+                             <span class="s">&#39;deadline__assignment_group__name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__examiners__username&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__candidates__identifier&#39;</span><span class="p">,</span>
+                             <span class="c"># assignment</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="c"># period</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="c"># subject</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">,</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>  <span class="c"># AssignmentGroup</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Assignment</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Period</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode&#39;</span><span class="p">,</span>  <span class="c"># Subject</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;short_name&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;long_name&#39;</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedStaticFeedbackMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedStaticFeedbackMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for a StaticFeedback object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">StaticFeedback</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;grade&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;is_passing_grade&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;saved_by&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;save_timestamp&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;rendered_view&#39;</span><span class="p">,</span>
+                             <span class="c">#&#39;delivery__deadline__assignment_group__examiners__username&#39;,</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__id&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">delivery</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__time_of_delivery&#39;</span><span class="p">,</span>
+                                       <span class="s">&#39;delivery__number&#39;</span><span class="p">,</span>
+                                       <span class="s">&#39;delivery__delivered_by&#39;</span><span class="p">])</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__number&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery__deadline__assignment_group__examiners__username&#39;</span><span class="p">,</span>
+                             <span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;delivery&#39;</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="SimplifiedFileMetaMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedFileMetaMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines the django model to be used, resultfields returned by</span>
+<span class="sd">    search and which fields can be used to search for a FileMeta object</span>
+<span class="sd">    using the Simplified API &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileMeta</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;size&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;id&#39;</span><span class="p">,</span>
+                             <span class="s">&#39;delivery&#39;</span><span class="p">,</span>
+                             <span class="n">subject</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">period</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__id&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">],</span>
+                             <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;delivery__deadline__assignment_group__parentnode__id&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>
+                                         <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">])</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__candidates__identifier&#39;</span><span class="p">,</span>  <span class="c"># student in assignment_group</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># subject</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># subject</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># period</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__short_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
+        <span class="s">&#39;delivery__deadline__assignment_group__parentnode__long_name&#39;</span><span class="p">,</span>  <span class="c"># assignment</span>
+        <span class="p">)</span>
+
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;size&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;delivery&#39;</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

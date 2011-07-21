@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.core.deliverystore &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.core.deliverystore</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.utils.importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ImproperlyConfigured</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">exists</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">remove</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">dumbdbm</span>
+
+
+<span class="k">def</span> <span class="nf">load_deliverystore_backend</span><span class="p">():</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_DELIVERY_STORE_BACKEND</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ImproperlyConfigured</span><span class="p">(</span>
+                <span class="s">&#39;Error splitting </span><span class="si">%s</span><span class="s"> into module and classname.&#39;</span> <span class="o">%</span>
+                <span class="n">settings</span><span class="o">.</span><span class="n">DELIVERY_STORE</span><span class="p">)</span>
+    <span class="n">modulepath</span><span class="p">,</span> <span class="n">classname</span> <span class="o">=</span> <span class="n">s</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">modulepath</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ImproperlyConfigured</span><span class="p">(</span>
+                <span class="s">&#39;Error importing deliverystore backend </span><span class="si">%s</span><span class="s">: &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">modulepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">classname</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ImproperlyConfigured</span><span class="p">(</span>
+                <span class="s">&#39;Module &quot;</span><span class="si">%s</span><span class="s">&quot; does not define a &quot;</span><span class="si">%s</span><span class="s">&quot; deliverystore backend&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">modulepath</span><span class="p">,</span> <span class="n">classname</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+
+
+
+
+<div class="viewcode-block" id="FileNotFoundError"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.FileNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">FileNotFoundError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Exception to be raised when the remove method of a DeliveryStore</span>
+<span class="sd">    does not find the given file. &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemeta_obj</span> <span class="o">=</span> <span class="n">filemeta_obj</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;File not found: </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">delivery</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+</div>
+<span class="k">class</span> <span class="nc">MemFile</span><span class="p">(</span><span class="n">StringIO</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="DeliveryStoreInterface"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface">[docs]</a><span class="k">class</span> <span class="nc">DeliveryStoreInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The interface all deliverystores must implement. All methods raise</span>
+<span class="sd">    ``NotImplementedError``. &quot;&quot;&quot;</span>
+
+    <span class="c"># TODO: read_open when file does not exist?</span>
+<div class="viewcode-block" id="DeliveryStoreInterface.read_open"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.read_open">[docs]</a>    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a file-like object opened for reading.</span>
+<span class="sd">        </span>
+<span class="sd">        The returned object must have ``close()`` and ``read()`` methods</span>
+<span class="sd">        as defined by the documentation of the standard python file-class.</span>
+
+<span class="sd">        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="DeliveryStoreInterface.write_open"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.write_open">[docs]</a>    <span class="k">def</span> <span class="nf">write_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a file-like object opened for writing.</span>
+<span class="sd">        </span>
+<span class="sd">        The returned object must have ``close()`` and ``write()`` methods as</span>
+<span class="sd">        defined by the documentation of the standard python file-class.</span>
+
+<span class="sd">        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="DeliveryStoreInterface.remove"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Remove the file.</span>
+
+<span class="sd">        Note that this method is called *before* the filemeta_obj is</span>
+<span class="sd">        removed. This means that the file might be removed, and the removal</span>
+<span class="sd">        of the filemeta_obj can still fail. To prevent users from having to</span>
+<span class="sd">        manually resolve such cases implementations should check if the file</span>
+<span class="sd">        exists, and raise FileNotFoundError if it does not.</span>
+
+<span class="sd">        The calling function has to check for FileNotFoundError and</span>
+<span class="sd">        handle any other error.</span>
+
+<span class="sd">        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="DeliveryStoreInterface.exists"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DeliveryStoreInterface.exists">[docs]</a>    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return ``True`` if the file exists, ``False`` if not.</span>
+<span class="sd">        </span>
+<span class="sd">        :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="FsDeliveryStore"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.FsDeliveryStore">[docs]</a><span class="k">class</span> <span class="nc">FsDeliveryStore</span><span class="p">(</span><span class="n">DeliveryStoreInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Filesystem-based DeliveryStore suitable for production use.</span>
+
+<span class="sd">    It stores files in a filesystem hierarcy with one directory for each</span>
+<span class="sd">    Delivery, with the delivery-id as name. In each delivery-directory, the</span>
+<span class="sd">    files are stored by FileMeta id.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param root: The root-directory where files are stored. Defaults to</span>
+<span class="sd">            the value of the ``DELIVERY_STORE_ROOT``-setting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">DELIVERY_STORE_ROOT</span>
+
+    <span class="k">def</span> <span class="nf">_get_dirpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delivery_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">delivery_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_dirpath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">delivery</span><span class="p">),</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">dirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dirpath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">delivery</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
+            <span class="n">mkdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">),</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="n">remove</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filepath</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="DbmDeliveryStore"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.DbmDeliveryStore">[docs]</a><span class="k">class</span> <span class="nc">DbmDeliveryStore</span><span class="p">(</span><span class="n">DeliveryStoreInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dbm DeliveryStore ONLY FOR TESTING.&quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">FileWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbm</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span> <span class="o">=</span> <span class="n">dbm</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dbm</span><span class="o">=</span><span class="n">dumbdbm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param filename:</span>
+<span class="sd">            The dbm-file where files are stored. Defaults to</span>
+<span class="sd">            the value of the ``DELIVERY_STORE_DBM_FILENAME``-setting.</span>
+<span class="sd">        :param dbm:</span>
+<span class="sd">            The dbm implementation. This defaults to :mod:`dumbdbm` for</span>
+<span class="sd">            portability of the data-files because this DeliveryStore is</span>
+<span class="sd">            primarly for development and database storage in the devilry</span>
+<span class="sd">            git-repo. But the parameter is provided to make it really easy</span>
+<span class="sd">            to create a DeliveryStore using a more efficient dbm, like gdbm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span> <span class="o">=</span> <span class="n">dbm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">DELIVERY_STORE_DBM_FILENAME</span>
+
+    <span class="k">def</span> <span class="nf">_get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MemFile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">dbm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DbmDeliveryStore</span><span class="o">.</span><span class="n">FileWriter</span><span class="p">(</span><span class="n">dbm</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">dbm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dbm</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">dbm</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">dbm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dbm</span>
+
+</div>
+<div class="viewcode-block" id="MemoryDeliveryStore"><a class="viewcode-back" href="../../../../core.deliverystore.html#devilry.apps.core.deliverystore.MemoryDeliveryStore">[docs]</a><span class="k">class</span> <span class="nc">MemoryDeliveryStore</span><span class="p">(</span><span class="n">DeliveryStoreInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Memory-base DeliveryStore ONLY FOR TESTING.</span>
+
+<span class="sd">    This is only for testing, and it does not handle parallel access.</span>
+<span class="sd">    Suitable for unittesting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">read_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">def</span> <span class="nf">write_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">MemFile</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="k">return</span> <span class="n">w</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="n">filemeta_obj</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filemeta_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">filemeta_obj</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

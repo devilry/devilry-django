@@ -1,0 +1,533 @@
+.. _examiner_restfulsimplifieddeadline_details_search:
+
+=============================================================================
+GET /examiner/restfulsimplifieddeadline/
+=============================================================================
+
+Search for Deadlines.
+
+The underlying data model searched is defined in :class:`devilry.apps.core.models.Deadline`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`devilry.apps.examiner.simplified.SimplifiedDeadline.search`.
+
+The request parameters (below) all modify the result of the search. They are
+applied in the following order:
+
+    1. The ``query`` is executed.
+    2. The result of the query is filtered through the ``filters``.
+    3. The result of the filtering is ordered as specified in ``orderby``.
+    4. The result of the ordering is limited by ``start`` and ``limit``.
+
+
+**************************
+Request
+**************************
+
+Request example
+###############
+
+.. code-block:: javascript
+
+    GET /examiner/restfulsimplifieddeadline/
+
+    {
+        query: 'a query string',
+        filters: [{field:"assignment_group", comp:"<", value:15},
+                      {field:"assignment_group__parentnode__long_name", comp:"startswith", value:"My example value"},
+                      {field:"assignment_group__parentnode__parentnode", comp:"<=", value:15}],
+        orderby: ["id", "-text", "deadline", "assignment_group", "status", "feedbacks_published"],
+        start: 10,
+        limit: 100
+    }
+
+
+
+Optional request parameters
+###########################
+
+Optional request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.
+
+query
+-----
+A string to search for. If this is empty or not given, all
+Deadlines that the authenticated user has access to is
+returned.
+
+If the string is not empty, the ``query``-string is split on whitespace,
+resulting in a list of words. Every *word* in the list is searched for
+*case-insensitive* matches within the following fields:
+
+    
+        assignment_group__candidates__identifier
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Candidate`
+            About the field:
+                List of many values.
+            Type
+                Comma-separated list
+    
+        assignment_group__parentnode__short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        assignment_group__parentnode__long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+        assignment_group__parentnode__parentnode__short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Period`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        assignment_group__parentnode__parentnode__long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Period`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+        assignment_group__parentnode__parentnode__parentnode__short_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Subject`
+            About the field:
+                Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+            Type
+                String
+    
+        assignment_group__parentnode__parentnode__parentnode__long_name
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Subject`
+            About the field:
+                A longer name, more descriptive than "Short name". This is the name visible to students.
+            Type
+                String
+    
+
+
+
+
+
+filters
+-------
+
+Filters can be used to perform complex queries. The ``filters`` parameter is a
+list of filters, where each filter is a map with the following entries:
+
+    field
+        A field name.
+    comp
+        A comparison operator.
+    value
+        The value to filter on.
+
+Example:
+
+    .. code-block:: javascript
+
+        [{field:"assignment_group", comp:"<", value:15},
+         {field:"assignment_group__parentnode__long_name", comp:"startswith", value:"My example value"},
+         {field:"assignment_group__parentnode__parentnode", comp:"<=", value:15}]
+
+Deadlines can be filtered on the following *fields*:
+
+
+    assignment_group
+        Actual location of the field:
+            :class:`devilry.apps.core.models.AssignmentGroup`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__long_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            A longer name, more descriptive than "Short name". This is the name visible to students.
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode__long_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            A longer name, more descriptive than "Short name". This is the name visible to students.
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode__parentnode
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Subject`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode__parentnode__long_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Subject`
+        About the field:
+            A longer name, more descriptive than "Short name". This is the name visible to students.
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode__parentnode__parentnode
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Node`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode__parentnode__short_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Subject`
+        About the field:
+            Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__parentnode__short_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Period`
+        About the field:
+            Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    assignment_group__parentnode__short_name
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Assignment`
+        About the field:
+            Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+        Type
+            String
+        Supported comparison operators:
+            ``startswith``, ``<=``, ``>=``, ``contains``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    deadline
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Deadline`
+        About the field:
+            The time of the deadline.
+        Type
+            DateTime string (YYYY-MM-DD hh:mm:ss)
+        Supported comparison operators:
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+    id
+        Actual location of the field:
+            :class:`devilry.apps.core.models.Deadline`
+        About the field:
+            Autogenerated identifier.
+        Type
+            Integer
+        Supported comparison operators:
+            ``startswith``, ``contains``, ``>=``, ``<=``, ``icontains``, ``iexact``, ``endswith``, ``exact``, ``<``, ``>``.
+
+
+
+
+
+
+
+exact_number_of_results
+-----------------------
+If given, this must be a positive integer (including 0), which specifies the exact number of
+expected results. This enables searches that you know should fail if they do not get this
+exact number of results, such as filtering for a User by unique username
+instead of its numeric ID (where you should expect exactly one result).
+
+
+orderby
+-------
+List of fieldnames. Order the result by these fields.
+Fieldnames can be prefixed by ``'-'`` for descending ordering.
+
+start
+-----
+After query, filters and orderby have been executed, the result is limited to
+the values from *start* to *start+limit*. Start defalts to ``0``.
+
+limit
+-----
+Limit results to this number of items. Defaults to ``50``.
+
+
+result_fieldgroups
+------------------
+A list of group names. Each group adds an additional set of fields to the
+results of the search. The following group names are available:
+
+    assignment
+        *Expands to the following fields:*
+        
+            assignment_group__parentnode__id
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    Autogenerated identifier.
+                Type
+                    Integer
+        
+            assignment_group__parentnode__short_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+                Type
+                    String
+        
+            assignment_group__parentnode__long_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Assignment`
+                About the field:
+                    A longer name, more descriptive than "Short name". This is the name visible to students.
+                Type
+                    String
+        
+
+    assignment_group
+        *Expands to the following fields:*
+        
+            assignment_group__name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.AssignmentGroup`
+                About the field:
+                    An optional name for the group. Typically used a project name on project assignments.
+                Type
+                    String
+        
+
+    assignment_group_users
+        *Expands to the following fields:*
+        
+            assignment_group__examiners__username
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.AssignmentGroup`
+                About the field:
+                    List of many values.
+                Type
+                    Comma-separated list
+        
+            assignment_group__candidates__identifier
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Candidate`
+                About the field:
+                    List of many values.
+                Type
+                    Comma-separated list
+        
+
+    period
+        *Expands to the following fields:*
+        
+            assignment_group__parentnode__parentnode__id
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Autogenerated identifier.
+                Type
+                    Integer
+        
+            assignment_group__parentnode__parentnode__short_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+                Type
+                    String
+        
+            assignment_group__parentnode__parentnode__long_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Period`
+                About the field:
+                    A longer name, more descriptive than "Short name". This is the name visible to students.
+                Type
+                    String
+        
+
+    subject
+        *Expands to the following fields:*
+        
+            assignment_group__parentnode__parentnode__parentnode__id
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Subject`
+                About the field:
+                    Autogenerated identifier.
+                Type
+                    Integer
+        
+            assignment_group__parentnode__parentnode__parentnode__short_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Subject`
+                About the field:
+                    Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+                Type
+                    String
+        
+            assignment_group__parentnode__parentnode__parentnode__long_name
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Subject`
+                About the field:
+                    A longer name, more descriptive than "Short name". This is the name visible to students.
+                Type
+                    String
+        
+
+
+
+
+
+
+
+
+
+
+*********************
+Response
+*********************
+
+On success
+##########
+
+
+Example
+------------------------
+
+*note that the is wrong in the example. The id is always unique. However, the
+example is generated from a non-varying dataset.*
+
+.. code-block:: javascript
+
+    200 OK
+
+    {
+        total: 20,
+        items: [
+            { id: 15,
+              text: "myvalue",
+              deadline: "2010-02-22 22:32:10",
+              assignment_group: 15,
+              status: 20,
+              feedbacks_published: true },
+            { id: 15,
+              text: "myvalue",
+              deadline: "2010-02-22 22:32:10",
+              assignment_group: 15,
+              status: 20,
+              feedbacks_published: true },
+            ...
+        ]
+    }
+
+
+Success response details
+------------------------
+
+Responds with HTTP code *200* and a *JSON encoded* dict containing the list of
+results and the *total* number of items found before applying ``limit`` and
+``start``. Each result in the
+list is a JSON object where the *key* is a fieldname and the associated value is
+the *value* for that field. The result always contains the following fields:
+
+    
+        id
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Deadline`
+            About the field:
+                Autogenerated identifier.
+            Type
+                Integer
+    
+        text
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Deadline`
+            About the field:
+                An optional text to show to students and examiners.
+            Type
+                String
+    
+        deadline
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Deadline`
+            About the field:
+                The time of the deadline.
+            Type
+                DateTime string (YYYY-MM-DD hh:mm:ss)
+    
+        assignment_group
+            Actual location of the field:
+                :class:`devilry.apps.core.models.AssignmentGroup`
+            About the field:
+                Autogenerated identifier.
+            Type
+                Integer
+    
+        status
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Deadline`
+            About the field:
+                Status number.
+            Type
+                Integer
+    
+        feedbacks_published
+            Actual location of the field:
+                :class:`devilry.apps.core.models.Deadline`
+            About the field:
+                If this is ``True``, the student can see all StaticFeedbacks associated with this Deadline
+            Type
+                Boolean
+    
+
+
+However, there may be more fields if specified with the ``result_fieldgroups``
+request parameter.
+
+
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`.

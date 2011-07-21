@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>POST /examiner/restfulsimplifiedstaticfeedback/ &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Examiner" href="index.html" />
+    <link rel="next" title="GET /examiner/restfulsimplifiedfilemeta/id" href="examiner_restfulsimplifiedfilemeta_details_read.html" />
+    <link rel="prev" title="GET /examiner/restfulsimplifiedstaticfeedback/" href="examiner_restfulsimplifiedstaticfeedback_details_search.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examiner_restfulsimplifiedfilemeta_details_read.html" title="GET /examiner/restfulsimplifiedfilemeta/id"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examiner_restfulsimplifiedstaticfeedback_details_search.html" title="GET /examiner/restfulsimplifiedstaticfeedback/"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Examiner</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="post-examiner-restfulsimplifiedstaticfeedback">
+<span id="examiner-restfulsimplifiedstaticfeedback-details-create"></span><h1>POST /examiner/restfulsimplifiedstaticfeedback/<a class="headerlink" href="#post-examiner-restfulsimplifiedstaticfeedback" title="Permalink to this headline">¶</a></h1>
+<p>Create a Static feedback.</p>
+<p>The underlying data model where the item is created is defined in
+<a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a>.
+The <a class="reference internal" href="../../simplified.html#simplified"><em>Simplified API</em></a> that the server forwards this request to is
+<a class="reference internal" href="../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.create" title="devilry.apps.examiner.simplified.SimplifiedStaticFeedback.create"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.apps.examiner.simplified.SimplifiedStaticFeedback.create()</span></tt></a>.</p>
+<div class="section" id="request">
+<h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">POST</span> <span class="o">/</span><span class="nx">examiner</span><span class="o">/</span><span class="nx">restfulsimplifiedstaticfeedback</span><span class="o">/</span>
+
+<span class="p">{</span>
+    <span class="nx">grade</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">rendered_view</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+    <span class="nx">delivery</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">points</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">is_passing_grade</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="required-request-parameters">
+<h3>Required request parameters<a class="headerlink" href="#required-request-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The following request parameters are encoded as a JSON object and sent as the
+request body as shown in the example above.</p>
+<div class="section" id="grade">
+<h4>grade<a class="headerlink" href="#grade" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The rendered grade, such as &#8220;A&#8221; or &#8220;approved&#8221;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</div>
+<div class="section" id="rendered-view">
+<h4>rendered_view<a class="headerlink" href="#rendered-view" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</div>
+<div class="section" id="delivery">
+<h4>delivery<a class="headerlink" href="#delivery" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
+<div class="section" id="points">
+<h4>points<a class="headerlink" href="#points" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Number of points given on this feedback.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</div>
+<div class="section" id="is-passing-grade">
+<h4>is_passing_grade<a class="headerlink" href="#is-passing-grade" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Is this a passing grade?</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="on-success">
+<h3>On success<a class="headerlink" href="#on-success" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="mi">201</span> <span class="nx">CREATED</span>
+
+<span class="p">{</span>
+    <span class="nx">grade</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
+    <span class="nx">rendered_view</span><span class="o">:</span> <span class="s2">&quot;myvalue&quot;</span><span class="p">,</span>
+    <span class="nx">delivery</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="nx">points</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">is_passing_grade</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="success-response-details">
+<h4>Success response details<a class="headerlink" href="#success-response-details" title="Permalink to this headline">¶</a></h4>
+<p>As long as the Static feedback is created without an error, the
+response is <em>HTTP 201</em> with the requested data in the body. The result always
+contains the request data with the <em>id</em> field added, however some values may
+have been changed due to logic performed on the server before saving.</p>
+</div>
+</div>
+<div class="section" id="on-error">
+<h3>On error<a class="headerlink" href="#on-error" title="Permalink to this headline">¶</a></h3>
+<p>On errors, we respond with one of the <a class="reference internal" href="../../public_restful_api.html#restful-api-error-statuscodes"><em>HTTP Error status codes</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">POST /examiner/restfulsimplifiedstaticfeedback/</a><ul>
+<li><a class="reference internal" href="#request">Request</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#required-request-parameters">Required request parameters</a><ul>
+<li><a class="reference internal" href="#grade">grade</a></li>
+<li><a class="reference internal" href="#rendered-view">rendered_view</a></li>
+<li><a class="reference internal" href="#delivery">delivery</a></li>
+<li><a class="reference internal" href="#points">points</a></li>
+<li><a class="reference internal" href="#is-passing-grade">is_passing_grade</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#on-success">On success</a><ul>
+<li><a class="reference internal" href="#id1">Example</a></li>
+<li><a class="reference internal" href="#success-response-details">Success response details</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#on-error">On error</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examiner_restfulsimplifiedstaticfeedback_details_search.html"
+                        title="previous chapter">GET /examiner/restfulsimplifiedstaticfeedback/</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examiner_restfulsimplifiedfilemeta_details_read.html"
+                        title="next chapter">GET /examiner/restfulsimplifiedfilemeta/id</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/restfulapi/examiner/examiner_restfulsimplifiedstaticfeedback_details_create.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examiner_restfulsimplifiedfilemeta_details_read.html" title="GET /examiner/restfulsimplifiedfilemeta/id"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="examiner_restfulsimplifiedstaticfeedback_details_search.html" title="GET /examiner/restfulsimplifiedstaticfeedback/"
+             >previous</a> |</li>
+        <li><a href="../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../public_restful_api.html" >Public RESTful API</a> &raquo;</li>
+          <li><a href="index.html" >Examiner</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

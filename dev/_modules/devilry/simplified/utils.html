@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.simplified.utils &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="devilry.simplified" href="../simplified.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../simplified.html" accesskey="U">devilry.simplified</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.simplified.utils</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; General purpose utilities used by the simplified API. If any functions here</span>
+<span class="sd">proves useful outside this module, they should me moved to ``devilry.utils``. &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
+
+
+<span class="k">def</span> <span class="nf">get_clspath</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;{0}.{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_field_from_fieldname</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">fkfield_as_idfield</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_recurse_get_modelfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">pathseg</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">modelcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field_by_name</span><span class="p">(</span><span class="n">pathseg</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">):</span>
+            <span class="n">parentmodel</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">related</span><span class="o">.</span><span class="n">parent_model</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fkfield_as_idfield</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">parentmodel</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">field</span>
+            <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">parentmodel</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">field</span>
+    <span class="k">return</span> <span class="n">_recurse_get_modelfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">):</span>
+    <span class="n">fieldvalue</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field_by_name</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fieldvalue</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="c"># If the foreign key is null</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fieldvalue</span><span class="o">.</span><span class="n">pk</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fieldvalue</span>
+
+<span class="k">def</span> <span class="nf">_recurse_getmodelattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">pathseg</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c"># NOTE: Dirty hack to support list results. This is to return</span>
+        <span class="c"># multiple candidates</span>
+        <span class="k">if</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">))</span> <span class="o">==</span> <span class="s">&quot;&lt;class &#39;django.db.models.fields.related.RelatedManager&#39;&gt;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="c"># NOTE: Dirty hack to support list results. This is to return</span>
+        <span class="c"># multiple examiners</span>
+        <span class="k">if</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">))</span> <span class="o">==</span> <span class="s">&quot;&lt;class &#39;django.db.models.fields.related.ManyRelatedManager&#39;&gt;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+
+        <span class="k">return</span> <span class="bp">None</span>  <span class="c"># If the foreign relationship we are following is null, we return None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">pathseg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_recurse_getmodelattr</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="modelinstance_to_dict"><a class="viewcode-back" href="../../../simplified.html#devilry.simplified.utils.modelinstance_to_dict">[docs]</a><span class="k">def</span> <span class="nf">modelinstance_to_dict</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldnames</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convert the given django model instance into a dict where</span>
+<span class="sd">    each fieldname in ``fieldnames`` is a key.</span>
+
+<span class="sd">    :param instance: A django model instance.</span>
+<span class="sd">    :param fieldname: List of fieldname names. Can also be foreign keys, such as</span>
+<span class="sd">        ``parentnode__parentnode__short_name``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dct</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">fieldnames</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&quot;__&quot;</span> <span class="ow">in</span> <span class="n">fieldname</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
+            <span class="n">dct</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recurse_getmodelattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dct</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_instanceattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dct</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../simplified.html" >devilry.simplified</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
