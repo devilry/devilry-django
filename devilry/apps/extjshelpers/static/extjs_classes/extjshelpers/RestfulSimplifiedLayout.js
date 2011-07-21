@@ -5,7 +5,10 @@
 Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.administratorrestfulsimplifiedlayout',
-    requires: ['devilry.extjshelpers.ErrorList'],
+    requires: [
+        'devilry.extjshelpers.ErrorList',
+        'devilry.extjshelpers.RestSubmit'
+    ],
     border: 0,
 
     config: {
@@ -53,7 +56,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
             iconCls: 'icon-save-32',
             handler: function() {
                 me.errorlist.clearErrors();
-                me.editform.getForm().submit({
+                me.editform.getForm().doAction('devilryrestsubmit', {
                     submitEmptyText: true,
                     waitMsg: 'Saving item...',
                     success: function(form, action) {
@@ -166,7 +169,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     },
 
     deleteCurrent: function() {
-        this.editform.submit({
+        this.editform.getForm().doAction('devilryrestsubmit', {
             submitEmptyText: true,
             method: 'DELETE',
             waitMsg: 'Deleting item...',
