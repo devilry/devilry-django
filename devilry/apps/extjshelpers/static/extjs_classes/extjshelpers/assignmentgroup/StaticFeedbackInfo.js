@@ -8,6 +8,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     cls: 'widget-staticfeedbackinfo',
     title: 'Feedback',
 
+    config: {
+        /**
+         * @cfg Delivery id. (Required).
+         */
+        deliveryid: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+         * class.
+         */
+        staticfeedbackstore: undefined
+    },
+
     tpl: Ext.create('Ext.XTemplate',
         '<table class="verticalinfotable">',
         '   <tr>',
@@ -39,10 +53,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         '<div class="rendered_view">{rendered_view}<div>'
     ),
 
-    config: {
-        deliveryid: undefined
-    },
-
     constructor: function(config) {
         this.addEvents('afterStoreLoadMoreThanZero');
         return this.callParent([config]);
@@ -51,18 +61,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     initComponent: function() {
 
         var me = this;
-        var staticfeedbackstoreid = 'devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore';
-        var staticfeedbackstore = Ext.data.StoreManager.lookup(staticfeedbackstoreid);
-        this.store = staticfeedbackstore;
-        this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
-        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+        this.staticfeedbackstore.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
+        this.staticfeedbackstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
             comp: 'exact',
             value: this.deliveryid
         }]);
 
         this.feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
-            store: this.store,
+            store: this.staticfeedbackstore,
             displayField: 'save_timestamp',
             valueField: 'id',
             autoSelect: true,
@@ -90,7 +97,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
     loadStore: function() {
         var me = this;
-        this.store.load({
+        this.staticfeedbackstore.load({
             callback: function(records, operation, successful) {
                 if(successful) {
                     if(records.length == 0) {
@@ -118,7 +125,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     },
 
     setStaticFeedback: function(feedback) {
-        var first = this.store.data.items[0].data.id;
+        var first = this.staticfeedbackstore.data.items[0].data.id;
         var tpldata = {isactive: first==feedback.id};
         Ext.apply(tpldata, feedback);
         this.setBody({

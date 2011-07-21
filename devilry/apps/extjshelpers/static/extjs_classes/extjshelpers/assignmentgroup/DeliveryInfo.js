@@ -23,10 +23,27 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
          */
         delivery: undefined,
 
+        /**
+         * @cfg
+         * Enable creation of new feedbacks? Defaults to ``false``.
+         *
+         * If this is ``true``, 
+         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+         * is used instead of
+         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
+         *
+         * If this is ``true``, the ``assignmentid`` config is _required_.
+         *
+         * When this is ``true``, the authenticated user still needs to have
+         * permission to POST new feedbacks for the view to work.
+         */
+        canExamine: false,
 
         /**
         * @cfg
-        * Assignment id. (Required).
+        * Assignment id. Required for 
+        * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo},
+        * which is used if the ``canExamine`` config is ``true``.
         */
         assignmentid: undefined,
 
@@ -35,7 +52,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
          * class.
          */
-        filemetastore: undefined
+        filemetastore: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
+         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
+         */
+        staticfeedbackstore: undefined
     },
 
     tpl: Ext.create('Ext.XTemplate',
@@ -63,9 +87,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     initComponent: function() {
         this.deliveryInfo = Ext.create('Ext.Component');
 
-        //this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
-        this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
+        var clsname = this.canExamine? 'StaticFeedbackEditableInfo': 'StaticFeedbackInfo';
+        this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.' + clsname, {
             deliveryid: this.delivery.id,
+            staticfeedbackstore: this.staticfeedbackstore,
             assignmentid: this.assignmentid
         });
 

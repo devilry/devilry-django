@@ -46,7 +46,23 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}.
          */
-        filemetastore: undefined
+        filemetastore: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
+         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
+         */
+        staticfeedbackstore: undefined,
+
+        /**
+         * @cfg
+         * Enable creation of new feedbacks? Defaults to ``false``.
+         *
+         * When this is ``true``, the authenticated user still needs to have
+         * permission to POST new feedbacks for the view to work.
+         */
+        canExamine: false
     },
 
 
@@ -118,7 +134,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 xtype: 'deliveryinfo',
                 assignmentid: this.assignmentid,
                 delivery: deliveryrecord.data,
-                filemetastore: this.filemetastore
+                filemetastore: this.filemetastore,
+                staticfeedbackstore: this.staticfeedbackstore,
+                canExamine: this.canExamine
             });
         } else {
             var errormsg = Ext.String.format(

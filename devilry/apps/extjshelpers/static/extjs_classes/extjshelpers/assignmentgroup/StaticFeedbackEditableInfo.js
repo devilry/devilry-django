@@ -1,4 +1,4 @@
-/** Panel to show StaticFeedback info .
+/** Panel to show StaticFeedback info and create new static feedbacks.
  *
  * @xtype staticfeedbackeditableinfo
  */
@@ -7,6 +7,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
     alias: 'widget.staticfeedbackeditableinfo',
 
     config: {
+        /**
+        * @cfg
+        * Assignment id. (Required).
+        */
         assignmentid: undefined
     },
 
