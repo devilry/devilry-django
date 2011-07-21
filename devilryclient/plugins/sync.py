@@ -125,11 +125,13 @@ class PullFromServer(object):
 
         self.tree[subject][period][assignment][group]['.meta'] = {}
         self.tree[subject][period][assignment][group]['.meta']['query_result'] = deadlines
+        number = 1 #number for tagging the deadlines
         for deadline in deadlines['items']:
             #format deadline
-            #TODO tag with number and drop -'s
             deadlinetime = deadline_format(deadline['deadline'])
-            deadlinetime = '{}_{}'.format(deadline['number'], deadlinetime)
+            deadlinetime = '{}_{}'.format(number, deadlinetime)
+            number += 1
+
             path = assignment_group_path.split(sep)
             group = path[-1]
             assignment = path[-2]
