@@ -1,110 +1,180 @@
 Ext.data.JsonP.devilry_extjshelpers_RestfulSimplifiedLayout({
-  "tagname": "class",
-  "name": "devilry.extjshelpers.RestfulSimplifiedLayout",
+  "subclasses": [
+
+  ],
   "doc": "<p>Layout for restful simplified editors.</p>\n",
-  "extends": "Ext.panel.Panel",
+  "docauthor": null,
+  "singleton": false,
+  "html_filename": "RestfulSimplifiedLayout.html",
+  "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout",
+  "code_type": "ext_define",
+  "superclasses": [
+
+  ],
+  "tagname": "class",
   "mixins": [
 
   ],
-  "alternateClassNames": [
-
-  ],
-  "xtypes": [
-    "administratorrestfulsimplifiedlayout"
-  ],
-  "author": null,
-  "docauthor": null,
-  "singleton": false,
-  "code_type": "ext_define",
-  "private": false,
   "protected": false,
   "static": false,
-  "inheritable": false,
-  "deprecated": null,
-  "alias": null,
+  "component": false,
   "members": {
-    "cfg": [
-
-    ],
     "property": [
 
     ],
     "method": [
       {
-        "tagname": "method",
-        "name": "loadRecordFromStore",
-        "owner": "devilry.extjshelpers.RestfulSimplifiedLayout",
-        "doc": "<p>Load the request record into the form.</p>\n",
         "params": [
           {
             "type": "Object",
-            "name": "record_id",
             "doc": "\n",
+            "name": "record_id",
             "optional": false
           }
         ],
+        "owner": "devilry.extjshelpers.RestfulSimplifiedLayout",
+        "doc": "<p>Load the request record into the form.</p>\n",
+        "html_filename": "RestfulSimplifiedLayout.html",
+        "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout-method-loadRecordFromStore",
+        "tagname": "method",
+        "shortDoc": "Load the request record into the form. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 186,
+        "inheritable": false,
+        "alias": null,
+        "name": "loadRecordFromStore",
         "return": {
           "type": "void",
           "doc": "\n"
         },
-        "private": false,
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
+        "deprecated": null
+      }
+    ],
+    "css_var": [
+
+    ],
+    "cfg": [
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.RestfulSimplifiedLayout",
+        "doc": "<p>Items for the <code>Ext.form.Panel</code> used to edit the RestfulSimplified object. (Required).</p>\n",
+        "html_filename": "RestfulSimplifiedLayout.html",
+        "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout-cfg-editformitems",
+        "tagname": "cfg",
+        "shortDoc": "Items for the Ext.form.Panel used to edit the RestfulSimplified object. ...",
         "protected": false,
         "static": false,
+        "private": false,
+        "linenr": 15,
         "inheritable": false,
-        "deprecated": null,
         "alias": null,
+        "name": "editformitems",
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
-        "linenr": 151,
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.RestfulSimplifiedLayout",
+        "doc": "<p>List of foreign key field names in the model. (Required).</p>\n",
         "html_filename": "RestfulSimplifiedLayout.html",
-        "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout-method-loadRecordFromStore",
-        "shortDoc": "Load the request record into the form. ..."
+        "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout-cfg-foreignkeyfieldnames",
+        "tagname": "cfg",
+        "shortDoc": "List of foreign key field names in the model. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 33,
+        "inheritable": false,
+        "alias": null,
+        "name": "foreignkeyfieldnames",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.RestfulSimplifiedLayout",
+        "doc": "<p><code>Ext.data.Model</code> for the RestfulSimplified object. (Required).</p>\n",
+        "html_filename": "RestfulSimplifiedLayout.html",
+        "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout-cfg-model",
+        "tagname": "cfg",
+        "shortDoc": "Ext.data.Model for the RestfulSimplified object. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 21,
+        "inheritable": false,
+        "alias": null,
+        "name": "model",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.RestfulSimplifiedLayout",
+        "doc": "<p>Does the RestfulSimplified support delete? (Required).</p>\n",
+        "html_filename": "RestfulSimplifiedLayout.html",
+        "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout-cfg-supports_delete",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 27,
+        "inheritable": false,
+        "alias": null,
+        "name": "supports_delete",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
+        "deprecated": null
       }
     ],
     "event": [
-
-    ],
-    "css_var": [
 
     ],
     "css_mixin": [
 
     ]
   },
-  "statics": {
-    "cfg": [
+  "alternateClassNames": [
 
-    ],
+  ],
+  "author": null,
+  "statics": {
     "property": [
 
     ],
     "method": [
 
     ],
-    "event": [
+    "css_var": [
 
     ],
-    "css_var": [
+    "cfg": [
+
+    ],
+    "event": [
 
     ],
     "css_mixin": [
 
     ]
   },
-  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
-  "linenr": 1,
-  "html_filename": "RestfulSimplifiedLayout.html",
-  "href": "RestfulSimplifiedLayout.html#devilry-extjshelpers-RestfulSimplifiedLayout",
-  "component": false,
-  "superclasses": [
-
-  ],
-  "subclasses": [
-
-  ],
+  "private": false,
   "mixedInto": [
 
   ],
+  "linenr": 1,
+  "inheritable": false,
+  "alias": null,
+  "name": "devilry.extjshelpers.RestfulSimplifiedLayout",
+  "xtypes": [
+    "administratorrestfulsimplifiedlayout"
+  ],
+  "extends": "Ext.panel.Panel",
   "allMixins": [
 
-  ]
+  ],
+  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedLayout.js",
+  "deprecated": null
 });

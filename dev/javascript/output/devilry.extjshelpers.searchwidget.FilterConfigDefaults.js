@@ -1,12 +1,12 @@
-Ext.data.JsonP.devilry_extjshelpers_SearchStringParser({
+Ext.data.JsonP.devilry_extjshelpers_searchwidget_FilterConfigDefaults({
   "subclasses": [
 
   ],
-  "doc": "<p>Parses values from a string into plain values and filters which is\ncompatible with our RESTful filters.</p>\n",
+  "doc": "<p>Defaults for devilry.extjshelpers.searchwidget.SearchResults.filterconfig\nfor student, administrator and examiner.</p>\n",
   "docauthor": null,
   "singleton": false,
-  "html_filename": "SearchStringParser.html",
-  "href": "SearchStringParser.html#devilry-extjshelpers-SearchStringParser",
+  "html_filename": "FilterConfigDefaults.html",
+  "href": "FilterConfigDefaults.html#devilry-extjshelpers-searchwidget-FilterConfigDefaults",
   "code_type": "ext_define",
   "superclasses": [
 
@@ -69,7 +69,7 @@ Ext.data.JsonP.devilry_extjshelpers_SearchStringParser({
   "linenr": 1,
   "inheritable": false,
   "alias": null,
-  "name": "devilry.extjshelpers.SearchStringParser",
+  "name": "devilry.extjshelpers.searchwidget.FilterConfigDefaults",
   "xtypes": [
 
   ],
@@ -77,6 +77,6 @@ Ext.data.JsonP.devilry_extjshelpers_SearchStringParser({
   "allMixins": [
 
   ],
-  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SearchStringParser.js",
+  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/FilterConfigDefaults.js",
   "deprecated": null
 });

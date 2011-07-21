@@ -1,153 +1,153 @@
 Ext.data.JsonP.devilry_extjshelpers_searchwidget_SearchResults({
-  "tagname": "class",
-  "name": "devilry.extjshelpers.searchwidget.SearchResults",
-  "doc": "<p>A panel containing multiple search results under a common title and store.</p>\n\n<pre><code> ------------------------\n | title                |\n ------------------------\n | result 1             |\n | result 2             |\n | result 3             |\n -----------------------|\n</code></pre>\n",
-  "extends": "Ext.panel.Panel",
-  "mixins": [
-
-  ],
-  "alternateClassNames": [
-
-  ],
-  "xtypes": [
-    "searchresults"
-  ],
-  "author": null,
-  "docauthor": null,
-  "singleton": false,
-  "code_type": "ext_define",
-  "private": false,
-  "protected": false,
-  "static": false,
-  "inheritable": false,
-  "deprecated": null,
-  "alias": null,
-  "members": {
-    "cfg": [
-      {
-        "tagname": "cfg",
-        "name": "editorurlprefix",
-        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
-        "type": "Object",
-        "doc": "<p>Editor url prefix (<strong>Required</strong>). The editor url for a specific\nitem is <code>editorurlprefix+id</code>. Note that this means that editorurlprefix <em>must</em>\nend with <code>/</code>. <em>Required</em>.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
-        "linenr": 20,
-        "html_filename": "SearchResults.html",
-        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-editorurlprefix",
-        "shortDoc": "Editor url prefix (Required). ..."
-      },
-      {
-        "tagname": "cfg",
-        "name": "rowformattpl",
-        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
-        "type": "Object",
-        "doc": "<p>Formatting template for the text rendered for each result item. <em>Required</em>.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
-        "linenr": 40,
-        "html_filename": "SearchResults.html",
-        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-rowformattpl",
-        "shortDoc": "Formatting template for the text rendered for each result item. ..."
-      },
-      {
-        "tagname": "cfg",
-        "name": "store",
-        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
-        "type": "Object",
-        "doc": "<p>The <code>Ext.data.store</code> where the results are loaded from. <em>Required</em>.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
-        "linenr": 34,
-        "html_filename": "SearchResults.html",
-        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-store",
-        "shortDoc": "The Ext.data.store where the results are loaded from. ..."
-      },
-      {
-        "tagname": "cfg",
-        "name": "title",
-        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
-        "type": "Object",
-        "doc": "<p>Title of these search results. <em>Required</em>.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
-        "linenr": 28,
-        "html_filename": "SearchResults.html",
-        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-title",
-        "shortDoc": "Title of these search results. ..."
-      }
-    ],
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "event": [
-
-    ],
-    "css_var": [
-
-    ],
-    "css_mixin": [
-
-    ]
-  },
-  "statics": {
-    "cfg": [
-
-    ],
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "event": [
-
-    ],
-    "css_var": [
-
-    ],
-    "css_mixin": [
-
-    ]
-  },
-  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
-  "linenr": 1,
-  "html_filename": "SearchResults.html",
-  "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults",
-  "component": false,
-  "superclasses": [
-
-  ],
   "subclasses": [
 
   ],
+  "doc": "<p>A panel containing multiple search results under a common title and store.</p>\n\n<pre><code> ------------------------\n | title                |\n ------------------------\n | result 1             |\n | result 2             |\n | result 3             |\n -----------------------|\n</code></pre>\n",
+  "docauthor": null,
+  "singleton": false,
+  "html_filename": "SearchResults.html",
+  "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults",
+  "code_type": "ext_define",
+  "superclasses": [
+
+  ],
+  "tagname": "class",
+  "mixins": [
+
+  ],
+  "protected": false,
+  "static": false,
+  "component": false,
+  "members": {
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
+    "cfg": [
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
+        "doc": "<p>Editor url prefix (<strong>Required</strong>). The editor url for a specific\nitem is <code>editorurlprefix+id</code>. Note that this means that editorurlprefix <em>must</em>\nend with <code>/</code>. <em>Required</em>.</p>\n",
+        "html_filename": "SearchResults.html",
+        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-editorurlprefix",
+        "tagname": "cfg",
+        "shortDoc": "Editor url prefix (Required). ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 20,
+        "inheritable": false,
+        "alias": null,
+        "name": "editorurlprefix",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
+        "doc": "<p>Formatting template for the text rendered for each result item. <em>Required</em>.</p>\n",
+        "html_filename": "SearchResults.html",
+        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-rowformattpl",
+        "tagname": "cfg",
+        "shortDoc": "Formatting template for the text rendered for each result item. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 40,
+        "inheritable": false,
+        "alias": null,
+        "name": "rowformattpl",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
+        "doc": "<p>The <code>Ext.data.store</code> where the results are loaded from. <em>Required</em>.</p>\n",
+        "html_filename": "SearchResults.html",
+        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-store",
+        "tagname": "cfg",
+        "shortDoc": "The Ext.data.store where the results are loaded from. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 34,
+        "inheritable": false,
+        "alias": null,
+        "name": "store",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.searchwidget.SearchResults",
+        "doc": "<p>Title of these search results. <em>Required</em>.</p>\n",
+        "html_filename": "SearchResults.html",
+        "href": "SearchResults.html#devilry-extjshelpers-searchwidget-SearchResults-cfg-title",
+        "tagname": "cfg",
+        "shortDoc": "Title of these search results. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 28,
+        "inheritable": false,
+        "alias": null,
+        "name": "title",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
+        "deprecated": null
+      }
+    ],
+    "event": [
+
+    ],
+    "css_mixin": [
+
+    ]
+  },
+  "alternateClassNames": [
+
+  ],
+  "author": null,
+  "statics": {
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
+    "css_mixin": [
+
+    ]
+  },
+  "private": false,
   "mixedInto": [
 
   ],
+  "linenr": 1,
+  "inheritable": false,
+  "alias": null,
+  "name": "devilry.extjshelpers.searchwidget.SearchResults",
+  "xtypes": [
+    "searchresults"
+  ],
+  "extends": "Ext.panel.Panel",
   "allMixins": [
 
-  ]
+  ],
+  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/searchwidget/SearchResults.js",
+  "deprecated": null
 });

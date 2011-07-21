@@ -1,116 +1,116 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineInfo({
-  "tagname": "class",
-  "name": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
-  "doc": "<p>Deadline info.</p>\n\n<p>Lists deliveries within a Deadline using <a href=\"#/api/devilry.extjshelpers.assignmentgroup.DeliveryGrid\" rel=\"devilry.extjshelpers.assignmentgroup.DeliveryGrid\" class=\"docClass\">devilry.extjshelpers.assignmentgroup.DeliveryGrid</a>.</p>\n",
-  "extends": "Ext.panel.Panel",
-  "mixins": [
-
-  ],
-  "alternateClassNames": [
-
-  ],
-  "xtypes": [
-    "deadlineinfo"
-  ],
-  "author": null,
-  "docauthor": null,
-  "singleton": false,
-  "code_type": "ext_define",
-  "private": false,
-  "protected": false,
-  "static": false,
-  "inheritable": false,
-  "deprecated": null,
-  "alias": null,
-  "members": {
-    "cfg": [
-      {
-        "tagname": "cfg",
-        "name": "deadline",
-        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
-        "type": "Object",
-        "doc": "<p>The deadline data. The data attribute of a record returned from\nloading the deadline from a store or model.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
-        "linenr": 17,
-        "html_filename": "DeadlineInfo.html",
-        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deadline",
-        "shortDoc": "The deadline data. ..."
-      },
-      {
-        "tagname": "cfg",
-        "name": "deliverymodel",
-        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
-        "type": "Object",
-        "doc": "<p>Delivery <code>Ext.data.Model</code>.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
-        "linenr": 24,
-        "html_filename": "DeadlineInfo.html",
-        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deliverymodel"
-      }
-    ],
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "event": [
-
-    ],
-    "css_var": [
-
-    ],
-    "css_mixin": [
-
-    ]
-  },
-  "statics": {
-    "cfg": [
-
-    ],
-    "property": [
-
-    ],
-    "method": [
-
-    ],
-    "event": [
-
-    ],
-    "css_var": [
-
-    ],
-    "css_mixin": [
-
-    ]
-  },
-  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
-  "linenr": 1,
-  "html_filename": "DeadlineInfo.html",
-  "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo",
-  "component": false,
-  "superclasses": [
-
-  ],
   "subclasses": [
 
   ],
+  "doc": "<p>Deadline info.</p>\n\n<p>Lists deliveries within a Deadline using <a href=\"#/api/devilry.extjshelpers.assignmentgroup.DeliveryGrid\" rel=\"devilry.extjshelpers.assignmentgroup.DeliveryGrid\" class=\"docClass\">devilry.extjshelpers.assignmentgroup.DeliveryGrid</a>.</p>\n",
+  "docauthor": null,
+  "singleton": false,
+  "html_filename": "DeadlineInfo.html",
+  "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo",
+  "code_type": "ext_define",
+  "superclasses": [
+
+  ],
+  "tagname": "class",
+  "mixins": [
+
+  ],
+  "protected": false,
+  "static": false,
+  "component": false,
+  "members": {
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
+    "cfg": [
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
+        "doc": "<p>The deadline data. The data attribute of a record returned from\nloading the deadline from a store or model.</p>\n",
+        "html_filename": "DeadlineInfo.html",
+        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deadline",
+        "tagname": "cfg",
+        "shortDoc": "The deadline data. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 17,
+        "inheritable": false,
+        "alias": null,
+        "name": "deadline",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
+        "doc": "<p>Delivery <code>Ext.data.Model</code>.</p>\n",
+        "html_filename": "DeadlineInfo.html",
+        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deliverymodel",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 24,
+        "inheritable": false,
+        "alias": null,
+        "name": "deliverymodel",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
+        "deprecated": null
+      }
+    ],
+    "event": [
+
+    ],
+    "css_mixin": [
+
+    ]
+  },
+  "alternateClassNames": [
+
+  ],
+  "author": null,
+  "statics": {
+    "property": [
+
+    ],
+    "method": [
+
+    ],
+    "css_var": [
+
+    ],
+    "cfg": [
+
+    ],
+    "event": [
+
+    ],
+    "css_mixin": [
+
+    ]
+  },
+  "private": false,
   "mixedInto": [
 
   ],
+  "linenr": 1,
+  "inheritable": false,
+  "alias": null,
+  "name": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
+  "xtypes": [
+    "deadlineinfo"
+  ],
+  "extends": "Ext.panel.Panel",
   "allMixins": [
 
-  ]
+  ],
+  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
+  "deprecated": null
 });
