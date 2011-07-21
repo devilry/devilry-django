@@ -166,6 +166,13 @@ def get_metadata():
     return metadata
 
 
+def save_metadata(metadata):
+    conf_dir = findconffolder()
+    metadata_f = open(join(conf_dir, 'metadata'), 'w')
+    metadata_f.write(str(metadata))
+    metadata_f.close()
+
+
 def get_metadata_from_path(path, metadata=None):
     """Given a path, find the the context the path belongs to, and
     the metadata for that level.
