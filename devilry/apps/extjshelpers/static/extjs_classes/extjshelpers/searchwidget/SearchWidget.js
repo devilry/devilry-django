@@ -67,7 +67,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
             me.hideResults();
         });
         this.getSearchField().addListener('newSearchValue', function(value) {
-            console.log(value);
+            //console.log(value);
             me.search(value);
         });
     },
