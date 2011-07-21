@@ -38,6 +38,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         'background-color': 'transparent'
     },
 
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
         var me = this;
         
@@ -181,8 +186,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
         Ext.ModelManager.getModel(this.model).load(record_id, {
             success: function(record) {
                 me.editform.loadRecord(record);
-                //var title = Ext.String.format('Edit', record.data.long_name, record.data.short_name);
-                //me.editform.setTitle(title);
                 var fields = me.editform.getForm().getFields();
                 Ext.each(me.foreignkeyfieldnames, function(fieldname) {
                     var field = fields.filter('name', fieldname).items[0];
