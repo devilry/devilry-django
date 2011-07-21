@@ -26,7 +26,8 @@
             renderTo: 'maincontent',
             assignmentgroupid: {{ assignmentgroupid }},
             assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup'),
-            deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery')
+            deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
+            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedDeadlineStore')
         });
     });
 

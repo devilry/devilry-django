@@ -32,7 +32,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         /**
          * @cfg {Ext.data.Model} Delivery model.
          */
-        deliverymodel: undefined
+        deliverymodel: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} Deadline store. (Required). _Note_ that this
+         * store has its ``proxy.extraParams`` changed in
+         * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
+         */
+        deadlinestore: undefined
     },
 
 
@@ -57,7 +64,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 items: [{
                     xtype: 'assignmentgroupinfo',
                     assignmentgroupid: this.assignmentgroupid,
-                    deliverymodel: this.deliverymodel
+                    deliverymodel: this.deliverymodel,
+                    deadlinestore: this.deadlinestore
                 }]
             }, {
                 region: 'center',

@@ -22,7 +22,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         /**
          * @cfg {Ext.data.Model} Delivery model.
          */
-        deliverymodel: undefined
+        deliverymodel: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} Deadline store. (Required). _Note_ that this
+         * store has its ``proxy.extraParams`` changed in initComponent.
+         */
+        deadlinestore: undefined
     },
 
     initComponent: function() {
@@ -31,16 +37,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     },
 
     loadDeadlines: function() {
-        var deadlinestoreid = 'devilry.apps.examiner.simplified.SimplifiedDeadlineStore';
-        var deadlinestore = Ext.data.StoreManager.lookup(deadlinestoreid);
-        deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
-        deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{
+        this.deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
+        this.deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'assignment_group',
             comp: 'exact',
             value: this.assignmentgroupid
         }]);
 
-        deadlinestore.load({
+        this.deadlinestore.load({
             scope: this,
             callback: this.onLoadDeadlines
         });
