@@ -1,8 +1,7 @@
 /** Deadline info.
  *
- * Lists deliveries and fires events when they are selected.
- *
- * @xtype deadlineinfo
+ * Lists deliveries within a Deadline using {@link
+ * devilry.extjshelpers.assignmentgroup.DeliveryGrid}.
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
     extend: 'Ext.panel.Panel',
@@ -23,7 +22,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
         deadline: undefined,
 
         /**
-         * @cfg {Ext.data.Model} Delivery model.
+         * @cfg
+         * Delivery ``Ext.data.Model``.
          */
         deliverymodel: undefined
     },
@@ -53,6 +53,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
             }]
         });
         this.callParent(arguments);
-        this.addEvents('deliverySelected');
     },
 });

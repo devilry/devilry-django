@@ -1,6 +1,4 @@
 /** Panel to show StaticFeedback info.
- *
- * @xtype staticfeedbackinfo
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     extend: 'Ext.panel.Panel',
@@ -10,12 +8,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
     config: {
         /**
-         * @cfg Delivery id. (Required).
+         * @cfg
+         * Delivery id. (Required).
          */
         deliveryid: undefined,
 
         /**
-         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
          * class.
          */

@@ -1,10 +1,23 @@
 
-/** Panel to show Delivery info, such as:
+/**
+ * Panel to show Delivery info.
+ * Uses {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}
+ * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+ * to show and manage StaticFeedback (see {@link #canExamine})
  *
- *  - Files
- *  - Time of delivery
- *
- * @xtype deliveryinfo
+ *      -------------------------------------------
+ *      | Info about the delivery                 |
+ *      |                                         |
+ *      |                                         |
+ *      -------------------------------------------
+ *      | StaticFeedbackInfo                      |
+ *      | or                                      |
+ *      | StaticFeedbackEditableInfo              |
+ *      |                                         |
+ *      |                                         |
+ *      |                                         |
+ *      |                                         |
+ *      -------------------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     extend: 'Ext.panel.Panel',
@@ -18,7 +31,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
     config: {
         /**
-         * @cfg {Object} A delivery object, such as ``data`` attribute of a
+         * @cfg
+         * A delivery object, such as ``data`` attribute of a
          * record loaded from a Delivery store or model.
          */
         delivery: undefined,
@@ -48,14 +62,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         assignmentid: undefined,
 
         /**
-         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
          * class.
          */
         filemetastore: undefined,
 
         /**
-         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
          */

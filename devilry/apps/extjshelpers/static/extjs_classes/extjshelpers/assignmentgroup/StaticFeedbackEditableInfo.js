@@ -1,6 +1,4 @@
 /** Panel to show StaticFeedback info and create new static feedbacks.
- *
- * @xtype staticfeedbackeditableinfo
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
     extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',

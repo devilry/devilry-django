@@ -1,7 +1,8 @@
-/** Grid panel for showing deliveries.
+/** Grid panel for showing deliveries within a deadline.
  *
- * @xtype deliverygrid
- */
+ * When a delivery is selected, we forward the selected record to
+ * {@link devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview#setDelivery}.
+ * */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliverygrid',

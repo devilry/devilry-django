@@ -1,3 +1,20 @@
+/**
+ * Combines {@link devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo} and
+ * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}
+ * into a complete AssignmentGroup reader and manager
+ * (if {@link #canExamine} is enabled).
+ *
+ *      -----------------------------------------------------------------
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      | AssignmentGroupInfo | DeliveryInfo                            |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      -----------------------------------------------------------------
+ */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
     width: 1000,
@@ -25,31 +42,36 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         assignmentgroupid: undefined,
 
         /**
-         * @cfg {Ext.data.Model} AssignmentGroup model. (Required).
+         * @cfg
+         * AssignmentGroup ``Ext.data.Model``. (Required).
          */
         assignmentgroupmodel: undefined,
 
         /**
-         * @cfg {Ext.data.Model} Delivery model. (Required).
+         * @cfg 
+         * Delivery  ``Ext.data.Model``. (Required).
          */
         deliverymodel: undefined,
 
         /**
-         * @cfg {Ext.data.Store} Deadline store. (Required).
+         * @cfg
+         * Deadline ``Ext.data.Store``. (Required).
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */
         deadlinestore: undefined,
 
         /**
-         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}.
          */
         filemetastore: undefined,
 
         /**
-         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
          */
@@ -58,6 +80,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         /**
          * @cfg
          * Enable creation of new feedbacks? Defaults to ``false``.
+         * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
          *
          * When this is ``true``, the authenticated user still needs to have
          * permission to POST new feedbacks for the view to work.
@@ -126,6 +149,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         });
     },
 
+    /**
+     * Create a {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}
+     * containing the given delivery and place it in the center area.
+     *
+     * @param {Ext.model.Model} deliveryrecord A Delivery record.
+     *
+     * Used by {@link devilry.extjshelpers.assignmentgroup.DeliveryGrid} and
+     * internally in this class.
+     */
     setDelivery: function(deliveryrecord) {
         if(deliveryrecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
             var centerArea = Ext.getCmp(this.centerAreaId);

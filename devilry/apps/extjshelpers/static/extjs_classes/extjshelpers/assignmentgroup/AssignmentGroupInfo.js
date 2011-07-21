@@ -1,8 +1,17 @@
 /** AssignmentGroup info.
  *
- * Lists DeadlineListing and info about the AssignmentGroup.
+ * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineListing} and info
+ * about the AssignmentGroup.
  *
- * @xtype assignmentgroupinfo
+ *      -----------------------
+ *      |                     |
+ *      | Deadlinelisting     |
+ *      |    DeadlineInfo     |
+ *      |        DeliveryGrid |
+ *      |    DeadlineInfo     |
+ *      |        DeliveryGrid |
+ *      |                     |
+ *      -----------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     extend: 'Ext.container.Container',
@@ -20,12 +29,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         assignmentgroupid: undefined,
 
         /**
-         * @cfg {Ext.data.Model} Delivery model. (Required).
+         * @cfg
+         * Delivery ``Ext.data.Model``. (Required).
          */
         deliverymodel: undefined,
 
         /**
-         * @cfg {Ext.data.Store} Deadline store. (Required).
+         * @cfg
+         * Deadline ``Ext.data.Store``. (Required).
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */
