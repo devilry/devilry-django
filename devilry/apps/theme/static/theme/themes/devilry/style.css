@@ -237,8 +237,8 @@ header {
   font-size: 18px;
   line-height: normal !important;
   height: auto !important;
-  padding: 7px !important;
-  border-radius: 15px;
+  padding: 4px 15px 4px 15px !important;
+  border-radius: 20px;
   width: 600px !important; }
 
 .multisearchresults {

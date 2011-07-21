@@ -45,11 +45,7 @@ Ext.define('devilry.extjshelpers.SearchField', {
         var currentValue = this.getValue();
         var noNewInput = value == currentValue;
         if(noNewInput) {
-            if(Ext.String.trim(currentValue) == "") {
-                this.fireEvent('emptyInput');
-            } else {
-                this.fireEvent('newSearchValue', value);
-            }
+            this.fireEvent('newSearchValue', value);
         }
     },
 
@@ -63,8 +59,12 @@ Ext.define('devilry.extjshelpers.SearchField', {
 
     handleChange: function(newValue) {
         var me = this;
-        Ext.Function.defer(function() {
-            me.triggerSearch(newValue);
-        }, this.searchdelay);
+        if(Ext.String.trim(newValue) == "") {
+            this.fireEvent('emptyInput');
+        } else {
+            Ext.Function.defer(function() {
+                me.triggerSearch(newValue);
+            }, this.searchdelay);
+        }
     }
 });
