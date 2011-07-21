@@ -28,9 +28,9 @@ def find_javascriptfiles():
 
 def build(outdir, openbrowser):
     infiles = find_javascriptfiles()
-    retcode = call(['jsduck', '--verbose', '--output', outdir] + infiles)
     if not exists(outdir):
         makedirs(outdir)
+    retcode = call(['jsduck', '--verbose', '--output', outdir] + infiles)
 
     print
     if retcode == 0:
