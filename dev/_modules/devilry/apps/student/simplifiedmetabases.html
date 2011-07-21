@@ -246,7 +246,7 @@
                              <span class="s">&#39;number&#39;</span><span class="p">,</span>
                              <span class="s">&#39;time_of_delivery&#39;</span><span class="p">,</span>
                              <span class="s">&#39;deadline&#39;</span><span class="p">,</span>
-                             <span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>
+                             <span class="n">deadline</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span> <span class="s">&#39;deadline__deadline&#39;</span><span class="p">],</span>
                              <span class="n">assignment_group</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>
                                                <span class="s">&#39;deadline__assignment_group__name&#39;</span><span class="p">],</span>
                              <span class="n">assignment</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;deadline__assignment_group__parentnode&#39;</span><span class="p">,</span>
@@ -273,7 +273,10 @@
                              <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__short_name&#39;</span><span class="p">,</span>
                              <span class="s">&#39;deadline__assignment_group__parentnode__parentnode__parentnode__long_name&#39;</span><span class="p">)</span>
     <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
-                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">),</span>
+                          <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">,</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;deadline&#39;</span><span class="p">),</span>
+                                            <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;assignment_group&#39;</span><span class="p">)),</span>
                           <span class="n">ForeignFilterSpec</span><span class="p">(</span><span class="s">&#39;deadline__assignment_group&#39;</span><span class="p">,</span>  <span class="c"># AssignmentGroup</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;parentnode&#39;</span><span class="p">),</span>
                                             <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)),</span>
@@ -325,6 +328,8 @@
                              <span class="s">&#39;delivery__number&#39;</span><span class="p">,</span>
                              <span class="s">&#39;delivery__deadline__assignment_group__examiners__username&#39;</span><span class="p">,</span>
                              <span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;delivery&#39;</span><span class="p">))</span>
 
 </div>
 <div class="viewcode-block" id="SimplifiedFileMetaMetaMixin"><a class="viewcode-back" href="../../../../metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedFileMetaMetaMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

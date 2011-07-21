@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-DeadlineInfo'>/** Deadline info.
+</span> *
+ * Lists deliveries and fires events when they are selected.
+ *
+ * @xtype deadlineinfo
+ */
+Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.deadlineinfo',
+    cls: 'widget-deadlineinfo',
+    margin: {bottom: 20},
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.DeliveryGrid'
+    ],
+    titleTpl: Ext.create('Ext.XTemplate', '{deadline:date}'),
+
+    config: {
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deadline'>        /**
+</span>         * @cfg
+         * The deadline data. The data attribute of a record returned from
+         * loading the deadline from a store or model.
+         */
+        deadline: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-Delivery'>        /**
+</span>         * @cfg {Ext.data.Model} Delivery model.
+         */
+        deliverymodel: undefined
+    },
+    
+    initComponent: function() {
+        var deliverystore = Ext.create('Ext.data.Store', {
+            model: this.deliverymodel,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true,
+        });
+
+        // NOTE: These changes to proxy should not affect the model.proxy (it seems like the proxy is copied into the store from the model)
+        deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
+        deliverystore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'deadline',
+            comp: 'exact',
+            value: this.deadline.id
+        }]);
+        deliverystore.load();
+
+        Ext.apply(this, {
+            title: this.titleTpl.apply(this.deadline),
+            items: [{
+                xtype: 'deliverygrid',
+                store: deliverystore
+            }]
+        });
+        this.callParent(arguments);
+        this.addEvents('deliverySelected');
+    },
+});
+</pre>
+</body>
+</html>

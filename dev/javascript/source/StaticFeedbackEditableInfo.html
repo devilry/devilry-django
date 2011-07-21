@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackEditableInfo'>/** Panel to show StaticFeedback info and create new static feedbacks.
+</span> *
+ * @xtype staticfeedbackeditableinfo
+ */
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
+    extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
+    alias: 'widget.staticfeedbackeditableinfo',
+
+    config: {
+<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackEditableInfo-cfg-assignmentid'>        /**
+</span>        * @cfg
+        * Assignment id. (Required).
+        */
+        assignmentid: undefined
+    },
+
+    constructor: function(config) {
+        return this.callParent([config]);
+    },
+
+    initComponent: function() {
+        var me = this;
+        this.createButton = Ext.create('Ext.button.Button', {
+            text: 'New feedback',
+            margin: {left: 5},
+            listeners: {
+                click: function() {
+                    me.loadFeedbackEditor();
+                }
+            }
+        });
+        this.addListener('afterStoreLoadMoreThanZero', function() {
+            me.getToolbar().add(me.createButton);
+            me.getToolbar().show();
+        });
+        this.callParent(arguments);
+    },
+
+    loadFeedbackEditor: function() {
+        this.getToolbar().hide();
+        this.setBody({
+            xtype: 'container',
+            loader: {
+                url: Ext.String.format('/static/gradeeditors/approved.js'),
+                renderer: 'component',
+                autoLoad: true,
+                loadMask: true
+            }
+        });
+    },
+
+    bodyWithNoFeedback: function() {
+        var me = this;
+        this.setBody({
+            xtype: 'component',
+            cls: 'no-feedback-editable',
+            html: '&lt;p&gt;No feedback&lt;/p&gt;&lt;p class=&quot;unimportant&quot;&gt;Click to create feedback&lt;/p&gt;',
+            listeners: {
+                render: function() {
+                    this.getEl().addListener('mouseup', me.loadFeedbackEditor, me);
+                }
+            }
+        });
+    }
+});
+</pre>
+</body>
+</html>

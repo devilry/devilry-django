@@ -32,8 +32,8 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"id", comp:"endswith", value:15},
-                      {field:"parentnode", comp:"contains", value:15},
+        filters: [{field:"id", comp:"icontains", value:15},
+                      {field:"parentnode", comp:"<", value:15},
                       {field:"parentnode__long_name", comp:"startswith", value:"My example value"}],
         orderby: ["id", "-name", "is_open", "status", "parentnode"],
         start: 10,
@@ -153,8 +153,8 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"id", comp:"endswith", value:15},
-         {field:"parentnode", comp:"contains", value:15},
+        [{field:"id", comp:"icontains", value:15},
+         {field:"parentnode", comp:"<", value:15},
          {field:"parentnode__long_name", comp:"startswith", value:"My example value"}]
 
 assignment groups can be filtered on the following *fields*:

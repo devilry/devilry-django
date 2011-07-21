@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo'>/** AssignmentGroup info.
+</span> *
+ * Lists DeadlineListing and info about the AssignmentGroup.
+ *
+ * @xtype assignmentgroupinfo
+ */
+Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.assignmentgroupinfo',
+    cls: 'widget-assignmentgroupinfo',
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.DeadlineListing'
+    ],
+
+    config: {
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-assignmentgroupid'>        /**
+</span>        * @cfg
+        * AssignmentGroup id. (Required).
+        */
+        assignmentgroupid: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-Delivery'>        /**
+</span>         * @cfg {Ext.data.Model} Delivery model. (Required).
+         */
+        deliverymodel: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-Deadline'>        /**
+</span>         * @cfg {Ext.data.Store} Deadline store. (Required).
+         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
+         * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
+         */
+        deadlinestore: undefined
+    },
+
+    initComponent: function() {
+        Ext.apply(this, {
+            items: [{
+                xtype: 'deadlinelisting',
+                assignmentgroupid: this.assignmentgroupid,
+                deliverymodel: this.deliverymodel,
+                deadlinestore: this.deadlinestore
+            }]
+        });
+        this.callParent(arguments);
+    },
+});
+</pre>
+</body>
+</html>

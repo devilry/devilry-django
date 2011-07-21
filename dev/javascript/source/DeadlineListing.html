@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-DeadlineListing'>/** Deadline listing.
+</span> *
+ * Lists DeadlineInfo's.
+ *
+ * @xtype deadlinelisting
+ */
+Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.deadlinelisting',
+    cls: 'widget-deadlinelisting',
+    requires: [
+        'devilry.extjshelpers.assignmentgroup.DeadlineInfo'
+    ],
+
+    config: {
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-assignmentgroupid'>        /**
+</span>        * @cfg
+        * AssignmentGroup id.
+        */
+        assignmentgroupid: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-Delivery'>        /**
+</span>         * @cfg {Ext.data.Model} Delivery model.
+         */
+        deliverymodel: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-Deadline'>        /**
+</span>         * @cfg {Ext.data.Store} Deadline store. (Required).
+         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
+         * this class.
+         */
+        deadlinestore: undefined
+    },
+
+    initComponent: function() {
+        this.callParent(arguments);
+        this.loadDeadlines();
+    },
+
+    loadDeadlines: function() {
+        this.deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
+        this.deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'assignment_group',
+            comp: 'exact',
+            value: this.assignmentgroupid
+        }]);
+
+        this.deadlinestore.load({
+            scope: this,
+            callback: this.onLoadDeadlines
+        });
+    },
+
+    onLoadDeadlines:function(deadlinerecords) {
+        var me = this;
+        Ext.each(deadlinerecords, function(deadlinerecord) {
+            me.addDeadline(deadlinerecord.data);
+        });
+    },
+
+    addDeadline:function(deadline) {
+        this.add({
+            xtype: 'deadlineinfo',
+            deadline: deadline,
+            deliverymodel: this.deliverymodel
+        });
+    }
+});
+</pre>
+</body>
+</html>
