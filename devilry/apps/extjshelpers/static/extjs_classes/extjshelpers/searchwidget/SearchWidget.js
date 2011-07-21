@@ -31,6 +31,20 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         'devilry.extjshelpers.SearchStringParser'
     ],
 
+    config: {
+        /**
+         * @cfg
+         * The {@link devilry.extjshelpers.searchwidget.SearchResults}, use
+         * when searching.
+         */
+        searchResultItems: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
         this.multisearchresultid = this.id + "-multisearchresults";
         Ext.apply(this, {
