@@ -32,7 +32,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     ],
 
     initComponent: function() {
-        this.multisearchresultid = this.id + "-multisearchresults"; 
+        this.multisearchresultid = this.id + "-multisearchresults";
         Ext.apply(this, {
             items: [{
                 xtype: 'multisearchfield'
@@ -45,6 +45,18 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         });
 
         this.callParent(arguments);
+        this.setupSearchEventListeners();
+    },
+
+    setupSearchEventListeners: function() {
+        var me = this;
+        this.getSearchField().addListener('emptyInput', function() {
+            me.hideResults();
+        });
+        this.getSearchField().addListener('newSearchValue', function(value) {
+            console.log(value);
+            me.search(value);
+        });
     },
 
     getSearchField: function() {

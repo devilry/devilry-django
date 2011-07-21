@@ -20,7 +20,7 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
         this.callParent([config]);
         this.initConfig(config);
         this.addEvents('emptyInput');
-        this.addEvents('newInput');
+        this.addEvents('newSearchValue');
     },
 
     initComponent: function() {
@@ -49,19 +49,18 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
         var noNewInput = value == currentValue;
         if(noNewInput) {
             if(Ext.String.trim(currentValue) == "") {
-                this.ownerCt.hideResults();
+                this.fireEvent('emptyInput');
             } else {
-                console.log(value);
-                this.ownerCt.search(value);
+                this.fireEvent('newSearchValue', value);
             }
         }
     },
 
     handleSpecialKey: function(e) {
         if(e.getKey() == e.ENTER) {
-            this.ownerCt.search(this.getValue());
+            this.fireEvent('newSearchValue', this.getValue());
         } else if(e.getKey() == e.ESC) {
-            this.ownerCt.hideResults();
+            this.fireEvent('emptyInput');
         }
     },
 
