@@ -198,10 +198,7 @@ class SimplifiedDeliveryMetaMixin(object):
                              'number',
                              'time_of_delivery',
                              'deadline',
-                             'deadline__assignment_group',
-                             'deadline__deadline',
-                             # TODO: deadline should be fieldgroup:
-                             # deadline=['deadline__assignment_group', 'deadline__deadline'],
+                             deadline=['deadline__assignment_group', 'deadline__deadline'],
                              assignment_group=['deadline__assignment_group',
                                                'deadline__assignment_group__name'],
                              assignment=['deadline__assignment_group__parentnode',
