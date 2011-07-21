@@ -20,26 +20,33 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     config: {
         /**
         * @cfg
-        * AssignmentGroup id.
+        * AssignmentGroup id. (Required).
         */
         assignmentgroupid: undefined,
 
         /**
-         * @cfg {Ext.data.Model} AssignmentGroup model.
+         * @cfg {Ext.data.Model} AssignmentGroup model. (Required).
          */
         assignmentgroupmodel: undefined,
 
         /**
-         * @cfg {Ext.data.Model} Delivery model.
+         * @cfg {Ext.data.Model} Delivery model. (Required).
          */
         deliverymodel: undefined,
 
         /**
-         * @cfg {Ext.data.Store} Deadline store. (Required). _Note_ that this
-         * store has its ``proxy.extraParams`` changed in
+         * @cfg {Ext.data.Store} Deadline store. (Required).
+         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */
-        deadlinestore: undefined
+        deadlinestore: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
+         * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}.
+         */
+        filemetastore: undefined
     },
 
 
@@ -110,7 +117,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             centerArea.add({
                 xtype: 'deliveryinfo',
                 assignmentid: this.assignmentid,
-                delivery: deliveryrecord.data
+                delivery: deliveryrecord.data,
+                filemetastore: this.filemetastore
             });
         } else {
             var errormsg = Ext.String.format(

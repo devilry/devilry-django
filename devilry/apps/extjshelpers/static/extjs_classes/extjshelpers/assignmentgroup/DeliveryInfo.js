@@ -15,6 +15,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     requires: [
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo'
     ],
+
+    config: {
+        /**
+         * @cfg {Object} A delivery object, such as ``data`` attribute of a
+         * record loaded from a Delivery store or model.
+         */
+        delivery: undefined,
+
+
+        /**
+        * @cfg
+        * Assignment id. (Required).
+        */
+        assignmentid: undefined,
+
+        /**
+         * @cfg {Ext.data.Store} FileMeta store. (Required).
+         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+         * class.
+         */
+        filemetastore: undefined
+    },
+
     tpl: Ext.create('Ext.XTemplate',
         '<dl>',
         '   <dt>Files</dt>',
@@ -37,14 +60,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         '</dl>'
     ),
 
-    config: {
-        /**
-         * @cfg
-         */
-        delivery: undefined,
-        assignmentid: undefined
-    },
-
     initComponent: function() {
         this.deliveryInfo = Ext.create('Ext.Component');
 
@@ -65,12 +80,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
     loadFileMetas: function() {
         var me = this;
-        var filemetastoreid = 'devilry.apps.examiner.simplified.SimplifiedFileMetaStore';
-        var store = Ext.data.StoreManager.lookup(filemetastoreid);
-        store.proxy.extraParams.filters = Ext.JSON.encode([
+        this.filemetastore.proxy.extraParams.filters = Ext.JSON.encode([
             {field: 'delivery', comp:'exact', value: this.delivery.id}
         ]);
-        store.load(function(filemetarecords, operation, success) {
+        this.filemetastore.load(function(filemetarecords, operation, success) {
             if(success) {
                 me.createBody(filemetarecords);
             } else {

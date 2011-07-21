@@ -25,8 +25,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         deliverymodel: undefined,
 
         /**
-         * @cfg {Ext.data.Store} Deadline store. (Required). _Note_ that this
-         * store has its ``proxy.extraParams`` changed in initComponent.
+         * @cfg {Ext.data.Store} Deadline store. (Required).
+         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
+         * this class.
          */
         deadlinestore: undefined
     },
