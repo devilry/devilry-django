@@ -152,6 +152,18 @@ def get_config():
     config.read(join(findconffolder(), 'config'))
     return config
 
+
+def get_metadata():
+    """Try to fetch .devilry/metadata. Raise an exception if it
+    doesn't exist"""
+
+    conf_dir = findconffolder()
+
+    metadata_f = open(join(conf_dir, 'metadata'), 'r')
+    metadata = eval(metadata_f.read())
+    return metadata
+
+
 def deadline_format(deadline):
     deadline = deadline.replace(':', '-')
     deadline = deadline.replace(' ', '_')
@@ -165,15 +177,3 @@ def is_late(delivery):
     deadline_time = delivery['deadline__deadline']
     delivery_time = delivery['time_of_delivery']
     return delivery_time > deadline_time
-
-#TODO check if {} tree exists
-
-def get_metadata():
-    """Try to fetch .devilry/metadata. Raise an exception if it
-    doesn't exist"""
-
-    conf_dir = findconffolder()
-
-    metadata_f = open(join(conf_dir, 'metadata'), 'r')
-    metadata = eval(metadata_f.read())
-    return metadata
