@@ -24,7 +24,7 @@ from tempfile import mkdtemp
 from common import get_docs_buildhtml_dir, depends, Command
 
 depends(Command('docs'),
-        Command('docs_js', '--clean'))
+        Command('docs_js'))
 
 
 repo_rw_url = 'git@github.com:devilry/devilry-django.git'
