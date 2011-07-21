@@ -15,7 +15,24 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview'>/**
+</span> * Combines {@link devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo} and
+ * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}
+ * into a complete AssignmentGroup reader and manager
+ * (if {@link #canExamine} is enabled).
+ *
+ *      -----------------------------------------------------------------
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      | AssignmentGroupInfo | DeliveryInfo                            |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      |                     |                                         |
+ *      -----------------------------------------------------------------
+ */
+Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
     width: 1000,
     height: 800,
@@ -35,46 +52,52 @@
     ),
 
     config: {
-<span id='global-cfg-assignmentgroupid'>        /**
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-assignmentgroupid'>        /**
 </span>        * @cfg
         * AssignmentGroup id. (Required).
         */
         assignmentgroupid: undefined,
 
-<span id='global-cfg-AssignmentGroup'>        /**
-</span>         * @cfg {Ext.data.Model} AssignmentGroup model. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-assignmentgroupmodel'>        /**
+</span>         * @cfg
+         * AssignmentGroup ``Ext.data.Model``. (Required).
          */
         assignmentgroupmodel: undefined,
 
-<span id='global-cfg-Delivery'>        /**
-</span>         * @cfg {Ext.data.Model} Delivery model. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-deliverymodel'>        /**
+</span>         * @cfg 
+         * Delivery  ``Ext.data.Model``. (Required).
          */
         deliverymodel: undefined,
 
-<span id='global-cfg-Deadline'>        /**
-</span>         * @cfg {Ext.data.Store} Deadline store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-deadlinestore'>        /**
+</span>         * @cfg
+         * Deadline ``Ext.data.Store``. (Required).
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */
         deadlinestore: undefined,
 
-<span id='global-cfg-FileMeta'>        /**
-</span>         * @cfg {Ext.data.Store} FileMeta store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-filemetastore'>        /**
+</span>         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}.
          */
         filemetastore: undefined,
 
-<span id='global-cfg-FileMeta'>        /**
-</span>         * @cfg {Ext.data.Store} FileMeta store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-staticfeedbackstore'>        /**
+</span>         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
          */
         staticfeedbackstore: undefined,
 
-<span id='global-cfg-canExamine'>        /**
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-cfg-canExamine'>        /**
 </span>         * @cfg
          * Enable creation of new feedbacks? Defaults to ``false``.
+         * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
          *
          * When this is ``true``, the authenticated user still needs to have
          * permission to POST new feedbacks for the view to work.
@@ -143,6 +166,15 @@
         });
     },
 
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupOverview-method-setDelivery'>    /**
+</span>     * Create a {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}
+     * containing the given delivery and place it in the center area.
+     *
+     * @param {Ext.model.Model} deliveryrecord A Delivery record.
+     *
+     * Used by {@link devilry.extjshelpers.assignmentgroup.DeliveryGrid} and
+     * internally in this class.
+     */
     setDelivery: function(deliveryrecord) {
         if(deliveryrecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
             var centerArea = Ext.getCmp(this.centerAreaId);

@@ -26,10 +26,10 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackInfo({
     "cfg": [
       {
         "tagname": "cfg",
-        "name": "Delivery",
+        "name": "deliveryid",
         "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo",
         "type": "Object",
-        "doc": "<p>id. (Required).</p>\n",
+        "doc": "<p>Delivery id. (Required).</p>\n",
         "private": false,
         "protected": false,
         "static": false,
@@ -37,17 +37,17 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackInfo({
         "deprecated": null,
         "alias": null,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackInfo.js",
-        "linenr": 12,
+        "linenr": 10,
         "html_filename": "StaticFeedbackInfo.html",
-        "href": "StaticFeedbackInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-Delivery",
-        "shortDoc": "id. ..."
+        "href": "StaticFeedbackInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-deliveryid",
+        "shortDoc": "Delivery id. ..."
       },
       {
         "tagname": "cfg",
-        "name": "FileMeta",
+        "name": "staticfeedbackstore",
         "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo",
-        "type": "Ext.data.Store",
-        "doc": "<p>store. (Required).\n<em>Note</em> that <code>filemetastore.proxy.extraParams</code> is changed by this\nclass.</p>\n",
+        "type": "Object",
+        "doc": "<p>FileMeta <code>Ext.data.Store</code>. (Required).\n<em>Note</em> that <code>filemetastore.proxy.extraParams</code> is changed by this\nclass.</p>\n",
         "private": false,
         "protected": false,
         "static": false,
@@ -55,10 +55,10 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackInfo({
         "deprecated": null,
         "alias": null,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackInfo.js",
-        "linenr": 17,
+        "linenr": 16,
         "html_filename": "StaticFeedbackInfo.html",
-        "href": "StaticFeedbackInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-FileMeta",
-        "shortDoc": "store. ..."
+        "href": "StaticFeedbackInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-staticfeedbackstore",
+        "shortDoc": "FileMeta Ext.data.Store. ..."
       }
     ],
     "property": [

@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"deadline", comp:"<", value:15},
-                      {field:"deadline__assignment_group", comp:">=", value:15},
-                      {field:"deadline__assignment_group__name", comp:"exact", value:"My example value"}],
+        filters: [{field:"deadline", comp:"startswith", value:15},
+                      {field:"deadline__assignment_group", comp:">", value:15},
+                      {field:"deadline__assignment_group__name", comp:"iexact", value:"My example value"}],
         orderby: ["id", "-number", "time_of_delivery", "deadline"],
         start: 10,
         limit: 100
@@ -161,9 +161,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"deadline", comp:"<", value:15},
-         {field:"deadline__assignment_group", comp:">=", value:15},
-         {field:"deadline__assignment_group__name", comp:"exact", value:"My example value"}]
+        [{field:"deadline", comp:"startswith", value:15},
+         {field:"deadline__assignment_group", comp:">", value:15},
+         {field:"deadline__assignment_group__name", comp:"iexact", value:"My example value"}]
 
 Deliveries can be filtered on the following *fields*:
 

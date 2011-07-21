@@ -17,9 +17,8 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-DeadlineListing'>/** Deadline listing.
 </span> *
- * Lists DeadlineInfo's.
- *
- * @xtype deadlinelisting
+ * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineInfo}'s
+ * within the given assignmentgroup ({@link #assignmentgroupid}).
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     extend: 'Ext.container.Container',
@@ -36,13 +35,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         */
         assignmentgroupid: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-Delivery'>        /**
-</span>         * @cfg {Ext.data.Model} Delivery model.
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-deliverymodel'>        /**
+</span>         * @cfg
+         * Delivery ``Ext.data.Model``.
          */
         deliverymodel: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-Deadline'>        /**
-</span>         * @cfg {Ext.data.Store} Deadline store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-deadlinestore'>        /**
+</span>         * @cfg
+         * Deadline ``Ext.data.Store``. (Required).
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * this class.
          */

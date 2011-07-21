@@ -16,12 +16,25 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo'>/** Panel to show Delivery info, such as:
-</span> *
- *  - Files
- *  - Time of delivery
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo'>/**
+</span> * Panel to show Delivery info.
+ * Uses {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}
+ * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+ * to show and manage StaticFeedback (see {@link #canExamine})
  *
- * @xtype deliveryinfo
+ *      -------------------------------------------
+ *      | Info about the delivery                 |
+ *      |                                         |
+ *      |                                         |
+ *      -------------------------------------------
+ *      | StaticFeedbackInfo                      |
+ *      | or                                      |
+ *      | StaticFeedbackEditableInfo              |
+ *      |                                         |
+ *      |                                         |
+ *      |                                         |
+ *      |                                         |
+ *      -------------------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     extend: 'Ext.panel.Panel',
@@ -34,8 +47,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     ],
 
     config: {
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-A'>        /**
-</span>         * @cfg {Object} A delivery object, such as ``data`` attribute of a
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-delivery'>        /**
+</span>         * @cfg
+         * A delivery object, such as ``data`` attribute of a
          * record loaded from a Delivery store or model.
          */
         delivery: undefined,
@@ -64,15 +78,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         */
         assignmentid: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-FileMeta'>        /**
-</span>         * @cfg {Ext.data.Store} FileMeta store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-filemetastore'>        /**
+</span>         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
          * class.
          */
         filemetastore: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-FileMeta'>        /**
-</span>         * @cfg {Ext.data.Store} FileMeta store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-staticfeedbackstore'>        /**
+</span>         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
          */

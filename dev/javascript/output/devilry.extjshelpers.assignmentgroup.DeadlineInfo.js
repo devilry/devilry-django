@@ -1,7 +1,7 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineInfo({
   "tagname": "class",
   "name": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
-  "doc": "<p>Deadline info.</p>\n\n<p>Lists deliveries and fires events when they are selected.</p>\n",
+  "doc": "<p>Deadline info.</p>\n\n<p>Lists deliveries within a Deadline using <a href=\"#/api/devilry.extjshelpers.assignmentgroup.DeliveryGrid\" rel=\"devilry.extjshelpers.assignmentgroup.DeliveryGrid\" class=\"docClass\">devilry.extjshelpers.assignmentgroup.DeliveryGrid</a>.</p>\n",
   "extends": "Ext.panel.Panel",
   "mixins": [
 
@@ -26,23 +26,6 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineInfo({
     "cfg": [
       {
         "tagname": "cfg",
-        "name": "Delivery",
-        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
-        "type": "Ext.data.Model",
-        "doc": "<p>model.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
-        "linenr": 25,
-        "html_filename": "DeadlineInfo.html",
-        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-Delivery"
-      },
-      {
-        "tagname": "cfg",
         "name": "deadline",
         "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
         "type": "Object",
@@ -54,10 +37,27 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineInfo({
         "deprecated": null,
         "alias": null,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
-        "linenr": 18,
+        "linenr": 17,
         "html_filename": "DeadlineInfo.html",
         "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deadline",
         "shortDoc": "The deadline data. ..."
+      },
+      {
+        "tagname": "cfg",
+        "name": "deliverymodel",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
+        "type": "Object",
+        "doc": "<p>Delivery <code>Ext.data.Model</code>.</p>\n",
+        "private": false,
+        "protected": false,
+        "static": false,
+        "inheritable": false,
+        "deprecated": null,
+        "alias": null,
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
+        "linenr": 24,
+        "html_filename": "DeadlineInfo.html",
+        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-deliverymodel"
       }
     ],
     "property": [

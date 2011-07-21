@@ -17,9 +17,18 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo'>/** AssignmentGroup info.
 </span> *
- * Lists DeadlineListing and info about the AssignmentGroup.
+ * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineListing} and info
+ * about the AssignmentGroup.
  *
- * @xtype assignmentgroupinfo
+ *      -----------------------
+ *      |                     |
+ *      | Deadlinelisting     |
+ *      |    DeadlineInfo     |
+ *      |        DeliveryGrid |
+ *      |    DeadlineInfo     |
+ *      |        DeliveryGrid |
+ *      |                     |
+ *      -----------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     extend: 'Ext.container.Container',
@@ -36,13 +45,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         */
         assignmentgroupid: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-Delivery'>        /**
-</span>         * @cfg {Ext.data.Model} Delivery model. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-deliverymodel'>        /**
+</span>         * @cfg
+         * Delivery ``Ext.data.Model``. (Required).
          */
         deliverymodel: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-Deadline'>        /**
-</span>         * @cfg {Ext.data.Store} Deadline store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-deadlinestore'>        /**
+</span>         * @cfg
+         * Deadline ``Ext.data.Store``. (Required).
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */

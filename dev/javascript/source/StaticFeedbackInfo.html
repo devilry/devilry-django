@@ -16,9 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo'>/** Panel to show StaticFeedback info.
-</span> *
- * @xtype staticfeedbackinfo
- */
+</span> */
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.staticfeedbackinfo',
@@ -26,13 +24,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     title: 'Feedback',
 
     config: {
-<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-Delivery'>        /**
-</span>         * @cfg Delivery id. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-deliveryid'>        /**
+</span>         * @cfg
+         * Delivery id. (Required).
          */
         deliveryid: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-FileMeta'>        /**
-</span>         * @cfg {Ext.data.Store} FileMeta store. (Required).
+<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-staticfeedbackstore'>        /**
+</span>         * @cfg
+         * FileMeta ``Ext.data.Store``. (Required).
          * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
          * class.
          */

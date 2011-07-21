@@ -1,7 +1,7 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineListing({
   "tagname": "class",
   "name": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
-  "doc": "<p>Deadline listing.</p>\n\n<p>Lists DeadlineInfo's.</p>\n",
+  "doc": "<p>Deadline listing.</p>\n\n<p>Lists <a href=\"#/api/devilry.extjshelpers.assignmentgroup.DeadlineInfo\" rel=\"devilry.extjshelpers.assignmentgroup.DeadlineInfo\" class=\"docClass\">devilry.extjshelpers.assignmentgroup.DeadlineInfo</a>'s\nwithin the given assignmentgroup (<a href=\"#/api/devilry.extjshelpers.assignmentgroup.DeadlineListing-cfg-assignmentgroupid\" rel=\"devilry.extjshelpers.assignmentgroup.DeadlineListing-cfg-assignmentgroupid\" class=\"docClass\">assignmentgroupid</a>).</p>\n",
   "extends": "Ext.container.Container",
   "mixins": [
 
@@ -26,41 +26,6 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineListing({
     "cfg": [
       {
         "tagname": "cfg",
-        "name": "Deadline",
-        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
-        "type": "Ext.data.Store",
-        "doc": "<p>store. (Required).\n<em>Note</em> that <code>deadlinestore.proxy.extraParams</code> is changed by\nthis class.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
-        "linenr": 27,
-        "html_filename": "DeadlineListing.html",
-        "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-Deadline",
-        "shortDoc": "store. ..."
-      },
-      {
-        "tagname": "cfg",
-        "name": "Delivery",
-        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
-        "type": "Ext.data.Model",
-        "doc": "<p>model.</p>\n",
-        "private": false,
-        "protected": false,
-        "static": false,
-        "inheritable": false,
-        "deprecated": null,
-        "alias": null,
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
-        "linenr": 22,
-        "html_filename": "DeadlineListing.html",
-        "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-Delivery"
-      },
-      {
-        "tagname": "cfg",
         "name": "assignmentgroupid",
         "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
         "type": "Object",
@@ -72,9 +37,44 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineListing({
         "deprecated": null,
         "alias": null,
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
-        "linenr": 16,
+        "linenr": 15,
         "html_filename": "DeadlineListing.html",
         "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-assignmentgroupid"
+      },
+      {
+        "tagname": "cfg",
+        "name": "deadlinestore",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
+        "type": "Object",
+        "doc": "<p>Deadline <code>Ext.data.Store</code>. (Required).\n<em>Note</em> that <code>deadlinestore.proxy.extraParams</code> is changed by\nthis class.</p>\n",
+        "private": false,
+        "protected": false,
+        "static": false,
+        "inheritable": false,
+        "deprecated": null,
+        "alias": null,
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
+        "linenr": 27,
+        "html_filename": "DeadlineListing.html",
+        "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-deadlinestore",
+        "shortDoc": "Deadline Ext.data.Store. ..."
+      },
+      {
+        "tagname": "cfg",
+        "name": "deliverymodel",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
+        "type": "Object",
+        "doc": "<p>Delivery <code>Ext.data.Model</code>.</p>\n",
+        "private": false,
+        "protected": false,
+        "static": false,
+        "inheritable": false,
+        "deprecated": null,
+        "alias": null,
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
+        "linenr": 21,
+        "html_filename": "DeadlineListing.html",
+        "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-deliverymodel"
       }
     ],
     "property": [

@@ -1,7 +1,7 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeliveryGrid({
   "tagname": "class",
   "name": "devilry.extjshelpers.assignmentgroup.DeliveryGrid",
-  "doc": "<p>Grid panel for showing deliveries.</p>\n",
+  "doc": "<p>Grid panel for showing deliveries within a deadline.</p>\n\n<p>When a delivery is selected, we forward the selected record to\n<a href=\"#/api/devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview-method-setDelivery\" rel=\"devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview-method-setDelivery\" class=\"docClass\">devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview.setDelivery</a>.</p>\n",
   "extends": "Ext.grid.Panel",
   "mixins": [
 

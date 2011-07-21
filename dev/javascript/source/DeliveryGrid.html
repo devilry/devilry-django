@@ -15,10 +15,11 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-DeliveryGrid'>/** Grid panel for showing deliveries.
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-DeliveryGrid'>/** Grid panel for showing deliveries within a deadline.
 </span> *
- * @xtype deliverygrid
- */
+ * When a delivery is selected, we forward the selected record to
+ * {@link devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview#setDelivery}.
+ * */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliverygrid',
