@@ -57,7 +57,7 @@ def clean(outdir):
 
 
 
-epilog = 'Example: {prog} --clean --build'.format(prog=getprogname())
+epilog = 'Example: {prog} --clean'.format(prog=getprogname())
 description = """{currenthelp}
 
 Requires JSDuck: https://github.com/nene/jsduck
