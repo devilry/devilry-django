@@ -7,6 +7,33 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
     alias: 'widget.administratorrestfulsimplifiedlayout',
     requires: ['devilry.extjshelpers.ErrorList'],
     border: 0,
+
+    config: {
+        /**
+         * @cfg
+         * Items for the ``Ext.form.Panel`` used to edit the RestfulSimplified object. (Required).
+         */
+        editformitems: undefined,
+
+        /**
+         * @cfg
+         * ``Ext.data.Model`` for the RestfulSimplified object. (Required).
+         */
+        model: undefined,
+
+        /**
+         * @cfg
+         * Does the RestfulSimplified support delete? (Required).
+         */
+        supports_delete: undefined,
+
+        /**
+         * @cfg
+         * List of foreign key field names in the model. (Required).
+         */
+        foreignkeyfieldnames: undefined
+    },
+
     bodyStyle: {
         'background-color': 'transparent'
     },
@@ -157,7 +184,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedLayout', {
                 //var title = Ext.String.format('Edit', record.data.long_name, record.data.short_name);
                 //me.editform.setTitle(title);
                 var fields = me.editform.getForm().getFields();
-                Ext.each(me.foreignkeys, function(fieldname) {
+                Ext.each(me.foreignkeyfieldnames, function(fieldname) {
                     var field = fields.filter('name', fieldname).items[0];
                     field.store.load(function(store, records, successful) {
                         field.setValue(record.data[fieldname]);
