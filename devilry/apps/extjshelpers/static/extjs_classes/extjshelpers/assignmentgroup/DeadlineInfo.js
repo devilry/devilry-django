@@ -7,7 +7,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deadlineinfo',
     cls: 'widget-deadlineinfo',
-    margin: {bottom: 20},
+    margin: 10,
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryGrid'
     ],

@@ -20,6 +20,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'New feedback',
+            iconCls: 'icon-add-16',
             margin: {left: 5},
             listeners: {
                 click: function() {

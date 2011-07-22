@@ -4,7 +4,7 @@
  * within the given assignmentgroup ({@link #assignmentgroupid}).
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
     requires: [
@@ -41,6 +41,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     },
 
     initComponent: function() {
+        Ext.apply(this, {
+            tbar: [{
+                xtype: 'button',
+                text: 'Create new deadline',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    click: function() {
+                        console.log('TODO');
+                    }
+                }
+            }]
+        });
         this.callParent(arguments);
         this.loadDeadlines();
     },

@@ -61,11 +61,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 region: 'north',
                 items: [{
                     xtype: 'assignmentgroupdetailspanel',
+                    assignmentgroup: this.assignmentgroup,
+                    bodyPadding: 10
                 }]
             }, {
                 region: 'center',
                 items: [{
                     xtype: 'deadlinelisting',
+                    title: 'Deadlines',
                     assignmentgroupid: this.assignmentgroup.id,
                     deliverymodel: this.deliverymodel,
                     deadlinestore: this.deadlinestore,
