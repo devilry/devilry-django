@@ -81,25 +81,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     },
 
     tpl: Ext.create('Ext.XTemplate',
-        '<dl>',
-        '   <dt>Files</dt>',
-        '   <tpl if="filemetas.length == 0">',
-        '       <dd><em>No files delivered</em></dd>',
-        '   </tpl>',
-        '   <tpl if="filemetas.length &gt; 0">',
-        '       <dd><ul><tpl for="filemetas">',
-        '           <li>{data.filename}</li>',
-        '       </tpl></ul></dd>',
-        '   </tpl>',
-        '   <tpl if="filemetas.errors">',
-        '       <dd><span class="error">Error while loading files</span></dd>',
-        '   </tpl>',
-        '   <tpl if="!filemetas">',
-        '       <dd><em>loading...</em></dd>',
-        '   </tpl>',
-        '   <dt>Time of delivery</dt>',
-        '   <dd>{delivery.time_of_delivery:date}</dd>',
-        '</dl>'
+        'Time of delivery: <em>{time_of_delivery:date}</em>'
     ),
 
     initComponent: function() {
@@ -111,11 +93,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         });
 
 
+        console.log(this.delivery);
         var me = this;
         Ext.apply(this, {
-            items: [
-                this.feedbackInfo
-            ],
+            items: [this.feedbackInfo],
             tbar: [{
                 xtype: 'button',
                 text: 'Browse files',
@@ -123,7 +104,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                     scope: me,
                     click: me.showFileMetaBrowserWindow
                 }
-            }]
+            }, '->', this.tpl.apply(this.delivery)]
         });
         this.callParent(arguments);
     },
