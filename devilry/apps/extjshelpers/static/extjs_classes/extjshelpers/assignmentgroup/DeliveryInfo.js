@@ -2,7 +2,7 @@
 /**
  * Panel to show Delivery info.
  * Uses {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}
- * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+ * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
  * to show and manage StaticFeedback (see {@link #canExamine})
  *
  *      -------------------------------------------
@@ -12,7 +12,7 @@
  *      -------------------------------------------
  *      | StaticFeedbackInfo                      |
  *      | or                                      |
- *      | StaticFeedbackEditableInfo              |
+ *      | StaticFeedbackEditor              |
  *      |                                         |
  *      |                                         |
  *      |                                         |
@@ -26,7 +26,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     cls: 'widget-deliveryinfo',
     html: '',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
     ],
@@ -44,7 +44,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
          * Enable creation of new feedbacks? Defaults to ``false``.
          *
          * If this is ``true``, 
-         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
          * is used instead of
          * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
          *
@@ -58,7 +58,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         /**
         * @cfg
         * Assignment id. Required for 
-        * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo},
+        * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor},
         * which is used if the ``canExamine`` config is ``true``.
         */
         assignmentid: undefined,
@@ -85,7 +85,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     ),
 
     initComponent: function() {
-        var clsname = this.canExamine? 'StaticFeedbackEditableInfo': 'StaticFeedbackInfo';
+        var clsname = this.canExamine? 'StaticFeedbackEditor': 'StaticFeedbackInfo';
         this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.' + clsname, {
             deliveryid: this.delivery.id,
             staticfeedbackstore: this.staticfeedbackstore,

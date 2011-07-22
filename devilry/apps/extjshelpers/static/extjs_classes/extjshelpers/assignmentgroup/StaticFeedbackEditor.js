@@ -1,8 +1,8 @@
 /** Panel to show StaticFeedback info and create new static feedbacks.
  */
-Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
-    alias: 'widget.staticfeedbackeditableinfo',
+    alias: 'widget.staticfeedbackeditor',
 
     config: {
         /**
