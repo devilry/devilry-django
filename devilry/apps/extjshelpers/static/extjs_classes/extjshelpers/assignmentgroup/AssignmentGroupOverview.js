@@ -99,9 +99,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 region: 'north',
                 height: 66,
                 xtype: 'container',
+                layout: 'fit',
                 items: [this.mainHeader]
             }, {
                 region: 'west',
+                layout: 'fit',
                 width: 220,
                 xtype: 'panel',
                 collapsible: true,   // make collapsible
@@ -116,6 +118,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }, {
                 region: 'center',
                 id: this.centerAreaId,
+                layout: 'fit',
                 items: []
             }],
         });
@@ -132,7 +135,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         assignmentgroup = assignmentgrouprecord.data;
         this.mainHeader.update(this.headingTpl.apply(assignmentgroup));
         this.assignmentid = assignmentgroup.parentnode;
-        //this.feedbackInfo.showNewFeedbackButton(assignmentid);
+
         var query = Ext.Object.fromQueryString(window.location.search);
         if(query.deliveryid == undefined) {
             this.handleNoDeliveryInQuerystring();

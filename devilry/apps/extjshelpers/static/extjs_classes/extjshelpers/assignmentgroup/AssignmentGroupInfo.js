@@ -18,6 +18,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     alias: 'widget.assignmentgroupinfo',
     cls: 'widget-assignmentgroupinfo',
     requires: [
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
         'devilry.extjshelpers.assignmentgroup.DeadlineListing'
     ],
 
@@ -43,13 +44,23 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
         deadlinestore: undefined
     },
 
+    layout: 'border',
+
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'deadlinelisting',
-                assignmentgroupid: this.assignmentgroupid,
-                deliverymodel: this.deliverymodel,
-                deadlinestore: this.deadlinestore
+                region: 'north',
+                items: [{
+                    xtype: 'assignmentgroupdetailspanel',
+                }]
+            }, {
+                region: 'center',
+                items: [{
+                    xtype: 'deadlinelisting',
+                    assignmentgroupid: this.assignmentgroupid,
+                    deliverymodel: this.deliverymodel,
+                    deadlinestore: this.deadlinestore
+                }]
             }]
         });
         this.callParent(arguments);
