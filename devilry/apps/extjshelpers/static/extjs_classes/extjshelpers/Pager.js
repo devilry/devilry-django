@@ -1,8 +1,11 @@
 /** Pager which can be used with any store. */
 Ext.define('devilry.extjshelpers.Pager', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.devilrypager',
     cls: 'widget-devilrypager',
+    style: {
+        border: 'none'
+    },
 
     layout: {
         type: 'hbox',
