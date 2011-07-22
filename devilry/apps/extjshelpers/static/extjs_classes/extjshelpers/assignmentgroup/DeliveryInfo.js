@@ -26,7 +26,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     cls: 'widget-deliveryinfo',
     html: '',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
+        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
     ],
 
     config: {
@@ -101,8 +103,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     ),
 
     initComponent: function() {
-        this.deliveryInfo = Ext.create('Ext.Component');
-
         var clsname = this.canExamine? 'StaticFeedbackEditableInfo': 'StaticFeedbackInfo';
         this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.' + clsname, {
             deliveryid: this.delivery.id,
@@ -111,33 +111,36 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         });
 
 
+        var me = this;
         Ext.apply(this, {
-            items: [this.deliveryInfo, this.feedbackInfo]
+            items: [
+                this.feedbackInfo
+            ],
+            tbar: [{
+                xtype: 'button',
+                text: 'Browse files',
+                listeners: {
+                    scope: me,
+                    click: me.showFileMetaBrowserWindow
+                }
+            }]
         });
-        this.createBody(false);
-        this.loadFileMetas();
         this.callParent(arguments);
     },
 
-    loadFileMetas: function() {
-        var me = this;
-        this.filemetastore.proxy.extraParams.filters = Ext.JSON.encode([
-            {field: 'delivery', comp:'exact', value: this.delivery.id}
-        ]);
-        this.filemetastore.load(function(filemetarecords, operation, success) {
-            if(success) {
-                me.createBody(filemetarecords);
-            } else {
-                me.createBody({errors: true});
-            }
-        });
-    },
+    showFileMetaBrowserWindow: function() {
+        Ext.create('Ext.window.Window', {
+            title: 'Files',
+            height: 400,
+            width: 600,
+            layout: 'fit',
+            items: [{
+                xtype: 'filemetabrowserpanel',
+                border: false,
+                filemetastore: this.filemetastore,
+                deliveryid: this.delivery.id
+            }]
+        }).show();
 
-    createBody: function(filemetas) {
-        var html = this.tpl.apply({
-            delivery: this.delivery,
-            filemetas: filemetas
-        });
-        this.deliveryInfo.update(html);
     }
 });
