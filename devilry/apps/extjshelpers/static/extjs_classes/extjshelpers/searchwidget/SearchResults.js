@@ -97,7 +97,6 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
         this.store.addListener('load', function(store, records, successful) {
             if(successful) {
                 me.handleStoreLoadSuccess(records);
-                me.down('devilrypager').updatePageSwitcher();
             } else {
                 me.handleStoreLoadFailure();
             }
