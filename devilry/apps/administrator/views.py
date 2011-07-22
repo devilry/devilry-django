@@ -1,4 +1,6 @@
 from django.views.generic import TemplateView, View
+from django.shortcuts import render
+
 import restful
 
 
