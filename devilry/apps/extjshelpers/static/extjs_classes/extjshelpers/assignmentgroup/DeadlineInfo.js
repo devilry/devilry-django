@@ -43,7 +43,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
             comp: 'exact',
             value: this.deadline.id
         }]);
-        deliverystore.load();
 
         Ext.apply(this, {
             title: this.titleTpl.apply(this.deadline),
@@ -53,5 +52,27 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
             }]
         });
         this.callParent(arguments);
+
+        this.noDeliveriesHandler(deliverystore);
+        deliverystore.load();
     },
+
+    noDeliveriesHandler: function(deliverystore) {
+        var me = this;
+        deliverystore.addListener('load', function(store, records, successful) {
+            if(successful && records.length == 0) {
+                me.addDocked([{
+                    dock: 'bottom',
+                    xtype: 'toolbar',
+                    items: [
+                        'No deliveries on this deadline'
+                    ]
+                }]);
+            }
+        });
+    },
+
+    selectDelivery: function(deliveryrecord) {
+        this.down('deliverygrid').selectDelivery(deliveryrecord);
+    }
 });

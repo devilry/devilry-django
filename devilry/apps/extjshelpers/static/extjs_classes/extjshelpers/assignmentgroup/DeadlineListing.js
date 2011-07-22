@@ -59,11 +59,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         });
     },
 
-    addDeadline:function(deadline) {
+    addDeadline: function(deadline) {
         this.add({
             xtype: 'deadlineinfo',
             deadline: deadline,
             deliverymodel: this.deliverymodel
+        });
+    },
+
+    selectDelivery: function(deliveryrecord) {
+        Ext.each(this.items.items, function(deadlineinfo, index) {
+            deadlineinfo.selectDelivery(deliveryrecord);
         });
     }
 });

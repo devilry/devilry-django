@@ -144,8 +144,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     loadDelivery: function(deliveryid) {
         var me = this;
         this.deliverymodel.load(deliveryid, {
-            scope: me,
-            success: me.setDelivery
+            success: function(deliveryrecord) {
+                me.down('deadlinelisting').selectDelivery(deliveryrecord);
+            }
         });
     },
 

@@ -13,6 +13,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
         '{number}. {time_of_delivery:date} (id:{id})'
     ),
 
+    // TODO: Paging (In case we get more deliveries than the pageSize)
+
     columns: [{
         header: 'Data',
         dataIndex: 'id',
@@ -26,6 +28,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
         selectionchange: function(grid, selections) {
             var selectedDelivery = selections[0];
             this.up('assignmentgroupoverview').setDelivery(selectedDelivery);
+        }
+    },
+
+    selectDelivery: function(deliveryrecord) {
+        //console.log(deliveryrecord);
+        //console.log(this.store);
+        //console.log(this.store.findRecord('id', deliveryrecord.data.id, 0, true));
+        this.getSelectionModel().deselectAll();
+        var deliveryIndex = this.store.findExact('id', deliveryrecord.data.id);
+        if(deliveryIndex != -1) {
+            this.getSelectionModel().select(deliveryIndex);
         }
     }
 });
