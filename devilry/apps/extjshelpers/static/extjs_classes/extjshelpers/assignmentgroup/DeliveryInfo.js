@@ -92,8 +92,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             assignmentid: this.assignmentid
         });
 
-
-        console.log(this.delivery);
         var me = this;
         Ext.apply(this, {
             items: [this.feedbackInfo],
