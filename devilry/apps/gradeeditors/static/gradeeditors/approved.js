@@ -37,7 +37,7 @@
                     grade: approved? "Approved": "Not approved",
                     is_passing_grade: approved,
                     points: approved? 1: 0,
-                    rendered_view: Ext.String.format('<pre>{0}</pre>', feedbacktext),
+                    rendered_view: Ext.String.format('{0}', feedbacktext),
                     delivery: staticfeedbackeditableinfo.deliveryid
                 });
 

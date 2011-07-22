@@ -33,7 +33,13 @@ Ext.define('devilry.extjshelpers.Pager', {
          * @cfg
          * Width of the container.
          */
-        height: 30
+        height: 30,
+
+        /**
+         * @cfg
+         * Reverse direction? If this is ``true``, the next button goes backwards, and the previous button goes forward.
+         */
+        reverseDirection: false
     },
 
     constructor: function(config) {
@@ -48,10 +54,11 @@ Ext.define('devilry.extjshelpers.Pager', {
                 xtype: 'button',
                 text: '<',
                 flex: 0,
-                id: this.id + '-pageswitch-prevbtn',
+                id: this.id + (this.reverseDirection? '-next': '-prev'),
+                disabled: true,
                 listeners: {
                     click: function() {
-                        me.store.previousPage();
+                        me.reverseDirection? me.store.nextPage(): me.store.previousPage();
                     }
                 },
             }, {
@@ -62,30 +69,43 @@ Ext.define('devilry.extjshelpers.Pager', {
                 },
                 flex: 1,
                 width: 200,
-                id: this.id + '-pageswitch-label',
+                id: this.id + '-label',
             }, {
                 xtype: 'button',
                 text: '>',
                 flex: 0,
-                id: this.id + '-pageswitch-nextbtn',
+                id: this.id + (this.reverseDirection? '-prev': '-next'),
+                disabled: true,
                 listeners: {
                     click: function() {
-                        me.store.nextPage();
+                        me.reverseDirection? me.store.previousPage(): me.store.nextPage();
                     }
                 }
             }]
         });
 
+        this.store.addListener('load', function(store, records, successful) {
+            if(successful) {
+                me.updatePageSwitcher(records);
+            }
+        });
+
         this.callParent(arguments);
     },
 
-    updatePageSwitcher: function() {
+    updatePageSwitcher: function(records) {
         var from = this.store.pageSize * (this.store.currentPage-1);
         var visibleOnCurrentPage = this.store.getCount();
+        var totalPages = this.store.getTotalCount() / this.store.pageSize;
+
         var label = this.middleLabelTpl.apply({
             total: this.store.getTotalCount(),
             from: from,
-            to: from + visibleOnCurrentPage
+            to: from + visibleOnCurrentPage,
+            //records: records, // Enable if we need it anywhere
+            firstRecord: records.length == 0? undefined: records[0],
+            currentPage: this.store.currentPage,
+            currentNegativePageOffset: totalPages - this.store.currentPage + 1
         });
         this.getMiddleLabel().update(label);
 
@@ -99,13 +119,12 @@ Ext.define('devilry.extjshelpers.Pager', {
         }
     },
     getMiddleLabel: function() {
-        return Ext.getCmp(this.id + '-pageswitch-label');
+        return Ext.getCmp(this.id + '-label');
     },
     getPreviousPageButton: function() {
-        return Ext.getCmp(this.id + '-pageswitch-prevbtn');
+        return Ext.getCmp(this.id + '-prev');
     },
     getNextPageButton: function() {
-        return Ext.getCmp(this.id + '-pageswitch-nextbtn');
+        return Ext.getCmp(this.id + '-next');
     }
-
 });

@@ -29,7 +29,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
         });
         this.addListener('afterStoreLoadMoreThanZero', function() {
             me.getToolbar().add(me.createButton);
-            me.getToolbar().show();
         });
         this.callParent(arguments);
     },

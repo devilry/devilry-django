@@ -5,6 +5,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     alias: 'widget.staticfeedbackinfo',
     cls: 'widget-staticfeedbackinfo',
     title: 'Feedback',
+    requires: [
+        'devilry.extjshelpers.Pager'
+    ],
 
     config: {
         /**
@@ -61,6 +64,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     initComponent: function() {
 
         var me = this;
+        this.staticfeedbackstore.pageSize = 1;
         this.staticfeedbackstore.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
         this.staticfeedbackstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
@@ -68,51 +72,40 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             value: this.deliveryid
         }]);
 
-        this.feedbackSelector = Ext.create('Ext.form.field.ComboBox', {
-            store: this.staticfeedbackstore,
-            displayField: 'save_timestamp',
-            valueField: 'id',
-            autoSelect: true,
-            width: 320,
-            forceSelection: true,
-            hidden: true,
-            editable: false,
-
-            listeners: {
-                select: function(field, staticfeedbackrecord) {
-                    me.setStaticFeedback(staticfeedbackrecord[0].data);
-                }
-            }
-        });
-
         Ext.apply(this, {
             tbar: [{
-                xtype: 'box',
-                flex: 1
-            }, this.feedbackSelector]
+                xtype: 'devilrypager',
+                store: this.staticfeedbackstore,
+                width: 200,
+                reverseDirection: true,
+                middleLabelTpl: Ext.create('Ext.XTemplate',
+                    '{currentNegativePageOffset}) ',
+                    '<tpl if="firstRecord">',
+                    '   {firstRecord.data.save_timestamp:date}',
+                    '</tpl>'
+                )
+            }, '->']
         });
         this.callParent(arguments);
-        this.loadStore();
-    },
 
-    loadStore: function() {
-        var me = this;
-        this.staticfeedbackstore.load({
-            callback: function(records, operation, successful) {
-                if(successful) {
-                    if(records.length == 0) {
-                        me.bodyWithNoFeedback();
-                    }
-                    else {
-                        me.bodyWithFeedback(records);
-                    }
+        this.staticfeedbackstore.addListener('load', function(store, records, successful) {
+            if(successful) {
+                if(records.length == 0) {
+                    me.bodyWithNoFeedback();
                 }
+                else {
+                    me.bodyWithFeedback(records[0]);
+                }
+            } else {
+                // TODO: handle failure
             }
         });
+        this.loadFeedbackViewer();
     },
 
     loadFeedbackViewer: function() {
-        this.loadStore();
+        this.getToolbar().show();
+        this.staticfeedbackstore.load();
     },
 
     getHeader: function() {
@@ -125,8 +118,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     },
 
     setStaticFeedback: function(feedback) {
-        var first = this.staticfeedbackstore.data.items[0].data.id;
-        var tpldata = {isactive: first==feedback.id};
+        var tpldata = {isactive: this.staticfeedbackstore.currentPage == 1};
         Ext.apply(tpldata, feedback);
         this.setBody({
             xtype: 'component',
@@ -135,20 +127,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         });
     },
 
-    bodyWithFeedback: function(records) {
-        var first = records[0].data;
-        this.feedbackSelector.setRawValue(first.save_timestamp);
-        if(records.length > 1) {
-            this.getToolbar().show();
-            this.feedbackSelector.show();
-        } else {
-        }
-        this.setStaticFeedback(first);
+    bodyWithFeedback: function(record) {
+        this.setStaticFeedback(record.data);
         this.fireEvent('afterStoreLoadMoreThanZero');
     },
 
     bodyWithNoFeedback: function() {
-        me.getToolbar().hide();
         this.setBody({
             xtype: 'component',
             cls: 'no-feedback',
@@ -159,4 +143,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     getToolbar: function() {
         return this.down('toolbar');
     }
+
 });
