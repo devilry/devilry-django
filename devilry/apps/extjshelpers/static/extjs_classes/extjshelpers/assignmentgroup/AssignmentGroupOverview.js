@@ -91,8 +91,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
     initComponent: function() {
         var me = this;
-        this.centerAreaId = this.id + '-center';
         this.mainHeader = Ext.create('Ext.Component');
+        this.centerArea = Ext.create('Ext.container.Container');
+        this.sidebar = Ext.create('Ext.container.Container');
 
         Ext.apply(this, {
             items: [{
@@ -109,17 +110,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 collapsible: true,   // make collapsible
                 //titleCollapse: true, // click anywhere on title to collapse.
                 split: true,
-                items: [{
-                    xtype: 'assignmentgroupinfo',
-                    assignmentgroupid: this.assignmentgroupid,
-                    deliverymodel: this.deliverymodel,
-                    deadlinestore: this.deadlinestore
-                }]
+                items: [this.sidebar]
             }, {
                 region: 'center',
-                id: this.centerAreaId,
                 layout: 'fit',
-                items: []
+                items: [this.centerArea]
             }],
         });
         this.callParent(arguments);
@@ -137,19 +132,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.assignmentid = assignmentgroup.parentnode;
 
         var query = Ext.Object.fromQueryString(window.location.search);
-        if(query.deliveryid == undefined) {
-            this.handleNoDeliveryInQuerystring();
-        } else {
-            this.loadDelivery(query.deliveryid);
-        }
-    },
-
-    loadDelivery: function(deliveryid) {
-        var me = this;
-        this.deliverymodel.load(deliveryid, {
-            success: function(deliveryrecord) {
-                me.down('deadlinelisting').selectDelivery(deliveryrecord);
-            }
+        this.sidebar.add({
+            xtype: 'assignmentgroupinfo',
+            assignmentgroup: assignmentgroup,
+            deliverymodel: this.deliverymodel,
+            deadlinestore: this.deadlinestore,
+            layout: 'fit',
+            selectedDeliveryId: parseInt(query.deliveryid)
         });
     },
 
@@ -164,9 +153,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     setDelivery: function(deliveryrecord) {
         if(deliveryrecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
-            var centerArea = Ext.getCmp(this.centerAreaId);
-            centerArea.removeAll();
-            centerArea.add({
+            this.centerArea.removeAll();
+            this.centerArea.add({
                 xtype: 'deliveryinfo',
                 assignmentid: this.assignmentid,
                 delivery: deliveryrecord.data,

@@ -3,15 +3,16 @@
  * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineListing} and info
  * about the AssignmentGroup.
  *
- *      -----------------------
- *      |                     |
- *      | Deadlinelisting     |
- *      |    DeadlineInfo     |
- *      |        DeliveryGrid |
- *      |    DeadlineInfo     |
- *      |        DeliveryGrid |
- *      |                     |
- *      -----------------------
+ *      -------------------------------
+ *      | AssignmentGroupDetailsPanel |
+ *      |                             |
+ *      | Deadlinelisting             |
+ *      |    DeadlineInfo             |
+ *      |        DeliveryGrid         |
+ *      |    DeadlineInfo             |
+ *      |        DeliveryGrid         |
+ *      |                             |
+ *      -------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     extend: 'Ext.container.Container',
@@ -25,9 +26,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     config: {
         /**
         * @cfg
-        * AssignmentGroup id. (Required).
+        * AssignmentGroup object such as the ``data`` attribute of a record
+        * returned from loading from a store. (Required).
         */
-        assignmentgroupid: undefined,
+        assignmentgroup: undefined,
 
         /**
          * @cfg
@@ -41,7 +43,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */
-        deadlinestore: undefined
+        deadlinestore: undefined,
+
+        /**
+         * @cfg
+         * Selected delivery id. May be undefined, in which case, no delivery
+         * is selected.
+         */
+        selectedDeliveryId: undefined
     },
 
     layout: 'border',
@@ -57,9 +66,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                 region: 'center',
                 items: [{
                     xtype: 'deadlinelisting',
-                    assignmentgroupid: this.assignmentgroupid,
+                    assignmentgroupid: this.assignmentgroup.id,
                     deliverymodel: this.deliverymodel,
-                    deadlinestore: this.deadlinestore
+                    deadlinestore: this.deadlinestore,
+                    selectedDeliveryId: this.selectedDeliveryId
                 }]
             }]
         });

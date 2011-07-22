@@ -30,7 +30,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * this class.
          */
-        deadlinestore: undefined
+        deadlinestore: undefined,
+
+        /**
+         * @cfg
+         * Selected delivery id. May be undefined, in which case, no delivery
+         * is selected.
+         */
+        selectedDeliveryId: undefined
     },
 
     initComponent: function() {
@@ -63,13 +70,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         this.add({
             xtype: 'deadlineinfo',
             deadline: deadline,
-            deliverymodel: this.deliverymodel
+            deliverymodel: this.deliverymodel,
+            selectedDeliveryId: this.selectedDeliveryId
         });
     },
-
-    selectDelivery: function(deliveryrecord) {
-        Ext.each(this.items.items, function(deadlineinfo, index) {
-            deadlineinfo.selectDelivery(deliveryrecord);
-        });
-    }
 });

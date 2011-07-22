@@ -31,12 +31,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
         }
     },
 
-    selectDelivery: function(deliveryrecord) {
-        //console.log(deliveryrecord);
-        //console.log(this.store);
-        //console.log(this.store.findRecord('id', deliveryrecord.data.id, 0, true));
+    selectDelivery: function(deliveryid) {
         this.getSelectionModel().deselectAll();
-        var deliveryIndex = this.store.findExact('id', deliveryrecord.data.id);
+        var deliveryIndex = this.store.findExact('id', deliveryid);
         if(deliveryIndex != -1) {
             this.getSelectionModel().select(deliveryIndex);
         }

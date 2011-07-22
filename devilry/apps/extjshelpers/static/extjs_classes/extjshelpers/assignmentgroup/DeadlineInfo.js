@@ -25,7 +25,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
          * @cfg
          * Delivery ``Ext.data.Model``.
          */
-        deliverymodel: undefined
+        deliverymodel: undefined,
+
+        /**
+         * @cfg
+         * Selected delivery id. May be undefined, in which case, no delivery
+         * is selected.
+         */
+        selectedDeliveryId: undefined
     },
     
     initComponent: function() {
@@ -53,26 +60,26 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
         });
         this.callParent(arguments);
 
-        this.noDeliveriesHandler(deliverystore);
+        var me = this;
+        deliverystore.addListener('load', function(store, records, successful) {
+            if(successful) {
+                if(records.length == 0) {
+                    me.addDocked([{
+                        dock: 'bottom',
+                        xtype: 'toolbar',
+                        items: [
+                            'No deliveries on this deadline'
+                        ]
+                    }]);
+                } else {
+                    me.selectDelivery(me.selectedDeliveryId);
+                }
+            }
+        });
         deliverystore.load();
     },
 
-    noDeliveriesHandler: function(deliverystore) {
-        var me = this;
-        deliverystore.addListener('load', function(store, records, successful) {
-            if(successful && records.length == 0) {
-                me.addDocked([{
-                    dock: 'bottom',
-                    xtype: 'toolbar',
-                    items: [
-                        'No deliveries on this deadline'
-                    ]
-                }]);
-            }
-        });
-    },
-
-    selectDelivery: function(deliveryrecord) {
-        this.down('deliverygrid').selectDelivery(deliveryrecord);
+    selectDelivery: function(deliveryid) {
+        this.down('deliverygrid').selectDelivery(deliveryid);
     }
 });
