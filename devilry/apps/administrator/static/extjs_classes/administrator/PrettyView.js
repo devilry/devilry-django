@@ -1,3 +1,4 @@
+/** A prettyview is a read-only view panel used to display a single model record. */
 Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
@@ -35,6 +36,13 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     constructor: function(config) {
+        this.addEvents(
+            /**
+             * @event
+             * Fired when the model record is loaded successfully.
+             * @param {Ext.model.Model} record The loaded record.
+             */
+            'loadmodel');
         this.callParent([config]);
         this.initConfig(config);
     },
@@ -80,6 +88,7 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     onModelLoadSuccess: function(record, operation) {
+        this.fireEvent('loadmodel', record);
         this.update(this.bodyTpl.apply(record.data));
     },
 
@@ -94,5 +103,4 @@ Ext.define('devilry.administrator.PrettyView', {
     onDelete: function() {
         console.log('delete');
     }
-
 });

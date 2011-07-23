@@ -1,3 +1,4 @@
+/** PrettyView for an assignment. */
 Ext.define('devilry.administrator.assignment.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_assignmentprettyview',

@@ -7,21 +7,33 @@
 {{ block.super }}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }}
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }}
 
     Ext.require('devilry.administrator.assignment.PrettyView');
     Ext.onReady(function() {
-        Ext.create('devilry.administrator.assignment.PrettyView', {
+        var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
             renderTo: 'prettyviewpanel',
             modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             objectid: {{ objectid }}
+        });
+
+        prettyview.addListener('loadmodel', function(record) {
+            Ext.create('Ext.Component', {
+                renderTo: 'content-heading',
+                data: record.data,
+                tpl: [
+                    '<h1>{long_name}</h1>',
+                    '<h2>{parentnode__long_name}</h2>',
+                    '<h3>{parentnode__parentnode__long_name}</h3>'
+                ]
+            });
         });
     });
 </script>
 {% endblock %}
 
 {% block main %}
-{{ block.super }}
-
-<div id="prettyviewpanel"></div>
+    <section class="treeheading" id="content-heading"></section>
+    {{ block.super }} {# The search box #}
+    <div id="prettyviewpanel" class="prettyviewpanel"></div>
 {% endblock %}
