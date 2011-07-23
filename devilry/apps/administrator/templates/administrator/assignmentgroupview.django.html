@@ -5,19 +5,19 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
 
-    {{ RestfulSimplifiedDeadline|extjs_model }};
-    {{ RestfulSimplifiedDeadline|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
 
-    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
-    {{ RestfulSimplifiedDelivery|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"assignment_group" }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
 
-    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
-    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
 
-    {{ RestfulSimplifiedFileMeta|extjs_model }};
-    {{ RestfulSimplifiedFileMeta|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
 
 
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');

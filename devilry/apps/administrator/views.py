@@ -29,11 +29,11 @@ class RestfulSimplifiedView(View):
         self.template_name = template_name
 
     def get(self, request, **indata):
-        for restclsname in restful.__all__:
-            indata[restclsname] = getattr(restful, restclsname)
+        context = indata
+        add_restfulapi_to_context(context)
         return render(request,
                       self.template_name,
-                      indata)
+                      context)
 
     @classmethod
     def as_url(cls, prefix, idargname, template_name):
