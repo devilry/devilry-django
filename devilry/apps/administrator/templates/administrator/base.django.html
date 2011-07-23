@@ -17,6 +17,7 @@
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
             renderTo: 'searchwidget-container',
+            urlPrefix: '{{ DEVILRY_MAIN_PAGE }}/administrator/',
             nodeRowTpl: '{{ restfulapi.RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
             subjectRowTpl: '{{ restfulapi.RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
             periodRowTpl: '{{ restfulapi.RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',

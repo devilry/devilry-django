@@ -9,6 +9,50 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
         'devilry.extjshelpers.searchwidget.FilterConfigDefaults',
     ],
 
+    config: {
+        /**
+         * @cfg
+         * Url prefix. Should be the absolute URL path to /administrator/.
+         */
+        urlPrefix: '',
+
+        /**
+         * @cfg
+         * ``Ext.XTemplate`` for Node rows.
+         */
+        nodeRowTpl: '',
+
+        /**
+         * @cfg
+         * ``Ext.XTemplate`` for Subject rows.
+         */
+        subjectRowTpl: '',
+
+        /**
+         * @cfg
+         * ``Ext.XTemplate`` for Period rows.
+         */
+        periodRowTpl: '',
+
+        /**
+         * @cfg
+         * ``Ext.XTemplate`` for Assignment rows.
+         */
+        assignmentRowTpl: '',
+
+        /**
+         * @cfg
+         * ``Ext.XTemplate`` for AssignmentGroup rows.
+         */
+        assignmentgroupRowTpl: '',
+
+        /**
+         * @cfg
+         * ``Ext.XTemplate`` for Delivery rows.
+         */
+        deliveryRowTpl: ''
+    },
+
     initComponent: function() {
         Ext.apply(this, {
             searchResultItems: [{
@@ -22,7 +66,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.nodeRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'editors/node/{id}'
+                        clickLinkTpl: this.urlPrefix + 'editors/node/{id}'
                     }
                 }
             }, {
@@ -36,7 +80,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.subjectRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'editors/subject/{id}'
+                        clickLinkTpl: this.urlPrefix + 'editors/subject/{id}'
                     }
                 }
             }, {
@@ -50,7 +94,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.periodRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'editors/period/{id}'
+                        clickLinkTpl: this.urlPrefix + 'editors/period/{id}'
                     }
                 }
             }, {
@@ -62,7 +106,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.assignmentRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'editors/assignment/{id}'
+                        clickLinkTpl: this.urlPrefix + 'editors/assignment/{id}'
                     },
                     menuitems: [{
                         text: 'Show deliveries',
@@ -78,7 +122,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.assignmentgroupRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'assignmentgroup/{id}'
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
                     }
                 }
             }, {
