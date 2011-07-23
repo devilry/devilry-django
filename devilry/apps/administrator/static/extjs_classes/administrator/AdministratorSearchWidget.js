@@ -17,7 +17,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: '{id}',
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'node/{id}'
+                        clickLinkTpl: 'editors/node/{id}'
                     }
                 }
             }, {
@@ -31,7 +31,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: '{id}',
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'subject/{id}'
+                        clickLinkTpl: 'editors/subject/{id}'
                     }
                 }
             }, {
@@ -45,7 +45,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: '{id}',
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'period/{id}'
+                        clickLinkTpl: 'editors/period/{id}'
                     }
                 }
             }, {
@@ -57,7 +57,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: '{id}',
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: 'assignment/{id}'
+                        clickLinkTpl: 'editors/assignment/{id}'
                     },
                     menuitems: [{
                         text: 'Show deliveries',

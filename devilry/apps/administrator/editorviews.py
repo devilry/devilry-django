@@ -26,7 +26,7 @@ class RestfulSimplifiedEditorView(View):
 
     @classmethod
     def create_url(cls):
-        prefix = cls.__name__.replace('Editor', '').lower()
+        prefix = cls.__name__.replace('Editor', '').replace('RestfulSimplified', '').lower()
         return url(r'^editors/{0}/(?P<record_id>\w+)?'.format(prefix),
                    login_required(cls.as_view()),
                    name='administrator-editors-{0}'.format(prefix))
