@@ -83,6 +83,7 @@ class TestStoreIntegration(TestCase):
         js = restfulcls_to_extjsstore(RestUser)
         expected = """Ext.create('Ext.data.Store', {
             model: 'devilry.apps.extjshelpers.tests.SimplifiedUser',
+            id: 'devilry.apps.extjshelpers.tests.SimplifiedUserStore',
             remoteFilter: true,
             remoteSort: true,
             autoSync: true

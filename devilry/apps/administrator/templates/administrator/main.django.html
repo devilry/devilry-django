@@ -17,6 +17,7 @@
     var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
+    Ext.require('devilry.extjshelpers.searchwidget.FilterConfigDefaults');
     Ext.require('devilry.extjshelpers.ButtonBar');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
@@ -25,66 +26,84 @@
                 xtype: 'searchresults',
                 title: 'Nodes',
                 store: nodestore,
-                links: [{
-                    title: 'Edit',
-                    urlprefix: '{% url administrator-editors-node %}',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: {
+                    type: 'node'
+                },
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Edit',
+                        clickLinkTpl: '{% url administrator-editors-node %}' + '{id}'
+                    }
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Subjects',
                 store: subjectstore,
-                links: [{
-                    title: 'Edit',
-                    urlprefix: '{% url administrator-editors-subject %}',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: {
+                    type: 'subject'
+                },
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Edit',
+                        clickLinkTpl: '{% url administrator-editors-subject %}' + '{id}'
+                    }
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Periods',
                 store: periodstore,
-                links: [{
-                    title: 'Statistics',
-                    urlprefix: '#',
-                    cssclass: 'button neutral-button'
-                }, {
-                    title: 'Edit',
-                    urlprefix: '{% url administrator-editors-period %}',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: {
+                    type: 'period'
+                },
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Edit',
+                        clickLinkTpl: '{% url administrator-editors-period %}' + '{id}',
+                    }
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
-                links: [{
-                    title: 'Edit',
-                    urlprefix: '{% url administrator-editors-assignment %}',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Edit',
+                        clickLinkTpl: '{% url administrator-editors-assignment %}' + '{id}',
+                    },
+                    menuitems: [{
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery assignment:{id}'
+                    }]
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
-                links: [{
-                    title: 'Edit',
-                    urlprefix: '{% url administrator-editors-assignmentgroup %}',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Edit',
+                        clickLinkTpl: 'assignmentgroup/{id}',
+                    }
+                }
             }, {
                 xtype: 'searchresults',
                 title: 'Delivery',
                 store: deliverystore,
-                links: [{
-                    title: 'Edit',
-                    urlprefix: '{% url administrator-editors-delivery %}',
-                    cssclass: 'button good-button'
-                }],
-                rowformattpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'Edit',
+                        {# clickLinkTpl: '{% url administrator-editors-delivery %}' + '{id}', #}
+                    }
+                }
             }]
         });
         searchwidget.loadInitialValues();

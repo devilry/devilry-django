@@ -1,16 +1,12 @@
-from os.path import dirname, join, exists
+from os.path import dirname, join, exists, sep
 from os import listdir, environ, mkdir
 from subprocess import call
-import sys, logging, argparse, os
-import stat
-from devilryclient.restfulclient import RestfulFactory
-from getpass import getpass
-
-import httplib
-import urllib
-from Cookie import SimpleCookie
-from urlparse import urlparse
-import ConfigParser
+import sys
+import logging
+import argparse
+import os
+#from devilryclient.restfulclient import RestfulFactory
+from ConfigParser import ConfigParser
 
 
 def helloworld():
@@ -42,7 +38,7 @@ def getcommandlist():
     """
     :return: All available commands
     """
-    filenames = listdir(join(dirname(__file__),'plugins'))
+    filenames = listdir(join(dirname(__file__), 'plugins'))
     commands = [filename for filename in filenames if filename.endswith('.py')]
     return commands
 
@@ -83,13 +79,14 @@ def execute(command, args):
     :param args: Additional arguments
     """
     logging.warning('Hello from utils.py')
+    #TODO should not search for .py files
     path = join(getpluginsdir(), command + ".py")
     if exists(path):
         commands = pathwithargs(path, args)
         call(commands)
     else:
         #command not found in devilry pulgins, must be a local command in .devilry folder
-        path = join(environ['HOME'], '.devilry', 'plugins', command+'.py')
+        path = join(environ['HOME'], '.devilry', 'plugins', command + '.py')
         if exists(path):
             commands = pathwithargs(path, args)
             call(commands)
@@ -141,89 +138,90 @@ def findconffolder():
     raise ValueError(".devirly not found")
 
 
-#TODO
-def restful_setup():
-    restful_factory = RestfulFactory("http://localhost:8000/")
-    SimplifiedNode = restful_factory.make("administrator/restfulsimplifiednode/")
-    SimplifiedSubject = restful_factory.make("administrator/restfulsimplifiedsubject/")
-    SimplifiedPeriod = restful_factory.make("administrator/restfulsimplifiedperiod/")
-    SimplifiedAssignment = restful_factory.make("administrator/restfulsimplifiedassignment/")
-    return [SimplifiedNode, SimplifiedSubject, SimplifiedPeriod, SimplifiedAssignment]
-
-
-#TODO
-def create_folder(node, parent_path, folder_name):
+def create_folder(path):
     """
     :param folder_name: A string representing the node attribute which the folder should be named after
     """
-    path = join(parent_path, str(node[folder_name]))
     if not exists(path):
         logging.debug('INFO: Creating {}'.format(path))
         mkdir(path)
     return path
 
 
-class Session(object):
+def get_config():
+    """Return a ConfigParser object that can be used immediately"""
+    config = ConfigParser()
+    config.read(join(findconffolder(), 'config'))
+    return config
 
-    class LoginError(Exception):
-        """Raised on login error"""
 
-    @classmethod
-    def get_session_cookie(self):
-        if exists(join(findconffolder(), 'session')):
-            session = open(join(findconffolder(), 'session'), 'r')
-            cookieout = session.read()
-            session.close()
-            return cookieout
-        else:
-            return self.login()
+def get_metadata():
+    """Try to fetch .devilry/metadata. Raise an exception if it
+    doesn't exist"""
 
-    @classmethod
-    def login(self):
+    conf_dir = findconffolder()
 
-        confdir = findconffolder()
-        conf = ConfigParser.ConfigParser()
-        conf.read(join(confdir, 'config'))
+    metadata_f = open(join(conf_dir, 'metadata'), 'r')
+    metadata = eval(metadata_f.read())
+    metadata_f.close()
+    return metadata
 
-        # make the url and credentials
-        url = join(conf.get('URL', 'url'), 'authenticate/login')
 
-        username = raw_input("Username: ")
-        password = getpass("Password: ")
+def save_metadata(metadata):
+    conf_dir = findconffolder()
+    metadata_f = open(join(conf_dir, 'metadata'), 'w')
+    metadata_f.write(str(metadata))
+    metadata_f.close()
 
-        creds = urllib.urlencode({'username': username, 'password': password})
 
-        parsed_url = urlparse(url)
-        host = parsed_url.netloc
+def get_metadata_from_path(path, metadata=None):
+    """Given a path, find the the context the path belongs to, and
+    the metadata for that level.
 
-        if parsed_url.scheme == "https":
-            conn = httplib.HTTPSConnection(host)
-        else:
-            conn = httplib.HTTPConnection(host)
+    :return: (context, metadata)
+    """
+    root_dir = dirname(findconffolder())
+    split_path = path.replace(root_dir, '').split(sep)
 
-        response = conn.request('POST', parsed_url.path, creds, {'Content-type': "application/x-www-form-urlencoded"})
+    # might be a plugin already fetched the metadata, so no need to
+    # fetch it again
+    if not metadata:
+        metadata = get_metadata()
 
-        response = conn.getresponse()
-        if response.status > 400:
-            raise self.LoginError("Login to %s failed with the following message: %s %s (%s)" % (
-                    url, response.status, response.reason, response.msg))
+    # alias split_path to something shorter
+    p = split_path
+    d = len(split_path)  # d for depth
 
-        response.read()
-        setcookie = response.getheader('Set-Cookie')
-        if setcookie == None:
-            raise self.LoginError("Login failed. This is usually because of "
-                             "invalid username/password, but might be "
-                             "caused by wrong login urlprefix or server errors. "
-                             "Technical error message: Login urlprefix did not "
-                             "respond with any authorization cookies.")
+    if d == 1:
+        return metadata
+    elif d == 2:
+        return metadata[p[1]]
+    elif d == 3:
+        return metadata[p[1]][p[2]]
+    elif d == 4:
+        return metadata[p[1]][p[2]][p[3]]
+    elif d == 5:
+        return metadata[p[1]][p[2]][p[3]][p[4]]
+    elif d == 6:
+        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]]
+    elif d == 7:
+        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]]
+    else:
+        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]][p[7]]
 
-        cookie = SimpleCookie()
-        cookie.load(setcookie)
-        cookieout = cookie.output().replace('Set-Cookie: ', '')
-        session = open(join(confdir, 'session'), 'w')
-        session.write(cookieout)
-        session.close()
 
-        os.chmod(join(confdir, 'session'), stat.S_IRUSR | stat.S_IWUSR)
+def deadline_format(deadline):
+    deadline = deadline.replace(':', '')
+    deadline = deadline.replace('-', '')
+    deadline = deadline.replace(' ', '_')
+    deadline = deadline[:-2]
+    return deadline
 
-        return cookieout
+
+def is_late(delivery):
+    """
+    Check if delivery is delivered after the deadline
+    """
+    deadline_time = delivery['deadline__deadline']
+    delivery_time = delivery['time_of_delivery']
+    return delivery_time > deadline_time

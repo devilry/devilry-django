@@ -233,20 +233,30 @@ header {
  * SearchWidget
  *
  */
-.searchfield {
+.widget-searchwidget .widget-searchfield {
   font-size: 18px;
   line-height: normal !important;
   height: auto !important;
-  padding: 7px !important;
-  border-radius: 15px; }
+  padding: 4px 15px 4px 15px !important;
+  border-radius: 20px;
+  width: 600px !important; }
 
-.search-popup-panel {
-  box-shadow: 0 3px 8px #888; }
-
-.searchresults-row > .links {
-  float: right;
-  font-size: 12px;
-  font-weight: bold; }
+.multisearchresults {
+  width: 570px; }
+  .multisearchresults > .x-panel-body {
+    background-color: #fff;
+    border: 3px solid #111;
+    border-radius: 0 0 14px 6px; }
+    .multisearchresults > .x-panel-body .searchresults {
+      margin: 20px; }
+      .multisearchresults > .x-panel-body .searchresults .searchresultitem {
+        padding: 4px;
+        border: 4px solid transparent; }
+        .multisearchresults > .x-panel-body .searchresults .searchresultitem:hover {
+          border: 4px solid #77b300;
+          background-color: #f7ffe5; }
+      .multisearchresults > .x-panel-body .searchresults .searchresultitem-even {
+        background-color: #f8f8f8; }
 
 .searchwidget-help {
   padding: 4px 15px 15px 15px !important;
@@ -366,17 +376,66 @@ a.warning-button {
  *
  */
 /* .x-layer are floating ExtJS items */
-#main .unimportant .x-layer .important {
-  font-size: 0.9em;
+.unimportant {
+  font-size: 0.8em;
   color: #444; }
 
-#main .important, .x-layer .important {
+.important {
   font-size: 1.1em;
   font-weight: bold;
   color: #111; }
 
 span.error {
   color: #a00; }
+
+table.verticalinfotable {
+  border-collapse: collapse;
+  border: 1px solid #D4D2CE; }
+  table.verticalinfotable thead th {
+    text-align: left;
+    font-weight: bold;
+    font-style: normal;
+    /*background-color: #ECEBE9;*/ }
+  table.verticalinfotable th {
+    text-align: right;
+    font-weight: normal;
+    font-style: italic;
+    background-color: #ECEBE9; }
+  table.verticalinfotable td, table.verticalinfotable th {
+    padding: 2px 6px;
+    border: 1px solid #D4D2CE; }
+  table.verticalinfotable td {
+    background-color: #fff; }
+
+div.warning {
+  background-color: #cc4400;
+  color: #ffeee5;
+  border: 2px solid #333;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 20px 0 20px 0; }
+
+.widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
+  padding: 20px; }
+  .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
+    margin: 0 auto 20px auto; }
+.widget-staticfeedbackinfo .no-feedback, .widget-staticfeedbackinfo .no-feedback-editable {
+  padding: 40px;
+  text-align: center;
+  font-size: 2.0em; }
+.widget-staticfeedbackinfo .no-feedback-editable {
+  cursor: pointer;
+  border: 4px solid transparent; }
+  .widget-staticfeedbackinfo .no-feedback-editable:hover {
+    border: 4px solid #77b300;
+    background-color: #f7ffe5; }
+
+.treeheader .level1 {
+  font-size: 1.6em; }
+.treeheader .level2 {
+  font-size: 1.4em; }
+.treeheader .level3 {
+  font-size: 1.2em; }
 
 /**
  *

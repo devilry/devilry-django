@@ -1,7 +1,10 @@
-from django.views.generic import TemplateView
+from django.views.generic import (TemplateView, View)
+from django.shortcuts import render
 
 import restful
 
+from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
+                     RestfulSimplifiedStaticFeedback, RestfulSimplifiedAssignment)
 
 class MainView(TemplateView):
     template_name='student/main.django.html'
@@ -15,3 +18,14 @@ class MainView(TemplateView):
         #print restful.RestfulSimplifiedAssignment._meta.simplified._meta.model.objects.all()
         
         return context
+
+class AddDeliveryView(View):
+    def get(self, request, deliveryid):
+        return render(request, 'student/add-delivery.django.html',
+                      {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
+                       'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
+                       'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
+                       'deadlineid': deliveryid,
+                       'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
+                      )
+                      
