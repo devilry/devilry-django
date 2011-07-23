@@ -9,7 +9,7 @@
 {% block headextra %}
 <script>
     {% for RestfulCls in restfulapi.values %}
-        {{ RestfulCls|extjs_combobox_model }};
+        {{ RestfulCls|extjs_combobox_model:"Search" }};
         {{ RestfulCls|extjs_store:"Search" }};
     {% endfor %}
 

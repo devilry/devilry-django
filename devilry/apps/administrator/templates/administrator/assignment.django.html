@@ -7,10 +7,14 @@
 {{ block.super }}
 
 <script>
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }}
+
     Ext.require('devilry.administrator.assignment.PrettyView');
     Ext.onReady(function() {
         Ext.create('devilry.administrator.assignment.PrettyView', {
-            renderTo: 'prettyviewpanel'
+            renderTo: 'prettyviewpanel',
+            modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+            objectid: {{ objectid }}
         });
     });
 </script>

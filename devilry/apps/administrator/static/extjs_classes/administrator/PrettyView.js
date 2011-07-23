@@ -5,19 +5,31 @@ Ext.define('devilry.administrator.PrettyView', {
     config: {
         /**
          * @cfg
-         * URL of the RESTful interface for the view.
+         * The name of the ``Ext.data.Model`` to present in the body. (Required).
          */
-        restfulUrl: undefined,
+        modelname: undefined,
 
         /**
          * @cfg
-         * List of buttons for related actions.
+         * Unique ID of the object to load from the model. (Required).
+         */
+        objectid: undefined,
+
+        /**
+         * @cfg
+         * A ``Ext.XTemplate`` object for the body of this view. (Required).
+         */
+        bodyTpl: undefined,
+
+        /**
+         * @cfg
+         * Optional list of buttons for related actions.
          */
         relatedButtons: undefined,
 
         /**
          * @cfg
-         * List menuitems for plugin actions.
+         * Optional list of menuitems for plugin actions.
          */
         //pluginItems: undefined
     },
@@ -31,6 +43,7 @@ Ext.define('devilry.administrator.PrettyView', {
         var tbar = ['->', {
             xtype: 'button',
             text: 'Delete',
+            scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -38,6 +51,7 @@ Ext.define('devilry.administrator.PrettyView', {
         }, {
             xtype: 'button',
             text: 'Edit',
+            scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.onEdit
@@ -54,10 +68,23 @@ Ext.define('devilry.administrator.PrettyView', {
 
         Ext.apply(this, {
             tbar: tbar,
-            items: [{
-            }],
         });
         this.callParent(arguments);
+
+        var model = Ext.ModelManager.getModel(this.modelname);
+        model.load(this.objectid, {
+            scope: this,
+            success: this.onModelLoadSuccess,
+            failure: this.onModelLoadFailure
+        });
+    },
+
+    onModelLoadSuccess: function(record, operation) {
+        this.update(this.bodyTpl.apply(record.data));
+    },
+
+    onModelLoadFailure: function(record, operation) {
+        throw 'Failed to load the model';
     },
 
     onEdit: function() {

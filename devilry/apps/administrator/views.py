@@ -36,6 +36,6 @@ class RestfulSimplifiedView(View):
                       context)
 
     @classmethod
-    def as_url(cls, prefix, idargname, template_name):
-        return url(r'^{0}/(?P<{1}>\d+)$'.format(prefix, idargname),
+    def as_url(cls, prefix, template_name):
+        return url(r'^{0}/(?P<objectid>\d+)$'.format(prefix),
                            login_required(cls.as_view(template_name=template_name)))
