@@ -15,7 +15,7 @@ urlpatterns = patterns('devilry.apps.administrator',
                        editorviews.AssignmentEditor.create_url(),
                        RestfulSimplifiedView.as_url('assignmentgroup', 'assignmentgroupid',
                                                     'administrator/assignmentgroupview.django.html'),
-                       RestfulSimplifiedView.as_url('assignment-better', 'assignmentid',
+                       RestfulSimplifiedView.as_url('assignment', 'assignmentid',
                                                     'administrator/assignment.django.html'),
                       )
 urlpatterns += administrator_restful

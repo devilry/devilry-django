@@ -1,23 +1,21 @@
-{% extends "administrator/base.django.html" %}
+{% extends "administrator/single-base.django.html" %}
 {% load extjs %}
 
+{% block title %}Assignment - {{ block.super }}{% endblock %}
 
 {% block headextra %}
-
 <script>
-    //Ext.require('devilry.administrator.AssignmentOverview');
-    Ext.onReady(function() {
-        //Ext.create('devilry.administrator.AssignmentOverview', {
+    //Ext.require('devilry.administrator.AssignmentPrettyView');
+    //Ext.onReady(function() {
+        //Ext.create('devilry.administrator.AssignmentPrettyView', {
+            
         //});
-    });
-
+    //});
 </script>
-
 {% endblock %}
 
-
 {% block main %}
+{{ block.super }}
 
-<div id="maincontent"></div>
-
+<div class="prettyviewpanel"></div>
 {% endblock %}
