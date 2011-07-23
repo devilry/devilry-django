@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from restful import administrator_restful
-from views import MainView, AssignmentGroupView
+from views import MainView, RestfulSimplifiedView
 import editorviews
 
 urlpatterns = patterns('devilry.apps.administrator',
@@ -13,7 +13,9 @@ urlpatterns = patterns('devilry.apps.administrator',
                        editorviews.SubjectEditor.create_url(),
                        editorviews.PeriodEditor.create_url(),
                        editorviews.AssignmentEditor.create_url(),
-                       url(r'^assignmentgroup/(?P<assignmentgroupid>\d+)$',
-                           login_required(AssignmentGroupView.as_view()))
+                       RestfulSimplifiedView.as_url('assignmentgroup', 'assignmentgroupid',
+                                                    'administrator/assignmentgroupview.django.html'),
+                       RestfulSimplifiedView.as_url('assignment-better', 'assignmentid',
+                                                    'administrator/assignment.django.html'),
                       )
 urlpatterns += administrator_restful
