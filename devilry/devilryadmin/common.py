@@ -172,5 +172,8 @@ class DevilryAdmArgumentParser(ArgumentParser):
     :func:`getprogname` and description to :func:`getcurrenthelp`. """
     def __init__(self, *args, **kwargs):
         kwargs['prog'] = getprogname()
-        kwargs['description'] = getcurrenthelp()
+        if 'description' in kwargs:
+            kwargs['description'] = kwargs['description'].format(currenthelp=getcurrenthelp())
+        else:
+            kwargs['description'] = getcurrenthelp()
         super(DevilryAdmArgumentParser, self).__init__(*args, **kwargs)

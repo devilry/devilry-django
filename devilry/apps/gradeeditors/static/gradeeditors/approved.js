@@ -21,14 +21,14 @@
     buttons: [{
         text: 'Cancel',
         handler: function() {
-            var staticfeedbackeditableinfo = this.up('staticfeedbackeditableinfo');
-            staticfeedbackeditableinfo.loadFeedbackViewer();
+            var staticfeedbackeditor = this.up('staticfeedbackeditor');
+            staticfeedbackeditor.loadFeedbackViewer();
         }
     }, {
         text: 'Publish feedback',
         handler: function() {
             if (this.up('form').getForm().isValid()) {
-                var staticfeedbackeditableinfo = this.up('staticfeedbackeditableinfo');
+                var staticfeedbackeditor = this.up('staticfeedbackeditor');
 
                 var approved = Ext.getCmp('approved-checkbox').getValue();
                 var feedbacktext = Ext.getCmp('feedback-text').getValue();
@@ -37,15 +37,15 @@
                     grade: approved? "Approved": "Not approved",
                     is_passing_grade: approved,
                     points: approved? 1: 0,
-                    rendered_view: Ext.String.format('<pre>{0}</pre>', feedbacktext),
-                    delivery: staticfeedbackeditableinfo.deliveryid
+                    rendered_view: Ext.String.format('{0}', feedbacktext),
+                    delivery: staticfeedbackeditor.deliveryid
                 });
 
                 staticfeedback.save({
                     success: function(response) {
                         console.log("Success");
                         console.log(response.data);
-                        staticfeedbackeditableinfo.loadFeedbackViewer()
+                        staticfeedbackeditor.loadFeedbackViewer()
                     },
                     failure: function(response) {
                         console.log("Error!");

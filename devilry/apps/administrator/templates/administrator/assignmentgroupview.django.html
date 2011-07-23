@@ -1,4 +1,4 @@
-{% extends "examiner/base.django.html" %}
+{% extends "administrator/base.django.html" %}
 {% load extjs %}
 
 
@@ -25,11 +25,11 @@
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'maincontent',
             assignmentgroupid: {{ assignmentgroupid }},
-            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup'),
-            deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
-            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedDeadlineStore'),
-            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedFileMetaStore'),
-            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore'),
+            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
+            deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
+            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeadlineStore'),
+            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
+            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
             canExamine: true
         });
     });
