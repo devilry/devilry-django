@@ -1,3 +1,8 @@
+/** SearchWidget used in every page in the entire administrator interface.
+ *
+ * Enables users to search for everything (like the dashboard) or just within
+ * the current item.
+ * */
 Ext.define('devilry.administrator.AdministratorSearchWidget', {
     extend: 'devilry.extjshelpers.searchwidget.SearchWidget',
     requires: [
