@@ -10,13 +10,19 @@
 <script>
     {% for RestfulCls in restfulclasses %}
         {{ RestfulCls|extjs_combobox_model }};
-        {{ RestfulCls|extjs_store }};
+        {{ RestfulCls|extjs_store:"Search" }};
     {% endfor %}
 
     Ext.require('devilry.administrator.AdministratorSearchWidget');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
-            renderTo: 'searchwidget-container'
+            renderTo: 'searchwidget-container',
+            nodeRowTpl: '{{ RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            subjectRowTpl: '{{ RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            periodRowTpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            assignmentRowTpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            assignmentgroupRowTpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            deliveryRowTpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
         });
         searchwidget.loadInitialValues();
         {% block post-searchwidget-javascript %}{% endblock %}

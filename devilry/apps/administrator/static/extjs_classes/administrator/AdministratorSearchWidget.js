@@ -9,12 +9,12 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             searchResultItems: [{
                 xtype: 'searchresults',
                 title: 'Nodes',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedNodeStore'),
+                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedNodeStoreSearch'),
                 filterconfig: {
                     type: 'node'
                 },
                 resultitemConfig: {
-                    tpl: '{id}',
+                    tpl: this.nodeRowTpl,
                     defaultbutton: {
                         text: 'Edit',
                         clickLinkTpl: 'editors/node/{id}'
@@ -23,12 +23,12 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Subjects',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedSubjectStore'),
+                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedSubjectStoreSearch'),
                 filterconfig: {
                     type: 'subject'
                 },
                 resultitemConfig: {
-                    tpl: '{id}',
+                    tpl: this.subjectRowTpl,
                     defaultbutton: {
                         text: 'Edit',
                         clickLinkTpl: 'editors/subject/{id}'
@@ -37,12 +37,12 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Periods',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedPeriodStore'),
+                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedPeriodStoreSearch'),
                 filterconfig: {
                     type: 'period'
                 },
                 resultitemConfig: {
-                    tpl: '{id}',
+                    tpl: this.periodRowTpl,
                     defaultbutton: {
                         text: 'Edit',
                         clickLinkTpl: 'editors/period/{id}'
@@ -51,10 +51,10 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedAssignmentStore'),
+                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedAssignmentStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
                 resultitemConfig: {
-                    tpl: '{id}',
+                    tpl: this.assignmentRowTpl,
                     defaultbutton: {
                         text: 'Edit',
                         clickLinkTpl: 'editors/assignment/{id}'
@@ -67,10 +67,10 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupStore'),
+                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedAssignmentGroupStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
-                    tpl: '{id}',
+                    tpl: this.assignmentgroupRowTpl,
                     defaultbutton: {
                         text: 'Edit',
                         clickLinkTpl: 'assignmentgroup/{id}'
@@ -79,10 +79,10 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
             }, {
                 xtype: 'searchresults',
                 title: 'Delivery',
-                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeliveryStore'),
+                store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeliveryStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
-                    tpl: '{id}'
+                    tpl: this.deliveryRowTpl
                 }
             }]
         });
