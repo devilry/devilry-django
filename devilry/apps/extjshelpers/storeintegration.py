@@ -1,16 +1,20 @@
 from modelintegration import get_extjs_modelname, restfulcls_to_extjsmodel
 
-def get_extjs_storeid(restfulcls):
+def get_extjs_storeid(restfulcls, storeidsuffix=''):
     """
     Get the ExtJS store id for the given restful class.
     Generated from the store id and class name of
     ``restfulcls._meta.simplified``
+
+    :param storeidsuffix: This string added to the end of the id.
     """
     simplified = restfulcls._meta.simplified
-    return '{module}.{name}Store'.format(module=simplified.__module__, name=simplified.__name__)
+    return '{module}.{name}Store{storeidsuffix}'.format(module=simplified.__module__,
+                                                        name=simplified.__name__,
+                                                        storeidsuffix=storeidsuffix)
 
 def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
-                            pagesize=None):
+                             storeidsuffix=''):
     """
     Create an extjs store from the given restful class.
 
@@ -20,22 +24,20 @@ def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
         Uses :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel` with
         ``modelkwargs`` as arguments.
     :param modelkwargs: See ``integrateModel``.
-    :param pagesize: An integer which is set as the pageSize parameter of the extjs store.
+    :param storeidsuffix:
+        Forwarded to func:`get_extjs_storeid` to generate the
+        ``id`` of the store.
     """
     if integrateModel:
         model = restfulcls_to_extjsmodel(restfulcls, **modelkwargs)
     else:
         model = "'{modelname}'".format(modelname=get_extjs_modelname(restfulcls))
-    if pagesize:
-        jspagesize = ' pageSize: {0},'.format(pagesize)
-    else:
-        jspagesize = ''
 
 
     return """Ext.create('Ext.data.Store', {{
             model: {model},
             id: '{id}',
             remoteFilter: true,
-            remoteSort: true,{jspagesize}
+            remoteSort: true,
             autoSync: true
-        }})""".format(model=model, id=get_extjs_storeid(restfulcls), jspagesize=jspagesize)
+        }})""".format(model=model, id=get_extjs_storeid(restfulcls, storeidsuffix))
