@@ -26,12 +26,13 @@ def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
     :param modelkwargs: See ``integrateModel``.
     :param storeidsuffix:
         Forwarded to func:`get_extjs_storeid` to generate the
-        ``id`` of the store.
+        ``id`` of the store and to func:`devilry.extjshelpers.modelintegration.get_extjs_modelname`
+        (as modelnamesuffix) to generate the model name.
     """
     if integrateModel:
         model = restfulcls_to_extjsmodel(restfulcls, **modelkwargs)
     else:
-        model = "'{modelname}'".format(modelname=get_extjs_modelname(restfulcls))
+        model = "'{modelname}'".format(modelname=get_extjs_modelname(restfulcls, storeidsuffix))
 
 
     return """Ext.create('Ext.data.Store', {{
