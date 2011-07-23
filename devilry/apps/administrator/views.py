@@ -5,15 +5,20 @@ from django.shortcuts import render
 
 import restful
 
+def add_restfulapi_to_context(context):
+    restfuldct = {}
+    for restclsname in restful.__all__:
+        restfuldct[restclsname] = getattr(restful, restclsname)
+    context['restfulapi'] = restfuldct
+
+
 
 class MainView(TemplateView):
     template_name='administrator/main.django.html'
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
-        for restclsname in restful.__all__:
-            context[restclsname] = getattr(restful, restclsname)
-        context['restfulclasses'] = [getattr(restful, restclsname) for restclsname in restful.__all__]
+        add_restfulapi_to_context(context)
         return context
 
 

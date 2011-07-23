@@ -3,6 +3,7 @@
 {% load i18n %}
 
 {% block headextra %}
+{{ block.super }}
 
 <script>
     {{ RestfulSimplifiedClass|extjs_model:"pointfields" }}
@@ -26,5 +27,6 @@
 
 
 {% block main %}
+{{ block.super }}
 <div id='editorcontainer'></div>
 {% endblock %}
