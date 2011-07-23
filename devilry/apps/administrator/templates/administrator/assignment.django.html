@@ -4,18 +4,20 @@
 {% block title %}Assignment - {{ block.super }}{% endblock %}
 
 {% block headextra %}
+{{ block.super }}
+
 <script>
-    //Ext.require('devilry.administrator.AssignmentPrettyView');
-    //Ext.onReady(function() {
-        //Ext.create('devilry.administrator.AssignmentPrettyView', {
-            
-        //});
-    //});
+    Ext.require('devilry.administrator.assignment.PrettyView');
+    Ext.onReady(function() {
+        Ext.create('devilry.administrator.assignment.PrettyView', {
+            renderTo: 'prettyviewpanel'
+        });
+    });
 </script>
 {% endblock %}
 
 {% block main %}
 {{ block.super }}
 
-<div class="prettyviewpanel"></div>
+<div id="prettyviewpanel"></div>
 {% endblock %}
