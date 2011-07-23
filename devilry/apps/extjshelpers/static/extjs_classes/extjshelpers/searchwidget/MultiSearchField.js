@@ -6,6 +6,16 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
     extend: 'Ext.form.field.Text',
     alias: 'widget.multisearchfield',
 
+    config: {
+        /**
+         * @cfg
+         * Delay before a search is performed in milliseconds. Defaults to 300.
+         * The search is not performed if the user changes the input text before
+         * ``searchdelay`` is over.
+         */
+        searchdelay: 300
+    },
+
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
@@ -15,19 +25,40 @@ Ext.define('devilry.extjshelpers.searchwidget.MultiSearchField', {
 
             listeners: {
                 specialKey: function(field, e) {
-                    if(e.getKey() == e.ENTER) {
-                        me.ownerCt.search(me.getValue());
-                    } else if(e.getKey() == e.ESC) {
-                        me.ownerCt.hideResults();
-                    }
+                    me.handleSpecialKey(e);
                 },
 
-                /* TODO: Wait for 0.2 sec or something before searhing on change. */
                 change: function(field, newValue, oldValue) {
-                    me.ownerCt.search(newValue);
+                    me.handleChange(newValue);
                 }
             }
         });
         this.callParent(arguments);
+    },
+
+    searchIfLatest: function(value) {
+        var currentValue = this.getValue();
+        if(value == currentValue) {
+            this.ownerCt.search(value);
+        }
+    },
+
+    handleSpecialKey: function(e) {
+        if(e.getKey() == e.ENTER) {
+            this.ownerCt.search(this.getValue());
+        } else if(e.getKey() == e.ESC) {
+            this.ownerCt.hideResults();
+        }
+    },
+
+    handleChange: function(newValue) {
+        if(Ext.String.trim(newValue) == "") {
+            this.ownerCt.hideResults();
+        } else {
+            var me = this;
+            Ext.Function.defer(function() {
+                me.searchIfLatest(newValue);
+            }, this.searchdelay);
+        }
     }
 });

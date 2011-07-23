@@ -10,9 +10,9 @@
         {{ RestfulCls|extjs_combobox_model }}
     {% endfor %}
 
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
     Ext.onReady(function() {
@@ -32,34 +32,44 @@
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
-                        text: 'Create feedback',
-                        clickLinkTpl: 'create-feedback/{id}'
-                    },
-                    menuitems: [{
-                        text: 'View delivery'
-                    }]
+                        text: 'View',
+                        clickLinkTpl: 'assignmentgroup/{deadline__assignment_group}?deliveryid={id}'
+                    }
                 }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
+                filterconfig: {
+                    type: 'group',
+                    shortcuts: {
+                        assignment: 'parentnode'
+                    }
+                },
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
                         text: 'Show deliveries',
                         clickFilter: 'type:delivery group:{id}'
-                    },
+                    }
                 }
             }, {
                 xtype: 'searchresults',
                 title: 'Assignments',
                 store: assignmentstore,
+                filterconfig: {
+                    type: 'assignment'
+                },
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
+                        text: 'Show groups',
+                        clickFilter: 'type:group assignment:{id}'
+                    },
+                    menuitems: [{
                         text: 'Show deliveries',
                         clickFilter: 'type:delivery assignment:{id}'
-                    },
+                    }]
                 }
             }]
         });
