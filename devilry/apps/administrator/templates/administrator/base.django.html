@@ -5,3 +5,25 @@
 {% block title %}{% trans "Devilry administrator interface" %}{% endblock %}
 
 {% block nav-class %}administrator{% endblock %}
+
+{% block headextra %}
+<script>
+    {% for RestfulCls in restfulclasses %}
+        {{ RestfulCls|extjs_combobox_model }};
+        {{ RestfulCls|extjs_store }};
+    {% endfor %}
+
+    Ext.require('devilry.administrator.AdministratorSearchWidget');
+    Ext.onReady(function() {
+        var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
+            renderTo: 'searchwidget-container'
+        });
+        searchwidget.loadInitialValues();
+        {% block post-searchwidget-javascript %}{% endblock %}
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div id='searchwidget-container'></div>
+{% endblock %}
