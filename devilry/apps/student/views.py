@@ -45,11 +45,11 @@ class FileUploadView(View):
     #                    'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
     #                   )
 
-    def post(self, request, deliveryid):
-        print "#", deliveryid, "#"
+    def post(self, request, deadlineid):
+        print "#", deadlineid, "#"
         print "#", request.user, "#"
 
-        deadline_obj = get_object_or_404(Deadline, id=deliveryid)
+        deadline_obj = get_object_or_404(Deadline, id=deadlineid)
         assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
         logged_in_user = request.user
         candidate = get_object_or_404(Candidate, assignment_group=assignment_group_obj)
