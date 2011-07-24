@@ -775,15 +775,27 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
-
-        # We know secondStud hasn't signed up for firstsem.inf101.
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.read(self.secondStud, self.inf101_firstsem_a1_g1.id)
 
+    def test_create(self):
+        kw = dict(
+                parentnode = self.inf101_firstsem_a1_g1.parentnode)
+
+        newpk = SimplifiedAssignmentGroup.create(self.admin1, **kw)
+        create_res = models.AssignmentGroup.objects.get(pk=newpk)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'Test')
+        self.assertEquals(create_res.parentnode,
+                self.inf101_firstsem_a1_g1.parentnode)
+
+    def test_update(self):
+        #TODO
+        pass
+
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101.firstsem:admin(testadmin)')
-        SimplifiedAssignmentGroup.delete(self.testadmin, self.inf101_firstsem_a1_g1.id)
-
+        # this node has children and should raise PermissionDenied
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.delete(self.testadmin,
                     self.inf101_firstsem_a1_g1.id)
