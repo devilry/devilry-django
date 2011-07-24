@@ -13,7 +13,10 @@
 Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.searchresults',
-    requires: ['devilry.extjshelpers.searchwidget.SearchResultItem'],
+    requires: [
+        'devilry.extjshelpers.searchwidget.SearchResultItem',
+        'devilry.extjshelpers.Pager'
+    ],
     cls: 'searchresults',
     hidden: true,
     config: {
@@ -49,6 +52,7 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
 
     constructor: function(config) {
         this.callParent([config]);
+        this.initConfig(config);
         var filterconfig = {
             type: undefined,
             shortcuts: new Object()
@@ -57,39 +61,35 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             Ext.apply(filterconfig, this.filterconfig);
         }
         this.filterconfig = filterconfig;
-        this.pageSwitcherLabelTpl = Ext.create('Ext.XTemplate', '{from}-{to} of {total}');
         return this;
     },
 
     initComponent: function() {
         var me = this;
+
+        this.showmorebutton = Ext.create('Ext.button.Button', {
+            text: 'Show more',
+            listeners: {
+                click: function() {
+                    me.getSearchWidget().modifySearch({
+                        type: me.filterconfig.type
+                    });
+                }
+            }
+        });
+
         Ext.apply(this, {
             frame: false,
             hideHeaders: true,
             minButtonWidth: 0,
 
-            fbar: [{
-                xtype: 'button',
-                text: '<',
-                id: this.id + '-pageswitch-prevbtn',
-                listeners: {
-                    click: function() {
-                        me.store.previousPage();
-                    }
-                }
+            tbar: [this.showmorebutton, {
+                xtype: 'box',
+                flex: 1
             }, {
-                xtype: 'component',
-                html: 'something',
-                id: this.id + '-pageswitch-label'
-            }, {
-                xtype: 'button',
-                text: '>',
-                id: this.id + '-pageswitch-nextbtn',
-                listeners: {
-                    click: function() {
-                        me.store.nextPage();
-                    }
-                }
+                xtype: 'devilrypager',
+                store: this.store,
+                width: 140
             }]
         });
         this.callParent(arguments);
@@ -97,40 +97,14 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
         this.store.addListener('load', function(store, records, successful) {
             if(successful) {
                 me.handleStoreLoadSuccess(records);
-                me.updatePageSwitcher();
             } else {
                 me.handleStoreLoadFailure();
             }
         });
     },
 
-    updatePageSwitcher: function() {
-        var from = this.store.pageSize * (this.store.currentPage-1);
-        var visibleOnCurrentPage = this.store.getCount();
-        var label = this.pageSwitcherLabelTpl.apply({
-            total: this.store.getTotalCount(),
-            from: from,
-            to: from + visibleOnCurrentPage
-        });
-        this.getPageSwitcherLabel().update(label);
-
-        this.getPreviousPageButton().hide();
-        if(from > 0) {
-            this.getPreviousPageButton().show();
-        }
-        this.getNextPageButton().hide();
-        if(visibleOnCurrentPage == this.store.pageSize && (from+visibleOnCurrentPage) != this.store.getTotalCount()) {
-            this.getNextPageButton().show();
-        }
-    },
-    getPageSwitcherLabel: function() {
-        return Ext.getCmp(this.id + '-pageswitch-label');
-    },
-    getPreviousPageButton: function() {
-        return Ext.getCmp(this.id + '-pageswitch-prevbtn');
-    },
-    getNextPageButton: function() {
-        return Ext.getCmp(this.id + '-pageswitch-nextbtn');
+    getSearchWidget: function() {
+        return this.up('multisearchresults').getSearchWidget();
     },
 
     handleStoreLoadFailure: function() {
@@ -162,7 +136,12 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
             return;
         }
         this.store.proxy.extraParams = parsedSearch.applyToExtraParams(this.store.proxy.extraParams, this.filterconfig.shortcuts);
-        //console.log(this.store.proxy.extraParams);
+        parsedSearch.applyPageSizeToStore(this.store);
+        if(parsedSearch.type) {
+            this.enableStandaloneMode();
+        } else {
+            this.enableSharingMode();
+        }
         this.loadStore();
     },
 
@@ -179,5 +158,23 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchResults', {
                 me.hide();
             }
         });
+    },
+
+    /**
+     * @private
+     *
+     * Used when this SearchResults is the only one beeing displayed.
+     */
+    enableStandaloneMode: function() {
+        this.showmorebutton.hide();
+    },
+
+    /**
+     * @private
+     *
+     * Used when this SearchResults is beeing displayed in a box with many other SearchResults.
+     */
+    enableSharingMode: function() {
+        this.showmorebutton.show();
     }
 });

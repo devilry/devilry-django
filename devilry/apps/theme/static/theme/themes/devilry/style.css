@@ -233,12 +233,13 @@ header {
  * SearchWidget
  *
  */
-.searchfield {
+.widget-searchwidget .widget-searchfield {
   font-size: 18px;
   line-height: normal !important;
   height: auto !important;
-  padding: 7px !important;
-  border-radius: 15px; }
+  padding: 4px 15px 4px 15px !important;
+  border-radius: 20px;
+  width: 600px !important; }
 
 .multisearchresults {
   width: 570px; }
@@ -249,7 +250,7 @@ header {
     .multisearchresults > .x-panel-body .searchresults {
       margin: 20px; }
       .multisearchresults > .x-panel-body .searchresults .searchresultitem {
-        padding: 10px;
+        padding: 4px;
         border: 4px solid transparent; }
         .multisearchresults > .x-panel-body .searchresults .searchresultitem:hover {
           border: 4px solid #77b300;
@@ -375,11 +376,11 @@ a.warning-button {
  *
  */
 /* .x-layer are floating ExtJS items */
-#main .unimportant .x-layer .important {
-  font-size: 0.9em;
+.unimportant {
+  font-size: 0.8em;
   color: #444; }
 
-#main .important, .x-layer .important {
+.important {
   font-size: 1.1em;
   font-weight: bold;
   color: #111; }
@@ -406,8 +407,28 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
-.widget-staticfeedbackinfo table.verticalinfotable {
-  float: right; }
+div.warning {
+  background-color: #cc4400;
+  color: #ffeee5;
+  border: 2px solid #333;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 20px 0 20px 0; }
+
+.widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
+  padding: 20px; }
+  .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
+    margin: 0 auto 20px auto; }
+.widget-staticfeedbackinfo .no-feedback, .widget-staticfeedbackinfo .no-feedback-editable {
+  padding: 40px;
+  text-align: center;
+  font-size: 2.0em; }
+.widget-staticfeedbackinfo .no-feedback-editable {
+  cursor: pointer;
+  border: 4px solid transparent; }
+  .widget-staticfeedbackinfo .no-feedback-editable:hover {
+    border: 4px solid #77b300;
+    background-color: #f7ffe5; }
 
 .treeheader .level1 {
   font-size: 1.6em; }

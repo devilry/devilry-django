@@ -24,12 +24,16 @@ parser.add_argument('-e', '--numexaminers', type=int, default=1,
                     help='Number of examiners on each assignment (defaults to 1).')
 parser.add_argument('-d', '--duckburghusers', action='store_true',
                     help='Load duckburgh users.')
+parser.add_argument("--deliverycountrange", default='0-4',
+                    help=("Number of deliveries. If it is a range separated by '-', "
+                          "a random number of deliveries in this range is used. Defaults "
+                          "to '0-4'"))
 parser.add_argument('--completionlist', action='store_true',
                    help='Print completionlist for bash completion.')
 args = parser.parse_args()
 
 if args.completionlist:
-    print "--numstudents --numexaminers --duckburghusers"
+    print "--numstudents --numexaminers --duckburghusers --deliverycountrange"
     exit(0)
 
 
@@ -49,11 +53,11 @@ scriptsdir = getscriptsdir()
 create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
 
 def create_testgroups(path, numstudents, numexaminers, subject_long_name,
-                      period_long_name, always_one_delivery, assignments):
+                      period_long_name, deliverycountrange, assignments):
     for a in assignments:
         args = [create_testgroups_cmd,
                 '{0}.{1}'.format(path, a['shortname']),
-                '--grade-plugin', a['gradeplugin'],
+                '--grade-plugin', 'fake',
                 '--num-students', str(numstudents),
                 '--num-examiners', str(numexaminers),
                 '--deadline-profile', str(a['deadlineprofile']),
@@ -64,8 +68,8 @@ def create_testgroups(path, numstudents, numexaminers, subject_long_name,
             args.extend(['--grade-maxpoints', str(a['maxpoints'])])
         if 'pointscale' in a:
             args.extend(['--pointscale', str(a['pointscale'])])
-        if always_one_delivery:
-            args.append('--always-one-delivery')
+        if deliverycountrange:
+            args.extend(['--deliverycountrange', deliverycountrange])
         #print "args: ", args
         call(append_pythonexec_to_command(args))
 
@@ -76,19 +80,15 @@ create_testgroups(path = 'duckburgh.univ:duck1100.spring01',
                   numstudents = args.numstudents, numexaminers = args.numexaminers,
                   subject_long_name = 'DUCK1100 - Getting started with python',
                   period_long_name = 'Spring year zero',
-                  always_one_delivery=True,
+                  deliverycountrange=args.deliverycountrange,
                   assignments = [
                                  {'shortname': 'week1', 'deadlineprofile': '-30', 'maxpoints': 14,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week one'},
                                  {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week two'},
                                  {'shortname': 'week3', 'deadlineprofile': 'old', 'maxpoints': 9,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week tree'},
                                  {'shortname': 'week4', 'deadlineprofile': 'recent', 'maxpoints': 9,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week tree'},
                                 ])
 
@@ -97,18 +97,15 @@ create_testgroups(path = 'duckburgh.univ:duck1080.fall01',
                   numstudents = args.numstudents, numexaminers = args.numexaminers,
                   subject_long_name = 'DUCK1080 - Making the illogical seem logical',
                   period_long_name = 'Fall year zero',
-                  always_one_delivery=True,
+                  deliverycountrange=args.deliverycountrange,
                   assignments = [
                                  {'shortname': 'week1', 'deadlineprofile': '-30', 'maxpoints': 11,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'pointscale': 10,
                                   'long_name': 'The one and only week one'},
                                  {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'pointscale': 10,
                                   'long_name': 'The one and only week two'},
                                  {'shortname': 'week3', 'deadlineprofile': 'recent', 'maxpoints': 9,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'pointscale': 10,
                                   'long_name': 'The one and only week tree'},
                                 ])
@@ -118,12 +115,24 @@ create_testgroups(path = 'duckburgh.univ:duck3580.fall01',
                   numstudents = args.numstudents, numexaminers = args.numexaminers,
                   subject_long_name = 'DUCK3580 - Making the web work',
                   period_long_name = 'Fall year zero',
-                  always_one_delivery=True,
+                  deliverycountrange=args.deliverycountrange,
                   assignments = [
                                  {'shortname': 'week1', 'deadlineprofile': '-30',
                                   'gradeplugin': 'grade_approved:approvedgrade',
                                   'long_name': 'Week one'},
                                  {'shortname': 'week2', 'deadlineprofile': 'recent',
-                                  'gradeplugin': 'grade_approved:approvedgrade',
                                   'long_name': 'Week two'}
                                 ])
+
+
+print
+print "**********************************************************"
+print "Create an example database"
+print
+print "Log in as:"
+print "     - grandma    (a superadmin)"
+print "     - examiner0  (an examiner)"
+print "     - student0   (a student)."
+print
+print "Every user has password: test"
+print "**********************************************************"

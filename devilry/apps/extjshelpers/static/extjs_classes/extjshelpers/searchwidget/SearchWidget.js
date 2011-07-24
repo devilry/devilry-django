@@ -18,24 +18,37 @@
  *     |                    |
  *     +--------------------+
  *
- * @xtype searchwidget
- * @cfg {[Object]} searchResultItems Item list forwarded to the item config of {@link devilry.extjshelpers.searchwidget.MultiSearchResults}
  * */
 Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
     extend: 'Ext.container.Container',
     alias: 'widget.searchwidget',
+    cls: 'widget-searchwidget',
     requires: [
+        'devilry.extjshelpers.SearchField',
         'devilry.extjshelpers.searchwidget.SearchResults',
-        'devilry.extjshelpers.searchwidget.MultiSearchField',
         'devilry.extjshelpers.searchwidget.MultiSearchResults',
         'devilry.extjshelpers.SearchStringParser'
     ],
 
+    config: {
+        /**
+         * @cfg
+         * The {@link devilry.extjshelpers.searchwidget.SearchResults}, use
+         * when searching.
+         */
+        searchResultItems: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
-        this.multisearchresultid = this.id + "-multisearchresults"; 
+        this.multisearchresultid = this.id + "-multisearchresults";
         Ext.apply(this, {
             items: [{
-                xtype: 'multisearchfield'
+                xtype: 'searchfield'
             }, {
                 xtype: 'multisearchresults',
                 items: this.searchResultItems,
@@ -45,10 +58,22 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         });
 
         this.callParent(arguments);
+        this.setupSearchEventListeners();
+    },
+
+    setupSearchEventListeners: function() {
+        var me = this;
+        this.getSearchField().addListener('emptyInput', function() {
+            me.hideResults();
+        });
+        this.getSearchField().addListener('newSearchValue', function(value) {
+            //console.log(value);
+            me.search(value);
+        });
     },
 
     getSearchField: function() {
-        return this.down('multisearchfield');
+        return this.down('searchfield');
     },
 
     focusOnSearchfield: function() {
@@ -78,10 +103,16 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
             searchstring: value
         });
+        this.currentParsedSearch = parsedSearch;
         this.showResults();
         Ext.each(this.getResultContainer().items.items, function(searchresults, index, resultgrids) {
             searchresults.search(parsedSearch);
         });
+    },
+
+    modifySearch: function(properties) {
+        Ext.apply(this.currentParsedSearch, properties);
+        this.setSearchValue(this.currentParsedSearch.toString());
     },
 
     setSearchValue: function(value) {

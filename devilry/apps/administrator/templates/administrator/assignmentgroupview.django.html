@@ -1,0 +1,46 @@
+{% extends "administrator/base.django.html" %}
+{% load extjs %}
+
+
+{% block headextra %}
+
+<script>
+    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+
+    {{ RestfulSimplifiedDeadline|extjs_model }};
+    {{ RestfulSimplifiedDeadline|extjs_store }};
+
+    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
+    {{ RestfulSimplifiedDelivery|extjs_store }};
+
+    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
+    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
+
+    {{ RestfulSimplifiedFileMeta|extjs_model }};
+    {{ RestfulSimplifiedFileMeta|extjs_store }};
+
+
+    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.onReady(function() {
+        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
+            renderTo: 'maincontent',
+            assignmentgroupid: {{ assignmentgroupid }},
+            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
+            deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
+            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeadlineStore'),
+            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
+            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
+            canExamine: true
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+
+{% block main %}
+
+<div id="maincontent"></div>
+
+{% endblock %}

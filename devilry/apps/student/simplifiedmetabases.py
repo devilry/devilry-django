@@ -198,7 +198,7 @@ class SimplifiedDeliveryMetaMixin(object):
                              'number',
                              'time_of_delivery',
                              'deadline',
-                             'deadline__assignment_group',
+                             deadline=['deadline__assignment_group', 'deadline__deadline'],
                              assignment_group=['deadline__assignment_group',
                                                'deadline__assignment_group__name'],
                              assignment=['deadline__assignment_group__parentnode',
@@ -225,7 +225,10 @@ class SimplifiedDeliveryMetaMixin(object):
                              'deadline__assignment_group__parentnode__parentnode__parentnode__short_name',
                              'deadline__assignment_group__parentnode__parentnode__parentnode__long_name')
     filters = FilterSpecs(FilterSpec('id'),
-                          FilterSpec('deadline__assignment_group'),
+                          FilterSpec('deadline'),
+                          ForeignFilterSpec('deadline',
+                                            FilterSpec('deadline'),
+                                            FilterSpec('assignment_group')),
                           ForeignFilterSpec('deadline__assignment_group',  # AssignmentGroup
                                             FilterSpec('parentnode'),
                                             FilterSpec('name')),
@@ -277,6 +280,8 @@ class SimplifiedStaticFeedbackMetaMixin(object):
                              'delivery__number',
                              'delivery__deadline__assignment_group__examiners__username',
                              )
+    filters = FilterSpecs(FilterSpec('id'),
+                          FilterSpec('delivery'))
 
 
 class SimplifiedFileMetaMetaMixin(object):
