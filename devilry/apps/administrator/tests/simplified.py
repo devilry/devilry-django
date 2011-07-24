@@ -46,7 +46,6 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         self.add(nodes='uni.fys')
         self.create_superuser('superadminuser')
 
-        #methods = ['create', 'read', 'update', 'delete', 'search'
 
     def test_search_filters(self):
         qrywrap = SimplifiedNode.search(self.admin1)
@@ -780,18 +779,23 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
     def test_create(self):
         kw = dict(
+                name = 'test',
                 parentnode = self.inf101_firstsem_a1_g1.parentnode)
 
         newpk = SimplifiedAssignmentGroup.create(self.admin1, **kw)
         create_res = models.AssignmentGroup.objects.get(pk=newpk)
-        self.assertEquals(create_res.short_name, 'test1')
-        self.assertEquals(create_res.long_name, 'Test')
+        self.assertEquals(create_res.name, 'test')
         self.assertEquals(create_res.parentnode,
                 self.inf101_firstsem_a1_g1.parentnode)
 
     def test_update(self):
-        #TODO
-        pass
+        kw = dict(name = 'test')
+
+        self.assertEquals(self.inf101_firstsem_a1_g1.name, 'g1')
+
+        newpk = SimplifiedAssignmentGroup.update(self.admin1, pk = self.inf101_firstsem_a1_g1.id, **kw)
+        create_res = models.AssignmentGroup.objects.get(pk=newpk)
+        self.assertEquals(create_res.name, 'test')
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101.firstsem:admin(testadmin)')

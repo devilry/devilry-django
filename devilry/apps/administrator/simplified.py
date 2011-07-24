@@ -190,7 +190,7 @@ class SimplifiedDeadline(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods an Administrator can use on a Deadline object using the Simplified API """
-        methods = ['search', 'read', 'create', 'delete']
+        methods = ['search', 'read', 'create']
 
     @classmethod
     def create_searchqryset(cls, user):
