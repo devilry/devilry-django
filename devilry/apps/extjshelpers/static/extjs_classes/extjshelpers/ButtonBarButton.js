@@ -2,7 +2,6 @@
 Ext.define('devilry.extjshelpers.ButtonBarButton', {
     extend: 'Ext.button.Button',
     alias: 'widget.buttonbarbutton',
-    iconCls: 'icon-add-32',
     scale: 'large',
 
     config: {

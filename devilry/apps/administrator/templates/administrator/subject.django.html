@@ -33,7 +33,7 @@
         });
 
         prettyview.addListener('edit', function(record) {
-            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            Ext.create('devilry.administrator.DefaultEditWindow', {
                 editpanel: Ext.ComponentManager.create({
                     xtype: 'administrator_editpanel',
                     modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
@@ -42,8 +42,7 @@
                     record: record
                 }),
                 prettyview: prettyview
-            });
-            editwindow.show();
+            }).show();
         });
     });
 </script>
