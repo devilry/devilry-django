@@ -2,6 +2,7 @@
 Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
+    bodyPadding: 20,
 
     config: {
         /**
@@ -33,20 +34,7 @@ Ext.define('devilry.administrator.PrettyView', {
          * The url to the dashboard. (Required). Used after delete to return to
          * the dashboard.
          */
-        dashboardUrl: undefined,
-
-        /**
-         * @cfg
-         * Items for the ``Ext.form.Panel`` used to edit the RestfulSimplified
-         * object. (Required).
-         */
-        editformitems: undefined,
-
-        /**
-         * @cfg
-         * List of foreign key field names in the model. (Required).
-         */
-        foreignkeyfieldnames: undefined
+        dashboardUrl: undefined
 
         /**
          * @cfg
@@ -118,8 +106,14 @@ Ext.define('devilry.administrator.PrettyView', {
 
     onModelLoadSuccess: function(record) {
         this.record = record;
-        this.update(this.bodyTpl.apply(record.data));
+        var bodyData = this.getExtraBodyData(record);
+        Ext.apply(bodyData, record.data);
+        this.update(this.bodyTpl.apply(bodyData));
         this.fireEvent('loadmodel', record);
+    },
+
+    getExtraBodyData: function(record) {
+        return {};
     },
 
     onModelLoadFailure: function(record, operation) {

@@ -2,3 +2,9 @@
 {% comment %}
 Base template for single-object views (I.E.: Those that take a specific ID).
 {% endcomment %}
+
+{% block main %}
+    <section class="treeheading" id="content-heading"></section>
+    {{ block.super }} {# The search box #}
+    <div id="prettyviewpanel" class="prettyviewpanel"></div>
+{% endblock %}
