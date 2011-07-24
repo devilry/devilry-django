@@ -166,7 +166,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             create_default_deadline = True
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_default_deadline:
-            self.deadlines.create(deadline=datetime.now(), assignment_group=self, is_head=True)
+            self.deadlines.create(deadline=datetime(1970, 1, 1), assignment_group=self, is_head=True)
 
     @classmethod
     def q_is_admin(cls, user_obj):
