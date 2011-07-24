@@ -29,6 +29,10 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     the student from administrators or examiners that change published
     feedback to avoid that a student can make an issue out of a bad feedback.
 
+    **NOTE:** When a StaticFeedback is saved, the corresponding
+    :attr:`AssignmentGroup.feedback` is updated to the newly created
+    StaticFeedback.
+
     .. attribute:: rendered_view
 
         The rendered HTML view.
@@ -123,15 +127,17 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         return "StaticFeedback on %s" % self.delivery
 
 
-def update_deadline_and_assignmentgroup_status(delivery):
-    delivery.deadline._update_status()
-    delivery.deadline.save()
-    delivery.deadline.assignment_group._update_status()
-    delivery.deadline.assignment_group.save()
+def update_deadline_and_assignmentgroup(feedback):
+    deadline = feedback.delivery.deadline
+    deadline._update_status()
+    deadline.save()
+    deadline.assignment_group._update_status()
+    deadline.assignment_group.feedback = feedback # NOTE: Set the last feedback to the active feedback.
+    deadline.assignment_group.save()
 
 def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']
-    update_deadline_and_assignmentgroup_status(feedback.delivery)
+    update_deadline_and_assignmentgroup(feedback)
 
 def feedback_grade_delete_handler(sender, **kwargs):
     feedback = kwargs['instance']
