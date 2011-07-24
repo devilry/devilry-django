@@ -2,6 +2,7 @@
 Ext.define('devilry.administrator.PrettyView', {
     extend: 'Ext.panel.Panel',
     cls: 'prettyviewpanel',
+    bodyPadding: 20,
 
     config: {
         /**
@@ -105,8 +106,14 @@ Ext.define('devilry.administrator.PrettyView', {
 
     onModelLoadSuccess: function(record) {
         this.record = record;
-        this.update(this.bodyTpl.apply(record.data));
+        var bodyData = this.getExtraBodyData(record);
+        Ext.apply(bodyData, record.data);
+        this.update(this.bodyTpl.apply(bodyData));
         this.fireEvent('loadmodel', record);
+    },
+
+    getExtraBodyData: function(record) {
+        return {};
     },
 
     onModelLoadFailure: function(record, operation) {

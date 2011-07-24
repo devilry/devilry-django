@@ -420,7 +420,7 @@ table.verticalinfotable {
     }
 }
 
-div.warning {
+div.warning, section.warning {
     background-color: $warningcolor_bg;
     color: $warningcolor_fg;
     border: 2px solid #333;

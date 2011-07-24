@@ -403,7 +403,7 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
-div.warning {
+div.warning, section.warning {
   background-color: #cc4400;
   color: #ffeee5;
   border: 2px solid #333;

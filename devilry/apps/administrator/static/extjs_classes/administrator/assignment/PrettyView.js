@@ -3,8 +3,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_assignmentprettyview',
 
-    bodyPadding: 20,
-
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
         '    <h1>Deadline</h1>',
