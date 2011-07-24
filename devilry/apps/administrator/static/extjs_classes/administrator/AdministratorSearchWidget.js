@@ -66,7 +66,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.nodeRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: this.urlPrefix + 'editors/node/{id}'
+                        clickLinkTpl: this.urlPrefix + 'node/{id}'
                     }
                 }
             }, {
@@ -80,7 +80,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.subjectRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: this.urlPrefix + 'editors/subject/{id}'
+                        clickLinkTpl: this.urlPrefix + 'subject/{id}'
                     }
                 }
             }, {
@@ -94,7 +94,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.periodRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: this.urlPrefix + 'editors/period/{id}'
+                        clickLinkTpl: this.urlPrefix + 'period/{id}'
                     }
                 }
             }, {
@@ -106,7 +106,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                     tpl: this.assignmentRowTpl,
                     defaultbutton: {
                         text: 'Edit',
-                        clickLinkTpl: this.urlPrefix + 'editors/assignment/{id}'
+                        clickLinkTpl: this.urlPrefix + 'assignment/{id}'
                     },
                     menuitems: [{
                         text: 'Show deliveries',
