@@ -16,7 +16,7 @@
             renderTo: 'prettyviewpanel',
             modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             objectid: {{ objectid }},
-            dashboardUrl: DASHBOARD_URL,
+            dashboardUrl: DASHBOARD_URL
         });
 
         var heading = Ext.ComponentManager.create({
@@ -42,19 +42,9 @@
                 foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }},
                 record: record
             });
-            var editwindow = Ext.create('Ext.window.Window', {
-                title: 'Edit',
-                width: 800,
-                height: 600,
-                layout: 'fit',
-                maximizable: true,
-                //maximized: true,
-                closeAction: 'hide',
-                items: editpanel
-            });
-            editpanel.addListener('saveSucess', function(record) {
-                editwindow.close();
-                prettyview.setRecord(record);
+            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+                editpanel: editpanel,
+                prettyview: prettyview
             });
             editwindow.show();
         });

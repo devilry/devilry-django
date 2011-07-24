@@ -95,7 +95,6 @@ Ext.define('devilry.administrator.EditPanel', {
     },
 
     loadRecord: function() {
-        console.log(this.record);
         this.editform.loadRecord(this.record);
         var fields = this.editform.getForm().getFields();
         var me = this;

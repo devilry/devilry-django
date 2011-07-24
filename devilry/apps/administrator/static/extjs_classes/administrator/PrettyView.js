@@ -33,20 +33,7 @@ Ext.define('devilry.administrator.PrettyView', {
          * The url to the dashboard. (Required). Used after delete to return to
          * the dashboard.
          */
-        dashboardUrl: undefined,
-
-        /**
-         * @cfg
-         * Items for the ``Ext.form.Panel`` used to edit the RestfulSimplified
-         * object. (Required).
-         */
-        editformitems: undefined,
-
-        /**
-         * @cfg
-         * List of foreign key field names in the model. (Required).
-         */
-        foreignkeyfieldnames: undefined
+        dashboardUrl: undefined
 
         /**
          * @cfg
