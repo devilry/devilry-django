@@ -33,7 +33,20 @@ Ext.define('devilry.administrator.PrettyView', {
          * The url to the dashboard. (Required). Used after delete to return to
          * the dashboard.
          */
-        dashboardUrl: undefined
+        dashboardUrl: undefined,
+
+        /**
+         * @cfg
+         * Items for the ``Ext.form.Panel`` used to edit the RestfulSimplified
+         * object. (Required).
+         */
+        editformitems: undefined,
+
+        /**
+         * @cfg
+         * List of foreign key field names in the model. (Required).
+         */
+        foreignkeyfieldnames: undefined
 
         /**
          * @cfg
@@ -49,7 +62,14 @@ Ext.define('devilry.administrator.PrettyView', {
              * Fired when the model record is loaded successfully.
              * @param {Ext.model.Model} record The loaded record.
              */
-            'loadmodel');
+            'loadmodel',
+            
+            /**
+             * @event
+             * Fired when the edit button is clicked.
+             * @param {Ext.model.Model} record The record to edit.
+             */
+            'edit');
         this.callParent([config]);
         this.initConfig(config);
     },
@@ -96,7 +116,7 @@ Ext.define('devilry.administrator.PrettyView', {
         });
     },
 
-    onModelLoadSuccess: function(record, operation) {
+    onModelLoadSuccess: function(record) {
         this.record = record;
         this.update(this.bodyTpl.apply(record.data));
         this.fireEvent('loadmodel', record);
@@ -107,7 +127,12 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     onEdit: function() {
-        console.log('edit');
+        this.fireEvent('edit', this.record);
+    },
+
+    /** Set record. Triggers the loadmodel event. */
+    setRecord: function(record) {
+        this.onModelLoadSuccess(record);
     },
 
     onDelete: function() {
