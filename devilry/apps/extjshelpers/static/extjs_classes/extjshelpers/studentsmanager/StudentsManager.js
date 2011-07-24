@@ -8,7 +8,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     layout: 'border',
 
     config: {
-        assignmentgroupstore: undefined
+        assignmentgroupstore: undefined,
+        assignmentid: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
     },
 
     initComponent: function() {
@@ -32,13 +38,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'studentsmanager_filterselector'
                 }]
             },{
-                title: 'Center Region',
                 region: 'center',     // center region is required, no width/height specified
-                //xtype: 'studentsmanager_studentsgrid',
                 xtype: 'panel',
                 layout: 'fit',
-                margins: '5 5 0 0',
-                items: []
+                items: [{
+                    xtype: 'studentsmanager_studentsgrid',
+                    store: this.assignmentgroupstore,
+                    assignmentid: this.assignmentid
+                }]
             }],
 
         });

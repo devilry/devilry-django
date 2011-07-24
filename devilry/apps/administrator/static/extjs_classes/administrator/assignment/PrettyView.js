@@ -6,6 +6,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.studentsmanager.StudentsManager'
     ],
 
+    config: {
+        assignmentgroupstore: undefined
+    },
+
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
         '    <tpl if="published">',
@@ -54,6 +58,11 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '</section>'
     ),
 
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     getExtraBodyData: function(record) {
         return {
             published: record.data.publishing_time < Ext.Date.now(),
@@ -88,6 +97,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 closeAction: 'hide',
                 items: {
                     xtype: 'studentsmanager',
+                    assignmentgroupstore: this.assignmentgroupstore,
+                    assignmentid: this.objectid
                 },
             });
         }

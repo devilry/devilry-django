@@ -7,7 +7,9 @@
 {{ block.super }}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }}
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject" }};
+    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     Ext.require('devilry.administrator.assignment.PrettyView');
     Ext.require('devilry.administrator.EditPanel');
@@ -16,7 +18,8 @@
             renderTo: 'prettyviewpanel',
             modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             objectid: {{ objectid }},
-            dashboardUrl: DASHBOARD_URL
+            dashboardUrl: DASHBOARD_URL,
+            assignmentgroupstore: assignmentgroupstore
         });
 
         var heading = Ext.ComponentManager.create({
@@ -32,6 +35,7 @@
 
         prettyview.addListener('loadmodel', function(record) {
             heading.update(record.data);
+            prettyview.onStudents();
         });
 
         prettyview.addListener('edit', function(record) {
