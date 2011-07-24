@@ -11,9 +11,13 @@
 
 <script>
     Ext.require('devilry.administrator.EditPanel');
-    Ext.require('devilry.administrator.DefaultEditWindow');
+    Ext.require('devilry.administrator.DefaultCreateWindow');
     Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
+
+
+    {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
+
     Ext.onReady(function() {
 
         Ext.create('devilry.extjshelpers.ButtonBar', {
@@ -28,12 +32,12 @@
                     body: 'A Node is a place to organise top-level administrators.'
                 },
                 handler: function() {
-                    Ext.create('devilry.administrator.DefaultEditWindow', {
+                    Ext.create('devilry.administrator.DefaultCreateWindow', {
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'administrator_editpanel',
-                            modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-                            editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
-                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }}
+                            modelname: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
+                            editformitems: {{ restfulapi.RestfulSimplifiedNode|extjs_form_items}},
+                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
                     }).show();
