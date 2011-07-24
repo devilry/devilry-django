@@ -2,6 +2,9 @@
 Ext.define('devilry.administrator.assignment.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_assignmentprettyview',
+    requires: [
+        'devilry.extjshelpers.studentsmanager.StudentsManager'
+    ],
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
@@ -84,8 +87,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 //maximized: true,
                 closeAction: 'hide',
                 items: {
-                    xtype: 'box',
-                    html: 'Hello world'
+                    xtype: 'studentsmanager',
                 },
             });
         }
