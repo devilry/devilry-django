@@ -24,7 +24,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             items: [{
                 region: 'north',     // position for region
                 xtype: 'panel',
-                height: 100
+                height: 100,
+                html: 'Search will go here'
             },{
                 region:'west',
                 xtype: 'panel',

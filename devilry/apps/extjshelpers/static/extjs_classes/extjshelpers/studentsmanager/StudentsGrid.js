@@ -44,6 +44,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             comp: 'exact',
             value: this.assignmentid
         }]);
+
+
+        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
+            checkOnly: true
+        });
+
         Ext.apply(this, {
             dockedItems: [{
                 xtype: 'pagingtoolbar',
