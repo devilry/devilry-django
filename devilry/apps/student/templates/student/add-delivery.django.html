@@ -57,7 +57,6 @@
                         id: 'homofil',
                         fieldLabel: 'Delivery',
                         labelWidth: 50,
-                        enctype: 'multipart/form-data',
                         width: '100%',
                         anchor: '100%',
                         msgTarget: 'side',
@@ -73,12 +72,12 @@
                         var form = this.up('form').getForm();
             if(form.isValid()){
                 form.submit({
-                    url: '/student/add-delivery/fileupload/33',
+                    url: '/student/add-delivery/fileupload/{{ deadlineid }}',
                     waitMsg: 'Uploading your photo...',
-                    success: function(fp, o) {
-                        Ext.Msg.alert('Success', 'File "' + o.result.file + '" has been uploaded.');
+                    success: function(form, res) {
+                        Ext.Msg.alert('Success', 'File "' + res.result.file + '" has been uploaded.');
                     },
-                    failure: function(fp, o) {
+                    failure: function(form, res) {
                        Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
                     }
                 });

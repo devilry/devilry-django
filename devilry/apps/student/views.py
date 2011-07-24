@@ -1,7 +1,11 @@
 from django.views.generic import (TemplateView, View)
-from django.shortcuts import render
-from django.http import HttpResponse
-import datetime
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseForbidden
+from datetime import datetime
+import json
+from ..core.models import (Delivery, FileMeta, 
+                           Deadline, AssignmentGroup,
+                           Candidate)
 
 import restful
 
@@ -42,11 +46,49 @@ class FileUploadView(View):
     #                   )
 
     def post(self, request, deliveryid):
+        print "#", deliveryid, "#"
+        print "#", request.user, "#"
 
+        deadline_obj = get_object_or_404(Deadline, id=deliveryid)
+        assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
+        logged_in_user = request.user
+        candidate = get_object_or_404(Candidate, assignment_group=assignment_group_obj)
+
+        if not assignment_group_obj.is_candidate(logged_in_user):
+            #TODO return Json
+            return HttpResponseForbidden("Oh no rude boy! You're not the right guy")
+
+        if not assignment_group_obj.can_add_deliveries():
+            #TODO return Json
+            return HttpResponseForbidden("Oh no rude boy! You're not allowed to deliver")
+
+        
         if 'dendrofil' in request.FILES:
-            print "#", request.FILES['dendrofil'].size, "#"
-            filen = request.FILES['dendrofil'].read()
-            print filen
-            return HttpResponse("{success: true, file: null}")
+            
+            #TODO Use simplified abstracted models
+            uploaded_file = request.FILES['dendrofil']
+            uploaded_file_size = uploaded_file.size
+            uploaded_file_name = uploaded_file.name
+
+            delivery = Delivery()
+            delivery.time_of_delivery = datetime.now()
+            delivery.delivered_by = candidate
+            delivery.succesful = False
+            deadline_obj.deliveries.add(delivery)
+            delivery.save()
+            
+            delivery.add_file(uploaded_file_name, uploaded_file.chunks())
+
+            delivery.succesful= True
+            delivery.full_clean()
+            delivery.save()      
+            
+            json_dict = {'success' : 'true', 'file' : uploaded_file_name}
+            json_result = json.dumps(json_dict)
+           
+            return HttpResponse(json_result)
+
         else:
-            return HttpResponse("{success: false, file: null}")
+
+            json_result = json.dumps({'success': 'false', 'file': 'null'})
+            return HttpResponse(json_result)
