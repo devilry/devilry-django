@@ -39,7 +39,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         a fake deadline is created with ``is_head=True``. All manually created deadlines
         should have ``is_head=False`` (the default).
 
-    .. deliveries_available_before_deadline::
+    .. attribute:: deliveries_available_before_deadline
 
         Should deliveries on this deadline be available to examiners before the
         deadline expires? This is set by students.
