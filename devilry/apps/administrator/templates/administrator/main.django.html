@@ -10,37 +10,46 @@
 {{ block.super }}
 
 <script>
+    Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
     Ext.onReady(function() {
 
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             width: 600,
-            buttons: [{
-                text: 'Node', url: '{% url administrator-editors-node "create" %}',
-                tooltip: {
+            items: [{
+                xtype: 'buttonbarbutton',
+                text: 'Node',
+                clickurl: '{% url administrator-editors-node "create" %}',
+                tooltipCfg: {
                     title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
                     body: 'A Node is a place to organise top-level administrators.'
                 }
             }, {
-                text: 'Subject', url: '{% url administrator-editors-subject "create" %}',
-                tooltip: {
+                xtype: 'buttonbarbutton',
+                text: 'Subject',
+                clickurl: '{% url administrator-editors-subject "create" %}',
+                tooltipCfg: {
                     title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
                     body: 'A Subject is often also called a course.'
                 }
             }, {
-                text: 'Period', url: '{% url administrator-editors-period "create" %}',
-                tooltip: {
+                xtype: 'buttonbarbutton',
+                text: 'Period',
+                clickurl: '{% url administrator-editors-period "create" %}',
+                tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
                     body: 'A Period is a limited period in time, such as a semester.'
                 }
             }, {
-                text: 'Assignment', url: '{% url administrator-editors-assignment "create" %}',
-                tooltip: {
+                xtype: 'buttonbarbutton',
+                text: 'Assignment',
+                clickurl: '{% url administrator-editors-assignment "create" %}',
+                tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
                     body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
                 }
-            }]   
+            }]
         });
         Ext.QuickTips.init();
     });
