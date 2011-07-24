@@ -65,7 +65,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.nodeRowTpl,
                     defaultbutton: {
-                        text: 'Edit',
+                        text: 'View',
                         clickLinkTpl: this.urlPrefix + 'node/view/{id}'
                     }
                 }
@@ -79,7 +79,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.subjectRowTpl,
                     defaultbutton: {
-                        text: 'Edit',
+                        text: 'View',
                         clickLinkTpl: this.urlPrefix + 'subject/view/{id}'
                     }
                 }
@@ -93,7 +93,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.periodRowTpl,
                     defaultbutton: {
-                        text: 'Edit',
+                        text: 'View',
                         clickLinkTpl: this.urlPrefix + 'period/view/{id}'
                     }
                 }
@@ -105,7 +105,7 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.assignmentRowTpl,
                     defaultbutton: {
-                        text: 'Edit',
+                        text: 'View',
                         clickLinkTpl: this.urlPrefix + 'assignment/view/{id}'
                     },
                     menuitems: [{
@@ -121,8 +121,8 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 resultitemConfig: {
                     tpl: this.assignmentgroupRowTpl,
                     defaultbutton: {
-                        text: 'Edit',
-                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/{id}'
+                        text: 'View',
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/view/{id}'
                     }
                 }
             }, {
@@ -131,7 +131,11 @@ Ext.define('devilry.administrator.AdministratorSearchWidget', {
                 store: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeliveryStoreSearch'),
                 filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
                 resultitemConfig: {
-                    tpl: this.deliveryRowTpl
+                    tpl: this.deliveryRowTpl,
+                    defaultbutton: {
+                        text: 'View',
+                        clickLinkTpl: this.urlPrefix + 'assignmentgroup/view/{deadline__assignment_group}?deliveryid={id}'
+                    }
                 }
             }]
         });
