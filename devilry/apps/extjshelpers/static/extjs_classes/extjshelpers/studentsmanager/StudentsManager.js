@@ -47,6 +47,16 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'studentsmanager_studentsgrid',
                     store: this.assignmentgroupstore,
                     assignmentid: this.assignmentid
+                }],
+
+                bbar: ['->', {
+                    xtype: 'button',
+                    scale: 'medium',
+                    text: 'Give feedback to selected'
+                }, {
+                    xtype: 'button',
+                    scale: 'medium',
+                    text: 'Statistics'
                 }]
             }],
 
