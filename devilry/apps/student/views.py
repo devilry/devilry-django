@@ -67,7 +67,6 @@ class FileUploadView(View):
             
             #TODO Use simplified abstracted models
             uploaded_file = request.FILES['dendrofil']
-            uploaded_file_size = uploaded_file.size
             uploaded_file_name = uploaded_file.name
 
             delivery = Delivery()
@@ -92,3 +91,14 @@ class FileUploadView(View):
 
             json_result = json.dumps({'success': 'false', 'file': 'null'})
             return HttpResponse(json_result)
+
+
+
+class AssignmentGroupView(View):
+    def get(self, request, assignmentgroupid):
+        indata = {'assignmentgroupid': assignmentgroupid }
+        for restclsname in restful.__all__:
+            indata[restclsname] = getattr(restful, restclsname)
+        return render(request,
+                      'student/assignmentgroupview.django.html',
+                       indata)

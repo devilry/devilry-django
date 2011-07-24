@@ -119,7 +119,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         });
         this.callParent(arguments);
 
-
+        console.log(this.assignmentgroupmodel);
+        console.log(this.deliverymodel);
+        console.log(this.assignmentgroupid);
+        
         this.assignmentgroupmodel.load(this.assignmentgroupid, {
             scope: me,
             success: me.onLoadAssignmentGroup
