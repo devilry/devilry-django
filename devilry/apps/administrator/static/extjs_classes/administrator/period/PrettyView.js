@@ -39,7 +39,6 @@ Ext.define('devilry.administrator.period.PrettyView', {
         '</section>'
     ),
 
-
     getExtraBodyData: function(record) {
         var is_old = record.data.end_time < Ext.Date.now();
         var starttime_in_future = record.data.start_time > Ext.Date.now();

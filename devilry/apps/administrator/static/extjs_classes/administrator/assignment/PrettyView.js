@@ -5,11 +5,23 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
-        '    <h1>Publishing time</h1>',
-        '    <p>',
-        '       The assignment is visible to students and examiners from ',
-        '       <strong>{publishing_time:date}</strong>.',
-        '    </p>',
+        '    <tpl if="published">',
+        '        <h1>Published</h1>',
+        '        <p>',
+        '           The assignment is currently visible to students and examiners. ',
+        '           Its publishing time was <strong>{publishing_time:date}</strong>.',
+        '        </p>',
+        '    </tpl>',
+        '    <tpl if="!published">',
+        '        <section class="warning">',
+        '             <h1>Not published</h1>',
+        '             <p>',
+        '                This assignment is currently <em>not visible</em> to students or examiners. ',
+        '                The assignment will become visible to students and examiners ',
+        '                <strong>{publishing_time:date}</strong>.',
+        '             </p>',
+        '        </section>',
+        '    </tpl>',
         '    <tpl if="must_pass">',
         '       <h1>Must pass</h1>',
         '       <p>',
@@ -21,7 +33,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '    <tpl if="anonymous">',
         '       <h1>Anonymous</h1>',
         '       <p>',
-        '           The assignment <em>is</em> anonymous. This means that examiners ',
+        '           The assignment <em>is anonymous</em>. This means that examiners ',
         '           see the <em>candidate ID</em> instead of user name and ',
         '           email. Furthermore, students do not see who their examiner(s)',
         '           are.',
@@ -39,6 +51,11 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '</section>'
     ),
 
+    getExtraBodyData: function(record) {
+        return {
+            published: record.data.publishing_time < Ext.Date.now(),
+        };
+    },
 
     initComponent: function() {
         this.studentsbutton = Ext.create('Ext.button.Button', {
