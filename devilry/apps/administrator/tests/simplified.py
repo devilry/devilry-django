@@ -200,13 +200,116 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
             SimplifiedNode.delete(self.exam1, self.uni.id)
 
 class TestSimplifiedSubject(SimplifiedAdminTestBase):
+    allExtras = SimplifiedSubject._meta.resultfields.additional_aslist()
     def setUp(self):
         super(TestSimplifiedSubject,self).setUp()
 
-    def test_delete_asnodeadmin(self):
-        self.add_to_path('uni;inf101:admin(testadmin)')
-        SimplifiedSubject.delete(self.testadmin, self.inf101.id)
+    def test_create_asadmin(self):
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
 
+        newpk = SimplifiedSubject.create(self.admin1, short_name='test1', **kw)
+        create_res = models.Subject.objects.get(pk=newpk)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'TestOne')
+        self.assertEquals(create_res.parentnode, self.uni)
+
+    def test_create_assuperadmin(self):
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        newpk = SimplifiedSubject.create(self.superadminuser, short_name='test1', **kw)
+        create_res = models.Subject.objects.get(pk=newpk)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'TestOne')
+        self.assertEquals(create_res.parentnode, self.uni)
+
+    def test_read(self):
+        # do a read with no extra fields
+        read_res = SimplifiedSubject.read(self.admin1, self.inf110.id)
+        expected_res = modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist())
+        self.assertEquals(read_res, expected_res)
+
+        # do a read with all extras
+        read_res = SimplifiedSubject.read(self.admin1, self.inf110.id, result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist(self.allExtras))
+        self.assertEquals(read_res, expected_res)
+
+    def test_update(self):
+        self.assertEquals(self.inf110.short_name, 'inf110')
+
+        kw = dict(short_name = 'test110',
+                    long_name = 'Test')
+
+        pk = SimplifiedSubject.update(self.admin1,
+                            pk = self.inf110.id,
+                            **kw)
+        update_res = models.Subject.objects.get(pk=pk)
+        self.assertEquals(update_res.short_name, 'test110')
+
+        self.assertEquals(self.inf110.short_name, 'inf110')
+        self.refresh_var(self.inf110)
+        self.assertEquals(self.inf110.short_name, 'test110')
+
+    def test_search_noextras(self):
+        # search with no query and no extra fields
+        search_res = SimplifiedSubject.search(self.admin1)
+        expected_res = [modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist()),
+                        modelinstance_to_dict(self.inf101, SimplifiedSubject._meta.resultfields.aslist())]
+
+        # assert that all search results are as expected
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_search_allextras(self):
+        # search with no querys, but all extra fields
+        search_res = SimplifiedSubject.search(self.admin1, result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist(self.allExtras)),
+                        modelinstance_to_dict(self.inf101, SimplifiedSubject._meta.resultfields.aslist(self.allExtras))]
+
+        # assert that all search results are as expected
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_search_withquery(self):
+        # search with query
+        search_res = SimplifiedSubject.search(self.admin1, query='11')
+        expected_res = [modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist())]
+
+        # assert that all search results are as expected
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_search_queryandextras(self):
+        # with query and extra fields.
+        search_res = SimplifiedSubject.search(self.admin1, query='11', result_fieldgroups=self.allExtras)
+        expected_res = [modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist(self.allExtras))]
+
+        # assert that all search results are as expected
+        self.assertEquals(search_res.count(), len(expected_res))
+        for s in search_res:
+            self.assertTrue(s in expected_res)
+
+    def test_search_security(self):
+        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
+
+        search_res = SimplifiedSubject.search(self.testPerson)
+        self.assertEquals(search_res.count(), 0)
+
+    def test_delete_asnodeadmin(self):
+        self.add_to_path('uni;test111:admin(testadmin)')
+        SimplifiedSubject.delete(self.testadmin, self.test111.id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.delete(self.testadmin, self.test111.id)
+
+        self.add_to_path('uni;inf101:admin(testadmin)')
+        # this node has children and should raise permissionDenied
         with self.assertRaises(PermissionDenied):
             SimplifiedSubject.delete(self.testadmin, self.inf101.id)
 
