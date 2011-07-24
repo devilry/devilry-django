@@ -14,7 +14,8 @@
         var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
             renderTo: 'prettyviewpanel',
             modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-            objectid: {{ objectid }}
+            objectid: {{ objectid }},
+            dashboardUrl: DASHBOARD_URL
         });
 
         prettyview.addListener('loadmodel', function(record) {
@@ -22,9 +23,9 @@
                 renderTo: 'content-heading',
                 data: record.data,
                 tpl: [
-                    '<h1>{long_name}</h1>',
+                    '<h1>{parentnode__parentnode__long_name}</h1>',
                     '<h2>{parentnode__long_name}</h2>',
-                    '<h3>{parentnode__parentnode__long_name}</h3>'
+                    '<h3>{long_name}</h3>'
                 ]
             });
         });

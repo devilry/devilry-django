@@ -30,6 +30,13 @@ Ext.define('devilry.administrator.PrettyView', {
 
         /**
          * @cfg
+         * The url to the dashboard. (Required). Used after delete to return to
+         * the dashboard.
+         */
+        dashboardUrl: undefined
+
+        /**
+         * @cfg
          * Optional list of menuitems for plugin actions.
          */
         //pluginItems: undefined
@@ -48,23 +55,25 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     initComponent: function() {
-        var tbar = ['->', {
-            xtype: 'button',
+        this.deletebutton = Ext.create('Ext.button.Button', {
             text: 'Delete',
             scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.onDelete
             }
-        }, {
-            xtype: 'button',
+        });
+
+        this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
             scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.onEdit
             }
-        }];
+        });
+
+        var tbar = ['->', this.deletebutton, this.editbutton];
 
         //if(this.pluginItems) {
             //Ext.Array.insert(tbar, 0, this.pluginItems);
@@ -88,8 +97,9 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     onModelLoadSuccess: function(record, operation) {
-        this.fireEvent('loadmodel', record);
+        this.record = record;
         this.update(this.bodyTpl.apply(record.data));
+        this.fireEvent('loadmodel', record);
     },
 
     onModelLoadFailure: function(record, operation) {
@@ -101,6 +111,23 @@ Ext.define('devilry.administrator.PrettyView', {
     },
 
     onDelete: function() {
-        console.log('delete');
+        var me = this;
+        Ext.MessageBox.show({
+            title: 'Confirm delete',
+            msg: 'Are you sure you want to delete?',
+            animateTarget: this.deletebutton,
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.ERROR,
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    me.deleteObject();
+                }
+            }
+        });
+    },
+
+    deleteObject: function() {
+        this.record.destroy();
+        window.location.href = this.dashboardUrl;
     }
 });

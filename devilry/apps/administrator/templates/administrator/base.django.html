@@ -13,11 +13,13 @@
         {{ RestfulCls|extjs_store:"Search" }};
     {% endfor %}
 
+    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/administrator/';
+
     Ext.require('devilry.administrator.AdministratorSearchWidget');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
             renderTo: 'searchwidget-container',
-            urlPrefix: '{{ DEVILRY_MAIN_PAGE }}/administrator/',
+            urlPrefix: DASHBOARD_URL,
             nodeRowTpl: '{{ restfulapi.RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
             subjectRowTpl: '{{ restfulapi.RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
             periodRowTpl: '{{ restfulapi.RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',
