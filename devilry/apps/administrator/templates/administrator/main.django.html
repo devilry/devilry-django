@@ -1,154 +1,125 @@
 {% extends "administrator/base.django.html" %}
 {% load extjs %}
 
+
+{% block post-searchwidget-javascript %}
+    searchwidget.focusOnSearchfield();
+{% endblock %}
+
 {% block headextra %}
+{{ block.super }}
 
 <script>
-
-    {% for RestfulCls in restfulclasses %}
-        {{ RestfulCls|extjs_combobox_model }}
-    {% endfor %}
-
-    var nodestore = {{ RestfulSimplifiedNode|extjs_store:3 }}
-    var subjectstore = {{ RestfulSimplifiedSubject|extjs_store:3 }}
-    var periodstore = {{ RestfulSimplifiedPeriod|extjs_store:3 }}
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
-
-    Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
-    Ext.require('devilry.extjshelpers.searchwidget.FilterConfigDefaults');
+    Ext.require('devilry.administrator.EditPanel');
+    Ext.require('devilry.administrator.DefaultCreateWindow');
+    Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
+
+
+    {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
+    {{ restfulapi.RestfulSimplifiedSubject|extjs_model }},
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model }},
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }},
+
     Ext.onReady(function() {
-        var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
-            renderTo: 'searchwidget-container',
-            searchResultItems: [{
-                xtype: 'searchresults',
-                title: 'Nodes',
-                store: nodestore,
-                filterconfig: {
-                    type: 'node'
-                },
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Edit',
-                        clickLinkTpl: '{% url administrator-editors-node %}' + '{id}'
-                    }
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Subjects',
-                store: subjectstore,
-                filterconfig: {
-                    type: 'subject'
-                },
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Edit',
-                        clickLinkTpl: '{% url administrator-editors-subject %}' + '{id}'
-                    }
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Periods',
-                store: periodstore,
-                filterconfig: {
-                    type: 'period'
-                },
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Edit',
-                        clickLinkTpl: '{% url administrator-editors-period %}' + '{id}',
-                    }
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignments',
-                store: assignmentstore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignment,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Edit',
-                        clickLinkTpl: '{% url administrator-editors-assignment %}' + '{id}',
-                    },
-                    menuitems: [{
-                        text: 'Show deliveries',
-                        clickFilter: 'type:delivery assignment:{id}'
-                    }]
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignment groups',
-                store: assignmentgroupstore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Edit',
-                        clickLinkTpl: 'assignmentgroup/{id}',
-                    }
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Delivery',
-                store: deliverystore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.delivery,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Edit',
-                        {# clickLinkTpl: '{% url administrator-editors-delivery %}' + '{id}', #}
-                    }
-                }
-            }]
-        });
-        searchwidget.loadInitialValues();
-        searchwidget.focusOnSearchfield();
 
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             width: 600,
-            buttons: [{
-                text: 'Node', url: '{% url administrator-editors-node "create" %}',
-                tooltip: {
+            items: [{
+                xtype: 'buttonbarbutton',
+                text: 'Node',
+                iconCls: 'icon-add-32',
+                tooltipCfg: {
                     title: '<span class="tooltip-title-current-item">Node</span> &rArr; Subject &rArr; Period &rArr; Assignment',
                     body: 'A Node is a place to organise top-level administrators.'
+                },
+                handler: function() {
+                    Ext.create('devilry.administrator.DefaultCreateWindow', {
+                        title: 'Create new node',
+                        editpanel: Ext.ComponentManager.create({
+                            xtype: 'administrator_editpanel',
+                            modelname: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
+                            editformitems: {{ restfulapi.RestfulSimplifiedNode|extjs_form_items}},
+                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
+                        }),
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
+                    }).show();
                 }
             }, {
-                text: 'Subject', url: '{% url administrator-editors-subject "create" %}',
-                tooltip: {
+                xtype: 'buttonbarbutton',
+                text: 'Subject',
+                clickurl: '{% url administrator-editors-subject "create" %}',
+                iconCls: 'icon-add-32',
+                tooltipCfg: {
                     title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
                     body: 'A Subject is often also called a course.'
+                },
+                handler: function() {
+                    Ext.create('devilry.administrator.DefaultCreateWindow', {
+                        title: 'Create new subject',
+                        editpanel: Ext.ComponentManager.create({
+                            xtype: 'administrator_editpanel',
+                            modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
+                            editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
+                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }}
+                        }),
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'subject/view/{id}')
+                    }).show();
                 }
             }, {
-                text: 'Period', url: '{% url administrator-editors-period "create" %}',
-                tooltip: {
+                xtype: 'buttonbarbutton',
+                text: 'Period',
+                iconCls: 'icon-add-32',
+                clickurl: '{% url administrator-editors-period "create" %}',
+                tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
                     body: 'A Period is a limited period in time, such as a semester.'
+                },
+                handler: function() {
+                    Ext.create('devilry.administrator.DefaultCreateWindow', {
+                        title: 'Create new period',
+                        editpanel: Ext.ComponentManager.create({
+                            xtype: 'administrator_editpanel',
+                            modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
+                            editformitems: {{ restfulapi.RestfulSimplifiedPeriod|extjs_form_items}},
+                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedPeriod|extjs_foreignkeys }}
+                        }),
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'period/view/{id}')
+                    }).show();
                 }
             }, {
-                text: 'Assignment', url: '{% url administrator-editors-assignment "create" %}',
-                tooltip: {
+                xtype: 'buttonbarbutton',
+                text: 'Assignment',
+                iconCls: 'icon-add-32',
+                clickurl: '{% url administrator-editors-assignment "create" %}',
+                tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
                     body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
+                },
+                handler: function() {
+                    Ext.create('devilry.administrator.DefaultCreateWindow', {
+                        title: 'Create new assignment',
+                        editpanel: Ext.ComponentManager.create({
+                            xtype: 'administrator_editpanel',
+                            modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+                            editformitems: {{ restfulapi.RestfulSimplifiedAssignment|extjs_form_items}},
+                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }}
+                        }),
+                        successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/view/{id}')
+                    }).show();
                 }
-            }]   
+            }]
         });
         Ext.QuickTips.init();
     });
-
-
 </script>
 
 {% endblock %}
 
 
 {% block main %}
-<div id='searchwidget-container'></div>
+{{ block.super }}
 <p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
 have permission to view or edit. Searching for a user will find any item
 related to that user, and searching for a subject will find anything related to

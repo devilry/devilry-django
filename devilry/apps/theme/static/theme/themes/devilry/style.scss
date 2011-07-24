@@ -182,11 +182,6 @@ header {
 #main {
 	padding: 20px;
     background-color: #f8f8f8;
-
-    h2 {
-        font-size: 1.4em;
-        margin: 20px 0 15px 0;
-    }
     a {
         font-size: 1.2em;
         font-weight: bold;
@@ -385,7 +380,6 @@ a.warning-button {
  *
  */
 
-/* .x-layer are floating ExtJS items */
 .unimportant {
     font-size: 0.8em;
     color: #444;
@@ -426,7 +420,7 @@ table.verticalinfotable {
     }
 }
 
-div.warning {
+div.warning, section.warning {
     background-color: $warningcolor_bg;
     color: $warningcolor_fg;
     border: 2px solid #333;
@@ -468,6 +462,36 @@ div.warning {
     .level3 {
         font-size: 1.2em;
     }
+}
+
+
+section h1 {
+    font-size: 1.8em;
+    margin: 20px 0 15px 0;
+}
+section h1:first-child {
+    margin-top: 0;
+}
+section h2 {
+    font-size: 1.6em;
+    margin: 16px 0 6px 0;
+}
+section h3 {
+    font-size: 1.2em;
+    margin: 16px 0 6px 0;
+}
+
+section.treeheading {
+    margin-bottom: 30px;
+    @each $headtype in h1, h2, h3 {
+        #{$headtype} {
+            margin: 0 0 8px 0;
+        }
+    }
+}
+
+.prettyviewpanel {
+    margin-top: 30px;
 }
 
 
