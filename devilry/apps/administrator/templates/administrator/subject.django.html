@@ -33,15 +33,14 @@
         });
 
         prettyview.addListener('edit', function(record) {
-            var editpanel = Ext.ComponentManager.create({
-                xtype: 'administrator_editpanel',
-                modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-                editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
-                foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }},
-                record: record
-            });
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
-                editpanel: editpanel,
+                editpanel: Ext.ComponentManager.create({
+                    xtype: 'administrator_editpanel',
+                    modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
+                    editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
+                    foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }},
+                    record: record
+                }),
                 prettyview: prettyview
             });
             editwindow.show();
