@@ -140,6 +140,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             assignmentgroup: assignmentgroup,
             deliverymodel: this.deliverymodel,
             deadlinestore: this.deadlinestore,
+            canExamine: this.canExamine,
             layout: 'fit',
             selectedDeliveryId: parseInt(query.deliveryid)
         });
