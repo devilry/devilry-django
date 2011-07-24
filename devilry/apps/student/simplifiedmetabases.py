@@ -104,6 +104,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                                     'candidates__identifier'],
                              feedback=['feedback__points',
                                        'feedback__grade',
+                                       'feedback__is_passing_grade',
                                        'feedback__rendered_view'],
                              assignment=['parentnode__long_name',
                                          'parentnode__short_name'],
