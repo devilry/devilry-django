@@ -1,11 +1,13 @@
 Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.studentsmanager',
+    cls: 'studentsmanager',
+    layout: 'border',
+
     requires: [
         'devilry.extjshelpers.studentsmanager.FilterSelector',
         'devilry.extjshelpers.studentsmanager.StudentsGrid'
     ],
-    layout: 'border',
 
     config: {
         assignmentgroupstore: undefined,
