@@ -24,6 +24,8 @@ is available as a template variable as ``RestfulSimplifiedDelivery``. You may us
 extjs_model
 -----------
 
+Simple usage:
+
 .. code-block:: javascript
 
     // Create a variable with the extjsmodel class definition
@@ -33,10 +35,24 @@ extjs_model
     // extjs_modelname filter (or a combination of both approaches)
     {{ RestfulSimplifiedDelivery|extjs_model }};
     var deliverymodelname = {{ RestfulSimplifiedDelivery|extjs_modelname }};
-    var delivery = Ext.create(deliverymodelname, {
-        // Data needed to create a delivery ...
-    });
+    var model = Ext.ModelManager.getModel(deliverymodelname);
+
+Specifying result_fieldgroups and model name suffix:
+
+.. code-block:: javascript
     
+    // Specify result_fieldgroups
+    {{ RestfulSimplifiedDelivery|extjs_model:"assignment_group,deadline" }};
+
+    // ... or specify a name suffix (to make the model name unique)
+    //     Notice the ;
+    {{ RestfulSimplifiedDelivery|extjs_model:";MyScope" }};
+
+    // ... or specify result_fieldgroups and suffix
+    {{ RestfulSimplifiedDelivery|extjs_model:"assignment_group,deadline;MyScope" }};
+
+    // Note that you can use extjs_modelname to get a suffixed name
+    {{ RestfulSimplifiedDelivery|extjs_modelname:"MyScope" }};
 
 .. autofunction:: devilry.apps.extjshelpers.templatetags.extjs.extjs_model
 

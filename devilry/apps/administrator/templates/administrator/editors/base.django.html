@@ -1,8 +1,4 @@
-{% extends "administrator/base.django.html" %}
 {% load extjs %}
-{% load i18n %}
-
-{% block headextra %}
 
 <script>
     {{ RestfulSimplifiedClass|extjs_model:"pointfields" }}
@@ -18,13 +14,8 @@
             foreignkeyfieldnames: {{ RestfulSimplifiedClass|extjs_foreignkeys }}
         });
         mainlayout.loadMode('{{ initial_mode }}', {{ record_id|default_if_none:"null" }});
-
     });
 
 </script>
-{% endblock %}
 
-
-{% block main %}
 <div id='editorcontainer'></div>
-{% endblock %}
