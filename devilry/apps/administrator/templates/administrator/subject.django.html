@@ -1,20 +1,20 @@
 {% extends "administrator/single-base.django.html" %}
 {% load extjs %}
 
-{% block title %}Period - {{ block.super }}{% endblock %}
+{% block title %}Subject - {{ block.super }}{% endblock %}
 
 {% block headextra %}
 {{ block.super }}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
+    {{ restfulapi.RestfulSimplifiedSubject|extjs_model }}
 
-    Ext.require('devilry.administrator.period.PrettyView');
+    Ext.require('devilry.administrator.subject.PrettyView');
     Ext.require('devilry.administrator.EditPanel');
     Ext.onReady(function() {
-        var prettyview = Ext.create('devilry.administrator.period.PrettyView', {
+        var prettyview = Ext.create('devilry.administrator.subject.PrettyView', {
             renderTo: 'prettyviewpanel',
-            modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
+            modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
             objectid: {{ objectid }},
             dashboardUrl: DASHBOARD_URL
         });
@@ -24,9 +24,7 @@
             renderTo: 'content-heading',
             data: {},
             tpl: [
-                '<h1>{parentnode__parentnode__long_name}</h1>',
-                '<h2>{parentnode__long_name}</h2>',
-                '<h3>{long_name} ({short_name})</h3>'
+                '<h1>{long_name} ({short_name})</h1>'
             ]
         });
 
@@ -37,9 +35,9 @@
         prettyview.addListener('edit', function(record) {
             var editpanel = Ext.ComponentManager.create({
                 xtype: 'administrator_editpanel',
-                modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
-                editformitems: {{ restfulapi.RestfulSimplifiedPeriod|extjs_form_items}},
-                foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedPeriod|extjs_foreignkeys }},
+                modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
+                editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
+                foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }},
                 record: record
             });
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {

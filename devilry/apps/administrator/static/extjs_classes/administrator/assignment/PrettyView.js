@@ -5,7 +5,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
-        '    <h1>Deadline</h1>',
+        '    <h1>Publishing time</h1>',
         '    <p>',
         '       The assignment is visible to students and examiners from ',
         '       <strong>{publishing_time:date}</strong>.',
