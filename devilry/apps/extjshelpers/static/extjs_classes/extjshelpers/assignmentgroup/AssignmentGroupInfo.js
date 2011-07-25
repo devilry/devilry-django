@@ -50,7 +50,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
          * Selected delivery id. May be undefined, in which case, no delivery
          * is selected.
          */
-        selectedDeliveryId: undefined
+        selectedDeliveryId: undefined,
+        
+        
+        canExamine: false
     },
 
     layout: 'border',
@@ -72,7 +75,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
                     assignmentgroupid: this.assignmentgroup.id,
                     deliverymodel: this.deliverymodel,
                     deadlinestore: this.deadlinestore,
-                    selectedDeliveryId: this.selectedDeliveryId
+                    selectedDeliveryId: this.selectedDeliveryId,
+                    canExamine: this.canExamine
                 }]
             }]
         });

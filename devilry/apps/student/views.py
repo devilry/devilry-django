@@ -1,7 +1,9 @@
 from django.views.generic import (TemplateView, View)
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
+from django.core.servers.basehttp import FileWrapper
 from datetime import datetime
+from mimetypes import guess_type
 import json
 from ..core.models import (Delivery, FileMeta, 
                            Deadline, AssignmentGroup,
@@ -35,15 +37,17 @@ class AddDeliveryView(View):
                        'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
                       )
 
+class ShowDeliveryView(View):
+    def get(self, request, deliveryid):
+        return render(request, 'student/show-delivery.django.html',
+                      {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
+                       'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
+                       'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
+                       'deliveryid': deliveryid,
+                       'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
+                      )
+
 class FileUploadView(View):
-    # def get(self, request, deliveryid):
-    #     return render(request, 'student/add-delivery.django.html',
-    #                   {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
-    #                    'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
-    #                    'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
-    #                    'deadlineid': deliveryid,
-    #                    'RestfulSimplifiedAssignment': RestfulSimplifiedAssignment}
-    #                   )
 
     def post(self, request, deadlineid):
         print "#", deadlineid, "#"
@@ -102,3 +106,26 @@ class AssignmentGroupView(View):
         return render(request,
                       'student/assignmentgroupview.django.html',
                        indata)
+
+
+
+class FileDownloadView(View):
+
+    def get(self, request, filemetaid):    
+        filemeta = get_object_or_404(FileMeta, id=filemetaid)
+        print filemeta
+        assignment_group = filemeta.delivery.deadline.assignment_group
+        if not (assignment_group.is_candidate(request.user) \
+                    or assignment_group.is_examiner(request.user) \
+                    or request.user.is_superuser \
+                    or assignment_group.parentnode.is_admin(request.user)):
+            return http.HttpResponseForbidden("Forbidden")
+        
+        # TODO: make this work on any storage backend
+        response = HttpResponse(FileWrapper(filemeta.deliverystore.read_open(filemeta)),
+                                content_type=guess_type(filemeta.filename))
+        response['Content-Disposition'] = "attachment; filename=%s" % \
+            filemeta.filename.encode("ascii", 'replace')
+        response['Content-Length'] = filemeta.size
+        
+        return response
