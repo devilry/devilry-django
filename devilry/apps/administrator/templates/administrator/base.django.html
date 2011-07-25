@@ -5,3 +5,34 @@
 {% block title %}{% trans "Devilry administrator interface" %}{% endblock %}
 
 {% block nav-class %}administrator{% endblock %}
+
+{% block headextra %}
+<script>
+    {% for RestfulCls in restfulapi.values %}
+        {{ RestfulCls|extjs_combobox_model:"Search" }};
+        {{ RestfulCls|extjs_store:"Search" }};
+    {% endfor %}
+
+    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/administrator/';
+
+    Ext.require('devilry.administrator.AdministratorSearchWidget');
+    Ext.onReady(function() {
+        var searchwidget = Ext.create('devilry.administrator.AdministratorSearchWidget', {
+            renderTo: 'searchwidget-container',
+            urlPrefix: DASHBOARD_URL,
+            nodeRowTpl: '{{ restfulapi.RestfulSimplifiedNode.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            subjectRowTpl: '{{ restfulapi.RestfulSimplifiedSubject.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            periodRowTpl: '{{ restfulapi.RestfulSimplifiedPeriod.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            assignmentRowTpl: '{{ restfulapi.RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            assignmentgroupRowTpl: '{{ restfulapi.RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            deliveryRowTpl: '{{ restfulapi.RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+        });
+        searchwidget.loadInitialValues();
+        {% block post-searchwidget-javascript %}{% endblock %}
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div id='searchwidget-container'></div>
+{% endblock %}

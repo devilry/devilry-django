@@ -206,9 +206,6 @@ header {
 #main {
   padding: 20px;
   background-color: #f8f8f8; }
-  #main h2 {
-    font-size: 1.4em;
-    margin: 20px 0 15px 0; }
   #main a {
     font-size: 1.2em;
     font-weight: bold;
@@ -375,7 +372,6 @@ a.warning-button {
  * General purpose style classes
  *
  */
-/* .x-layer are floating ExtJS items */
 .unimportant {
   font-size: 0.8em;
   color: #444; }
@@ -407,7 +403,7 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
-div.warning {
+div.warning, section.warning {
   background-color: #cc4400;
   color: #ffeee5;
   border: 2px solid #333;
@@ -436,6 +432,38 @@ div.warning {
   font-size: 1.4em; }
 .treeheader .level3 {
   font-size: 1.2em; }
+
+section h1 {
+  font-size: 1.8em;
+  margin: 20px 0 15px 0; }
+
+section h1:first-child {
+  margin-top: 0; }
+
+section h2 {
+  font-size: 1.6em;
+  margin: 16px 0 6px 0; }
+
+section h3 {
+  font-size: 1.2em;
+  margin: 16px 0 6px 0; }
+
+section.treeheading {
+  margin-bottom: 30px; }
+  section.treeheading h1 {
+    margin: 0 0 8px 0; }
+  section.treeheading h2 {
+    margin: 0 0 8px 0; }
+  section.treeheading h3 {
+    margin: 0 0 8px 0; }
+
+.prettyviewpanel {
+  margin-top: 30px; }
+
+.studentsmanager .pointscolumn {
+  font-size: 30px; }
+.studentsmanager .nofeedback {
+  color: #aaa; }
 
 /**
  *

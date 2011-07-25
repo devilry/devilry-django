@@ -1,0 +1,53 @@
+{% extends "administrator/single-base.django.html" %}
+{% load extjs %}
+
+{% block title %}Period - {{ block.super }}{% endblock %}
+
+{% block headextra %}
+{{ block.super }}
+
+<script>
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
+
+    Ext.require('devilry.administrator.period.PrettyView');
+    Ext.require('devilry.administrator.EditPanel');
+    Ext.onReady(function() {
+        var prettyview = Ext.create('devilry.administrator.period.PrettyView', {
+            renderTo: 'prettyviewpanel',
+            modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
+            objectid: {{ objectid }},
+            dashboardUrl: DASHBOARD_URL
+        });
+
+        var heading = Ext.ComponentManager.create({
+            xtype: 'component',
+            renderTo: 'content-heading',
+            data: {},
+            tpl: [
+                '<h1>{parentnode__parentnode__long_name}</h1>',
+                '<h2>{parentnode__long_name}</h2>',
+                '<h3>{long_name} ({short_name})</h3>'
+            ]
+        });
+
+        prettyview.addListener('loadmodel', function(record) {
+            heading.update(record.data);
+        });
+
+        prettyview.addListener('edit', function(record) {
+            var editpanel = Ext.ComponentManager.create({
+                xtype: 'administrator_editpanel',
+                modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
+                editformitems: {{ restfulapi.RestfulSimplifiedPeriod|extjs_form_items}},
+                foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedPeriod|extjs_foreignkeys }},
+                record: record
+            });
+            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+                editpanel: editpanel,
+                prettyview: prettyview
+            });
+            editwindow.show();
+        });
+    });
+</script>
+{% endblock %}

@@ -1,7 +1,16 @@
+from django.conf.urls.defaults import url
+from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, View
 from django.shortcuts import render
 
 import restful
+
+def add_restfulapi_to_context(context):
+    restfuldct = {}
+    for restclsname in restful.__all__:
+        restfuldct[restclsname] = getattr(restful, restclsname)
+    context['restfulapi'] = restfuldct
+
 
 
 class MainView(TemplateView):
@@ -9,17 +18,24 @@ class MainView(TemplateView):
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
-        for restclsname in restful.__all__:
-            context[restclsname] = getattr(restful, restclsname)
-        context['restfulclasses'] = [getattr(restful, restclsname) for restclsname in restful.__all__]
+        add_restfulapi_to_context(context)
         return context
 
 
-class AssignmentGroupView(View):
-    def get(self, request, assignmentgroupid):
-        indata = {'assignmentgroupid': assignmentgroupid }
-        for restclsname in restful.__all__:
-            indata[restclsname] = getattr(restful, restclsname)
+class RestfulSimplifiedView(View):
+    template_name = None
+
+    def __init__(self, template_name):
+        self.template_name = template_name
+
+    def get(self, request, **indata):
+        context = indata
+        add_restfulapi_to_context(context)
         return render(request,
-                      'administrator/assignmentgroupview.django.html',
-                       indata)
+                      self.template_name,
+                      context)
+
+    @classmethod
+    def as_url(cls, prefix, template_name):
+        return url(r'^{0}/view/(?P<objectid>\d+)$'.format(prefix),
+                           login_required(cls.as_view(template_name=template_name)))

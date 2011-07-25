@@ -1,10 +1,10 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
 from ..extjshelpers import extjs_restful_modelapi
-from ..student import restfulmetabases
 from simplified import (SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta)
+from devilry.coreutils.restful import metabases as restfulmetabases
 
 
 __all__ = ('RestfulSimplifiedSubject',
