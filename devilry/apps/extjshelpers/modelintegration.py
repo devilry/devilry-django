@@ -18,9 +18,14 @@ def _djangofield_to_extjstype(field):
 
 
 def _recurse_get_fkfield(modelcls, path):
-    cur = modelcls._meta.get_field(path.pop(0))
+    fieldname = path.pop(0)
+    try:
+        cur = modelcls._meta.get_field(fieldname)
+    except fields.FieldDoesNotExist, e:
+        # We assume this is a ManyToMany field if it is not a normal field
+        return dict(type='auto')
     if not path:
-        return cur
+        return _djangofield_to_extjstype(cur)
     else:
         return _recurse_get_fkfield(cur.related.parent_model, path)
 
@@ -32,7 +37,7 @@ def _iter_fields(simplifiedcls, result_fieldgroups):
             path = fieldname.split('__')
             yield fieldname, _recurse_get_fkfield(meta.model, path)
         else:
-            yield fieldname, meta.model._meta.get_field(fieldname)
+            yield fieldname, _djangofield_to_extjstype(meta.model._meta.get_field(fieldname))
 
 
 
@@ -65,9 +70,8 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         See :func:`~devilry.apps.extjshelpers.modelintegration.get_extjs_modelname`.
     """
     modelfields = []
-    for fieldname, field in _iter_fields(restfulcls._meta.simplified,
+    for fieldname, exttype in _iter_fields(restfulcls._meta.simplified,
                                          result_fieldgroups):
-        exttype = _djangofield_to_extjstype(field)
         exttype['name'] = fieldname
         modelfields.append(exttype)
     #for fieldname in restfulcls._meta.urlmap:

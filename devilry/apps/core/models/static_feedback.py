@@ -139,12 +139,13 @@ def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']
     update_deadline_and_assignmentgroup(feedback)
 
-def feedback_grade_delete_handler(sender, **kwargs):
-    feedback = kwargs['instance']
-    if feedback.grade != None:
-        feedback.grade.delete()
+# TODO: Update this for grade editors:
+#def feedback_grade_delete_handler(sender, **kwargs):
+    #feedback = kwargs['instance']
+    #if feedback.grade != None:
+        #feedback.grade.delete()
 
-from django.db.models.signals import pre_delete, post_save
-pre_delete.connect(feedback_grade_delete_handler, sender=StaticFeedback)
+from django.db.models.signals import post_save
+#pre_delete.connect(feedback_grade_delete_handler, sender=StaticFeedback)
 post_save.connect(feedback_update_assignmentgroup_status_handler,
                   sender=StaticFeedback)

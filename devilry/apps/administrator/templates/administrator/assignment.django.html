@@ -8,7 +8,7 @@
 
 <script>
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     Ext.require('devilry.administrator.assignment.PrettyView');

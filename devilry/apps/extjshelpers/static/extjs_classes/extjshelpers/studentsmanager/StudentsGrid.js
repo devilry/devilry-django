@@ -6,6 +6,22 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         assignmentid: undefined
     },
 
+    candidatesCol: Ext.create('Ext.XTemplate', 
+        '<ul class="candidatescolumn">',
+        '    <tpl for="candidates__identifier">',
+        '       <li>{.}</li>',
+        '    </tpl>',
+        '</ul>'
+    ),
+
+    examinersCol: Ext.create('Ext.XTemplate', 
+        '<ul class="examinerscolumn">',
+        '    <tpl for="examiners__username">',
+        '       <li>{.}</li>',
+        '    </tpl>',
+        '</ul>'
+    ),
+
     pointsColTpl: Ext.create('Ext.XTemplate', 
         '<div class="pointscolumn">',
         '    <tpl if="feedback">',
@@ -59,9 +75,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             }],
 
             columns: [{
-                text: 'Students', dataIndex: 'id', flex: 2
+                text: 'Students', dataIndex: 'id', flex: 2,
+                renderer: this.formatCandidatesCol
             }, {
-                text: 'Examiners', dataIndex: 'id', flex: 2
+                text: 'Examiners', dataIndex: 'id', flex: 2,
+                renderer: this.formatExaminersCol
             }, {
                 text: 'Latest feedback',
                 columns: [{
@@ -84,6 +102,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
                 limit: 10
             }
         });
+    },
+
+    formatCandidatesCol: function(value, p, record) {
+        return this.candidatesCol.apply(record.data);
+    },
+
+    formatExaminersCol: function(value, p, record) {
+        return this.examinersCol.apply(record.data);
     },
 
     formatPointsCol: function(value, p, record) {
