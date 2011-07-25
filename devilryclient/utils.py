@@ -8,7 +8,7 @@ import os
 #from devilryclient.restfulclient import RestfulFactory
 from ConfigParser import ConfigParser
 
-from datetime import datetime
+import datetime
 import time
 
 
@@ -222,7 +222,7 @@ def deadline_format(deadline):
 
 
 def deadline_unformat(deadline):
-    return datetime.fromtimestamp(time.mktime(time.strptime(deadline, "%Y%m%d_%H%M")))
+    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(deadline, "%Y%m%d_%H%M")))
 
 
 def is_late(delivery):

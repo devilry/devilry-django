@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-from devilryclient.utils import findconffolder, get_config, get_metadata, deadline_unformat, is_late
-from os.path import dirname, join, sep, exists, basename
-from os import listdir, getcwd
-import time
-from datetime import datetime
+from devilryclient.utils import get_config, get_metadata, deadline_unformat, save_metadata
+from os.path import dirname, sep, basename
 
 
 class DevilryClientUpdateMeta(object):
@@ -15,23 +12,7 @@ class DevilryClientUpdateMeta(object):
 
     def __init__(self):
         self.conf = get_config()
-        self.root_dir = dirname(findconffolder())
         self.metadata = get_metadata()
-        self.num_groups = 0
-        self.num_subjects = 0
-        self.num_deliveries = 0
-        self.num_feedbacks = 0
-        groups_subject = 0
-        groups_period = 0
-        groups_assignment = 0
-
-        #TODO somehow reset all metadata counters to 0
-
-        #assignment_group.candidate list
-        #antall deliveries i hvert nivaa
-        #antall assignmentgroups i hvert nivaa
-        #antall feedbacks
-        #antall late deliveries
 
     def depth(self, path):
         return len(path.split(sep))
@@ -47,12 +28,14 @@ class DevilryClientUpdateMeta(object):
             6: self.delivery_meta
             }
 
-        # sort the keys by increasing depth
-        for key in sorted(self.metadata.keys(), key=lambda path: len(path.split(sep))):
+        # sort the keys
+        for key in sorted(self.metadata.keys()):
             if key == '.meta':
                 continue
             print key
             methods[self.depth(key)](key)
+
+        save_metadata(self.metadata)
 
     def subject_meta(self, path):
         # alias to something shorter
@@ -98,39 +81,24 @@ class DevilryClientUpdateMeta(object):
             path = dirname(path)
             self.metadata[path]['.meta']['num_groups'] += 1
 
-        # subject = path_dict['subject']
-        # period = path_dict['period']
-        # assignment = path_dict['assignment']
-        # groups = self.metadata[subject][period][assignment]
-        # groups['.meta']['num_assignmentgroups'] = 0 #for assignment
-        # for group in groups.keys():
-        #     if group[0] != '.':
-        #         path_dict['group'] = group
-        #         self.metadata['.meta']['num_assignmentgroups'] += 1
-        #         self.metadata[subject]['.meta']['num_assignmentgroups'] += 1
-        #         self.metadata[subject][period]['.meta']['num_assignmentgroups'] += 1
-        #         self.metadata[subject][period][assignment]['.meta']['num_assignmentgroups'] += 1
-        #         self.deadline_meta(path_dict)
-
     def deadline_meta(self, path):
-        self.metadata[path]['deadline'] = deadline_unformat(basename(path)[2:])
+        self.metadata[path]['.meta']['deadline'] = deadline_unformat(basename(path)[2:])
 
     def delivery_meta(self, path):
-        # subject = path_dict['subject']
-        # period = path_dict['period']
-        # assignment = path_dict['assignment']
-        # group = path_dict['group']
-        # deadline = path_dict['deadline']
-        # deliveries = self.metadata[subject][period][assignment][group][deadline]
-        # for delivery in deliveries.keys():
-        #     if delivery[0] != '.':
-        #         path_dict['delivery'] = delivery
-        #         self.file_meta(path_dict)
         # alias to something short
         meta = self.metadata[path]['.meta']
         meta['done'] = "TODO: noooo, we shouldnt overwrite this variable if it existed before sync"
-        # meta['deliver_time'] = 
-        #is_late(self.metadata[dirname(path)]['deadline'])
+        meta['delivery_time'] = -1
+        meta['is_late'] = self.metadata[dirname(path)] < meta['delivery_time']  # is_late(self.metadata[dirname(path)]['deadline'])
+        meta['delivered_by'] = 'FixMe'
+
+        # update upwards (TODO: should only be done for the latest delivery!)
+
+        # skip deadline, it doesn't hold num_deliveries
+        path = dirname(path)
+        while dirname(path) != '':
+            path = dirname(path)
+            self.metadata[path]['.meta']['num_deliveries'] += 1
 
     def file_meta(self, path_dict):
         subject = path_dict['subject']
