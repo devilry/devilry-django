@@ -13,14 +13,14 @@ class SimplifiedConfig(SimplifiedModelApi):
         model = Config
         resultfields = FieldSpec('id', 'gradeeditorid', 'assignment', 'config')
         searchfields = FieldSpec()
-        methods = ('read')
+        methods = ('read',)
 
     @classmethod
     def read_authorize(cls, user, obj):
-        Assignment.objects.get(Assignment.q_is_examiner(user) & Q(id=obj.id))
-        #if not obj.assignment.can_save():
-            #raise PermissionDenied()
-
+        try:
+            Assignment.objects.get(Assignment.q_is_examiner(user) & Q(id=obj.id))
+        except Assignment.DoesNotExist:
+            raise PermissionDenied()
 
 
 @simplified_modelapi
