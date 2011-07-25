@@ -53,7 +53,8 @@
                     items: [
                     {
                         xtype: 'fileuploadfield',
-                        name: 'photo',
+                        name: 'dendrofil',
+                        id: 'homofil',
                         fieldLabel: 'Delivery',
                         labelWidth: 50,
                         width: '100%',
@@ -68,7 +69,21 @@
                         text: 'Deliver!',
                         handler: function (a, b)
                         {
-                            msg('Success', 'Not really, nothing ever happened with your file');
+                        var form = this.up('form').getForm();
+            if(form.isValid()){
+                form.submit({
+                    url: '/student/add-delivery/fileupload/{{ deadlineid }}',
+                    waitMsg: 'Uploading your photo...',
+                    success: function(form, res) {
+                        Ext.Msg.alert('Success', 'File "' + res.result.file + '" has been uploaded.');
+                    },
+                    failure: function(form, res) {
+                       Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
+                    }
+                });
+            }
+
+                            //msg('Success', 'Not really, nothing ever happened with your file');
 
                         }
                     }]
