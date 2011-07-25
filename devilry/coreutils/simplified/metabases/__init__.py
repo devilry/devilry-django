@@ -1,5 +1,5 @@
-from ..core import models
-from ...simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
+from devilry.apps.core import models
+from devilry.simplified import FieldSpec, FilterSpec, FilterSpecs, PatternFilterSpec, ForeignFilterSpec
 
 
 class SimplifiedSubjectMetaMixin(object):
