@@ -6,6 +6,12 @@ from utils import modelinstance_to_dict
 class QryResultWrapper(object):
     """ Wrapper around a django QuerySet.
 
+    This object can be iterated and indexed::
+
+        print resultdct[0]['myfield']
+        for resultdct in qryresultwrapper:
+            print resultdct['myfield']
+
     .. attribute:: resultfields
 
         The underlying django queryset provides access to far more data
