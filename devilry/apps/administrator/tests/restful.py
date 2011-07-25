@@ -12,7 +12,7 @@ from ...core import models, testhelper
 testhelper.TestHelper.set_memory_deliverystore()
 
 
-class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
+class TestRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
     def setUp(self):
         self.add(nodes='uni:admin(admin1).fys')
         self.client = Client()
@@ -117,7 +117,7 @@ class TestAdministratorRestfulSimplifiedNode(TestCase, testhelper.TestHelper):
         self.assertEquals(r.status_code, 200)
 
 
-class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelper):
+class TestRestfulSimplifiedAssignment(TestCase, testhelper.TestHelper):
     def setUp(self):
         self.add(nodes='uni:admin(admin1)',
                  subjects=['inf101', 'inf110'],
@@ -145,7 +145,7 @@ class TestAdministratorRestfulSimplifiedAssignment(TestCase, testhelper.TestHelp
         self.assertEquals(set(first.keys()), set(all_resultfields))
 
 
-class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper):
+class TestRestfulSimplifiedSubject(TestCase, testhelper.TestHelper):
     simplifiedcls = RestfulSimplifiedSubject
     resultfields = SimplifiedSubject._meta.resultfields
 
@@ -235,7 +235,7 @@ class TestAdministratorRestfulSimplifiedSubject(TestCase, testhelper.TestHelper)
         self.assertEquals(models.Subject.objects.filter(short_name='inf101').count(), 0)
 
 
-class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
+class TestRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
     simplifiedcls = RestfulSimplifiedPeriod
     resultfields = SimplifiedPeriod._meta.resultfields
 
@@ -331,7 +331,7 @@ class TestAdministratorRestfulSimplifiedPeriod(TestCase, testhelper.TestHelper):
 
 
 
-class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
+class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
     simplifiedcls = RestfulSimplifiedAssignmentGroup
     resultfields = SimplifiedAssignmentGroup._meta.resultfields
 
