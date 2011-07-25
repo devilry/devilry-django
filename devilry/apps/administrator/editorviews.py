@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
 
 import restful
+from views import add_restfulapi_to_context
 
 
 class RestfulSimplifiedEditorView(View):
@@ -19,15 +20,16 @@ class RestfulSimplifiedEditorView(View):
             record_id = int(record_id)
         else:
             return HttpResponseNotFound()
-        templatevars =  {'record_id': record_id,
+        context =  {'record_id': record_id,
                          'initial_mode': initial_mode,
                          'RestfulSimplifiedClass': self.restful}
-        return render(request, self.template_name, templatevars)
+        add_restfulapi_to_context(context)
+        return render(request, self.template_name, context)
 
     @classmethod
     def create_url(cls):
-        prefix = cls.__name__.replace('Editor', '').lower()
-        return url(r'^editors/{0}/(?P<record_id>\w+)?'.format(prefix),
+        prefix = cls.__name__.replace('Editor', '').replace('RestfulSimplified', '').lower()
+        return url(r'^{0}/edit/(?P<record_id>\w+)?'.format(prefix),
                    login_required(cls.as_view()),
                    name='administrator-editors-{0}'.format(prefix))
 

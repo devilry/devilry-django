@@ -1,36 +1,57 @@
-{% extends "administrator/base.django.html" %}
+{% extends "administrator/single-base.django.html" %}
 {% load extjs %}
 
+{% block title %}Assignment - {{ block.super }}{% endblock %}
 
 {% block headextra %}
+{{ block.super }}
 
 <script>
-    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
+    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
-    {{ RestfulSimplifiedDeadline|extjs_model }};
-    {{ RestfulSimplifiedDeadline|extjs_store }};
-
-    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
-    {{ RestfulSimplifiedDelivery|extjs_store }};
-
-    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
-    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
-
-    {{ RestfulSimplifiedFileMeta|extjs_model }};
-    {{ RestfulSimplifiedFileMeta|extjs_store }};
-
-
-    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require('devilry.administrator.assignment.PrettyView');
+    Ext.require('devilry.administrator.EditPanel');
     Ext.onReady(function() {
+        var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
+            renderTo: 'prettyviewpanel',
+            modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+            objectid: {{ objectid }},
+            dashboardUrl: DASHBOARD_URL,
+            assignmentgroupstore: assignmentgroupstore
+        });
+
+        var heading = Ext.ComponentManager.create({
+            xtype: 'component',
+            renderTo: 'content-heading',
+            data: {},
+            tpl: [
+                '<h1>{parentnode__parentnode__long_name}</h1>',
+                '<h2>{parentnode__long_name}</h2>',
+                '<h3>{long_name} ({short_name})</h3>'
+            ]
+        });
+
+        prettyview.addListener('loadmodel', function(record) {
+            heading.update(record.data);
+            prettyview.onStudents();
+        });
+
+        prettyview.addListener('edit', function(record) {
+            var editpanel = Ext.ComponentManager.create({
+                xtype: 'administrator_editpanel',
+                modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+                editformitems: {{ restfulapi.RestfulSimplifiedAssignment|extjs_form_items}},
+                foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }},
+                record: record
+            });
+            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+                editpanel: editpanel,
+                prettyview: prettyview
+            });
+            editwindow.show();
+        });
     });
-
 </script>
-
-{% endblock %}
-
-
-{% block main %}
-
-<div id="maincontent"></div>
-
 {% endblock %}

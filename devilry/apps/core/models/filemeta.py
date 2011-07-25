@@ -97,7 +97,7 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 def filemeta_deleted_handler(sender, **kwargs):
     filemeta = kwargs['instance']
     try:
-        filemeta.deliverystore.remove_file(filemeta)
+        filemeta.deliverystore.remove(filemeta)
     except FileNotFoundError, e:
         # TODO: We should have some way of cleaning files which have no
         # corresponding FileMeta from DeliveryStores (could happen if the

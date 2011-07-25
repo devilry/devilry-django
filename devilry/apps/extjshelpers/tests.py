@@ -50,10 +50,10 @@ class TestModelIntegration(TestCase):
         js = restfulcls_to_extjsmodel(RestUser)
         expected = """Ext.define('devilry.apps.extjshelpers.tests.SimplifiedUser', {
             extend: 'Ext.data.Model',
+            requires: ['devilry.extjshelpers.RestProxy'],
             fields: [{"type": "int", "name": "id"}, {"type": "auto", "name": "first"}, {"type": "auto", "name": "last"}, {"type": "auto", "name": "email"}, {"type": "int", "name": "score"}],
             idProperty: 'id',
-            proxy: {
-                type: 'rest',
+            proxy: Ext.create('devilry.extjshelpers.RestProxy', {
                 url: '/restuser',
                 extraParams: {
                     getdata_in_qrystring: true,
@@ -67,7 +67,7 @@ class TestModelIntegration(TestCase):
                 writer: {
                     type: 'json'
                 }
-            }
+            })
         })"""
         self.assertEquals(js, expected)
 

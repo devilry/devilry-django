@@ -37,22 +37,34 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
          * Selected delivery id. May be undefined, in which case, no delivery
          * is selected.
          */
-        selectedDeliveryId: undefined
+        selectedDeliveryId: undefined,
+        
+        /**
+         * @cfg
+         * Viewable buttons depends on this
+         * 
+         */
+        canExamine: false
     },
 
     initComponent: function() {
-        Ext.apply(this, {
-            tbar: [{
-                xtype: 'button',
-                text: 'Create new deadline',
-                iconCls: 'icon-add-16',
-                listeners: {
-                    click: function() {
-                        console.log('TODO');
+        if (this.canExamine)
+        {
+            Ext.apply(this, {
+                tbar: [
+                {
+                    xtype: 'button',
+                    text: 'Create new deadline',
+                    iconCls: 'icon-add-16',
+                    listeners: {
+                        click: function ()
+                        {
+                            console.log('TODO');
+                        }
                     }
-                }
-            }]
-        });
+                }]
+            });
+        }
         this.callParent(arguments);
         this.loadDeadlines();
     },
