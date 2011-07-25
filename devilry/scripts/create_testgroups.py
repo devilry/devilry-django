@@ -106,7 +106,6 @@ if __name__ == "__main__":
     from django.contrib.auth.models import User
     from devilry.apps.core.models import Delivery
     from devilry.apps.core.testhelpers import create_from_path
-    from devilry.apps.core.gradeplugin import registry
 
     def exit_help():
         p.print_help()
@@ -308,10 +307,11 @@ if __name__ == "__main__":
     deliverycountrange = opt.deliverycountrange
     #print deliverycountrange
 
-    if not opt.gradeplugin:
-        raise SystemExit("--grade-plugin is required. Possible values: %s" %
-                ', '.join(['"%s"' % key for key, i in registry.iteritems()]))
-    gradeplugin = opt.gradeplugin
+    ## NOTE: Not used anymore because of grade editors
+    #if not opt.gradeplugin:
+        #raise SystemExit("--grade-plugin is required. Possible values: %s" %
+                #', '.join(['"%s"' % key for key, i in registry.iteritems()]))
+    #gradeplugin = opt.gradeplugin
 
     if opt.deadline:
         deadline = datetime.strptime(opt.deadline, "%Y-%m-%d")
@@ -347,9 +347,7 @@ if __name__ == "__main__":
     create_missing_users(itertools.chain(all_students, examiners))
 
     # Create the assignment
-    assignment = create_from_path(assignmentpath,
-            grade_plugin_key=gradeplugin,
-            gradeplugin_maxpoints=grade_maxpoints)
+    assignment = create_from_path(assignmentpath)
     assignment.publishing_time = deadline - timedelta(days=opt.pubtime_diff)
     if opt.pointscale:
         assignment.autoscale = False
@@ -367,8 +365,8 @@ if __name__ == "__main__":
         assignment.parentnode.end_time = deadline + timedelta(days=20)
         assignment.parentnode.save()
     logging.info(
-            "Creating groups on %s with deadline %s and grade_plugin %s" % (
-                assignment, deadline, gradeplugin))
+            "Creating groups on %s with deadline %s" % (
+                assignment, deadline))
 
     # Subject and period
     period = assignment.parentnode
