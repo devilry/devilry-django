@@ -8,7 +8,8 @@ class Config(models.Model):
     """
     Stored by admins.
     """
-    assignment = models.OneToOne(Assignment)
+    gradeeditorid = models.SlugField()
+    assignment = models.OneToOneField(Assignment)
     config = models.TextField()
 
 
