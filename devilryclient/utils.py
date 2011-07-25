@@ -206,7 +206,7 @@ def get_metadata_from_path(path, metadata=None):
 def deadline_format(deadline):
     deadline = deadline.replace(':', '')
     deadline = deadline.replace('-', '')
-    deadline = deadline.replace(' ', '_')
+    deadline = deadline.replace(' ', '-')
     deadline = deadline[:-2]
     return deadline
 
