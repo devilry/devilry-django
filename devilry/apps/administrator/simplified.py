@@ -151,7 +151,7 @@ class SimplifiedDelivery(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ['search', 'read', 'delete']
 
 
 @simplified_modelapi
@@ -159,7 +159,7 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedStaticFeedbackMetaMixin):
         """ Defines what methods an Administrator can use on a StaticFeedback object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ['search', 'read', 'delete']
 
     @classmethod
     def create_searchqryset(cls, user):
@@ -171,18 +171,16 @@ class SimplifiedStaticFeedback(SimplifiedModelApi):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
-    def read_authorize(cls, user, obj):
-        """ Checks if the given ``user`` is an administrator for the given
-        StaticFeedback ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.
+    def write_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to the given
+        ``obj``, and raise ``PermissionDenied`` if not.
 
         :param user: A django user object.
-        :param obj: A StaticFeedback object
+        :param obj: A object of the type this method is used in.
         :throws PermissionDenied:
         """
-        #TODO: Replace when issue #141 is resolved!
-        if not user.is_superuser:
-            if not obj.delivery.deadline.assignment_group.is_admin(user):
-                raise PermissionDenied()
+        if not obj.delivery.deadline.assignment_group.can_save(user):
+            raise PermissionDenied()
 
 
 @simplified_modelapi
@@ -190,7 +188,7 @@ class SimplifiedDeadline(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods an Administrator can use on a Deadline object using the Simplified API """
-        methods = ['search', 'read', 'create']
+        methods = ['search', 'read', 'create', 'delete']
 
     @classmethod
     def create_searchqryset(cls, user):
@@ -234,7 +232,7 @@ class SimplifiedFileMeta(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. """
     class Meta(SimplifiedFileMetaMetaMixin):
         """ Defines what methods an Administrator can use on a FileMeta object using the Simplified API """
-        methods = ['search', 'read']
+        methods = ['search', 'read', 'delete']
 
     @classmethod
     def create_searchqryset(cls, user):
@@ -246,15 +244,13 @@ class SimplifiedFileMeta(SimplifiedModelApi):
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
     @classmethod
-    def read_authorize(cls, user_obj, obj):
-        """ Checks if the given ``user`` is an administrator for the given
-        FileMeta ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.
+    def write_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to the given
+        ``obj``, and raise ``PermissionDenied`` if not.
 
         :param user: A django user object.
-        :param obj: A FileMeta object.
+        :param obj: A object of the type this method is used in.
         :throws PermissionDenied:
         """
-        #TODO: Replace when issue #141 is resolved!
-        if not user_obj.is_superuser:
-            if not obj.delivery.deadline.assignment_group.is_admin(user_obj):
-                raise PermissionDenied()
+        if not obj.delivery.deadline.assignment_group.can_save(user):
+            raise PermissionDenied()
