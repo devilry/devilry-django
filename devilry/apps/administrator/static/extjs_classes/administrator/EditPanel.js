@@ -96,6 +96,8 @@ Ext.define('devilry.administrator.EditPanel', {
 
     loadRecord: function() {
         this.editform.loadRecord(this.record);
+
+        // Set foreign key field values
         var fields = this.editform.getForm().getFields();
         var me = this;
         Ext.each(this.foreignkeyfieldnames, function(fieldname) {

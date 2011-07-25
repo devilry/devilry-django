@@ -3,8 +3,6 @@ Ext.define('devilry.administrator.period.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_periodprettyview',
 
-    bodyPadding: 20,
-
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
         '   <tpl if="is_old">',
@@ -40,7 +38,6 @@ Ext.define('devilry.administrator.period.PrettyView', {
         '   </tpl>',
         '</section>'
     ),
-
 
     getExtraBodyData: function(record) {
         var is_old = record.data.end_time < Ext.Date.now();
