@@ -49,8 +49,6 @@ class CanSaveBase(SimplifiedModelApi):
         """
         return cls._meta.model.where_is_admin_or_superadmin(user)
 
-
-
 @simplified_modelapi
 class SimplifiedNode(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Node`. """
