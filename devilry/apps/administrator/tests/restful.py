@@ -362,6 +362,19 @@ class TestAdministratorRestfulSimplifiedAssignmentGroup(TestCase, testhelper.Tes
         first = data['items'][0]
         self.assertEquals(set(first.keys()), set(self.resultfields.aslist()))
 
+
+    def test_search_all_result_fieldgroups(self):
+        url = self.simplifiedcls.get_rest_url()
+        allExtraFieldgroups = SimplifiedAssignmentGroup._meta.resultfields.additional_aslist()
+        r = self.client.get(url, data={'getdata_in_qrystring': True,
+                                       'result_fieldgroups': json.dumps(allExtraFieldgroups)})
+        self.assertEquals(r.status_code, 200)
+        data = json.loads(r.content)
+        first = data['items'][0]
+        self.assertEquals(set(first.keys()), set(self.resultfields.all_aslist()))
+
+
+
     def test_create(self):
         #TODO test_create
         pass
