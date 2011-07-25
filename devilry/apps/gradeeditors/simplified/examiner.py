@@ -12,7 +12,7 @@ class SimplifiedConfig(SimplifiedModelApi):
         methods = ('read')
 
     #@classmethod
-    #def write_authorize(cls, user, obj):
+    #def read_authorize(cls, user, obj):
         #if not obj.assignment.can_save():
             #raise PermissionDenied()
 
@@ -25,8 +25,13 @@ class SimplifiedFeedbackDraft(SimplifiedModelApi):
         resultfields = FieldSpec('id', 'delivery', 'saved_by', 'shared', 'draft')
         searchfields = FieldSpec()
         methods = ('create', 'read', 'update')
+        editablefields = ('delivery', 'shared', 'draft')
+
+    #@classmethod
+    #def write_authorize(cls, user, obj):
+        #if not obj.delivery.deadline.assignment_group.can_save():
+            #raise PermissionDenied()
 
     @classmethod
-    def write_authorize(cls, user, obj):
-        if not obj.delivery.deadline.assignment_group.can_save():
-            raise PermissionDenied()
+    def pre_full_clean(cls, user, obj):
+        obj.saved_by = user
