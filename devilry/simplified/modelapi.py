@@ -1,3 +1,4 @@
+from types import MethodType
 from django.db.models.fields import AutoField, FieldDoesNotExist
 
 from qryresultwrapper import QryResultWrapper
@@ -315,6 +316,19 @@ def _validate_fieldnameiterator(cls, attribute, fieldnameiterator):
                                                                                    attribute,
                                                                                    fieldname))
 
+
+
+class UnsupportedCrudsMethod(Exception):
+    """
+    Raised when trying to call an unsupperted CRUD+S method (a method on in Meta.methods).
+    """
+
+def _create_unsupported_cruds_method(cls, methodname):
+    def wrapper(cls, *args, **kwargs):
+        raise UnsupportedCrudsMethod()
+    setattr(cls, methodname, MethodType(wrapper, cls))
+
+
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
 
@@ -396,13 +410,14 @@ def simplified_modelapi(cls):
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
 
-    # Dynamically remove create(), read(), update(), delete() if not supported
-    cls._all_crud_methods = ('create', 'read', 'update', 'delete')
-    for method in cls._all_crud_methods:
+    # Dynamically remove create(), read(), update(), delete() and search() if not supported
+    cls._all_cruds_methods = ('create', 'read', 'update', 'delete', 'search')
+    for method in cls._all_cruds_methods:
         if not method in cls._meta.methods:
-            setattr(cls, method, None)
+            _create_unsupported_cruds_method(cls, method)
+            #setattr(cls, method, None)
 
-    for method in cls._all_crud_methods:
+    for method in cls._all_cruds_methods:
         setattr(cls, 'supports_{0}'.format(method), method in cls._meta.methods)
 
     if hasattr(cls._meta, 'filters'):

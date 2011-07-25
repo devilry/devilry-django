@@ -12,7 +12,7 @@ from editform import _create_editform
 
 def _copy_supports_metaattrs_from_simplified(cls):
     """ Copy all supports_[method] boolean variables from the simplified class. """
-    for method in cls._meta.simplified._all_crud_methods:
+    for method in cls._meta.simplified._all_cruds_methods:
         attrname = 'supports_{0}'.format(method)
         setattr(cls, attrname, getattr(cls._meta.simplified, attrname))
 
