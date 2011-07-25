@@ -7,18 +7,6 @@
 {% block nav-class %}student{% endblock %}
 
 {% block main %}
-<tr>
-  <th>{% trans "Files" %}</th>
-  <td>
-    <ul>
-    {% for filemeta in RestfulSimplifiedDelivery._meta.simplified.filemetas.all %}
-      <li>
-        <a href='{% url file-download filemeta.id %}'>{{ filemeta.filename }}</a>  
-        <span class='unimportant'>({{ filemeta.size }} bytes)</span>
-      </li>
-    {% endfor %}
-    </ul>
-  </td>
-</tr>
+<h1>HEISANN!</h1>
 
 {% endblock %}
