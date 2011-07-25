@@ -4,7 +4,7 @@ from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta)
 from ..extjshelpers import extjs_restful_modelapi#, wizard
-from ..student import restfulmetabases
+from devilry.coreutils.restful import metabases as restfulmetabases
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
