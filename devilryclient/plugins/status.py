@@ -89,13 +89,11 @@ class DevilryClientStatus(object):
 
     def collect_data(self):
         for key in sorted(self.metadata.keys()):
-            if key == '.meta':
-                continue
             print key
-            for metakey in self.metadata[key]['.meta']:
+            for metakey in self.metadata[key].keys():
                 if metakey == 'query_result':
                     continue
-                print "    ", metakey, ':', self.metadata[key]['.meta'][metakey]
+                print "    ", metakey, ':', self.metadata[key][metakey]
 
     def display(self):
         pass

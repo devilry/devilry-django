@@ -222,7 +222,7 @@ def deadline_format(deadline):
 
 
 def deadline_unformat(deadline):
-    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(deadline, "%Y%m%d_%H%M")))
+    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(deadline, "%Y%m%d-%H%M")))
 
 
 def is_late(delivery):

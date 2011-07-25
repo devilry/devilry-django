@@ -57,8 +57,8 @@ class PullFromServer(object):
 
             key = subject_path.replace(self.root_dir, '')
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = subject
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = subject
             
             self.add_periods(key, subject_path, periods)
 
@@ -75,8 +75,8 @@ class PullFromServer(object):
             key = period_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = period
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = period
 
             self.add_assignments(key, period_path, assignments)
 
@@ -94,8 +94,8 @@ class PullFromServer(object):
             key = assignment_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = assignment
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = assignment
 
             self.add_assignmentgroups(key, assignment_path, assignment_groups)
 
@@ -112,8 +112,8 @@ class PullFromServer(object):
             key = assignment_group_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = assignment_group
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = assignment_group
 
             self.add_deadlines(key, assignment_group_path, deadlines)
 
@@ -136,8 +136,8 @@ class PullFromServer(object):
             key = deadline_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = deadline
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = deadline
 
             self.add_deliveries(key, deadline_path, deliveries)
 
@@ -159,8 +159,8 @@ class PullFromServer(object):
             key = delivery_path.replace(self.root_dir, '')
             
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = delivery
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = delivery
 
             self.add_files(key, delivery_path, files)
 
@@ -171,8 +171,8 @@ class PullFromServer(object):
             f.close()
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = delivery_file
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = delivery_file
 
     def write_metadata(self):
         devilryfolder = findconffolder()

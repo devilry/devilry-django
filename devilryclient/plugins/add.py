@@ -14,7 +14,7 @@ class DevilryClientAdd(object):
         self.metadata = get_metadata()
 
     def set_and_save(self, path):
-        self.metadata[dirname(path).replace(self.root_dir, '')]['.meta']['done'] = True
+        self.metadata[dirname(path).replace(self.root_dir, '')]['done'] = True
         save_metadata(self.metadata)
 
     def check_context(self):
