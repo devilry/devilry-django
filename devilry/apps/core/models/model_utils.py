@@ -5,23 +5,6 @@
     be changed.
 """
 
-from datetime import datetime
-import re
-
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Q, Max
-from django.core.exceptions import ValidationError, PermissionDenied
-from django.utils.translation import ugettext as _
-from django.utils.formats import date_format
-
-from ..deliverystore import load_deliverystore_backend, FileNotFoundError
-from .. import gradeplugin
-
-
-# TODO: indexes
-# TODO: short_name ignorecase match on save.
-
 pathsep = '.' # path separator for Node-paths
 
 def splitpath(path, expected_len=0):
