@@ -3,9 +3,10 @@
 import logging
 import sys
 import ConfigParser
-from os.path import join, dirname, sep
+from os.path import join, dirname, sep, exists
+from os import rename
 from devilryclient.restfulclient.restfulfactory import RestfulFactory
-from devilryclient.utils import logging_startup, findconffolder, create_folder, deadline_format, is_late
+from devilryclient.utils import logging_startup, findconffolder, create_folder, deadline_format, is_late, get_metadata, save_metadata
 
 class PullFromServer(object):
     """
@@ -35,18 +36,17 @@ class PullFromServer(object):
         self.SimplifiedStaticFeedback = restful_factory.make("/examiner/restfulsimplifiedstaticfeedback/")
         self.SimplifiedFileMeta = restful_factory.make("/examiner/restfulsimplifiedfilemeta/")
 
-        self.tree = {}
-        self.root_dir = dirname(confdir) + '/'
+        self.root_dir = dirname(confdir) + sep
+        self.metadata = {}
 
-    def add_start(self):
+    def run(self):
         #start creating directories recursively
         devilry_path = dirname(findconffolder())
         subjects = self.SimplifiedSubject.search(query='')
         self.add_subjects(devilry_path, subjects)
+        self.write_metadata()
 
     def add_subjects(self, devilry_path, subjects):
-        self.tree['.meta'] = {}
-        self.tree['.meta']['query_result'] = subjects
         for subject in subjects['items']:
             subject_path = create_folder(join(devilry_path, subject['short_name']))
             #search for this subjects periods
@@ -56,17 +56,14 @@ class PullFromServer(object):
             periods = self.SimplifiedPeriod.search(result_fieldgroups=['subject'], filters=period_filters)
 
             key = subject_path.replace(self.root_dir, '')
-            self.tree[key] = {}
-
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = subject
+            
             self.add_periods(key, subject_path, periods)
 
     def add_periods(self, key, subject_path, periods):
-
-        #get names
-        self.tree[key]['.meta'] = {}
-        self.tree[key]['.meta']['query_result'] = periods
         for period in periods['items']:
-
             period_path = create_folder(join(subject_path, period['short_name']))
             assignment_filters = [{'field':'parentnode',
                                    'comp':'exact',
@@ -76,14 +73,14 @@ class PullFromServer(object):
                 filters=assignment_filters)
             #add period to tree dictionary
             key = period_path.replace(self.root_dir, '')
-            self.tree[key] = {}
+
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = period
 
             self.add_assignments(key, period_path, assignments)
 
     def add_assignments(self, key, period_path, assignments):
-
-        self.tree[key]['.meta'] = {}
-        self.tree[key]['.meta']['query_result'] = assignments
         for assignment in assignments['items']:
             assignment_path = create_folder(join(period_path, assignment['short_name']))
             a_group_filters = [{'field':'parentnode',
@@ -95,14 +92,14 @@ class PullFromServer(object):
                 filters=a_group_filters)
 
             key = assignment_path.replace(self.root_dir, '')
-            self.tree[key] = {}
+
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = assignment
 
             self.add_assignmentgroups(key, assignment_path, assignment_groups)
 
     def add_assignmentgroups(self, key, assignment_path, assignment_groups):
-
-        self.tree[key]['.meta'] = {}
-        self.tree[key]['.meta']['query_result'] = assignment_groups
         for assignment_group in assignment_groups['items']:
 
             assignment_group_path = create_folder(join(assignment_path, str(assignment_group['id'])))
@@ -113,13 +110,14 @@ class PullFromServer(object):
                 result_fieldgroups=['period', 'assignment', 'assignment_group'],
                 filters=deadline_filters, order_by='deadline')
             key = assignment_group_path.replace(self.root_dir, '')
-            self.tree[key] = {}
+
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = assignment_group
 
             self.add_deadlines(key, assignment_group_path, deadlines)
 
     def add_deadlines(self, key, assignment_group_path, deadlines):
-        self.tree[key]['.meta'] = {}
-        self.tree[key]['.meta']['query_result'] = deadlines
         number = 1  # number for tagging the deadlines
         for deadline in deadlines['items']:
             #format deadline
@@ -136,14 +134,14 @@ class PullFromServer(object):
                 filters=delivery_filters)
 
             key = deadline_path.replace(self.root_dir, '')
-            self.tree[key] = {}
+
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = deadline
 
             self.add_deliveries(key, deadline_path, deliveries)
 
     def add_deliveries(self, key, deadline_path, deliveries):
-
-        self.tree[key]['.meta'] = {}
-        self.tree[key]['.meta']['query_result'] = deliveries
         for delivery in deliveries['items']:
             #tag late deliveries
             if is_late(delivery):
@@ -159,27 +157,29 @@ class PullFromServer(object):
                 filters=file_filters)
 
             key = delivery_path.replace(self.root_dir, '')
-            self.tree[key] = {}
+            
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = delivery
 
             self.add_files(key, delivery_path, files)
 
     def add_files(self, key, delivery_path, files):
-
-        self.tree[key]['.meta'] = {}
-        self.tree[key]['.meta']['query_result'] = files
-
         file_path = create_folder(join(delivery_path, 'files'))
-        self.tree[key]['files'] = []
         for delivery_file in files['items']:
             f = open(join(file_path, delivery_file['filename']), 'w')
             f.close()
 
-            self.tree[key]['files'].append(delivery_file['filename'])
+            self.metadata[key] = {}
+            self.metadata[key]['.meta'] = {}
+            self.metadata[key]['.meta']['query_result'] = delivery_file
 
+    def write_metadata(self):
         devilryfolder = findconffolder()
-        treefile = open(join(devilryfolder, 'metadata'), 'w')
-        treefile.write(str(self.tree))
-        treefile.close()
+        metafilename = join(devilryfolder, 'metadata')
+        if exists(metafilename):
+            rename(metafilename, join(devilryfolder, 'old_metadata'))
+        save_metadata(self.metadata)
 
 if __name__ == '__main__':
-    PullFromServer().add_start()
+    PullFromServer().run()
