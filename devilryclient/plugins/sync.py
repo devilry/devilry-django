@@ -36,6 +36,7 @@ class PullFromServer(object):
         self.SimplifiedFileMeta = restful_factory.make("/examiner/restfulsimplifiedfilemeta/")
 
         self.tree = {}
+        self.root_dir = dirname(confdir) + '/'
 
     def add_start(self):
         #start creating directories recursively
@@ -53,16 +54,17 @@ class PullFromServer(object):
                                'comp':'exact',
                                'value':subject['id']}]
             periods = self.SimplifiedPeriod.search(result_fieldgroups=['subject'], filters=period_filters)
-            #self.tree['.meta'] = {}
-            self.tree[subject['short_name']] = {}
-            self.add_periods(subject_path, periods)
 
-    def add_periods(self, subject_path, periods):
-        path = subject_path.split(sep)
+            key = subject_path.replace(self.root_dir, '')
+            self.tree[key] = {}
+
+            self.add_periods(key, subject_path, periods)
+
+    def add_periods(self, key, subject_path, periods):
+
         #get names
-        subject = path[-1]
-        self.tree[subject]['.meta'] = {}
-        self.tree[subject]['.meta']['query_result'] = periods
+        self.tree[key]['.meta'] = {}
+        self.tree[key]['.meta']['query_result'] = periods
         for period in periods['items']:
 
             period_path = create_folder(join(subject_path, period['short_name']))
@@ -73,36 +75,34 @@ class PullFromServer(object):
                 result_fieldgroups=['subject', 'period'],
                 filters=assignment_filters)
             #add period to tree dictionary
-            self.tree[subject][period['short_name']] = {}
-            self.add_assignments(period_path, assignments)
+            key = period_path.replace(self.root_dir, '')
+            self.tree[key] = {}
 
-    def add_assignments(self, period_path, assignments):
-        path = period_path.split(sep)
-        period = path[-1]
-        subject = path[-2]
-        self.tree[subject][period]['.meta'] = {}
-        self.tree[subject][period]['.meta']['query_result'] = assignments
+            self.add_assignments(key, period_path, assignments)
+
+    def add_assignments(self, key, period_path, assignments):
+
+        self.tree[key]['.meta'] = {}
+        self.tree[key]['.meta']['query_result'] = assignments
         for assignment in assignments['items']:
             assignment_path = create_folder(join(period_path, assignment['short_name']))
             a_group_filters = [{'field':'parentnode',
                                 'comp':'exact',
                                 'value':assignment['id']}]
 
-            assignment_groups = self.SimplifiedAssignmentGroup.search( 
-                            result_fieldgroups=['period', 'assignment', 'users'], 
-                            filters=a_group_filters)
+            assignment_groups = self.SimplifiedAssignmentGroup.search(
+                result_fieldgroups=['period', 'assignment', 'users'],
+                filters=a_group_filters)
 
-            self.tree[subject][period][assignment['short_name']] = {}
-            self.add_assignmentgroups(assignment_path, assignment_groups)
+            key = assignment_path.replace(self.root_dir, '')
+            self.tree[key] = {}
 
-    def add_assignmentgroups(self, assignment_path, assignment_groups):
-        path = assignment_path.split(sep)
-        assignment = path[-1]
-        period = path[-2]
-        subject = path[-3]
+            self.add_assignmentgroups(key, assignment_path, assignment_groups)
 
-        self.tree[subject][period][assignment]['.meta'] = {}
-        self.tree[subject][period][assignment]['.meta']['query_result'] = assignment_groups
+    def add_assignmentgroups(self, key, assignment_path, assignment_groups):
+
+        self.tree[key]['.meta'] = {}
+        self.tree[key]['.meta']['query_result'] = assignment_groups
         for assignment_group in assignment_groups['items']:
 
             assignment_group_path = create_folder(join(assignment_path, str(assignment_group['id'])))
@@ -111,32 +111,21 @@ class PullFromServer(object):
                                  'value':assignment_group['id']}]
             deadlines = self.SimplifiedDeadline.search(
                 result_fieldgroups=['period', 'assignment', 'assignment_group'],
-                filters=deadline_filters)
+                filters=deadline_filters, order_by='deadline')
+            key = assignment_group_path.replace(self.root_dir, '')
+            self.tree[key] = {}
 
-            self.tree[subject][period][assignment][str(assignment_group['id'])] = {}
-            self.add_deadlines(assignment_group_path, deadlines)
+            self.add_deadlines(key, assignment_group_path, deadlines)
 
-    def add_deadlines(self, assignment_group_path, deadlines):
-        path = assignment_group_path.split(sep)
-        group = path[-1]
-        assignment = path[-2]
-        period = path[-3]
-        subject = path[-4]
-
-        self.tree[subject][period][assignment][group]['.meta'] = {}
-        self.tree[subject][period][assignment][group]['.meta']['query_result'] = deadlines
-        number = 1 #number for tagging the deadlines
+    def add_deadlines(self, key, assignment_group_path, deadlines):
+        self.tree[key]['.meta'] = {}
+        self.tree[key]['.meta']['query_result'] = deadlines
+        number = 1  # number for tagging the deadlines
         for deadline in deadlines['items']:
             #format deadline
             deadlinetime = deadline_format(deadline['deadline'])
             deadlinetime = '{}_{}'.format(number, deadlinetime)
             number += 1
-
-            path = assignment_group_path.split(sep)
-            group = path[-1]
-            assignment = path[-2]
-            period = path[-3]
-            subject = path[-4]
 
             deadline_path = create_folder(join(assignment_group_path, deadlinetime))
             delivery_filters = [{'field':'deadline',
@@ -146,20 +135,15 @@ class PullFromServer(object):
                 result_fieldgroups=['period', 'assignment', 'assignment_group', 'deadline'],
                 filters=delivery_filters)
 
-            self.tree[subject][period][assignment][group][deadlinetime] = {}
+            key = deadline_path.replace(self.root_dir, '')
+            self.tree[key] = {}
 
-            self.add_deliveries(deadline_path, deliveries)
+            self.add_deliveries(key, deadline_path, deliveries)
 
-    def add_deliveries(self, deadline_path, deliveries):
-        path = deadline_path.split(sep)
-        deadline = path[-1]
-        group = path[-2]
-        assignment = path[-3]
-        period = path[-4]
-        subject = path[-5]
+    def add_deliveries(self, key, deadline_path, deliveries):
 
-        self.tree[subject][period][assignment][group][deadline]['.meta'] = {}
-        self.tree[subject][period][assignment][group][deadline]['.meta']['query_result'] = deliveries
+        self.tree[key]['.meta'] = {}
+        self.tree[key]['.meta']['query_result'] = deliveries
         for delivery in deliveries['items']:
             #tag late deliveries
             if is_late(delivery):
@@ -174,28 +158,23 @@ class PullFromServer(object):
                 result_fieldgroups=['period', 'assignment', 'assignment_group'],
                 filters=file_filters)
 
-            self.tree[subject][period][assignment][group][deadline][str(delivery['number'])] = {}
+            key = delivery_path.replace(self.root_dir, '')
+            self.tree[key] = {}
 
-            self.add_files(delivery_path, files)
+            self.add_files(key, delivery_path, files)
 
-    def add_files(self, delivery_path, files):
-        path = delivery_path.split(sep)
-        delivery = path[-1]
-        deadline = path[-2]
-        group = path[-3]
-        assignment = path[-4]
-        period = path[-5]
-        subject = path[-6]
-        self.tree[subject][period][assignment][group][deadline][delivery]['.meta'] = {}
-        self.tree[subject][period][assignment][group][deadline][delivery]['.meta']['query_result'] = files
+    def add_files(self, key, delivery_path, files):
+
+        self.tree[key]['.meta'] = {}
+        self.tree[key]['.meta']['query_result'] = files
 
         file_path = create_folder(join(delivery_path, 'files'))
-        self.tree[subject][period][assignment][group][deadline][delivery]['files'] = []
+        self.tree[key]['files'] = []
         for delivery_file in files['items']:
             f = open(join(file_path, delivery_file['filename']), 'w')
             f.close()
 
-            self.tree[subject][period][assignment][group][deadline][delivery]['files'].append(delivery_file['filename'])
+            self.tree[key]['files'].append(delivery_file['filename'])
 
         devilryfolder = findconffolder()
         treefile = open(join(devilryfolder, 'metadata'), 'w')

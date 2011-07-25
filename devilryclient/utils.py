@@ -8,6 +8,9 @@ import os
 #from devilryclient.restfulclient import RestfulFactory
 from ConfigParser import ConfigParser
 
+from datetime import datetime
+import time
+
 
 def helloworld():
     print "Hello world"
@@ -167,40 +170,47 @@ def get_metadata():
     return metadata
 
 
-def get_metadata_from_path(path, metadata=None):
-    """Given a path, find the the context the path belongs to, and
-    the metadata for that level.
+def save_metadata(metadata):
+    conf_dir = findconffolder()
+    metadata_f = open(join(conf_dir, 'metadata'), 'w')
+    metadata_f.write(str(metadata))
+    metadata_f.close()
 
-    :return: (context, metadata)
-    """
-    root_dir = dirname(findconffolder())
-    split_path = path.replace(root_dir, '').split(sep)
 
-    # might be a plugin already fetched the metadata, so no need to
-    # fetch it again
-    if not metadata:
-        metadata = get_metadata()
+# def get_metadata_from_path(path, metadata=None):
+#     """Given a path, find the the context the path belongs to, and
+#     the metadata for that level.
 
-    # alias split_path to something shorter
-    p = split_path
-    d = len(split_path)  # d for depth
+#     :return: (context, metadata)
+#     """
+#     root_dir = dirname(findconffolder())
+#     split_path = path.replace(root_dir, '').split(sep)
 
-    if d == 1:
-        return metadata
-    elif d == 2:
-        return metadata[p[1]]
-    elif d == 3:
-        return metadata[p[1]][p[2]]
-    elif d == 4:
-        return metadata[p[1]][p[2]][p[3]]
-    elif d == 5:
-        return metadata[p[1]][p[2]][p[3]][p[4]]
-    elif d == 6:
-        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]]
-    elif d == 7:
-        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]]
-    else:
-        return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]][p[7]]
+#     # might be a plugin already fetched the metadata, so no need to
+#     # fetch it again
+#     if not metadata:
+#         metadata = get_metadata()
+
+#     # alias split_path to something shorter
+#     p = split_path
+#     d = len(split_path)  # d for depth
+
+#     if d == 1:
+#         return metadata
+#     elif d == 2:
+#         return metadata[p[1]]
+#     elif d == 3:
+#         return metadata[p[1]][p[2]]
+#     elif d == 4:
+#         return metadata[p[1]][p[2]][p[3]]
+#     elif d == 5:
+#         return metadata[p[1]][p[2]][p[3]][p[4]]
+#     elif d == 6:
+#         return metadata[p[1]][p[2]][p[3]][p[4]][p[5]]
+#     elif d == 7:
+#         return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]]
+#     else:
+#         return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]][p[7]]
 
 
 def deadline_format(deadline):
@@ -209,6 +219,10 @@ def deadline_format(deadline):
     deadline = deadline.replace(' ', '-')
     deadline = deadline[:-2]
     return deadline
+
+
+def deadline_unformat(deadline):
+    return datetime.fromtimestamp(time.mktime(time.strptime(deadline, "%Y%m%d_%H%M")))
 
 
 def is_late(delivery):

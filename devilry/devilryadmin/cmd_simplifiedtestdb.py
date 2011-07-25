@@ -53,7 +53,7 @@ def create_testgroups(path, numstudents, numexaminers, subject_long_name,
     for a in assignments:
         args = [create_testgroups_cmd,
                 '{0}.{1}'.format(path, a['shortname']),
-                '--grade-plugin', a['gradeplugin'],
+                '--grade-plugin', 'fake',
                 '--num-students', str(numstudents),
                 '--num-examiners', str(numexaminers),
                 '--deadline-profile', str(a['deadlineprofile']),
@@ -79,16 +79,12 @@ create_testgroups(path = 'duckburgh.univ:duck1100.spring01',
                   always_one_delivery=True,
                   assignments = [
                                  {'shortname': 'week1', 'deadlineprofile': '-30', 'maxpoints': 14,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week one'},
                                  {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week two'},
                                  {'shortname': 'week3', 'deadlineprofile': 'old', 'maxpoints': 9,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week tree'},
                                  {'shortname': 'week4', 'deadlineprofile': 'recent', 'maxpoints': 9,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'long_name': 'The one and only week tree'},
                                 ])
 
@@ -100,15 +96,12 @@ create_testgroups(path = 'duckburgh.univ:duck1080.fall01',
                   always_one_delivery=True,
                   assignments = [
                                  {'shortname': 'week1', 'deadlineprofile': '-30', 'maxpoints': 11,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'pointscale': 10,
                                   'long_name': 'The one and only week one'},
                                  {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'pointscale': 10,
                                   'long_name': 'The one and only week two'},
                                  {'shortname': 'week3', 'deadlineprofile': 'recent', 'maxpoints': 9,
-                                  'gradeplugin': 'grade_rstschema:rstschemagrade',
                                   'pointscale': 10,
                                   'long_name': 'The one and only week tree'},
                                 ])
@@ -124,6 +117,18 @@ create_testgroups(path = 'duckburgh.univ:duck3580.fall01',
                                   'gradeplugin': 'grade_approved:approvedgrade',
                                   'long_name': 'Week one'},
                                  {'shortname': 'week2', 'deadlineprofile': 'recent',
-                                  'gradeplugin': 'grade_approved:approvedgrade',
                                   'long_name': 'Week two'}
                                 ])
+
+
+print
+print "**********************************************************"
+print "Create an example database"
+print
+print "Log in as:"
+print "     - grandma    (a superadmin)"
+print "     - examiner0  (an examiner)"
+print "     - student0   (a student)."
+print
+print "Every user has password: test"
+print "**********************************************************"

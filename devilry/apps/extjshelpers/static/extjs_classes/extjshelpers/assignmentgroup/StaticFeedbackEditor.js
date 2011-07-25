@@ -1,12 +1,14 @@
-/** Panel to show StaticFeedback info .
- *
- * @xtype staticfeedbackeditableinfo
+/** Panel to show StaticFeedback info and create new static feedbacks.
  */
-Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
-    extend: 'devilry.extjshelpers.StaticFeedbackInfo',
-    alias: 'widget.staticfeedbackeditableinfo',
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
+    extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
+    alias: 'widget.staticfeedbackeditor',
 
     config: {
+        /**
+        * @cfg
+        * Assignment id. (Required).
+        */
         assignmentid: undefined
     },
 
@@ -18,6 +20,7 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'New feedback',
+            iconCls: 'icon-add-16',
             margin: {left: 5},
             listeners: {
                 click: function() {
@@ -27,7 +30,6 @@ Ext.define('devilry.extjshelpers.StaticFeedbackEditableInfo', {
         });
         this.addListener('afterStoreLoadMoreThanZero', function() {
             me.getToolbar().add(me.createButton);
-            me.getToolbar().show();
         });
         this.callParent(arguments);
     },

@@ -99,13 +99,13 @@ class DevilryClientStatus(object):
         # if self.soi != None and self.soi != node and depth == 0:
         #     return
 
-        print depth * "  ", node
+        print depth * "  ", node, sub_tree.keys()
 
-        for key in sub_tree.keys():
+        for key in sorted(sub_tree.keys()):
             self.traverse_tree(key, sub_tree[key], depth + 1)
 
     def collect_data(self):
-        for key in self.metadata.keys():
+        for key in sorted(self.metadata.keys()):
             self.traverse_tree(key, self.metadata[key], 0)
 
     def display(self):
