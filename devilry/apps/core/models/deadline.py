@@ -33,6 +33,17 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
         A django ``RelatedManager`` that holds the `deliveries <Delivery>`_ on this group.
 
+    .. attribute:: is_head
+
+        Is this the first *fake* deadline? When an assignmentgroup is created,
+        a fake deadline is created with ``is_head=True``. All manually created deadlines
+        should have ``is_head=False`` (the default).
+
+    .. attribute:: deliveries_available_before_deadline
+
+        Should deliveries on this deadline be available to examiners before the
+        deadline expires? This is set by students.
+
     .. attribute:: status
 
         The status of this deadline. The data can be deduces from other data in the database, but
@@ -44,7 +55,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             2. Corrected, not published
             3. Corrected and published
 
-     .. attribute:: feedbacks_published
+    .. attribute:: feedbacks_published
 
         If this boolean field is ``True``, the student can see all
         :class:`StaticFeedback` objects associated with this Deadline through a
@@ -60,8 +71,13 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     deadline = models.DateTimeField(help_text=_('The time of the deadline.'))
     text = models.TextField(blank=True, null=True,
                             help_text=_('An optional text to show to students and examiners.'))
-    is_head = models.BooleanField(default=False)
-    deliveries_available_before_deadline = models.BooleanField(default=False)
+    is_head = models.BooleanField(default=False,
+                                 help_text=_('Is this the first fake deadline? When an assignmentgroup is created, '
+                                             'a fake deadline is created with is_head=True. All manually created deadlines '
+                                             'have is_head=False.'))
+    deliveries_available_before_deadline = models.BooleanField(default=False,
+                                                              help_text=_('Should deliveries on this deadline be available to examiners before the'
+                                                                          'deadline expires? This is set by students.'))
     feedbacks_published = models.BooleanField(default=False,
                                               help_text=_('If this is ``True``, the student can see all '\
                                                           'StaticFeedbacks associated with this Deadline'))

@@ -60,7 +60,7 @@ def field_to_restfultype(field):
     elif isinstance(field, fields.DateTimeField):
         return 'DateTime string (YYYY-MM-DD hh:mm:ss)', '"2010-02-22 22:32:10"'
     elif isinstance(field, fields.related.ManyToManyField) or isinstance(field, fields.related.RelatedObject):
-        return 'Comma-separated list', '"this, is, an, example"'
+        return 'List of strings', '["this", "is", "an", "example"]'
     else:
         raise ValueError('Unsupported field type: {0}'.format(type(field)))
 

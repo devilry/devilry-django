@@ -15,13 +15,14 @@
         {{ RestfulCls|extjs_combobox_model }}
     {% endfor %}
 
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store:3 }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store:3 }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store:3 }}
-    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:3 }}
-    var listingdeadlinestore = {{ RestfulSimplifiedDeadline|extjs_store:10 }}
+    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
+    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
+    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
+    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store }}
+    var listingdeadlinestore = {{ RestfulSimplifiedDeadline|extjs_store }}
 
     Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
+    Ext.require('devilry.extjshelpers.searchwidget.FilterConfigDefaults');
     Ext.onReady(function() {
         var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
             renderTo: 'searchwidget',
@@ -40,8 +41,17 @@
                 xtype: 'searchresults',
                 title: 'Assignment groups',
                 store: assignmentgroupstore,
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
                 resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+                    defaultbutton: {
+                        text: 'View/edit',
+                        clickLinkTpl: 'assignmentgroup/{id}'
+                    },
+                    menuitems: [{
+                        text: 'Show deliveries',
+                        clickFilter: 'type:delivery group:{id}'
+                    }]
                 }
             }, {
                 xtype: 'searchresults',
