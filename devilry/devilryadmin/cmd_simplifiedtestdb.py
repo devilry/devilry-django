@@ -53,7 +53,8 @@ scriptsdir = getscriptsdir()
 create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
 
 def create_testgroups(path, numstudents, numexaminers, subject_long_name,
-                      period_long_name, deliverycountrange, assignments):
+                      period_long_name, deliverycountrange, assignments,
+                      examinerspergroup=1, studentspergroup=1):
     for a in assignments:
         args = [create_testgroups_cmd,
                 '{0}.{1}'.format(path, a['shortname']),
@@ -63,6 +64,8 @@ def create_testgroups(path, numstudents, numexaminers, subject_long_name,
                 '--deadline-profile', str(a['deadlineprofile']),
                 '--subject-long-name', subject_long_name,
                 '--period-long-name', period_long_name,
+                '--examiners-per-group', str(examinerspergroup),
+                '--students-per-group', str(studentspergroup),
                 '--assignment-long-name', a['long_name']]
         if 'maxpoints' in a:
             args.extend(['--grade-maxpoints', str(a['maxpoints'])])
@@ -123,6 +126,21 @@ create_testgroups(path = 'duckburgh.univ:duck3580.fall01',
                                  {'shortname': 'week2', 'deadlineprofile': 'recent',
                                   'long_name': 'Week two'}
                                 ])
+
+# Duck 5063
+create_testgroups(path = 'duckburgh.univ:duck5063.fall01',
+                  numstudents = args.numstudents, numexaminers = args.numexaminers,
+                  subject_long_name = 'DUCK5063 - Make low level stuff',
+                  period_long_name = 'Fall year zero',
+                  deliverycountrange=args.deliverycountrange,
+                  assignments = [
+                                 {'shortname': 'first_assignment', 'deadlineprofile': '-30',
+                                  'gradeplugin': 'grade_approved:approvedgrade',
+                                  'long_name': 'First assignment'},
+                                 {'shortname': 'second_assignment', 'deadlineprofile': 'recent',
+                                  'long_name': 'Second assignment'}
+                                ],
+                 studentspergroup = 2, examinerspergroup = 3)
 
 
 print
