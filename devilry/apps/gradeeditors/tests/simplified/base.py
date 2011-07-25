@@ -12,17 +12,17 @@ class SimplifiedFeedbackDraftTestBase(testhelper.TestHelper):
         self.add(nodes='uni',
                  subjects=['inf101'],
                  periods=['spring01'],
-                 assignments=['assignment1:admin(goodadmin)', 'assignment2:admin(badadmin)'])
+                 assignments=['assignment1:admin(goodadmin,secondgoodadmin)', 'assignment2:admin(badadmin)'])
         self.add_to_path('uni;inf101.spring01.assignment1.group1:candidate(firststudent):examiner(goodexaminer)')
         self.add_to_path('uni;inf101.spring01.assignment1.group2:candidate(secondstudent):examiner(badexaminer)')
         group = self.inf101_spring01_assignment1_group1
         self.delivery = self.add_delivery(group)
         self._setup_users()
 
-    def _create_draft_without_simplified(self):
+    def _create_draft_without_simplified(self, saved_by):
         return FeedbackDraft.objects.create(delivery=self.delivery,
-                                            draft='tst',
-                                            saved_by=self.goodexaminer)
+                                            draft='txt',
+                                            saved_by=saved_by)
 
     #def _setup_users(self):
         #
@@ -52,7 +52,7 @@ class SimplifiedFeedbackDraftCreateTestBase(SimplifiedFeedbackDraftTestBase):
 class SimplifiedFeedbackDraftReadTestBase(SimplifiedFeedbackDraftTestBase):
 
     def _read_success_test(self, user):
-        draft = self._create_draft_without_simplified()
+        draft = self._create_draft_without_simplified(user)
         result = self.SimplifiedFeedbackDraft.read(user, draft.id)
         self.assertEquals(result['draft'], draft.draft)
 
@@ -60,6 +60,32 @@ class SimplifiedFeedbackDraftReadTestBase(SimplifiedFeedbackDraftTestBase):
         self._read_success_test(self.gooduser)
 
     def test_read_as_baduser(self):
-        draft = self._create_draft_without_simplified()
+        draft = self._create_draft_without_simplified(self.goodexaminer)
         with self.assertRaises(PermissionDenied):
             self.SimplifiedFeedbackDraft.read(self.baduser, draft.id)
+
+    def test_read_superuser_access(self):
+        # Check that superusers do not have access to drafts from other users
+        draft = self._create_draft_without_simplified(self.goodexaminer)
+        with self.assertRaises(PermissionDenied):
+            self.SimplifiedFeedbackDraft.read(self.superuser, draft.id)
+
+
+class SimplifiedFeedbackDraftSearchTestBase(SimplifiedFeedbackDraftTestBase):
+    def _search_success_test(self, user):
+        self.assertEquals(0, len(self.SimplifiedFeedbackDraft.search(user)))
+        self._create_draft_without_simplified(user)
+        self._create_draft_without_simplified(user)
+        self.assertEquals(2, len(self.SimplifiedFeedbackDraft.search(user)))
+
+    def test_search_as_gooduser(self):
+        self._search_success_test(self.gooduser)
+
+    def test_search_as_baduser(self):
+        draft = self._create_draft_without_simplified(self.gooduser)
+        self.assertEquals(0, len(self.SimplifiedFeedbackDraft.search(self.baduser)))
+
+    def test_search_superuser_access(self):
+        # Check that superusers do not have access to drafts from other users
+        draft = self._create_draft_without_simplified(self.gooduser)
+        self.assertEquals(0, len(self.SimplifiedFeedbackDraft.search(self.superuser)))

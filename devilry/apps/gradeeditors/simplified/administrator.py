@@ -24,5 +24,7 @@ class SimplifiedConfig(SimplifiedModelApi):
 class SimplifiedFeedbackDraft(examiner.SimplifiedFeedbackDraft):
     @classmethod
     def write_authorize(cls, user, obj):
+        if not obj.id == None:
+            raise ValueError('We should not be able to update FeedbackDraft. If you see this exception, we have a BUG.')
         if not obj.delivery.deadline.assignment_group.can_save(user):
             raise PermissionDenied()
