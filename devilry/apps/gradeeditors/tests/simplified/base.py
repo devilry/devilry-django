@@ -43,9 +43,6 @@ class SimplifiedFeedbackDraftCreateTestBase(SimplifiedFeedbackDraftTestBase):
     def test_create_as_gooduser(self):
         self._create_success_test(self.gooduser)
 
-    #def test_create_as_superuser(self):
-        #self._create_success_test(self.superuser)
-
     def test_create_as_baduser(self):
         with self.assertRaises(PermissionDenied):
             self.SimplifiedFeedbackDraft.create(self.baduser,
@@ -57,39 +54,12 @@ class SimplifiedFeedbackDraftReadTestBase(SimplifiedFeedbackDraftTestBase):
     def _read_success_test(self, user):
         draft = self._create_draft_without_simplified()
         result = self.SimplifiedFeedbackDraft.read(user, draft.id)
-        self.assertEquals(result, {'delivery': 1,
-                                   'saved_by': 5,
-                                   'shared': False,
-                                   'draft': u'tst',
-                                   'id': 1})
+        self.assertEquals(result['draft'], draft.draft)
 
     def test_read_as_gooduser(self):
         self._read_success_test(self.gooduser)
-
-    #def test_read_as_superuser(self):
-        #self._read_success_test(self.superuser)
 
     def test_read_as_baduser(self):
         draft = self._create_draft_without_simplified()
         with self.assertRaises(PermissionDenied):
             self.SimplifiedFeedbackDraft.read(self.baduser, draft.id)
-
-
-class SimplifiedFeedbackDraftUpdateTestBase(SimplifiedFeedbackDraftTestBase):
-    def _update_success_test(self, user):
-        draft = self._create_draft_without_simplified()
-        self.SimplifiedFeedbackDraft.update(user, draft.id,
-                                            delivery=self.delivery,
-                                            draft='UPDATED')
-        updated = FeedbackDraft.objects.get(id=draft.id)
-        self.assertEquals(updated.draft, 'UPDATED')
-
-    def test_update_as_gooduser(self):
-        self._update_success_test(self.gooduser)
-
-    def test_update_as_baduser(self):
-        draft = self._create_draft_without_simplified()
-        with self.assertRaises(PermissionDenied):
-            self.SimplifiedFeedbackDraft.update(self.baduser, draft.id,
-                                                delivery=self.delivery,
-                                                draft='tst')

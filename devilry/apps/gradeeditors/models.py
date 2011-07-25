@@ -18,9 +18,8 @@ class FeedbackDraft(models.Model):
     Stored by examiners.
     """
     delivery = models.ForeignKey(Delivery)
-    saved_by = models.ForeignKey(User)
-    shared = models.BooleanField()
     draft = models.TextField()
-
-    class Meta:
-        unique_together = ('delivery', 'saved_by')
+    save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False,
+                                          help_text='Time when this feedback was saved. Since FeedbackDraft '
+                                                    'is immutable, this never changes.')
+    saved_by = models.ForeignKey(User)

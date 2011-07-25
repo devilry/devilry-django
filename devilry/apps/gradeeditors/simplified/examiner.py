@@ -1,5 +1,6 @@
 from devilry.simplified import (SimplifiedModelApi, simplified_modelapi,
-                                FieldSpec, PermissionDenied)
+                                FieldSpec, PermissionDenied, FilterSpecs,
+                                FilterSpec)
 from ..models import Config, FeedbackDraft
 
 
@@ -22,10 +23,14 @@ class SimplifiedConfig(SimplifiedModelApi):
 class SimplifiedFeedbackDraft(SimplifiedModelApi):
     class Meta:
         model = FeedbackDraft
-        resultfields = FieldSpec('id', 'delivery', 'saved_by', 'shared', 'draft')
+        resultfields = FieldSpec('id', 'delivery', 'saved_by', 'save_timestamp', 'draft')
         searchfields = FieldSpec()
-        methods = ('create', 'read', 'update')
-        editablefields = ('delivery', 'shared', 'draft')
+        filters = FilterSpecs(FilterSpec('delivery'))
+        methods = ('create', 'read', 'search')
+        editablefields = ('delivery', 'draft')
+
+    def create_searchqryset(self, user):
+        return self._meta.model.objects.filter(saved_by=user)
 
     #@classmethod
     #def write_authorize(cls, user, obj):

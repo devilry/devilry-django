@@ -2,11 +2,10 @@ from django.test import TestCase
 
 from devilry.apps.core import testhelper
 from devilry.apps.gradeeditors.simplified import administrator
-from devilry.apps.gradeeditors.models import Config, FeedbackDraft
+from devilry.apps.gradeeditors.models import Config
 from devilry.simplified import PermissionDenied
 from base import (SimplifiedFeedbackDraftCreateTestBase,
-                  SimplifiedFeedbackDraftReadTestBase,
-                  SimplifiedFeedbackDraftUpdateTestBase)
+                  SimplifiedFeedbackDraftReadTestBase)
 
 
 testhelper.TestHelper.set_memory_deliverystore()
@@ -118,7 +117,3 @@ class SimplifiedFeedbackDraftAdministratorCreateTest(SimplifiedFeedbackDraftCrea
 class SimplifiedFeedbackDraftAdministratorReadTest(SimplifiedFeedbackDraftReadTestBase, SetupFeedbackDraftTest, TestCase):
     def test_read_as_superuser(self):
         self._read_success_test(self.superuser)
-
-class SimplifiedFeedbackDraftAdministratorUpdateTest(SimplifiedFeedbackDraftUpdateTestBase, SetupFeedbackDraftTest, TestCase):
-    def test_update_as_superuser(self):
-        self._update_success_test(self.superuser)
