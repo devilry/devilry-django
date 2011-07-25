@@ -325,7 +325,7 @@ class UnsupportedCrudsMethod(Exception):
 
 def _create_unsupported_cruds_method(cls, methodname):
     def wrapper(cls, *args, **kwargs):
-        raise UnsupportedCrudsMethod()
+        raise UnsupportedCrudsMethod("Unsupperted CRUD+S method: {}".format(methodname))
     setattr(cls, methodname, MethodType(wrapper, cls))
 
 
