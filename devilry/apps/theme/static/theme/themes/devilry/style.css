@@ -460,6 +460,11 @@ section.treeheading {
 .prettyviewpanel {
   margin-top: 30px; }
 
+.studentsmanager .pointscolumn {
+  font-size: 30px; }
+.studentsmanager .nofeedback {
+  color: #aaa; }
+
 /**
  *
  * Footer

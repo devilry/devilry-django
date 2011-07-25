@@ -2,6 +2,13 @@
 Ext.define('devilry.administrator.assignment.PrettyView', {
     extend: 'devilry.administrator.PrettyView',
     alias: 'widget.administrator_assignmentprettyview',
+    requires: [
+        'devilry.extjshelpers.studentsmanager.StudentsManager'
+    ],
+
+    config: {
+        assignmentgroupstore: undefined
+    },
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
@@ -51,6 +58,11 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '</section>'
     ),
 
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     getExtraBodyData: function(record) {
         return {
             published: record.data.publishing_time < Ext.Date.now(),
@@ -84,8 +96,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 //maximized: true,
                 closeAction: 'hide',
                 items: {
-                    xtype: 'box',
-                    html: 'Hello world'
+                    xtype: 'studentsmanager',
+                    assignmentgroupstore: this.assignmentgroupstore,
+                    assignmentid: this.objectid
                 },
             });
         }

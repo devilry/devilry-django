@@ -204,6 +204,8 @@ if __name__ == "__main__":
                     student=User.objects.get(username=student))
         for examiner in examiners:
             group.examiners.add(User.objects.get(username=examiner))
+        fakedeadline = group.deadlines.all()[0]
+        fakedeadline.deadline = datetime(1970, 1, 1)
         group.deadlines.create(deadline=deadline)
         logging.info("Created {0} (id:{1})".format(group, group.id))
         return group
@@ -256,14 +258,14 @@ if __name__ == "__main__":
 
         # More than two weeks since deadline - should have feedback on about all
         if deadline < two_weeks_ago:
-            logging.debug("Very old deadline (14 days +)")
+            logging.info("    Very old deadline (14 days +)")
             if randint(0, 100) <= 3: # Always a 3% chance to forget giving feedback.
                 return
             autocreate_feedbacks(delivery, group_quality_percent, max_percent)
 
         # Less than two weeks but more that 5 days since deadline
         elif deadline < five_days_ago:
-            logging.debug("Old deadline (5-14 days)")
+            logging.info("    Old deadline (5-14 days)")
             if randint(0, 100) <= 10:
                 # 10% of them has no feedback yet
                 return
@@ -272,7 +274,7 @@ if __name__ == "__main__":
         # Recent deadline (2-5 days since deadline)
         # in the middle of giving feedback
         elif deadline < two_days_ago:
-            logging.debug("Recent deadline (2-5 days)")
+            logging.info("    Recent deadline (2-5 days)")
             if randint(0, 100) <= 50:
                 # Half of them has no feedback yet
                 return
@@ -280,7 +282,7 @@ if __name__ == "__main__":
 
         # Very recent deadline (0-2 days since deadline)
         elif deadline < now:
-            logging.debug("Very recent deadline (0-3 days)")
+            logging.info("    Very recent deadline (0-3 days)")
             if randint(0, 100) <= 90:
                 # 90% of them has no feedback yet
                 return
@@ -288,7 +290,7 @@ if __name__ == "__main__":
 
         # Deadline is in the future
         else:
-            logging.debug("Deadline is in the future. Made deliveries, but "\
+            logging.info("    Deadline is in the future. Made deliveries, but "\
                     "no feedback")
             pass # No feedback
 
