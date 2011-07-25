@@ -11,7 +11,7 @@ class SimplifiedConfig(SimplifiedModelApi):
         model = Config
         resultfields = FieldSpec('id', 'gradeeditorid', 'assignment', 'config')
         searchfields = FieldSpec()
-        methods = ['create', 'read', 'update']
+        methods = ('create', 'read', 'update')
 
     @classmethod
     def write_authorize(cls, user, obj):

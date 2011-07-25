@@ -1,9 +1,14 @@
-from django.conf.urls.defaults import patterns, url
-from django.contrib.auth.decorators import login_required
+from django.conf.urls.defaults import patterns, include
+
+from restful.administrator import administrator_restful
+from restful.examiner import examiner_restful
 
 
-
+administratorurlpatterns = patterns('')
+administratorurlpatterns += administrator_restful
+examinerurlpatterns = patterns('')
+examinerurlpatterns += examiner_restful
 urlpatterns = patterns('devilry.apps.gradeeditors',
-                       #url(r'^load-grade-editor/(?P<assignmentid>\d+)',
-                           #login_required(LoadGradeEditor.as_view()))
+                       (r'^administrator/', include(administratorurlpatterns)),
+                       (r'^examiner/', include(examinerurlpatterns))
                       )
