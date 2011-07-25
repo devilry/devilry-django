@@ -16,9 +16,6 @@ from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
 from model_utils import Etag, EtagMismatchException
 
-from devilry.apps.gradeeditors import gradeeditor_registry
-
-
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
@@ -42,12 +39,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         Node.
-
-    .. attribute:: grade_plugin
-
-        A django.db.models.CharField_ that holds the key of the current
-        grade-plugin. More info on grade-plugins
-        :ref:`here <grade-plugins>`.
 
     .. attribute:: assignmentgroups
 
@@ -126,10 +117,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
-    grade_plugin = models.CharField(max_length=100,
-            verbose_name=_("Grade editor"),
-            choices=gradeeditor_registry.itertitles(),
-            default=gradeeditor_registry.getdefaultkey())
     filenames = models.TextField(blank=True, null=True,
             verbose_name=_("Filenames"),
             help_text=_('Filenames separated by newline or space. If '
