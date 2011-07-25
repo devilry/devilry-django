@@ -113,7 +113,7 @@ class SimplifiedStaticFeedback(PublishedWhereIsExaminerMixin):
                           'rendered_view', 'delivery']
 
     @classmethod
-    def post_full_clean(cls, user, obj):
+    def pre_full_clean(cls, user, obj):
         if not obj.id == None:
             raise ValueError('BUG: Examiners should only have create permission on StaticFeedback.')
         obj.saved_by = user
