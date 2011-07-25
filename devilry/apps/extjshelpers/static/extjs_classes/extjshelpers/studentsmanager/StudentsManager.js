@@ -6,7 +6,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     requires: [
         'devilry.extjshelpers.studentsmanager.FilterSelector',
-        'devilry.extjshelpers.studentsmanager.StudentsGrid'
+        'devilry.extjshelpers.studentsmanager.StudentsGrid',
+        'devilry.extjshelpers.SearchField'
     ],
 
     config: {
@@ -25,7 +26,18 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 region: 'north',     // position for region
                 xtype: 'panel',
                 height: 100,
-                html: 'Search will go here'
+                //html: 'Search will go here'
+                layout: { //Layout spec of underlying components
+                    type: 'vbox',
+                    align: 'center'
+                },
+                items: [{
+                    xtype: 'searchfield',
+                    width: 600,
+                    height: 40,
+                    padding: '30 0 0 0'
+
+                }]
             },{
                 region:'west',
                 xtype: 'panel',
