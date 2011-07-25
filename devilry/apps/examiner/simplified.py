@@ -1,9 +1,14 @@
 from ...simplified import SimplifiedModelApi, simplified_modelapi, PermissionDenied, FieldSpec
 from ..core import models
-from ..student.simplifiedmetabases import (SimplifiedSubjectMetaMixin, SimplifiedFileMetaMetaMixin,
-                                           SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
-                                           SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
-                                           SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,)
+from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
+                                                   SimplifiedFileMetaMetaMixin,
+                                                   SimplifiedPeriodMetaMixin,
+                                                   SimplifiedAssignmentMetaMixin,
+                                                   SimplifiedAssignmentGroupMetaMixin,
+                                                   SimplifiedDeadlineMetaMixin,
+                                                   SimplifiedDeliveryMetaMixin,
+                                                   SimplifiedStaticFeedbackMetaMixin,)
+
 
 
 class PublishedWhereIsExaminerMixin(SimplifiedModelApi):

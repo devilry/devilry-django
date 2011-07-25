@@ -1,15 +1,18 @@
 from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            PermissionDenied, FieldSpec,
-                           FilterSpecs, FilterSpec, ForeignFilterSpec, PatternFilterSpec)
+                           FilterSpecs, FilterSpec, PatternFilterSpec)
 from ..core import models
-
-from ..student.simplifiedmetabases import (SimplifiedSubjectMetaMixin,
-                                           SimplifiedPeriodMetaMixin, SimplifiedAssignmentMetaMixin,
-                                           SimplifiedAssignmentGroupMetaMixin, SimplifiedDeadlineMetaMixin,
-                                           SimplifiedDeliveryMetaMixin, SimplifiedStaticFeedbackMetaMixin,
-                                           SimplifiedFileMetaMetaMixin)
+from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
+                                                   SimplifiedPeriodMetaMixin,
+                                                   SimplifiedAssignmentMetaMixin,
+                                                   SimplifiedAssignmentGroupMetaMixin,
+                                                   SimplifiedDeadlineMetaMixin,
+                                                   SimplifiedDeliveryMetaMixin,
+                                                   SimplifiedStaticFeedbackMetaMixin,
+                                                   SimplifiedFileMetaMetaMixin)
 
 __all__ = ('SimplifiedNode', 'SimplifiedSubject', 'SimplifiedPeriod', 'SimplifiedAssignment')
+
 
 
 class CanSaveBase(SimplifiedModelApi):
