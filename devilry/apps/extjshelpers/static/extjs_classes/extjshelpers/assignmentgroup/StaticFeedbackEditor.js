@@ -39,7 +39,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.setBody({
             xtype: 'container',
             loader: {
-                url: Ext.String.format('/static/gradeeditors/approved.js'),
+                url: Ext.String.format('/static/asminimalaspossible_gradeeditor/drafteditor.js'), // TODO read from an API
                 renderer: 'component',
                 autoLoad: true,
                 loadMask: true

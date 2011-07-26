@@ -6,6 +6,7 @@ import itertools
 from random import randint
 from datetime import datetime, timedelta
 
+from devilry.apps.gradeeditors.models import Config
 from common import (setup_logging, load_devilry_plugins,
     add_settings_option, set_django_settings_module, add_quiet_opt,
     add_debug_opt)
@@ -354,6 +355,9 @@ if __name__ == "__main__":
         assignment.pointscale = opt.pointscale
     if opt.assignment_long_name:
         assignment.long_name = opt.assignment_long_name
+    Config.objects.create(assignment=assignment,
+                          gradeeditorid='asminimalaspossible',
+                          config='')
     assignment.save()
 
     # Make sure assignment fits in parentnode
