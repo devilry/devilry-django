@@ -780,12 +780,13 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
     def test_create(self):
         kw = dict(
-                parentnode = self.inf101_firstsem_a1_g1.parentnode)
+            name='test1',
+            parentnode=self.inf101_firstsem_a1_g1.parentnode)
 
         newpk = SimplifiedAssignmentGroup.create(self.admin1, **kw)
         create_res = models.AssignmentGroup.objects.get(pk=newpk)
-        self.assertEquals(create_res.short_name, 'test1')
-        self.assertEquals(create_res.long_name, 'Test')
+        self.assertEquals(create_res.name, 'test1')
+        # self.assertEquals(create_res.long_name, 'Test')
         self.assertEquals(create_res.parentnode,
                 self.inf101_firstsem_a1_g1.parentnode)
 
@@ -1036,7 +1037,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # create a deadline that runs out in 3 days
         kw = dict(
             assignment_group=self.inf101_firstsem_a1_g1,
-            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            deadline=self.inf101_firstsem_a1.publishing_time + timedelta(days=3),
             text='Last shot!')
 
         createdpk = SimplifiedDeadline.create(self.admin1, **kw)
@@ -1074,7 +1075,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # see that the new admin can create a deadline where he is admin
         SimplifiedDeadline.create(self.inf110admin,
                                   assignment_group=self.inf110_secondsem_a1_g1,
-                                  deadline=self.inf110_secondsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+                                  deadline=self.inf110_secondsem_a1.publishing_time + timedelta(days=3),
                                   text='Last shot!')
 
     def test_delete_asnodeadmin(self):

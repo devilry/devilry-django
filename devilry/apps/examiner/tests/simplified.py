@@ -9,6 +9,7 @@ from ....simplified.utils import modelinstance_to_dict
 from ..simplified import (SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedPeriod,
                           SimplifiedSubject, SimplifiedDeadline, SimplifiedStaticFeedback)
 
+from datetime import timedelta
 
 testhelper.TestHelper.set_memory_deliverystore()
 
@@ -409,7 +410,7 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
     def test_create(self):
         kw = dict(text='test',
                   assignment_group=self.inf101_firstsem_a1_g1,
-                  deadline=self.inf101_firstsem_a1_g1.deadlines.all()[0])
+                  deadline=self.inf101_firstsem_a1.publishing_time + timedelta(days=2))
         created_pk = SimplifiedDeadline.create(self.firstExam, **kw)
 
         create_res = models.Deadline.objects.get(pk=created_pk)
