@@ -34,7 +34,9 @@ class DevilryClientUpdateMeta(object):
             if key == '.meta':
                 continue
             print key
-            methods[self.depth(key)](key)
+            method = methods.get(self.depth(key), None)
+            if method:
+                method(key)
 
         save_metadata(self.metadata)
 
@@ -96,8 +98,9 @@ class DevilryClientUpdateMeta(object):
         try:
             old_meta = eval(open(join(self.confdir, 'old_metadata'), 'r').read())
             meta['done'] = old_meta[path]['done']
-        except Exception, e:
-            print "---------- ", e
+        except Exception:
+            pass
+
         meta['time_of_delivery'] = meta['query_result']['time_of_delivery']
         meta['is_late'] = self.metadata[dirname(path)] < meta['time_of_delivery']  # is_late(self.metadata[dirname(path)]['deadline'])
         meta['delivered_by'] = 'FixMe'
