@@ -95,7 +95,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         
         var extraParams = assignmentgroupstore.proxy.extraParams;
         assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        console.log(assignmentgroupstore.proxy.extraParams);
         
         assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
@@ -107,7 +106,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             scope   : this,
             callback: function(records, operation, success) {
                 //the operation object contains all of the details of the load operation
-                console.log(records);
+                //console.log(records);
             }
         });
         
@@ -123,7 +122,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
         
         var extraParams = assignmentgroupstore.proxy.extraParams;
-        console.log(extraParams);
         assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
         
         assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
@@ -132,13 +130,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             value: this.assignmentid
         }]);
         
-        console.log(assignmentgroupstore.proxy.extraParams);
         
         assignmentgroupstore.load({
             scope   : this,
             callback: function(records, operation, success) {
                 //the operation object contains all of the details of the load operation
-                console.log(records);
+                //console.log(records);
             }
         });
         
