@@ -7,9 +7,16 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
+class ConfigValidationError(ValidationError):
+    """
+    Raised when :meth:`RegistryItem.validate_config` fails to validate the
+    configstring.
+    """
+
 class DraftValidationError(ValidationError):
     """
-    Raised when :meth:`RegistryItem.validate_draft` fails to validate the draft.
+    Raised when :meth:`RegistryItem.validate_draft` fails to validate the
+    draftstring.
     """
 
 
@@ -37,14 +44,30 @@ class RegistryItem(object):
 
     @classmethod
     def validate_config(cls, configstring):
+        """
+        Validate ``configstring`` and raise :exc:`ConfigValidationError` if it
+        does not validate.
+        """
         raise NotImplementedError('This grade plugin does not support configuration')
 
     @classmethod
     def validate_draft(cls, draftstring):
+        """
+        Validate ``draftstring`` and raise :exc:`DraftValidationError` if the validation fails.
+        """
         raise NotImplementedError()
 
     @classmethod
     def draft_to_staticfeedback_kwargs(cls, draftstring):
+        """
+        Convert ``draftstring`` into a dictionary of keyword arguments for StaticFeedback.
+        The returned dict should only contain the following keys:
+
+            - is_passing_grade
+            - grade
+            - points
+            - rendered_view
+        """
         raise NotImplementedError()
 
 
