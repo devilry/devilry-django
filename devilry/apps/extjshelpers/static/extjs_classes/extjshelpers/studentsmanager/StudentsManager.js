@@ -83,17 +83,36 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     
     setSearchfieldAttributes: function() {
         var search_field = this.down('searchfield');
+        var me = this;
         
-        search_field.addListener('newSearchValue', function(value) {
-            console.log("StudentManager: " + value);
-        });
+        /*Add listener for searchfield input*/
+        search_field.addListener('newSearchValue', this.doSomethingWithSearchFieldString, this);
 
         search_field.addListener('emptyInput', function() {
             console.log("StudentManager: Nil");
         });        
     
+    },
+    
+    doSomethingWithSearchFieldString: function(value) {            
+        console.log("StudentManager: " + value);
+        
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+            searchstring: value
+        });
+        
+        console.log(this);
+        var extraParams = assignmentgroupstore.proxy.extraParams;
+        assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
+        console.log(assignmentgroupstore.proxy.extraParams);
+        assignmentgroupstore.load({
+            scope   : this,
+            callback: function(records, operation, success) {
+                //the operation object contains all of the details of the load operation
+                console.log(records);
+            }
+        });
+        
     }
-    
-    
     
 });
