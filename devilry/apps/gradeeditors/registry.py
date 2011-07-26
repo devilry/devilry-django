@@ -3,9 +3,14 @@
 
     A :class:`Registry`-object.
 """
-
-
 from django.conf import settings
+from django.core.exceptions import ValidationError
+
+
+class DraftValidationError(ValidationError):
+    """
+    Raised when :meth:`RegistryItem.validate_draft` fails to validate the draft.
+    """
 
 
 class RegistryItem(object):
@@ -39,7 +44,7 @@ class RegistryItem(object):
         raise NotImplementedError()
 
     @classmethod
-    def draft_to_staticfeedback(cls, draftstring):
+    def draft_to_staticfeedback_kwargs(cls, draftstring):
         raise NotImplementedError()
 
 
@@ -48,8 +53,8 @@ class Registry(object):
     Grade editor registry. You **should not** create a object of this class.
     It is already available as :attr:`gradeeditor_registry`.
     """
-    #def __init__(self):
-        #self._registry = {'approved': RegistryItem('approved', 'Fake', 'Fake')} # TODO: This hack must be replaced when we develop the new grade plugins
+    def __init__(self):
+        self._registry = {}
 
     def register(self, registryitem):
         """
@@ -58,6 +63,9 @@ class Registry(object):
         if registryitem.gradeeditorid in self._registry:
             raise ValueError('More than one gradeeditor with gradeeditorid: {0}'.format(registryitem.gradeeditorid))
         self._registry[registryitem.gradeeditorid] = registryitem
+
+    def __getitem__(self, gradeeditorid):
+        return self._registry[gradeeditorid]
 
     def getdefaultkey(self):
         """

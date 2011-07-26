@@ -14,6 +14,9 @@ class Config(models.Model):
     assignment = models.OneToOneField(Assignment, related_name='gradeeditor_config')
     config = models.TextField()
 
+    def _get_gradeeditor(self):
+        return gradeeditor_registry[self.gradeeditorid]
+
 
 class FeedbackDraft(models.Model):
     """
@@ -28,42 +31,48 @@ class FeedbackDraft(models.Model):
     published = models.BooleanField(default=False,
                                     help_text='Has this draft been published as a StaticFeedback? Setting this to true on create automatically creates a StaticFeedback.')
     staticfeedback = models.OneToOneField(StaticFeedback, blank=True, null=True,
+                                          related_name='gradeeditor_feedbackdraft',
                                           help_text='The StaticFeedback where this was published if this draft has been published.')
+
+    def _get_gradeeditor(self):
+        return self.delivery.deadline.assignment_group.parentnode.gradeeditor_config._get_gradeeditor()
 
     def clean(self):
         if self.id == None: # If creating a new FeedbackDraft
-            if not self.published:
-                self.staticfeedback = None # We should NEVER set staticfeedback if published is not True
-            assignment = self.delivery.deadline.assignment_group.parentnode
             try:
-                config = assignment.gradeeditor_config
+                config = self._get_gradeeditor()
             except Config.DoesNotExist:
                 raise ValidationError(('Can not create feedback on delivery:{0} '
-                                       'because assignment:{1} does not have a '
-                                       'gradeeditor_config.').format(self.delivery,
-                                                                     assignment))
-            self.staticfeedback = self._to_staticfeedback()
-            self.staticfeedback.full_clean()
+                                       'because its assignment does not have a '
+                                       'gradeeditor_config.').format(self.delivery))
+            else:
+                config.validate_draft(self.draft)
+                if self.published:
+                    self._tmp_staticfeedback = self._to_staticfeedback()
+                    self._tmp_staticfeedback.full_clean()
+                else:
+                    self.staticfeedback = None # We should NEVER set staticfeedback if published is not True
         else:
             raise ValidationError('FeedbackDraft is immutable (it can not be changed).')
 
     def save(self, *args, **kwargs):
         super(FeedbackDraft, self).save(*args, **kwargs)
-        if self.staticfeedback:
-            self.staticfeedback.save()
+        #print 'FeedbackDraft:', FeedbackDraft.objects.get(id=self.id)
+        if hasattr(self, '_tmp_staticfeedback'):
+            self._tmp_staticfeedback.save()
+            self.staticfeedback = self._tmp_staticfeedback # Note: We use _tmp_staticfeedback because if we need a variable in which to store the staticfeedback while we save it. We can not just save self.staticfeedback() because that would just create create a copy without actually setting self.staticfeedback to the newly saved value.
+            super(FeedbackDraft, self).save(*args, **kwargs)
 
     def _to_staticfeedback(self):
-        config = self.delivery.deadline.assignment_group.parentnode.gradeeditor_config
-        print config
+        """ Return a staticfeedback generated from self. """
+        gradeeditor = self._get_gradeeditor()
+        kwargs = gradeeditor.draft_to_staticfeedback_kwargs(self.draft)
 
-
-
-#def handle_feedbackdraft_delete(sender, **kwargs):
-    #feedbackdraft = kwargs['instance']
-    #if feedbackdraft.published:
-        #feedbackdraft._publish()
-
-
-#from django.db.models.signals import post_save
-#post_save.connect(handle_feedbackdraft_delete,
-                  #sender=FeedbackDraft)
+        # Create StaticFeedback from kwargs. We copy by key instead of **kwargs to make sure we dont get anything extra.
+        return StaticFeedback(is_passing_grade=kwargs['is_passing_grade'],
+                                        grade=kwargs['grade'],
+                                        points=kwargs['points'],
+                                        rendered_view=kwargs['rendered_view'],
+                                        delivery=self.delivery,
+                                        save_timestamp=None,
+                                        saved_by=self.saved_by)

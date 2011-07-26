@@ -12,7 +12,7 @@ testhelper.TestHelper.set_memory_deliverystore()
 
 
 
-class SimplifiedConfigAdministratorReadTest(TestCase, testhelper.TestHelper):
+class SimplifiedConfigExaminerReadTest(TestCase, testhelper.TestHelper):
     def setUp(self):
         self.add(nodes='uni',
                  subjects=['inf101'],
@@ -50,11 +50,11 @@ class SetupFeedbackDraftTest(object):
         self.gooduser = self.goodexaminer
         self.baduser = self.badexaminer
 
-class SimplifiedFeedbackDraftAdministratorCreateTest(SimplifiedFeedbackDraftCreateTestBase, SetupFeedbackDraftTest, TestCase):
+class SimplifiedFeedbackDraftExaminerCreateTest(SimplifiedFeedbackDraftCreateTestBase, SetupFeedbackDraftTest, TestCase):
     pass
 
-class SimplifiedFeedbackDraftAdministratorReadTest(SimplifiedFeedbackDraftReadTestBase, SetupFeedbackDraftTest, TestCase):
+class SimplifiedFeedbackDraftExaminerReadTest(SimplifiedFeedbackDraftReadTestBase, SetupFeedbackDraftTest, TestCase):
     pass
 
-class SimplifiedFeedbackDraftAdministratorSearchTest(SimplifiedFeedbackDraftSearchTestBase, SetupFeedbackDraftTest, TestCase):
+class SimplifiedFeedbackDraftExaminerSearchTest(SimplifiedFeedbackDraftSearchTestBase, SetupFeedbackDraftTest, TestCase):
     pass
