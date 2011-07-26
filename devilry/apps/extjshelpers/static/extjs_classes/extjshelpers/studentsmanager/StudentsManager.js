@@ -33,6 +33,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 },
                 items: [{
                     xtype: 'searchfield',
+                    id: 'foo',
                     width: 600,
                     height: 40,
                     padding: '30 0 0 0'
@@ -75,5 +76,24 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
         });
         this.callParent(arguments);
+        this.setSearchfieldAttributes();
+    },
+    
+    
+    
+    setSearchfieldAttributes: function() {
+        var search_field = this.down('searchfield');
+        
+        search_field.addListener('newSearchValue', function(value) {
+            console.log("StudentManager: " + value);
+        });
+
+        search_field.addListener('emptyInput', function() {
+            console.log("StudentManager: Nil");
+        });        
+    
     }
+    
+    
+    
 });
