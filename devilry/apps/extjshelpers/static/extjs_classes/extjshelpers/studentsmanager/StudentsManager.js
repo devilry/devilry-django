@@ -87,24 +87,53 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         
         /*Add listener for searchfield input*/
         search_field.addListener('newSearchValue', this.doSomethingWithSearchFieldString, this);
-
         search_field.addListener('emptyInput', function() {
-            console.log("StudentManager: Nil");
-        });        
+        
+        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
+            searchstring: ""
+        });
+        
+        var extraParams = assignmentgroupstore.proxy.extraParams;
+        assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
+        console.log(assignmentgroupstore.proxy.extraParams);
+        
+        assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.assignmentid
+        }]);
+        
+        assignmentgroupstore.load({
+            scope   : this,
+            callback: function(records, operation, success) {
+                //the operation object contains all of the details of the load operation
+                console.log(records);
+            }
+        });
+        
+        }, this);
+      
     
     },
     
     doSomethingWithSearchFieldString: function(value) {            
-        console.log("StudentManager: " + value);
         
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
             searchstring: value
         });
         
-        console.log(this);
         var extraParams = assignmentgroupstore.proxy.extraParams;
+        console.log(extraParams);
         assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
+        
+        assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.assignmentid
+        }]);
+        
         console.log(assignmentgroupstore.proxy.extraParams);
+        
         assignmentgroupstore.load({
             scope   : this,
             callback: function(records, operation, success) {
