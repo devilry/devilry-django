@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 
 from restful import student_restful
 from views import (MainView, AddDeliveryView, 
-                   FileUploadView, AssignmentGroupView)
+                   FileUploadView, AssignmentGroupView,
+                   FileDownloadView, ShowDeliveryView)
 
 urlpatterns = patterns('devilry.apps.student',
                        url(r'^$', login_required(MainView.as_view()), name='student'),
@@ -15,6 +16,12 @@ urlpatterns = patterns('devilry.apps.student',
                            name='file-upload'),
                        url(r'^assignmentgroup/(?P<assignmentgroupid>\d+)$',
                            login_required(AssignmentGroupView.as_view())),
+                       url(r'^show-delivery/(?P<deliveryid>\d+)$',
+                           login_required(ShowDeliveryView.as_view()),
+                           name='show-delivery'),
+                       url(r'^show-delivery/filedownload/(?P<filemetaid>\d+)$',
+                           login_required(FileDownloadView.as_view()),
+                           name='file-download'),
                        )
 
 urlpatterns += student_restful
