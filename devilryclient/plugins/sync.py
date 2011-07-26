@@ -57,12 +57,11 @@ class PullFromServer(object):
 
             key = subject_path.replace(self.root_dir, '')
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = subject
+            self.metadata[key]['query_result'] = subject
             
-            self.add_periods(key, subject_path, periods)
+            self.add_periods(subject_path, periods)
 
-    def add_periods(self, key, subject_path, periods):
+    def add_periods(self, subject_path, periods):
         for period in periods['items']:
             period_path = create_folder(join(subject_path, period['short_name']))
             assignment_filters = [{'field':'parentnode',
@@ -75,12 +74,11 @@ class PullFromServer(object):
             key = period_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = period
+            self.metadata[key]['query_result'] = period
 
-            self.add_assignments(key, period_path, assignments)
+            self.add_assignments(period_path, assignments)
 
-    def add_assignments(self, key, period_path, assignments):
+    def add_assignments(self, period_path, assignments):
         for assignment in assignments['items']:
             assignment_path = create_folder(join(period_path, assignment['short_name']))
             a_group_filters = [{'field':'parentnode',
@@ -94,12 +92,11 @@ class PullFromServer(object):
             key = assignment_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = assignment
+            self.metadata[key]['query_result'] = assignment
 
-            self.add_assignmentgroups(key, assignment_path, assignment_groups)
+            self.add_assignmentgroups(assignment_path, assignment_groups)
 
-    def add_assignmentgroups(self, key, assignment_path, assignment_groups):
+    def add_assignmentgroups(self, assignment_path, assignment_groups):
         for assignment_group in assignment_groups['items']:
 
             assignment_group_path = create_folder(join(assignment_path, str(assignment_group['id'])))
@@ -112,12 +109,11 @@ class PullFromServer(object):
             key = assignment_group_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = assignment_group
+            self.metadata[key]['query_result'] = assignment_group
 
-            self.add_deadlines(key, assignment_group_path, deadlines)
+            self.add_deadlines(assignment_group_path, deadlines)
 
-    def add_deadlines(self, key, assignment_group_path, deadlines):
+    def add_deadlines(self, assignment_group_path, deadlines):
         number = 1  # number for tagging the deadlines
         for deadline in deadlines['items']:
             #format deadline
@@ -136,12 +132,11 @@ class PullFromServer(object):
             key = deadline_path.replace(self.root_dir, '')
 
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = deadline
+            self.metadata[key]['query_result'] = deadline
 
-            self.add_deliveries(key, deadline_path, deliveries)
+            self.add_deliveries(deadline_path, deliveries)
 
-    def add_deliveries(self, key, deadline_path, deliveries):
+    def add_deliveries(self, deadline_path, deliveries):
         for delivery in deliveries['items']:
             #tag late deliveries
             if is_late(delivery):
@@ -156,24 +151,38 @@ class PullFromServer(object):
                 result_fieldgroups=['period', 'assignment', 'assignment_group'],
                 filters=file_filters)
 
+            feedbacks = self.SimplifiedStaticFeedback.search(
+                result_fieldgroups=['period', 'assignment', 'assignment_group'],
+                filters=file_filters)
+
             key = delivery_path.replace(self.root_dir, '')
             
             self.metadata[key] = {}
-            self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = delivery
+            self.metadata[key]['query_result'] = delivery
 
-            self.add_files(key, delivery_path, files)
+            self.add_files(delivery_path, files)
+            #self.add_feedbacks(delivery_path, feedbacks)
 
-    def add_files(self, key, delivery_path, files):
+    def add_files(self, delivery_path, files):
         file_path = create_folder(join(delivery_path, 'files'))
         for delivery_file in files['items']:
-            f = open(join(file_path, delivery_file['filename']), 'w')
+            path = join(file_path, delivery_file['filename'])
+            f = open(path, 'w')
             f.close()
+            
+            key = path.replace(self.root_dir, '')
+            self.metadata[key] = {}
+            self.metadata[key]['query_result'] = delivery_file
 
+    """
+    def add_feedbacks(self, delivery_path, feedbacks):
+        #TODO
+        file_path = create_folder(join(delivery_path, 'files'))
+        for feedback in feedbacks['items']:
             self.metadata[key] = {}
             self.metadata[key]['.meta'] = {}
-            self.metadata[key]['.meta']['query_result'] = delivery_file
-
+            self.metadata[key]['.meta']['feedback_query_result'] = feedback
+    """
     def write_metadata(self):
         devilryfolder = findconffolder()
         metafilename = join(devilryfolder, 'metadata')
