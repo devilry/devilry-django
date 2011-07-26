@@ -27,11 +27,11 @@ class SimplifiedConfig(SimplifiedModelApi):
 class SimplifiedFeedbackDraft(SimplifiedModelApi):
     class Meta:
         model = FeedbackDraft
-        resultfields = FieldSpec('id', 'delivery', 'saved_by', 'save_timestamp', 'draft')
+        resultfields = FieldSpec('id', 'delivery', 'saved_by', 'save_timestamp', 'draft', 'published', 'staticfeedback')
         searchfields = FieldSpec()
         filters = FilterSpecs(FilterSpec('delivery'))
         methods = ('create', 'read', 'search')
-        editablefields = ('delivery', 'draft')
+        editablefields = ('delivery', 'draft', 'published')
 
     @classmethod
     def create_searchqryset(self, user):

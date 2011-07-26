@@ -11,42 +11,53 @@ from django.conf import settings
 class RegistryItem(object):
     """
     Information about a grade plugin.
+
+    The attributes documented below are required.
+
+    .. attribute:: gradeeditorid
+
+        A unique string for this editor. If two editors with the same
+        gradeeditorid is registered, an exception will be raised on load time.
+
+    .. attribute:: title
+
+        A short title for the grade editor.
+
+    .. attribute:: description
+
+        A longer description of the grade editor.
     """
-    def __init__(self, idstring, title, description):
-        """
-        All parameters are stored as object attributes.
-
-        :param idstring:
-            A unique string for this editor. If two editors with the same
-            idstring is registered, an exception will be raised on load time.
-        :param title:
-            A short title for the grade editor.
-        :param description:
-            A longer description of the grade editor.
-        """
-        self.idstring = idstring
-        self.title = title
-        self.description = description
-
     def __str__(self):
         return self.title
+
+    @classmethod
+    def validate_config(cls, configstring):
+        raise NotImplementedError('This grade plugin does not support configuration')
+
+    @classmethod
+    def validate_draft(cls, draftstring):
+        raise NotImplementedError()
+
+    @classmethod
+    def draft_to_staticfeedback(cls, draftstring):
+        raise NotImplementedError()
 
 
 class Registry(object):
     """
-    Grade-plugin registry. You do not need to create a object of this class.
-    It is already available as :attr:`registry`.
+    Grade editor registry. You **should not** create a object of this class.
+    It is already available as :attr:`gradeeditor_registry`.
     """
-    def __init__(self):
-        self._registry = {'approved': RegistryItem('approved', 'Fake', 'Fake')} # TODO: This hack must be replaced when we develop the new grade plugins
+    #def __init__(self):
+        #self._registry = {'approved': RegistryItem('approved', 'Fake', 'Fake')} # TODO: This hack must be replaced when we develop the new grade plugins
 
     def register(self, registryitem):
         """
         Add a :class:`RegistryItem` to the registry.
         """
-        if registryitem.idstring in self._registry:
-            raise ValueError('More than one gradeeditor with idstring: {0}'.format(registryitem.idstring))
-        self._registry[registryitem.idstring] = registryitem
+        if registryitem.gradeeditorid in self._registry:
+            raise ValueError('More than one gradeeditor with gradeeditorid: {0}'.format(registryitem.gradeeditorid))
+        self._registry[registryitem.gradeeditorid] = registryitem
 
     def getdefaultkey(self):
         """

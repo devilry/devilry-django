@@ -38,7 +38,9 @@ class SimplifiedFeedbackDraftCreateTestBase(SimplifiedFeedbackDraftTestBase):
         id = self.SimplifiedFeedbackDraft.create(user,
                                                  delivery=self.delivery,
                                                  draft='tst')
-        FeedbackDraft.objects.get(id=id) # Will fail if it does not exist
+        draft = FeedbackDraft.objects.get(id=id) # Will fail if it does not exist
+        self.assertFalse(draft.published)
+        self.assertEquals(None, draft.staticfeedback)
 
     def test_create_as_gooduser(self):
         self._create_success_test(self.gooduser)
@@ -48,6 +50,14 @@ class SimplifiedFeedbackDraftCreateTestBase(SimplifiedFeedbackDraftTestBase):
             self.SimplifiedFeedbackDraft.create(self.baduser,
                                                          delivery=self.delivery,
                                                          draft='tst')
+
+    def test_publish(self):
+        id = self.SimplifiedFeedbackDraft.create(self.gooduser,
+                                                 delivery=self.delivery,
+                                                 draft='tst',
+                                                 published=True)
+        FeedbackDraft.objects.get(id=id) # Will fail if it does not exist
+
 
 class SimplifiedFeedbackDraftReadTestBase(SimplifiedFeedbackDraftTestBase):
 

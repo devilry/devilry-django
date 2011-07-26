@@ -1,1 +1,1 @@
-from registry import gradeeditor_registry
+from registry import gradeeditor_registry, RegistryItem
