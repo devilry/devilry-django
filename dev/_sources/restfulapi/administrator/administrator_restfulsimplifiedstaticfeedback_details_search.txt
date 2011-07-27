@@ -32,7 +32,7 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"delivery", comp:"contains", value:15},
+        filters: [{field:"delivery", comp:"iexact", value:15},
                       {field:"id", comp:">", value:15}],
         orderby: ["id", "-grade", "is_passing_grade", "saved_by", "save_timestamp", "delivery", "rendered_view"],
         start: 10,
@@ -120,7 +120,7 @@ resulting in a list of words. Every *word* in the list is searched for
             About the field:
                 List of many values.
             Type
-                Comma-separated list
+                List of strings
     
 
 
@@ -144,7 +144,7 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"delivery", comp:"contains", value:15},
+        [{field:"delivery", comp:"iexact", value:15},
          {field:"id", comp:">", value:15}]
 
 Static feedbacks can be filtered on the following *fields*:

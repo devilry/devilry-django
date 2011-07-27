@@ -49,11 +49,16 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">PermissionDenied</span>
-<span class="kn">from</span> <span class="nn">simplifiedmetabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span>
-                                 <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">,</span>
-                                 <span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">,</span>
-                                 <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedFileMetaMetaMixin</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">restfulmetabases</span> <span class="kn">import</span> <span class="n">DeadlineExtjsModelMeta</span>
+<span class="kn">from</span> <span class="nn">devilry.coreutils.simplified.metabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedFileMetaMetaMixin</span><span class="p">)</span>
+
+
 
 <span class="k">class</span> <span class="nc">PublishedWhereIsCandidateMixin</span><span class="p">(</span><span class="n">SimplifiedModelApi</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Mixin class extended by all classes in the Simplified API for Student using the Simplified API &quot;&quot;&quot;</span>
@@ -115,7 +120,7 @@
         <span class="n">editablefields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;successful&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">post_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">pre_full_clean</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;BUG: Students should only have create permission on Delivery&#39;</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">time_of_delivery</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>

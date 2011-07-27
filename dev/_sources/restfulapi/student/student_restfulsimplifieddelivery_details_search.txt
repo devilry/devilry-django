@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"deadline", comp:"icontains", value:15},
-                      {field:"deadline__assignment_group", comp:"exact", value:15},
-                      {field:"deadline__assignment_group__name", comp:"startswith", value:"My example value"}],
+        filters: [{field:"deadline", comp:"exact", value:15},
+                      {field:"deadline__assignment_group", comp:"<", value:15},
+                      {field:"deadline__assignment_group__name", comp:"<=", value:"My example value"}],
         orderby: ["id", "-number", "time_of_delivery", "deadline"],
         start: 10,
         limit: 100
@@ -81,7 +81,7 @@ resulting in a list of words. Every *word* in the list is searched for
             About the field:
                 List of many values.
             Type
-                Comma-separated list
+                List of strings
     
         deadline__assignment_group__candidates__identifier
             Actual location of the field:
@@ -89,7 +89,7 @@ resulting in a list of words. Every *word* in the list is searched for
             About the field:
                 List of many values.
             Type
-                Comma-separated list
+                List of strings
     
         deadline__assignment_group__parentnode__short_name
             Actual location of the field:
@@ -161,9 +161,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"deadline", comp:"icontains", value:15},
-         {field:"deadline__assignment_group", comp:"exact", value:15},
-         {field:"deadline__assignment_group__name", comp:"startswith", value:"My example value"}]
+        [{field:"deadline", comp:"exact", value:15},
+         {field:"deadline__assignment_group", comp:"<", value:15},
+         {field:"deadline__assignment_group__name", comp:"<=", value:"My example value"}]
 
 Deliveries can be filtered on the following *fields*:
 

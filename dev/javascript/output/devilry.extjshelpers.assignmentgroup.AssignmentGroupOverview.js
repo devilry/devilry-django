@@ -41,7 +41,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupOverview({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 152,
+        "linenr": 149,
         "inheritable": false,
         "alias": null,
         "name": "setDelivery",

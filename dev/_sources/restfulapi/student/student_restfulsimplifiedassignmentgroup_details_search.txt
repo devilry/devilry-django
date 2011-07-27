@@ -32,10 +32,10 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"id", comp:"iexact", value:15},
-                      {field:"parentnode", comp:"<=", value:15},
-                      {field:"parentnode__long_name", comp:"contains", value:"My example value"}],
-        orderby: ["id", "-name", "is_open", "status", "parentnode"],
+        filters: [{field:"id", comp:"<", value:15},
+                      {field:"parentnode", comp:"startswith", value:15},
+                      {field:"parentnode__long_name", comp:"<=", value:"My example value"}],
+        orderby: ["id", "-name", "is_open", "status", "parentnode", "feedback"],
         start: 10,
         limit: 100
     }
@@ -73,7 +73,7 @@ resulting in a list of words. Every *word* in the list is searched for
             About the field:
                 List of many values.
             Type
-                Comma-separated list
+                List of strings
     
         candidates__identifier
             Actual location of the field:
@@ -81,7 +81,7 @@ resulting in a list of words. Every *word* in the list is searched for
             About the field:
                 List of many values.
             Type
-                Comma-separated list
+                List of strings
     
         parentnode__long_name
             Actual location of the field:
@@ -153,9 +153,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"id", comp:"iexact", value:15},
-         {field:"parentnode", comp:"<=", value:15},
-         {field:"parentnode__long_name", comp:"contains", value:"My example value"}]
+        [{field:"id", comp:"<", value:15},
+         {field:"parentnode", comp:"startswith", value:15},
+         {field:"parentnode__long_name", comp:"<=", value:"My example value"}]
 
 assignment groups can be filtered on the following *fields*:
 
@@ -352,26 +352,6 @@ results of the search. The following group names are available:
                     String
         
 
-    users
-        *Expands to the following fields:*
-        
-            examiners__username
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.AssignmentGroup`
-                About the field:
-                    List of many values.
-                Type
-                    Comma-separated list
-        
-            candidates__identifier
-                Actual location of the field:
-                    :class:`devilry.apps.core.models.Candidate`
-                About the field:
-                    List of many values.
-                Type
-                    Comma-separated list
-        
-
     period
         *Expands to the following fields:*
         
@@ -396,6 +376,62 @@ results of the search. The following group names are available:
                     :class:`devilry.apps.core.models.Period`
                 About the field:
                     Max 20 characters. Only numbers, lowercase characters, '_' and '-'. 
+                Type
+                    String
+        
+
+    users
+        *Expands to the following fields:*
+        
+            examiners__username
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.AssignmentGroup`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
+        
+            candidates__identifier
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.Candidate`
+                About the field:
+                    List of many values.
+                Type
+                    List of strings
+        
+
+    feedback
+        *Expands to the following fields:*
+        
+            feedback__points
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.StaticFeedback`
+                About the field:
+                    Number of points given on this feedback.
+                Type
+                    Integer
+        
+            feedback__grade
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.StaticFeedback`
+                About the field:
+                    The rendered grade, such as "A" or "approved".
+                Type
+                    String
+        
+            feedback__is_passing_grade
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.StaticFeedback`
+                About the field:
+                    Is this a passing grade?
+                Type
+                    Boolean
+        
+            feedback__rendered_view
+                Actual location of the field:
+                    :class:`devilry.apps.core.models.StaticFeedback`
+                About the field:
+                    A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.
                 Type
                     String
         
@@ -434,12 +470,14 @@ example is generated from a non-varying dataset.*
               name: "My example value",
               is_open: true,
               status: 20,
-              parentnode: 15 },
+              parentnode: 15,
+              feedback: 15 },
             { id: 15,
               name: "My example value",
               is_open: true,
               status: 20,
-              parentnode: 15 },
+              parentnode: 15,
+              feedback: 15 },
             ...
         ]
     }
@@ -490,6 +528,14 @@ the *value* for that field. The result always contains the following fields:
         parentnode
             Actual location of the field:
                 :class:`devilry.apps.core.models.Assignment`
+            About the field:
+                Autogenerated identifier.
+            Type
+                Integer
+    
+        feedback
+            Actual location of the field:
+                :class:`devilry.apps.core.models.StaticFeedback`
             About the field:
                 Autogenerated identifier.
             Type

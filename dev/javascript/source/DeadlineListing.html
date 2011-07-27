@@ -21,7 +21,7 @@
  * within the given assignmentgroup ({@link #assignmentgroupid}).
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
     requires: [
@@ -47,10 +47,41 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * this class.
          */
-        deadlinestore: undefined
+        deadlinestore: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-selectedDeliveryId'>        /**
+</span>         * @cfg
+         * Selected delivery id. May be undefined, in which case, no delivery
+         * is selected.
+         */
+        selectedDeliveryId: undefined,
+        
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-canExamine'>        /**
+</span>         * @cfg
+         * Viewable buttons depends on this
+         * 
+         */
+        canExamine: false
     },
 
     initComponent: function() {
+        if (this.canExamine)
+        {
+            Ext.apply(this, {
+                tbar: [
+                {
+                    xtype: 'button',
+                    text: 'Create new deadline',
+                    iconCls: 'icon-add-16',
+                    listeners: {
+                        click: function ()
+                        {
+                            console.log('TODO');
+                        }
+                    }
+                }]
+            });
+        }
         this.callParent(arguments);
         this.loadDeadlines();
     },
@@ -76,13 +107,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         });
     },
 
-    addDeadline:function(deadline) {
+    addDeadline: function(deadline) {
         this.add({
             xtype: 'deadlineinfo',
             deadline: deadline,
-            deliverymodel: this.deliverymodel
+            deliverymodel: this.deliverymodel,
+            selectedDeliveryId: this.selectedDeliveryId
         });
-    }
+    },
 });
 </pre>
 </body>

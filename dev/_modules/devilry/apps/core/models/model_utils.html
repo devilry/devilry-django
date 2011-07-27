@@ -54,23 +54,6 @@
 <span class="sd">    be changed.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">import</span> <span class="nn">re</span>
-
-<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
-<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
-<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">Max</span>
-<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">PermissionDenied</span>
-<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext</span> <span class="k">as</span> <span class="n">_</span>
-<span class="kn">from</span> <span class="nn">django.utils.formats</span> <span class="kn">import</span> <span class="n">date_format</span>
-
-<span class="kn">from</span> <span class="nn">..deliverystore</span> <span class="kn">import</span> <span class="n">load_deliverystore_backend</span><span class="p">,</span> <span class="n">FileNotFoundError</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">gradeplugin</span>
-
-
-<span class="c"># TODO: indexes</span>
-<span class="c"># TODO: short_name ignorecase match on save.</span>
-
 <span class="n">pathsep</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span> <span class="c"># path separator for Node-paths</span>
 
 <div class="viewcode-block" id="splitpath"><a class="viewcode-back" href="../../../../../core.models.html#devilry.apps.core.models.model_utils.splitpath">[docs]</a><span class="k">def</span> <span class="nf">splitpath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">expected_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>

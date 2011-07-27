@@ -19,7 +19,7 @@
 <span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo'>/**
 </span> * Panel to show Delivery info.
  * Uses {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}
- * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+ * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
  * to show and manage StaticFeedback (see {@link #canExamine})
  *
  *      -------------------------------------------
@@ -29,7 +29,7 @@
  *      -------------------------------------------
  *      | StaticFeedbackInfo                      |
  *      | or                                      |
- *      | StaticFeedbackEditableInfo              |
+ *      | StaticFeedbackEditor              |
  *      |                                         |
  *      |                                         |
  *      |                                         |
@@ -43,7 +43,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     cls: 'widget-deliveryinfo',
     html: '',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
+        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
     ],
 
     config: {
@@ -59,7 +61,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
          * Enable creation of new feedbacks? Defaults to ``false``.
          *
          * If this is ``true``, 
-         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo}
+         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
          * is used instead of
          * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
          *
@@ -73,7 +75,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 <span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-assignmentid'>        /**
 </span>        * @cfg
         * Assignment id. Required for 
-        * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo},
+        * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor},
         * which is used if the ``canExamine`` config is ``true``.
         */
         assignmentid: undefined,
@@ -96,66 +98,46 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     },
 
     tpl: Ext.create('Ext.XTemplate',
-        '&lt;dl&gt;',
-        '   &lt;dt&gt;Files&lt;/dt&gt;',
-        '   &lt;tpl if=&quot;filemetas.length == 0&quot;&gt;',
-        '       &lt;dd&gt;&lt;em&gt;No files delivered&lt;/em&gt;&lt;/dd&gt;',
-        '   &lt;/tpl&gt;',
-        '   &lt;tpl if=&quot;filemetas.length &amp;gt; 0&quot;&gt;',
-        '       &lt;dd&gt;&lt;ul&gt;&lt;tpl for=&quot;filemetas&quot;&gt;',
-        '           &lt;li&gt;{data.filename}&lt;/li&gt;',
-        '       &lt;/tpl&gt;&lt;/ul&gt;&lt;/dd&gt;',
-        '   &lt;/tpl&gt;',
-        '   &lt;tpl if=&quot;filemetas.errors&quot;&gt;',
-        '       &lt;dd&gt;&lt;span class=&quot;error&quot;&gt;Error while loading files&lt;/span&gt;&lt;/dd&gt;',
-        '   &lt;/tpl&gt;',
-        '   &lt;tpl if=&quot;!filemetas&quot;&gt;',
-        '       &lt;dd&gt;&lt;em&gt;loading...&lt;/em&gt;&lt;/dd&gt;',
-        '   &lt;/tpl&gt;',
-        '   &lt;dt&gt;Time of delivery&lt;/dt&gt;',
-        '   &lt;dd&gt;{delivery.time_of_delivery:date}&lt;/dd&gt;',
-        '&lt;/dl&gt;'
+        'Time of delivery: &lt;em&gt;{time_of_delivery:date}&lt;/em&gt;'
     ),
 
     initComponent: function() {
-        this.deliveryInfo = Ext.create('Ext.Component');
-
-        var clsname = this.canExamine? 'StaticFeedbackEditableInfo': 'StaticFeedbackInfo';
+        var clsname = this.canExamine? 'StaticFeedbackEditor': 'StaticFeedbackInfo';
         this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.' + clsname, {
             deliveryid: this.delivery.id,
             staticfeedbackstore: this.staticfeedbackstore,
             assignmentid: this.assignmentid
         });
 
-
+        var me = this;
         Ext.apply(this, {
-            items: [this.deliveryInfo, this.feedbackInfo]
+            items: [this.feedbackInfo],
+            tbar: [{
+                xtype: 'button',
+                text: 'Browse files',
+                listeners: {
+                    scope: me,
+                    click: me.showFileMetaBrowserWindow
+                }
+            }, '-&gt;', this.tpl.apply(this.delivery)]
         });
-        this.createBody(false);
-        this.loadFileMetas();
         this.callParent(arguments);
     },
 
-    loadFileMetas: function() {
-        var me = this;
-        this.filemetastore.proxy.extraParams.filters = Ext.JSON.encode([
-            {field: 'delivery', comp:'exact', value: this.delivery.id}
-        ]);
-        this.filemetastore.load(function(filemetarecords, operation, success) {
-            if(success) {
-                me.createBody(filemetarecords);
-            } else {
-                me.createBody({errors: true});
-            }
-        });
-    },
+    showFileMetaBrowserWindow: function() {
+        Ext.create('Ext.window.Window', {
+            title: 'Files',
+            height: 400,
+            width: 600,
+            layout: 'fit',
+            items: [{
+                xtype: 'filemetabrowserpanel',
+                border: false,
+                filemetastore: this.filemetastore,
+                deliveryid: this.delivery.id
+            }]
+        }).show();
 
-    createBody: function(filemetas) {
-        var html = this.tpl.apply({
-            delivery: this.delivery,
-            filemetas: filemetas
-        });
-        this.deliveryInfo.update(html);
     }
 });
 </pre>

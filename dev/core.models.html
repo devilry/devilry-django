@@ -498,14 +498,6 @@ Node.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="devilry.apps.core.models.model_utils.Assignment.grade_plugin">
-<tt class="descname">grade_plugin</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Assignment.grade_plugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/models/fields/#charfield">django.db.models.CharField</a> that holds the key of the current
-grade-plugin. More info on grade-plugins
-<a class="reference internal" href="grade-plugins.html#grade-plugins"><em>here</em></a>.</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Assignment.assignmentgroups">
 <tt class="descname">assignmentgroups</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Assignment.assignmentgroups" title="Permalink to this definition">¶</a></dt>
 <dd><p>A set of <a class="reference internal" href="#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">assignmentgroups</span></tt></a> for this assignment</p>
@@ -922,6 +914,14 @@ comma (<tt class="docutils literal"><span class="pre">','</span></tt>).</p>
 <dd><p>Check if the user has permission to save this AssignmentGroup.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="devilry.apps.core.models.AssignmentGroup.can_add_deliveries">
+<tt class="descname">can_add_deliveries</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.AssignmentGroup.can_add_deliveries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if a student can add deliveries on this assignmentgroup</p>
+<p>Both the assignmentgroups is_open attribute, and the periods start
+and end time is checked.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -959,10 +959,16 @@ comma (<tt class="docutils literal"><span class="pre">','</span></tt>).</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="devilry.apps.core.models.model_utils.Deadline.deliveries_available_before_deadline">
+<tt class="descname">deliveries_available_before_deadline</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Deadline.deliveries_available_before_deadline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should deliveries on this deadline be available to examiners before the
+deadline expires? This is set by students.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Deadline.status">
 <tt class="descname">status</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Deadline.status" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>The status of this deadline. The data can be deduces from other data in the database, but
+<dd><p>The status of this deadline. The data can be deduces from other data in the database, but
 since this requires complex queries, we store it as a integer
 instead, with the following values:</p>
 <blockquote>
@@ -973,15 +979,14 @@ instead, with the following values:</p>
 <li>Corrected and published</li>
 </ol>
 </div></blockquote>
-</div></blockquote>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.Deadline.feedbacks_published">
 <tt class="descname">feedbacks_published</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Deadline.feedbacks_published" title="Permalink to this definition">¶</a></dt>
 <dd><p>If this boolean field is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the student can see all
 <tt class="xref py py-class docutils literal"><span class="pre">StaticFeedback</span></tt> objects associated with this Deadline through a
 <tt class="xref py py-class docutils literal"><span class="pre">Delivery</span></tt>. See also <a class="reference internal" href="#devilry.apps.core.models.model_utils.Assignment.examiners_publish_feedbacks_directly" title="devilry.apps.core.models.model_utils.Assignment.examiners_publish_feedbacks_directly"><tt class="xref py py-attr docutils literal"><span class="pre">Assignment.examiners_publish_feedbacks_directly</span></tt></a>.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="method">
@@ -1094,13 +1099,6 @@ was delived after deadline..</p>
 <dd><p>A DateTimeField containing the etag for this object.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="devilry.apps.core.models.Delivery.delivered_too_late">
-<tt class="descname">delivered_too_late</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Delivery.delivered_too_late" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compares the deadline and time of delivery.
-If time_of_delivery is greater than the deadline, return True.</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="devilry.apps.core.models.Delivery.after_deadline">
 <tt class="descname">after_deadline</tt><a class="headerlink" href="#devilry.apps.core.models.Delivery.after_deadline" title="Permalink to this definition">¶</a></dt>
@@ -1181,6 +1179,9 @@ Feedbacks are related to Deadlines through its <a class="reference internal" hre
 can browse every StaticFeedback on their deliveries. This history is to protect
 the student from administrators or examiners that change published
 feedback to avoid that a student can make an issue out of a bad feedback.</p>
+<p><strong>NOTE:</strong> When a StaticFeedback is saved, the corresponding
+<a class="reference internal" href="#devilry.apps.core.models.model_utils.AssignmentGroup.feedback" title="devilry.apps.core.models.model_utils.AssignmentGroup.feedback"><tt class="xref py py-attr docutils literal"><span class="pre">AssignmentGroup.feedback</span></tt></a> is updated to the newly created
+StaticFeedback.</p>
 <dl class="attribute">
 <dt id="devilry.apps.core.models.model_utils.StaticFeedback.rendered_view">
 <tt class="descname">rendered_view</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.StaticFeedback.rendered_view" title="Permalink to this definition">¶</a></dt>

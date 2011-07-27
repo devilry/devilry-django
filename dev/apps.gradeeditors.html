@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.gradeeditors — Grade editors &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
+    <link rel="next" title="devilry.utils.assignmentgroup" href="utils.assignmentgroup.html" />
+    <link rel="prev" title="devilry.apps.extjshelpers — ExtJS helpers" href="extjshelpers.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.assignmentgroup.html" title="devilry.utils.assignmentgroup"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="devilry-apps-gradeeditors-grade-editors">
+<span id="apps-gradeeditors"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">devilry.apps.gradeeditors</span></tt> &#8212; Grade editors<a class="headerlink" href="#devilry-apps-gradeeditors-grade-editors" title="Permalink to this headline">¶</a></h1>
+<p><strong>WARNING</strong>: OUTDATED docs. This will be updated for the new <em>grade editors</em>.</p>
+<div class="section" id="the-view">
+<h2>The view<a class="headerlink" href="#the-view" title="Permalink to this headline">¶</a></h2>
+<p>TODO: New example</p>
+</div>
+<div class="section" id="register-the-plugin">
+<h2>Register the plugin<a class="headerlink" href="#register-the-plugin" title="Permalink to this headline">¶</a></h2>
+<p>To make the plugin register itself when the server starts, you need to put
+something like the following in <tt class="docutils literal"><span class="pre">devilry_plugin.py</span></tt> in you plugin (see
+<a class="reference internal" href="plugins.html#plugins"><em>How to write a plugin</em></a>):</p>
+<p>TODO : New example.</p>
+<p>You can see that we register our <em>model</em> and our <em>view</em>. The API-docs for
+<a class="reference internal" href="#devilry.apps.gradeeditors.registry.gradeeditor_registry" title="devilry.apps.gradeeditors.registry.gradeeditor_registry"><tt class="xref py py-attr docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.gradeeditor_registry</span></tt></a> explains all the details.</p>
+</div>
+<div class="section" id="module-devilry.apps.gradeeditors.registry">
+<span id="grade-editor-classes"></span><h2>Grade editor classes<a class="headerlink" href="#module-devilry.apps.gradeeditors.registry" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.registry.gradeeditor_registry">
+<tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">gradeeditor_registry</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.gradeeditor_registry" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="#devilry.apps.gradeeditors.registry.Registry" title="devilry.apps.gradeeditors.registry.Registry"><tt class="xref py py-class docutils literal"><span class="pre">Registry</span></tt></a>-object.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="devilry.apps.gradeeditors.registry.ConfigValidationError">
+<em class="property">exception </em><tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">ConfigValidationError</tt><big>(</big><em>message</em>, <em>code=None</em>, <em>params=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#ConfigValidationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.ConfigValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ValidationError</span></tt></p>
+<p>Raised when <a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem.validate_config" title="devilry.apps.gradeeditors.registry.RegistryItem.validate_config"><tt class="xref py py-meth docutils literal"><span class="pre">RegistryItem.validate_config()</span></tt></a> fails to validate the
+configstring.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="devilry.apps.gradeeditors.registry.DraftValidationError">
+<em class="property">exception </em><tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">DraftValidationError</tt><big>(</big><em>message</em>, <em>code=None</em>, <em>params=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#DraftValidationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.DraftValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ValidationError</span></tt></p>
+<p>Raised when <a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem.validate_draft" title="devilry.apps.gradeeditors.registry.RegistryItem.validate_draft"><tt class="xref py py-meth docutils literal"><span class="pre">RegistryItem.validate_draft()</span></tt></a> fails to validate the
+draftstring.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem">
+<em class="property">class </em><tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">RegistryItem</tt><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#RegistryItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Information about a grade plugin.</p>
+<p>The attributes documented below are required.</p>
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.gradeeditorid">
+<tt class="descname">gradeeditorid</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.gradeeditorid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unique string for this editor. If two editors with the same
+gradeeditorid is registered, an exception will be raised on load time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.title">
+<tt class="descname">title</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short title for the grade editor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.description">
+<tt class="descname">description</tt><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A longer description of the grade editor.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.validate_config">
+<em class="property">classmethod </em><tt class="descname">validate_config</tt><big>(</big><em>configstring</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#RegistryItem.validate_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.validate_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate <tt class="docutils literal"><span class="pre">configstring</span></tt> and raise <a class="reference internal" href="#devilry.apps.gradeeditors.registry.ConfigValidationError" title="devilry.apps.gradeeditors.registry.ConfigValidationError"><tt class="xref py py-exc docutils literal"><span class="pre">ConfigValidationError</span></tt></a> if it
+does not validate.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.validate_draft">
+<em class="property">classmethod </em><tt class="descname">validate_draft</tt><big>(</big><em>draftstring</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#RegistryItem.validate_draft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.validate_draft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate <tt class="docutils literal"><span class="pre">draftstring</span></tt> and raise <a class="reference internal" href="#devilry.apps.gradeeditors.registry.DraftValidationError" title="devilry.apps.gradeeditors.registry.DraftValidationError"><tt class="xref py py-exc docutils literal"><span class="pre">DraftValidationError</span></tt></a> if the validation fails.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.gradeeditors.registry.RegistryItem.draft_to_staticfeedback_kwargs">
+<em class="property">classmethod </em><tt class="descname">draft_to_staticfeedback_kwargs</tt><big>(</big><em>draftstring</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#RegistryItem.draft_to_staticfeedback_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.RegistryItem.draft_to_staticfeedback_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <tt class="docutils literal"><span class="pre">draftstring</span></tt> into a dictionary of keyword arguments for StaticFeedback.
+The returned dict should only contain the following keys:</p>
+<blockquote>
+<div><ul class="simple">
+<li>is_passing_grade</li>
+<li>grade</li>
+<li>points</li>
+<li>rendered_view</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devilry.apps.gradeeditors.registry.Registry">
+<em class="property">class </em><tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">Registry</tt><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#Registry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.Registry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Grade editor registry. You <strong>should not</strong> create a object of this class.
+It is already available as <a class="reference internal" href="#devilry.apps.gradeeditors.registry.gradeeditor_registry" title="devilry.apps.gradeeditors.registry.gradeeditor_registry"><tt class="xref py py-attr docutils literal"><span class="pre">gradeeditor_registry</span></tt></a>.</p>
+<dl class="method">
+<dt id="devilry.apps.gradeeditors.registry.Registry.register">
+<tt class="descname">register</tt><big>(</big><em>registryitem</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#Registry.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.Registry.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a <a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem" title="devilry.apps.gradeeditors.registry.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">RegistryItem</span></tt></a> to the registry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.apps.gradeeditors.registry.Registry.getdefaultkey">
+<tt class="descname">getdefaultkey</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#Registry.getdefaultkey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.Registry.getdefaultkey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the default key (the key defined in the DEVILRY_DEFAULT_GRADEEDITOR setting).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devilry.apps.gradeeditors.registry.Registry.itertitles">
+<tt class="descname">itertitles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#Registry.itertitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.Registry.itertitles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the registry yielding (key, title).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">devilry.apps.gradeeditors</span></tt> &#8212; Grade editors</a><ul>
+<li><a class="reference internal" href="#the-view">The view</a></li>
+<li><a class="reference internal" href="#register-the-plugin">Register the plugin</a></li>
+<li><a class="reference internal" href="#module-devilry.apps.gradeeditors.registry">Grade editor classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="extjshelpers.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">devilry.apps.extjshelpers</span></tt> &#8212; ExtJS helpers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.assignmentgroup.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">devilry.utils.assignmentgroup</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/apps.gradeeditors.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.assignmentgroup.html" title="devilry.utils.assignmentgroup"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="extjshelpers.html" title="devilry.apps.extjshelpers — ExtJS helpers"
+             >previous</a> |</li>
+        <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

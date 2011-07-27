@@ -1,12 +1,12 @@
-Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditableInfo({
+Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditor({
   "subclasses": [
 
   ],
   "doc": "<p>Panel to show StaticFeedback info and create new static feedbacks.</p>\n",
   "docauthor": null,
   "singleton": false,
-  "html_filename": "StaticFeedbackEditableInfo.html",
-  "href": "StaticFeedbackEditableInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditableInfo",
+  "html_filename": "StaticFeedbackEditor.html",
+  "href": "StaticFeedbackEditor.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor",
   "code_type": "ext_define",
   "superclasses": [
     "devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo"
@@ -31,10 +31,10 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditableInfo({
     "cfg": [
       {
         "type": "Object",
-        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo",
+        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor",
         "doc": "<p>Assignment id. (Required).</p>\n",
-        "html_filename": "StaticFeedbackEditableInfo.html",
-        "href": "StaticFeedbackEditableInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditableInfo-cfg-assignmentid",
+        "html_filename": "StaticFeedbackEditor.html",
+        "href": "StaticFeedbackEditor.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor-cfg-assignmentid",
         "tagname": "cfg",
         "shortDoc": "Assignment id. ...",
         "protected": false,
@@ -44,7 +44,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditableInfo({
         "inheritable": false,
         "alias": null,
         "name": "assignmentid",
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditableInfo.js",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js",
         "deprecated": null
       },
       {
@@ -58,7 +58,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditableInfo({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 10,
+        "linenr": 13,
         "inheritable": false,
         "alias": null,
         "name": "deliveryid",
@@ -76,7 +76,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditableInfo({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 16,
+        "linenr": 19,
         "inheritable": false,
         "alias": null,
         "name": "staticfeedbackstore",
@@ -122,14 +122,14 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditableInfo({
   "linenr": 1,
   "inheritable": false,
   "alias": null,
-  "name": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo",
+  "name": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor",
   "xtypes": [
-    "staticfeedbackeditableinfo"
+    "staticfeedbackeditor"
   ],
   "extends": "devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo",
   "allMixins": [
 
   ],
-  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditableInfo.js",
+  "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js",
   "deprecated": null
 });

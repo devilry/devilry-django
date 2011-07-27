@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-administrator-assignment-PrettyView'>/** PrettyView for an assignment. */
+</span>Ext.define('devilry.administrator.assignment.PrettyView', {
+    extend: 'devilry.administrator.PrettyView',
+    alias: 'widget.administrator_assignmentprettyview',
+    requires: [
+        'devilry.extjshelpers.studentsmanager.StudentsManager'
+    ],
+
+    config: {
+        assignmentgroupstore: undefined
+    },
+
+    bodyTpl: Ext.create('Ext.XTemplate',
+        '&lt;section&gt;',
+        '    &lt;tpl if=&quot;published&quot;&gt;',
+        '        &lt;h1&gt;Published&lt;/h1&gt;',
+        '        &lt;p&gt;',
+        '           The assignment is currently visible to students and examiners. ',
+        '           Its publishing time was &lt;strong&gt;{publishing_time:date}&lt;/strong&gt;.',
+        '        &lt;/p&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!published&quot;&gt;',
+        '        &lt;section class=&quot;warning&quot;&gt;',
+        '             &lt;h1&gt;Not published&lt;/h1&gt;',
+        '             &lt;p&gt;',
+        '                This assignment is currently &lt;em&gt;not visible&lt;/em&gt; to students or examiners. ',
+        '                The assignment will become visible to students and examiners ',
+        '                &lt;strong&gt;{publishing_time:date}&lt;/strong&gt;.',
+        '             &lt;/p&gt;',
+        '        &lt;/section&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;must_pass&quot;&gt;',
+        '       &lt;h1&gt;Must pass&lt;/h1&gt;',
+        '       &lt;p&gt;',
+        '           Each students are &lt;em&gt;required&lt;/em&gt; to get a passsing grade ',
+        '           on this assigmment to pass the &lt;em&gt;period&lt;/em&gt;. This requirement ',
+        '           is only active for students registered on groups on this assignment.',
+        '       &lt;/p&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;anonymous&quot;&gt;',
+        '       &lt;h1&gt;Anonymous&lt;/h1&gt;',
+        '       &lt;p&gt;',
+        '           The assignment &lt;em&gt;is anonymous&lt;/em&gt;. This means that examiners ',
+        '           see the &lt;em&gt;candidate ID&lt;/em&gt; instead of user name and ',
+        '           email. Furthermore, students do not see who their examiner(s)',
+        '           are.',
+        '       &lt;/p&gt;',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!anonymous&quot;&gt;',
+        '       &lt;h1&gt;Not anonymous&lt;/h1&gt;',
+        '       &lt;p&gt;',
+        '           The assignment is &lt;em&gt;not&lt;/em&gt; anonymous. This means that examiners ',
+        '           can see information about who their students are. ',
+        '           Furthermore, students can see who their examiner(s)',
+        '           are.',
+        '       &lt;/p&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/section&gt;'
+    ),
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    getExtraBodyData: function(record) {
+        return {
+            published: record.data.publishing_time &lt; Ext.Date.now(),
+        };
+    },
+
+    initComponent: function() {
+        this.studentsbutton = Ext.create('Ext.button.Button', {
+            text: 'Students',
+            scale: 'medium',
+            listeners: {
+                scope: this,
+                click: this.onStudents
+            }
+        });
+
+        Ext.apply(this, {
+            relatedButtons: [this.studentsbutton]
+        });
+        this.callParent(arguments);
+    },
+
+    onStudents: function() {
+        if(!this.studentswindow) {
+            this.studentswindow = Ext.create('Ext.window.Window', {
+                title: 'Students',
+                width: 800,
+                height: 600,
+                layout: 'fit',
+                maximizable: true,
+                //maximized: true,
+                closeAction: 'hide',
+                items: {
+                    xtype: 'studentsmanager',
+                    assignmentgroupstore: this.assignmentgroupstore,
+                    assignmentid: this.objectid
+                },
+            });
+        }
+        this.studentswindow.show();
+    }
+});
+</pre>
+</body>
+</html>

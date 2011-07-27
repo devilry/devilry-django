@@ -108,7 +108,7 @@ resulting data. The following group names are available:
                 About the field:
                     List of many values.
                 Type
-                    Comma-separated list
+                    List of strings
         
             assignment_group__candidates__identifier
                 Actual location of the field:
@@ -116,7 +116,7 @@ resulting data. The following group names are available:
                 About the field:
                     List of many values.
                 Type
-                    Comma-separated list
+                    List of strings
         
 
     period

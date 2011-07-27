@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"assignment_group", comp:">=", value:15},
-                      {field:"assignment_group__parentnode__long_name", comp:"iexact", value:"My example value"},
-                      {field:"assignment_group__parentnode__parentnode", comp:"exact", value:15}],
+        filters: [{field:"assignment_group", comp:"contains", value:15},
+                      {field:"assignment_group__parentnode__long_name", comp:"icontains", value:"My example value"},
+                      {field:"assignment_group__parentnode__parentnode", comp:"endswith", value:15}],
         orderby: ["id", "-text", "deadline", "assignment_group", "status", "feedbacks_published"],
         start: 10,
         limit: 100
@@ -65,7 +65,7 @@ resulting in a list of words. Every *word* in the list is searched for
             About the field:
                 List of many values.
             Type
-                Comma-separated list
+                List of strings
     
         assignment_group__parentnode__short_name
             Actual location of the field:
@@ -137,9 +137,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"assignment_group", comp:">=", value:15},
-         {field:"assignment_group__parentnode__long_name", comp:"iexact", value:"My example value"},
-         {field:"assignment_group__parentnode__parentnode", comp:"exact", value:15}]
+        [{field:"assignment_group", comp:"contains", value:15},
+         {field:"assignment_group__parentnode__long_name", comp:"icontains", value:"My example value"},
+         {field:"assignment_group__parentnode__parentnode", comp:"endswith", value:15}]
 
 Deadlines can be filtered on the following *fields*:
 
@@ -347,7 +347,7 @@ results of the search. The following group names are available:
                 About the field:
                     List of many values.
                 Type
-                    Comma-separated list
+                    List of strings
         
             assignment_group__candidates__identifier
                 Actual location of the field:
@@ -355,7 +355,7 @@ results of the search. The following group names are available:
                 About the field:
                     List of many values.
                 Type
-                    Comma-separated list
+                    List of strings
         
 
     period

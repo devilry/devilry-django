@@ -47,6 +47,23 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineListing({
         "deprecated": null
       },
       {
+        "type": "Boolean",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
+        "doc": "<p>Viewable buttons depends on this</p>\n",
+        "html_filename": "DeadlineListing.html",
+        "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-canExamine",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 42,
+        "inheritable": false,
+        "alias": null,
+        "name": "canExamine",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
+        "deprecated": null
+      },
+      {
         "type": "Object",
         "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
         "doc": "<p>Deadline <code>Ext.data.Store</code>. (Required).\n<em>Note</em> that <code>deadlinestore.proxy.extraParams</code> is changed by\nthis class.</p>\n",
@@ -78,6 +95,24 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineListing({
         "inheritable": false,
         "alias": null,
         "name": "deliverymodel",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineListing",
+        "doc": "<p>Selected delivery id. May be undefined, in which case, no delivery\nis selected.</p>\n",
+        "html_filename": "DeadlineListing.html",
+        "href": "DeadlineListing.html#devilry-extjshelpers-assignmentgroup-DeadlineListing-cfg-selectedDeliveryId",
+        "tagname": "cfg",
+        "shortDoc": "Selected delivery id. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 35,
+        "inheritable": false,
+        "alias": null,
+        "name": "selectedDeliveryId",
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineListing.js",
         "deprecated": null
       }
@@ -124,7 +159,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineListing({
   "xtypes": [
     "deadlinelisting"
   ],
-  "extends": "Ext.container.Container",
+  "extends": "Ext.panel.Panel",
   "allMixins": [
 
   ],

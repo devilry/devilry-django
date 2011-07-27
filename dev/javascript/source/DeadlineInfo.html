@@ -24,7 +24,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deadlineinfo',
     cls: 'widget-deadlineinfo',
-    margin: {bottom: 20},
+    margin: 10,
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryGrid'
     ],
@@ -42,7 +42,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
 </span>         * @cfg
          * Delivery ``Ext.data.Model``.
          */
-        deliverymodel: undefined
+        deliverymodel: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-selectedDeliveryId'>        /**
+</span>         * @cfg
+         * Selected delivery id. May be undefined, in which case, no delivery
+         * is selected.
+         */
+        selectedDeliveryId: undefined
     },
     
     initComponent: function() {
@@ -60,7 +67,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
             comp: 'exact',
             value: this.deadline.id
         }]);
-        deliverystore.load();
 
         Ext.apply(this, {
             title: this.titleTpl.apply(this.deadline),
@@ -70,7 +76,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
             }]
         });
         this.callParent(arguments);
+
+        var me = this;
+        deliverystore.addListener('load', function(store, records, successful) {
+            if(successful) {
+                if(records.length == 0) {
+                    me.addDocked([{
+                        dock: 'bottom',
+                        xtype: 'toolbar',
+                        items: [
+                            'No deliveries on this deadline'
+                        ]
+                    }]);
+                } else {
+                    me.selectDelivery(me.selectedDeliveryId);
+                }
+            }
+        });
+        deliverystore.load();
     },
+
+    selectDelivery: function(deliveryid) {
+        this.down('deliverygrid').selectDelivery(deliveryid);
+    }
 });
 </pre>
 </body>

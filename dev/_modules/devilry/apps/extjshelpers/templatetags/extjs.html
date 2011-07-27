@@ -59,43 +59,50 @@
 
 
 <span class="nd">@register.filter</span>
-<div class="viewcode-block" id="extjs_model"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_model">[docs]</a><span class="k">def</span> <span class="nf">extjs_model</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">result_fieldgroups</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="extjs_model"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_model">[docs]</a><span class="k">def</span> <span class="nf">extjs_model</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an extjs model from the given restful class.</span>
 <span class="sd">    Uses :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel`.</span>
 
 <span class="sd">    :param restfulcls: Forwarded directly to :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel`.</span>
-<span class="sd">    :param result_fieldgroups:</span>
-<span class="sd">        A string separated by ``&quot;,&quot;``. The string is split and forwarded to</span>
-<span class="sd">        :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel`.</span>
+<span class="sd">    :param args:</span>
+<span class="sd">        A string containing the arguments for :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel`.</span>
+<span class="sd">        ``args`` is split on ``&quot;;&quot;``.</span>
+<span class="sd">        The first item in the resulting tuple</span>
+<span class="sd">        is split on ``&quot;,&quot;`` and forwarded as ``result_fieldgroups``.</span>
+<span class="sd">        If ``args`` is empty, ``result_fieldgroups`` will be an empty list.</span>
+<span class="sd">        The second item in the resulting tuple is forwarded as ``modelnamesuffix``.</span>
+<span class="sd">        If ``args`` does not contain ``&quot;;&quot;``, this ``modelnamesuffix`` will be</span>
+<span class="sd">        an empty string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">result_fieldgroups</span><span class="p">:</span>
-        <span class="n">result_fieldgroups</span> <span class="o">=</span> <span class="n">result_fieldgroups</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">result_fieldgroups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">result_fieldgroups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">modelnamesuffix</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">result_fieldgroups</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">modelnamesuffix</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">js</span> <span class="o">=</span> <span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">result_fieldgroups</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="n">js</span><span class="p">)</span>
 </div>
 <span class="nd">@register.filter</span>
-<div class="viewcode-block" id="extjs_combobox_model"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_combobox_model">[docs]</a><span class="k">def</span> <span class="nf">extjs_combobox_model</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">):</span>
+<div class="viewcode-block" id="extjs_combobox_model"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_combobox_model">[docs]</a><span class="k">def</span> <span class="nf">extjs_combobox_model</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">js</span> <span class="o">=</span> <span class="n">restfulcls_to_extjscomboboxmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">)</span>
+    <span class="n">js</span> <span class="o">=</span> <span class="n">restfulcls_to_extjscomboboxmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="n">js</span><span class="p">)</span>
 </div>
 <span class="nd">@register.filter</span>
-<div class="viewcode-block" id="extjs_store"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_store">[docs]</a><span class="k">def</span> <span class="nf">extjs_store</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="extjs_store"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_store">[docs]</a><span class="k">def</span> <span class="nf">extjs_store</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an extjs store from the given restful class.</span>
 <span class="sd">    Uses :func:`~devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore`.</span>
 
-<span class="sd">    :param restfulcls: Forwarded directly to</span>
-<span class="sd">        :func:`~devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore`.</span>
-<span class="sd">    :param result_fieldgroups:</span>
-<span class="sd">        :func:`~devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore`.</span>
+<span class="sd">    :param storeidsuffix: Forwarded directly to :func:`~devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">js</span> <span class="o">=</span> <span class="n">restfulcls_to_extjsstore</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="n">pagesize</span><span class="p">)</span>
+    <span class="n">js</span> <span class="o">=</span> <span class="n">restfulcls_to_extjsstore</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="o">=</span><span class="n">storeidsuffix</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="n">js</span><span class="p">)</span>
 </div>
 <span class="nd">@register.filter</span>
@@ -117,7 +124,7 @@
     <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="n">js</span><span class="p">)</span>
 </div>
 <span class="nd">@register.filter</span>
-<div class="viewcode-block" id="extjs_modelname"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_modelname">[docs]</a><span class="k">def</span> <span class="nf">extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">):</span>
+<div class="viewcode-block" id="extjs_modelname"><a class="viewcode-back" href="../../../../../extjshelpers.html#devilry.apps.extjshelpers.templatetags.extjs.extjs_modelname">[docs]</a><span class="k">def</span> <span class="nf">extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the name of the extjs model generated by</span>
 <span class="sd">    :func:`~devilry.extjshelpers.templatetags.extjs.extjs_model` using the same</span>
@@ -125,19 +132,22 @@
 
 <span class="sd">    Uses :func:`~devilry.apps.extjshelpers.modelintegration.get_extjs_modelname`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">js</span> <span class="o">=</span> <span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">)</span>
+    <span class="n">js</span> <span class="o">=</span> <span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="s">&quot;&#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">js</span><span class="p">))</span>
 </div>
 <span class="nd">@register.filter</span>
-<span class="k">def</span> <span class="nf">extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the id of the extjs store generated by</span>
 <span class="sd">    :func:`~devilry.extjshelpers.templatetags.extjs.extjs_store` using the same</span>
 <span class="sd">    ``restfulcls``.</span>
 
 <span class="sd">    Uses :func:`~devilry.apps.extjshelpers.storeintegration.get_extjs_storeid`.</span>
+
+<span class="sd">    :param storeidsuffix:</span>
+<span class="sd">        Forwarded to  :func:`~devilry.apps.extjshelpers.storeintegration.get_extjs_storeid`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">js</span> <span class="o">=</span> <span class="n">get_extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">)</span>
+    <span class="n">js</span> <span class="o">=</span> <span class="n">get_extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mark_safe</span><span class="p">(</span><span class="s">&quot;&#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">js</span><span class="p">))</span>
 </pre></div>
 

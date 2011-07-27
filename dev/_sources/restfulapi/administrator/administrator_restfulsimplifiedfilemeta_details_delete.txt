@@ -1,0 +1,64 @@
+.. _administrator_restfulsimplifiedfilemeta_details_delete:
+
+=============================================================================
+DELETE /administrator/restfulsimplifiedfilemeta/id
+=============================================================================
+
+Delete a FileMeta.
+
+The underlying data model where the item is deleted from is defined in :class:`devilry.apps.core.models.FileMeta`.
+The :ref:`simplified` that the server forwards this request to is
+:meth:`devilry.apps.administrator.simplified.SimplifiedFileMeta.delete`.
+
+
+********
+Request
+********
+
+Example
+################
+
+.. code-block:: javascript
+
+    DELETE /administrator/restfulsimplifiedfilemeta/id
+
+
+
+Required request parameters
+###########################
+
+id
+--------------
+
+The unique identifier of a FileMeta. You will typically get
+this id in response from a search.
+
+
+**************
+Response
+**************
+
+
+On success
+##########
+
+As long as the FileMeta is deleted without an error, the
+response is *HTTP 200* with a JSON object containing the id in the response body.
+
+
+Example
+-------
+
+.. code-block:: javascript
+
+    200 OK
+
+    {
+        id: 10
+    }
+
+
+On error
+########
+
+On errors, we respond with one of the :ref:`restful_api_error_statuscodes`

@@ -78,10 +78,10 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
-    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
 <span class="p">}</span>
@@ -119,7 +119,7 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 <dt>About the field:</dt>
 <dd>List of many values.</dd>
 <dt>Type</dt>
-<dd>Comma-separated list</dd>
+<dd>List of strings</dd>
 </dl>
 </dd>
 <dt>candidates__identifier</dt>
@@ -129,7 +129,7 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 <dt>About the field:</dt>
 <dd>List of many values.</dd>
 <dt>Type</dt>
-<dd>Comma-separated list</dd>
+<dd>List of strings</dd>
 </dl>
 </dd>
 <dt>parentnode__long_name</dt>
@@ -211,9 +211,9 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;parentnode__long_name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -446,33 +446,6 @@ results of the search. The following group names are available:</p>
 </dl>
 </div></blockquote>
 </dd>
-<dt>users</dt>
-<dd><p class="first"><em>Expands to the following fields:</em></p>
-<blockquote class="last">
-<div><dl class="docutils">
-<dt>examiners__username</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>List of many values.</dd>
-<dt>Type</dt>
-<dd>Comma-separated list</dd>
-</dl>
-</dd>
-<dt>candidates__identifier</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>List of many values.</dd>
-<dt>Type</dt>
-<dd>Comma-separated list</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-</dd>
 <dt>period</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
@@ -510,6 +483,80 @@ results of the search. The following group names are available:</p>
 </dl>
 </div></blockquote>
 </dd>
+<dt>users</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>examiners__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+<dt>candidates__identifier</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>feedback</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>feedback__points</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Number of points given on this feedback.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>feedback__grade</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The rendered grade, such as &#8220;A&#8221; or &#8220;approved&#8221;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>feedback__is_passing_grade</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Is this a passing grade?</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
+</dl>
+</dd>
+<dt>feedback__rendered_view</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A rendered HTML version of the feedback, containing whatever the grade-editor chose to dump in this field.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -532,12 +579,14 @@ example is generated from a non-varying dataset.</em></p>
           <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
           <span class="nx">is_open</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
           <span class="nx">status</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
-          <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
+          <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">feedback</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;My example value&quot;</span><span class="p">,</span>
           <span class="nx">is_open</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
           <span class="nx">status</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
-          <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
+          <span class="nx">parentnode</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">feedback</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
         <span class="p">...</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -597,6 +646,16 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dd><dl class="first last docutils">
 <dt>Actual location of the field:</dt>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Assignment" title="devilry.apps.core.models.Assignment"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Assignment</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>feedback</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.StaticFeedback" title="devilry.apps.core.models.StaticFeedback"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.StaticFeedback</span></tt></a></dd>
 <dt>About the field:</dt>
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>

@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devilry.apps.gradeeditors.registry &mdash; Devilry v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/devilry.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Devilry v1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devilry.apps.gradeeditors.registry</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. attribute:: gradeeditor_registry</span>
+
+<span class="sd">    A :class:`Registry`-object.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+
+
+<div class="viewcode-block" id="ConfigValidationError"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.ConfigValidationError">[docs]</a><span class="k">class</span> <span class="nc">ConfigValidationError</span><span class="p">(</span><span class="n">ValidationError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when :meth:`RegistryItem.validate_config` fails to validate the</span>
+<span class="sd">    configstring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="DraftValidationError"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.DraftValidationError">[docs]</a><span class="k">class</span> <span class="nc">DraftValidationError</span><span class="p">(</span><span class="n">ValidationError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when :meth:`RegistryItem.validate_draft` fails to validate the</span>
+<span class="sd">    draftstring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="RegistryItem"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.RegistryItem">[docs]</a><span class="k">class</span> <span class="nc">RegistryItem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Information about a grade plugin.</span>
+
+<span class="sd">    The attributes documented below are required.</span>
+
+<span class="sd">    .. attribute:: gradeeditorid</span>
+
+<span class="sd">        A unique string for this editor. If two editors with the same</span>
+<span class="sd">        gradeeditorid is registered, an exception will be raised on load time.</span>
+
+<span class="sd">    .. attribute:: title</span>
+
+<span class="sd">        A short title for the grade editor.</span>
+
+<span class="sd">    .. attribute:: description</span>
+
+<span class="sd">        A longer description of the grade editor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RegistryItem.validate_config"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.RegistryItem.validate_config">[docs]</a>    <span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">configstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate ``configstring`` and raise :exc:`ConfigValidationError` if it</span>
+<span class="sd">        does not validate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;This grade plugin does not support configuration&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RegistryItem.validate_draft"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.RegistryItem.validate_draft">[docs]</a>    <span class="k">def</span> <span class="nf">validate_draft</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">draftstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate ``draftstring`` and raise :exc:`DraftValidationError` if the validation fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RegistryItem.draft_to_staticfeedback_kwargs"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.RegistryItem.draft_to_staticfeedback_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">draft_to_staticfeedback_kwargs</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">draftstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert ``draftstring`` into a dictionary of keyword arguments for StaticFeedback.</span>
+<span class="sd">        The returned dict should only contain the following keys:</span>
+
+<span class="sd">            - is_passing_grade</span>
+<span class="sd">            - grade</span>
+<span class="sd">            - points</span>
+<span class="sd">            - rendered_view</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="Registry"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.Registry">[docs]</a><span class="k">class</span> <span class="nc">Registry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grade editor registry. You **should not** create a object of this class.</span>
+<span class="sd">    It is already available as :attr:`gradeeditor_registry`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Registry.register"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.Registry.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registryitem</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a :class:`RegistryItem` to the registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">registryitem</span><span class="o">.</span><span class="n">gradeeditorid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;More than one gradeeditor with gradeeditorid: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">registryitem</span><span class="o">.</span><span class="n">gradeeditorid</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">registryitem</span><span class="o">.</span><span class="n">gradeeditorid</span><span class="p">]</span> <span class="o">=</span> <span class="n">registryitem</span>
+</div>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradeeditorid</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">gradeeditorid</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Registry.getdefaultkey"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.Registry.getdefaultkey">[docs]</a>    <span class="k">def</span> <span class="nf">getdefaultkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the default key (the key defined in the DEVILRY_DEFAULT_GRADEEDITOR setting).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEVILRY_DEFAULT_GRADEEDITOR</span>
+</div>
+<div class="viewcode-block" id="Registry.itertitles"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.Registry.itertitles">[docs]</a>    <span class="k">def</span> <span class="nf">itertitles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Iterate over the registry yielding (key, title). &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">title</span>
+
+</div></div>
+<span class="n">gradeeditor_registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Devilry v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The Devilry Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

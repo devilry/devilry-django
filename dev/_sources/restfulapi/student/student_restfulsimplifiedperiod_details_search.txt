@@ -33,7 +33,7 @@ Request example
     {
         query: 'a query string',
         filters: [{field:"long_name", comp:"icontains", value:"My example value"},
-                      {field:"parentnode", comp:"contains", value:15},
+                      {field:"parentnode", comp:"endswith", value:15},
                       {field:"parentnode__long_name", comp:">", value:"My example value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name", "start_time", "end_time"],
         start: 10,
@@ -114,7 +114,7 @@ Example:
     .. code-block:: javascript
 
         [{field:"long_name", comp:"icontains", value:"My example value"},
-         {field:"parentnode", comp:"contains", value:15},
+         {field:"parentnode", comp:"endswith", value:15},
          {field:"parentnode__long_name", comp:">", value:"My example value"}]
 
 Periods can be filtered on the following *fields*:

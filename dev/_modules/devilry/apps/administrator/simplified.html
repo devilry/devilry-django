@@ -48,16 +48,19 @@
   <h1>Source code for devilry.apps.administrator.simplified</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">simplified_modelapi</span><span class="p">,</span>
                            <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span><span class="p">,</span>
-                           <span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">ForeignFilterSpec</span><span class="p">,</span> <span class="n">PatternFilterSpec</span><span class="p">)</span>
+                           <span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">PatternFilterSpec</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">models</span>
-
-<span class="kn">from</span> <span class="nn">..student.simplifiedmetabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
-                                           <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span>
-                                           <span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">,</span>
-                                           <span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">,</span> <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">,</span>
-                                           <span class="n">SimplifiedFileMetaMetaMixin</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">devilry.coreutils.simplified.metabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedPeriodMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedAssignmentMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">,</span>
+                                                   <span class="n">SimplifiedFileMetaMetaMixin</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;SimplifiedNode&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedSubject&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedPeriod&#39;</span><span class="p">,</span> <span class="s">&#39;SimplifiedAssignment&#39;</span><span class="p">)</span>
+
 
 
 <span class="k">class</span> <span class="nc">CanSaveBase</span><span class="p">(</span><span class="n">SimplifiedModelApi</span><span class="p">):</span>
@@ -96,8 +99,6 @@
 <span class="sd">        :rtype: a django queryset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-
-
 
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedNode"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedNode">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedNode</span><span class="p">(</span><span class="n">CanSaveBase</span><span class="p">):</span>
@@ -199,7 +200,7 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedDelivery.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a Delivery object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -207,7 +208,7 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedStaticFeedback.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedStaticFeedbackMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a StaticFeedback object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedStaticFeedback.create_searchqryset"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
@@ -219,18 +220,16 @@
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="SimplifiedStaticFeedback.read_authorize"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.read_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">read_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Checks if the given ``user`` is an administrator for the given</span>
-<span class="sd">        StaticFeedback ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.</span>
+<div class="viewcode-block" id="SimplifiedStaticFeedback.write_authorize"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedStaticFeedback.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given ``user`` can save changes to the given</span>
+<span class="sd">        ``obj``, and raise ``PermissionDenied`` if not.</span>
 
 <span class="sd">        :param user: A django user object.</span>
-<span class="sd">        :param obj: A StaticFeedback object</span>
+<span class="sd">        :param obj: A object of the type this method is used in.</span>
 <span class="sd">        :throws PermissionDenied:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c">#TODO: Replace when issue #141 is resolved!</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">can_save</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -282,7 +281,7 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.FileMeta`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedFileMeta.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedFileMetaMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a FileMeta object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedFileMeta.create_searchqryset"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
@@ -294,18 +293,16 @@
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="SimplifiedFileMeta.read_authorize"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.read_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">read_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Checks if the given ``user`` is an administrator for the given</span>
-<span class="sd">        FileMeta ``obj`` or a superadmin, and raises ``PermissionDenied`` if not.</span>
+<div class="viewcode-block" id="SimplifiedFileMeta.write_authorize"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedFileMeta.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given ``user`` can save changes to the given</span>
+<span class="sd">        ``obj``, and raise ``PermissionDenied`` if not.</span>
 
 <span class="sd">        :param user: A django user object.</span>
-<span class="sd">        :param obj: A FileMeta object.</span>
+<span class="sd">        :param obj: A object of the type this method is used in.</span>
 <span class="sd">        :throws PermissionDenied:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c">#TODO: Replace when issue #141 is resolved!</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">user_obj</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span></div></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">delivery</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">can_save</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

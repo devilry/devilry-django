@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
     <link rel="next" title="devilry.apps.student.simplified — Simplifed API for students" href="student.simplified.html" />
-    <link rel="prev" title="devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes" href="metabases.simplified.html" /> 
+    <link rel="prev" title="devilry.coreutils.simplified.metabases — Metaclasses for the Simplified classes" href="coreutils.simplified.metabases.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="student.simplified.html" title="devilry.apps.student.simplified — Simplifed API for students"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="metabases.simplified.html" title="devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes"
+          <a href="coreutils.simplified.metabases.html" title="devilry.coreutils.simplified.metabases — Metaclasses for the Simplified classes"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -68,7 +68,7 @@ the given user to be examiner on the object being manipulated.</p>
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedSubject.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedSubject.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedSubject.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.subject.SimplifiedSubjectMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on a Subject object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedSubject.Meta.model">
@@ -122,12 +122,12 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedSubject.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedSubject.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedSubject.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedSubject.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedSubject.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedSubject.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedSubject.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -256,7 +256,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedPeriod.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedPeriod.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedPeriod.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.period.SimplifiedPeriodMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on a Period object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedPeriod.Meta.model">
@@ -310,12 +310,12 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedPeriod.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedPeriod.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedPeriod.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedPeriod.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedPeriod.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedPeriod.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedPeriod.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -444,7 +444,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedAssignment.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedAssignment.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignment.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.assignment.SimplifiedAssignmentMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on an Assignment object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedAssignment.Meta.model">
@@ -498,12 +498,12 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedAssignment.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignment.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedAssignment.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignment.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedAssignment.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignment.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignment.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -632,7 +632,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedAssignmentGroup.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.assignment_group.SimplifiedAssignmentGroupMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on an AssignmentGroup object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.Meta.model">
@@ -686,12 +686,12 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedAssignmentGroup.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedAssignmentGroup.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -820,7 +820,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedDeadline.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedDeadline.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDeadline.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.deadline.SimplifiedDeadlineMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on a Deadline object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedDeadline.Meta.model">
@@ -900,7 +900,9 @@ given in <tt class="docutils literal"><span class="pre">\*\*kwargs</span></tt> w
 <dl class="classmethod">
 <dt id="devilry.apps.examiner.simplified.SimplifiedDeadline.delete">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">delete</tt><big>(</big><em>user</em>, <em>pk</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDeadline.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete the given object.</p>
+<dd><p>Delete the given object. If the object <tt class="xref py py-meth docutils literal"><span class="pre">is_empty()</span></tt> it can be
+deleted by any user with <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt>,
+if not then only a Superuser may delete the object</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -943,8 +945,8 @@ that assignment is not anonymous.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedDeadline.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDeadline.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedDeadline.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDeadline.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDeadline.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -1057,7 +1059,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedDelivery.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedDelivery.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDelivery.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.delivery.SimplifiedDeliveryMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on a Delivery object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedDelivery.Meta.model">
@@ -1111,12 +1113,12 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedDelivery.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDelivery.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedDelivery.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDelivery.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedDelivery.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedDelivery.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedDelivery.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -1245,7 +1247,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedStaticFeedback.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedStaticFeedback.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.staticfeedback.SimplifiedStaticFeedbackMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on a StaticFeedback
 object using the Simplified API. Also adds to the resultfields
 returned by search</p>
@@ -1346,7 +1348,7 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedStaticFeedback.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedStaticFeedback.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedStaticFeedback.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -1455,7 +1457,7 @@ this check is not performed. If the check fails,
 <dl class="class">
 <dt id="devilry.apps.examiner.simplified.SimplifiedFileMeta.Meta">
 <em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/devilry/apps/examiner/simplified.html#SimplifiedFileMeta.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedFileMeta.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="metabases.simplified.html#devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin" title="devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">devilry.coreutils.simplified.metabases.filemeta.SimplifiedFileMetaMetaMixin</span></tt></p>
 <p>Defines what methods an Examiner can use on a FileMeta object using the Simplified API</p>
 <dl class="attribute">
 <dt id="devilry.apps.examiner.simplified.SimplifiedFileMeta.Meta.model">
@@ -1509,12 +1511,12 @@ that assignment is not anonymous.</p>
 <dt id="devilry.apps.examiner.simplified.SimplifiedFileMeta.is_empty">
 <em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">is_empty</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedFileMeta.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given obj is empty. Defaults to returning <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
-<p>Can be implemented in subclasses to enable superadmins to recursively delete the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<p>Can be implemented in subclasses to enable superadmins to recursively <tt class="xref py py-meth docutils literal"><span class="pre">delete()</span></tt> the <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="devilry.apps.examiner.simplified.SimplifiedFileMeta.post_full_clean">
-<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">post_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedFileMeta.post_full_clean" title="Permalink to this definition">¶</a></dt>
+<dt id="devilry.apps.examiner.simplified.SimplifiedFileMeta.pre_full_clean">
+<em class="property">classmethod </em><tt class="descclassname">SimplifiedFileMeta.</tt><tt class="descname">pre_full_clean</tt><big>(</big><em>user</em>, <em>obj</em><big>)</big><a class="headerlink" href="#devilry.apps.examiner.simplified.SimplifiedFileMeta.pre_full_clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invoked after the user has been authorize by <tt class="xref py py-meth docutils literal"><span class="pre">write_authorize()</span></tt> and
 before <tt class="docutils literal"><span class="pre">obj.full_clean()</span></tt> in <tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt>.</p>
 <p>Override this to set custom/generated values on <tt class="docutils literal"><span class="pre">obj</span></tt> before it is
@@ -1661,8 +1663,8 @@ this check is not performed. If the check fails,
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="metabases.simplified.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">devilry.apps.student.simplifiedmetabases</span></tt> &#8212; Metaclasses for the Simplified classes</a></p>
+  <p class="topless"><a href="coreutils.simplified.metabases.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">devilry.coreutils.simplified.metabases</span></tt> &#8212; Metaclasses for the Simplified classes</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="student.simplified.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">devilry.apps.student.simplified</span></tt> &#8212; Simplifed API for students</a></p>
@@ -1701,7 +1703,7 @@ this check is not performed. If the check fails,
           <a href="student.simplified.html" title="devilry.apps.student.simplified — Simplifed API for students"
              >next</a> |</li>
         <li class="right" >
-          <a href="metabases.simplified.html" title="devilry.apps.student.simplifiedmetabases — Metaclasses for the Simplified classes"
+          <a href="coreutils.simplified.metabases.html" title="devilry.coreutils.simplified.metabases — Metaclasses for the Simplified classes"
              >previous</a> |</li>
         <li><a href="index.html">Devilry v1.0 documentation</a> &raquo;</li> 
       </ul>

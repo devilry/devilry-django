@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="index.html" />
-    <link rel="next" title="Grade plugins" href="grade-plugins.html" />
+    <link rel="next" title="devilry.apps.gradeeditors — Grade editors" href="apps.gradeeditors.html" />
     <link rel="prev" title="Low level RESTful web service API" href="restful.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="grade-plugins.html" title="Grade plugins"
+          <a href="apps.gradeeditors.html" title="devilry.apps.gradeeditors — Grade editors"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="restful.html" title="Low level RESTful web service API"
@@ -64,6 +64,7 @@ is available as a template variable as <tt class="docutils literal"><span class=
 <a class="reference internal" href="restful.html#restful"><em>RESTful class</em></a> in place of <tt class="docutils literal"><span class="pre">RestfulSimplifiedDelivery</span></tt>.</p>
 <div class="section" id="extjs-model">
 <h3>extjs_model<a class="headerlink" href="#extjs-model" title="Permalink to this headline">¶</a></h3>
+<p>Simple usage:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="c1">// Create a variable with the extjsmodel class definition</span>
 <span class="kd">var</span> <span class="nx">deliverymodel</span> <span class="o">=</span> <span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span> <span class="p">}};</span>
 
@@ -71,14 +72,27 @@ is available as a template variable as <tt class="docutils literal"><span class=
 <span class="c1">// extjs_modelname filter (or a combination of both approaches)</span>
 <span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span> <span class="p">}};</span>
 <span class="kd">var</span> <span class="nx">deliverymodelname</span> <span class="o">=</span> <span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_modelname</span> <span class="p">}};</span>
-<span class="kd">var</span> <span class="nx">delivery</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">deliverymodelname</span><span class="p">,</span> <span class="p">{</span>
-    <span class="c1">// Data needed to create a delivery ...</span>
-<span class="p">});</span>
+<span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">ModelManager</span><span class="p">.</span><span class="nx">getModel</span><span class="p">(</span><span class="nx">deliverymodelname</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Specifying result_fieldgroups and model name suffix:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="c1">// Specify result_fieldgroups</span>
+<span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span><span class="o">:</span><span class="s2">&quot;assignment_group,deadline&quot;</span> <span class="p">}};</span>
+
+<span class="c1">// ... or specify a name suffix (to make the model name unique)</span>
+<span class="c1">//     Notice the ;</span>
+<span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span><span class="o">:</span><span class="s2">&quot;;MyScope&quot;</span> <span class="p">}};</span>
+
+<span class="c1">// ... or specify result_fieldgroups and suffix</span>
+<span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_model</span><span class="o">:</span><span class="s2">&quot;assignment_group,deadline;MyScope&quot;</span> <span class="p">}};</span>
+
+<span class="c1">// Note that you can use extjs_modelname to get a suffixed name</span>
+<span class="p">{{</span> <span class="nx">RestfulSimplifiedDelivery</span><span class="o">|</span><span class="nx">extjs_modelname</span><span class="o">:</span><span class="s2">&quot;MyScope&quot;</span> <span class="p">}};</span>
 </pre></div>
 </div>
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.templatetags.extjs.extjs_model">
-<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_model</tt><big>(</big><em>restfulcls</em>, <em>result_fieldgroups=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_model" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_model</tt><big>(</big><em>restfulcls</em>, <em>args=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an extjs model from the given restful class.
 Uses <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsmodel()</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -87,8 +101,14 @@ Uses <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegra
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>restfulcls</strong> &#8211; Forwarded directly to <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsmodel()</span></tt></a>.</li>
-<li><strong>result_fieldgroups</strong> &#8211; A string separated by <tt class="docutils literal"><span class="pre">&quot;,&quot;</span></tt>. The string is split and forwarded to
-<a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsmodel()</span></tt></a>.</li>
+<li><strong>args</strong> &#8211; A string containing the arguments for <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsmodel()</span></tt></a>.
+<tt class="docutils literal"><span class="pre">args</span></tt> is split on <tt class="docutils literal"><span class="pre">&quot;;&quot;</span></tt>.
+The first item in the resulting tuple
+is split on <tt class="docutils literal"><span class="pre">&quot;,&quot;</span></tt> and forwarded as <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt>.
+If <tt class="docutils literal"><span class="pre">args</span></tt> is empty, <tt class="docutils literal"><span class="pre">result_fieldgroups</span></tt> will be an empty list.
+The second item in the resulting tuple is forwarded as <tt class="docutils literal"><span class="pre">modelnamesuffix</span></tt>.
+If <tt class="docutils literal"><span class="pre">args</span></tt> does not contain <tt class="docutils literal"><span class="pre">&quot;;&quot;</span></tt>, this <tt class="docutils literal"><span class="pre">modelnamesuffix</span></tt> will be
+an empty string.</li>
 </ul>
 </td>
 </tr>
@@ -104,7 +124,7 @@ Uses <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegra
 </div>
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.templatetags.extjs.extjs_modelname">
-<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_modelname</tt><big>(</big><em>restfulcls</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_modelname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_modelname" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_modelname</tt><big>(</big><em>restfulcls</em>, <em>modelnamesuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_modelname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_modelname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the name of the extjs model generated by
 <tt class="xref py py-func docutils literal"><span class="pre">extjs_model()</span></tt> using the same
 <tt class="docutils literal"><span class="pre">restfulcls</span></tt>.</p>
@@ -119,7 +139,7 @@ Uses <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegra
 </div>
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.templatetags.extjs.extjs_combobox_model">
-<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_combobox_model</tt><big>(</big><em>restfulcls</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_combobox_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_combobox_model" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_combobox_model</tt><big>(</big><em>restfulcls</em>, <em>modelnamesuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_combobox_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_combobox_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel" title="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjscomboboxmodel()</span></tt></a>.</p>
 </dd></dl>
 
@@ -131,19 +151,14 @@ Uses <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegra
 </div>
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.templatetags.extjs.extjs_store">
-<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_store</tt><big>(</big><em>restfulcls</em>, <em>pagesize=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_store" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.templatetags.extjs.</tt><tt class="descname">extjs_store</tt><big>(</big><em>restfulcls</em>, <em>storeidsuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/templatetags/extjs.html#extjs_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.templatetags.extjs.extjs_store" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an extjs store from the given restful class.
 Uses <a class="reference internal" href="#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore" title="devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsstore()</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>restfulcls</strong> &#8211; Forwarded directly to
-<a class="reference internal" href="#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore" title="devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsstore()</span></tt></a>.</li>
-<li><strong>result_fieldgroups</strong> &#8211; <a class="reference internal" href="#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore" title="devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsstore()</span></tt></a>.</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storeidsuffix</strong> &#8211; Forwarded directly to <a class="reference internal" href="#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore" title="devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsstore()</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -181,15 +196,23 @@ Uses <a class="reference internal" href="#devilry.apps.extjshelpers.storeintegra
 <span id="low-level-api-for-filters"></span><h2>Low-level API for filters<a class="headerlink" href="#module-devilry.apps.extjshelpers.modelintegration" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.modelintegration.get_extjs_modelname">
-<tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">get_extjs_modelname</tt><big>(</big><em>restfulcls</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#get_extjs_modelname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.get_extjs_modelname" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">get_extjs_modelname</tt><big>(</big><em>restfulcls</em>, <em>modelnamesuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#get_extjs_modelname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.get_extjs_modelname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the ExtJS model name for the given restful class.
 Generated from the module name and class name of
 <tt class="docutils literal"><span class="pre">restfulcls._meta.simplified</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>modelnamesuffix</strong> &#8211; Suffixed to the generated model name.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel">
-<tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">restfulcls_to_extjsmodel</tt><big>(</big><em>restfulcls</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#restfulcls_to_extjsmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">restfulcls_to_extjsmodel</tt><big>(</big><em>restfulcls</em>, <em>result_fieldgroups=</em><span class="optional">[</span><span class="optional">]</span>, <em>modelnamesuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#restfulcls_to_extjsmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an extjs model from the given restful class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -201,6 +224,7 @@ Generated from the module name and class name of
 which means that the parameter is forwarded to
 <a class="reference internal" href="simplified.html#devilry.simplified.SimplifiedModelApi.search" title="devilry.simplified.SimplifiedModelApi.search"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.simplified.SimplifiedModelApi.search()</span></tt></a> on the server after
 passing through validations in the RESTful wrapper.</li>
+<li><strong>modelnamesuffix</strong> &#8211; See <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.get_extjs_modelname" title="devilry.apps.extjshelpers.modelintegration.get_extjs_modelname"><tt class="xref py py-func docutils literal"><span class="pre">get_extjs_modelname()</span></tt></a>.</li>
 </ul>
 </td>
 </tr>
@@ -210,24 +234,34 @@ passing through validations in the RESTful wrapper.</li>
 
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel">
-<tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">restfulcls_to_extjscomboboxmodel</tt><big>(</big><em>restfulcls</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#restfulcls_to_extjscomboboxmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.modelintegration.</tt><tt class="descname">restfulcls_to_extjscomboboxmodel</tt><big>(</big><em>restfulcls</em>, <em>modelnamesuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/modelintegration.html#restfulcls_to_extjscomboboxmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shortcut for:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">_extjsmodelmeta</span><span class="o">.</span><span class="n">combobox_fieldgroups</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span>
+                         <span class="n">restfulcls</span><span class="o">.</span><span class="n">_extjsmodelmeta</span><span class="o">.</span><span class="n">combobox_fieldgroups</span><span class="p">,</span>
+                         <span class="n">modelnamesuffix</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <span class="target" id="module-devilry.apps.extjshelpers.storeintegration"></span><dl class="function">
 <dt id="devilry.apps.extjshelpers.storeintegration.get_extjs_storeid">
-<tt class="descclassname">devilry.apps.extjshelpers.storeintegration.</tt><tt class="descname">get_extjs_storeid</tt><big>(</big><em>restfulcls</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/storeintegration.html#get_extjs_storeid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.storeintegration.get_extjs_storeid" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.storeintegration.</tt><tt class="descname">get_extjs_storeid</tt><big>(</big><em>restfulcls</em>, <em>storeidsuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/storeintegration.html#get_extjs_storeid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.storeintegration.get_extjs_storeid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the ExtJS store id for the given restful class.
 Generated from the store id and class name of
 <tt class="docutils literal"><span class="pre">restfulcls._meta.simplified</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storeidsuffix</strong> &#8211; This string added to the end of the id.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore">
-<tt class="descclassname">devilry.apps.extjshelpers.storeintegration.</tt><tt class="descname">restfulcls_to_extjsstore</tt><big>(</big><em>restfulcls</em>, <em>integrateModel=False</em>, <em>modelkwargs={}</em>, <em>pagesize=None</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/storeintegration.html#restfulcls_to_extjsstore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">devilry.apps.extjshelpers.storeintegration.</tt><tt class="descname">restfulcls_to_extjsstore</tt><big>(</big><em>restfulcls</em>, <em>integrateModel=False</em>, <em>modelkwargs={}</em>, <em>storeidsuffix=''</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/extjshelpers/storeintegration.html#restfulcls_to_extjsstore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an extjs store from the given restful class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -239,7 +273,9 @@ Generated from the store id and class name of
 Uses <a class="reference internal" href="#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel" title="devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel"><tt class="xref py py-func docutils literal"><span class="pre">restfulcls_to_extjsmodel()</span></tt></a> with
 <tt class="docutils literal"><span class="pre">modelkwargs</span></tt> as arguments.</li>
 <li><strong>modelkwargs</strong> &#8211; See <tt class="docutils literal"><span class="pre">integrateModel</span></tt>.</li>
-<li><strong>pagesize</strong> &#8211; An integer which is set as the pageSize parameter of the extjs store.</li>
+<li><strong>storeidsuffix</strong> &#8211; Forwarded to func:<cite>get_extjs_storeid</cite> to generate the
+<tt class="docutils literal"><span class="pre">id</span></tt> of the store and to func:<cite>devilry.extjshelpers.modelintegration.get_extjs_modelname</cite>
+(as modelnamesuffix) to generate the model name.</li>
 </ul>
 </td>
 </tr>
@@ -328,8 +364,8 @@ on comboboxes). Defaults to <tt class="docutils literal"><span class="pre">'{com
   <p class="topless"><a href="restful.html"
                         title="previous chapter">Low level RESTful web service API</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="grade-plugins.html"
-                        title="next chapter">Grade plugins</a></p>
+  <p class="topless"><a href="apps.gradeeditors.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">devilry.apps.gradeeditors</span></tt> &#8212; Grade editors</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/extjshelpers.txt"
@@ -362,7 +398,7 @@ on comboboxes). Defaults to <tt class="docutils literal"><span class="pre">'{com
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="grade-plugins.html" title="Grade plugins"
+          <a href="apps.gradeeditors.html" title="devilry.apps.gradeeditors — Grade editors"
              >next</a> |</li>
         <li class="right" >
           <a href="restful.html" title="Low level RESTful web service API"

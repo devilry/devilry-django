@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-administrator-PrettyView'>/** A prettyview is a read-only view panel used to display a single model record. */
+</span>Ext.define('devilry.administrator.PrettyView', {
+    extend: 'Ext.panel.Panel',
+    cls: 'prettyviewpanel',
+    bodyPadding: 20,
+
+    config: {
+<span id='devilry-administrator-PrettyView-cfg-modelname'>        /**
+</span>         * @cfg
+         * The name of the ``Ext.data.Model`` to present in the body. (Required).
+         */
+        modelname: undefined,
+
+<span id='devilry-administrator-PrettyView-cfg-objectid'>        /**
+</span>         * @cfg
+         * Unique ID of the object to load from the model. (Required).
+         */
+        objectid: undefined,
+
+<span id='devilry-administrator-PrettyView-cfg-bodyTpl'>        /**
+</span>         * @cfg
+         * A ``Ext.XTemplate`` object for the body of this view. (Required).
+         */
+        bodyTpl: undefined,
+
+<span id='devilry-administrator-PrettyView-cfg-relatedButtons'>        /**
+</span>         * @cfg
+         * Optional list of buttons for related actions.
+         */
+        relatedButtons: undefined,
+
+<span id='devilry-administrator-PrettyView-cfg-dashboardUrl'>        /**
+</span>         * @cfg
+         * The url to the dashboard. (Required). Used after delete to return to
+         * the dashboard.
+         */
+        dashboardUrl: undefined
+
+<span id='devilry-administrator-PrettyView-cfg-'>        /**
+</span>         * @cfg
+         * Optional list of menuitems for plugin actions.
+         */
+        //pluginItems: undefined
+    },
+
+    constructor: function(config) {
+        this.addEvents(
+<span id='devilry-administrator-PrettyView-event-loadmodel'>            /**
+</span>             * @event
+             * Fired when the model record is loaded successfully.
+             * @param {Ext.model.Model} record The loaded record.
+             */
+            'loadmodel',
+            
+<span id='devilry-administrator-PrettyView-event-edit'>            /**
+</span>             * @event
+             * Fired when the edit button is clicked.
+             * @param {Ext.model.Model} record The record to edit.
+             */
+            'edit');
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    initComponent: function() {
+        this.deletebutton = Ext.create('Ext.button.Button', {
+            text: 'Delete',
+            scale: 'medium',
+            listeners: {
+                scope: this,
+                click: this.onDelete
+            }
+        });
+
+        this.editbutton = Ext.create('Ext.button.Button', {
+            text: 'Edit',
+            scale: 'medium',
+            listeners: {
+                scope: this,
+                click: this.onEdit
+            }
+        });
+
+        var tbar = ['-&gt;', this.deletebutton, this.editbutton];
+
+        //if(this.pluginItems) {
+            //Ext.Array.insert(tbar, 0, this.pluginItems);
+        //}
+
+        if(this.relatedButtons) {
+            Ext.Array.insert(tbar, 0, this.relatedButtons);
+        }
+
+        Ext.apply(this, {
+            tbar: tbar,
+        });
+        this.callParent(arguments);
+
+        var model = Ext.ModelManager.getModel(this.modelname);
+        model.load(this.objectid, {
+            scope: this,
+            success: this.onModelLoadSuccess,
+            failure: this.onModelLoadFailure
+        });
+    },
+
+    onModelLoadSuccess: function(record) {
+        this.record = record;
+        var bodyData = this.getExtraBodyData(record);
+        Ext.apply(bodyData, record.data);
+        this.update(this.bodyTpl.apply(bodyData));
+        this.fireEvent('loadmodel', record);
+    },
+
+    getExtraBodyData: function(record) {
+        return {};
+    },
+
+    onModelLoadFailure: function(record, operation) {
+        throw 'Failed to load the model';
+    },
+
+    onEdit: function() {
+        this.fireEvent('edit', this.record);
+    },
+
+<span id='devilry-administrator-PrettyView-method-setRecord'>    /** Set record. Triggers the loadmodel event. */
+</span>    setRecord: function(record) {
+        this.onModelLoadSuccess(record);
+    },
+
+    onDelete: function() {
+        var me = this;
+        Ext.MessageBox.show({
+            title: 'Confirm delete',
+            msg: 'Are you sure you want to delete?',
+            animateTarget: this.deletebutton,
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.ERROR,
+            fn: function(btn) {
+                if(btn == 'yes') {
+                    me.deleteObject();
+                }
+            }
+        });
+    },
+
+    deleteObject: function() {
+        this.record.destroy();
+        window.location.href = this.dashboardUrl;
+    }
+});
+</pre>
+</body>
+</html>

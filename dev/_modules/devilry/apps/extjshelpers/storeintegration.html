@@ -49,17 +49,21 @@
   <h1>Source code for devilry.apps.extjshelpers.storeintegration</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">modelintegration</span> <span class="kn">import</span> <span class="n">get_extjs_modelname</span><span class="p">,</span> <span class="n">restfulcls_to_extjsmodel</span>
 
-<div class="viewcode-block" id="get_extjs_storeid"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.storeintegration.get_extjs_storeid">[docs]</a><span class="k">def</span> <span class="nf">get_extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">):</span>
+<div class="viewcode-block" id="get_extjs_storeid"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.storeintegration.get_extjs_storeid">[docs]</a><span class="k">def</span> <span class="nf">get_extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the ExtJS store id for the given restful class.</span>
 <span class="sd">    Generated from the store id and class name of</span>
 <span class="sd">    ``restfulcls._meta.simplified``</span>
+
+<span class="sd">    :param storeidsuffix: This string added to the end of the id.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">simplified</span> <span class="o">=</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span>
-    <span class="k">return</span> <span class="s">&#39;{module}.{name}Store&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&#39;{module}.{name}Store{storeidsuffix}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span>
+                                                        <span class="n">name</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                                                        <span class="n">storeidsuffix</span><span class="o">=</span><span class="n">storeidsuffix</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="restfulcls_to_extjsstore"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.storeintegration.restfulcls_to_extjsstore">[docs]</a><span class="k">def</span> <span class="nf">restfulcls_to_extjsstore</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">integrateModel</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">modelkwargs</span><span class="o">=</span><span class="p">{},</span>
-                            <span class="n">pagesize</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                             <span class="n">storeidsuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an extjs store from the given restful class.</span>
 
@@ -69,25 +73,24 @@
 <span class="sd">        Uses :func:`~devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel` with</span>
 <span class="sd">        ``modelkwargs`` as arguments.</span>
 <span class="sd">    :param modelkwargs: See ``integrateModel``.</span>
-<span class="sd">    :param pagesize: An integer which is set as the pageSize parameter of the extjs store.</span>
+<span class="sd">    :param storeidsuffix:</span>
+<span class="sd">        Forwarded to func:`get_extjs_storeid` to generate the</span>
+<span class="sd">        ``id`` of the store and to func:`devilry.extjshelpers.modelintegration.get_extjs_modelname`</span>
+<span class="sd">        (as modelnamesuffix) to generate the model name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">integrateModel</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="o">**</span><span class="n">modelkwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="s">&quot;&#39;{modelname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span><span class="o">=</span><span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">pagesize</span><span class="p">:</span>
-        <span class="n">jspagesize</span> <span class="o">=</span> <span class="s">&#39; pageSize: {0},&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pagesize</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">jspagesize</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="s">&quot;&#39;{modelname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span><span class="o">=</span><span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="p">))</span>
 
 
     <span class="k">return</span> <span class="s">&quot;&quot;&quot;Ext.create(&#39;Ext.data.Store&#39;, {{</span>
 <span class="s">            model: {model},</span>
 <span class="s">            id: &#39;{id}&#39;,</span>
 <span class="s">            remoteFilter: true,</span>
-<span class="s">            remoteSort: true,{jspagesize}</span>
+<span class="s">            remoteSort: true,</span>
 <span class="s">            autoSync: true</span>
-<span class="s">        }})&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">get_extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">),</span> <span class="n">jspagesize</span><span class="o">=</span><span class="n">jspagesize</span><span class="p">)</span></div>
+<span class="s">        }})&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">get_extjs_storeid</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="p">))</span></div>
 </pre></div>
 
           </div>

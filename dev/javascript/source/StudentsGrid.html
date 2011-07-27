@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.studentsmanager_studentsgrid',
+
+    config: {
+        assignmentid: undefined
+    },
+
+    candidatesCol: Ext.create('Ext.XTemplate', 
+        '&lt;ul class=&quot;candidatescolumn&quot;&gt;',
+        '    &lt;tpl for=&quot;candidates__identifier&quot;&gt;',
+        '       &lt;li&gt;{.}&lt;/li&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/ul&gt;'
+    ),
+
+    examinersCol: Ext.create('Ext.XTemplate', 
+        '&lt;ul class=&quot;examinerscolumn&quot;&gt;',
+        '    &lt;tpl for=&quot;examiners__username&quot;&gt;',
+        '       &lt;li&gt;{.}&lt;/li&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/ul&gt;'
+    ),
+
+    pointsColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;div class=&quot;pointscolumn&quot;&gt;',
+        '    &lt;tpl if=&quot;feedback&quot;&gt;',
+        '       {feedback__points}',
+        '    &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!feedback&quot;&gt;',
+        '       &lt;div class=&quot;nofeedback&quot;&gt;&amp;empty;&lt;/div&gt;',
+        '   &lt;/tpl&gt;',
+        '&lt;/div&gt;'
+    ),
+
+    gradeColTpl: Ext.create('Ext.XTemplate', 
+        '&lt;div class=&quot;gradecolumn&quot;&gt;',
+        '   &lt;tpl if=&quot;feedback&quot;&gt;',
+        '        &lt;div class=&quot;grade&quot;&gt;Grade: {feedback__grade}&lt;/div&gt;',
+        '        &lt;div class=&quot;passing_grade&quot;&gt;Passing grade? {feedback__is_passing_grade}&lt;/div&gt;',
+        '        &lt;div class=&quot;grade&quot;&gt;&lt;/div&gt;',
+        '   &lt;/tpl&gt;',
+        '    &lt;tpl if=&quot;!feedback&quot;&gt;',
+        '        &lt;div class=&quot;nofeedback&quot;&gt;',
+        '           No feedback',
+        '        &lt;/div&gt;',
+        '    &lt;/tpl&gt;',
+        '&lt;/div&gt;'
+    ),
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    initComponent: function() {
+        this.store.pageSize = 10;
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'parentnode',
+            comp: 'exact',
+            value: this.assignmentid
+        }]);
+
+
+        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
+            checkOnly: true
+        });
+
+        Ext.apply(this, {
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'bottom',
+                displayInfo: true
+            }],
+
+            columns: [{
+                text: 'Students', dataIndex: 'id', flex: 2,
+                renderer: this.formatCandidatesCol
+            }, {
+                text: 'Examiners', dataIndex: 'id', flex: 2,
+                renderer: this.formatExaminersCol
+            }, {
+                text: 'Latest feedback',
+                columns: [{
+                    text: 'Points',
+                    dataIndex: 'feedback__points',
+                    renderer: this.formatPointsCol,
+                    width: 70
+                }, {
+                    text: 'Grade',
+                    dataIndex: 'feedback__grade',
+                    width: 150,
+                    renderer: this.formatGradeCol
+                }]
+            }]
+        });
+        this.callParent(arguments);
+        this.store.load({
+            params: {
+                start: 0,
+                limit: 10
+            }
+        });
+    },
+
+    formatCandidatesCol: function(value, p, record) {
+        return this.candidatesCol.apply(record.data);
+    },
+
+    formatExaminersCol: function(value, p, record) {
+        return this.examinersCol.apply(record.data);
+    },
+
+    formatPointsCol: function(value, p, record) {
+        return this.pointsColTpl.apply(record.data);
+    },
+
+    formatGradeCol: function(value, p, record) {
+        return this.gradeColTpl.apply(record.data);
+    }
+});
+</pre>
+</body>
+</html>

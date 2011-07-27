@@ -1,6 +1,6 @@
 Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackInfo({
   "subclasses": [
-    "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo"
+    "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor"
   ],
   "doc": "<p>Panel to show StaticFeedback info.</p>\n",
   "docauthor": null,
@@ -40,7 +40,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackInfo({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 10,
+        "linenr": 13,
         "inheritable": false,
         "alias": null,
         "name": "deliveryid",
@@ -58,7 +58,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackInfo({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 16,
+        "linenr": 19,
         "inheritable": false,
         "alias": null,
         "name": "staticfeedbackstore",

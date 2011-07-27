@@ -34,14 +34,17 @@ Administrator
     administrator_restfulsimplifiedassignmentgroup_details_delete
     administrator_restfulsimplifieddelivery_details_read
     administrator_restfulsimplifieddelivery_details_search
+    administrator_restfulsimplifieddelivery_details_delete
     administrator_restfulsimplifieddeadline_details_read
     administrator_restfulsimplifieddeadline_details_search
     administrator_restfulsimplifieddeadline_details_create
     administrator_restfulsimplifieddeadline_details_delete
     administrator_restfulsimplifiedstaticfeedback_details_read
     administrator_restfulsimplifiedstaticfeedback_details_search
+    administrator_restfulsimplifiedstaticfeedback_details_delete
     administrator_restfulsimplifiedfilemeta_details_read
     administrator_restfulsimplifiedfilemeta_details_search
+    administrator_restfulsimplifiedfilemeta_details_delete
 
 
 Node
@@ -282,6 +285,11 @@ Delivery
         <th><a href="administrator_restfulsimplifieddelivery_details_read.html">GET&nbsp;/administrator/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
         <td>Retrieve a Delivery.</td>
     </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifieddelivery_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Delete a Delivery.</td>
+    </tr>
         </tbody>
     </table>
 
@@ -348,6 +356,11 @@ StaticFeedback
         <th><a href="administrator_restfulsimplifiedstaticfeedback_details_read.html">GET&nbsp;/administrator/restfulsimplifiedstaticfeedback/<span class="restfulid">id</span></a></th>
         <td>Retrieve a Static feedback.</td>
     </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedstaticfeedback_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedstaticfeedback/<span class="restfulid">id</span></a></th>
+        <td>Delete a Static feedback.</td>
+    </tr>
         </tbody>
     </table>
 
@@ -375,6 +388,11 @@ FileMeta
     <tr>
         <th><a href="administrator_restfulsimplifiedfilemeta_details_read.html">GET&nbsp;/administrator/restfulsimplifiedfilemeta/<span class="restfulid">id</span></a></th>
         <td>Retrieve a FileMeta.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedfilemeta_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedfilemeta/<span class="restfulid">id</span></a></th>
+        <td>Delete a FileMeta.</td>
     </tr>
         </tbody>
     </table>

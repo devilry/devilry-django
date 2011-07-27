@@ -63,6 +63,24 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_DeadlineInfo({
         "name": "deliverymodel",
         "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
         "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.assignmentgroup.DeadlineInfo",
+        "doc": "<p>Selected delivery id. May be undefined, in which case, no delivery\nis selected.</p>\n",
+        "html_filename": "DeadlineInfo.html",
+        "href": "DeadlineInfo.html#devilry-extjshelpers-assignmentgroup-DeadlineInfo-cfg-selectedDeliveryId",
+        "tagname": "cfg",
+        "shortDoc": "Selected delivery id. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 30,
+        "inheritable": false,
+        "alias": null,
+        "name": "selectedDeliveryId",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/DeadlineInfo.js",
+        "deprecated": null
       }
     ],
     "event": [

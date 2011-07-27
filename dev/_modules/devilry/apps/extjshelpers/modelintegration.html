@@ -67,9 +67,14 @@
 
 
 <span class="k">def</span> <span class="nf">_recurse_get_fkfield</span><span class="p">(</span><span class="n">modelcls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-    <span class="n">cur</span> <span class="o">=</span> <span class="n">modelcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">fieldname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">modelcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">fields</span><span class="o">.</span><span class="n">FieldDoesNotExist</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c"># We assume this is a ManyToMany field if it is not a normal field</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;auto&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cur</span>
+        <span class="k">return</span> <span class="n">_djangofield_to_extjstype</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_recurse_get_fkfield</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">related</span><span class="o">.</span><span class="n">parent_model</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
@@ -81,21 +86,26 @@
             <span class="n">path</span> <span class="o">=</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">_recurse_get_fkfield</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">_djangofield_to_extjstype</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">))</span>
 
 
 
-<div class="viewcode-block" id="get_extjs_modelname"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.modelintegration.get_extjs_modelname">[docs]</a><span class="k">def</span> <span class="nf">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">):</span>
+<div class="viewcode-block" id="get_extjs_modelname"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.modelintegration.get_extjs_modelname">[docs]</a><span class="k">def</span> <span class="nf">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the ExtJS model name for the given restful class.</span>
 <span class="sd">    Generated from the module name and class name of</span>
 <span class="sd">    ``restfulcls._meta.simplified``</span>
+
+<span class="sd">    :param modelnamesuffix:</span>
+<span class="sd">        Suffixed to the generated model name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">simplified</span> <span class="o">=</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span>
-    <span class="k">return</span> <span class="s">&#39;{module}.{name}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&#39;{module}.{name}{modelnamesuffix}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span>
+                                                     <span class="n">name</span><span class="o">=</span><span class="n">simplified</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                                                     <span class="n">modelnamesuffix</span><span class="o">=</span><span class="n">modelnamesuffix</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="restfulcls_to_extjsmodel"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel">[docs]</a><span class="k">def</span> <span class="nf">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">result_fieldgroups</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="restfulcls_to_extjsmodel"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjsmodel">[docs]</a><span class="k">def</span> <span class="nf">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">result_fieldgroups</span><span class="o">=</span><span class="p">[],</span> <span class="n">modelnamesuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an extjs model from the given restful class.</span>
 
@@ -105,11 +115,12 @@
 <span class="sd">        which means that the parameter is forwarded to</span>
 <span class="sd">        :meth:`devilry.simplified.SimplifiedModelApi.search` on the server after</span>
 <span class="sd">        passing through validations in the RESTful wrapper.</span>
+<span class="sd">    :param modelnamesuffix:</span>
+<span class="sd">        See :func:`~devilry.apps.extjshelpers.modelintegration.get_extjs_modelname`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">modelfields</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_iter_fields</span><span class="p">(</span><span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span><span class="p">,</span>
+    <span class="k">for</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">exttype</span> <span class="ow">in</span> <span class="n">_iter_fields</span><span class="p">(</span><span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span><span class="p">,</span>
                                          <span class="n">result_fieldgroups</span><span class="p">):</span>
-        <span class="n">exttype</span> <span class="o">=</span> <span class="n">_djangofield_to_extjstype</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
         <span class="n">exttype</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldname</span>
         <span class="n">modelfields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exttype</span><span class="p">)</span>
     <span class="c">#for fieldname in restfulcls._meta.urlmap:</span>
@@ -136,20 +147,24 @@
 <span class="s">                    type: &#39;json&#39;</span>
 <span class="s">                }}</span>
 <span class="s">            }})</span>
-<span class="s">        }})&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span> <span class="o">=</span> <span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">),</span>
+<span class="s">        }})&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span> <span class="o">=</span> <span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="p">),</span>
                       <span class="n">modelfields</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modelfields</span><span class="p">),</span>
                       <span class="n">idprop</span> <span class="o">=</span> <span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="c"># TODO: metaoption</span>
                       <span class="n">resturl</span> <span class="o">=</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">get_rest_url</span><span class="p">(),</span>
                       <span class="n">js_result_fieldgroups</span><span class="o">=</span><span class="n">js_result_fieldgroups</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="restfulcls_to_extjscomboboxmodel"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel">[docs]</a><span class="k">def</span> <span class="nf">restfulcls_to_extjscomboboxmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">):</span>
+<div class="viewcode-block" id="restfulcls_to_extjscomboboxmodel"><a class="viewcode-back" href="../../../../extjshelpers.html#devilry.apps.extjshelpers.modelintegration.restfulcls_to_extjscomboboxmodel">[docs]</a><span class="k">def</span> <span class="nf">restfulcls_to_extjscomboboxmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Shortcut for::</span>
 
-<span class="sd">        restfulcls_to_extjsmodel(restfulcls, restfulcls._extjsmodelmeta.combobox_fieldgroups)</span>
+<span class="sd">        restfulcls_to_extjsmodel(restfulcls,</span>
+<span class="sd">                                 restfulcls._extjsmodelmeta.combobox_fieldgroups,</span>
+<span class="sd">                                 modelnamesuffix)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">_extjsmodelmeta</span><span class="o">.</span><span class="n">combobox_fieldgroups</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span>
+                                    <span class="n">restfulcls</span><span class="o">.</span><span class="n">_extjsmodelmeta</span><span class="o">.</span><span class="n">combobox_fieldgroups</span><span class="p">,</span>
+                                    <span class="n">modelnamesuffix</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

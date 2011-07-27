@@ -15,14 +15,14 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackEditableInfo'>/** Panel to show StaticFeedback info and create new static feedbacks.
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor'>/** Panel to show StaticFeedback info and create new static feedbacks.
 </span> */
-Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
+Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
-    alias: 'widget.staticfeedbackeditableinfo',
+    alias: 'widget.staticfeedbackeditor',
 
     config: {
-<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackEditableInfo-cfg-assignmentid'>        /**
+<span id='devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor-cfg-assignmentid'>        /**
 </span>        * @cfg
         * Assignment id. (Required).
         */
@@ -37,6 +37,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'New feedback',
+            iconCls: 'icon-add-16',
             margin: {left: 5},
             listeners: {
                 click: function() {
@@ -46,7 +47,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
         });
         this.addListener('afterStoreLoadMoreThanZero', function() {
             me.getToolbar().add(me.createButton);
-            me.getToolbar().show();
         });
         this.callParent(arguments);
     },
@@ -56,7 +56,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditableInfo', {
         this.setBody({
             xtype: 'container',
             loader: {
-                url: Ext.String.format('/static/gradeeditors/approved.js'),
+                url: Ext.String.format('/static/asminimalaspossible_gradeeditor/drafteditor.js'), // TODO read from an API
                 renderer: 'component',
                 autoLoad: true,
                 loadMask: true

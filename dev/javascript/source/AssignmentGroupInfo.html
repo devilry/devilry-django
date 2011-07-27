@@ -20,30 +20,33 @@
  * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineListing} and info
  * about the AssignmentGroup.
  *
- *      -----------------------
- *      |                     |
- *      | Deadlinelisting     |
- *      |    DeadlineInfo     |
- *      |        DeliveryGrid |
- *      |    DeadlineInfo     |
- *      |        DeliveryGrid |
- *      |                     |
- *      -----------------------
+ *      -------------------------------
+ *      | AssignmentGroupDetailsPanel |
+ *      |                             |
+ *      | Deadlinelisting             |
+ *      |    DeadlineInfo             |
+ *      |        DeliveryGrid         |
+ *      |    DeadlineInfo             |
+ *      |        DeliveryGrid         |
+ *      |                             |
+ *      -------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
     extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupinfo',
     cls: 'widget-assignmentgroupinfo',
     requires: [
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
         'devilry.extjshelpers.assignmentgroup.DeadlineListing'
     ],
 
     config: {
-<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-assignmentgroupid'>        /**
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-assignmentgroup'>        /**
 </span>        * @cfg
-        * AssignmentGroup id. (Required).
+        * AssignmentGroup object such as the ``data`` attribute of a record
+        * returned from loading from a store. (Required).
         */
-        assignmentgroupid: undefined,
+        assignmentgroup: undefined,
 
 <span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-deliverymodel'>        /**
 </span>         * @cfg
@@ -57,16 +60,41 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo', {
          * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
          * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
          */
-        deadlinestore: undefined
+        deadlinestore: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupInfo-cfg-selectedDeliveryId'>        /**
+</span>         * @cfg
+         * Selected delivery id. May be undefined, in which case, no delivery
+         * is selected.
+         */
+        selectedDeliveryId: undefined,
+        
+        
+        canExamine: false
     },
+
+    layout: 'border',
 
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'deadlinelisting',
-                assignmentgroupid: this.assignmentgroupid,
-                deliverymodel: this.deliverymodel,
-                deadlinestore: this.deadlinestore
+                region: 'north',
+                items: [{
+                    xtype: 'assignmentgroupdetailspanel',
+                    assignmentgroup: this.assignmentgroup,
+                    bodyPadding: 10
+                }]
+            }, {
+                region: 'center',
+                items: [{
+                    xtype: 'deadlinelisting',
+                    title: 'Deadlines',
+                    assignmentgroupid: this.assignmentgroup.id,
+                    deliverymodel: this.deliverymodel,
+                    deadlinestore: this.deadlinestore,
+                    selectedDeliveryId: this.selectedDeliveryId,
+                    canExamine: this.canExamine
+                }]
             }]
         });
         this.callParent(arguments);

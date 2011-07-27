@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Devilry v1.0 documentation" href="../../index.html" />
     <link rel="up" title="Administrator" href="index.html" />
-    <link rel="next" title="GET /administrator/restfulsimplifieddeadline/id" href="administrator_restfulsimplifieddeadline_details_read.html" />
+    <link rel="next" title="DELETE /administrator/restfulsimplifieddelivery/id" href="administrator_restfulsimplifieddelivery_details_delete.html" />
     <link rel="prev" title="GET /administrator/restfulsimplifieddelivery/id" href="administrator_restfulsimplifieddelivery_details_read.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="administrator_restfulsimplifieddeadline_details_read.html" title="GET /administrator/restfulsimplifieddeadline/id"
+          <a href="administrator_restfulsimplifieddelivery_details_delete.html" title="DELETE /administrator/restfulsimplifieddelivery/id"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="administrator_restfulsimplifieddelivery_details_read.html" title="GET /administrator/restfulsimplifieddelivery/id"
@@ -78,9 +78,9 @@ applied in the following order:</p>
 
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
-    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+    <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;icontains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
     <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-number&quot;</span><span class="p">,</span> <span class="s2">&quot;time_of_delivery&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
@@ -129,7 +129,7 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 <dt>About the field:</dt>
 <dd>List of many values.</dd>
 <dt>Type</dt>
-<dd>Comma-separated list</dd>
+<dd>List of strings</dd>
 </dl>
 </dd>
 <dt>deadline__assignment_group__candidates__identifier</dt>
@@ -139,7 +139,7 @@ resulting in a list of words. Every <em>word</em> in the list is searched for
 <dt>About the field:</dt>
 <dd>List of many values.</dd>
 <dt>Type</dt>
-<dd>Comma-separated list</dd>
+<dd>List of strings</dd>
 </dl>
 </dd>
 <dt>deadline__assignment_group__parentnode__short_name</dt>
@@ -221,9 +221,9 @@ list of filters, where each filter is a map with the following entries:</p>
 </div></blockquote>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+<div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;icontains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;iexact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -739,8 +739,8 @@ request parameter.</p>
   <p class="topless"><a href="administrator_restfulsimplifieddelivery_details_read.html"
                         title="previous chapter">GET /administrator/restfulsimplifieddelivery/id</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="administrator_restfulsimplifieddeadline_details_read.html"
-                        title="next chapter">GET /administrator/restfulsimplifieddeadline/id</a></p>
+  <p class="topless"><a href="administrator_restfulsimplifieddelivery_details_delete.html"
+                        title="next chapter">DELETE /administrator/restfulsimplifieddelivery/id</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/restfulapi/administrator/administrator_restfulsimplifieddelivery_details_search.txt"
@@ -773,7 +773,7 @@ request parameter.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="administrator_restfulsimplifieddeadline_details_read.html" title="GET /administrator/restfulsimplifieddeadline/id"
+          <a href="administrator_restfulsimplifieddelivery_details_delete.html" title="DELETE /administrator/restfulsimplifieddelivery/id"
              >next</a> |</li>
         <li class="right" >
           <a href="administrator_restfulsimplifieddelivery_details_read.html" title="GET /administrator/restfulsimplifieddelivery/id"
