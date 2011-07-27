@@ -332,7 +332,7 @@ class TestHelper(object):
             period.end_time = period.start_time + timedelta(5 * 30)
 
         if extras['ln']:
-            period.long_name = extras['ln']
+            period.long_name = extras['ln'][0]
 
         period.full_clean()
         period.save()
