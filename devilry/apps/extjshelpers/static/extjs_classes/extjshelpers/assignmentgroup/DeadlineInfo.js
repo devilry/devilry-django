@@ -29,12 +29,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
     },
     
     initComponent: function() {
-        var deliverystore = Ext.create('Ext.data.Store', {
-            model: this.deliverymodel,
-            remoteFilter: true,
-            remoteSort: true,
-            autoSync: true,
-        });
+        //var deliverystore = Ext.create('Ext.data.Store', {
+            //model: this.deliverymodel,
+            //remoteFilter: true,
+            //remoteSort: true,
+            //autoSync: true,
+        //});
 
         deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
         deliverystore.proxy.extraParams.filters = Ext.JSON.encode([{

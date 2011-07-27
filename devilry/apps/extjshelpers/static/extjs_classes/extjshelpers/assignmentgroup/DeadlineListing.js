@@ -1,15 +1,12 @@
-/** Deadline listing.
- *
- * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineInfo}'s
- * within the given assignmentgroup ({@link #assignmentgroup_recordcontainer}).
- */
+/** Deadline listing. */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.grid.Panel',
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
-    requires: [
-        'devilry.extjshelpers.assignmentgroup.DeadlineInfo'
-    ],
+    hideHeaders: true, // Hide column header
+    rowTpl: Ext.create('Ext.XTemplate',
+        '{number}. {time_of_delivery:date} (id:{id})'
+    ),
 
     config: {
         /**
@@ -20,18 +17,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
 
         /**
          * @cfg
-         * Deadline ``Ext.data.Store``. (Required).
-         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
-         * this class.
+         * Enable creation of new deadlines?
          */
-        deadlinestore: undefined,
-
-        /**
-         * @cfg
-         * Viewable buttons depends on this
-         * 
-         */
-        canExamine: false,
+        enableDeadlineCreation: false,
 
         /**
          * @cfg
@@ -42,51 +30,89 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     },
 
     constructor: function(config) {
-        this.addEvents(
-            /**
-             * @event
-             * Fired when a delivery is selected.
-             * @param deliveryRecord The selected delivery record.
-             */
-            'selectDelivery');
         this.callParent([config]);
         this.initConfig(config);
     },
 
     initComponent: function() {
-        if (this.canExamine)
-        {
-            Ext.apply(this, {
-                tbar: [
-                {
-                    xtype: 'button',
-                    text: 'Create new deadline',
-                    iconCls: 'icon-add-16',
-                    listeners: {
-                        click: function ()
-                        {
-                            console.log('TODO');
-                        }
-                    }
-                }]
-            });
+        if(this.enableDeadlineCreation) {
+            this.addCreateNewDeadlineButton();
         }
+
+        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            enableGroupingMenu: false,
+            groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
+        });
+
+        Ext.apply(this, {
+            features: [groupingFeature],
+            store: this.createDeliveryStore(),
+            columns: [{
+                header: 'Data',
+                dataIndex: 'id',
+                flex: 1,
+                renderer: function(value, metaData, deliveryrecord) {
+                    return this.rowTpl.apply(deliveryrecord.data);
+                }
+            }],
+            listeners: {
+                scope: this,
+                selectionchange: this.onSelectDelivery
+            },
+        });
+
         this.callParent(arguments);
         this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
-        this.addListener('selectDelivery', this.onSelectDelivery, this);
     },
 
-    /** Reload all deadlines on this assignmentgroup. */
+    /**
+     * @private
+     * */
+    createDeliveryStore: function() {
+        var deliverystore = Ext.create('Ext.data.Store', {
+            model: this.deliverymodel,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true,
+            groupField: 'deadline__deadline'
+        });
+
+        deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
+        return deliverystore;
+    },
+
+    /**
+     * @private
+     * */
+    addCreateNewDeadlineButton: function() {
+        Ext.apply(this, {
+            tbar: [{
+                xtype: 'button',
+                text: 'Create new deadline',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    click: function ()
+                    {
+                        console.log('TODO');
+                    }
+                }
+            }]
+        });
+    },
+
+    /**
+     * @private
+     * Reload all deadlines on this assignmentgroup.
+     * */
     reload: function() {
-        this.removeAll();
         this.loadDeadlines(this.assignmentgroup_recordcontainer.record.data.id);
     },
 
     /**
      * @private
      */
-    onSelectDelivery: function(deliveryRecord) {
-        //console.log(deliveryRecord);
+    onSelectDelivery: function(grid, selections) {
+        var deliveryRecord = selections[0];
         this.delivery_recordcontainer.setRecord(deliveryRecord);
     },
 
@@ -94,38 +120,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
      * @private
      */
     loadDeadlines: function(assignmentgroupid) {
-        this.deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
-        this.deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'assignment_group',
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'deadline__assignment_group',
             comp: 'exact',
             value: assignmentgroupid
         }]);
-
-        this.deadlinestore.load({
-            scope: this,
-            callback: this.onLoadDeadlines
-        });
-    },
-
-    /**
-     * @private
-     */
-    onLoadDeadlines:function(deadlinerecords) {
-        var me = this;
-        Ext.each(deadlinerecords, function(deadlinerecord) {
-            me.addDeadline(deadlinerecord.data);
-        });
-    },
-
-    /**
-     * @private
-     */
-    addDeadline: function(deadline) {
-        this.add({
-            xtype: 'deadlineinfo',
-            deadline: deadline,
-            deliverymodel: this.deliverymodel,
-            delivery_recordcontainer: this.delivery_recordcontainer
-        });
-    },
+        this.store.load();
+    }
 });
