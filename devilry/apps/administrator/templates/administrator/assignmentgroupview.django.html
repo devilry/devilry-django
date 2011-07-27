@@ -6,6 +6,7 @@
 
 <script>
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
@@ -32,12 +33,24 @@
             renderTo: 'maincontent',
             assignmentgroupid: {{ objectid }},
             assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
+            assignmentgroupstore: assignmentgroupstore,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
             deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeadlineStore'),
             filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
             staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
             canExamine: true
         });
+
+        assignmentgroupstore.proxy.extraParams.limit = 1;
+        assignmentgroupstore.proxy.extraParams.start = 0;
+        assignmentgroupstore.pageSize = 1;
+        assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'id',
+            comp: 'exact',
+            value: {{ objectid }}
+        }]);
+
+        assignmentgroupstore.load();
     });
 
 </script>

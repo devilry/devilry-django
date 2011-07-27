@@ -119,14 +119,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         });
         this.callParent(arguments);
 
-        console.log(this.assignmentgroupmodel);
-        console.log(this.deliverymodel);
-        console.log(this.assignmentgroupid);
-        
-        this.assignmentgroupmodel.load(this.assignmentgroupid, {
-            scope: me,
-            success: me.onLoadAssignmentGroup
-        });
+        //this.assignmentgroupmodel.load(this.assignmentgroupid, {
+            //scope: me,
+            //success: me.onLoadAssignmentGroup
+        //});
+        this.assignmentgroupstore.addListener('load', this.onAssignmentGroupStoreLoad, this);
     },
 
     onLoadAssignmentGroup: function(assignmentgrouprecord) {
@@ -144,6 +141,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             layout: 'fit',
             selectedDeliveryId: parseInt(query.deliveryid)
         });
+    },
+
+    onAssignmentGroupStoreLoad: function(store, records, successful) {
+        if(successful) {
+            this.onLoadAssignmentGroup(records[0]);
+        } else {
+            // TODO: handle unsuccessful load
+        }
     },
 
     /**
