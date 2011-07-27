@@ -13,14 +13,14 @@ class TestDeadline(TestCase, TestHelper):
         self.okVerdict = {"grade": "C", "points": 85, "is_passing_grade": True}
 
     def test_publish_feedbacks_directly(self):
-        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1)')
+        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
         self.delivery = self.add_delivery("inf1100.period1.assignment1.group1", self.goodFile)
         self.feedback = self.add_feedback(self.delivery, verdict=self.okVerdict)        
         # ..._assignment1.examiners_publish_feedbacks_directly is True by default
         self.assertTrue(Deadline.objects.get(id=self.feedback.delivery.deadline.id).feedbacks_published)
 
     def test_dont_publish_feedbacks_directly(self):
-        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1)')
+        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
         # Disable publish feedbacks directly before adding delivery and feedback
         self.inf1100_period1_assignment1.examiners_publish_feedbacks_directly = False
         self.inf1100_period1_assignment1.save()

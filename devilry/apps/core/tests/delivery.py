@@ -15,7 +15,8 @@ class TestDelivery(TestCase, TestHelper):
                  assignmentgroups=["g1:candidate(student1):examiner(examiner1)",
                                    "g2:candidate(student2):examiner(examiner2)",
                                    "g3:candidate(student3,student2):examiner(examiner1,examiner2,examiner3)",
-                                   "g4:candidate(student4):examiner(examiner3)"])
+                                   "g4:candidate(student4):examiner(examiner3)"],
+                 deadlines=['d1:ends(1)'])
         self.goodFile = {"good.py": "print awesome"}
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)

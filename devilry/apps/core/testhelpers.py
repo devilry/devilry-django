@@ -124,7 +124,8 @@ class TestDeliveryStoreMixin(TestHelper):
                  subjects=["inf1100"],
                  periods=["period"],
                  assignments=["assignment1"],
-                 assignmentgroups=["g1:candidate(student1)"])
+                 assignmentgroups=["g1:candidate(student1)"],
+                 deadlines=['d1:ends(10)'])
         # file and verdict
         self.goodFile = {"good.py": "print awesome"}
         d = self.add_delivery("inf1100.period.assignment1.g1", self.goodFile)
