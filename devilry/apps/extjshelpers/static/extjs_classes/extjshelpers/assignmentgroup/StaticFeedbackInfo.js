@@ -34,11 +34,27 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     },
     
     initComponent: function() {
+        this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+
+        Ext.apply(this, {
+            tbar: [{
+                xtype: 'devilrypager',
+                store: this.staticfeedbackstore,
+                width: 200,
+                reverseDirection: true,
+                middleLabelTpl: Ext.create('Ext.XTemplate',
+                    '<tpl if="firstRecord">',
+                '   {currentNegativePageOffset})&nbsp;&nbsp;',
+                '   {firstRecord.data.save_timestamp:date}',
+                '</tpl>'
+                )
+            }, '->']
+        });
+
         this.callParent(arguments);
 
         this.staticfeedbackstore.pageSize = 1;
         this.staticfeedbackstore.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
-        this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
         this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecord, this);
         this.staticfeedbackstore.addListener('load', this.onLoadStaticfeedbackstore, this);
@@ -62,30 +78,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
 
     onSetStaticFeedbackRecord: function() {
-        console.log(this.staticfeedbackstore);
-        if(this.toolbar) {
-            this.removeDocked(this.toolbar);
-        }
-        if(this.staticfeedbackstore.totalCount > 1) {
-            this.toolbar = Ext.ComponentManager.create({
-                xtype: 'toolbar',
-                dock: 'top',
-                items: [{
-                    xtype: 'devilrypager',
-                    store: this.staticfeedbackstore,
-                    width: 200,
-                    reverseDirection: true,
-                    middleLabelTpl: Ext.create('Ext.XTemplate',
-                        '<tpl if="firstRecord">',
-                        '   {currentNegativePageOffset})&nbsp;&nbsp;',
-                        '   {firstRecord.data.save_timestamp:date}',
-                        '</tpl>'
-                    )
-                }, '->']
-            });
-            this.addDocked(this.toolbar);
-        }
-
         this.setBody({
             xtype: 'staticfeedbackview',
             singlerecordontainer: this.staticfeedback_recordcontainer
@@ -110,10 +102,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         this.add(content);
     },
 
-    //bodyWithFeedback: function(record) {
-        //this.setStaticFeedback(record.data);
-        //this.fireEvent('afterStoreLoadMoreThanZero');
-    //},
 
     bodyWithNoFeedback: function() {
         this.setBody({
@@ -126,5 +114,4 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     //getToolbar: function() {
         //return this.down('toolbar');
     //}
-
 });

@@ -46,57 +46,74 @@ Ext.define('devilry.extjshelpers.Pager', {
     },
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
         var me = this;
-        Ext.apply(this, {
-            items: [{
-                xtype: 'button',
-                text: '<',
-                flex: 0,
-                id: this.id + (this.reverseDirection? '-next': '-prev'),
-                disabled: true,
-                listeners: {
-                    click: function() {
-                        me.reverseDirection? me.store.nextPage(): me.store.previousPage();
-                    }
-                },
-            }, {
-                xtype: 'component',
-                html: '',
-                style: {
-                    'text-align': 'center'
-                },
-                flex: 1,
-                width: 200,
-                id: this.id + '-label',
-            }, {
-                xtype: 'button',
-                text: '>',
-                flex: 0,
-                id: this.id + (this.reverseDirection? '-prev': '-next'),
-                disabled: true,
-                listeners: {
-                    click: function() {
-                        me.reverseDirection? me.store.previousPage(): me.store.nextPage();
-                    }
+
+        this.previousButton = Ext.ComponentManager.create({
+            xtype: 'button',
+            text: '<',
+            flex: 0,
+            disabled: true,
+            listeners: {
+                click: function() {
+                    me.store.previousPage();
                 }
-            }]
+            },
         });
+
+        this.middleLabel = Ext.ComponentManager.create({
+            xtype: 'component',
+            html: '',
+            style: {
+                'text-align': 'center'
+            },
+            flex: 1,
+            //width: 200
+        });
+
+        this.nextButton = Ext.ComponentManager.create({
+            xtype: 'button',
+            text: '>',
+            flex: 0,
+            disabled: true,
+            listeners: {
+                click: function() {
+                    me.store.nextPage();
+                }
+            }
+        });
+
+        this.items = [
+            this.previousButton,
+            this.middleLabel,
+            this.nextButton
+        ];
+        if(this.reverseDirection) {
+            this.nextButton.setText('<');
+            this.previousButton.setText('>');
+            this.items[2] = this.previousButton;
+            this.items[0] = this.nextButton;
+        }
+        this.callParent(arguments);
 
         this.store.addListener('load', function(store, records, successful) {
             if(successful) {
                 me.updatePageSwitcher(records);
             }
         });
-
-        this.callParent(arguments);
     },
 
     updatePageSwitcher: function(records) {
+        if(records.length == 0) {
+            this.hide();
+            return;
+        } else {
+            this.show();
+        }
         var from = this.store.pageSize * (this.store.currentPage-1);
         var visibleOnCurrentPage = this.store.getCount();
         var totalPages = this.store.getTotalCount() / this.store.pageSize;
@@ -110,24 +127,15 @@ Ext.define('devilry.extjshelpers.Pager', {
             currentPage: this.store.currentPage,
             currentNegativePageOffset: totalPages - this.store.currentPage + 1
         });
-        this.getMiddleLabel().update(label);
+        this.middleLabel.update(label);
 
-        this.getPreviousPageButton().disable();
+        this.previousButton.disable();
         if(from > 0) {
-            this.getPreviousPageButton().enable();
+            this.previousButton.enable();
         }
-        this.getNextPageButton().disable();
+        this.nextButton.disable();
         if(visibleOnCurrentPage == this.store.pageSize && (from+visibleOnCurrentPage) != this.store.getTotalCount()) {
-            this.getNextPageButton().enable();
+            this.nextButton.enable();
         }
-    },
-    getMiddleLabel: function() {
-        return Ext.getCmp(this.id + '-label');
-    },
-    getPreviousPageButton: function() {
-        return Ext.getCmp(this.id + '-prev');
-    },
-    getNextPageButton: function() {
-        return Ext.getCmp(this.id + '-next');
     }
 });
