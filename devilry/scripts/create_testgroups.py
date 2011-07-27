@@ -374,10 +374,45 @@ if __name__ == "__main__":
 
     def create_example_assignment(assignmentpath,
                                   subject_long_name, period_long_name,
-                                  groupname_prefix, deadline_profiles,
-                                  num_students, studentname_prefix, students_per_group,
-                                  num_examiners, examinername_prefix, examiners_per_group,
-                                  grade_maxpoints, deliverycountrange):
+
+                                  groupname_prefix = None,
+                                  deadline_profiles = '-10',
+
+                                  num_students = 10,
+                                  studentname_prefix = 'student',
+                                  students_per_group = 1,
+
+                                  num_examiners=3,
+                                  examinername_prefix='examiner',
+                                  examiners_per_group=1,
+
+                                  grade_maxpoints=1,
+                                  deliverycountrange='0-4'):
+        """
+        :param assignmentpath: Path to assignment.
+        :param subject_long_name: Long name of the subject.
+        :param period_long_name: Long name of the period.
+        :param groupname_prefix:
+            Group name prefix. Group names will be this prefix plus
+            a number. If this is None, group name will be left blank.
+        :param deadline_profiles:
+            A list of deadline offsets. Example: "+10,-20,-35" will create
+            a deadline 10 days in the future, a deadline 20 days ago, and
+            a deadline 35 days ago.
+
+        :param num_students: Total number of students.
+        :param studentname_prefix: Prefix of student name.
+        :param students_per_group: Number of students per group.
+
+        :param num_examiners: Total number of examiners.
+        :param studentname_prefix: Prefix of student name.
+        :param examiners_per_group: Number of examiners per group.
+
+        :param grade_maxpoints: Maxpoints for grades.
+        :param deliverycountrange:
+                Number of deliveries. If it is a range separated by '-',
+                a random number of deliveries in this range is used.
+        """
 
         deadlines = parse_deadline_profiles(deadline_profiles)
         assignment = create_assignment(assignmentpath, deadlines, opt.pointscale, opt.assignment_long_name)
