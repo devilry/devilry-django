@@ -40,8 +40,7 @@ if args.completionlist:
 
 require_djangoproject()
 depends(Command('init_exampledb'),
-        Command('load_grandmauser'),
-        Command('load_duckburghusers'))
+        Command('load_grandmauser'))
 if args.duckburghusers:
     depends(Command('load_duckburghusers'))
 
