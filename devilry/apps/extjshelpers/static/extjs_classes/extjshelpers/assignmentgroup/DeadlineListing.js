@@ -38,7 +38,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
          * Viewable buttons depends on this
          * 
          */
-        canExamine: false
+        canExamine: false,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
+         * The record is changed when a user selects a delivery.
+         */
+        delivery_recordcontainer: undefined
     },
 
     constructor: function(config) {
@@ -87,6 +94,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
      */
     onSelectDelivery: function(deliveryRecord) {
         this.selectedDeliveryId = deliveryRecord.data.id;
+        this.delivery_recordcontainer.setRecord(deliveryRecord);
     },
 
     /**

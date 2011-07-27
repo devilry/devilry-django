@@ -31,10 +31,13 @@
     Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
         var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'maincontent',
-            assignmentgroupid: {{ objectid }},
             assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
+            delivery_recordcontainer: delivery_recordcontainer,
+
+            assignmentgroupid: {{ objectid }},
             assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
             assignmentgroupstore: assignmentgroupstore,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),

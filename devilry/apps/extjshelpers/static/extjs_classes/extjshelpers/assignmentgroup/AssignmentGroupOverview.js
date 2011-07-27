@@ -121,6 +121,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             xtype: 'deadlinelisting',
                             title: 'Deadlines',
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                            delivery_recordcontainer: this.delivery_recordcontainer,
                             deliverymodel: this.deliverymodel,
                             deadlinestore: this.deadlinestore,
                             selectedDeliveryId: this.selectedDeliveryId,
@@ -134,8 +135,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }]
             }, {
                 region: 'center',
-                layout: 'fit',
-                items: [this.centerArea]
+                layout: 'border',
+                items: [{
+                    region: 'north',
+                    xtype: 'deliveryinfo',
+                    height: 40,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    filemetastore: this.filemetastore
+                }, {
+                    region: 'center',
+                }]
             }],
         });
         this.callParent(arguments);
