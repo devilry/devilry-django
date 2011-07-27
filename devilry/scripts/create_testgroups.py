@@ -204,17 +204,16 @@ if __name__ == "__main__":
                     student=User.objects.get(username=student))
         for examiner in examiners:
             group.examiners.add(User.objects.get(username=examiner))
-        fakedeadline = group.deadlines.all()[0]
-        fakedeadline.deadline = datetime(1970, 1, 1)
-        group.deadlines.create(deadline=deadline)
+        #group.deadlines.create(deadline=deadline)
         logging.info("Created {0} (id:{1})".format(group, group.id))
         return group
 
     def create_example_deliveries_and_feedback(group, quality_percents,
                                                group_quality_percent,
                                                grade_maxpoints,
-                                               deliverycountrange):
-        deadline = group.get_active_deadline().deadline
+                                               deliverycountrange,
+                                               deadline):
+        group.deadlines.create(deadline=deadline)
         now = datetime.now()
         two_weeks_ago = now - timedelta(days=14)
         two_days_ago = now - timedelta(days=2)
@@ -327,6 +326,8 @@ if __name__ == "__main__":
             deadline = now - timedelta(days=3)
         elif p == 'old':
             deadline = now - timedelta(days=9)
+        elif p == 'twoweeksold':
+            deadline = now - timedelta(days=14)
         elif p == 'very-old':
             deadline = now - timedelta(days=60)
         elif p.startswith("-") or p.startswith("+"):
@@ -401,5 +402,9 @@ if __name__ == "__main__":
         group_quality_percent = 100 - (float(studnum)/num_students * 100)
         group_quality_percent = round(group_quality_percent)
         logging.debug("Group quality percent: %s" % group_quality_percent)
-        create_example_deliveries_and_feedback(group, quality_percents,
-                group_quality_percent, grade_maxpoints, deliverycountrange)
+        create_example_deliveries_and_feedback(group,
+                                               quality_percents,
+                                               group_quality_percent,
+                                               grade_maxpoints,
+                                               deliverycountrange,
+                                               deadline)
