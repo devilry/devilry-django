@@ -39,6 +39,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         Ext.apply(this, {
             tbar: [{
                 xtype: 'devilrypager',
+                hidden: true,
                 store: this.staticfeedbackstore,
                 width: 200,
                 reverseDirection: true,
@@ -87,10 +88,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     onLoadStaticfeedbackstore: function(store, records, successful) {
         if(successful) {
             if(records.length == 0) {
+                this.getToolbar().hide();
                 this.bodyWithNoFeedback();
             }
             else {
+                this.getToolbar().show();
                 this.staticfeedback_recordcontainer.setRecord(records[0]);
+                this.fireEvent('afterStoreLoadMoreThanZero');
             }
         } else {
             // TODO: handle failure
@@ -111,7 +115,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         });
     },
 
-    //getToolbar: function() {
-        //return this.down('toolbar');
-    //}
+    getToolbar: function() {
+        return this.down('toolbar');
+    }
 });

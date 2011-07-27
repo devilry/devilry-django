@@ -28,9 +28,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 }
             }
         });
-        //this.addListener('afterStoreLoadMoreThanZero', function() {
-            //me.getToolbar().add(me.createButton);
-        //});
+        this.addListener('afterStoreLoadMoreThanZero', function() {
+            me.getToolbar().add(me.createButton);
+        });
         this.callParent(arguments);
     },
 
@@ -59,5 +59,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 }
             }
         });
+    },
+
+    showFeedbackViewer: function() {
+        this.onLoadDelivery();
     }
 });

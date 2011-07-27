@@ -11,7 +11,7 @@
         text: 'Cancel',
         handler: function() {
             var staticfeedbackeditor = this.up('staticfeedbackeditor');
-            staticfeedbackeditor.loadFeedbackViewer();
+            staticfeedbackeditor.showFeedbackViewer();
         }
     }, {
         text: 'Publish feedback',
@@ -30,7 +30,7 @@
                     success: function(response) {
                         console.log("Success");
                         console.log(response.data);
-                        staticfeedbackeditor.loadFeedbackViewer()
+                        staticfeedbackeditor.showFeedbackViewer();
                     },
                     failure: function(response) {
                         console.log("Error!");

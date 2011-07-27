@@ -108,8 +108,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }, {
                     region: 'center',
                     items: [{
-                        //xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                        xtype: 'staticfeedbackinfo',
+                        xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                        //xtype: 'staticfeedbackinfo',
                         staticfeedbackstore: this.staticfeedbackstore,
                         delivery_recordcontainer: this.delivery_recordcontainer
                     }]
