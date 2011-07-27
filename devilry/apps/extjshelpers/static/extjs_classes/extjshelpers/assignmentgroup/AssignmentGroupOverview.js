@@ -86,8 +86,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     items: [{
                         region: 'north',
                         items: [{
+                            // TODO: We do not need this. Should just have is_open as part of the workflow, and ID is not something users should need
                             xtype: 'assignmentgroupdetailspanel',
-                            //title: 'Assignment group',
                             bodyPadding: 10,
                             singlerecordontainer: this.assignmentgroup_recordcontainer
                         }]
@@ -95,7 +95,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         region: 'center',
                         items: [{
                             xtype: 'deadlinelisting',
-                            title: 'Deadlines',
+                            title: 'Deliveries',
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             delivery_recordcontainer: this.delivery_recordcontainer,
                             deliverymodel: this.deliverymodel,
