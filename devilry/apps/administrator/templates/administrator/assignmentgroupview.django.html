@@ -5,7 +5,7 @@
 {% block headextra %}
 
 <script>
-    var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};

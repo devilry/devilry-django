@@ -1,19 +1,5 @@
 /**
- * Combines {@link devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo} and
- * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}
- * into a complete AssignmentGroup reader and manager
- * (if {@link #canExamine} is enabled).
  *
- *      -----------------------------------------------------------------
- *      |                     |                                         |
- *      |                     |                                         |
- *      |                     |                                         |
- *      | AssignmentGroupInfo | DeliveryInfo                            |
- *      |                     |                                         |
- *      |                     |                                         |
- *      |                     |                                         |
- *      |                     |                                         |
- *      -----------------------------------------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
@@ -23,7 +9,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     alias: 'widget.assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
-        'devilry.extjshelpers.assignmentgroup.AssignmentGroupInfo'
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
+        'devilry.extjshelpers.assignmentgroup.DeadlineListing'
     ],
 
     headingTpl: Ext.create('Ext.XTemplate',
@@ -91,12 +78,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
         Ext.apply(this, {
             items: [{
-                region: 'north',
-                height: 66,
-                xtype: 'container',
-                layout: 'fit',
-                items: [this.mainHeader]
-            }, {
                 region: 'west',
                 layout: 'fit',
                 width: 220,
@@ -143,30 +124,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }],
         });
         this.callParent(arguments);
-    },
-
-    /**
-     * @private
-     */
-    onLoadAssignmentGroup: function(assignmentgrouprecord) {
-        this.assignmentgroupid = assignmentgrouprecord.id;
-        assignmentgroup = assignmentgrouprecord.data;
-        //this.mainHeader.update(this.headingTpl.apply(assignmentgroup));
-        //this.assignmentid = assignmentgroup.parentnode;
-
-        //var query = Ext.Object.fromQueryString(window.location.search);
-        //this.sidebar.add({
-            //xtype: 'assignmentgroupinfo',
-            //assignmentgroup: assignmentgroup,
-            //deliverymodel: this.deliverymodel,
-            //deadlinestore: this.deadlinestore,
-            //canExamine: this.canExamine,
-            //layout: 'fit',
-            //selectedDeliveryId: parseInt(query.deliveryid)
-        //});
-    },
-
-    setAssignmentGroupRecord: function(record) {
-        this.down('assignmentgroupdetailspanel').setAssignmentGroupRecord(record);
     }
 });
