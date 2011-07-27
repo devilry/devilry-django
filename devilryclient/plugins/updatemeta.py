@@ -2,6 +2,8 @@
 from devilryclient.utils import get_config, get_metadata, deadline_unformat, save_metadata, findconffolder
 from os.path import dirname, sep, basename, join
 
+from datetime import datetime
+
 
 class DevilryClientUpdateMeta(object):
     """
@@ -39,6 +41,7 @@ class DevilryClientUpdateMeta(object):
                 method(key)
 
         save_metadata(self.metadata)
+        
 
     def subject_meta(self, path):
         # alias to something shorter
@@ -64,7 +67,7 @@ class DevilryClientUpdateMeta(object):
 
         # update upwards
         self.metadata[dirname(path)]['num_periods'] += 1
-        
+
     def assignment_meta(self, path):
         meta = self.metadata[path]
         meta['num_groups'] = 0
@@ -97,12 +100,12 @@ class DevilryClientUpdateMeta(object):
         # check if old_metadata exists, and grab the done status
         try:
             old_meta = eval(open(join(self.confdir, 'old_metadata'), 'r').read())
-            meta['done'] = old_meta[path]['done']
+            meta['corrected'] = old_meta[path]['corrected']
         except Exception:
-            pass
+            meta['corrected'] = False
 
-        meta['time_of_delivery'] = meta['query_result']['time_of_delivery']
-        meta['is_late'] = self.metadata[dirname(path)] < meta['time_of_delivery']  # is_late(self.metadata[dirname(path)]['deadline'])
+        meta['time_of_delivery'] = datetime.strptime(meta['query_result']['time_of_delivery'], "%Y-%m-%d %H:%M:%S")
+        meta['is_late'] = self.metadata[dirname(path)]['deadline'] < meta['time_of_delivery']
         meta['delivered_by'] = 'FixMe'
 
         # update upwards (TODO: should only be done for the latest delivery!)
