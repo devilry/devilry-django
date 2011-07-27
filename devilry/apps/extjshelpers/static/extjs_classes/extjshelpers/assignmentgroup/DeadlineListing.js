@@ -28,13 +28,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
 
         /**
          * @cfg
-         * Selected delivery id. May be undefined, in which case, no delivery
-         * is selected.
-         */
-        selectedDeliveryId: undefined,
-        
-        /**
-         * @cfg
          * Viewable buttons depends on this
          * 
          */
@@ -93,7 +86,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
      * @private
      */
     onSelectDelivery: function(deliveryRecord) {
-        this.selectedDeliveryId = deliveryRecord.data.id;
+        //console.log(deliveryRecord);
         this.delivery_recordcontainer.setRecord(deliveryRecord);
     },
 
@@ -132,7 +125,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             xtype: 'deadlineinfo',
             deadline: deadline,
             deliverymodel: this.deliverymodel,
-            selectedDeliveryId: this.selectedDeliveryId
+            delivery_recordcontainer: this.delivery_recordcontainer
         });
     },
 });

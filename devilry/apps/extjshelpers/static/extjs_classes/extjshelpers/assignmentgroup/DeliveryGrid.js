@@ -1,8 +1,5 @@
 /** Grid panel for showing deliveries within a deadline.
- *
- * When a delivery is selected, we forward the selected record to
- * {@link devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview#setDelivery}.
- * */
+ */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliverygrid',
@@ -30,12 +27,4 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
             this.up('deadlinelisting').fireEvent('selectDelivery', deliveryRecord);
         }
     },
-
-    selectDelivery: function(deliveryid) {
-        this.getSelectionModel().deselectAll();
-        var deliveryIndex = this.store.findExact('id', deliveryid);
-        if(deliveryIndex != -1) {
-            this.getSelectionModel().select(deliveryIndex);
-        }
-    }
 });

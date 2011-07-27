@@ -25,14 +25,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
          * @cfg
          * Delivery ``Ext.data.Model``.
          */
-        deliverymodel: undefined,
-
-        /**
-         * @cfg
-         * Selected delivery id. May be undefined, in which case, no delivery
-         * is selected.
-         */
-        selectedDeliveryId: undefined
+        deliverymodel: undefined
     },
     
     initComponent: function() {
@@ -70,15 +63,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
                             'No deliveries on this deadline'
                         ]
                     }]);
-                } else {
-                    me.selectDelivery(me.selectedDeliveryId);
                 }
             }
         });
         deliverystore.load();
-    },
-
-    selectDelivery: function(deliveryid) {
-        this.down('deliverygrid').selectDelivery(deliveryid);
     }
 });

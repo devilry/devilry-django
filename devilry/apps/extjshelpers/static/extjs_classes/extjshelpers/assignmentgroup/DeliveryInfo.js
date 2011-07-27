@@ -66,8 +66,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
      * @private
      */
     onLoadDelivery: function() {
-        this.removeAll();
-        this.addDocked({
+        if(this.toolbar) {
+            this.removeDocked(this.toolbar);
+        }
+        this.toolbar = Ext.ComponentManager.create({
             xtype: 'toolbar',
             dock: 'top',
             items: [{
@@ -79,6 +81,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
                 }
             }, '->', this.toolbarTpl.apply(this.delivery_recordcontainer.record.data)]
         });
+        this.addDocked(this.toolbar);
     },
 
     /**

@@ -139,7 +139,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 items: [{
                     region: 'north',
                     xtype: 'deliveryinfo',
-                    height: 40,
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     filemetastore: this.filemetastore
                 }, {
@@ -182,7 +181,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @param {Ext.model.Model} deliveryRecord A Delivery record.
      */
     setDelivery: function(deliveryRecord) {
-        if(deliveryRecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
+        //if(deliveryRecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
             //this.centerArea.removeAll();
             //this.centerArea.add({
                 //xtype: 'deliveryinfo',
@@ -192,13 +191,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 //staticfeedbackstore: this.staticfeedbackstore,
                 //canExamine: this.canExamine
             //});
-            console.log(deliveryRecord);
-        } else {
-            var errormsg = Ext.String.format(
-                'Invalid deliveryid: {0}. Must be a delivery made by AssignmentGroup: {1}',
-                deliveryRecord.id,
-                this.assignmentgroupid);
-            console.error(errormsg);
-        }
+            //console.log(deliveryRecord);
+        //} else {
+            //var errormsg = Ext.String.format(
+                //'Invalid deliveryid: {0}. Must be a delivery made by AssignmentGroup: {1}',
+                //deliveryRecord.id,
+                //this.assignmentgroupid);
+            //console.error(errormsg);
+        //}
     }
 });
