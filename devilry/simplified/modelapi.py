@@ -68,7 +68,7 @@ class SimplifiedModelApi(object):
     def is_empty(cls, obj):
         """ Check if the given obj is empty. Defaults to returning ``False``.
 
-        Can be implemented in subclasses to enable superadmins to recursively delete the ``obj``.
+        Can be implemented in subclasses to enable superadmins to recursively :meth:`delete` the ``obj``.
         """
         return False
 
@@ -223,7 +223,9 @@ class SimplifiedModelApi(object):
 
     @classmethod
     def delete(cls, user, pk):
-        """ Delete the given object.
+        """ Delete the given object. If the object :meth:`is_empty` it can be
+        deleted by any user with :meth:`write_authorize`,
+        if not then only a Superuser may delete the object
 
         :param user: Django user object.
         :param pk: Id of object or kwargs to the get method of the configured model.
