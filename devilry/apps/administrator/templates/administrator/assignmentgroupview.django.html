@@ -5,7 +5,7 @@
 {% block headextra %}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
@@ -28,10 +28,13 @@
 
 
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
+        var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'maincontent',
             assignmentgroupid: {{ objectid }},
+            assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
             assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
             assignmentgroupstore: assignmentgroupstore,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
@@ -41,16 +44,22 @@
             canExamine: true
         });
 
-        assignmentgroupstore.proxy.extraParams.limit = 1;
-        assignmentgroupstore.proxy.extraParams.start = 0;
-        assignmentgroupstore.pageSize = 1;
-        assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'id',
-            comp: 'exact',
-            value: {{ objectid }}
-        }]);
+        //assignmentgroupstore.proxy.extraParams.limit = 1;
+        //assignmentgroupstore.proxy.extraParams.start = 0;
+        //assignmentgroupstore.pageSize = 1;
+        //assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+            //field: 'id',
+            //comp: 'exact',
+            //value: {{ objectid }}
+        //}]);
 
-        assignmentgroupstore.load();
+        //assignmentgroupstore.load();
+    
+        assignmentgroupmodel.load({{ objectid }}, {
+            success: function(record) {
+                assignmentgroup_recordcontainer.setRecord(record);
+            }
+        });
     });
 
 </script>

@@ -43,9 +43,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
         /**
          * @cfg
-         * AssignmentGroup ``Ext.data.Model``. (Required).
+         * AssignmentGroup ``Ext.data.Store``. (Required).
          */
-        assignmentgroupmodel: undefined,
+        assignmentgroupstore: undefined,
 
         /**
          * @cfg 
@@ -110,7 +110,30 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 collapsible: true,   // make collapsible
                 //titleCollapse: true, // click anywhere on title to collapse.
                 split: true,
-                items: [this.sidebar]
+                items: [{
+                    xtype: 'panel',
+                    layout: 'border',
+                    items: [{
+                        region: 'north',
+                        items: [{
+                            xtype: 'assignmentgroupdetailspanel',
+                            title: 'Assignment group',
+                            bodyPadding: 10,
+                            singlerecordontainer: this.assignmentgroup_recordcontainer
+                        }]
+                    }, {
+                        region: 'center',
+                        //items: [{
+                            //xtype: 'deadlinelisting',
+                            //title: 'Deadlines',
+                            //assignmentgroupid: this.assignmentgroup.id,
+                            //deliverymodel: this.deliverymodel,
+                            //deadlinestore: this.deadlinestore,
+                            //selectedDeliveryId: this.selectedDeliveryId,
+                            //canExamine: this.canExamine
+                        //}]
+                    }]
+                }]
             }, {
                 region: 'center',
                 layout: 'fit',
@@ -118,37 +141,30 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }],
         });
         this.callParent(arguments);
-
-        //this.assignmentgroupmodel.load(this.assignmentgroupid, {
-            //scope: me,
-            //success: me.onLoadAssignmentGroup
-        //});
-        this.assignmentgroupstore.addListener('load', this.onAssignmentGroupStoreLoad, this);
     },
 
+    /**
+     * @private
+     */
     onLoadAssignmentGroup: function(assignmentgrouprecord) {
         assignmentgroup = assignmentgrouprecord.data;
-        this.mainHeader.update(this.headingTpl.apply(assignmentgroup));
-        this.assignmentid = assignmentgroup.parentnode;
+        //this.mainHeader.update(this.headingTpl.apply(assignmentgroup));
+        //this.assignmentid = assignmentgroup.parentnode;
 
-        var query = Ext.Object.fromQueryString(window.location.search);
-        this.sidebar.add({
-            xtype: 'assignmentgroupinfo',
-            assignmentgroup: assignmentgroup,
-            deliverymodel: this.deliverymodel,
-            deadlinestore: this.deadlinestore,
-            canExamine: this.canExamine,
-            layout: 'fit',
-            selectedDeliveryId: parseInt(query.deliveryid)
-        });
+        //var query = Ext.Object.fromQueryString(window.location.search);
+        //this.sidebar.add({
+            //xtype: 'assignmentgroupinfo',
+            //assignmentgroup: assignmentgroup,
+            //deliverymodel: this.deliverymodel,
+            //deadlinestore: this.deadlinestore,
+            //canExamine: this.canExamine,
+            //layout: 'fit',
+            //selectedDeliveryId: parseInt(query.deliveryid)
+        //});
     },
 
-    onAssignmentGroupStoreLoad: function(store, records, successful) {
-        if(successful) {
-            this.onLoadAssignmentGroup(records[0]);
-        } else {
-            // TODO: handle unsuccessful load
-        }
+    setAssignmentGroupRecord: function(record) {
+        this.down('assignmentgroupdetailspanel').setAssignmentGroupRecord(record);
     },
 
     /**
@@ -178,9 +194,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 this.assignmentgroupid);
             console.error(errormsg);
         }
-    },
-
-    handleNoDeliveryInQuerystring: function() {
-        console.log('no delivery selected');
     }
 });
