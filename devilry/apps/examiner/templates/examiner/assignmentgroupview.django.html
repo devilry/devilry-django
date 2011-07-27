@@ -5,32 +5,53 @@
 {% block headextra %}
 
 <script>
-    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
+    var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
 
-    {{ RestfulSimplifiedDeadline|extjs_model }};
-    {{ RestfulSimplifiedDeadline|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
 
-    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
-    {{ RestfulSimplifiedDelivery|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"deadline,assignment_group" }};
+    {{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
 
-    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
-    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
 
-    {{ RestfulSimplifiedFileMeta|extjs_model }};
-    {{ RestfulSimplifiedFileMeta|extjs_store }};
+    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
+    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
+
+    {# These are used by the grade editor #}
+    {{ RestfulSimplifiedConfig|extjs_model }};
+    {{ RestfulSimplifiedConfig|extjs_store }};
+    {{ RestfulSimplifiedFeedbackDraft|extjs_model }};
+    {{ RestfulSimplifiedFeedbackDraft|extjs_store }};
 
 
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle');
+    Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
+        var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+
+        var title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
+            renderTo: 'content-heading',
+            singlerecordontainer: assignmentgroup_recordcontainer
+        });
+
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'maincontent',
-            assignmentgroupid: {{ assignmentgroupid }},
-            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup'),
+            assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
+            delivery_recordcontainer: delivery_recordcontainer,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
-            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedDeadlineStore'),
             filemetastore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedFileMetaStore'),
             staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore'),
             canExamine: true
+        });
+
+        assignmentgroupmodel.load({{ assignmentgroupid }}, {
+            success: function(record) {
+                assignmentgroup_recordcontainer.setRecord(record);
+            }
         });
     });
 
@@ -41,6 +62,7 @@
 
 {% block main %}
 
-<div id="maincontent"></div>
+<section class="treeheading" id="content-heading"></section>
+<div id="maincontent" class="prettyviewpanel"></div>
 
 {% endblock %}

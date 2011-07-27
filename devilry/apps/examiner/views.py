@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView, View
 from django.shortcuts import render
 
+from devilry.apps.gradeeditors.restful.examiner import (RestfulSimplifiedConfig,
+                                                        RestfulSimplifiedFeedbackDraft)
 import restful
 
 
@@ -17,9 +19,12 @@ class MainView(TemplateView):
 
 class AssignmentGroupView(View):
     def get(self, request, assignmentgroupid):
-        indata = {'assignmentgroupid': assignmentgroupid }
+        context = {'assignmentgroupid': assignmentgroupid,
+                   'restfulapi': {}}
         for restclsname in restful.__all__:
-            indata[restclsname] = getattr(restful, restclsname)
+            context['restfulapi'][restclsname] = getattr(restful, restclsname)
+        context['RestfulSimplifiedConfig'] = RestfulSimplifiedConfig
+        context['RestfulSimplifiedFeedbackDraft'] = RestfulSimplifiedFeedbackDraft
         return render(request,
                       'examiner/assignmentgroupview.django.html',
-                       indata)
+                       context)
