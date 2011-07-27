@@ -26,8 +26,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryGrid', {
 
     listeners: {
         selectionchange: function(grid, selections) {
-            var selectedDelivery = selections[0];
-            this.up('assignmentgroupoverview').setDelivery(selectedDelivery);
+            var deliveryRecord = selections[0];
+            this.up('deadlinelisting').fireEvent('selectDelivery', deliveryRecord);
         }
     },
 

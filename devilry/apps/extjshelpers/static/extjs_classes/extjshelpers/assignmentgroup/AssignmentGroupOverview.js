@@ -36,12 +36,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
     config: {
         /**
-        * @cfg
-        * AssignmentGroup id. (Required).
-        */
-        assignmentgroupid: undefined,
-
-        /**
          * @cfg
          * AssignmentGroup ``Ext.data.Store``. (Required).
          */
@@ -123,15 +117,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         }]
                     }, {
                         region: 'center',
-                        //items: [{
-                            //xtype: 'deadlinelisting',
-                            //title: 'Deadlines',
-                            //assignmentgroupid: this.assignmentgroup.id,
-                            //deliverymodel: this.deliverymodel,
-                            //deadlinestore: this.deadlinestore,
-                            //selectedDeliveryId: this.selectedDeliveryId,
-                            //canExamine: this.canExamine
-                        //}]
+                        items: [{
+                            xtype: 'deadlinelisting',
+                            title: 'Deadlines',
+                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                            deliverymodel: this.deliverymodel,
+                            deadlinestore: this.deadlinestore,
+                            selectedDeliveryId: this.selectedDeliveryId,
+                            canExamine: this.canExamine,
+                            listeners: {
+                                scope: this,
+                                selectDelivery: this.setDelivery
+                            }
+                        }]
                     }]
                 }]
             }, {
@@ -147,6 +145,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     onLoadAssignmentGroup: function(assignmentgrouprecord) {
+        this.assignmentgroupid = assignmentgrouprecord.id;
         assignmentgroup = assignmentgrouprecord.data;
         //this.mainHeader.update(this.headingTpl.apply(assignmentgroup));
         //this.assignmentid = assignmentgroup.parentnode;
@@ -171,26 +170,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * Create a {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}
      * containing the given delivery and place it in the center area.
      *
-     * @param {Ext.model.Model} deliveryrecord A Delivery record.
-     *
-     * Used by {@link devilry.extjshelpers.assignmentgroup.DeliveryGrid} and
-     * internally in this class.
+     * @param {Ext.model.Model} deliveryRecord A Delivery record.
      */
-    setDelivery: function(deliveryrecord) {
-        if(deliveryrecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
-            this.centerArea.removeAll();
-            this.centerArea.add({
-                xtype: 'deliveryinfo',
-                assignmentid: this.assignmentid,
-                delivery: deliveryrecord.data,
-                filemetastore: this.filemetastore,
-                staticfeedbackstore: this.staticfeedbackstore,
-                canExamine: this.canExamine
-            });
+    setDelivery: function(deliveryRecord) {
+        if(deliveryRecord.data.deadline__assignment_group == this.assignmentgroupid) { // Note that this is not for security (that is handled on the server, however it is to prevent us from showing a delivery within the wrong assignment group (which is a bug))
+            //this.centerArea.removeAll();
+            //this.centerArea.add({
+                //xtype: 'deliveryinfo',
+                //assignmentid: this.assignmentid,
+                //delivery: deliveryRecord.data,
+                //filemetastore: this.filemetastore,
+                //staticfeedbackstore: this.staticfeedbackstore,
+                //canExamine: this.canExamine
+            //});
+            console.log(deliveryRecord);
         } else {
             var errormsg = Ext.String.format(
                 'Invalid deliveryid: {0}. Must be a delivery made by AssignmentGroup: {1}',
-                deliveryrecord.id,
+                deliveryRecord.id,
                 this.assignmentgroupid);
             console.error(errormsg);
         }

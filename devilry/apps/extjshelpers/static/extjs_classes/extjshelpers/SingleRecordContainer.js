@@ -21,6 +21,6 @@ Ext.define('devilry.extjshelpers.SingleRecordContainer', {
      */
     setRecord: function(record) {
         this.record = record;
-        this.fireEvent('setRecord');
+        this.fireEvent('setRecord', this);
     }
 });

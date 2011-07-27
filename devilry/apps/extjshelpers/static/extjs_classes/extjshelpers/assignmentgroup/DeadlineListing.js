@@ -1,7 +1,7 @@
 /** Deadline listing.
  *
  * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineInfo}'s
- * within the given assignmentgroup ({@link #assignmentgroupid}).
+ * within the given assignmentgroup ({@link #assignmentgroup_recordcontainer}).
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     extend: 'Ext.panel.Panel',
@@ -12,12 +12,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     ],
 
     config: {
-        /**
-        * @cfg
-        * AssignmentGroup id.
-        */
-        assignmentgroupid: undefined,
-
         /**
          * @cfg
          * Delivery ``Ext.data.Model``.
@@ -47,6 +41,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         canExamine: false
     },
 
+    constructor: function(config) {
+        this.addEvents(
+            /**
+             * @event
+             * Fired when a delivery is selected.
+             * @param deliveryRecord The selected delivery record.
+             */
+            'selectDelivery');
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
     initComponent: function() {
         if (this.canExamine)
         {
@@ -66,15 +72,32 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             });
         }
         this.callParent(arguments);
-        this.loadDeadlines();
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
+        this.addListener('selectDelivery', this.onSelectDelivery, this);
     },
 
-    loadDeadlines: function() {
+    /** Reload all deadlines on this assignmentgroup. */
+    reload: function() {
+        this.removeAll();
+        this.loadDeadlines(this.assignmentgroup_recordcontainer.record.data.id);
+    },
+
+    /**
+     * @private
+     */
+    onSelectDelivery: function(deliveryRecord) {
+        this.selectedDeliveryId = deliveryRecord.data.id;
+    },
+
+    /**
+     * @private
+     */
+    loadDeadlines: function(assignmentgroupid) {
         this.deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
         this.deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'assignment_group',
             comp: 'exact',
-            value: this.assignmentgroupid
+            value: assignmentgroupid
         }]);
 
         this.deadlinestore.load({
@@ -83,6 +106,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         });
     },
 
+    /**
+     * @private
+     */
     onLoadDeadlines:function(deadlinerecords) {
         var me = this;
         Ext.each(deadlinerecords, function(deadlinerecord) {
@@ -90,6 +116,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         });
     },
 
+    /**
+     * @private
+     */
     addDeadline: function(deadline) {
         this.add({
             xtype: 'deadlineinfo',

@@ -43,7 +43,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineInfo', {
             autoSync: true,
         });
 
-        // NOTE: These changes to proxy should not affect the model.proxy (it seems like the proxy is copied into the store from the model)
         deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
         deliverystore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'deadline',
