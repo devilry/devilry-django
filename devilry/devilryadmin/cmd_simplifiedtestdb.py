@@ -85,13 +85,13 @@ create_testgroups(path = 'duckburgh.univ:duck1100.spring01',
                   period_long_name = 'Spring year zero',
                   deliverycountrange=args.deliverycountrange,
                   assignments = [
-                                 {'shortname': 'week1', 'deadlineprofile': '-30', 'maxpoints': 14,
+                                 {'shortname': 'week1', 'deadlineprofile': '-60', 'maxpoints': 14,
                                   'long_name': 'The one and only week one'},
-                                 {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
+                                 {'shortname': 'week2', 'deadlineprofile': '-30', 'maxpoints': 10,
                                   'long_name': 'The one and only week two'},
-                                 {'shortname': 'week3', 'deadlineprofile': 'old', 'maxpoints': 9,
+                                 {'shortname': 'week3', 'deadlineprofile': '-9', 'maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
-                                 {'shortname': 'week4', 'deadlineprofile': 'recent', 'maxpoints': 9,
+                                 {'shortname': 'week4', 'deadlineprofile': '-3', 'maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
                                 ])
 
@@ -108,7 +108,7 @@ create_testgroups(path = 'duckburgh.univ:duck1080.fall01',
                                  {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
                                   'pointscale': 10,
                                   'long_name': 'The one and only week two'},
-                                 {'shortname': 'week3', 'deadlineprofile': 'recent', 'maxpoints': 9,
+                                 {'shortname': 'week3', 'deadlineprofile': '-3', 'maxpoints': 9,
                                   'pointscale': 10,
                                   'long_name': 'The one and only week tree'},
                                 ])
@@ -120,10 +120,10 @@ create_testgroups(path = 'duckburgh.univ:duck3580.fall01',
                   period_long_name = 'Fall year zero',
                   deliverycountrange=args.deliverycountrange,
                   assignments = [
-                                 {'shortname': 'week1', 'deadlineprofile': '-30',
+                                 {'shortname': 'week1', 'deadlineprofile': '-40,-30,-20',
                                   'gradeplugin': 'grade_approved:approvedgrade',
                                   'long_name': 'Week one'},
-                                 {'shortname': 'week2', 'deadlineprofile': 'recent',
+                                 {'shortname': 'week2', 'deadlineprofile': '-3,-10,-20',
                                   'long_name': 'Week two'}
                                 ])
 
@@ -137,7 +137,7 @@ create_testgroups(path = 'duckburgh.univ:duck5063.fall01',
                                  {'shortname': 'first_assignment', 'deadlineprofile': '-30',
                                   'gradeplugin': 'grade_approved:approvedgrade',
                                   'long_name': 'First assignment'},
-                                 {'shortname': 'second_assignment', 'deadlineprofile': 'recent',
+                                 {'shortname': 'second_assignment', 'deadlineprofile': '-3',
                                   'long_name': 'Second assignment'}
                                 ],
                  studentspergroup = 2, examinerspergroup = 3)

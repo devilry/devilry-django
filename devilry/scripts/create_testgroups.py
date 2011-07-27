@@ -77,7 +77,7 @@ if __name__ == "__main__":
                        "to '0-4'"))
     p.add_option("--grade-plugin", dest="gradeplugin",
             default=None, help="Grade plugin key.")
-    p.add_option("-p", "--deadline-profile", dest="deadline_profile",
+    p.add_option("-p", "--deadline-profile", dest="deadline_profiles",
             default='recent',
             help="Deadline profile. Defaults to 'recent' "
                 "Values: soon (no feedback, but 50% deliveries), "\
@@ -180,7 +180,7 @@ if __name__ == "__main__":
                                              saved_by=examiner, points=points,
                                              grade="g{0}".format(points),
                                              is_passing_grade=bool(points))
-        logging.info('    Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
+        logging.info('        Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
         return feedback
 
     def autocreate_feedbacks(delivery, group_quality_percent, max_percent):
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         if numdeliveries == 0:
             return
         else:
-            logging.info('    Deliveries: {numdeliveries}'.format(numdeliveries=numdeliveries))
+            logging.info("        Deliveries: {numdeliveries}".format(numdeliveries=numdeliveries))
         deliveries = autocreate_deliveries(group, numdeliveries)
         delivery = deliveries[-1]
 
@@ -257,14 +257,14 @@ if __name__ == "__main__":
 
         # More than two weeks since deadline - should have feedback on about all
         if deadline < two_weeks_ago:
-            logging.info("    Very old deadline (14 days +)")
+            logging.info("        Very old deadline (14 days +): Only 3% missing feedback (forgotten)")
             if randint(0, 100) <= 3: # Always a 3% chance to forget giving feedback.
                 return
             autocreate_feedbacks(delivery, group_quality_percent, max_percent)
 
         # Less than two weeks but more that 5 days since deadline
         elif deadline < five_days_ago:
-            logging.info("    Old deadline (5-14 days)")
+            logging.info("        Old deadline (5-14 days): 10% of them has no feedback yet")
             if randint(0, 100) <= 10:
                 # 10% of them has no feedback yet
                 return
@@ -273,7 +273,7 @@ if __name__ == "__main__":
         # Recent deadline (2-5 days since deadline)
         # in the middle of giving feedback
         elif deadline < two_days_ago:
-            logging.info("    Recent deadline (2-5 days)")
+            logging.info("        Recent deadline (2-5 days): 50% of them has no feedback yet")
             if randint(0, 100) <= 50:
                 # Half of them has no feedback yet
                 return
@@ -281,7 +281,7 @@ if __name__ == "__main__":
 
         # Very recent deadline (0-2 days since deadline)
         elif deadline < now:
-            logging.info("    Very recent deadline (0-3 days)")
+            logging.info("        Very recent deadline (0-3 days): 90% of them has no feedback yet")
             if randint(0, 100) <= 90:
                 # 90% of them has no feedback yet
                 return
@@ -289,9 +289,27 @@ if __name__ == "__main__":
 
         # Deadline is in the future
         else:
-            logging.info("    Deadline is in the future. Made deliveries, but "\
+            logging.info("        Deadline is in the future. Made deliveries, but "\
                     "no feedback")
             pass # No feedback
+
+    def parse_deadline_profile(profile):
+        if not (profile.startswith("-") or profile.startswith("+")):
+            raise SystemExit("Invalid --deadline-profile")
+
+        now = datetime.now()
+        if not profile[1:].isdigit():
+            raise SystemExit("Numeric deadline profile must be + or - "\
+                    "suffixed with a number")
+        days = int(profile[1:])
+        if profile.startswith("-"):
+            deadline = now - timedelta(days=int(days))
+        else:
+            deadline = now + timedelta(days=int(days))
+        return deadline
+
+    def parse_deadline_profiles(profiles):
+        return [parse_deadline_profile(profile) for profile in profiles.split(',')]
 
 
 
@@ -314,33 +332,9 @@ if __name__ == "__main__":
     #gradeplugin = opt.gradeplugin
 
     if opt.deadline:
-        deadline = datetime.strptime(opt.deadline, "%Y-%m-%d")
+        deadlines = [datetime.strptime(opt.deadline, "%Y-%m-%d")]
     else:
-        now = datetime.now()
-        p = opt.deadline_profile
-        if p == 'soon':
-            deadline = now + timedelta(days=1)
-        elif p == 'very-recent':
-            deadline = now - timedelta(days=1)
-        elif p == 'recent':
-            deadline = now - timedelta(days=3)
-        elif p == 'old':
-            deadline = now - timedelta(days=9)
-        elif p == 'twoweeksold':
-            deadline = now - timedelta(days=14)
-        elif p == 'very-old':
-            deadline = now - timedelta(days=60)
-        elif p.startswith("-") or p.startswith("+"):
-            if not p[1:].isdigit():
-                raise SystemExit("Numeric deadline profile must be + or - "\
-                        "suffixed with a number")
-            days = int(p[1:])
-            if p.startswith("-"):
-                deadline = now - timedelta(days=int(days))
-            else:
-                deadline = now + timedelta(days=int(days))
-        else:
-            raise SystemExit("Invalid --deadline-profile")
+        deadlines = parse_deadline_profiles(opt.deadline_profiles)
 
 
     examiners = ['%s%d' % (examiner_prefix, d)
@@ -350,7 +344,7 @@ if __name__ == "__main__":
 
     # Create the assignment
     assignment = create_from_path(assignmentpath)
-    assignment.publishing_time = deadline - timedelta(days=opt.pubtime_diff)
+    assignment.publishing_time = deadlines[0] - timedelta(days=opt.pubtime_diff)
     if opt.pointscale:
         assignment.autoscale = False
         assignment.pointscale = opt.pointscale
@@ -366,12 +360,10 @@ if __name__ == "__main__":
         assignment.parentnode.start_time = assignment.publishing_time - \
                 timedelta(days=5)
         assignment.parentnode.save()
-    if assignment.parentnode.end_time < deadline:
-        assignment.parentnode.end_time = deadline + timedelta(days=20)
+    if assignment.parentnode.end_time < deadlines[-1]:
+        assignment.parentnode.end_time = deadlines[-1] + timedelta(days=20)
         assignment.parentnode.save()
-    logging.info(
-            "Creating groups on %s with deadline %s" % (
-                assignment, deadline))
+    logging.info("Creating groups on {0}".format(assignment))
 
     # Subject and period
     period = assignment.parentnode
@@ -401,10 +393,13 @@ if __name__ == "__main__":
 
         group_quality_percent = 100 - (float(studnum)/num_students * 100)
         group_quality_percent = round(group_quality_percent)
-        logging.debug("Group quality percent: %s" % group_quality_percent)
-        create_example_deliveries_and_feedback(group,
-                                               quality_percents,
-                                               group_quality_percent,
-                                               grade_maxpoints,
-                                               deliverycountrange,
-                                               deadline)
+        logging.debug("    Group quality percent: %s" % group_quality_percent)
+
+        for deadline in deadlines:
+            logging.info('    Deadline: {0}'.format(deadline))
+            create_example_deliveries_and_feedback(group,
+                                                   quality_percents,
+                                                   group_quality_percent,
+                                                   grade_maxpoints,
+                                                   deliverycountrange,
+                                                   deadline)
