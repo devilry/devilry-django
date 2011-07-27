@@ -1,4 +1,4 @@
-/** Deadline listing. */
+/** List deliveries grouped by deadline. */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deadlinelisting',
