@@ -71,11 +71,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
 
     initComponent: function() {
-        var me = this;
-        this.mainHeader = Ext.create('Ext.Component');
-        this.centerArea = Ext.create('Ext.container.Container');
-        this.sidebar = Ext.create('Ext.container.Container');
-
         Ext.apply(this, {
             items: [{
                 region: 'west',
@@ -92,7 +87,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         region: 'north',
                         items: [{
                             xtype: 'assignmentgroupdetailspanel',
-                            title: 'Assignment group',
+                            //title: 'Assignment group',
                             bodyPadding: 10,
                             singlerecordontainer: this.assignmentgroup_recordcontainer
                         }]

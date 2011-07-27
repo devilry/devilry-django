@@ -3,7 +3,7 @@
  * Kind of like ``Ext.view.View`` only for a single record.
  */
 Ext.define('devilry.extjshelpers.SingleRecordView', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.Component',
     alias: 'widget.singlerecordview',
 
     config: {

@@ -11,8 +11,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel', {
         '   <dd>{id}</dd>',
         '   <dt>Is open?</dt>',
         '   <dd>{is_open}</dd>',
-        '   <dt>Candidates</dt>',
-        '   <dd>TODO</dd>',
         '</dl>'
     )
 });

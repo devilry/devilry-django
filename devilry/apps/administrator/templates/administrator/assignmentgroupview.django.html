@@ -1,8 +1,9 @@
-{% extends "administrator/base.django.html" %}
+{% extends "administrator/single-base.django.html" %}
 {% load extjs %}
 
 
 {% block headextra %}
+{{ block.super }}
 
 <script>
     var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
@@ -28,12 +29,19 @@
 
 
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle');
     Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
         var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+
+        var title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
+            renderTo: 'content-heading',
+            singlerecordontainer: assignmentgroup_recordcontainer
+        });
+
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            renderTo: 'maincontent',
+            renderTo: 'prettyviewpanel',
             assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
             delivery_recordcontainer: delivery_recordcontainer,
 
@@ -47,17 +55,6 @@
             canExamine: true
         });
 
-        //assignmentgroupstore.proxy.extraParams.limit = 1;
-        //assignmentgroupstore.proxy.extraParams.start = 0;
-        //assignmentgroupstore.pageSize = 1;
-        //assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            //field: 'id',
-            //comp: 'exact',
-            //value: {{ objectid }}
-        //}]);
-
-        //assignmentgroupstore.load();
-    
         assignmentgroupmodel.load({{ objectid }}, {
             success: function(record) {
                 assignmentgroup_recordcontainer.setRecord(record);
@@ -66,12 +63,5 @@
     });
 
 </script>
-
-{% endblock %}
-
-
-{% block main %}
-
-<div id="maincontent"></div>
 
 {% endblock %}
