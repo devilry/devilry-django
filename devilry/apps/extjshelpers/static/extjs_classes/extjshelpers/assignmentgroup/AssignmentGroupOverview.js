@@ -25,12 +25,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
     config: {
         /**
-         * @cfg
-         * AssignmentGroup ``Ext.data.Store``. (Required).
-         */
-        assignmentgroupstore: undefined,
-
-        /**
          * @cfg 
          * Delivery  ``Ext.data.Model``. (Required).
          */
@@ -60,7 +54,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          * When this is ``true``, the authenticated user still needs to have
          * permission to POST new feedbacks for the view to work.
          */
-        canExamine: false
+        canExamine: false,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
+         */
+        delivery_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined
     },
 
 
@@ -109,7 +115,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     region: 'center',
                     items: [{
                         xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                        //xtype: 'staticfeedbackinfo',
                         staticfeedbackstore: this.staticfeedbackstore,
                         delivery_recordcontainer: this.delivery_recordcontainer
                     }]

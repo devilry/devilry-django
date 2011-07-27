@@ -7,7 +7,6 @@
 
 <script>
     var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
-    var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
@@ -44,12 +43,7 @@
             renderTo: 'prettyviewpanel',
             assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
             delivery_recordcontainer: delivery_recordcontainer,
-
-            assignmentgroupid: {{ objectid }},
-            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedAssignmentGroup'),
-            assignmentgroupstore: assignmentgroupstore,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
-            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedDeadlineStore'),
             filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
             staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
             canExamine: true
