@@ -206,11 +206,10 @@ def parse_deadline_profiles(profiles):
     return [parse_deadline_profile(profile) for profile in profiles.split(',')]
 
 
-def create_assignment(period, short_name, long_name, deadlines):
+def create_assignment(period, deadlines, **assignment_kwargs):
     """ Create an assignment from path. """
-    assignment = period.assignments.create(short_name=short_name,
-                                           long_name=long_name,
-                                           publishing_time = deadlines[0] - timedelta(14))
+    assignment = period.assignments.create(publishing_time = deadlines[0] - timedelta(14),
+                                           **assignment_kwargs)
     Config.objects.create(assignment=assignment,
                           gradeeditorid='asminimalaspossible',
                           config='')
@@ -274,18 +273,8 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
-def set_subject_and_period_long_name(assignment, subject_long_name, period_long_name):
-    period = assignment.parentnode
-    subject = period.parentnode
-    period.long_name = period_long_name
-    period.save()
-    subject.long_name = subject_long_name
-    subject.save()
 
-
-def create_example_assignment(period, short_name, long_name,
-                              pointscale = None, # TODO: Use this
-
+def create_example_assignment(period,
                               groupname_prefix = None,
                               deadline_profiles = '-10',
 
@@ -298,10 +287,11 @@ def create_example_assignment(period, short_name, long_name,
                               examiners_per_group=1,
 
                               grade_maxpoints=1,
-                              deliverycountrange='0-4'):
+                              deliverycountrange='0-4',
+
+                              **assignment_kwargs):
     """
-    :param subject_long_name: Long name of the subject.
-    :param period_long_name: Long name of the period.
+    :param assignment_kwargs: Keyword arguments to Assignment.__init__.
     :param groupname_prefix:
         Group name prefix. Group names will be this prefix plus
         a number. If this is None, group name will be left blank.
@@ -324,7 +314,7 @@ def create_example_assignment(period, short_name, long_name,
             a random number of deliveries in this range is used.
     """
     deadlines = parse_deadline_profiles(deadline_profiles)
-    assignment = create_assignment(period, short_name, long_name, deadlines)
+    assignment = create_assignment(period, deadlines, **assignment_kwargs)
 
     fit_assignment_in_parentnode(assignment, deadlines)
 
