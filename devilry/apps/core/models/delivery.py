@@ -103,8 +103,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """ Compares the deadline and time of delivery.
         If time_of_delivery is greater than the deadline, return True.
         """
-        if self.deadline.is_head:
-            return False
         return self.time_of_delivery > self.deadline.deadline
     after_deadline = property(delivered_too_late)
 
