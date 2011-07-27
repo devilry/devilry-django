@@ -18,7 +18,7 @@ def create_missing_users(usernames):
             u = User(username=username, email="%s@example.com" % username)
             u.set_password("test")
             u.save()
-            logging.info("Created user %s." % username)
+            logging.info("        Created user %s." % username)
 
 def autocreate_delivery(group):
     active_deadline = group.get_active_deadline()
@@ -74,7 +74,7 @@ def autocreate_feedback(delivery, group_quality_percent, max_percent, grade_maxp
                                          saved_by=examiner, points=points,
                                          grade="g{0}".format(points),
                                          is_passing_grade=bool(points))
-    logging.info('        Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
+    logging.info('                Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
     return feedback
 
 def autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints):
@@ -99,7 +99,7 @@ def create_example_assignmentgroup(assignment, students, examiners,
     for examiner in examiners:
         group.examiners.add(User.objects.get(username=examiner))
     #group.deadlines.create(deadline=deadline)
-    logging.info("Created {0} (id:{1})".format(group, group.id))
+    logging.info("        Created {0} (id:{1})".format(group, group.id))
     return group
 
 def create_example_deliveries_and_feedback(group, quality_percents,
@@ -137,7 +137,7 @@ def create_example_deliveries_and_feedback(group, quality_percents,
     if numdeliveries == 0:
         return
     else:
-        logging.info("        Deliveries: {numdeliveries}".format(numdeliveries=numdeliveries))
+        logging.info("                Deliveries: {numdeliveries}".format(numdeliveries=numdeliveries))
     deliveries = autocreate_deliveries(group, numdeliveries)
     delivery = deliveries[-1]
 
@@ -151,14 +151,14 @@ def create_example_deliveries_and_feedback(group, quality_percents,
 
     # More than two weeks since deadline - should have feedback on about all
     if deadline < two_weeks_ago:
-        logging.info("        Very old deadline (14 days +): Only 3% missing feedback (forgotten)")
+        logging.info("                Very old deadline (14 days +): Only 3% missing feedback (forgotten)")
         if randint(0, 100) <= 3: # Always a 3% chance to forget giving feedback.
             return
         autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints)
 
     # Less than two weeks but more that 5 days since deadline
     elif deadline < five_days_ago:
-        logging.info("        Old deadline (5-14 days): 10% of them has no feedback yet")
+        logging.info("                Old deadline (5-14 days): 10% of them has no feedback yet")
         if randint(0, 100) <= 10:
             # 10% of them has no feedback yet
             return
@@ -167,7 +167,7 @@ def create_example_deliveries_and_feedback(group, quality_percents,
     # Recent deadline (2-5 days since deadline)
     # in the middle of giving feedback
     elif deadline < two_days_ago:
-        logging.info("        Recent deadline (2-5 days): 50% of them has no feedback yet")
+        logging.info("                Recent deadline (2-5 days): 50% of them has no feedback yet")
         if randint(0, 100) <= 50:
             # Half of them has no feedback yet
             return
@@ -175,7 +175,7 @@ def create_example_deliveries_and_feedback(group, quality_percents,
 
     # Very recent deadline (0-2 days since deadline)
     elif deadline < now:
-        logging.info("        Very recent deadline (0-3 days): 90% of them has no feedback yet")
+        logging.info("                Very recent deadline (0-3 days): 90% of them has no feedback yet")
         if randint(0, 100) <= 90:
             # 90% of them has no feedback yet
             return
@@ -183,7 +183,7 @@ def create_example_deliveries_and_feedback(group, quality_percents,
 
     # Deadline is in the future
     else:
-        logging.info("        Deadline is in the future. Made deliveries, but "\
+        logging.info("                Deadline is in the future. Made deliveries, but "\
                 "no feedback")
         pass # No feedback
 
@@ -261,7 +261,7 @@ def create_groups(assignment,
         logging.debug("    Group quality percent: %s" % group_quality_percent)
 
         for deadline in deadlines:
-            logging.info('    Deadline: {0}'.format(deadline))
+            logging.info('            Deadline: {0}'.format(deadline))
             create_example_deliveries_and_feedback(group,
                                                    quality_percents,
                                                    group_quality_percent,
@@ -328,7 +328,7 @@ def create_example_assignment(period, short_name, long_name,
 
     fit_assignment_in_parentnode(assignment, deadlines)
 
-    logging.info("Creating groups on {0}".format(assignment))
+    logging.info("    Creating groups on {0}".format(assignment))
     all_examiners = create_numbered_users(num_examiners, examinername_prefix)
     all_students = create_numbered_users(num_students, studentname_prefix)
     create_groups(assignment,

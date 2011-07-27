@@ -34,7 +34,7 @@ parser.add_argument('--completionlist', action='store_true',
 args = parser.parse_args()
 
 if args.completionlist:
-    print "--numstudents --numexaminers --duckburghusers --deliverycountrange"
+    print "--num_students --num_examiners --duckburghusers --deliverycountrange"
     exit(0)
 
 
@@ -56,6 +56,7 @@ scriptsdir = getscriptsdir()
 create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
 
 def create_testgroups(period, assignments, **shared_kwargs):
+    logging.info(str(period))
     for kwargs in assignments:
         kw = dict()
         kw.update(shared_kwargs)
