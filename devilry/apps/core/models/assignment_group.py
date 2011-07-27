@@ -159,15 +159,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return 0.0
         return (scale/maxpoints) * self.points
 
-    def save(self, *args, **kwargs):
-        create_default_deadline = False
-        # Only if object doesn't yet exist in the database
-        if not self.pk:
-            create_default_deadline = True
-        super(AssignmentGroup, self).save(*args, **kwargs)
-        if create_default_deadline:
-            self.deadlines.create(deadline=datetime(1970, 1, 1), assignment_group=self, is_head=True)
-
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(parentnode__admins=user_obj) | \
