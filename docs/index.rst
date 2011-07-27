@@ -10,7 +10,7 @@
     restful
     extjshelpers
 
-    grade-plugins
+    apps.gradeeditors
 
     utils.assignmentgroup
     utils.ordereddict
@@ -19,7 +19,7 @@
     utils.devilry_email
 
     administrator.simplified
-    metabases.simplified
+    coreutils.simplified.metabases
     examiner.simplified
     student.simplified
     public_restful_api
@@ -41,7 +41,7 @@ Plugin development
 ######################################################################
 
 * **The basics:** :ref:`plugins`
-* **Grade plugins:** :ref:`Overview <grade-plugins>`
+* **Grade editors:** :ref:`Overview <apps.gradeeditors>`
 
 
 
