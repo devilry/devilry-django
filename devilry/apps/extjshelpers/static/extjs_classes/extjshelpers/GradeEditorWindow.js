@@ -5,6 +5,7 @@ Ext.define('devilry.extjshelpers.GradeEditorWindow', {
     width: 800,
     height: 600,
     layout: 'fit',
+    modal: true,
 
     config: {
         /**
