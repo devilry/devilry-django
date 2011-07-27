@@ -33,7 +33,7 @@ if __name__ == "__main__":
     p.add_option("--groupname-prefix", dest="groupname_prefix",
             default=None,
             help="Group name prefix. Group names will be this prefix plus "\
-                    "a number. If you dont spesify this, group name will "\
+                    "a number. If you dont specify this, group name will "\
                     "be blank.")
     p.add_option("--subject-long-name", dest="subject_long_name",
             default=None,
@@ -78,22 +78,8 @@ if __name__ == "__main__":
     p.add_option("--grade-plugin", dest="gradeplugin",
             default=None, help="Grade plugin key.")
     p.add_option("-p", "--deadline-profile", dest="deadline_profiles",
-            default='recent',
-            help="Deadline profile. Defaults to 'recent' "
-                "Values: soon (no feedback, but 50% deliveries), "\
-                "very-recent (some feedback), recent (about " \
-                "50% feedback), old (about 90% feedback), very-old (all have " \
-                "feedback). In addition, there is always some bad students " \
-                "who forget to deliver, and some bad examiners who forget to " \
-                "publish and correct.")
-    p.add_option("--deadline", dest="deadline",
-            default=None,
-            help="Deadline. If this is specified, --deadline-profile is "\
-                "ignored. Format: YYYY-MM-DD. Time will always be 00:00.")
-    p.add_option("--pubtime-diff", dest="pubtime_diff",
-            default=14, type='int',
-            help="Number of days between publishing time and deadline. "\
-                "Defaults to 14.")
+            default='-10',
+            help="Deadline profile. Defaults to '-10'")
 
 
     add_quiet_opt(p)
@@ -170,7 +156,7 @@ if __name__ == "__main__":
             d.append(autocreate_delivery(group))
         return d
 
-    def autocreate_feedback(delivery, group_quality_percent, max_percent):
+    def autocreate_feedback(delivery, group_quality_percent, max_percent, grade_maxpoints):
         grade_percent = randint(group_quality_percent, max_percent)
         points = int(round(grade_maxpoints*grade_percent / 100.0))
 
@@ -183,9 +169,9 @@ if __name__ == "__main__":
         logging.info('        Feedback: points={points}, is_passing_grade={is_passing_grade}'.format(**feedback.__dict__))
         return feedback
 
-    def autocreate_feedbacks(delivery, group_quality_percent, max_percent):
+    def autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints):
         for x in xrange(randint(1, 3)):
-            autocreate_feedback(delivery, group_quality_percent, max_percent)
+            autocreate_feedback(delivery, group_quality_percent, max_percent, grade_maxpoints)
 
 
     def create_example_assignmentgroup(assignment, students, examiners,
@@ -260,7 +246,7 @@ if __name__ == "__main__":
             logging.info("        Very old deadline (14 days +): Only 3% missing feedback (forgotten)")
             if randint(0, 100) <= 3: # Always a 3% chance to forget giving feedback.
                 return
-            autocreate_feedbacks(delivery, group_quality_percent, max_percent)
+            autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints)
 
         # Less than two weeks but more that 5 days since deadline
         elif deadline < five_days_ago:
@@ -268,7 +254,7 @@ if __name__ == "__main__":
             if randint(0, 100) <= 10:
                 # 10% of them has no feedback yet
                 return
-            autocreate_feedbacks(delivery, group_quality_percent, max_percent)
+            autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints)
 
         # Recent deadline (2-5 days since deadline)
         # in the middle of giving feedback
@@ -277,7 +263,7 @@ if __name__ == "__main__":
             if randint(0, 100) <= 50:
                 # Half of them has no feedback yet
                 return
-            autocreate_feedbacks(delivery, group_quality_percent, max_percent)
+            autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints)
 
         # Very recent deadline (0-2 days since deadline)
         elif deadline < now:
@@ -285,7 +271,7 @@ if __name__ == "__main__":
             if randint(0, 100) <= 90:
                 # 90% of them has no feedback yet
                 return
-            autocreate_feedbacks(delivery, group_quality_percent, max_percent)
+            autocreate_feedbacks(delivery, group_quality_percent, max_percent, grade_maxpoints)
 
         # Deadline is in the future
         else:
@@ -312,94 +298,124 @@ if __name__ == "__main__":
         return [parse_deadline_profile(profile) for profile in profiles.split(',')]
 
 
+    def create_assignment(assignmentpath, deadlines, pointscale, long_name):
+        """ Create an assignment from path. """
+        assignment = create_from_path(assignmentpath)
+        assignment.publishing_time = deadlines[0] - timedelta(14)
+        if pointscale:
+            assignment.autoscale = False
+            assignment.pointscale = pointscale
+        if long_name:
+            assignment.long_name = long_name
+        Config.objects.create(assignment=assignment,
+                              gradeeditorid='asminimalaspossible',
+                              config='')
+        assignment.save()
+        return assignment
 
-    assignmentpath = args[0]
-    groupname_prefix = opt.groupname_prefix
-    student_prefix = opt.studentname_prefix
-    students_per_group = opt.students_per_group
-    num_students = opt.num_students
-    examiner_prefix = opt.examinername_prefix
-    num_examiners = opt.num_examiners
-    examiners_per_group = opt.examiners_per_group
-    grade_maxpoints = opt.grade_maxpoints
-    deliverycountrange = opt.deliverycountrange
-    #print deliverycountrange
-
-    ## NOTE: Not used anymore because of grade editors
-    #if not opt.gradeplugin:
-        #raise SystemExit("--grade-plugin is required. Possible values: %s" %
-                #', '.join(['"%s"' % key for key, i in registry.iteritems()]))
-    #gradeplugin = opt.gradeplugin
-
-    if opt.deadline:
-        deadlines = [datetime.strptime(opt.deadline, "%Y-%m-%d")]
-    else:
-        deadlines = parse_deadline_profiles(opt.deadline_profiles)
+    def fit_assignment_in_parentnode(assignment, deadlines):
+        """ Make sure assignment fits in parentnode """
+        if assignment.parentnode.start_time > assignment.publishing_time:
+            assignment.parentnode.start_time = assignment.publishing_time - \
+                    timedelta(days=5)
+            assignment.parentnode.save()
+        if assignment.parentnode.end_time < deadlines[-1]:
+            assignment.parentnode.end_time = deadlines[-1] + timedelta(days=20)
+            assignment.parentnode.save()
 
 
-    examiners = ['%s%d' % (examiner_prefix, d)
-            for d in xrange(0,num_examiners)]
-    all_students = ['%s%d' % (student_prefix, d) for d in xrange(0, num_students)]
-    create_missing_users(itertools.chain(all_students, examiners))
+    def create_groups(assignment,
+                      deadlines, groupname_prefix,
+                      all_examiners, examiners_per_group,
+                      all_students, students_per_group,
+                      deliverycountrange, grade_maxpoints):
+        quality_percents = (
+                93, # A > 93
+                80, # B > 80
+                65, # C > 65
+                45, # D > 45
+                30) # E > 30 
 
-    # Create the assignment
-    assignment = create_from_path(assignmentpath)
-    assignment.publishing_time = deadlines[0] - timedelta(days=opt.pubtime_diff)
-    if opt.pointscale:
-        assignment.autoscale = False
-        assignment.pointscale = opt.pointscale
-    if opt.assignment_long_name:
-        assignment.long_name = opt.assignment_long_name
-    Config.objects.create(assignment=assignment,
-                          gradeeditorid='asminimalaspossible',
-                          config='')
-    assignment.save()
+        examinersiter = itertools.cycle(grouplist(all_examiners, examiners_per_group))
+        for studnum, students_in_group in enumerate(grouplist(all_students, students_per_group)):
+            examiners_on_group = examinersiter.next()
+            groupname = None
+            if groupname_prefix:
+                groupname = "%s %d" % (groupname_prefix, studnum)
+            group = create_example_assignmentgroup(assignment, students_in_group,
+                    examiners_on_group, groupname)
 
-    # Make sure assignment fits in parentnode
-    if assignment.parentnode.start_time > assignment.publishing_time:
-        assignment.parentnode.start_time = assignment.publishing_time - \
-                timedelta(days=5)
-        assignment.parentnode.save()
-    if assignment.parentnode.end_time < deadlines[-1]:
-        assignment.parentnode.end_time = deadlines[-1] + timedelta(days=20)
-        assignment.parentnode.save()
-    logging.info("Creating groups on {0}".format(assignment))
+            group_quality_percent = 100 - (float(studnum)/len(all_students)* 100)
+            group_quality_percent = round(group_quality_percent)
+            logging.debug("    Group quality percent: %s" % group_quality_percent)
 
-    # Subject and period
-    period = assignment.parentnode
-    subject = period.parentnode
-    if opt.period_long_name:
-        period.long_name = opt.period_long_name
+            for deadline in deadlines:
+                logging.info('    Deadline: {0}'.format(deadline))
+                create_example_deliveries_and_feedback(group,
+                                                       quality_percents,
+                                                       group_quality_percent,
+                                                       grade_maxpoints,
+                                                       deliverycountrange,
+                                                       deadline)
+
+    def create_numbered_users(numusers, prefix):
+        users = ['{0}{1}'.format(prefix, number) for number in xrange(0, numusers)]
+        create_missing_users(users)
+        return users
+
+    def set_subject_and_period_long_name(assignment, subject_long_name, period_long_name):
+        period = assignment.parentnode
+        subject = period.parentnode
+        period.long_name = period_long_name
         period.save()
-    if opt.subject_long_name:
-        subject.long_name = opt.subject_long_name
+        subject.long_name = subject_long_name
         subject.save()
 
 
-    examinersiter = itertools.cycle(grouplist(examiners, examiners_per_group))
-    quality_percents = (
-            93, # A > 93
-            80, # B > 80
-            65, # C > 65
-            45, # D > 45
-            30) # E > 30 
-    for studnum, students in enumerate(grouplist(all_students, students_per_group)):
-        examiners = examinersiter.next()
-        groupname = None
-        if groupname_prefix:
-            groupname = "%s %d" % (groupname_prefix, studnum)
-        group = create_example_assignmentgroup(assignment, students,
-                examiners, groupname)
+    def create_example_assignment(assignmentpath,
+                                  subject_long_name, period_long_name,
+                                  groupname_prefix, deadline_profiles,
+                                  num_students, studentname_prefix, students_per_group,
+                                  num_examiners, examinername_prefix, examiners_per_group,
+                                  grade_maxpoints, deliverycountrange):
 
-        group_quality_percent = 100 - (float(studnum)/num_students * 100)
-        group_quality_percent = round(group_quality_percent)
-        logging.debug("    Group quality percent: %s" % group_quality_percent)
+        deadlines = parse_deadline_profiles(deadline_profiles)
+        assignment = create_assignment(assignmentpath, deadlines, opt.pointscale, opt.assignment_long_name)
 
-        for deadline in deadlines:
-            logging.info('    Deadline: {0}'.format(deadline))
-            create_example_deliveries_and_feedback(group,
-                                                   quality_percents,
-                                                   group_quality_percent,
-                                                   grade_maxpoints,
-                                                   deliverycountrange,
-                                                   deadline)
+        fit_assignment_in_parentnode(assignment, deadlines)
+        set_subject_and_period_long_name(assignment, subject_long_name, period_long_name)
+
+        logging.info("Creating groups on {0}".format(assignment))
+        all_examiners = create_numbered_users(num_examiners, examinername_prefix)
+        all_students = create_numbered_users(num_students, studentname_prefix)
+        create_groups(assignment,
+                      deadlines = deadlines,
+                      groupname_prefix = groupname_prefix,
+
+                      all_examiners = all_examiners,
+                      examiners_per_group = examiners_per_group,
+
+                      all_students = all_students,
+                      students_per_group = students_per_group,
+
+                      grade_maxpoints = grade_maxpoints,
+                      deliverycountrange = deliverycountrange)
+
+
+    create_example_assignment(args[0],
+                              subject_long_name = opt.subject_long_name,
+                              period_long_name = opt.period_long_name,
+
+                              groupname_prefix = opt.groupname_prefix,
+                              deadline_profiles = opt.deadline_profiles,
+
+                              num_students = opt.num_students,
+                              studentname_prefix = opt.studentname_prefix,
+                              students_per_group = opt.students_per_group,
+
+                              num_examiners = opt.num_examiners,
+                              examinername_prefix = opt.examinername_prefix,
+                              examiners_per_group = opt.examiners_per_group,
+
+                              grade_maxpoints = opt.grade_maxpoints,
+                              deliverycountrange = opt.deliverycountrange)
