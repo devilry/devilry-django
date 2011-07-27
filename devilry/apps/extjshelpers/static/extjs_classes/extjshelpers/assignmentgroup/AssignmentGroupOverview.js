@@ -10,7 +10,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
-        'devilry.extjshelpers.assignmentgroup.DeadlineListing'
+        'devilry.extjshelpers.assignmentgroup.DeadlineListing',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor'
     ],
 
     headingTpl: Ext.create('Ext.XTemplate',
@@ -33,14 +35,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          * Delivery  ``Ext.data.Model``. (Required).
          */
         deliverymodel: undefined,
-
-        /**
-         * @cfg
-         * Deadline ``Ext.data.Store``. (Required).
-         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
-         * {@link devilry.extjshelpers.assignmentgroup.DeadlineListing}.
-         */
-        deadlinestore: undefined,
 
         /**
          * @cfg
@@ -99,8 +93,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             delivery_recordcontainer: this.delivery_recordcontainer,
                             deliverymodel: this.deliverymodel,
-                            deadlinestore: this.deadlinestore,
-                            selectedDeliveryId: this.selectedDeliveryId,
                             enableDeadlineCreation: this.canExamine
                         }]
                     }]
@@ -115,6 +107,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     filemetastore: this.filemetastore
                 }, {
                     region: 'center',
+                    items: [{
+                        //xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                        xtype: 'staticfeedbackinfo',
+                        staticfeedbackstore: this.staticfeedbackstore,
+                        delivery_recordcontainer: this.delivery_recordcontainer
+                    }]
                 }]
             }],
         });

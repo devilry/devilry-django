@@ -1,23 +1,6 @@
 
 /**
  * Panel to show Delivery info.
- * Uses {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}
- * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
- * to show and manage StaticFeedback (see {@link #canExamine})
- *
- *      -------------------------------------------
- *      | Info about the delivery                 |
- *      |                                         |
- *      |                                         |
- *      -------------------------------------------
- *      | StaticFeedbackInfo                      |
- *      | or                                      |
- *      | StaticFeedbackEditor              |
- *      |                                         |
- *      |                                         |
- *      |                                         |
- *      |                                         |
- *      -------------------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     extend: 'Ext.panel.Panel',
@@ -49,12 +32,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
     ),
 
     initComponent: function() {
-        //var clsname = this.canExamine? 'StaticFeedbackEditor': 'StaticFeedbackInfo';
-        //this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.' + clsname, {
-            //deliveryid: this.delivery.id,
-            //staticfeedbackstore: this.staticfeedbackstore,
-            //assignmentid: this.assignmentid
-        //});
         this.callParent(arguments);
         if(this.delivery_recordcontainer.record) {
             this.onLoadDelivery();
