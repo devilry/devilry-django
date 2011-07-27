@@ -8,19 +8,20 @@
 #################################################################
 
 from sys import exit
-from subprocess import call
 from os.path import join
+import logging
 
 from common import (getscriptsdir, require_djangoproject,
                     append_pythonexec_to_command, depends, Command,
                     DevilryAdmArgumentParser)
-
+from create_random_exampledata import create_example_assignment
+from devilry.apps.core.testhelper import TestHelper
 
 
 parser = DevilryAdmArgumentParser(description='Process some integers.')
-parser.add_argument('-s', '--numstudents', type=int, default=2,
+parser.add_argument('-s', '--num_students', type=int, default=2,
                     help='Number of students on each assignment (defaults to 2).')
-parser.add_argument('-e', '--numexaminers', type=int, default=1,
+parser.add_argument('-e', '--num_examiners', type=int, default=1,
                     help='Number of examiners on each assignment (defaults to 1).')
 parser.add_argument('-d', '--duckburghusers', action='store_true',
                     help='Load duckburgh users.')
@@ -44,6 +45,8 @@ depends(Command('init_exampledb'),
 if args.duckburghusers:
     depends(Command('load_duckburghusers'))
 
+logging.basicConfig(level=logging.INFO, format='%(levelname)7s: %(message)s')
+
 
 
 
@@ -52,95 +55,74 @@ if args.duckburghusers:
 scriptsdir = getscriptsdir()
 create_testgroups_cmd = join(scriptsdir, 'create_testgroups.py')
 
-def create_testgroups(path, numstudents, numexaminers, subject_long_name,
-                      period_long_name, deliverycountrange, assignments,
-                      examinerspergroup=1, studentspergroup=1):
-    for a in assignments:
-        args = [create_testgroups_cmd,
-                '{0}.{1}'.format(path, a['shortname']),
-                '--grade-plugin', 'fake',
-                '--num-students', str(numstudents),
-                '--num-examiners', str(numexaminers),
-                '--deadline-profile', str(a['deadlineprofile']),
-                '--subject-long-name', subject_long_name,
-                '--period-long-name', period_long_name,
-                '--examiners-per-group', str(examinerspergroup),
-                '--students-per-group', str(studentspergroup),
-                '--assignment-long-name', a['long_name']]
-        if 'maxpoints' in a:
-            args.extend(['--grade-maxpoints', str(a['maxpoints'])])
-        if 'pointscale' in a:
-            args.extend(['--pointscale', str(a['pointscale'])])
-        if deliverycountrange:
-            args.extend(['--deliverycountrange', deliverycountrange])
-        #print "args: ", args
-        call(append_pythonexec_to_command(args))
+def create_testgroups(period, assignments, **shared_kwargs):
+    for kwargs in assignments:
+        kw = dict()
+        kw.update(shared_kwargs)
+        kw.update(kwargs)
+        create_example_assignment(period, **kw)
 
+
+testhelper = TestHelper()
+testhelper.add()
+testhelper.add(nodes='duckburgh.univ:admin(duckburghboss)',
+               subjects=['duck1100:admin(donald):ln(DUCK1100 - Getting started with python)',
+                         'duck1080:admin(daisy):ln(DUCK1080 - Making the illogical seem logical)',
+                         'duck3580:admin(clarabelle):ln(DUCK3580 - Making the web work)',
+                         'duck5063:admin(scrooge):ln(DUCK5063 - Make low level stuff)'],
+               periods=['spring01:ln(Spring year zero)'])
 
 
 # Duck 1100
-create_testgroups(path = 'duckburgh.univ:duck1100.spring01',
-                  numstudents = args.numstudents, numexaminers = args.numexaminers,
-                  subject_long_name = 'DUCK1100 - Getting started with python',
-                  period_long_name = 'Spring year zero',
+create_testgroups(testhelper.duck1100_spring01,
+                  num_students = args.num_students, num_examiners = args.num_examiners,
                   deliverycountrange=args.deliverycountrange,
                   assignments = [
-                                 {'shortname': 'week1', 'deadlineprofile': '-60', 'maxpoints': 14,
+                                 {'short_name': 'week1', 'deadline_profiles': '-60', 'grade_maxpoints': 14,
                                   'long_name': 'The one and only week one'},
-                                 {'shortname': 'week2', 'deadlineprofile': '-30', 'maxpoints': 10,
+                                 {'short_name': 'week2', 'deadline_profiles': '-30', 'grade_maxpoints': 10,
                                   'long_name': 'The one and only week two'},
-                                 {'shortname': 'week3', 'deadlineprofile': '-9', 'maxpoints': 9,
+                                 {'short_name': 'week3', 'deadline_profiles': '-9', 'grade_maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
-                                 {'shortname': 'week4', 'deadlineprofile': '-3', 'maxpoints': 9,
+                                 {'short_name': 'week4', 'deadline_profiles': '-3', 'grade_maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
                                 ])
 
 # Duck 1080
-create_testgroups(path = 'duckburgh.univ:duck1080.fall01',
-                  numstudents = args.numstudents, numexaminers = args.numexaminers,
-                  subject_long_name = 'DUCK1080 - Making the illogical seem logical',
-                  period_long_name = 'Fall year zero',
+create_testgroups(testhelper.duck1080_spring01,
+                  num_students = args.num_students, num_examiners = args.num_examiners,
                   deliverycountrange=args.deliverycountrange,
                   assignments = [
-                                 {'shortname': 'week1', 'deadlineprofile': '-30', 'maxpoints': 11,
-                                  'pointscale': 10,
+                                 {'short_name': 'week1', 'deadline_profiles': '-30', 'grade_maxpoints': 11,
                                   'long_name': 'The one and only week one'},
-                                 {'shortname': 'week2', 'deadlineprofile': '-20', 'maxpoints': 10,
-                                  'pointscale': 10,
+                                 {'short_name': 'week2', 'deadline_profiles': '-20', 'grade_maxpoints': 10,
                                   'long_name': 'The one and only week two'},
-                                 {'shortname': 'week3', 'deadlineprofile': '-3', 'maxpoints': 9,
-                                  'pointscale': 10,
+                                 {'short_name': 'week3', 'deadline_profiles': '-3', 'grade_maxpoints': 9,
                                   'long_name': 'The one and only week tree'},
                                 ])
 
 # Duck 3580
-create_testgroups(path = 'duckburgh.univ:duck3580.fall01',
-                  numstudents = args.numstudents, numexaminers = args.numexaminers,
-                  subject_long_name = 'DUCK3580 - Making the web work',
-                  period_long_name = 'Fall year zero',
+create_testgroups(testhelper.duck3580_spring01,
+                  num_students = args.num_students, num_examiners = args.num_examiners,
                   deliverycountrange=args.deliverycountrange,
                   assignments = [
-                                 {'shortname': 'week1', 'deadlineprofile': '-40,-30,-20',
-                                  'gradeplugin': 'grade_approved:approvedgrade',
+                                 {'short_name': 'week1', 'deadline_profiles': '-40,-30,-20',
                                   'long_name': 'Week one'},
-                                 {'shortname': 'week2', 'deadlineprofile': '-3,-10,-20',
+                                 {'short_name': 'week2', 'deadline_profiles': '-3,-10,-20',
                                   'long_name': 'Week two'}
                                 ])
 
 # Duck 5063
-create_testgroups(path = 'duckburgh.univ:duck5063.fall01',
-                  numstudents = args.numstudents, numexaminers = args.numexaminers,
-                  subject_long_name = 'DUCK5063 - Make low level stuff',
-                  period_long_name = 'Fall year zero',
+create_testgroups(testhelper.duck5063_spring01,
+                  num_students = args.num_students, num_examiners = args.num_examiners,
                   deliverycountrange=args.deliverycountrange,
                   assignments = [
-                                 {'shortname': 'first_assignment', 'deadlineprofile': '-30',
-                                  'gradeplugin': 'grade_approved:approvedgrade',
+                                 {'short_name': 'first_assignment', 'deadline_profiles': '-30',
                                   'long_name': 'First assignment'},
-                                 {'shortname': 'second_assignment', 'deadlineprofile': '-3',
+                                 {'short_name': 'second_assignment', 'deadline_profiles': '-3',
                                   'long_name': 'Second assignment'}
                                 ],
-                 studentspergroup = 2, examinerspergroup = 3)
+                 students_per_group = 2, examiners_per_group = 3)
 
 
 print
