@@ -24,5 +24,22 @@ Ext.define('devilry.extjshelpers.GradeEditorWindow', {
      */
     exit: function() {
         this.close();
+    },
+
+    save: function(published, draft, saveconfig) {
+        var staticfeedback = Ext.create('devilry.apps.gradeeditors.simplified.administrator.SimplifiedFeedbackDraft', {
+            draft: draft,
+            published: published,
+            delivery: this.deliveryid
+        });
+        staticfeedback.save(saveconfig, saveconfig);
+    },
+
+    saveDraft: function(draft, saveconfig) {
+        this.save(false, draft, saveconfig);
+    },
+
+    saveDraftAndPublish: function(draft, saveconfig) {
+        this.save(true, draft, saveconfig);
     }
 });

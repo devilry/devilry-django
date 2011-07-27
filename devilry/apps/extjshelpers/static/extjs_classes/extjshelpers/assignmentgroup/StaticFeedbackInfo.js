@@ -37,19 +37,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         this.staticfeedback_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
         Ext.apply(this, {
-            tbar: [{
-                xtype: 'devilrypager',
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
                 hidden: true,
-                store: this.staticfeedbackstore,
-                width: 200,
-                reverseDirection: true,
-                middleLabelTpl: Ext.create('Ext.XTemplate',
-                    '<tpl if="firstRecord">',
-                '   {currentNegativePageOffset})&nbsp;&nbsp;',
-                '   {firstRecord.data.save_timestamp:date}',
-                '</tpl>'
-                )
-            }, '->']
+                items: [{
+                    xtype: 'devilrypager',
+                    hidden: true,
+                    store: this.staticfeedbackstore,
+                    width: 200,
+                    reverseDirection: true,
+                    middleLabelTpl: Ext.create('Ext.XTemplate',
+                        '<tpl if="firstRecord">',
+                    '   {currentNegativePageOffset})&nbsp;&nbsp;',
+                    '   {firstRecord.data.save_timestamp:date}',
+                    '</tpl>'
+                    )
+                }, '->']
+            }]
         });
 
         this.callParent(arguments);

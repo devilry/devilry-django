@@ -37,7 +37,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     },
 
     loadGradeEditor: function() {
-        //this.getToolbar().hide();
         Ext.create('devilry.extjshelpers.GradeEditorWindow', {
             deliveryid: this.delivery_recordcontainer.record.data.id,
             items: {
@@ -48,6 +47,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                     autoLoad: true,
                     loadMask: true
                 }
+            },
+
+            listeners: {
+                scope: this,
+                beforeclose: this.onCloseGradeEditor
             }
         }).show();
     },
@@ -66,7 +70,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         });
     },
 
-    showFeedbackViewer: function() {
+    /**
+     * @private
+     */
+    onCloseGradeEditor: function() {
         this.onLoadDelivery();
     }
 });
