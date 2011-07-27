@@ -3,6 +3,9 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
     alias: 'widget.staticfeedbackeditor',
+    depends: [
+        'devilry.extjshelpers.GradeEditorWindow'
+    ],
 
     config: {
         /**
@@ -23,9 +26,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             iconCls: 'icon-add-16',
             margin: {left: 5},
             listeners: {
-                click: function() {
-                    me.loadFeedbackEditor();
-                }
+                scope: this,
+                click: this.loadGradeEditor
             }
         });
         this.addListener('afterStoreLoadMoreThanZero', function() {
@@ -34,17 +36,20 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         this.callParent(arguments);
     },
 
-    loadFeedbackEditor: function() {
-        this.getToolbar().hide();
-        this.setBody({
-            xtype: 'container',
-            loader: {
-                url: Ext.String.format('/static/asminimalaspossible_gradeeditor/drafteditor.js'), // TODO read from an API
-                renderer: 'component',
-                autoLoad: true,
-                loadMask: true
+    loadGradeEditor: function() {
+        //this.getToolbar().hide();
+        Ext.create('devilry.extjshelpers.GradeEditorWindow', {
+            deliveryid: this.delivery_recordcontainer.record.data.id,
+            items: {
+                xtype: 'container',
+                loader: {
+                    url: Ext.String.format('/static/asminimalaspossible_gradeeditor/drafteditor.js'), // TODO read from an API
+                    renderer: 'component',
+                    autoLoad: true,
+                    loadMask: true
+                }
             }
-        });
+        }).show();
     },
 
     bodyWithNoFeedback: function() {
@@ -55,7 +60,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             html: '<p>No feedback</p><p class="unimportant">Click to create feedback</p>',
             listeners: {
                 render: function() {
-                    this.getEl().addListener('mouseup', me.loadFeedbackEditor, me);
+                    this.getEl().addListener('mouseup', me.loadGradeEditor, me);
                 }
             }
         });
