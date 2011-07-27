@@ -19,6 +19,12 @@
     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
 
+    {# These are used by the grade editor #}
+    {{ RestfulSimplifiedConfig|extjs_model }};
+    {{ RestfulSimplifiedConfig|extjs_store }};
+    {{ RestfulSimplifiedFeedbackDraft|extjs_model }};
+    {{ RestfulSimplifiedFeedbackDraft|extjs_store }};
+
 
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
     Ext.onReady(function() {

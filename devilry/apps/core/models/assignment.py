@@ -16,7 +16,6 @@ from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
 from model_utils import Etag, EtagMismatchException
 
-from .. import gradeplugin
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
@@ -40,12 +39,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
         Node.
-
-    .. attribute:: grade_plugin
-
-        A django.db.models.CharField_ that holds the key of the current
-        grade-plugin. More info on grade-plugins
-        :ref:`here <grade-plugins>`.
 
     .. attribute:: assignmentgroups
 
@@ -124,10 +117,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             verbose_name=_("Students can see points"))
     admins = models.ManyToManyField(User, blank=True,
             verbose_name=_("Administrators"))
-    grade_plugin = models.CharField(max_length=100,
-            verbose_name=_("Grade plugin"),
-            choices=gradeplugin.registry,
-            default=gradeplugin.registry.getdefaultkey())
     filenames = models.TextField(blank=True, null=True,
             verbose_name=_("Filenames"),
             help_text=_('Filenames separated by newline or space. If '
@@ -228,12 +217,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             #self.pointscale = self.maxpoints
         #super(Assignment, self).save()
         #self._update_scalepoints()
-
-    #TODO delete this?
-    #def get_gradeplugin_registryitem(self):
-        #""" Get the :class:`devilry.core.gradeplugin.RegistryItem`
-        #for the current :attr:`grade_plugin`. """
-        #return gradeplugin.registry.getitem(self.grade_plugin)
 
     #TODO delete this?
     #def get_filenames(self):

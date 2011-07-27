@@ -1,3 +1,4 @@
+from types import MethodType
 from django.db.models.fields import AutoField, FieldDoesNotExist
 
 from qryresultwrapper import QryResultWrapper
@@ -67,7 +68,7 @@ class SimplifiedModelApi(object):
     def is_empty(cls, obj):
         """ Check if the given obj is empty. Defaults to returning ``False``.
 
-        Can be implemented in subclasses to enable superadmins to recursively delete the ``obj``.
+        Can be implemented in subclasses to enable superadmins to recursively :meth:`delete` the ``obj``.
         """
         return False
 
@@ -146,7 +147,7 @@ class SimplifiedModelApi(object):
         return result
 
     @classmethod
-    def post_full_clean(cls, user, obj):
+    def pre_full_clean(cls, user, obj):
         """
         Invoked after the user has been authorize by :meth:`write_authorize` and
         before ``obj.full_clean()`` in :meth:`create` and :meth:`update`.
@@ -171,7 +172,7 @@ class SimplifiedModelApi(object):
         obj =  cls._meta.model()
         cls._set_values(obj, field_values)
         cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
-        cls.post_full_clean(user, obj)
+        cls.pre_full_clean(user, obj)
         obj.full_clean()
         obj.save()
         return obj.pk
@@ -215,14 +216,16 @@ class SimplifiedModelApi(object):
         # Important to write authorize after _set_values in case any attributes
         # used in write_authorize is changed by _set_values.
         cls.write_authorize(user, obj)
-        cls.post_full_clean(user, obj)
+        cls.pre_full_clean(user, obj)
         obj.full_clean()
         obj.save()
         return obj.pk
 
     @classmethod
     def delete(cls, user, pk):
-        """ Delete the given object.
+        """ Delete the given object. If the object :meth:`is_empty` it can be
+        deleted by any user with :meth:`write_authorize`,
+        if not then only a Superuser may delete the object
 
         :param user: Django user object.
         :param pk: Id of object or kwargs to the get method of the configured model.
@@ -315,6 +318,19 @@ def _validate_fieldnameiterator(cls, attribute, fieldnameiterator):
                                                                                    attribute,
                                                                                    fieldname))
 
+
+
+class UnsupportedCrudsMethod(Exception):
+    """
+    Raised when trying to call an unsupperted CRUD+S method (a method on in Meta.methods).
+    """
+
+def _create_unsupported_cruds_method(cls, methodname):
+    def wrapper(cls, *args, **kwargs):
+        raise UnsupportedCrudsMethod("Unsupperted CRUD+S method: {}".format(methodname))
+    setattr(cls, methodname, MethodType(wrapper, cls))
+
+
 def simplified_modelapi(cls):
     """ Decorator which creates a simplified API for a Django model.
 
@@ -396,13 +412,14 @@ def simplified_modelapi(cls):
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
 
-    # Dynamically remove create(), read(), update(), delete() if not supported
-    cls._all_crud_methods = ('create', 'read', 'update', 'delete')
-    for method in cls._all_crud_methods:
+    # Dynamically remove create(), read(), update(), delete() and search() if not supported
+    cls._all_cruds_methods = ('create', 'read', 'update', 'delete', 'search')
+    for method in cls._all_cruds_methods:
         if not method in cls._meta.methods:
-            setattr(cls, method, None)
+            _create_unsupported_cruds_method(cls, method)
+            #setattr(cls, method, None)
 
-    for method in cls._all_crud_methods:
+    for method in cls._all_cruds_methods:
         setattr(cls, 'supports_{0}'.format(method), method in cls._meta.methods)
 
     if hasattr(cls._meta, 'filters'):

@@ -5,6 +5,7 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
 from deliverystore import MemoryDeliveryStore
 from django.core.exceptions import ValidationError
 
+
 class TestHelper(object):
     """
     This class helps generate test data.
@@ -108,9 +109,7 @@ class TestHelper(object):
         # where X is the deadline the delivery belongs to, and Y is
         # a number that starts at 1 and increments for each new delivery
 
-        # subtract 1, because all assignmentgroups get a default
-        # deadline when created
-        prefix = prefix + 'deadline' + str(group.deadlines.count() - 1) + '_'
+        prefix = prefix + 'deadline' + str(group.deadlines.count()) + '_'
         deadline_num = group.get_active_deadline().deliveries.count()
         vars(self)[prefix + 'delivery' + str(deadline_num)] = delivery
         return delivery
@@ -332,7 +331,7 @@ class TestHelper(object):
             period.end_time = period.start_time + timedelta(5 * 30)
 
         if extras['ln']:
-            period.long_name = extras['ln']
+            period.long_name = extras['ln'][0]
 
         period.full_clean()
         period.save()
@@ -465,11 +464,11 @@ class TestHelper(object):
                    parentnode.short_name + '_' +                        # assignment_
                    group_name] = group
 
-        # create the default deadline, deadline0, variable
-        vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   parentnode.parentnode.short_name + '_' +             # period_
-                   parentnode.short_name + '_' +                        # assignment_
-                   group_name + '_deadline0'] = group.deadlines.all()[0]
+        # # create the default deadline, deadline0, variable
+        # vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+        #            parentnode.parentnode.short_name + '_' +             # period_
+        #            parentnode.short_name + '_' +                        # assignment_
+        #            group_name + '_deadline0'] = group.deadlines.all()[0]
         return group
 
     def _do_the_assignmentgroups(self, assignments, assignmentgroups_list):

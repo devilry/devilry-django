@@ -28,14 +28,14 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(exam1,exam3)')
-        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(exam1)')
-        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(exam2)')
-        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(exam2)')
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(exam1,exam3).d1')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(exam1).d1')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(exam2).d1')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(exam2).d1')
 
         # secondStud began secondsem
-        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1)')
-        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1)')
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1).d1')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1).d1')
 
 
 class TestSimplifiedNode(SimplifiedAdminTestBase):
@@ -46,7 +46,6 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         self.add(nodes='uni.fys')
         self.create_superuser('superadminuser')
 
-        #methods = ['create', 'read', 'update', 'delete', 'search'
 
     def test_search_filters(self):
         qrywrap = SimplifiedNode.search(self.admin1)
@@ -363,6 +362,7 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
         expected_res = modelinstance_to_dict(self.inf110_firstsem, SimplifiedPeriod._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
+    def test_read_allextras(self):
         # do a read with all extras
         read_res = SimplifiedPeriod.read(self.admin1, self.inf110_firstsem.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf110_firstsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))
@@ -463,6 +463,7 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
             SimplifiedPeriod.delete(self.exam1, self.inf101_firstsem.id)
 
 class TestSimplifiedAssignment(SimplifiedAdminTestBase):
+    allExtras = SimplifiedAssignment._meta.resultfields.additional_aslist()
 
     def setUp(self):
         super(TestSimplifiedAssignment, self).setUp()
@@ -509,8 +510,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         self.add_to_path('uni;inf110.firstsem.a2:admin(testPerson)')
         SimplifiedAssignment.read(self.testPerson, self.inf110_firstsem_a2.id)
 
-    def test_search(self):
-        self.allExtras = SimplifiedAssignment._meta.resultfields.additional_aslist()
+    def test_search_noextras(self):
         # search with no query and no extra fields
         search_res = SimplifiedAssignment.search(self.admin1)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
@@ -527,6 +527,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_allextras(self):
         # search with no querys, but all extra fields
         search_res = SimplifiedAssignment.search(self.admin1, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1,
@@ -550,6 +551,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_query(self):
         # search with query
         search_res = SimplifiedAssignment.search(self.admin1, query='a1')
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1, SimplifiedAssignment._meta.resultfields.aslist()),
@@ -561,6 +563,7 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_queryandextras(self):
         # with query and extra fields, only subject containing '11' is 'inf110'.
         search_res = SimplifiedAssignment.search(self.admin1, query='11', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf110_secondsem_a1,
@@ -708,7 +711,7 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
     def setUp(self):
         super(TestSimplifiedAdminAssignmentGroup, self).setUp()
 
-    def test_search(self):
+    def test_search_noextras(self):
         # search with no query and no extra fields
 
         search_res = SimplifiedAssignmentGroup.search(self.admin1)
@@ -725,6 +728,7 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_allextras(self):
         # search with no query and with extra fields
         search_res = SimplifiedAssignmentGroup.search(self.admin1, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1, self.allFields),
@@ -739,6 +743,7 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_query(self):
         # search with query
         search_res = SimplifiedAssignmentGroup.search(self.admin1, query='secondStud')
         expected_res = [modelinstance_to_dict(self.inf101_secondsem_a1_g2, self.baseFields),
@@ -748,6 +753,7 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_queryandextras(self):
         # with query and extra fields
         search_res = SimplifiedAssignmentGroup.search(self.admin1, query='inf101', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1, self.allFields),
@@ -767,6 +773,7 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                                              SimplifiedAssignmentGroup._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
+    def test_read_allextras(self):
         # do a read with all extras
         read_res = SimplifiedAssignmentGroup.read(self.admin1, self.inf101_firstsem_a1_g1.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1,
@@ -791,8 +798,13 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
                 self.inf101_firstsem_a1_g1.parentnode)
 
     def test_update(self):
-        #TODO
-        pass
+        kw = dict(name = 'test')
+
+        self.assertEquals(self.inf101_firstsem_a1_g1.name, 'g1')
+
+        newpk = SimplifiedAssignmentGroup.update(self.admin1, pk = self.inf101_firstsem_a1_g1.id, **kw)
+        create_res = models.AssignmentGroup.objects.get(pk=newpk)
+        self.assertEquals(create_res.name, 'test')
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101.firstsem:admin(testadmin)')
@@ -837,7 +849,7 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
                 self.add_delivery(group)
                 self.add_feedback(group)
 
-    def test_search(self):
+    def test_search_noextras(self):
         # search with no query and no extra fields
         search_res = SimplifiedStaticFeedback.search(self.admin1)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_feedbacks[0],
@@ -858,6 +870,7 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_allextras(self):
         # search with no query and with extra fields
         search_res = SimplifiedStaticFeedback.search(self.admin1, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_feedbacks[0],
@@ -877,6 +890,7 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_query(self):
         # search with query
         search_res = SimplifiedStaticFeedback.search(self.admin1, query='a1')
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_feedbacks[0],
@@ -890,6 +904,7 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_queryandextras(self):
         # with query and extra fields
         search_res = SimplifiedStaticFeedback.search(self.admin1, query='inf110', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf110_secondsem_a1_g1_feedbacks[0],
@@ -909,6 +924,7 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
                                              SimplifiedStaticFeedback._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
+    def test_read_allextras(self):
         # do a read with all extras
         read_res = SimplifiedStaticFeedback.read(self.admin1, self.inf101_firstsem_a1_g1_feedbacks[0].id,
                                            result_fieldgroups=self.allExtras)
@@ -917,7 +933,6 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         self.assertEquals(read_res, expected_res)
 
     def test_read_security(self):
-
         # test with someone who's not an admin
         with self.assertRaises(PermissionDenied):
             SimplifiedStaticFeedback.read(self.firstStud, self.inf101_firstsem_a1_g1_feedbacks[0].id)
@@ -925,6 +940,25 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         # test with someone who's not an admin
         with self.assertRaises(PermissionDenied):
             SimplifiedStaticFeedback.read(self.exam1, self.inf101_firstsem_a1_g1_feedbacks[0].id)
+
+    def test_delete_asnodeadmin(self):
+        self.add_to_path('uni;inf101:admin(testadmin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedStaticFeedback.delete(self.testadmin, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
+
+    def test_delete_assuperadmin(self):
+        delid = self.inf101_firstsem_a1_g1.deadlines.all()[0].id
+        SimplifiedStaticFeedback.delete(self.superadminuser, delid)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedStaticFeedback.delete(self.superadminuser, delid)
+
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedStaticFeedback.delete(self.firstStud, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedStaticFeedback.delete(self.exam1, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
 
 
 class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
@@ -936,7 +970,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
     def setUp(self):
         super(TestSimplifiedAdminDeadline, self).setUp()
 
-    def test_search(self):
+    def test_search_noextras(self):
         # search with no query and no extra fields
         # should only have the deafault deadlines created when the
         # assignment group was created
@@ -954,6 +988,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_allextras(self):
         # search with no query and with extra fields
         search_res = SimplifiedDeadline.search(self.admin1, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1.deadlines.all()[0], self.allFields),
@@ -968,6 +1003,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_query(self):
         # search with query
         search_res = SimplifiedDeadline.search(self.admin1, query='secondStud')
         expected_res = [modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.baseFields),
@@ -977,6 +1013,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_queryandextras(self):
         # with query and extra fields
         search_res = SimplifiedDeadline.search(self.admin1, query='inf101', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1.deadlines.all()[0], self.allFields),
@@ -988,6 +1025,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_query_newdeadlines_andextras(self):
         # add some new deadlines, to simulate groups getting a second
         # chance
         self.add_to_path('uni;inf101.secondsem.a1.g2.deadline:ends(10):text(This is your last shot!)')
@@ -998,7 +1036,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf110_secondsem_a1_g1.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf110_secondsem_a2_g1.deadlines.all()[0], self.allFields),
                         # this group now has 2 deadlines. make sure to include the old one here
-                        modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.order_by('deadline')[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondsem_a1_g2_deadline2, self.allFields),
                         # and the new one here
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2_deadlines[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields),
@@ -1053,7 +1091,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # publishing date
         invalid_deadline_dict = dict(
             assignment_group=self.inf101_firstsem_a1_g1,
-            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=-10),
+            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=-11),
             text='this deadline is impossible')
         with self.assertRaises(Exception):  # TODO: Where is ValidationError declared?
             SimplifiedDeadline.create(self.admin1, **invalid_deadline_dict)
@@ -1079,16 +1117,24 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                                   text='Last shot!')
 
     def test_delete_asnodeadmin(self):
-        #TODO - complete this
-        pass
+        self.add_to_path('uni;inf101:admin(testadmin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.delete(self.testadmin, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
 
     def test_delete_assuperadmin(self):
-        #TODO - complete this
-        pass
+        delid = self.inf101_firstsem_a1_g1.deadlines.all()[0].id
+        SimplifiedDeadline.delete(self.superadminuser, delid)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.delete(self.superadminuser, delid)
 
     def test_delete_noperm(self):
-        #TODO - complete this
-        pass
+        delid = self.inf101_firstsem_a1_g1.deadlines.all()[0].id
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.delete(self.firstStud, delid)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.delete(self.exam1, delid)
 
 class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
 
@@ -1108,7 +1154,7 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
                 files = {'good.py': ['print ', 'awesome']}
                 self.add_delivery(group, files)
 
-    def test_search(self):
+    def test_search_noextras(self):
         # search with no query and no extra fields
         # should only have the deafault deadlines created when the
         # assignment group was created
@@ -1126,6 +1172,7 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_allextras(self):
         # search with no query and with extra fields
         search_res = SimplifiedFileMeta.search(self.admin1, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
@@ -1140,6 +1187,7 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_query(self):
         # search with query
         search_res = SimplifiedFileMeta.search(self.admin1, query='secondStud')
         expected_res = [modelinstance_to_dict(self.inf101_secondsem_a1_g2_deliveries[0].filemetas.all()[0], self.baseFields),
@@ -1149,6 +1197,7 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_queryandextras(self):
         # with query and extra fields
         search_res = SimplifiedFileMeta.search(self.admin1, query='inf101', result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0], self.allFields),
@@ -1168,9 +1217,29 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
                                              SimplifiedFileMeta._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
 
+    def test_read_allextras(self):
         # do a read with all extras
         read_res = SimplifiedFileMeta.read(self.admin1, self.inf101_firstsem_a1_g1.deadlines.all()[0].id,
                                            result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0],
                                              SimplifiedFileMeta._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
+
+    def test_delete_asnodeadmin(self):
+        self.add_to_path('uni;inf101:admin(testadmin)')
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.delete(self.testadmin, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
+
+    def test_delete_assuperadmin(self):
+        delid = self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id
+        SimplifiedFileMeta.delete(self.superadminuser, delid)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.delete(self.superadminuser, delid)
+
+    def test_delete_noperm(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.delete(self.firstStud, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.delete(self.exam1, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)

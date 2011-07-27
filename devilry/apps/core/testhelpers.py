@@ -5,23 +5,16 @@ import os
 from django.contrib.auth.models import User
 from django.conf import settings
 
-import gradeplugin
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
-        Delivery, FileMeta, Candidate
+        FileMeta, Candidate
 from deliverystore import FileNotFoundError
 from testhelper import TestHelper
 
 
-def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
+def create_from_path(path):
     """ Create a Node, Subject, Period, Assignment or AssignmentGroup from
     ``path``.
 
-    :param grade_plugin_key: Key of the grade plugin to use on assignments.
-        This defaults to the default grade plugin.
-    :param gradeplugin_maxpoints: The ``points`` parameter sent to
-        :meth:`gradeplugin.GradeModel.init_example` if creating a
-        assignment.
-    
     Examples::
 
         assignmentgroup = create_from_path(
@@ -74,8 +67,6 @@ def create_from_path(path, grade_plugin_key=None, gradeplugin_maxpoints=0):
         assignmentname = pathsplit[2]
         assignment = Assignment(parentnode=period, short_name=assignmentname,
                 long_name=assignmentname.capitalize(), publishing_time=datetime.now())
-        gp = grade_plugin_key or gradeplugin.registry.getdefaultkey()
-        assignment.grade_plugin = gp
         
         assignment.clean()
         try:
@@ -133,7 +124,8 @@ class TestDeliveryStoreMixin(TestHelper):
                  subjects=["inf1100"],
                  periods=["period"],
                  assignments=["assignment1"],
-                 assignmentgroups=["g1:candidate(student1)"])
+                 assignmentgroups=["g1:candidate(student1)"],
+                 deadlines=['d1:ends(10)'])
         # file and verdict
         self.goodFile = {"good.py": "print awesome"}
         d = self.add_delivery("inf1100.period.assignment1.g1", self.goodFile)
