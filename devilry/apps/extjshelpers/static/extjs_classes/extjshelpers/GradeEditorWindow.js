@@ -35,11 +35,21 @@ Ext.define('devilry.extjshelpers.GradeEditorWindow', {
         staticfeedback.save(saveconfig, saveconfig);
     },
 
-    saveDraft: function(draft, saveconfig) {
-        this.save(false, draft, saveconfig);
+    saveDraft: function(draft, onFailure) {
+        this.save(false, draft, {
+            failure: onFailure
+        });
     },
 
-    saveDraftAndPublish: function(draft, saveconfig) {
-        this.save(true, draft, saveconfig);
+    saveDraftAndPublish: function(draft, onFailure) {
+        var me = this;
+        this.save(true, draft, {
+            success: function(response) {
+                console.log("Success");
+                console.log(response.data);
+                me.exit();
+            },
+            failure: onFailure
+        });
     }
 });

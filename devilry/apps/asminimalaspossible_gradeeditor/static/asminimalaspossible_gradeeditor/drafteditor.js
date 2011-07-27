@@ -8,7 +8,7 @@
     }],
 
     buttons: [{
-        text: 'Cancel',
+        text: 'Close',
         handler: function() {
             var gradeeditor = this.up('gradeeditor');
             gradeeditor.exit();
@@ -21,17 +21,7 @@
                 var draft = Ext.JSON.encode(approved);
 
                 var gradeeditor = this.up('gradeeditor');
-                gradeeditor.saveDraftAndPublish(draft, {
-                    success: function(response) {
-                        console.log("Success");
-                        console.log(response.data);
-                        gradeeditor.exit();
-                    },
-                    failure: function(response) {
-                        console.log("Error!");
-                        console.log(response);
-                    }
-                });
+                gradeeditor.saveDraftAndPublish(draft);
             }
         }
     }]
