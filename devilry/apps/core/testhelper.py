@@ -437,6 +437,7 @@ class TestHelper(object):
                 group.save()
             except ValidationError:
                 raise ValueError("Assignmentgroup not created!")
+        group.deadlines.create(deadline=datetime.now())
 
         # add the extras (only admins allowed in subject)
         for candidate in extras['candidate']:
