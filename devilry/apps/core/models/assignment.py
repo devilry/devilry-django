@@ -246,16 +246,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_examiner(cls, user_obj):
         return Q(assignmentgroups__examiners=user_obj)
 
-    def assignment_groups_where_is_examiner(self, user_obj):
-        """ Get all assignment groups within this assignment where the given
-        ``user_obj`` is examiner.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        return self.assignmentgroups.filter(
-            Q(examiners=user_obj))
-
     def clean(self, *args, **kwargs):
         """Validate the assignment.
 
