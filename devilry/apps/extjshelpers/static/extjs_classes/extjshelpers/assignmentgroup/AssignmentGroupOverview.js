@@ -171,8 +171,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         Ext.apply(this, {
-    //width: 1000,
-    //height: 800,
+            //width: 1000,
+            //height: 800,
             tbar: [{
                 xtype: 'button',
                 menu: [], // To get an arrow
