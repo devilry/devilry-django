@@ -26,6 +26,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         '<div>'
     ),
 
+    renderTo: 'content-main',
+
+    /**
+    * ID of the div to render title to.
+    */
+    renderTitleTo: 'content-heading',
+
     config: {
 
         /**
@@ -38,24 +45,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          */
         canExamine: false,
 
-
         /**
          * @cfg
-         * 
+         * AssignmentGroup ID.
          */
         assignmentgroupid: undefined,
-
-        /**
-         * @cfg
-         * 
-         */
-        assignmentgroupmodel: undefined,
-
-        /**
-         * @cfg
-         * ID of the div to render title to.
-         */
-        renderTitleTo: undefined,
 
         /**
          * @cfg
@@ -82,16 +76,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        console.log(this.assignmentgroup_recordcontainer);
 
         this.title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
             renderTo: this.renderTitleTo,
             singlerecordontainer: this.assignmentgroup_recordcontainer
         });
 
+        this.role = this.isAdministrator? 'administrator': 'examiner';
+        this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
         this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
         this.filemetastore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedFileMetaStore'));
         this.staticfeedbackstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedStaticFeedbackStore'));
+        this.gradeeditor_config_model = Ext.ModelManager.getModel(Ext.String.format(
+            'devilry.apps.gradeeditors.simplified.{0}.SimplifiedConfig',
+            this.role
+        ));
     },
 
     loadAssignmentgroupRecord: function() {
@@ -123,8 +122,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     getSimplifiedClassName: function(name) {
         var classname = Ext.String.format(
             'devilry.apps.{0}.simplified.{1}',
-            this.isAdministrator? 'administrator': 'examiner',
-            name
+            this.role, name
         );
         return classname;
     },

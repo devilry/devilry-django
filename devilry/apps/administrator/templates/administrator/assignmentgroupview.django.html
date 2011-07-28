@@ -6,7 +6,7 @@
 {{ block.super }}
 
 <script>
-    var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
 
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
     {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
@@ -21,7 +21,7 @@
     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
 
     {# These are used by the grade editor #}
-    var gradeeditor_config_model = {{ RestfulSimplifiedConfig|extjs_model }};
+    {{ RestfulSimplifiedConfig|extjs_model }};
     {{ RestfulSimplifiedFeedbackDraft|extjs_model }};
     {{ RestfulSimplifiedFeedbackDraft|extjs_store }};
 
@@ -34,8 +34,6 @@
             renderTo: 'content-main',
             renderTitleTo: 'content-heading',
             assignmentgroupid: {{ objectid }},
-            assignmentgroupmodel: assignmentgroupmodel,
-            gradeeditor_config_model: gradeeditor_config_model,
             isAdministrator: true,
             canExamine: true
         });
