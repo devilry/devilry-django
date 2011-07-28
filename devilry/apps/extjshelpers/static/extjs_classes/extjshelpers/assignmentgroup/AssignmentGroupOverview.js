@@ -106,7 +106,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
-        this.title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
+        Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
             renderTo: this.renderTitleTo,
             singlerecordontainer: this.assignmentgroup_recordcontainer
         });
