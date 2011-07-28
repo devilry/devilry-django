@@ -209,7 +209,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     onOtherDeliveries: function(button) {
         if(!this.deliveriesWindow) {
             this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries grouped by deadline (double-click to open)',
+                title: 'Deliveries grouped by deadline',
                 height: 500,
                 width: 400,
                 modal: true,

@@ -44,14 +44,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
         });
 
+        this.store = this.createDeliveryStore();
         Ext.apply(this, {
             features: [groupingFeature],
-            store: this.createDeliveryStore(),
             columns: [{
                 header: 'Data',
                 dataIndex: 'id',
                 flex: 1,
                 renderer: function(value, metaData, deliveryrecord) {
+                    //console.log(deliveryrecord.data);
                     return this.rowTpl.apply(deliveryrecord.data);
                 }
             }],
@@ -59,6 +60,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
                 scope: this,
                 itemmouseup: this.onSelectDelivery
             },
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'top',
+                displayInfo: false
+            }]
         });
 
         this.callParent(arguments);
@@ -131,12 +138,4 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         }]);
         this.store.load();
     }
-
-    //selectDelivery: function(deliveryid) {
-        //this.getSelectionModel().deselectAll();
-        //var deliveryIndex = this.store.findExact('id', deliveryid);
-        //if(deliveryIndex != -1) {
-            //this.getSelectionModel().select(deliveryIndex);
-        //}
-    //}
 });
