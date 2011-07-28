@@ -84,9 +84,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
 
     onSetStaticFeedbackRecord: function() {
+        var isactive = this.staticfeedbackstore.currentPage == 1;
         this.setBody({
             xtype: 'staticfeedbackview',
-            singlerecordontainer: this.staticfeedback_recordcontainer
+            singlerecordontainer: this.staticfeedback_recordcontainer,
+            extradata: {
+                isactive: isactive
+            }
         });
     },
 

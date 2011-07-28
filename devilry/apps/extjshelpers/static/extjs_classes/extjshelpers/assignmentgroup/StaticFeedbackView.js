@@ -10,7 +10,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '       <td>{grade}</td>',
         '   </tr>',
         '       <th>Points</th>',
-        '       <td>{points}</td>',
+        '       <td><strong>TODO</strong> {points}</td>',
         '   </tr>',
         '       <th>Is passing grade?</th>',
         '       <td>{is_passing_grade}</td>',

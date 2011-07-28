@@ -9,6 +9,7 @@ Ext.define('devilry.extjshelpers.SingleRecordView', {
     config: {
         /**
         * @cfg
+        * A {@link devilry.extjshelpers.SingleRecordContainer} which contains data for the ``tpl``.
         */
         singlerecordontainer: undefined,
 
@@ -16,7 +17,16 @@ Ext.define('devilry.extjshelpers.SingleRecordView', {
          * @cfg
          * An ``Ext.XTemplate`` which takes the record in ``singlerecordontainer.record.data`` as input.
          */
-        tpl: undefined
+        tpl: undefined,
+
+        /**
+         * @cfg
+         * Extra data for the ``tpl``. Applied before the data in
+         * ``singlerecordontainer``, so any shared attributed with
+         * ``singlerecordontainer.data`` will use the attribute in
+         * ``singlerecordontainer.data``.
+         */
+        extradata: undefined
     },
 
     constructor: function(config) {
@@ -43,6 +53,9 @@ Ext.define('devilry.extjshelpers.SingleRecordView', {
      * @private
      */
     updateBody: function() {
-        this.update(this.tpl.apply(this.singlerecordontainer.record.data));
+        var data = {};
+        Ext.apply(data, this.extradata);
+        Ext.apply(data, this.singlerecordontainer.record.data);
+        this.update(this.tpl.apply(data));
     }
 });
