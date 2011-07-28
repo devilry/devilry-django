@@ -1,17 +1,15 @@
 #!/usr/bin/env python
+if __name__ == '__main__':
+    import sys
+    import logging
+    from utils import execute, logging_startup, showhelp
 
-import sys
-import logging
-from utils import execute, logging_startup, showhelp
+    try:
+        command = sys.argv[1]
+        args = sys.argv[2:]
+    except IndexError:
+        showhelp()
+        raise SystemExit()
 
-try:
-    command = sys.argv[1]
-    args = sys.argv[2:]
-except IndexError:
-    showhelp()
-    raise SystemExit()
-
-logging_startup(args)
-
-logging.info('Hello!')
-execute(command, args)
+    args = logging_startup(args)
+    execute(command, args)
