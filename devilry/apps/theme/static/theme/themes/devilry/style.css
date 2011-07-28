@@ -403,6 +403,11 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
+.widget-assignmentgroupoverview .infotable {
+  margin: 30px auto 30px auto !important; }
+  .widget-assignmentgroupoverview .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
+    width: 100%; }
+
 div.warning, section.warning {
   background-color: #cc4400;
   color: #ffeee5;

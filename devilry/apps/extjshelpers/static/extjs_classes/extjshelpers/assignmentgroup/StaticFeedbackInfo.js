@@ -48,6 +48,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             xtype: 'panel',
             width: 350,
             hidden: true,
+            cls: 'infotable',
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',

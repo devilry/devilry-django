@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackDetailsTable', {
     cls: 'widget-staticfeedbackdetailstable',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<table class="verticalinfotable" style="width: 100%">',
+        '<table class="verticalinfotable">',
         '   <tr>',
         '       <th>Grade</th>',
         '       <td>{grade}</td>',

@@ -4,6 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
     cls: 'widget-staticfeedbackview',
 
     tpl: Ext.create('Ext.XTemplate',
+        '<section class="feedback-text">',
         '<tpl if="!isactive">',
         '   <div class="warning">',
         '       <strong>This is not the active feedback.</strong>',
@@ -15,6 +16,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '       read this feedback',
         '   </div>',
         '</tpl>',
+        '</section>',
         '<div class="rendered_view">{rendered_view}<div>'
     )
 });

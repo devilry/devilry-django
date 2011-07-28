@@ -27,6 +27,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.assignmentgroupoverview',
+    cls: 'widget-assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',

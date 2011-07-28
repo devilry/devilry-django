@@ -420,6 +420,22 @@ table.verticalinfotable {
     }
 }
 
+
+section.feedback-text {
+}
+
+.widget-assignmentgroupoverview {
+    .infotable {
+        margin: 30px auto 30px auto !important;
+        .widget-staticfeedbackdetailstable {
+            table.verticalinfotable {
+                width: 100%;
+            }
+        }
+    }
+}
+
+
 div.warning, section.warning {
     background-color: $warningcolor_bg;
     color: $warningcolor_fg;
