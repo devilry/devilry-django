@@ -120,7 +120,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             items: {
                 xtype: 'container',
                 loader: {
-                    url: '/static/asminimalaspossible_gradeeditor/drafteditor.js',
+                    url: this.registryitem_recordcontainer.record.data.draft_editor_url,
                     renderer: 'component',
                     autoLoad: true,
                     loadMask: true
@@ -134,6 +134,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         }).show();
     },
 
+    /**
+     * Overrides parent method to enable examiners to click to create feedback.
+     */
     bodyWithNoFeedback: function() {
         var me = this;
         this.setBody({

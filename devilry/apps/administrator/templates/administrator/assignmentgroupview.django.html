@@ -57,7 +57,6 @@
                 // Load grade editor
                 gradeeditor_config_model.load(record.data.parentnode, {
                     success: function(record) {
-                        console.log('Loaded grade editor data');
                         gradeeditor_config_recordcontainer.setRecord(record);
                     },
                     failure: function() {
