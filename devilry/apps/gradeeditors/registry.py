@@ -70,6 +70,14 @@ class RegistryItem(object):
         """
         raise NotImplementedError()
 
+    @classmethod
+    def asinfodict(cls):
+        return dict(gradeeditorid = cls.gradeeditorid,
+                    title = cls.title,
+                    description = cls.description,
+                    config_editor_url = cls.config_editor_url,
+                    draft_editor_url = cls.draft_editor_url)
+
 
 class Registry(object):
     """
@@ -100,6 +108,10 @@ class Registry(object):
         """ Iterate over the registry yielding (key, title). """
         for key, item in self._registry.iteritems():
             yield key, item.title
+
+    def iterinfordicts(self):
+        for item in self._registry.itervalues():
+            yield item.asinfodict()
 
 
 gradeeditor_registry = Registry()

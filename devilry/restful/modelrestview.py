@@ -1,8 +1,10 @@
-from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse
 
 from ..simplified import PermissionDenied, SimplifiedException
 from restview import RestfulView
-from serializers import serializers, SerializableResult
+from serializers import (serializers, SerializableResult,
+                         ErrorMsgSerializableResult,
+                         ForbiddenSerializableResult)
 from readform import ReadForm
 
 
@@ -24,15 +26,6 @@ def _extjswrap(data, use_extjshacks, success=True, total=None):
         else:
             return dict(items=data, total=total)
 
-class ErrorMsgSerializableResult(SerializableResult):
-    def __init__(self, errormessage, httpresponsecls):
-        super(ErrorMsgSerializableResult, self).__init__(dict(errormessages=[errormessage]),
-                                                         httpresponsecls=httpresponsecls)
-
-class ForbiddenSerializableResult(ErrorMsgSerializableResult):
-    def __init__(self):
-        super(ForbiddenSerializableResult, self).__init__('Forbidden',
-                                                          HttpResponseForbidden)
 
 class FormErrorSerializableResult(SerializableResult):
     def __init__(self, form, use_extjshacks):

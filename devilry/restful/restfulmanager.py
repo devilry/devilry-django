@@ -14,7 +14,7 @@ class RestfulManager(object):
         urlpatterns += myrestapi
 
     An alternative would be to not decorate your views using this class,
-    and rather use :class:`devilry.`
+    and rather use :meth:`devilry.restful.RestfulView.create_rest_url`.
     """
     def __init__(self):
         self._restapis = []

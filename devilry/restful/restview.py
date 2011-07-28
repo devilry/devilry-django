@@ -14,7 +14,10 @@ def extjshacks(f):
         return f(self, request, *args, **kwargs)
     return wrapper
 
-def forbidden_if_no_authenticated(f):
+def forbidden_if_not_authenticated(f):
+    """ Very similar to :func:`django.contrib.auth.decorators.login_required`,
+    however it returns class:`django.http.HttpResponseForbidden` instead of
+    redirecting to login. """
     @wraps(f)
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -42,10 +45,10 @@ class RestfulView(View):
         The name of the url is the ``cls._meta.urlname``, documented in
         :func:`restful_api`.
 
-        The view is wrapped by :func:`django.contrib.auth.decorators.login_required`.
+        The view is wrapped by :func:`forbidden_if_not_authenticated`.
         """
         return url(r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$'.format(urlprefix=cls._meta.urlprefix),
-            forbidden_if_no_authenticated(cls.as_view()),
+            forbidden_if_not_authenticated(cls.as_view()),
             name=cls._meta.urlname)
 
     @classmethod

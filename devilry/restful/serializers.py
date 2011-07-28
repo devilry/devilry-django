@@ -1,16 +1,25 @@
 from functools import wraps
 import json
 from django.db.models.query import ValuesQuerySet
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseForbidden
 
 
-# TODO: Rename to SerializableResult
 class SerializableResult(object):
     """ Stores Python objects for serialization with :class:`devilry.simplified.serializers.SerializerRegistry`. """
     def __init__(self, result, httpresponsecls=HttpResponse, encoding='utf-8'):
         self.result = result
         self.httpresponsecls = httpresponsecls
         self.encoding = encoding
+
+class ErrorMsgSerializableResult(SerializableResult):
+    def __init__(self, errormessage, httpresponsecls):
+        super(ErrorMsgSerializableResult, self).__init__(dict(errormessages=[errormessage]),
+                                                         httpresponsecls=httpresponsecls)
+
+class ForbiddenSerializableResult(ErrorMsgSerializableResult):
+    def __init__(self):
+        super(ForbiddenSerializableResult, self).__init__('Forbidden',
+                                                          HttpResponseForbidden)
 
 
 class SerializerRegistryItem(object):

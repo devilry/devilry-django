@@ -1,4 +1,5 @@
 import json
+from django.conf import settings
 
 from devilry.apps.gradeeditors import gradeeditor_registry, RegistryItem, DraftValidationError
 
@@ -13,7 +14,7 @@ class AsMinimalAsPossible(RegistryItem):
     title = 'Minimal'
     description = 'A minimal grade editor for testing. Allows examiners to select if delivery is approved or not approved.'
     config_editor_url = None
-    draft_editor_url = ''
+    draft_editor_url = settings.DEVILRY_STATIC_URL + '/asminimalaspossible_gradeeditor/drafteditor.js'
 
     @classmethod
     def validate_config(cls, configstring):
