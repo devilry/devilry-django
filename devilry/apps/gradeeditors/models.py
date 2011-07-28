@@ -11,7 +11,8 @@ class Config(models.Model):
     Stored by admins.
     """
     gradeeditorid = models.SlugField()
-    assignment = models.OneToOneField(Assignment, related_name='gradeeditor_config')
+    assignment = models.OneToOneField(Assignment, related_name='gradeeditor_config',
+                                      primary_key=True)
     config = models.TextField()
 
     def _get_gradeeditor(self):

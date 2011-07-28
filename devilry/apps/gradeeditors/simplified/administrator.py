@@ -9,7 +9,7 @@ import examiner
 class SimplifiedConfig(SimplifiedModelApi):
     class Meta:
         model = Config
-        resultfields = FieldSpec('id', 'gradeeditorid', 'assignment', 'config')
+        resultfields = FieldSpec('gradeeditorid', 'assignment', 'config')
         searchfields = FieldSpec()
         methods = ('create', 'read', 'update')
 

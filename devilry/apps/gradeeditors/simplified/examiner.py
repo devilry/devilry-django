@@ -11,14 +11,14 @@ from ..models import Config, FeedbackDraft
 class SimplifiedConfig(SimplifiedModelApi):
     class Meta:
         model = Config
-        resultfields = FieldSpec('id', 'gradeeditorid', 'assignment', 'config')
+        resultfields = FieldSpec('gradeeditorid', 'assignment', 'config')
         searchfields = FieldSpec()
         methods = ('read',)
 
     @classmethod
     def read_authorize(cls, user, obj):
         try:
-            Assignment.objects.get(Assignment.q_is_examiner(user) & Q(id=obj.id))
+            Assignment.objects.get(Assignment.q_is_examiner(user) & Q(id=obj.assignment_id))
         except Assignment.DoesNotExist:
             raise PermissionDenied()
 

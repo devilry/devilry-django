@@ -25,17 +25,17 @@ class SimplifiedConfigExaminerReadTest(TestCase, testhelper.TestHelper):
         config = Config.objects.create(gradeeditorid='fake',
                                        assignment=self.inf101_spring01_assignment1,
                                        config='tst')
-        result = examiner.SimplifiedConfig.read(self.goodexaminer, config.id)
+        result = examiner.SimplifiedConfig.read(self.goodexaminer, config.assignment_id)
         self.assertEquals(result, {'gradeeditorid': u'fake',
                                    'assignment': 1,
-                                   'config': u'tst', 'id': 1})
+                                   'config': u'tst'})
 
     def test_read_as_badexaminer(self):
         config = Config.objects.create(gradeeditorid='fake',
                                        assignment=self.inf101_spring01_assignment1,
                                        config='tst')
         with self.assertRaises(PermissionDenied):
-            examiner.SimplifiedConfig.read(self.badexaminer, config.id)
+            examiner.SimplifiedConfig.read(self.badexaminer, config.assignment_id)
 
 
 #

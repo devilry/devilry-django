@@ -27,7 +27,7 @@ class SimplifiedConfigAdministratorCreateTest(SimplifiedConfigAdministratorTestB
                                                    gradeeditorid='fake',
                                                    assignment=self.inf101_spring01_assignment1,
                                                    config='tst')
-        Config.objects.get(id=id) # Will fail if it does not exist
+        Config.objects.get(assignment=id) # Will fail if it does not exist
 
     def test_create_as_goodadmin(self):
         self._create_success_test(self.goodadmin)
@@ -48,10 +48,10 @@ class SimplifiedConfigAdministratorReadTest(SimplifiedConfigAdministratorTestBas
         config = Config.objects.create(gradeeditorid='fake',
                                        assignment=self.inf101_spring01_assignment1,
                                        config='tst')
-        result = administrator.SimplifiedConfig.read(user, config.id)
+        result = administrator.SimplifiedConfig.read(user, config.assignment_id)
         self.assertEquals(result, {'gradeeditorid': u'fake',
                                    'assignment': 1,
-                                   'config': u'tst', 'id': 1})
+                                   'config': u'tst'})
 
     def test_read_as_goodadmin(self):
         self._read_success_test(self.goodadmin)
@@ -64,7 +64,7 @@ class SimplifiedConfigAdministratorReadTest(SimplifiedConfigAdministratorTestBas
                                        assignment=self.inf101_spring01_assignment1,
                                        config='tst')
         with self.assertRaises(PermissionDenied):
-            id = administrator.SimplifiedConfig.read(self.badadmin, config.id)
+            id = administrator.SimplifiedConfig.read(self.badadmin, config.assignment_id)
 
 
 class SimplifiedConfigAdministratorUpdateTest(SimplifiedConfigAdministratorTestBase):
@@ -75,11 +75,11 @@ class SimplifiedConfigAdministratorUpdateTest(SimplifiedConfigAdministratorTestB
                                             config='tst')
 
     def _update_success_test(self, user):
-        administrator.SimplifiedConfig.update(user, self.config.id,
+        administrator.SimplifiedConfig.update(user, self.config.assignment_id,
                                               gradeeditorid='updated',
                                               assignment=self.inf101_spring01_assignment1,
                                               config='UPDATED')
-        updated = Config.objects.get(id=self.config.id)
+        updated = Config.objects.get(assignment=self.config.assignment_id)
         self.assertEquals(updated.gradeeditorid, 'updated')
         self.assertEquals(updated.config, 'UPDATED')
 
@@ -92,7 +92,7 @@ class SimplifiedConfigAdministratorUpdateTest(SimplifiedConfigAdministratorTestB
 
     def test_update_as_badadmin(self):
         with self.assertRaises(PermissionDenied):
-            administrator.SimplifiedConfig.update(self.badadmin, self.config.id,
+            administrator.SimplifiedConfig.update(self.badadmin, self.config.assignment_id,
                                                   gradeeditorid='updated',
                                                   assignment=self.inf101_spring01_assignment1,
                                                   config='UPDATED')
