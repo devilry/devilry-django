@@ -183,12 +183,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     scope: this,
                     click: this.onOtherDeliveries
                 }
-            }],
-            items: [{
+            }, '->', {
                 xtype: 'deliveryinfo',
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 filemetastore: this.filemetastore
-            }, {
+            }],
+            items: [{
                 items: [{
                     xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
                     staticfeedbackstore: this.staticfeedbackstore,
