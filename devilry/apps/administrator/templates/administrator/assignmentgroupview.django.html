@@ -30,45 +30,15 @@
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle');
     Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
-        var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        var gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-
-        var title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
-            renderTo: 'content-heading',
-            singlerecordontainer: assignmentgroup_recordcontainer
-        });
-
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             renderTo: 'content-main',
-            assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
-            delivery_recordcontainer: delivery_recordcontainer,
-            gradeeditor_config_recordcontainer: gradeeditor_config_recordcontainer,
-            deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
-            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
-            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
+            renderTitleTo: 'content-heading',
+            assignmentgroupid: {{ objectid }},
+            assignmentgroupmodel: assignmentgroupmodel,
+            gradeeditor_config_model: gradeeditor_config_model,
+            isAdministrator: true,
             canExamine: true
         });
-
-        assignmentgroupmodel.load({{ objectid }}, {
-            success: function(record) {
-                assignmentgroup_recordcontainer.setRecord(record);
-
-                // Load grade editor
-                gradeeditor_config_model.load(record.data.parentnode, {
-                    success: function(record) {
-                        gradeeditor_config_recordcontainer.setRecord(record);
-                    },
-                    failure: function() {
-                        // TODO: Handle errors
-                    }
-                });
-            },
-            failure: function() {
-                // TODO: Handle errors
-            }
-        });
-
     });
 
 </script>

@@ -1,5 +1,8 @@
 /**
  *
+            deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
+            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
+            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
@@ -24,27 +27,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     ),
 
     config: {
-        /**
-         * @cfg 
-         * Delivery  ``Ext.data.Model``. (Required).
-         */
-        deliverymodel: undefined,
-
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
-         * {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo}.
-         */
-        filemetastore: undefined,
-
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
-         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
-         */
-        staticfeedbackstore: undefined,
 
         /**
          * @cfg
@@ -56,27 +38,98 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          */
         canExamine: false,
 
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
-         */
-        delivery_recordcontainer: undefined,
 
         /**
          * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         * 
          */
-        assignmentgroup_recordcontainer: undefined,
+        assignmentgroupid: undefined,
 
         /**
          * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for GradeEditor Config.
+         * 
          */
-        gradeeditor_config_recordcontainer: undefined
+        assignmentgroupmodel: undefined,
+
+        /**
+         * @cfg
+         * ID of the div to render title to.
+         */
+        renderTitleTo: undefined,
+
+        /**
+         * @cfg
+         * Use the administrator RESTful interface to store drafts? If this is
+         * ``false``, we use the examiner RESTful interface.
+         */
+        isAdministrator: false // TODO: Recurse this down to FeedbackEditor
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
     },
 
 
     initComponent: function() {
+        this.createAttributes();
+        this.createLayout();
+        this.callParent(arguments);
+        this.loadAssignmentgroupRecord();
+    },
+
+    createAttributes: function() {
+        this.assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        console.log(this.assignmentgroup_recordcontainer);
+
+        this.title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
+            renderTo: this.renderTitleTo,
+            singlerecordontainer: this.assignmentgroup_recordcontainer
+        });
+
+        this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
+        this.filemetastore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedFileMetaStore'));
+        this.staticfeedbackstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedStaticFeedbackStore'));
+    },
+
+    loadAssignmentgroupRecord: function() {
+        this.assignmentgroupmodel.load(this.assignmentgroupid, {
+            scope: this,
+            success: function(record) {
+                this.assignmentgroup_recordcontainer.setRecord(record);
+
+                // Load grade editor
+                this.gradeeditor_config_model.load(record.data.parentnode, {
+                    scope: this,
+                    success: function(record) {
+                        this.gradeeditor_config_recordcontainer.setRecord(record);
+                    },
+                    failure: function() {
+                        // TODO: Handle errors
+                    }
+                });
+            },
+            failure: function() {
+                // TODO: Handle errors
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    getSimplifiedClassName: function(name) {
+        var classname = Ext.String.format(
+            'devilry.apps.{0}.simplified.{1}',
+            this.isAdministrator? 'administrator': 'examiner',
+            name
+        );
+        return classname;
+    },
+
+    createLayout: function() {
         Ext.apply(this, {
             items: [{
                 region: 'west',
@@ -128,6 +181,5 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }]
             }],
         });
-        this.callParent(arguments);
     }
 });
