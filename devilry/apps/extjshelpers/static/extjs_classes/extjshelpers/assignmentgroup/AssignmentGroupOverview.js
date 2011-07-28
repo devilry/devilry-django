@@ -26,9 +26,6 @@
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
-    width: 1000,
-    height: 800,
-    layout: 'border',
     alias: 'widget.assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
@@ -174,6 +171,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         Ext.apply(this, {
+    //width: 1000,
+    //height: 800,
             tbar: [{
                 xtype: 'button',
                 menu: [], // To get an arrow
@@ -186,55 +185,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }
             }],
             items: [{
-                //region: 'west',
-                //layout: 'fit',
-                //width: 220,
-                //xtype: 'panel',
-                //collapsible: true,   // make collapsible
-                ////titleCollapse: true, // click anywhere on title to collapse.
-                //split: true,
-                //items: [{
-                    //xtype: 'panel',
-                    //layout: 'border',
-                    //items: [{
-                        //region: 'north',
-                        //items: [{
-                            //// TODO: We do not need this. Should just have is_open as part of the workflow, and ID is not something users should need
-                            //xtype: 'assignmentgroupdetailspanel',
-                            //bodyPadding: 10,
-                            //singlerecordontainer: this.assignmentgroup_recordcontainer
-                        //}]
-                    //}, {
-                        //region: 'center',
-                        //items: [{
-                            //xtype: 'deadlinelisting',
-                            //title: 'Deliveries',
-                            //assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                            //delivery_recordcontainer: this.delivery_recordcontainer,
-                            //deliverymodel: this.deliverymodel,
-                            //enableDeadlineCreation: this.canExamine
-                        //}]
-                    //}]
-                //}]
-            //}, {
-                region: 'center',
-                layout: 'border',
+                xtype: 'deliveryinfo',
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                filemetastore: this.filemetastore
+            }, {
                 items: [{
-                    region: 'north',
-                    xtype: 'deliveryinfo',
+                    xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                    staticfeedbackstore: this.staticfeedbackstore,
                     delivery_recordcontainer: this.delivery_recordcontainer,
-                    filemetastore: this.filemetastore
-                }, {
-                    region: 'center',
-                    items: [{
-                        xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                        staticfeedbackstore: this.staticfeedbackstore,
-                        delivery_recordcontainer: this.delivery_recordcontainer,
-                        isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-                        gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
-                    }]
+                    isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                    gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
                 }]
-            }],
+            }]
         });
     },
 
