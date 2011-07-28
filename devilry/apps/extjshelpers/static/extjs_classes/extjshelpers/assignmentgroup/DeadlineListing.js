@@ -57,7 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             }],
             listeners: {
                 scope: this,
-                itemdblclick: this.onSelectDelivery
+                itemmouseup: this.onSelectDelivery
             },
         });
 
