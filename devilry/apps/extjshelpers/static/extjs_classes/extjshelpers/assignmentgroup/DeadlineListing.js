@@ -131,4 +131,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         }]);
         this.store.load();
     }
+
+    //selectDelivery: function(deliveryid) {
+        //this.getSelectionModel().deselectAll();
+        //var deliveryIndex = this.store.findExact('id', deliveryid);
+        //if(deliveryIndex != -1) {
+            //this.getSelectionModel().select(deliveryIndex);
+        //}
+    //}
 });

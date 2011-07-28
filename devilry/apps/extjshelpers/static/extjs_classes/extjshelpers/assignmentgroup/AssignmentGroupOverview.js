@@ -94,6 +94,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.createLayout();
         this.callParent(arguments);
         this.loadAssignmentgroupRecord();
+        this.selectDeliveryIfInQueryString();
     },
 
     /**
@@ -231,4 +232,31 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.deliveriesWindow.show();
         this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
     },
+
+    /**
+     * @private
+     */
+    selectDeliveryIfInQueryString: function() {
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(query.deliveryid) {
+            var deliveryid = parseInt(query.deliveryid);
+            this.deliverymodel.load(deliveryid, {
+                scope: this,
+                success: function(record) {
+                    if(this.assignmentgroupid == record.data.deadline__assignment_group) {
+                        this.delivery_recordcontainer.setRecord(record);
+                    } else {
+                        throw Ext.String.format(
+                            'Delivery {0} is not in AssignmentGroup {1}',
+                            deliveryid,
+                            this.assignmentgroupid
+                        );
+                    }
+                },
+                failure: function() {
+                    // TODO: Handle errors
+                }
+            });
+        }
+    }
 });
