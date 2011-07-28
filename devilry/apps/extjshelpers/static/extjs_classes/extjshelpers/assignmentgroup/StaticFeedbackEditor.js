@@ -13,13 +13,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for GradeEditor Config.
          */
-        gradeeditor_config_recordcontainer: undefined,
-
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
-         */
-        delivery_recordcontainer: undefined
+        gradeeditor_config_recordcontainer: undefined
     },
 
     constructor: function(config) {

@@ -123,7 +123,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
                         staticfeedbackstore: this.staticfeedbackstore,
                         delivery_recordcontainer: this.delivery_recordcontainer,
-                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
                         gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
                     }]
                 }]
