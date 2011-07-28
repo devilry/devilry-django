@@ -133,24 +133,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             scope: this,
             success: function(record) {
                 this.assignmentgroup_recordcontainer.setRecord(record);
-
-                // Load grade editor
-                if(this.canExamine) {
-                    this.gradeeditor_config_model.load(record.data.parentnode, {
-                        scope: this,
-                        success: function(record) {
-                            this.gradeeditor_config_recordcontainer.setRecord(record);
-                        },
-                        failure: function() {
-                            // TODO: Handle errors
-                        }
-                    });
-                }
+                this.loadGradeEditorConfigModel();
             },
             failure: function() {
                 // TODO: Handle errors
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    loadGradeEditorConfigModel: function() {
+        if(this.canExamine) {
+            this.gradeeditor_config_model.load(this.assignmentgroup_recordcontainer.record.data.parentnode, {
+                scope: this,
+                success: function(record) {
+                    this.gradeeditor_config_recordcontainer.setRecord(record);
+                },
+                failure: function() {
+                    // TODO: Handle errors
+                }
+            });
+        }
     },
 
     /**
