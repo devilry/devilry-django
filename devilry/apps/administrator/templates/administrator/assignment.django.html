@@ -15,7 +15,7 @@
     Ext.require('devilry.administrator.EditPanel');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
-            renderTo: 'prettyviewpanel',
+            renderTo: 'content-main',
             modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
             objectid: {{ objectid }},
             dashboardUrl: DASHBOARD_URL,

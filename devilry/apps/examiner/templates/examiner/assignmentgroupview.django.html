@@ -39,7 +39,7 @@
         });
 
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            renderTo: 'maincontent',
+            renderTo: 'content-main',
             assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
             delivery_recordcontainer: delivery_recordcontainer,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
@@ -63,6 +63,6 @@
 {% block main %}
 
 <section class="treeheading" id="content-heading"></section>
-<div id="maincontent" class="prettyviewpanel"></div>
+<div id="content-main"></div>
 
 {% endblock %}
