@@ -176,8 +176,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         Ext.apply(this, {
             tbar: [{
                 xtype: 'button',
+                menu: [], // To get an arrow
                 text: 'Other deliveries/deadlines',
                 scale: 'large',
+                enableToggle: true,
                 listeners: {
                     scope: this,
                     click: this.onOtherDeliveries
@@ -255,6 +257,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     deliverymodel: this.deliverymodel,
                     enableDeadlineCreation: this.canExamine
+                },
+                listeners: {
+                    close: function() {
+                        button.toggle(false);
+                    }
                 }
             });
         }
