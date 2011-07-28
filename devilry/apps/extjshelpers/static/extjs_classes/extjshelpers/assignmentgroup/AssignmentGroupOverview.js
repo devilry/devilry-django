@@ -82,7 +82,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          * Use the administrator RESTful interface to store drafts? If this is
          * ``false``, we use the examiner RESTful interface.
          */
-        isAdministrator: false // TODO: Recurse this down to FeedbackEditor
+        isAdministrator: false
     },
 
     constructor: function(config) {
