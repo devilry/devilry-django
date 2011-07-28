@@ -11,7 +11,9 @@
 {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
 {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
 
-{# These are used by the grade editor #}
-{{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
-{{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
-{{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_store }};
+{% if canExamine %}
+    {# These are used by the grade editor #}
+    {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
+    {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
+    {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_store }};
+{% endif %}

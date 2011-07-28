@@ -111,15 +111,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             singlerecordontainer: this.assignmentgroup_recordcontainer
         });
 
-        this.role = this.isAdministrator? 'administrator': 'examiner';
+        this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
         this.deliverymodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDelivery'));
         this.filemetastore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedFileMetaStore'));
         this.staticfeedbackstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedStaticFeedbackStore'));
-        this.gradeeditor_config_model = Ext.ModelManager.getModel(Ext.String.format(
-            'devilry.apps.gradeeditors.simplified.{0}.SimplifiedConfig',
-            this.role
-        ));
+
+        if(this.canExamine) {
+            this.gradeeditor_config_model = Ext.ModelManager.getModel(Ext.String.format(
+                'devilry.apps.gradeeditors.simplified.{0}.SimplifiedConfig',
+                this.role
+            ));
+        }
     },
 
     /**
@@ -132,15 +135,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 this.assignmentgroup_recordcontainer.setRecord(record);
 
                 // Load grade editor
-                this.gradeeditor_config_model.load(record.data.parentnode, {
-                    scope: this,
-                    success: function(record) {
-                        this.gradeeditor_config_recordcontainer.setRecord(record);
-                    },
-                    failure: function() {
-                        // TODO: Handle errors
-                    }
-                });
+                if(this.canExamine) {
+                    this.gradeeditor_config_model.load(record.data.parentnode, {
+                        scope: this,
+                        success: function(record) {
+                            this.gradeeditor_config_recordcontainer.setRecord(record);
+                        },
+                        failure: function() {
+                            // TODO: Handle errors
+                        }
+                    });
+                }
             },
             failure: function() {
                 // TODO: Handle errors

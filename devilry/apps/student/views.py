@@ -9,8 +9,8 @@ from ..core.models import (Delivery, FileMeta,
                            Deadline, AssignmentGroup,
                            Candidate)
 
+from devilry.utils.module import dump_all_into_dict
 import restful
-
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
                      RestfulSimplifiedStaticFeedback, RestfulSimplifiedAssignment)
 
@@ -100,12 +100,11 @@ class FileUploadView(View):
 
 class AssignmentGroupView(View):
     def get(self, request, assignmentgroupid):
-        indata = {'assignmentgroupid': assignmentgroupid }
-        for restclsname in restful.__all__:
-            indata[restclsname] = getattr(restful, restclsname)
+        context = {'objectid': assignmentgroupid,
+                   'restfulapi': dump_all_into_dict(restful)}
         return render(request,
                       'student/assignmentgroupview.django.html',
-                       indata)
+                       context)
 
 
 

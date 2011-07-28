@@ -5,7 +5,7 @@
 {{ block.super }}
 
 <script>
-    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
+    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
