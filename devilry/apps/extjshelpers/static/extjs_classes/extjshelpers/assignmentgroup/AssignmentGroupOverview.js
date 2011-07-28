@@ -172,20 +172,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     createLayout: function() {
+        this.onOtherDeliveriesBtn = Ext.ComponentManager.create({
+            xtype: 'button',
+            menu: [], // To get an arrow
+            text: 'Other deliveries/deadlines',
+            scale: 'large',
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                click: this.onOtherDeliveries
+            }
+        });
         Ext.apply(this, {
             //width: 1000,
             //height: 800,
-            tbar: [{
-                xtype: 'button',
-                menu: [], // To get an arrow
-                text: 'Other deliveries/deadlines',
-                scale: 'large',
-                enableToggle: true,
-                listeners: {
-                    scope: this,
-                    click: this.onOtherDeliveries
-                }
-            }, '->', {
+            tbar: [this.onOtherDeliveriesBtn, '->', {
                 xtype: 'deliveryinfo',
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 filemetastore: this.filemetastore
@@ -214,7 +215,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 modal: true,
                 layout: 'fit',
                 closeAction: 'hide',
-                //animateTarget: button,
                 items: {
                     xtype: 'deadlinelisting',
                     assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
@@ -223,14 +223,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     enableDeadlineCreation: this.canExamine
                 },
                 listeners: {
+                    scope: this,
                     close: function() {
-                        button.toggle(false);
+                        this.onOtherDeliveriesBtn.toggle(false);
                     }
                 }
             });
         }
         this.deliveriesWindow.show();
-        this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+        if(button) {
+            this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+        }
     },
 
     /**
@@ -257,6 +260,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     // TODO: Handle errors
                 }
             });
+        } else {
+            this.onOtherDeliveries();
         }
     }
 });

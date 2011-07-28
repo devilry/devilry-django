@@ -421,9 +421,6 @@ table.verticalinfotable {
 }
 
 
-section.feedback-text {
-}
-
 .widget-assignmentgroupoverview {
     .infotable {
         margin: 30px auto 30px auto !important;
@@ -432,6 +429,10 @@ section.feedback-text {
                 width: 100%;
             }
         }
+    }
+
+    section.rendered_view {
+        margin: 0 20px 20px 20px;
     }
 }
 
@@ -446,6 +447,7 @@ div.warning, section.warning {
 }
 
 .widget-staticfeedbackinfo {
+    padding: 30px;
     .widget-staticfeedbackinfo-feedbackview {
         $padding: 20px;
         padding: $padding;
@@ -470,18 +472,18 @@ div.warning, section.warning {
 
 
 section h1 {
-    font-size: 1.8em;
+    font-size: 2.6em;
     margin: 20px 0 15px 0;
 }
 section h1:first-child {
     margin-top: 0;
 }
 section h2 {
-    font-size: 1.6em;
+    font-size: 2.0em;
     margin: 16px 0 6px 0;
 }
 section h3 {
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin: 16px 0 6px 0;
 }
 
