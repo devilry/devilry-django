@@ -132,18 +132,6 @@ class TestAssignment(TestCase, TestHelper):
         self.assertEquals(2,
                 self.inf1100_looong_assignment1.assignment_groups_where_is_examiner(examiner2).count())
 
-    def test_assignmentgroups_where_is_examiner_or_admin(self):
-        examiner1 = User.objects.get(username='examiner1')
-        ifiadmin = User.objects.get(username='ifiadmin')
-        self.assertEquals(self.inf1100_looong_assignment1_g1.id,
-                self.inf1100_looong_assignment1.assignment_groups_where_can_examine(examiner1)[0].id)
-        self.assertEquals(2,
-                self.inf1100_looong_assignment1.assignment_groups_where_can_examine(examiner1).count())
-        self.assertEquals(self.inf1100_looong_assignment1_g1.id,
-                self.inf1100_looong_assignment1.assignment_groups_where_can_examine(ifiadmin)[0].id)
-        self.assertEquals(4,
-                          self.inf1100_looong_assignment1.assignment_groups_where_can_examine(ifiadmin).count())
-
     def test_clean_publishing_time_before(self):
         assignment1 = self.inf1100_looong_assignment1
         assignment1.parentnode.start_time = datetime(2010, 1, 1)

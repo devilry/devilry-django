@@ -255,25 +255,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         return self.assignmentgroups.filter(
             Q(examiners=user_obj))
-    
-    def assignment_groups_where_can_examine(self, user_obj):
-        """ Get all assignment groups within this assignment where the given
-        ``user_obj`` is examiner or admin. If the user is superadmin, all
-        assignments are returned.
-        
-        :param user_obj: A django.contrib.auth.models.User_ object.
-        :rtype: QuerySet
-        """
-        if user_obj.is_superuser:
-            return self.assignmentgroups.all()
-        else:
-            return self.assignmentgroups.filter(
-                Q(examiners=user_obj) |
-                Q(parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__admins=user_obj) |
-                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
-            
+
     def clean(self, *args, **kwargs):
         """Validate the assignment.
 
