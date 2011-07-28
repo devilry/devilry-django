@@ -1,8 +1,28 @@
 /**
  *
-            deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
-            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
-            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
+ * Requires the following definitions in the django template:
+ *
+ *     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+ *    
+ *     {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"deadline,assignment_group" }};
+ *     {{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
+ *    
+ *     {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
+ *     {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
+ *    
+ *     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
+ *     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
+ *    
+ *     {# These are used by the grade editor and only required is canExamine is true #}
+ *     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
+ *     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
+ *     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_store }};
+ *
+ * The ones from ``restfulapi`` are for core classes, while the ones from
+ * ``gradeeditors`` is from ``devilry.apps.gradeeditors``. You can dump this
+ * code into the django template using:
+ *
+ *     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
@@ -15,7 +35,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
         'devilry.extjshelpers.assignmentgroup.DeadlineListing',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
+        'devilry.extjshelpers.SingleRecordContainer'
     ],
 
     headingTpl: Ext.create('Ext.XTemplate',
@@ -26,14 +48,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         '<div>'
     ),
 
-    renderTo: 'content-main',
-
-    /**
-    * ID of the div to render title to.
-    */
-    renderTitleTo: 'content-heading',
-
     config: {
+        /**
+         * @cfg
+        * ID of the div to render title to. Defaults to 'content-heading'.
+        */
+        renderTitleTo: 'content-heading',
+
+        /**
+         * @cfg
+        * ID of the div to render the body to. Defaults to 'content-main'.
+        */
+        renderTo: 'content-main',
 
         /**
          * @cfg
@@ -72,6 +98,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.loadAssignmentgroupRecord();
     },
 
+    /**
+     * @private
+     */
     createAttributes: function() {
         this.assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
@@ -93,6 +122,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         ));
     },
 
+    /**
+     * @private
+     */
     loadAssignmentgroupRecord: function() {
         this.assignmentgroupmodel.load(this.assignmentgroupid, {
             scope: this,
@@ -127,6 +159,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         return classname;
     },
 
+    /**
+     * @private
+     */
     createLayout: function() {
         Ext.apply(this, {
             items: [{

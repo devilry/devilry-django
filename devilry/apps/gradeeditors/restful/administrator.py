@@ -6,6 +6,7 @@ from ..simplified.administrator import (SimplifiedConfig,
                                         SimplifiedFeedbackDraft)
 
 
+__all__ = ('RestfulSimplifiedConfig', 'RestfulSimplifiedFeedbackDraft')
 administrator_restful = RestfulManager()
 
 @administrator_restful.register

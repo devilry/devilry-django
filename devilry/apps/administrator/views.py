@@ -3,8 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, View
 from django.shortcuts import render
 
-from devilry.apps.gradeeditors.restful.administrator import (RestfulSimplifiedConfig,
-                                                             RestfulSimplifiedFeedbackDraft)
+from devilry.apps.gradeeditors.restful import administrator as gradeeditors_restful
 import restful
 
 def add_restfulapi_to_context(context):
@@ -49,5 +48,7 @@ class RestfulSimplifiedView(View):
 
 class RestfulSimplifiedAssignmentGroupView(RestfulSimplifiedView):
     def edit_context(self, context):
-        context['RestfulSimplifiedConfig'] = RestfulSimplifiedConfig
-        context['RestfulSimplifiedFeedbackDraft'] = RestfulSimplifiedFeedbackDraft
+        restfuldct = {}
+        for restclsname in gradeeditors_restful.__all__:
+            restfuldct[restclsname] = getattr(gradeeditors_restful, restclsname)
+        context['gradeeditors'] = restfuldct

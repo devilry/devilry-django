@@ -6,6 +6,7 @@ from ..simplified.examiner import (SimplifiedConfig,
                                    SimplifiedFeedbackDraft)
 
 
+__all__ = ('RestfulSimplifiedConfig', 'RestfulSimplifiedFeedbackDraft')
 examiner_restful = RestfulManager()
 
 @examiner_restful.register

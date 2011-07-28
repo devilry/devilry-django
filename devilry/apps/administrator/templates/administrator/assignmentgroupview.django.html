@@ -1,44 +1,19 @@
 {% extends "administrator/single-base.django.html" %}
-{% load extjs %}
 
 
 {% block headextra %}
 {{ block.super }}
 
 <script>
-    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
-
-    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"deadline,assignment_group" }};
-    {{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
-
-    {# These are used by the grade editor #}
-    {{ RestfulSimplifiedConfig|extjs_model }};
-    {{ RestfulSimplifiedFeedbackDraft|extjs_model }};
-    {{ RestfulSimplifiedFeedbackDraft|extjs_store }};
-
-
+    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
-    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle');
-    Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            renderTo: 'content-main',
-            renderTitleTo: 'content-heading',
             assignmentgroupid: {{ objectid }},
             isAdministrator: true,
             canExamine: true
         });
     });
-
 </script>
 
 {% endblock %}
