@@ -174,38 +174,47 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         Ext.apply(this, {
+            tbar: [{
+                xtype: 'button',
+                text: 'Other deliveries/deadlines',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onOtherDeliveries
+                }
+            }],
             items: [{
-                region: 'west',
-                layout: 'fit',
-                width: 220,
-                xtype: 'panel',
-                collapsible: true,   // make collapsible
-                //titleCollapse: true, // click anywhere on title to collapse.
-                split: true,
-                items: [{
-                    xtype: 'panel',
-                    layout: 'border',
-                    items: [{
-                        region: 'north',
-                        items: [{
-                            // TODO: We do not need this. Should just have is_open as part of the workflow, and ID is not something users should need
-                            xtype: 'assignmentgroupdetailspanel',
-                            bodyPadding: 10,
-                            singlerecordontainer: this.assignmentgroup_recordcontainer
-                        }]
-                    }, {
-                        region: 'center',
-                        items: [{
-                            xtype: 'deadlinelisting',
-                            title: 'Deliveries',
-                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                            delivery_recordcontainer: this.delivery_recordcontainer,
-                            deliverymodel: this.deliverymodel,
-                            enableDeadlineCreation: this.canExamine
-                        }]
-                    }]
-                }]
-            }, {
+                //region: 'west',
+                //layout: 'fit',
+                //width: 220,
+                //xtype: 'panel',
+                //collapsible: true,   // make collapsible
+                ////titleCollapse: true, // click anywhere on title to collapse.
+                //split: true,
+                //items: [{
+                    //xtype: 'panel',
+                    //layout: 'border',
+                    //items: [{
+                        //region: 'north',
+                        //items: [{
+                            //// TODO: We do not need this. Should just have is_open as part of the workflow, and ID is not something users should need
+                            //xtype: 'assignmentgroupdetailspanel',
+                            //bodyPadding: 10,
+                            //singlerecordontainer: this.assignmentgroup_recordcontainer
+                        //}]
+                    //}, {
+                        //region: 'center',
+                        //items: [{
+                            //xtype: 'deadlinelisting',
+                            //title: 'Deliveries',
+                            //assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                            //delivery_recordcontainer: this.delivery_recordcontainer,
+                            //deliverymodel: this.deliverymodel,
+                            //enableDeadlineCreation: this.canExamine
+                        //}]
+                    //}]
+                //}]
+            //}, {
                 region: 'center',
                 layout: 'border',
                 items: [{
@@ -225,5 +234,31 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }]
             }],
         });
-    }
+    },
+
+    /**
+     * @private
+     */
+    onOtherDeliveries: function(button) {
+        if(!this.deliveriesWindow) {
+            this.deliveriesWindow = Ext.create('Ext.window.Window', {
+                title: 'Deliveries grouped by deadline (double-click to open)',
+                height: 500,
+                width: 400,
+                modal: true,
+                layout: 'fit',
+                closeAction: 'hide',
+                //animateTarget: button,
+                items: {
+                    xtype: 'deadlinelisting',
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    deliverymodel: this.deliverymodel,
+                    enableDeadlineCreation: this.canExamine
+                }
+            });
+        }
+        this.deliveriesWindow.show();
+        this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+    },
 });
