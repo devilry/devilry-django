@@ -13,7 +13,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
          * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for GradeEditor Config.
          */
-        gradeeditor_config_recordcontainer: undefined
+        gradeeditor_config_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * Use the administrator RESTful interface to store drafts? If this is
+         * ``false``, we use the examiner RESTful interface.
+         */
+        isAdministrator: false
     },
 
     constructor: function(config) {
@@ -111,7 +118,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     loadGradeEditor: function() {
         Ext.create('devilry.extjshelpers.DraftEditorWindow', {
             deliveryid: this.delivery_recordcontainer.record.data.id,
-            isAdministrator: true,
+            isAdministrator: this.isAdministrator,
             items: {
                 xtype: 'container',
                 loader: {
