@@ -48,7 +48,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                     width: 200,
                     reverseDirection: true,
                     middleLabelTpl: Ext.create('Ext.XTemplate',
-                        '<tpl if="firstRecord">',
+                    '<tpl if="firstRecord">',
                     '   {currentNegativePageOffset})&nbsp;&nbsp;',
                     '   {firstRecord.data.save_timestamp:date}',
                     '</tpl>'

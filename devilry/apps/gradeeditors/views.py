@@ -14,7 +14,9 @@ class RestfulGradeEditorConfig(RestfulView):
         except KeyError, e:
             return ForbiddenSerializableResult()
         else:
-            return SerializableResult(registryitem.asinfodict())
+            return SerializableResult(self.extjswrapshortcut(registryitem.asinfodict()))
 
     def crud_search(self, request):
-        return SerializableResult(list(gradeeditor_registry.iterinfordicts()))
+        result = list(gradeeditor_registry.iterinfordicts())
+        result = self.extjswrapshortcut(result, total=len(result))
+        return SerializableResult(result)

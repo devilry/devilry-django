@@ -21,8 +21,7 @@
     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
 
     {# These are used by the grade editor #}
-    {{ RestfulSimplifiedConfig|extjs_model }};
-    {{ RestfulSimplifiedConfig|extjs_store }};
+    var gradeeditor_config_model = {{ RestfulSimplifiedConfig|extjs_model }};
     {{ RestfulSimplifiedFeedbackDraft|extjs_model }};
     {{ RestfulSimplifiedFeedbackDraft|extjs_store }};
 
@@ -33,6 +32,7 @@
     Ext.onReady(function() {
         var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        var gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
         var title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
             renderTo: 'content-heading',
@@ -43,6 +43,7 @@
             renderTo: 'prettyviewpanel',
             assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
             delivery_recordcontainer: delivery_recordcontainer,
+            gradeeditor_config_recordcontainer: gradeeditor_config_recordcontainer,
             deliverymodel: Ext.ModelManager.getModel('devilry.apps.administrator.simplified.SimplifiedDelivery'),
             filemetastore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedFileMetaStore'),
             staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.administrator.simplified.SimplifiedStaticFeedbackStore'),
@@ -52,8 +53,23 @@
         assignmentgroupmodel.load({{ objectid }}, {
             success: function(record) {
                 assignmentgroup_recordcontainer.setRecord(record);
+
+                // Load grade editor
+                gradeeditor_config_model.load(record.data.parentnode, {
+                    success: function(record) {
+                        console.log('Loaded grade editor data');
+                        gradeeditor_config_recordcontainer.setRecord(record);
+                    },
+                    failure: function() {
+                        // TODO: Handle errors
+                    }
+                });
+            },
+            failure: function() {
+                // TODO: Handle errors
             }
         });
+
     });
 
 </script>

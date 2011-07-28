@@ -66,7 +66,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
          * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
          */
-        assignmentgroup_recordcontainer: undefined
+        assignmentgroup_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for GradeEditor Config.
+         */
+        gradeeditor_config_recordcontainer: undefined
     },
 
 
@@ -116,7 +122,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     items: [{
                         xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
                         staticfeedbackstore: this.staticfeedbackstore,
-                        delivery_recordcontainer: this.delivery_recordcontainer
+                        delivery_recordcontainer: this.delivery_recordcontainer,
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer, // Only required by staticfeedbackeditor
+                        gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
                     }]
                 }]
             }],
