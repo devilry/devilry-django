@@ -14,6 +14,24 @@ def extjshacks(f):
         return f(self, request, *args, **kwargs)
     return wrapper
 
+
+def extjswrap(data, use_extjshacks, success=True, total=None):
+    """
+    If ``use_extjshacks`` is true, wrap ``data`` in the information
+    required by extjs.
+    """
+    if use_extjshacks:
+        result = dict(items = data)
+        if total != None:
+            result['total'] = total
+        result['success'] = success
+        return result
+    else:
+        if total == None:
+            return data
+        else:
+            return dict(items=data, total=total)
+
 def forbidden_if_not_authenticated(f):
     """ Very similar to :func:`django.contrib.auth.decorators.login_required`,
     however it returns class:`django.http.HttpResponseForbidden` instead of
@@ -31,6 +49,10 @@ class RestfulView(View):
     :class:`RestfulView` and the :func:`restful_api`-decorator is use in
     conjunction to create a RESTful web service with a CRUD+S interface.
     """
+
+    def extjswrapshortcut(self, data, success=True, total=None):
+        return extjswrap(data, self.use_extjshacks, success, total)
+
 
     @classmethod
     def create_rest_url(cls):
