@@ -3,60 +3,19 @@
 
 
 {% block headextra %}
+{{ block.super }}
 
 <script>
-    var assignmentgroupmodel = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
-
-    {{ restfulapi.RestfulSimplifiedDeadline|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedDeadline|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"deadline,assignment_group" }};
-    {{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
-
-    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
-    {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
-
-    {# These are used by the grade editor #}
-    {{ RestfulSimplifiedConfig|extjs_model }};
-    {{ RestfulSimplifiedConfig|extjs_store }};
-    {{ RestfulSimplifiedFeedbackDraft|extjs_model }};
-    {{ RestfulSimplifiedFeedbackDraft|extjs_store }};
-
-
+    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
-    Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle');
-    Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
-        var assignmentgroup_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-
-        var title = Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
-            renderTo: 'content-heading',
-            singlerecordontainer: assignmentgroup_recordcontainer
-        });
-
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            renderTo: 'content-main',
-            assignmentgroup_recordcontainer: assignmentgroup_recordcontainer,
-            delivery_recordcontainer: delivery_recordcontainer,
-            deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
-            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedFileMetaStore'),
-            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore'),
+            assignmentgroupid: {{ objectid }},
+            isAdministrator: false,
             canExamine: true
         });
-
-        assignmentgroupmodel.load({{ assignmentgroupid }}, {
-            success: function(record) {
-                assignmentgroup_recordcontainer.setRecord(record);
-            }
-        });
     });
-
 </script>
-
 {% endblock %}
 
 

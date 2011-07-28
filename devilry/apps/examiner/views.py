@@ -1,9 +1,16 @@
 from django.views.generic import TemplateView, View
 from django.shortcuts import render
 
-from devilry.apps.gradeeditors.restful.examiner import (RestfulSimplifiedConfig,
-                                                        RestfulSimplifiedFeedbackDraft)
+from devilry.apps.gradeeditors.restful import examiner as gradeeditors_restful
 import restful
+
+
+def dump_all_into_dict(module):
+    """ Dump ``module.__all__ into a dict, and return the dict. """
+    dct = {}
+    for clsname in module.__all__:
+        dct[clsname] = getattr(module, clsname)
+    return dct
 
 
 class MainView(TemplateView):
@@ -19,12 +26,10 @@ class MainView(TemplateView):
 
 class AssignmentGroupView(View):
     def get(self, request, assignmentgroupid):
-        context = {'assignmentgroupid': assignmentgroupid,
-                   'restfulapi': {}}
-        for restclsname in restful.__all__:
-            context['restfulapi'][restclsname] = getattr(restful, restclsname)
-        context['RestfulSimplifiedConfig'] = RestfulSimplifiedConfig
-        context['RestfulSimplifiedFeedbackDraft'] = RestfulSimplifiedFeedbackDraft
+        context = {'objectid': assignmentgroupid,
+                   'restfulapi': dump_all_into_dict(restful),
+                   'gradeeditors': dump_all_into_dict(gradeeditors_restful)
+                  }
         return render(request,
                       'examiner/assignmentgroupview.django.html',
                        context)
