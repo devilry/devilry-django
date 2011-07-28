@@ -19,8 +19,8 @@ class SimplifiedFeedbackDraftTestBase(testhelper.TestHelper):
                  subjects=['inf101'],
                  periods=['spring01'],
                  assignments=['assignment1:admin(goodadmin,secondgoodadmin)', 'assignment2:admin(badadmin)'])
-        self.add_to_path('uni;inf101.spring01.assignment1.group1:candidate(firststudent):examiner(goodexaminer)')
-        self.add_to_path('uni;inf101.spring01.assignment1.group2:candidate(secondstudent):examiner(badexaminer)')
+        self.add_to_path('uni;inf101.spring01.assignment1.group1:candidate(firststudent):examiner(goodexaminer).d1')
+        self.add_to_path('uni;inf101.spring01.assignment1.group2:candidate(secondstudent):examiner(badexaminer).d1')
         group = self.inf101_spring01_assignment1_group1
         self.delivery = self.add_delivery(group)
         self._setup_users()

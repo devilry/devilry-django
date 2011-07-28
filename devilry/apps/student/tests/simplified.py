@@ -23,14 +23,14 @@ class SimplifiedStudentTestBase(TestCase, testhelper.TestHelper):
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud)')
-        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud)')
-        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud)')
-        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud)')
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud).d1')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud).d1')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud).d1')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud).d1')
 
         # secondStud began secondsem
-        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud)')
-        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud)')
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud).d1')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud).d1')
 
 
 class TestSimplifiedNode(SimplifiedStudentTestBase):
@@ -535,14 +535,14 @@ class TestSimplifiedCandidateFileMeta(SimplifiedStudentTestBase):
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(exam1,exam3)')
-        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(exam1)')
-        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(exam2)')
-        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(exam2)')
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(exam1,exam3).d1')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(exam1).d1')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(exam2).d1')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(exam2).d1')
 
         # secondStud began secondsem
-        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1)')
-        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1)')
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1).d1')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1).d1')
 
         for var in dir(self):
             # find any variable that ends with '_gN' where N is a
