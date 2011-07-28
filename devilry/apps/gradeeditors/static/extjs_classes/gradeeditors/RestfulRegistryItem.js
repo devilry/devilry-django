@@ -1,3 +1,4 @@
+/** Restful API for gradeeditor RegistryItems */
 Ext.define('devilry.gradeeditors.RestfulRegistryItem', {
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
@@ -11,7 +12,7 @@ Ext.define('devilry.gradeeditors.RestfulRegistryItem', {
     ],
 
     proxy: Ext.create('devilry.extjshelpers.RestProxy', {
-        url: '/gradeeditors/restfulgradeeditorconfig/', // TODO: URL prefix
+        url: DevilrySettings.DEVILRY_MAIN_PAGE + '/gradeeditors/restfulgradeeditorconfig/',
         reader: {
             type: 'json',
             root: 'items',

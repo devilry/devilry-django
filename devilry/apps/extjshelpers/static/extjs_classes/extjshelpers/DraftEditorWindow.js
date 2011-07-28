@@ -1,4 +1,4 @@
-Ext.define('devilry.extjshelpers.GradeEditorWindow', {
+Ext.define('devilry.extjshelpers.DraftEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradeeditor',
     title: 'Create feedback',
@@ -12,7 +12,14 @@ Ext.define('devilry.extjshelpers.GradeEditorWindow', {
          * @cfg
          * ID of the Delivery where the feedback belongs.
          */
-        deliveryid: undefined
+        deliveryid: undefined,
+
+        /**
+         * @cfg
+         * Use the administrator RESTful interface to store drafts? If this is
+         * ``false``, we use the examiner RESTful interface.
+         */
+        isAdministrator: false
     },
 
     constructor: function(config) {
@@ -28,7 +35,11 @@ Ext.define('devilry.extjshelpers.GradeEditorWindow', {
     },
 
     save: function(published, draft, saveconfig) {
-        var staticfeedback = Ext.create('devilry.apps.gradeeditors.simplified.administrator.SimplifiedFeedbackDraft', {
+        var classname = Ext.String.format(
+            'devilry.apps.gradeeditors.simplified.{0}.SimplifiedFeedbackDraft',
+            this.isAdministrator? 'administrator': 'examiner'
+        );
+        var staticfeedback = Ext.create(classname, {
             draft: draft,
             published: published,
             delivery: this.deliveryid

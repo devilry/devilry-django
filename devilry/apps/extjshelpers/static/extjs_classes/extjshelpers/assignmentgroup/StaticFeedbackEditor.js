@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
     alias: 'widget.staticfeedbackeditor',
     requires: [
-        'devilry.extjshelpers.GradeEditorWindow',
+        'devilry.extjshelpers.DraftEditorWindow',
         'devilry.gradeeditors.RestfulRegistryItem'
     ],
 
@@ -115,8 +115,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     loadGradeEditor: function() {
-        Ext.create('devilry.extjshelpers.GradeEditorWindow', {
+        Ext.create('devilry.extjshelpers.DraftEditorWindow', {
             deliveryid: this.delivery_recordcontainer.record.data.id,
+            isAdministrator: true,
             items: {
                 xtype: 'container',
                 loader: {
