@@ -57,11 +57,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             }],
             listeners: {
                 scope: this,
-                selectionchange: this.onSelectDelivery
+                itemdblclick: this.onSelectDelivery
             },
         });
 
         this.callParent(arguments);
+        if(this.assignmentgroup_recordcontainer.record) {
+            this.reload();
+        }
         this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
     },
 
@@ -86,10 +89,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
      * */
     addCreateNewDeadlineButton: function() {
         Ext.apply(this, {
-            tbar: [{
+            bbar: ['->', {
                 xtype: 'button',
                 text: 'Create new deadline',
-                iconCls: 'icon-add-16',
+                iconCls: 'icon-add-32',
+                scale: 'large',
                 listeners: {
                     click: function ()
                     {
@@ -111,9 +115,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     /**
      * @private
      */
-    onSelectDelivery: function(grid, selections) {
-        var deliveryRecord = selections[0];
+    onSelectDelivery: function(grid, deliveryRecord) {
         this.delivery_recordcontainer.setRecord(deliveryRecord);
+        this.up('window').close();
     },
 
     /**

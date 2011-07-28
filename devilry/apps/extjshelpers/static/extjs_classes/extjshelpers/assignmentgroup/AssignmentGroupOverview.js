@@ -26,9 +26,6 @@
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.panel.Panel',
-    width: 1000,
-    height: 800,
-    layout: 'border',
     alias: 'widget.assignmentgroupoverview',
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
@@ -133,24 +130,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             scope: this,
             success: function(record) {
                 this.assignmentgroup_recordcontainer.setRecord(record);
-
-                // Load grade editor
-                if(this.canExamine) {
-                    this.gradeeditor_config_model.load(record.data.parentnode, {
-                        scope: this,
-                        success: function(record) {
-                            this.gradeeditor_config_recordcontainer.setRecord(record);
-                        },
-                        failure: function() {
-                            // TODO: Handle errors
-                        }
-                    });
-                }
+                this.loadGradeEditorConfigModel();
             },
             failure: function() {
                 // TODO: Handle errors
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    loadGradeEditorConfigModel: function() {
+        if(this.canExamine) {
+            this.gradeeditor_config_model.load(this.assignmentgroup_recordcontainer.record.data.parentnode, {
+                scope: this,
+                success: function(record) {
+                    this.gradeeditor_config_recordcontainer.setRecord(record);
+                },
+                failure: function() {
+                    // TODO: Handle errors
+                }
+            });
+        }
     },
 
     /**
@@ -169,56 +171,63 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     createLayout: function() {
         Ext.apply(this, {
-            items: [{
-                region: 'west',
-                layout: 'fit',
-                width: 220,
-                xtype: 'panel',
-                collapsible: true,   // make collapsible
-                //titleCollapse: true, // click anywhere on title to collapse.
-                split: true,
-                items: [{
-                    xtype: 'panel',
-                    layout: 'border',
-                    items: [{
-                        region: 'north',
-                        items: [{
-                            // TODO: We do not need this. Should just have is_open as part of the workflow, and ID is not something users should need
-                            xtype: 'assignmentgroupdetailspanel',
-                            bodyPadding: 10,
-                            singlerecordontainer: this.assignmentgroup_recordcontainer
-                        }]
-                    }, {
-                        region: 'center',
-                        items: [{
-                            xtype: 'deadlinelisting',
-                            title: 'Deliveries',
-                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                            delivery_recordcontainer: this.delivery_recordcontainer,
-                            deliverymodel: this.deliverymodel,
-                            enableDeadlineCreation: this.canExamine
-                        }]
-                    }]
-                }]
-            }, {
-                region: 'center',
-                layout: 'border',
-                items: [{
-                    region: 'north',
-                    xtype: 'deliveryinfo',
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    filemetastore: this.filemetastore
-                }, {
-                    region: 'center',
-                    items: [{
-                        xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                        staticfeedbackstore: this.staticfeedbackstore,
-                        delivery_recordcontainer: this.delivery_recordcontainer,
-                        isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-                        gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
-                    }]
-                }]
+            //width: 1000,
+            //height: 800,
+            tbar: [{
+                xtype: 'button',
+                menu: [], // To get an arrow
+                text: 'Other deliveries/deadlines',
+                scale: 'large',
+                enableToggle: true,
+                listeners: {
+                    scope: this,
+                    click: this.onOtherDeliveries
+                }
+            }, '->', {
+                xtype: 'deliveryinfo',
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                filemetastore: this.filemetastore
             }],
+            items: [{
+                items: [{
+                    xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                    staticfeedbackstore: this.staticfeedbackstore,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                    gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
+                }]
+            }]
         });
-    }
+    },
+
+    /**
+     * @private
+     */
+    onOtherDeliveries: function(button) {
+        if(!this.deliveriesWindow) {
+            this.deliveriesWindow = Ext.create('Ext.window.Window', {
+                title: 'Deliveries grouped by deadline (double-click to open)',
+                height: 500,
+                width: 400,
+                modal: true,
+                layout: 'fit',
+                closeAction: 'hide',
+                //animateTarget: button,
+                items: {
+                    xtype: 'deadlinelisting',
+                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    deliverymodel: this.deliverymodel,
+                    enableDeadlineCreation: this.canExamine
+                },
+                listeners: {
+                    close: function() {
+                        button.toggle(false);
+                    }
+                }
+            });
+        }
+        this.deliveriesWindow.show();
+        this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
+    },
 });
