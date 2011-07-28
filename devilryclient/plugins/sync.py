@@ -8,6 +8,7 @@ from os import rename
 from devilryclient.restfulclient.restfulfactory import RestfulFactory
 from devilryclient.utils import logging_startup, findconffolder, create_folder, deadline_format, is_late, get_metadata, save_metadata
 
+
 class PullFromServer(object):
     """
     Collect all data that the logged-in user has access to...
@@ -125,7 +126,7 @@ class PullFromServer(object):
                                  'comp':'exact',
                                  'value':deadline['id']}]
             deliveries = self.SimplifiedDelivery.search(
-                result_fieldgroups=['period', 'assignment', 'assignment_group', 'deadline'],
+                result_fieldgroups=['period', 'assignment', 'assignment_group', 'deadline', 'delivered_by', 'candidates'],
                 filters=delivery_filters)
 
             key = deadline_path.replace(self.root_dir, '')
