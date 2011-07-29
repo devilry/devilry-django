@@ -25,7 +25,7 @@
  *     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupoverview',
     cls: 'widget-assignmentgroupoverview',
     requires: [
@@ -185,19 +185,32 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }
         });
         Ext.apply(this, {
-            //width: 1000,
-            //height: 800,
-            tbar: [this.onOtherDeliveriesBtn, '->', {
-                xtype: 'deliveryinfo',
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                filemetastore: this.filemetastore
-            }],
-            items: [{
-                xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                staticfeedbackstore: this.staticfeedbackstore,
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-                gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
+            items:[{
+                xtype: 'devilrypager',
+                store: this.staticfeedbackstore,
+                width: 200,
+                middleLabelTpl: Ext.create('Ext.XTemplate',
+                    '<tpl if="firstRecord">',
+                    '   {currentNegativePageOffset})&nbsp;&nbsp;',
+                    '   {firstRecord.data.save_timestamp:date}',
+                    '</tpl>'
+                )
+            }, {
+                xtype: 'panel',
+                frame: false,
+                layout: 'fit',
+                tbar: [this.onOtherDeliveriesBtn, '->', {
+                    xtype: 'deliveryinfo',
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    filemetastore: this.filemetastore
+                }],
+                items: [{
+                    xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                    staticfeedbackstore: this.staticfeedbackstore,
+                    delivery_recordcontainer: this.delivery_recordcontainer,
+                    isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                    gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
+                }]
             }]
         });
     },
