@@ -1,0 +1,19 @@
+{% load extjs %}
+
+{{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
+
+{{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"deadline,assignment_group" }};
+{{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
+
+{{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
+{{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
+
+{{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
+{{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
+
+{% if canExamine %}
+    {# These are used by the grade editor #}
+    {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
+    {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
+    {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_store }};
+{% endif %}

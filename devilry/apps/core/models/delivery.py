@@ -99,14 +99,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     # Only used when this is aliasing an earlier delivery, delivery_type == TYPE_ALIAS
     alias_delivery = models.OneToOneField("Delivery", blank=True, null=True)
 
-    def delivered_too_late(self):
+    def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
         If time_of_delivery is greater than the deadline, return True.
         """
-        if self.deadline.is_head:
-            return False
         return self.time_of_delivery > self.deadline.deadline
-    after_deadline = property(delivered_too_late)
+    after_deadline = property(_delivered_too_late)
 
     class Meta:
         app_label = 'core'

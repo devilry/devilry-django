@@ -3,13 +3,24 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     extend: 'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
     alias: 'widget.staticfeedbackeditor',
+    requires: [
+        'devilry.extjshelpers.DraftEditorWindow',
+        'devilry.gradeeditors.RestfulRegistryItem'
+    ],
 
     config: {
         /**
-        * @cfg
-        * Assignment id. (Required).
-        */
-        assignmentid: undefined
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for GradeEditor Config.
+         */
+        gradeeditor_config_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * Use the administrator RESTful interface to store drafts? If this is
+         * ``false``, we use the examiner RESTful interface.
+         */
+        isAdministrator: false
     },
 
     constructor: function(config) {
@@ -17,36 +28,117 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     },
 
     initComponent: function() {
+        this.callParent(arguments);
+
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'New feedback',
             iconCls: 'icon-add-16',
             margin: {left: 5},
+            hidden: true,
             listeners: {
-                click: function() {
-                    me.loadFeedbackEditor();
+                scope: this,
+                click: this.loadGradeEditor
+            }
+        });
+        this.getToolbar().add(this.createButton);
+
+        this.addListener('afterStoreLoadMoreThanZero', this.showCreateButton, this);
+
+        if(this.delivery_recordcontainer.record) {
+            this.onLoadDeliveryInEditor();
+        }
+        this.delivery_recordcontainer.addListener('setRecord', this.onLoadDeliveryInEditor, this);
+
+        if(this.gradeeditor_config_recordcontainer.record) {
+            this.onLoadGradeEditorConfig();
+        }
+        this.gradeeditor_config_recordcontainer.addListener('setRecord', this.onLoadGradeEditorConfig, this);
+
+        this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
+
+    },
+
+    /**
+     * @private
+     * This is suffixed with InEditor to not crash with superclass.onLoadDelivery().
+     */
+    onLoadDeliveryInEditor: function() {
+        this.showCreateButton();
+    },
+
+    /**
+     * @private
+     */
+    onLoadGradeEditorConfig: function() {
+        this.loadRegistryItem();
+    },
+
+    /**
+     * @private
+     */
+    loadRegistryItem: function() {
+        var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
+        registryitem_model.load(this.gradeeditor_config_recordcontainer.record.data.gradeeditorid, {
+            scope: this,
+            success: function(record) {
+                this.registryitem_recordcontainer.setRecord(record);
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    onLoadRegistryItem: function() {
+        this.showCreateButton();
+    },
+
+    /**
+     * @private
+     * Show create button when:
+     *
+     * - Delivery has loaded.
+     * - Grade editor config has loaded.
+     * - Registry item has loaded.
+     */
+    showCreateButton: function() {
+        if(this.gradeeditor_config_recordcontainer.record &&
+                this.delivery_recordcontainer.record &&
+                this.registryitem_recordcontainer.record) {
+            //this.getToolbar().add(this.createButton);
+            this.createButton.show();
+        }
+    },
+
+    /**
+     * @private
+     */
+    loadGradeEditor: function() {
+        Ext.create('devilry.extjshelpers.DraftEditorWindow', {
+            deliveryid: this.delivery_recordcontainer.record.data.id,
+            isAdministrator: this.isAdministrator,
+            items: {
+                xtype: 'container',
+                loader: {
+                    url: this.registryitem_recordcontainer.record.data.draft_editor_url,
+                    renderer: 'component',
+                    autoLoad: true,
+                    loadMask: true
                 }
+            },
+
+            listeners: {
+                scope: this,
+                beforeclose: this.onCloseGradeEditor
             }
-        });
-        this.addListener('afterStoreLoadMoreThanZero', function() {
-            me.getToolbar().add(me.createButton);
-        });
-        this.callParent(arguments);
+        }).show();
     },
 
-    loadFeedbackEditor: function() {
-        this.getToolbar().hide();
-        this.setBody({
-            xtype: 'container',
-            loader: {
-                url: Ext.String.format('/static/gradeeditors/approved.js'),
-                renderer: 'component',
-                autoLoad: true,
-                loadMask: true
-            }
-        });
-    },
-
+    /**
+     * Overrides parent method to enable examiners to click to create feedback.
+     */
     bodyWithNoFeedback: function() {
         var me = this;
         this.setBody({
@@ -55,9 +147,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             html: '<p>No feedback</p><p class="unimportant">Click to create feedback</p>',
             listeners: {
                 render: function() {
-                    this.getEl().addListener('mouseup', me.loadFeedbackEditor, me);
+                    this.getEl().addListener('mouseup', me.loadGradeEditor, me);
                 }
             }
         });
+    },
+
+    /**
+     * @private
+     */
+    onCloseGradeEditor: function() {
+        this.onLoadDelivery();
     }
 });

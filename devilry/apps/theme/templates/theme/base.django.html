@@ -33,6 +33,12 @@
             Ext.Ajax.defaultHeaders = {
                     'X_DEVILRY_USE_EXTJS': true
             };
+
+            Ext.define('DevilrySettings', {
+                singleton: true,
+                DEVILRY_STATIC_URL: '{{ DEVILRY_STATIC_URL}}',
+                DEVILRY_MAIN_PAGE: '{{ DEVILRY_MAIN_PAGE }}'
+            });
         </script>
         <script src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
 

@@ -1,23 +1,14 @@
-/** Deadline listing.
- *
- * Lists {@link devilry.extjshelpers.assignmentgroup.DeadlineInfo}'s
- * within the given assignmentgroup ({@link #assignmentgroupid}).
- */
+/** List deliveries grouped by deadline. */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.grid.Panel',
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
-    requires: [
-        'devilry.extjshelpers.assignmentgroup.DeadlineInfo'
-    ],
+    hideHeaders: true, // Hide column header
+    rowTpl: Ext.create('Ext.XTemplate',
+        '{number}. {time_of_delivery:date} (id:{id})'
+    ),
 
     config: {
-        /**
-        * @cfg
-        * AssignmentGroup id.
-        */
-        assignmentgroupid: undefined,
-
         /**
          * @cfg
          * Delivery ``Ext.data.Model``.
@@ -26,76 +17,114 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
 
         /**
          * @cfg
-         * Deadline ``Ext.data.Store``. (Required).
-         * _Note_ that ``deadlinestore.proxy.extraParams`` is changed by
-         * this class.
+         * Enable creation of new deadlines?
          */
-        deadlinestore: undefined,
+        enableDeadlineCreation: false,
 
         /**
          * @cfg
-         * Selected delivery id. May be undefined, in which case, no delivery
-         * is selected.
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
+         * The record is changed when a user selects a delivery.
          */
-        selectedDeliveryId: undefined,
-        
-        /**
-         * @cfg
-         * Viewable buttons depends on this
-         * 
-         */
-        canExamine: false
+        delivery_recordcontainer: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
     },
 
     initComponent: function() {
-        if (this.canExamine)
-        {
-            Ext.apply(this, {
-                tbar: [
-                {
-                    xtype: 'button',
-                    text: 'Create new deadline',
-                    iconCls: 'icon-add-16',
-                    listeners: {
-                        click: function ()
-                        {
-                            console.log('TODO');
-                        }
-                    }
-                }]
-            });
+        if(this.enableDeadlineCreation) {
+            this.addCreateNewDeadlineButton();
         }
+
+        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            enableGroupingMenu: false,
+            groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
+        });
+
+        Ext.apply(this, {
+            features: [groupingFeature],
+            store: this.createDeliveryStore(),
+            columns: [{
+                header: 'Data',
+                dataIndex: 'id',
+                flex: 1,
+                renderer: function(value, metaData, deliveryrecord) {
+                    return this.rowTpl.apply(deliveryrecord.data);
+                }
+            }],
+            listeners: {
+                scope: this,
+                selectionchange: this.onSelectDelivery
+            },
+        });
+
         this.callParent(arguments);
-        this.loadDeadlines();
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
     },
 
-    loadDeadlines: function() {
-        this.deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-number']);
-        this.deadlinestore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'assignment_group',
+    /**
+     * @private
+     * */
+    createDeliveryStore: function() {
+        var deliverystore = Ext.create('Ext.data.Store', {
+            model: this.deliverymodel,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true,
+            groupField: 'deadline__deadline'
+        });
+
+        deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
+        return deliverystore;
+    },
+
+    /**
+     * @private
+     * */
+    addCreateNewDeadlineButton: function() {
+        Ext.apply(this, {
+            tbar: [{
+                xtype: 'button',
+                text: 'Create new deadline',
+                iconCls: 'icon-add-16',
+                listeners: {
+                    click: function ()
+                    {
+                        console.log('TODO');
+                    }
+                }
+            }]
+        });
+    },
+
+    /**
+     * @private
+     * Reload all deadlines on this assignmentgroup.
+     * */
+    reload: function() {
+        this.loadDeadlines(this.assignmentgroup_recordcontainer.record.data.id);
+    },
+
+    /**
+     * @private
+     */
+    onSelectDelivery: function(grid, selections) {
+        var deliveryRecord = selections[0];
+        this.delivery_recordcontainer.setRecord(deliveryRecord);
+    },
+
+    /**
+     * @private
+     */
+    loadDeadlines: function(assignmentgroupid) {
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'deadline__assignment_group',
             comp: 'exact',
-            value: this.assignmentgroupid
+            value: assignmentgroupid
         }]);
-
-        this.deadlinestore.load({
-            scope: this,
-            callback: this.onLoadDeadlines
-        });
-    },
-
-    onLoadDeadlines:function(deadlinerecords) {
-        var me = this;
-        Ext.each(deadlinerecords, function(deadlinerecord) {
-            me.addDeadline(deadlinerecord.data);
-        });
-    },
-
-    addDeadline: function(deadline) {
-        this.add({
-            xtype: 'deadlineinfo',
-            deadline: deadline,
-            deliverymodel: this.deliverymodel,
-            selectedDeliveryId: this.selectedDeliveryId
-        });
-    },
+        this.store.load();
+    }
 });

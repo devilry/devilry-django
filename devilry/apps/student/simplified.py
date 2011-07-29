@@ -72,7 +72,7 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
         editablefields = ['successful']
 
     @classmethod
-    def post_full_clean(cls, user, obj):
+    def pre_full_clean(cls, user, obj):
         if not obj.id == None:
             raise ValueError('BUG: Students should only have create permission on Delivery')
         obj.time_of_delivery = datetime.now()

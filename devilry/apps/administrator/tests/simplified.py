@@ -28,14 +28,14 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(exam1,exam3)')
-        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(exam1)')
-        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(exam2)')
-        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(exam2)')
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(exam1,exam3).d1')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(exam1).d1')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(exam2).d1')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(exam2).d1')
 
         # secondStud began secondsem
-        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1)')
-        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1)')
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1).d1')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1).d1')
 
 
 class TestSimplifiedNode(SimplifiedAdminTestBase):
@@ -863,12 +863,13 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
     def test_create(self):
         kw = dict(
-                name = 'test',
-                parentnode = self.inf101_firstsem_a1_g1.parentnode)
+            name='test1',
+            parentnode=self.inf101_firstsem_a1_g1.parentnode)
 
         newpk = SimplifiedAssignmentGroup.create(self.admin1, **kw)
         create_res = models.AssignmentGroup.objects.get(pk=newpk)
-        self.assertEquals(create_res.name, 'test')
+        self.assertEquals(create_res.name, 'test1')
+        # self.assertEquals(create_res.long_name, 'Test')
         self.assertEquals(create_res.parentnode,
                 self.inf101_firstsem_a1_g1.parentnode)
 
@@ -1111,7 +1112,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf110_secondsem_a1_g1.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf110_secondsem_a2_g1.deadlines.all()[0], self.allFields),
                         # this group now has 2 deadlines. make sure to include the old one here
-                        modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.order_by('deadline')[0], self.allFields),
+                        modelinstance_to_dict(self.inf101_secondsem_a1_g2_deadline2, self.allFields),
                         # and the new one here
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2_deadlines[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields),
@@ -1150,7 +1151,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # create a deadline that runs out in 3 days
         kw = dict(
             assignment_group=self.inf101_firstsem_a1_g1,
-            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            deadline=self.inf101_firstsem_a1.publishing_time + timedelta(days=3),
             text='Last shot!')
 
         createdpk = SimplifiedDeadline.create(self.admin1, **kw)
@@ -1166,7 +1167,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # publishing date
         invalid_deadline_dict = dict(
             assignment_group=self.inf101_firstsem_a1_g1,
-            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=-10),
+            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=-11),
             text='this deadline is impossible')
         with self.assertRaises(Exception):  # TODO: Where is ValidationError declared?
             SimplifiedDeadline.create(self.admin1, **invalid_deadline_dict)
@@ -1188,7 +1189,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         # see that the new admin can create a deadline where he is admin
         SimplifiedDeadline.create(self.inf110admin,
                                   assignment_group=self.inf110_secondsem_a1_g1,
-                                  deadline=self.inf110_secondsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+                                  deadline=self.inf110_secondsem_a1.publishing_time + timedelta(days=3),
                                   text='Last shot!')
 
     def test_delete_asnodeadmin(self):

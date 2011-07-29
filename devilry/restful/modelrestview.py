@@ -1,8 +1,10 @@
-from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse
 
 from ..simplified import PermissionDenied, SimplifiedException
-from restview import RestfulView
-from serializers import serializers, SerializableResult
+from restview import RestfulView, extjswrap
+from serializers import (serializers, SerializableResult,
+                         ErrorMsgSerializableResult,
+                         ForbiddenSerializableResult)
 from readform import ReadForm
 
 
@@ -11,35 +13,12 @@ class HttpResponseCreated(HttpResponse):
     status_code = 201
 
 
-def _extjswrap(data, use_extjshacks, success=True, total=None):
-    if use_extjshacks:
-        result = dict(items = data)
-        if total != None:
-            result['total'] = total
-        result['success'] = success
-        return result
-    else:
-        if total == None:
-            return data
-        else:
-            return dict(items=data, total=total)
-
-class ErrorMsgSerializableResult(SerializableResult):
-    def __init__(self, errormessage, httpresponsecls):
-        super(ErrorMsgSerializableResult, self).__init__(dict(errormessages=[errormessage]),
-                                                         httpresponsecls=httpresponsecls)
-
-class ForbiddenSerializableResult(ErrorMsgSerializableResult):
-    def __init__(self):
-        super(ForbiddenSerializableResult, self).__init__('Forbidden',
-                                                          HttpResponseForbidden)
-
 class FormErrorSerializableResult(SerializableResult):
     def __init__(self, form, use_extjshacks):
         fielderrors = dict(form.errors)
         non_field_errors = list(form.non_field_errors())
         result = dict(fielderrors=fielderrors, errormessages=non_field_errors)
-        result = _extjswrap(result, use_extjshacks, success=False)
+        result = extjswrap(result, use_extjshacks, success=False)
         super(FormErrorSerializableResult, self).__init__(result, httpresponsecls=HttpResponseBadRequest)
 
 
@@ -62,10 +41,6 @@ class ModelRestfulView(RestfulView):
     def filter_resultitem(cls, itemdct):
         return cls.filter_urlmap(itemdct)
 
-
-    def _extjswrapshortcut(self, data, success=True, total=None):
-        return _extjswrap(data, self.use_extjshacks, success, total)
-
     def restultqry_to_list(self, qryresultwrapper):
         return [self.__class__.filter_resultitem(itemdct) \
                 for itemdct in qryresultwrapper]
@@ -83,7 +58,7 @@ class ModelRestfulView(RestfulView):
                 return ForbiddenSerializableResult()
 
             data['id'] = id
-            result = self._extjswrapshortcut(data)
+            result = self.extjswrapshortcut(data)
             if instance == None:
                 return SerializableResult(result, httpresponsecls=HttpResponseCreated)
             else:
@@ -120,7 +95,7 @@ class ModelRestfulView(RestfulView):
                                                   httpresponsecls=HttpResponseBadRequest)
 
             resultlist = self.restultqry_to_list(qryresultwrapper)
-            result = self._extjswrapshortcut(resultlist, total=qryresultwrapper.total)
+            result = self.extjswrapshortcut(resultlist, total=qryresultwrapper.total)
             return SerializableResult(result)
         else:
             return FormErrorSerializableResult(form, self.use_extjshacks)
@@ -141,7 +116,7 @@ class ModelRestfulView(RestfulView):
                 data = self._meta.simplified.read(self.request.user, id, **cleaned_data)
             except PermissionDenied, e:
                 return ForbiddenSerializableResult()
-            data = self._extjswrapshortcut(data)
+            data = self.extjswrapshortcut(data)
             return SerializableResult(data)
         else:
             return FormErrorSerializableResult(form, self.use_extjshacks)
@@ -166,5 +141,5 @@ class ModelRestfulView(RestfulView):
         except PermissionDenied, e:
             return ForbiddenSerializableResult()
         else:
-            data = self._extjswrapshortcut(dict(id=id))
+            data = self.extjswrapshortcut(dict(id=id))
             return SerializableResult(data)

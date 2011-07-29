@@ -3,44 +3,25 @@
 
 
 {% block headextra %}
+{{ block.super }}
 
 <script>
-    {{ RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment" }};
-
-    {{ RestfulSimplifiedDeadline|extjs_model }};
-    {{ RestfulSimplifiedDeadline|extjs_store }};
-
-    {{ RestfulSimplifiedDelivery|extjs_model:'assignment_group' }};
-    {{ RestfulSimplifiedDelivery|extjs_store }};
-
-    {{ RestfulSimplifiedStaticFeedback|extjs_model }};
-    {{ RestfulSimplifiedStaticFeedback|extjs_store }};
-
-    {{ RestfulSimplifiedFileMeta|extjs_model }};
-    {{ RestfulSimplifiedFileMeta|extjs_store }};
-
-
+    {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
-            renderTo: 'maincontent',
-            assignmentgroupid: {{ assignmentgroupid }},
-            assignmentgroupmodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup'),
-            deliverymodel: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
-            deadlinestore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedDeadlineStore'),
-            filemetastore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedFileMetaStore'),
-            staticfeedbackstore: Ext.data.StoreManager.lookup('devilry.apps.examiner.simplified.SimplifiedStaticFeedbackStore'),
+            assignmentgroupid: {{ objectid }},
+            isAdministrator: false,
             canExamine: true
         });
     });
-
 </script>
-
 {% endblock %}
 
 
 {% block main %}
 
-<div id="maincontent"></div>
+<section class="treeheading" id="content-heading"></section>
+<div id="content-main"></div>
 
 {% endblock %}

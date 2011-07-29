@@ -9,6 +9,7 @@ from ....simplified.utils import modelinstance_to_dict
 from ..simplified import (SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedPeriod,
                           SimplifiedSubject, SimplifiedDeadline, SimplifiedStaticFeedback)
 
+from datetime import timedelta
 
 testhelper.TestHelper.set_memory_deliverystore()
 
@@ -23,15 +24,15 @@ class SimplifiedExaminerTestBase(TestCase, testhelper.TestHelper):
                  assignments=['a1', 'a2'])
 
         # add firstStud to the first and secondsem assignments
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(firstExam)')
-        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(firstExam)')
-        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(firstExam)')
-        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(firstExam)')
-        self.add_to_path('uni;inf110.secondsem.a3:anon(true).g1:candidate(firstStud):examiner(firstExam)')
+        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(firstStud):examiner(firstExam).d1')
+        self.add_to_path('uni;inf101.firstsem.a2.g1:candidate(firstStud):examiner(firstExam).d1')
+        self.add_to_path('uni;inf110.secondsem.a1.g1:candidate(firstStud):examiner(firstExam).d1')
+        self.add_to_path('uni;inf110.secondsem.a2.g1:candidate(firstStud):examiner(firstExam).d1')
+        self.add_to_path('uni;inf110.secondsem.a3:anon(true).g1:candidate(firstStud):examiner(firstExam).d1')
 
         # secondStud began secondsem
-        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud);examiner(secondExam)')
-        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(secondExam)')
+        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud);examiner(secondExam).d1')
+        self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(secondExam).d1')
 
 
 class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
@@ -378,6 +379,7 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
         #but he/she/it does get a result when he/she/it is set to be an examiner
         self.add_to_path('uni;inf101.firstsem.a1.g1:examiner(testPerson)')
         search_res = SimplifiedDeadline.search(self.testPerson)
+
         self.assertEquals(len(search_res), 1)
 
         #but not in another course
@@ -409,7 +411,7 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
     def test_create(self):
         kw = dict(text='test',
                   assignment_group=self.inf101_firstsem_a1_g1,
-                  deadline=self.inf101_firstsem_a1_g1.deadlines.all()[0])
+                  deadline=self.inf101_firstsem_a1.publishing_time + timedelta(days=12))
         created_pk = SimplifiedDeadline.create(self.firstExam, **kw)
 
         create_res = models.Deadline.objects.get(pk=created_pk)
@@ -417,7 +419,7 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
         self.assertEquals(create_res.assignment_group,
                           self.inf101_firstsem_a1_g1)
         self.assertEquals(create_res.deadline,
-                          self.inf101_firstsem_a1_g1.deadlines.all()[0].deadline)
+                          self.inf101_firstsem_a1_g1.get_active_deadline().deadline)
 
     def test_create_security(self):
         kw = dict(text='test',

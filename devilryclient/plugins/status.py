@@ -87,26 +87,13 @@ class DevilryClientStatus(object):
         self.collect_data()
         self.display()
 
-    def traverse_tree(self, node, sub_tree, depth):
-
-        if node == '.meta':
-            return
-
-        if node == 'files':
-            print depth * "  ", sub_tree
-            return
-
-        # if self.soi != None and self.soi != node and depth == 0:
-        #     return
-
-        print depth * "  ", node
-
-        for key in sub_tree.keys():
-            self.traverse_tree(key, sub_tree[key], depth + 1)
-
     def collect_data(self):
-        for key in self.metadata.keys():
-            self.traverse_tree(key, self.metadata[key], 0)
+        for key in sorted(self.metadata.keys()):
+            print key
+            for metakey in self.metadata[key].keys():
+                if metakey == 'query_result':
+                    continue
+                print "    ", metakey, ':', self.metadata[key][metakey]
 
     def display(self):
         pass

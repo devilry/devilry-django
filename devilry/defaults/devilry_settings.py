@@ -8,10 +8,9 @@ Defaults for settings defined by Devilry.
 DEVILRY_MAIN_PAGE = ''
 
 # The default grade-plugin:
-# grade_default:approvedgrade, grade_rstschema:rstschemagrade or grade_default:charfieldgrade
-DEVILRY_DEFAULT_GRADEPLUGIN='fake'
+DEVILRY_DEFAULT_GRADEEDITOR='approved'
 
-DEVILRY_STATIC_URL = '/static'
+DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjshelpers/extjs'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'

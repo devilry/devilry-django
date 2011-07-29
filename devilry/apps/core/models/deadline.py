@@ -33,12 +33,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
         A django ``RelatedManager`` that holds the `deliveries <Delivery>`_ on this group.
 
-    .. attribute:: is_head
-
-        Is this the first *fake* deadline? When an assignmentgroup is created,
-        a fake deadline is created with ``is_head=True``. All manually created deadlines
-        should have ``is_head=False`` (the default).
-
     .. attribute:: deliveries_available_before_deadline
 
         Should deliveries on this deadline be available to examiners before the
@@ -71,10 +65,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     deadline = models.DateTimeField(help_text=_('The time of the deadline.'))
     text = models.TextField(blank=True, null=True,
                             help_text=_('An optional text to show to students and examiners.'))
-    is_head = models.BooleanField(default=False,
-                                 help_text=_('Is this the first fake deadline? When an assignmentgroup is created, '
-                                             'a fake deadline is created with is_head=True. All manually created deadlines '
-                                             'have is_head=False.'))
     deliveries_available_before_deadline = models.BooleanField(default=False,
                                                               help_text=_('Should deliveries on this deadline be available to examiners before the'
                                                                           'deadline expires? This is set by students.'))
@@ -135,13 +125,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     #def is_old(self):
         #""" Return True if :attr:`deadline` expired. """
         #return self.deadline < datetime.now()
-
-    #TODO delete this?
-    #def delete(self, *args, **kwargs):
-        #""" Prevent deletion if this is the head deadline """
-        #if self.is_head:
-            #raise PermissionDenied()
-        #super(Deadline, self).delete(*args, **kwargs)
 
     @classmethod
     def q_is_admin(cls, user_obj):

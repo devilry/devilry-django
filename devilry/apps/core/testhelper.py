@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
 from deliverystore import MemoryDeliveryStore
+from django.core.exceptions import ValidationError
 
 
 class TestHelper(object):
@@ -108,9 +109,7 @@ class TestHelper(object):
         # where X is the deadline the delivery belongs to, and Y is
         # a number that starts at 1 and increments for each new delivery
 
-        # subtract 1, because all assignmentgroups get a default
-        # deadline when created
-        prefix = prefix + 'deadline' + str(group.deadlines.count() - 1) + '_'
+        prefix = prefix + 'deadline' + str(group.deadlines.count()) + '_'
         deadline_num = group.get_active_deadline().deliveries.count()
         vars(self)[prefix + 'delivery' + str(deadline_num)] = delivery
         return delivery
@@ -167,7 +166,7 @@ class TestHelper(object):
         try:
             feedback.full_clean()
             feedback.save()
-        except:
+        except ValidationError:
             raise
 
         # add it to the groups feedbacks list
@@ -208,7 +207,7 @@ class TestHelper(object):
         try:
             user.full_clean()
             user.save()
-        except:
+        except ValidationError:
             user = User.objects.get(username=name)
         vars(self)[user.username] = user
         return user
@@ -223,7 +222,7 @@ class TestHelper(object):
         try:
             node.full_clean()
             node.save()
-        except:
+        except ValidationError:
             node = Node.objects.get(parentnode=parent, short_name=name)
 
         # allowed roles in node are:
@@ -270,7 +269,7 @@ class TestHelper(object):
         try:
             subject.full_clean()
             subject.save()
-        except:
+        except ValidationError:
             subject = Subject.objects.get(short_name=subject_name)
 
         # add the extras (only admins allowed in subject)
@@ -317,7 +316,7 @@ class TestHelper(object):
         try:
             period.full_clean()
             period.save()
-        except Exception:
+        except ValidationError:
             period = Period.objects.get(parentnode=parentnode, short_name=period_name)
 
         # add the extras (only admins allowed in subject)
@@ -332,7 +331,7 @@ class TestHelper(object):
             period.end_time = period.start_time + timedelta(5 * 30)
 
         if extras['ln']:
-            period.long_name = extras['ln']
+            period.long_name = extras['ln'][0]
 
         period.full_clean()
         period.save()
@@ -373,7 +372,7 @@ class TestHelper(object):
         try:
             assignment.full_clean()
             assignment.save()
-        except:
+        except ValidationError:
             assignment = Assignment.objects.get(parentnode=parentnode,
                                                 short_name=assignment_name)
 
@@ -435,7 +434,7 @@ class TestHelper(object):
             try:
                 group.full_clean()
                 group.save()
-            except:
+            except ValidationError:
                 raise ValueError("Assignmentgroup not created!")
 
         # add the extras (only admins allowed in subject)
@@ -465,11 +464,11 @@ class TestHelper(object):
                    parentnode.short_name + '_' +                        # assignment_
                    group_name] = group
 
-        # create the default deadline, deadline0, variable
-        vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   parentnode.parentnode.short_name + '_' +             # period_
-                   parentnode.short_name + '_' +                        # assignment_
-                   group_name + '_deadline0'] = group.deadlines.all()[0]
+        # # create the default deadline, deadline0, variable
+        # vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
+        #            parentnode.parentnode.short_name + '_' +             # period_
+        #            parentnode.short_name + '_' +                        # assignment_
+        #            group_name + '_deadline0'] = group.deadlines.all()[0]
         return group
 
     def _do_the_assignmentgroups(self, assignments, assignmentgroups_list):
@@ -504,7 +503,7 @@ class TestHelper(object):
         try:
             deadline.full_clean()
             deadline.save()
-        except:
+        except ValidationError:
             raise  ValueError("something impossible happened when creating deadline")
 
         if extras['ends']:

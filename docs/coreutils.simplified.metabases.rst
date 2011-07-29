@@ -1,7 +1,7 @@
-.. _apps.student.simplifiedmetabases:
+.. _coreutils.simplified.metabases:
 
 ==========================================================================================
-:mod:`devilry.apps.student.simplifiedmetabases` --- Metaclasses for the Simplified classes
+:mod:`devilry.coreutils.simplified.metabases` --- Metaclasses for the Simplified classes
 ==========================================================================================
 
 Classes defining which fields can be searched for and what fields will be 
@@ -12,40 +12,40 @@ Simplified Meta
 
 Subject
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedSubjectMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedSubjectMetaMixin
     :inherited-members: 
 
 Period
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedPeriodMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedPeriodMetaMixin
     :inherited-members: 
 
 Assignment
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedAssignmentMetaMixin
     :inherited-members: 
 
 AssignmentGroup
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedAssignmentGroupMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedAssignmentGroupMetaMixin
     :inherited-members: 
 
 Deadline
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedDeadlineMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedDeadlineMetaMixin
     :inherited-members: 
 
 Delivery
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedDeliveryMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedDeliveryMetaMixin
     :inherited-members: 
 
 StaticFeedback
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedStaticFeedbackMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedStaticFeedbackMetaMixin
     :inherited-members: 
 
 FileMeta
 #########################################################
-.. autoclass:: devilry.apps.student.simplifiedmetabases.SimplifiedFileMetaMetaMixin
+.. autoclass:: devilry.coreutils.simplified.metabases.SimplifiedFileMetaMetaMixin
     :inherited-members: 

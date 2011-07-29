@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView, View
 from django.shortcuts import render
 
+from devilry.apps.gradeeditors.restful import examiner as gradeeditors_restful
+from devilry.utils.module import dump_all_into_dict
 import restful
 
 
@@ -17,9 +19,10 @@ class MainView(TemplateView):
 
 class AssignmentGroupView(View):
     def get(self, request, assignmentgroupid):
-        indata = {'assignmentgroupid': assignmentgroupid }
-        for restclsname in restful.__all__:
-            indata[restclsname] = getattr(restful, restclsname)
+        context = {'objectid': assignmentgroupid,
+                   'restfulapi': dump_all_into_dict(restful),
+                   'gradeeditors': dump_all_into_dict(gradeeditors_restful)
+                  }
         return render(request,
                       'examiner/assignmentgroupview.django.html',
-                       indata)
+                       context)
