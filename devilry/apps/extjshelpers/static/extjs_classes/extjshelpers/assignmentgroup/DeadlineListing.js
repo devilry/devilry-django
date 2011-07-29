@@ -57,6 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
                 flex: 1,
                 tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, deliveryrecord) {
+                    //console.log(deliveryrecord.data);
                     return this.rowTpl.apply(deliveryrecord.data);
                 }
             }],

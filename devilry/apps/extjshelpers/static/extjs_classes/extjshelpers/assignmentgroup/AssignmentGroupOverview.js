@@ -192,13 +192,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 filemetastore: this.filemetastore
             }],
             items: [{
-                items: [{
-                    xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                    staticfeedbackstore: this.staticfeedbackstore,
-                    delivery_recordcontainer: this.delivery_recordcontainer,
-                    isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
-                    gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
-                }]
+                xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                staticfeedbackstore: this.staticfeedbackstore,
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
+                gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
             }]
         });
     },

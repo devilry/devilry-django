@@ -403,13 +403,8 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
-.widget-assignmentgroupoverview .infotable {
-  margin: 30px auto 30px auto !important; }
-  .widget-assignmentgroupoverview .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
-    width: 100%; }
-.widget-assignmentgroupoverview section.rendered_view {
-  margin: 0 20px 20px 20px; }
 .widget-assignmentgroupoverview .widget-staticfeedbackinfo {
+  width: 100% !important;
   padding: 30px; }
   .widget-assignmentgroupoverview .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
     padding: 20px; }
@@ -425,6 +420,10 @@ table.verticalinfotable {
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable:hover {
       border: 4px solid #77b300;
       background-color: #f7ffe5; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable {
+    margin: 0 auto 30px auto !important; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
+      width: 100%; }
 
 .after-deadline {
   display: inline-block;

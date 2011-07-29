@@ -10,6 +10,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackDetailsTable'
     ],
+    frame: false,
+    frameHeader: false,
+    border: 0,
+
 
     config: {
         /**
