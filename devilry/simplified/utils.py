@@ -72,5 +72,8 @@ def modelinstance_to_dict(instance, fieldnames):
             try:
                 dct[fieldname] = _get_instanceattr(instance, fieldname)
             except FieldDoesNotExist:
-                dct[fieldname] = getattr(instance, fieldname) # This is an annotated field
+                dct[fieldname] = getattr(instance, fieldname) # This is an annotated field (or something is seriously wrong)
+            except AttributeError:
+                # Annotated field
+                continue # If we fail here, it will not work to user this for both read (which does not support annotated fields) and search
     return dct
