@@ -10,7 +10,7 @@
     {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
 
     Ext.require('devilry.administrator.period.PrettyView');
-    Ext.require('devilry.administrator.EditPanel');
+    Ext.require('devilry.extjshelpers.SimplifiedRestfulEditPanel');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.period.PrettyView', {
             renderTo: 'content-main',
@@ -36,7 +36,7 @@
 
         prettyview.addListener('edit', function(record) {
             var editpanel = Ext.ComponentManager.create({
-                xtype: 'administrator_editpanel',
+                xtype: 'simplifiedrestful_editpanel',
                 modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
                 editformitems: {{ restfulapi.RestfulSimplifiedPeriod|extjs_form_items}},
                 foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedPeriod|extjs_foreignkeys }},

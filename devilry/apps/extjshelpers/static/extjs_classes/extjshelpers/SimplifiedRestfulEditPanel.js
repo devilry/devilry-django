@@ -1,6 +1,7 @@
-Ext.define('devilry.administrator.EditPanel', {
+/** Apanel for editing SimplifiedRestful models. */
+Ext.define('devilry.extjshelpers.SimplifiedRestfulEditPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.administrator_editpanel',
+    alias: 'widget.simplifiedrestful_editpanel',
     requires: ['devilry.extjshelpers.RestSubmit'],
 
     config: {

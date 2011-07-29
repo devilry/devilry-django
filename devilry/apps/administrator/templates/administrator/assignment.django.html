@@ -12,7 +12,7 @@
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     Ext.require('devilry.administrator.assignment.PrettyView');
-    Ext.require('devilry.administrator.EditPanel');
+    Ext.require('devilry.extjshelpers.SimplifiedRestfulEditPanel');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
             renderTo: 'content-main',
@@ -40,7 +40,7 @@
 
         prettyview.addListener('edit', function(record) {
             var editpanel = Ext.ComponentManager.create({
-                xtype: 'administrator_editpanel',
+                xtype: 'simplifiedrestful_editpanel',
                 modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
                 editformitems: {{ restfulapi.RestfulSimplifiedAssignment|extjs_form_items}},
                 foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }},

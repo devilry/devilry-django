@@ -1,16 +1,16 @@
-/** Base class for the default config for the Edit/Create new window, which is
- * opened to edit/create new item in the admin interface. */
-Ext.define('devilry.administrator.DefaultEditWindowBase', {
+/** Base class for windows used to Edit/Create SimplifiedRestful models. */
+Ext.define('devilry.extjshelpers.SimplifiedRestfulEditWindowBase', {
     extend: 'Ext.window.Window',
     width: 800,
     height: 600,
     layout: 'fit',
     maximizable: true,
+    modal: true,
 
     config: {
         /**
          * @cfg
-         * The {@link devilry.administrator.EditPanel} to use for editing.
+         * The {@link devilry.extjshelpers.SimplifiedRestfulEditPanel} to use for editing.
          */
         editpanel: undefined
     },

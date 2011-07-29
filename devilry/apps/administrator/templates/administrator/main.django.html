@@ -10,8 +10,8 @@
 {{ block.super }}
 
 <script>
-    Ext.require('devilry.administrator.EditPanel');
     Ext.require('devilry.administrator.DefaultCreateWindow');
+    Ext.require('devilry.extjshelpers.SimplifiedRestfulEditPanel');
     Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
 
@@ -38,7 +38,7 @@
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
                         title: 'Create new node',
                         editpanel: Ext.ComponentManager.create({
-                            xtype: 'administrator_editpanel',
+                            xtype: 'simplifiedrestful_editpanel',
                             modelname: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
                             editformitems: {{ restfulapi.RestfulSimplifiedNode|extjs_form_items}},
                             foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
@@ -59,7 +59,7 @@
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
                         title: 'Create new subject',
                         editpanel: Ext.ComponentManager.create({
-                            xtype: 'administrator_editpanel',
+                            xtype: 'simplifiedrestful_editpanel',
                             modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
                             editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
                             foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }}
@@ -80,7 +80,7 @@
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
                         title: 'Create new period',
                         editpanel: Ext.ComponentManager.create({
-                            xtype: 'administrator_editpanel',
+                            xtype: 'simplifiedrestful_editpanel',
                             modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
                             editformitems: {{ restfulapi.RestfulSimplifiedPeriod|extjs_form_items}},
                             foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedPeriod|extjs_foreignkeys }}
@@ -101,7 +101,7 @@
                     Ext.create('devilry.administrator.DefaultCreateWindow', {
                         title: 'Create new assignment',
                         editpanel: Ext.ComponentManager.create({
-                            xtype: 'administrator_editpanel',
+                            xtype: 'simplifiedrestful_editpanel',
                             modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
                             editformitems: {{ restfulapi.RestfulSimplifiedAssignment|extjs_form_items}},
                             foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }}
