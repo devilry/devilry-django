@@ -79,9 +79,10 @@ def autocreate_delivery(group):
     others = Delivery.objects.filter(deadline__assignment_group=group).order_by("-number")
     if others.count() == 1:
         if active_deadline.deadline < datetime.now():
-            if randint(0, 100) <= 5:
-                # 5% chance to get the first delivery after the deadline
+            if randint(0, 100) <= 30:
+                # 30% chance to get the first delivery after the deadline
                 offset = timedelta(minutes=-randint(1, 20))
+                logging.info("                (deliveries after deadline)")
             else:
                 offset = timedelta(hours=randint(0, 15),
                         minutes=randint(0, 59))

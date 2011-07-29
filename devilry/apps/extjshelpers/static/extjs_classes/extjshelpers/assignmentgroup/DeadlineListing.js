@@ -5,7 +5,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     cls: 'widget-deadlinelisting',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{number}. {time_of_delivery:date} (id:{id})'
+        '{number}. {time_of_delivery:date}',
+        '<tpl if="time_of_delivery &gt; deadline__deadline">',
+        '   <span class="after-deadline">(After deadline)</span>',
+        '</tpl>'
     ),
 
     config: {
@@ -45,14 +48,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
         });
 
         this.store = this.createDeliveryStore();
+        var me = this;
         Ext.apply(this, {
             features: [groupingFeature],
             columns: [{
                 header: 'Data',
                 dataIndex: 'id',
                 flex: 1,
+                tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, deliveryrecord) {
-                    //console.log(deliveryrecord.data);
                     return this.rowTpl.apply(deliveryrecord.data);
                 }
             }],
