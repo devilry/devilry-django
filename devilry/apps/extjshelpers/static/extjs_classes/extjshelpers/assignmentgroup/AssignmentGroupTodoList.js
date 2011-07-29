@@ -4,15 +4,28 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     cls: 'widget-assignmentgrouptodolist',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{id}'
+        '<tpl if="name">',
+        '   {name}: ',
+        '</tpl>',
+        '<ul>',
+        '<tpl for="candidates__identifier">',
+        '   <li>{.}</li>',
+        '</tpl>',
+        '</ul>'
     ),
 
     config: {
         /**
          * @cfg
-         * AssignmentGroup ``Ext.data.Model``.
+         * AssignmentGroup ``Ext.data.Store``.
          */
-        assignmentgroupmodel: undefined
+        store: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined
     },
 
     constructor: function(config) {
@@ -67,8 +80,4 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
         }]);
         this.store.load();
     },
-
-    /**
-     * @private
-     * */
 });

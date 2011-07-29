@@ -238,7 +238,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             listeners: {
                 scope: this,
                 close: function() {
-                    this.onOtherDeliveriesBtn.toggle(false);
+                    button.toggle(false);
                 }
             }
         });
