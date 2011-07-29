@@ -175,6 +175,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         this.onOtherDeliveriesBtn = Ext.ComponentManager.create({
             xtype: 'button',
             menu: [], // To get an arrow
+            id: 'tooltip-other-deliveries',
             text: 'Other deliveries/deadlines',
             scale: 'large',
             enableToggle: true,
