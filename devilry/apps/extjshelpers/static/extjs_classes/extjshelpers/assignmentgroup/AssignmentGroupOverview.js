@@ -39,14 +39,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
-    headingTpl: Ext.create('Ext.XTemplate',
-        '<div class="treeheader">',
-        '   <div class="level1">{parentnode__parentnode__parentnode__long_name}</div>',
-        '   <div class="level2">{parentnode__parentnode__long_name}</div>',
-        '   <div class="level3">{parentnode__long_name}</div>',
-        '<div>'
-    ),
-
     config: {
         /**
          * @cfg
