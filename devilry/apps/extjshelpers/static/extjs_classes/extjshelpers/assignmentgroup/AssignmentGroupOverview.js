@@ -31,7 +31,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
-        'devilry.extjshelpers.assignmentgroup.DeadlineListing',
+        'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
@@ -253,14 +253,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     onOtherDeliveries: function(button) {
         if(!this.deliveriesWindow) {
             this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries grouped by deadline',
+                title: 'Deliveries and deadlines',
                 height: 500,
                 width: 400,
                 modal: true,
                 layout: 'fit',
                 closeAction: 'hide',
                 items: {
-                    xtype: 'deadlinelisting',
+                    xtype: 'deadlinesonsinglegroupmanager',
                     assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     deliverymodel: this.deliverymodel,

@@ -2,14 +2,15 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     extend: 'Ext.grid.Panel',
     requires: [
-        'devilry.administrator.DefaultCreateWindow',
+        'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel'
     ],
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{number}. {time_of_delivery:date}',
+        'Delivery number {number}, ',
+        'delivered <span class="time_of_delivery">{time_of_delivery:date}</span>',
         '<tpl if="time_of_delivery &gt; deadline__deadline">',
         '   <span class="after-deadline">(After deadline)</span>',
         '</tpl>'
@@ -151,10 +152,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
 
     /**
      * @private
-     * Reload all deadlines on this assignmentgroup.
+     * Reload all deliveries on this assignmentgroup.
      * */
     reload: function() {
-        this.loadDeadlines(this.assignmentgroup_recordcontainer.record.data.id);
+        this.loadDeliveries(this.assignmentgroup_recordcontainer.record.data.id);
     },
 
     /**
@@ -168,7 +169,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     /**
      * @private
      */
-    loadDeadlines: function(assignmentgroupid) {
+    loadDeliveries: function(assignmentgroupid) {
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'deadline__assignment_group',
             comp: 'exact',
