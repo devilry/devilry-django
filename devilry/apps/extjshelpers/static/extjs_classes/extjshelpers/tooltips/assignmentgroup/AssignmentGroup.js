@@ -27,6 +27,7 @@ Ext.define('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {
         this.other_deliveries = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.OtherDeliveries', {});
         this.search_field = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.SearchField', {});
         this.warning_field = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.WarningField', {});
+        this.feedback_window = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.FeedbackWindow', {});
     },
     /**
      * Animate all tooltips as a wizard.

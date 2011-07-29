@@ -29,7 +29,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
          * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
          * The record is changed when a user selects a delivery.
          */
-        delivery_recordcontainer: undefined
+        delivery_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined
     },
 
     constructor: function(config) {

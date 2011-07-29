@@ -35,16 +35,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
-
-    headingTpl: Ext.create('Ext.XTemplate',
-        '<div class="treeheader">',
-        '   <div class="level1">{parentnode__parentnode__parentnode__long_name}</div>',
-        '   <div class="level2">{parentnode__parentnode__long_name}</div>',
-        '   <div class="level3">{parentnode__long_name}</div>',
-        '<div>'
-    ),
 
     config: {
         /**
@@ -121,6 +114,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 'devilry.apps.gradeeditors.simplified.{0}.SimplifiedConfig',
                 this.role
             ));
+
+            this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
         }
     },
 
@@ -166,6 +161,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             this.role, name
         );
         return classname;
+
     },
 
     /**
@@ -184,22 +180,72 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 click: this.onOtherDeliveries
             }
         });
+        var tbarItems = [this.onOtherDeliveriesBtn,'->', {
+            xtype: 'deliveryinfo',
+            delivery_recordcontainer: this.delivery_recordcontainer,
+            filemetastore: this.filemetastore
+        }];
+
+        if(this.canExamine) {
+            var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
+                xtype: 'button',
+                menu: [], // To get an arrow
+                id: 'tooltip-uncorrected-groups',
+                text: 'Uncorrected groups',
+                scale: 'large',
+                enableToggle: true,
+                listeners: {
+                    scope: this,
+                    click: this.onUncorrectedGroups
+                }
+            });
+            Ext.Array.insert(tbarItems, 0, [onUncorrectedGroupsBtn]);
+        }
+
+
         Ext.apply(this, {
-            //width: 1000,
-            //height: 800,
-            tbar: [this.onOtherDeliveriesBtn, '->', {
-                xtype: 'deliveryinfo',
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                filemetastore: this.filemetastore
-            }],
+            xtype: 'panel',
+            frame: false,
+            layout: 'fit',
+            tbar: tbarItems,
             items: [{
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
+                id: 'tooltip-feedback-window',
                 staticfeedbackstore: this.staticfeedbackstore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
                 gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
             }]
         });
+    },
+
+
+    /**
+     * @private
+     */
+    onUncorrectedGroups: function(button) {
+        this.groupsWindow = Ext.create('Ext.window.Window', {
+            title: 'Open assignment groups',
+            height: 500,
+            width: 400,
+            modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'assignmentgrouptodolist',
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                store: this.assignmentgroupstore
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        this.groupsWindow.show();
+        if(button) {
+            this.groupsWindow.alignTo(button, 'bl', [0, 0]);
+        }
     },
 
     /**
