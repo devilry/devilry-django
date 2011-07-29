@@ -1,12 +1,12 @@
-/** List deliveries grouped by deadline. */
-Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
+/** List deliveries on a single group, grouped by deadline. */
+Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
+    alias: 'widget.deliveriesonsinglegrouplisting',
+    cls: 'widget-deliveriesonsinglegrouplisting',
     requires: [
         'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel'
     ],
-    alias: 'widget.deadlinelisting',
-    cls: 'widget-deadlinelisting',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
         'Delivery number {number}, ',

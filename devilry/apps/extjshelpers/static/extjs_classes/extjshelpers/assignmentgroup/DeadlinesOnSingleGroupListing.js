@@ -1,7 +1,7 @@
-Ext.define('devilry.extjshelpers.assignmentgroup.EmptyDeadlineListing', {
+Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.emptydeadlinelisting',
-    cls: 'widget-emptydeadlinelisting',
+    alias: 'widget.deadlinesonsinglegrouplisting',
+    cls: 'widget-deadlinesonsinglegrouplisting',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
         '{deadline:date}'

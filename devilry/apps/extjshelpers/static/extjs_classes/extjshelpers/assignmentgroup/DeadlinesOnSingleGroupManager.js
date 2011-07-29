@@ -3,8 +3,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
     alias: 'widget.deadlinesonsinglegroupmanager',
     cls: 'widget-deadlinesonsinglegroupmanager',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.DeadlineListing',
-        'devilry.extjshelpers.assignmentgroup.EmptyDeadlineListing'
+        'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing',
+        'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing'
     ],
 
     config: {
@@ -57,7 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
             //border: 0,
             items: [{
                 title: 'Deliveries grouped by deadline',
-                xtype: 'deadlinelisting',
+                xtype: 'deliveriesonsinglegrouplisting',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 deliverymodel: this.deliverymodel,
@@ -65,7 +65,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
                 enableDeadlineCreation: this.enableDeadlineCreation
             }, {
                 title: 'Deadlines without deliveries',
-                xtype: 'emptydeadlinelisting',
+                xtype: 'deadlinesonsinglegrouplisting',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 deadlinemodel: this.deadlinemodel
             }]
