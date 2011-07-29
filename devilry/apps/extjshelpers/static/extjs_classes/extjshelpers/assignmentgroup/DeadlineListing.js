@@ -1,6 +1,10 @@
 /** List deliveries grouped by deadline. */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     extend: 'Ext.grid.Panel',
+    requires: [
+        'devilry.administrator.DefaultCreateWindow',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel'
+    ],
     alias: 'widget.deadlinelisting',
     cls: 'widget-deadlinelisting',
     hideHeaders: true, // Hide column header
@@ -17,6 +21,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
          * Delivery ``Ext.data.Model``.
          */
         deliverymodel: undefined,
+
+        /**
+         * @cfg
+         * Deadline ``Ext.data.Model``.
+         */
+        deadlinemodel: undefined,
 
         /**
          * @cfg
@@ -113,13 +123,30 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
                 iconCls: 'icon-add-32',
                 scale: 'large',
                 listeners: {
-                    click: function ()
-                    {
-                        console.log('TODO');
-                    }
+                    scope: this,
+                    click: this.onCreateNewDeadline
                 }
             }]
         });
+    },
+
+    /**
+     * @private
+     */
+    onCreateNewDeadline: function() {
+        var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
+            title: 'Create deadline',
+            editpanel: Ext.ComponentManager.create({
+                xtype: 'restfulsimplified_editpanel',
+                modelname: this.deadlinemodel,
+                editformitems: assignmentgroupoverview_deadline_editformitems,
+                foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames
+            }),
+            onSaveSuccess: function(record) {
+                this.close();
+            }
+        });
+        createDeadlineWindow.show();
     },
 
     /**

@@ -116,6 +116,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             ));
 
             this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
+            this.deadlinemodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDeadline'));
         }
     },
 
@@ -224,7 +225,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     onUncorrectedGroups: function(button) {
-        this.groupsWindow = Ext.create('Ext.window.Window', {
+        var groupsWindow = Ext.create('Ext.window.Window', {
             title: 'Open assignment groups',
             height: 500,
             width: 400,
@@ -242,10 +243,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }
             }
         });
-        this.groupsWindow.show();
-        if(button) {
-            this.groupsWindow.alignTo(button, 'bl', [0, 0]);
-        }
+        groupsWindow.show();
+        groupsWindow.alignTo(button, 'bl', [0, 0]);
     },
 
     /**
@@ -265,6 +264,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     deliverymodel: this.deliverymodel,
+                    deadlinemodel: this.deadlinemodel,
                     enableDeadlineCreation: this.canExamine
                 },
                 listeners: {
