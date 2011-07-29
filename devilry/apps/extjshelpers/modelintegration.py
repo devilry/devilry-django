@@ -37,7 +37,11 @@ def _iter_fields(simplifiedcls, result_fieldgroups):
             path = fieldname.split('__')
             yield fieldname, _recurse_get_fkfield(meta.model, path)
         else:
-            yield fieldname, _djangofield_to_extjstype(meta.model._meta.get_field(fieldname))
+            if fieldname in simplifiedcls._meta.annotated_fields:
+                extjstype = dict(type='auto')
+            else:
+                extjstype =_djangofield_to_extjstype(meta.model._meta.get_field(fieldname)) 
+            yield fieldname, extjstype
 
 
 

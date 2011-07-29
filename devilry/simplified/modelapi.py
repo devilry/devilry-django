@@ -26,7 +26,8 @@ def _create_meta_ediablefields(cls):
     if hasattr(cls._meta, 'editablefields'):
         editablefields = cls._meta.editablefields
     else:
-        editablefields = cls._meta.resultfields.localfields_aslist()
+        editablefields = [f for f in cls._meta.resultfields.localfields_aslist() \
+                if not f in cls._meta.annotated_fields]
         pk = cls._meta.model._meta.pk
         if pk.get_attname() in editablefields:
             if isinstance(pk, AutoField):
@@ -314,6 +315,9 @@ def _validate_fieldnameiterator(cls, attribute, fieldnameiterator):
         try:
             get_field_from_fieldname(cls._meta.model, fieldname)
         except FieldDoesNotExist, e:
+            if hasattr(cls._meta, 'annotated_fields'):
+                if fieldname in cls._meta.annotated_fields:
+                    continue
             raise SimplifiedConfigError('{0}.{1}: Invalid field name: {2}.'.format(get_clspath(cls),
                                                                                    attribute,
                                                                                    fieldname))
@@ -408,6 +412,8 @@ def simplified_modelapi(cls):
     _validate_fieldnameiterator(cls, 'Meta.resultfields', cls._meta.resultfields)
     _require_metaattr(cls, 'searchfields')
     _validate_fieldnameiterator(cls, 'Meta.searchfields', cls._meta.searchfields)
+    if not hasattr(cls._meta, 'annotated_fields'):
+        cls._meta.annotated_fields = []
     _create_meta_ediablefields(cls)
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
