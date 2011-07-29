@@ -180,27 +180,34 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 click: this.onOtherDeliveries
             }
         });
-        this.onUncorrectedGroupsBtn = Ext.ComponentManager.create({
-            xtype: 'button',
-            menu: [], // To get an arrow
-            id: 'tooltip-uncorrected-groups',
-            text: 'Uncorrected groups',
-            scale: 'large',
-            enableToggle: true,
-            listeners: {
-                scope: this,
-                click: this.onUncorrectedGroups
-            }
-        });
+        var tbarItems = [this.onOtherDeliveriesBtn,'->', {
+            xtype: 'deliveryinfo',
+            delivery_recordcontainer: this.delivery_recordcontainer,
+            filemetastore: this.filemetastore
+        }];
+
+        if(this.canExamine) {
+            var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
+                xtype: 'button',
+                menu: [], // To get an arrow
+                id: 'tooltip-uncorrected-groups',
+                text: 'Uncorrected groups',
+                scale: 'large',
+                enableToggle: true,
+                listeners: {
+                    scope: this,
+                    click: this.onUncorrectedGroups
+                }
+            });
+            Ext.Array.insert(tbarItems, 0, [onUncorrectedGroupsBtn]);
+        }
+
+
         Ext.apply(this, {
             xtype: 'panel',
             frame: false,
             layout: 'fit',
-            tbar: [this.onUncorrectedGroupsBtn, this.onOtherDeliveriesBtn,'->', {
-                xtype: 'deliveryinfo',
-                delivery_recordcontainer: this.delivery_recordcontainer,
-                filemetastore: this.filemetastore
-            }],
+            tbar: tbarItems,
             items: [{
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
                 id: 'tooltip-feedback-window',
