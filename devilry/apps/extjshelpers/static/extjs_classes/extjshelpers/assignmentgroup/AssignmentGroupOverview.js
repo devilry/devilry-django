@@ -35,6 +35,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
+        'devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
@@ -187,11 +188,23 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 click: this.onOtherDeliveries
             }
         });
+        this.onUncorrectedGroupsBtn = Ext.ComponentManager.create({
+            xtype: 'button',
+            menu: [], // To get an arrow
+            id: 'tooltip-uncorrected-groups',
+            text: 'Uncorrected groups',
+            scale: 'large',
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                click: this.onUncorrectedGroups
+            }
+        });
         Ext.apply(this, {
             xtype: 'panel',
             frame: false,
             layout: 'fit',
-            tbar: [this.onOtherDeliveriesBtn, '->', {
+            tbar: [this.onUncorrectedGroupsBtn, this.onOtherDeliveriesBtn,'->', {
                 xtype: 'deliveryinfo',
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 filemetastore: this.filemetastore
@@ -204,6 +217,35 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 gradeeditor_config_recordcontainer: this.gradeeditor_config_recordcontainer // Only required by staticfeedbackeditor
             }]
         });
+    },
+
+
+    /**
+     * @private
+     */
+    onUncorrectedGroups: function(button) {
+        this.groupsWindow = Ext.create('Ext.window.Window', {
+            title: 'Open assignment groups',
+            height: 500,
+            width: 400,
+            modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'assignmentgrouptodolist',
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                store: this.assignmentgroupstore
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    this.onOtherDeliveriesBtn.toggle(false);
+                }
+            }
+        });
+        this.groupsWindow.show();
+        if(button) {
+            this.groupsWindow.alignTo(button, 'bl', [0, 0]);
+        }
     },
 
     /**

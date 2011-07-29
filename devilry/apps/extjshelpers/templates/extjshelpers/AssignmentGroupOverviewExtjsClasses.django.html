@@ -12,6 +12,9 @@
 {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
 
 {% if canExamine %}
+    {# Used to show uncorrected groups #}
+    {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
+
     {# These are used by the grade editor #}
     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
