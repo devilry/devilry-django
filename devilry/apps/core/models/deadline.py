@@ -96,6 +96,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
+        self.save()
+        self.assignment_group._update_status()
     
     def clean(self, *args, **kwargs):
         """Validate the deadline.

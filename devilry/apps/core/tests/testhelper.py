@@ -383,12 +383,12 @@ class TestTestHelper(TestCase):
         self.assertTrue(d5.after_deadline)
 
         # check that all the created deliveries have the status
-        # Delivery.NOT_CORRECTED
-        self.assertEquals(d1.get_status_number(), Delivery.NOT_CORRECTED)
-        self.assertEquals(d2.get_status_number(), Delivery.NOT_CORRECTED)
-        self.assertEquals(d3.get_status_number(), Delivery.NOT_CORRECTED)
-        self.assertEquals(d4.get_status_number(), Delivery.NOT_CORRECTED)
-        self.assertEquals(d5.get_status_number(), Delivery.NOT_CORRECTED)
+        # Delivery.DELIVERY_NOT_CORRECTED
+        self.assertEquals(d1._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
+        self.assertEquals(d2._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
+        self.assertEquals(d3._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
+        self.assertEquals(d4._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
+        self.assertEquals(d5._get_status_number(), Delivery.DELIVERY_NOT_CORRECTED)
 
     def test_feedback(self):
         self.ti.add(nodes='uio.ifi',

@@ -159,6 +159,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return 0.0
         return (scale/maxpoints) * self.points
 
+    def save(self, *args, **kwargs):
+        super(AssignmentGroup, self).save(*args, **kwargs)
+
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(parentnode__admins=user_obj) | \
@@ -308,6 +311,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def _update_status(self):
         """ Query for the correct status, and set :attr:`status`. """
         self.status = self._get_status_from_qry()
+        self.save()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup. """
