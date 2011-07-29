@@ -92,10 +92,19 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
 @administrator_restful.register
 @extjs_restful_modelapi
 @restful_modelapi
+class RestfulSimplifiedDeadline(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedDeadline
+        foreignkey_fields = {'assignment_group': RestfulSimplifiedAssignmentGroup}
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
 class RestfulSimplifiedDelivery(ModelRestfulView):
     class Meta:
         simplified = SimplifiedDelivery
-        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
+        foreignkey_fields = {'deadline': RestfulSimplifiedDeadline}
 
     class ExtjsModelMeta(restfulmetabases.DeliveryExtjsModelMeta):
         """ Metadata for javascript. """
@@ -104,19 +113,10 @@ class RestfulSimplifiedDelivery(ModelRestfulView):
 @administrator_restful.register
 @extjs_restful_modelapi
 @restful_modelapi
-class RestfulSimplifiedDeadline(ModelRestfulView):
-    class Meta:
-        simplified = SimplifiedDeadline
-        foreignkey_fields = {'parentnode': RestfulSimplifiedAssignmentGroup}
-
-
-@administrator_restful.register
-@extjs_restful_modelapi
-@restful_modelapi
 class RestfulSimplifiedStaticFeedback(ModelRestfulView):
     class Meta:
         simplified = SimplifiedStaticFeedback
-        foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}
+        foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
 
 
 @administrator_restful.register
@@ -125,4 +125,4 @@ class RestfulSimplifiedStaticFeedback(ModelRestfulView):
 class RestfulSimplifiedFileMeta(ModelRestfulView):
     class Meta:
         simplified = SimplifiedFileMeta
-        foreignkey_fields = {'parentnode': RestfulSimplifiedDelivery}
+        foreignkey_fields = {'delivery': RestfulSimplifiedDelivery}
