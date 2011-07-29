@@ -57,8 +57,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
        A DateTimeField containing the etag for this object.
     """
-    DELIVERY_NOT_CORRECTED = 0
-    DELIVERY_CORRECTED = 1
+    #DELIVERY_NOT_CORRECTED = 0
+    #DELIVERY_CORRECTED = 1
 
     TYPE_ELECTRONIC = 0
     TYPE_NON_ELECTRONIC = 1
@@ -76,8 +76,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         help_text=_('The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
                     'unique within the assignment-group.'))
-    status = models.PositiveIntegerField(default = 0,
-                                         help_text = 'Status number. 0: Not corrected. 1: Corrected.')
+    #status = models.PositiveIntegerField(default = 0,
+                                         #help_text = 'Status number. 0: Not corrected. 1: Corrected.')
 
     # Fields set by user
     successful = models.BooleanField(blank=True, default=False,
@@ -154,17 +154,17 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         filemeta.save()
         return filemeta
 
-    def _get_status_number(self):
-        """ Get the numeric status for this delivery.
+    #def _get_status_number(self):
+        #""" Get the numeric status for this delivery.
 
-        :return: The numeric status:
-            :attr:`Delivery.DELIVERY_NOT_CORRECTED` or
-            :attr:`Delivery.DELIVERY_CORRECTED`
-        """
-        if self.feedbacks.all().count() == 0:
-            return Delivery.DELIVERY_NOT_CORRECTED
-        else:
-            return Delivery.DELIVERY_CORRECTED
+        #:return: The numeric status:
+            #:attr:`Delivery.DELIVERY_NOT_CORRECTED` or
+            #:attr:`Delivery.DELIVERY_CORRECTED`
+        #"""
+        #if self.feedbacks.all().count() == 0:
+            #return Delivery.DELIVERY_NOT_CORRECTED
+        #else:
+            #return Delivery.DELIVERY_CORRECTED
 
     def _set_number(self):
         m = Delivery.objects.filter(deadline__assignment_group=self.deadline.assignment_group).aggregate(Max('number'))
@@ -180,8 +180,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         super(Delivery, self).save(*args, **kwargs)
 
     def _update_status(self):
-        self.status = self._get_status_number()
-        self.save()
+        #self.status = self._get_status_number()
+        #self.save()
         self.deadline._update_status()
 
     def __unicode__(self):
@@ -190,10 +190,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
 
 def update_deadline_and_assignmentgroup_status(delivery):
-    delivery.deadline._update_status()
-    delivery.deadline.save()
-    delivery.deadline.assignment_group._update_status()
-    delivery.deadline.assignment_group.save()
+    delivery._update_status()
 
 def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
     delivery = kwargs['instance']
