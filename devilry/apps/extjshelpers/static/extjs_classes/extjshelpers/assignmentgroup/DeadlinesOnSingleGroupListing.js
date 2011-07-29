@@ -69,8 +69,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             field: 'assignment_group',
             comp: 'exact',
             value: assignmentgroupid
+        }, {
+            field: 'number_of_deliveries',
+            comp: 'exact',
+            value: 0
         }]);
-        this.store.load();
+        this.store.load({
+            scope: this,
+            callback: this.onDeadlineStoreLoad
+        });
+    },
+
+    /**
+     * @private
+     */
+    onDeadlineStoreLoad: function(records, op, success) {
+        this.setTitle(Ext.String.format(
+            '{0} ({1})',
+            this.title,
+            this.store.getTotalCount()
+        ));
+        if(this.store.getTotalCount() == 0) {
+            this.disable();
+        }
     },
 
     /**
