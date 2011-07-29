@@ -57,6 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         this.add({
             xtype: 'button',
             text: 'Browse files',
+            id: 'tooltip-browse-files',
             scale: 'large',
             listeners: {
                 scope: this,

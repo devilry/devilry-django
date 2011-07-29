@@ -175,6 +175,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             //height: 800,
             tbar: [{
                 xtype: 'button',
+                id: 'tooltip-other-deliveries',
                 menu: [], // To get an arrow
                 text: 'Other deliveries/deadlines',
                 scale: 'large',

@@ -7,12 +7,18 @@
 <script>
     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
+    Ext.require('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup');    
     Ext.onReady(function() {
+
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             assignmentgroupid: {{ objectid }},
             isAdministrator: true,
             canExamine: true
         });
+        
+        var tooltip = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {});
+        tooltip.initComponent();        
+        
     });
 </script>
 
