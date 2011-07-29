@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from ...simplified import (SimplifiedModelApi, simplified_modelapi,
                            PermissionDenied, FieldSpec,
                            FilterSpecs, FilterSpec, PatternFilterSpec)
@@ -221,7 +223,7 @@ class SimplifiedDeadline(SimplifiedModelApi):
         :param user: A django user object.
         :rtype: a django queryset
         """
-        return cls._meta.model.where_is_admin_or_superadmin(user)
+        return cls._meta.model.where_is_admin_or_superadmin(user).annotate(number_of_deliveries=Count('deliveries'))
 
     @classmethod
     def read_authorize(cls, user_obj, obj):

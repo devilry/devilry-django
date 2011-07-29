@@ -1,5 +1,6 @@
 from devilry.apps.core import models
-from devilry.simplified import FieldSpec, FilterSpec, FilterSpecs, ForeignFilterSpec
+from devilry.simplified import (FieldSpec, FilterSpec, FilterSpecs,
+                                ForeignFilterSpec)
 
 
 
@@ -8,10 +9,12 @@ class SimplifiedDeadlineMetaMixin(object):
     search and which fields can be used to search for a Deadline object
     using the Simplified API """
     model = models.Deadline
+    annotated_fields = ('number_of_deliveries',)
     resultfields = FieldSpec('id',
                              'text',
                              'deadline',
                              'assignment_group',
+                             'number_of_deliveries',
                              #'status', # TODO: Needs to handle the fact that students should not know about "Corrected not published"
                              'feedbacks_published',
                              subject=['assignment_group__parentnode__parentnode__parentnode__id',
@@ -39,6 +42,7 @@ class SimplifiedDeadlineMetaMixin(object):
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('deadline'),
                           FilterSpec('assignment_group'),
+                          FilterSpec('number_of_deliveries'),
                           ForeignFilterSpec('assignment_group__parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),
