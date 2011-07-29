@@ -45,6 +45,7 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         self.add(nodes='uni:admin(admin1).mat.inf')
         self.add(nodes='uni.fys')
         self.create_superuser('superadminuser')
+        self.add_to_path('uni;inf101:admin(testadmin).firstsem.a1.g1:candidate(teststud):examiner(testexam)')
 
 
     def test_search_filters(self):
@@ -101,6 +102,33 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         self.assertEquals(create_res.long_name, 'TestOne')
         self.assertEquals(create_res.parentnode, None)
 
+    def test_create_security_asstudent(self):
+        # test that a student cant create a node
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.create(self.teststud, short_name='test1', **kw)
+
+    def test_create_security_asexaminer(self):
+        # test that an examiner cant create a node
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.create(self.testexam, short_name='test1', **kw)
+
+    def test_create_security_assubjectadmin(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.create(self.testadmin, short_name='test1', **kw)
+
     def test_read(self):
         # do a read with no extra fields
         read_res = SimplifiedNode.read(self.admin1, self.uni.id)
@@ -111,6 +139,21 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         read_res = SimplifiedNode.read(self.admin1, self.uni.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.uni, SimplifiedNode._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
+
+    def test_read_security_asstudent(self):
+        # test that a student cant read a node
+        with self.assertRaises(PermissionDenied):
+            read_res = SimplifiedNode.read(self.teststud, self.uni.id)
+
+    def test_read_security_asexam(self):
+        # test that a student cant read a node
+        with self.assertRaises(PermissionDenied):
+            read_res = SimplifiedNode.read(self.testexam, self.uni.id)
+
+    def test_read_security_assubjectadmin(self):
+        # test that a student cant read a node
+        with self.assertRaises(PermissionDenied):
+            read_res = SimplifiedNode.read(self.testadmin, self.uni.id)
 
     def test_update(self):
         self.assertEquals(self.uni.short_name, 'uni')
@@ -127,6 +170,33 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         self.assertEquals(self.uni.short_name, 'uni')
         self.refresh_var(self.uni)
         self.assertEquals(self.uni.short_name, 'testuni')
+
+    def test_update_security_asstudent(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.update(self.teststud, pk=self.uni.id, **kw)
+
+    def test_update_security_asexaminer(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.update(self.testexam, pk=self.uni.id, **kw)
+
+    def test_update_security_assubjectadmin(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.update(self.testadmin, pk=self.uni.id, **kw)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -174,10 +244,16 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedNode.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
-        search_res = SimplifiedNode.search(self.testPerson)
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedNode.search(self.testexam)
+        self.assertEquals(search_res.count(), 0)
+
+    def test_search_security_assubjectadmin(self):
+        search_res = SimplifiedNode.search(self.testadmin)
         self.assertEquals(search_res.count(), 0)
 
     def test_delete_asnodeadmin(self):
