@@ -1,7 +1,7 @@
 /** Default config for the Edit window, which is opened to edit an item in the
  * admin interface. */
 Ext.define('devilry.administrator.DefaultEditWindow', {
-    extend: 'devilry.extjshelpers.SimplifiedRestfulEditWindowBase',
+    extend: 'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
     title: 'Edit',
     
     config: {

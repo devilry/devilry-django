@@ -10,7 +10,7 @@
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }}
 
     Ext.require('devilry.administrator.node.PrettyView');
-    Ext.require('devilry.extjshelpers.SimplifiedRestfulEditPanel');
+    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.node.PrettyView', {
             renderTo: 'content-main',
@@ -34,7 +34,7 @@
 
         prettyview.addListener('edit', function(record) {
             var editpanel = Ext.ComponentManager.create({
-                xtype: 'simplifiedrestful_editpanel',
+                xtype: 'restfulsimplified_editpanel',
                 modelname: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
                 editformitems: {{ restfulapi.RestfulSimplifiedNode|extjs_form_items}},
                 foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }},

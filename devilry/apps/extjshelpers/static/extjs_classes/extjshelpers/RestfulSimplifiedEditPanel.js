@@ -1,7 +1,7 @@
-/** Apanel for editing SimplifiedRestful models. */
-Ext.define('devilry.extjshelpers.SimplifiedRestfulEditPanel', {
+/** Apanel for editing RestfulSimplified models. */
+Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.simplifiedrestful_editpanel',
+    alias: 'widget.restfulsimplified_editpanel',
     requires: ['devilry.extjshelpers.RestSubmit'],
 
     config: {

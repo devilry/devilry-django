@@ -1,5 +1,5 @@
-/** Base class for windows used to Edit/Create SimplifiedRestful models. */
-Ext.define('devilry.extjshelpers.SimplifiedRestfulEditWindowBase', {
+/** Base class for windows used to Edit/Create RestfulSimplified models. */
+Ext.define('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
     extend: 'Ext.window.Window',
     width: 800,
     height: 600,
@@ -10,7 +10,7 @@ Ext.define('devilry.extjshelpers.SimplifiedRestfulEditWindowBase', {
     config: {
         /**
          * @cfg
-         * The {@link devilry.extjshelpers.SimplifiedRestfulEditPanel} to use for editing.
+         * The {@link devilry.extjshelpers.RestfulSimplifiedEditPanel} to use for editing.
          */
         editpanel: undefined
     },
