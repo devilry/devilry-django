@@ -128,12 +128,9 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
 
 def update_deadline_and_assignmentgroup(feedback):
-    deadline = feedback.delivery.deadline
-    deadline._update_status()
-    deadline.save()
-    deadline.assignment_group._update_status()
-    deadline.assignment_group.feedback = feedback # NOTE: Set the last feedback to the active feedback.
-    deadline.assignment_group.save()
+    feedback.delivery.deadline.assignment_group.feedback = feedback # NOTE: Set the last feedback to the active feedback.
+    feedback.delivery.deadline.assignment_group.save()
+    feedback.delivery._update_status()
 
 def feedback_update_assignmentgroup_status_handler(sender, **kwargs):
     feedback = kwargs['instance']

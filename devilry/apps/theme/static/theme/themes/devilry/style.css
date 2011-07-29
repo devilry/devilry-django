@@ -403,6 +403,42 @@ table.verticalinfotable {
   table.verticalinfotable td {
     background-color: #fff; }
 
+.widget-assignmentgroupoverview .widget-staticfeedbackinfo {
+  width: 100% !important;
+  padding: 30px; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
+    padding: 20px; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
+      margin: 0 auto 20px auto; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback, .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable {
+    padding: 40px;
+    text-align: center;
+    font-size: 2.0em; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable {
+    cursor: pointer;
+    border: 4px solid transparent; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable:hover {
+      border: 4px solid #77b300;
+      background-color: #f7ffe5; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable {
+    margin: 0 auto 30px auto !important; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
+      width: 100%; }
+
+.after-deadline {
+  display: inline-block;
+  color: #cc4400; }
+
+td.selectable-gridcell {
+  border: none !important; }
+  td.selectable-gridcell .x-grid-cell-inner {
+    padding: 8px 4px 8px 4px !important;
+    border: 4px solid transparent !important;
+    cursor: pointer; }
+    td.selectable-gridcell .x-grid-cell-inner:hover {
+      border: 4px solid #77b300 !important;
+      background-color: #f7ffe5; }
+
 div.warning, section.warning {
   background-color: #cc4400;
   color: #ffeee5;
@@ -411,34 +447,19 @@ div.warning, section.warning {
   padding: 20px;
   margin: 20px 0 20px 0; }
 
-.widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
-  padding: 20px; }
-  .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
-    margin: 0 auto 20px auto; }
-.widget-staticfeedbackinfo .no-feedback, .widget-staticfeedbackinfo .no-feedback-editable {
-  padding: 40px;
-  text-align: center;
-  font-size: 2.0em; }
-.widget-staticfeedbackinfo .no-feedback-editable {
-  cursor: pointer;
-  border: 4px solid transparent; }
-  .widget-staticfeedbackinfo .no-feedback-editable:hover {
-    border: 4px solid #77b300;
-    background-color: #f7ffe5; }
-
 section h1 {
-  font-size: 1.8em;
+  font-size: 2.6em;
   margin: 20px 0 15px 0; }
 
 section h1:first-child {
   margin-top: 0; }
 
 section h2 {
-  font-size: 1.6em;
+  font-size: 2.0em;
   margin: 16px 0 6px 0; }
 
 section h3 {
-  font-size: 1.2em;
+  font-size: 1.5em;
   margin: 16px 0 6px 0; }
 
 section.treeheading {

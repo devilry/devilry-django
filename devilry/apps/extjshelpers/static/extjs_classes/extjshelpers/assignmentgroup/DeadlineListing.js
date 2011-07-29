@@ -5,7 +5,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     cls: 'widget-deadlinelisting',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{number}. {time_of_delivery:date} (id:{id})'
+        '{number}. {time_of_delivery:date}',
+        '<tpl if="time_of_delivery &gt; deadline__deadline">',
+        '   <span class="after-deadline">(After deadline)</span>',
+        '</tpl>'
     ),
 
     config: {
@@ -44,24 +47,36 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
         });
 
+        this.store = this.createDeliveryStore();
+        var me = this;
         Ext.apply(this, {
             features: [groupingFeature],
-            store: this.createDeliveryStore(),
             columns: [{
                 header: 'Data',
                 dataIndex: 'id',
                 flex: 1,
+                tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, deliveryrecord) {
+                    //console.log(deliveryrecord.data);
                     return this.rowTpl.apply(deliveryrecord.data);
                 }
             }],
             listeners: {
                 scope: this,
-                selectionchange: this.onSelectDelivery
+                itemmouseup: this.onSelectDelivery
             },
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'top',
+                displayInfo: false
+            }]
         });
 
         this.callParent(arguments);
+        if(this.assignmentgroup_recordcontainer.record) {
+            this.reload();
+        }
         this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
     },
 
@@ -86,10 +101,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
      * */
     addCreateNewDeadlineButton: function() {
         Ext.apply(this, {
-            tbar: [{
+            bbar: ['->', {
                 xtype: 'button',
                 text: 'Create new deadline',
-                iconCls: 'icon-add-16',
+                iconCls: 'icon-add-32',
+                scale: 'large',
                 listeners: {
                     click: function ()
                     {
@@ -111,9 +127,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     /**
      * @private
      */
-    onSelectDelivery: function(grid, selections) {
-        var deliveryRecord = selections[0];
+    onSelectDelivery: function(grid, deliveryRecord) {
         this.delivery_recordcontainer.setRecord(deliveryRecord);
+        this.up('window').close();
     },
 
     /**

@@ -3,13 +3,16 @@
  * Panel to show Delivery info.
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.deliveryinfo',
     cls: 'widget-deliveryinfo',
     html: '',
     requires: [
         'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
     ],
+
+    width: 500,
+    style: {border: 'none'},
 
     config: {
         /**
@@ -27,11 +30,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         delivery_recordcontainer: undefined
     },
 
-    toolbarTpl: Ext.create('Ext.XTemplate',
-        'Time of delivery: <em>{time_of_delivery:date}</em>'
+    timeOfDeliveryTpl: Ext.create('Ext.XTemplate',
+        '<span class="time_of_delivery">',
+        '   Time of delivery: <em>{time_of_delivery:date}</em>',
+        '   <tpl if="time_of_delivery &gt; deadline__deadline">',
+        '       <span class="after-deadline">(After deadline)</span>',
+        '   </tpl>',
+        '</span>'
     ),
 
     initComponent: function() {
+        Ext.apply(this, {
+            hidden: true,
+        });
         this.callParent(arguments);
         if(this.delivery_recordcontainer.record) {
             this.onLoadDelivery();
@@ -43,32 +54,34 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
      * @private
      */
     onLoadDelivery: function() {
-        if(this.toolbar) {
-            this.removeDocked(this.toolbar);
-        }
-        this.toolbar = Ext.ComponentManager.create({
-            xtype: 'toolbar',
-            dock: 'top',
-            items: [{
-                xtype: 'button',
-                text: 'Browse files',
-                listeners: {
-                    scope: this,
-                    click: this.showFileMetaBrowserWindow
-                }
-            }, '->', this.toolbarTpl.apply(this.delivery_recordcontainer.record.data)]
+        var delivery = this.delivery_recordcontainer.record.data;
+        this.show();
+        this.removeAll();
+        this.add('->');
+        this.add(this.timeOfDeliveryTpl.apply(delivery));
+        this.add('-');
+        this.add({
+            xtype: 'button',
+            text: 'Browse files',
+            id: 'tooltip-browse-files',
+            scale: 'large',
+            listeners: {
+                scope: this,
+                click: this.showFileMetaBrowserWindow
+            }
         });
-        this.addDocked(this.toolbar);
     },
 
     /**
      * @private
      */
-    showFileMetaBrowserWindow: function() {
+    showFileMetaBrowserWindow: function(button) {
         Ext.create('Ext.window.Window', {
             title: 'Files',
             height: 400,
             width: 600,
+            modal: true,
+            animateTarget: button,
             layout: 'fit',
             items: [{
                 xtype: 'filemetabrowserpanel',

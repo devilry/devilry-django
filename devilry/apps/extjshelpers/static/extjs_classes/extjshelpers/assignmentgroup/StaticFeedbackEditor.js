@@ -33,15 +33,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
             text: 'New feedback',
-            iconCls: 'icon-add-16',
-            margin: {left: 5},
+            iconCls: 'icon-add-32',
             hidden: true,
+            scale: 'large',
             listeners: {
                 scope: this,
                 click: this.loadGradeEditor
             }
         });
-        this.getToolbar().add(this.createButton);
+        this.infotableBottomToolbar.add('->');
+        this.infotableBottomToolbar.add(this.createButton);
+        this.infotableBottomToolbar.show();
 
         this.addListener('afterStoreLoadMoreThanZero', this.showCreateButton, this);
 
@@ -107,7 +109,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
         if(this.gradeeditor_config_recordcontainer.record &&
                 this.delivery_recordcontainer.record &&
                 this.registryitem_recordcontainer.record) {
-            //this.getToolbar().add(this.createButton);
             this.createButton.show();
         }
     },

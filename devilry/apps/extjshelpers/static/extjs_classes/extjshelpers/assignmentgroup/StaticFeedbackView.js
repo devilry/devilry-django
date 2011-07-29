@@ -4,22 +4,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
     cls: 'widget-staticfeedbackview',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<table class="verticalinfotable">',
-        '   <tr>',
-        '       <th>Grade</th>',
-        '       <td>{grade}</td>',
-        '   </tr>',
-        '       <th>Points</th>',
-        '       <td><strong>TODO</strong> {points}</td>',
-        '   </tr>',
-        '       <th>Is passing grade?</th>',
-        '       <td>{is_passing_grade}</td>',
-        '   </tr>',
-        '   </tr>',
-        '       <th>Feedback save time</th>',
-        '       <td>{save_timestamp:date}</td>',
-        '   </tr>',
-        '</table>',
         '<tpl if="!isactive">',
         '   <div class="warning">',
         '       <strong>This is not the active feedback.</strong>',
@@ -31,6 +15,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
         '       read this feedback',
         '   </div>',
         '</tpl>',
-        '<div class="rendered_view">{rendered_view}<div>'
+        '<section class="rendered_view">{rendered_view}<section>'
     )
 });

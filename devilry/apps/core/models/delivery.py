@@ -7,7 +7,7 @@ from django.db.models import Q, Max
 
 from deadline import Deadline
 from filemeta import FileMeta
-from ..models import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node, AssignmentGroup
+from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
 # TODO: Constraint: Can only be delivered by a person in the assignment group?
 #                   Or maybe an administrator?
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
@@ -56,29 +56,14 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
-
     """
-    status_mapping = (
-        _("Not corrected"),
-        _("Corrected"),
-        _("Corrected, not published"),
-        _("Corrected and published"),
-    )
-    status_mapping_student = (
-        status_mapping[0],
-        status_mapping[1],
-        status_mapping[2],
-        status_mapping[3],
-    )
-    NOT_CORRECTED = 0
-    CORRECTED = 1
-    CORRECTED_AND_PUBLISHED = 2
-    CORRECTED_NOT_PUBLISHED = 3
+    #DELIVERY_NOT_CORRECTED = 0
+    #DELIVERY_CORRECTED = 1
 
     TYPE_ELECTRONIC = 0
     TYPE_NON_ELECTRONIC = 1
     TYPE_ALIAS = 2
-    
+
     delivery_type = models.PositiveIntegerField(default=TYPE_ELECTRONIC,
             verbose_name = _("Type of deliveries"),
             help_text=_('This option controls if this assignment accepts only '
@@ -91,6 +76,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         help_text=_('The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
                     'unique within the assignment-group.'))
+    #status = models.PositiveIntegerField(default = 0,
+                                         #help_text = 'Status number. 0: Not corrected. 1: Corrected.')
+
     # Fields set by user
     successful = models.BooleanField(blank=True, default=False,
                                     help_text=_('Has the delivery and all its files been uploaded successfully?'))
@@ -166,50 +154,17 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         filemeta.save()
         return filemeta
 
-    def get_status_number(self):
-        """ Get the numeric status for this delivery.
+    #def _get_status_number(self):
+        #""" Get the numeric status for this delivery.
 
-        :return: The numeric status:
-            :attr:`Delivery.NOT_CORRECTED`,
-            :attr:`Delivery.CORRECTED_NOT_PUBLISHED` or
-            :attr:`Delivery.CORRECTED_AND_PUBLISHED`.
-        """
-        if self.feedbacks.all().count() > 0:
-            return Delivery.CORRECTED_AND_PUBLISHED
-        else:
-            #return Delivery.CORRECTED_NOT_PUBLISHED # TODO: Handle the fact that this info does not exist anymore.
-            return Delivery.NOT_CORRECTED
-
-    #TODO delete this?
-    #def get_localized_status(self):
+        #:return: The numeric status:
+            #:attr:`Delivery.DELIVERY_NOT_CORRECTED` or
+            #:attr:`Delivery.DELIVERY_CORRECTED`
         #"""
-        #Returns the current status string from
-        #:attr:`AssignmentGroup.status_mapping`.
-        #"""
-        #status = self.get_status_number()
-        #return status_mapping[status]
-
-    #TODO delete this?
-    #def get_localized_student_status(self):
-        #"""
-        #Returns the current status string from
-        #:attr:`status_mapping_student`.
-        #"""
-        #status = self.get_status_number()
-        #return status_mapping_student[status]
-
-    #TODO delete this?
-    #def get_status_cssclass(self):
-        #""" Returns the css class for the current status from
-        #:attr:`status_mapping_cssclass`. """
-        #return status_mapping_cssclass[self.get_status_number()]
-
-    #TODO delete this?
-    #def get_status_student_cssclass(self):
-        #""" Returns the css class for the current status from
-        #:attr:`status_mapping_student_cssclass`. """
-        #return status_mapping_student_cssclass[
-                #self.get_status_number()]
+        #if self.feedbacks.all().count() == 0:
+            #return Delivery.DELIVERY_NOT_CORRECTED
+        #else:
+            #return Delivery.DELIVERY_CORRECTED
 
     def _set_number(self):
         m = Delivery.objects.filter(deadline__assignment_group=self.deadline.assignment_group).aggregate(Max('number'))
@@ -224,21 +179,23 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             self._set_number()
         super(Delivery, self).save(*args, **kwargs)
 
+    def _update_status(self):
+        #self.status = self._get_status_number()
+        #self.save()
+        self.deadline._update_status()
+
     def __unicode__(self):
         return u'%s - %s (%s)' % (self.deadline.assignment_group, self.number,
                 date_format(self.time_of_delivery, "DATETIME_FORMAT"))
 
 
 def update_deadline_and_assignmentgroup_status(delivery):
-    delivery.deadline._update_status()
-    delivery.deadline.save()
-    delivery.deadline.assignment_group._update_status()
-    delivery.deadline.assignment_group.save()
+    delivery._update_status()
 
 def delivery_update_assignmentgroup_status_handler(sender, **kwargs):
     delivery = kwargs['instance']
     update_deadline_and_assignmentgroup_status(delivery)
 
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import post_save
 post_save.connect(delivery_update_assignmentgroup_status_handler,
-        sender=Delivery)
+                  sender=Delivery)
