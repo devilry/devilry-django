@@ -31,7 +31,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     requires: [
         'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel',
-        'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
+        'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing',
+        'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
@@ -173,7 +174,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             xtype: 'button',
             menu: [], // To get an arrow
             id: 'tooltip-other-deliveries',
-            text: 'Other deliveries/deadlines',
+            text: 'Deliveries',
             scale: 'large',
             enableToggle: true,
             listeners: {
@@ -181,7 +182,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 click: this.onOtherDeliveries
             }
         });
-        var tbarItems = [this.onOtherDeliveriesBtn,'->', {
+
+        var tbarItems = [this.onOtherDeliveriesBtn, {
+            xtype: 'button',
+            menu: [], // To get an arrow
+            id: 'tooltip-deliveries',
+            text: 'Deadlines',
+            scale: 'large',
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                click: this.onDeadlines
+            }
+        }, '->', {
             xtype: 'deliveryinfo',
             delivery_recordcontainer: this.delivery_recordcontainer,
             filemetastore: this.filemetastore
@@ -260,7 +273,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 layout: 'fit',
                 closeAction: 'hide',
                 items: {
-                    xtype: 'deadlinesonsinglegroupmanager',
+                    xtype: 'deliveriesonsinglegrouplisting',
                     assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     deliverymodel: this.deliverymodel,
@@ -279,6 +292,36 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         if(button) {
             this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
         }
+    },
+
+    /**
+     * @private
+     */
+    onDeadlines: function(button) {
+        var deadlinesWindow = Ext.create('Ext.window.Window', {
+            title: 'Deadlines',
+            width: 600,
+            height: 400,
+            modal: true,
+            layout: 'fit',
+            closeAction: 'hide',
+            items: {
+                xtype: 'deadlinesonsinglegrouplisting',
+                assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                deliverymodel: this.deliverymodel,
+                deadlinemodel: this.deadlinemodel,
+                enableDeadlineCreation: this.canExamine
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        deadlinesWindow.show();
+        deadlinesWindow.alignTo(button, 'bl', [0, 0]);
     },
 
     /**

@@ -2,6 +2,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
     extend: 'Ext.grid.Panel',
     alias: 'widget.deadlinesonsinglegrouplisting',
     cls: 'widget-deadlinesonsinglegrouplisting',
+    requires: [
+        'devilry.extjshelpers.forms.Deadline'
+    ],
+
     rowTpl: Ext.create('Ext.XTemplate',
         '{deadline:date}'
     ),
@@ -40,7 +44,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             columns: [{
                 header: 'Deadline',
                 dataIndex: 'deadline',
-                flex: 1,
+                width: 150,
                 renderer: function(value, metaData, deadlinerecord) {
                     return this.rowTpl.apply(deadlinerecord.data);
                 }
@@ -51,7 +55,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             }, {
                 header: 'Deliveries',
                 dataIndex: 'number_of_deliveries',
-                flex: 1
+                width: 85
             }],
             dockedItems: [{
                 xtype: 'pagingtoolbar',
@@ -147,9 +151,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             editpanel: Ext.ComponentManager.create({
                 xtype: 'restfulsimplified_editpanel',
                 modelname: this.deadlinemodel,
-                //editformitems: assignmentgroupoverview_deadline_editformitems,
                 editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
-                //foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames,
                 record: deadlineRecord
             }),
             onSaveSuccess: function(record) {
