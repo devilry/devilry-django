@@ -3,6 +3,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.restfulsimplified_editpanel',
     requires: ['devilry.extjshelpers.RestSubmit'],
+    layout: 'fit',
 
     config: {
         /**
@@ -56,10 +57,28 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         }
 
         this.editform.frame = false;
+        if(this.editform.flex == undefined) {
+            this.editform.flex = 15;
+        }
         this.editform.border = 0;
 
         Ext.apply(this, {
-            items: [this.errorlist, this.editform],
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+
+            items: [this.editform, {
+                xtype: 'panel',
+                frame: false,
+                border: false,
+                bodyCls: 'editform-sidebar',
+                flex: 5,
+                items: [{
+                    xtype: 'box',
+                    html: this.editform.help || ''
+                }, this.errorlist]
+            }],
 
             dockedItems: [{
                 xtype: 'toolbar',

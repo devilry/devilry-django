@@ -147,9 +147,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
         var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
             title: 'Create deadline',
             width: 500,
-            height: 300,
-            editpanel: Ext.ComponentManager.create({
-                xtype: 'restfulsimplified_editpanel',
+            height: 400,
+            editpanel: Ext.widget('restfulsimplified_editpanel', {
                 modelname: this.deadlinemodel,
                 editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
                 record: deadlineRecord

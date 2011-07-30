@@ -345,8 +345,21 @@ a.warning-button {
         color: #BB0000;
     }
 }
-.editform .editform-body {
-    padding: 15px;
+.editform {
+    .editform-body {
+        padding: 15px;
+        .editform-sidebar {
+            margin-left: 30px;
+
+            strong {
+                font-weight: bold;
+            }
+            p {
+                padding: 5px 0;
+                line-height: 1.2em;
+            }
+        }
+    }
 }
 
 
