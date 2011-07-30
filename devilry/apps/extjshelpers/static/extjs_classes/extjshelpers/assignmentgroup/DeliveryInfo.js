@@ -32,7 +32,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
     timeOfDeliveryTpl: Ext.create('Ext.XTemplate',
         '<span class="time_of_delivery">',
-        '   Time of delivery: <em>{time_of_delivery:date}</em>',
+        '   Time of delivery: <em>{time_of_delivery:date}</em><br/>',
         '   <tpl if="time_of_delivery &gt; deadline__deadline">',
         '       <span class="after-deadline">(After deadline)</span>',
         '   </tpl>',
