@@ -51,6 +51,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
     },
 
     initComponent: function() {
+        if(this.enableDeadlineCreation) {
+            this.addCreateNewDeadlineButton();
+        }
+
         Ext.apply(this, {
             layout: 'fit',
             //frame: false,
@@ -64,12 +68,49 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
                 deadlinemodel: this.deadlinemodel,
                 enableDeadlineCreation: this.enableDeadlineCreation
             }, {
-                title: 'Deadlines without deliveries',
+                title: 'Deadline overview',
                 xtype: 'deadlinesonsinglegrouplisting',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 deadlinemodel: this.deadlinemodel
             }]
         });
         this.callParent(arguments);
+    },
+
+    /**
+     * @private
+     * */
+    addCreateNewDeadlineButton: function() {
+        Ext.apply(this, {
+            bbar: ['->', {
+                xtype: 'button',
+                text: 'Create new deadline',
+                iconCls: 'icon-add-32',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onCreateNewDeadline
+                }
+            }]
+        });
+    },
+
+    /**
+     * @private
+     */
+    onCreateNewDeadline: function() {
+        var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
+            title: 'Create deadline',
+            editpanel: Ext.ComponentManager.create({
+                xtype: 'restfulsimplified_editpanel',
+                modelname: this.deadlinemodel,
+                editformitems: assignmentgroupoverview_deadline_editformitems,
+                foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames
+            }),
+            onSaveSuccess: function(record) {
+                this.close();
+            }
+        });
+        createDeadlineWindow.show();
     }
 });

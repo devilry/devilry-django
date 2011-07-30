@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
     cls: 'widget-deadlinesonsinglegrouplisting',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{deadline:date}'
+        '{deadline:date} ({number_of_deliveries} deliveries)'
     ),
 
     config: {
@@ -41,7 +41,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             dockedItems: [{
                 xtype: 'pagingtoolbar',
                 store: this.store,
-                dock: 'top',
+                dock: 'bottom',
                 displayInfo: false
             }]
         });
@@ -69,10 +69,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
             field: 'assignment_group',
             comp: 'exact',
             value: assignmentgroupid
-        }, {
-            field: 'number_of_deliveries',
-            comp: 'exact',
-            value: 0
         }]);
         this.store.load({
             scope: this,
