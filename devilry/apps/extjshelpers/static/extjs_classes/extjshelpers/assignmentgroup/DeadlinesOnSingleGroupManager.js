@@ -3,6 +3,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
     alias: 'widget.deadlinesonsinglegroupmanager',
     cls: 'widget-deadlinesonsinglegroupmanager',
     requires: [
+        'devilry.extjshelpers.forms.Deadline',
         'devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing',
         'devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing'
     ],
@@ -99,13 +100,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
      * @private
      */
     onCreateNewDeadline: function() {
+        var deadlineRecord = Ext.create(this.deadlinemodel, {
+            'assignment_group': this.assignmentgroup_recordcontainer.record.data.id
+        });
+
         var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
             title: 'Create deadline',
+            width: 500,
+            height: 300,
             editpanel: Ext.ComponentManager.create({
                 xtype: 'restfulsimplified_editpanel',
                 modelname: this.deadlinemodel,
-                editformitems: assignmentgroupoverview_deadline_editformitems,
-                foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames
+                //editformitems: assignmentgroupoverview_deadline_editformitems,
+                editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
+                //foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames,
+                record: deadlineRecord
             }),
             onSaveSuccess: function(record) {
                 this.close();

@@ -21,8 +21,17 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
          * @cfg
          * List of foreign key field names in the model. (Required).
          */
-        foreignkeyfieldnames: undefined
+        foreignkeyfieldnames: undefined,
+
+        /**
+         * @cfg
+         * A instance of the ``Ext.data.Model`` which should be loaded into the
+         * form.
+         */
+        record: undefined
     },
+    cls: 'editform',
+    bodyCls: 'editform-body',
 
     constructor: function(config) {
         this.callParent([config]);
@@ -31,34 +40,44 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     initComponent: function() {
         this.errorlist = Ext.create('devilry.extjshelpers.ErrorList');
-        this.editform = Ext.ComponentManager.create({
-            xtype: 'form',
-            model: this.modelname,
-            items: this.editformitems,
 
-            // Fields will be arranged vertically, stretched to full width
-            layout: 'anchor',
-            defaults: {
-                anchor: '100%',
-            },
+        if(this.editformitems) {
+            this.editform = Ext.ComponentManager.create({
+                xtype: 'form',
+                model: this.modelname,
+                items: this.editformitems,
 
-            cls: 'editform',
-            bodyCls: 'editform-body',
+                // Fields will be arranged vertically, stretched to full width
+                layout: 'anchor',
+                defaults: {
+                    anchor: '100%',
+                },
+            });
+        }
 
-            buttons: [{
-                xtype: 'button',
-                text: 'Save',
-                scale: 'large',
-                iconCls: 'icon-save-32',
-                listeners: {
-                    scope: this,
-                    click: this.onSave
-                }
-            }]
-        });
+        this.editform.frame = false;
+        this.editform.border = 0;
 
         Ext.apply(this, {
-            items: [this.errorlist, this.editform]
+            items: [this.errorlist, this.editform],
+
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                defaults: {minWidth: 75},
+
+                items: ['->', {
+                    xtype: 'button',
+                    text: 'Save',
+                    scale: 'large',
+                    iconCls: 'icon-save-32',
+                    listeners: {
+                        scope: this,
+                        click: this.onSave
+                    }
+                }]
+            }]
         });
         this.callParent(arguments);
 
