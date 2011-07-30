@@ -1422,6 +1422,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.baseFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.baseFields),
                         ]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         # assert that all search results are as expected
         self.assertEquals(search_res.count(), len(expected_res))
@@ -1438,6 +1440,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields),
                         ]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1448,6 +1452,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         search_res = SimplifiedDeadline.search(self.admin1, query='secondStud')
         expected_res = [modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.baseFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.baseFields)]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1460,6 +1466,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_firstsem_a2_g1.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields)]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1481,6 +1489,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2_deadlines[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields),
                         ]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1704,15 +1714,15 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
 
     def test_read_security_asstudent(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedFileMeta.read(self.teststud, self.inf101_firstsem_a1_g1_deliveried[0].filemetas.all()[0].id)
+            SimplifiedFileMeta.read(self.teststud, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
 
     def test_read_security_asexaminer(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedFileMeta.read(self.testexam, self.inf101_firstsem_a1_g1_deliveried[0].filemetas.all()[0].id)
+            SimplifiedFileMeta.read(self.testexam, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
 
     def test_read_security_asadmin(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedFileMeta.read(self.testadmin, self.inf110_secondsem_a1_g1_deliveried[0].filemetas.all()[0].id)
+            SimplifiedFileMeta.read(self.testadmin, self.inf110_secondsem_a1_g1_deliveries[0].filemetas.all()[0].id)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101:admin(testadmin)')
