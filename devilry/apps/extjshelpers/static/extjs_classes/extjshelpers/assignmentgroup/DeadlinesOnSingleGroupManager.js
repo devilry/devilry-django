@@ -52,10 +52,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
     },
 
     initComponent: function() {
-        if(this.enableDeadlineCreation) {
-            this.addCreateNewDeadlineButton();
-        }
-
         Ext.apply(this, {
             layout: 'fit',
             //frame: false,
@@ -65,61 +61,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupManager',
                 xtype: 'deliveriesonsinglegrouplisting',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 delivery_recordcontainer: this.delivery_recordcontainer,
-                deliverymodel: this.deliverymodel,
-                deadlinemodel: this.deadlinemodel,
-                enableDeadlineCreation: this.enableDeadlineCreation
+                deliverymodel: this.deliverymodel
             }, {
                 title: 'Deadline overview',
                 xtype: 'deadlinesonsinglegrouplisting',
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                deadlinemodel: this.deadlinemodel
+                deadlinemodel: this.deadlinemodel,
+                enableDeadlineCreation: this.enableDeadlineCreation
             }]
         });
         this.callParent(arguments);
-    },
-
-    /**
-     * @private
-     * */
-    addCreateNewDeadlineButton: function() {
-        Ext.apply(this, {
-            bbar: ['->', {
-                xtype: 'button',
-                text: 'Create new deadline',
-                iconCls: 'icon-add-32',
-                scale: 'large',
-                listeners: {
-                    scope: this,
-                    click: this.onCreateNewDeadline
-                }
-            }]
-        });
-    },
-
-    /**
-     * @private
-     */
-    onCreateNewDeadline: function() {
-        var deadlineRecord = Ext.create(this.deadlinemodel, {
-            'assignment_group': this.assignmentgroup_recordcontainer.record.data.id
-        });
-
-        var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
-            title: 'Create deadline',
-            width: 500,
-            height: 300,
-            editpanel: Ext.ComponentManager.create({
-                xtype: 'restfulsimplified_editpanel',
-                modelname: this.deadlinemodel,
-                //editformitems: assignmentgroupoverview_deadline_editformitems,
-                editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
-                //foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames,
-                record: deadlineRecord
-            }),
-            onSaveSuccess: function(record) {
-                this.close();
-            }
-        });
-        createDeadlineWindow.show();
     }
 });

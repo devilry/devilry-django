@@ -2,9 +2,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
     extend: 'Ext.grid.Panel',
     alias: 'widget.deadlinesonsinglegrouplisting',
     cls: 'widget-deadlinesonsinglegrouplisting',
-    hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{deadline:date} ({number_of_deliveries} deliveries)'
+        '{deadline:date}'
     ),
 
     config: {
@@ -18,7 +17,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
          * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
          */
-        assignmentgroup_recordcontainer: undefined
+        assignmentgroup_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * Enable creation of new deadlines?
+         */
+        enableDeadlineCreation: false,
     },
 
     constructor: function(config) {
@@ -27,16 +32,26 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
     },
 
     initComponent: function() {
+        if(this.enableDeadlineCreation) {
+            this.addCreateNewDeadlineButton();
+        }
         this.store = this.createDeadlineStore();
         Ext.apply(this, {
             columns: [{
-                header: 'Data',
-                dataIndex: 'id',
+                header: 'Deadline',
+                dataIndex: 'deadline',
                 flex: 1,
-                tdCls: 'selectable-gridcell',
                 renderer: function(value, metaData, deadlinerecord) {
                     return this.rowTpl.apply(deadlinerecord.data);
                 }
+            }, {
+                header: 'Text',
+                dataIndex: 'text',
+                flex: 2
+            }, {
+                header: 'Deliveries',
+                dataIndex: 'number_of_deliveries',
+                flex: 1
             }],
             dockedItems: [{
                 xtype: 'pagingtoolbar',
@@ -80,14 +95,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
      * @private
      */
     onDeadlineStoreLoad: function(records, op, success) {
-        this.setTitle(Ext.String.format(
-            '{0} ({1})',
-            this.title,
-            this.store.getTotalCount()
-        ));
-        if(this.store.getTotalCount() == 0) {
-            this.disable();
-        }
     },
 
     /**
@@ -104,4 +111,52 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
         deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline']);
         return deadlinestore;
     },
+
+
+    /**
+     * @private
+     * */
+    addCreateNewDeadlineButton: function() {
+        Ext.apply(this, {
+            tbar: ['->', {
+                xtype: 'button',
+                text: 'Create new deadline',
+                iconCls: 'icon-add-32',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onCreateNewDeadline
+                }
+            }]
+        });
+    },
+
+    /**
+     * @private
+     */
+    onCreateNewDeadline: function() {
+        var deadlineRecord = Ext.create(this.deadlinemodel, {
+            'assignment_group': this.assignmentgroup_recordcontainer.record.data.id
+        });
+
+        var me = this;
+        var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
+            title: 'Create deadline',
+            width: 500,
+            height: 300,
+            editpanel: Ext.ComponentManager.create({
+                xtype: 'restfulsimplified_editpanel',
+                modelname: this.deadlinemodel,
+                //editformitems: assignmentgroupoverview_deadline_editformitems,
+                editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
+                //foreignkeyfieldnames: assignmentgroupoverview_deadline_foreignkeyfieldnames,
+                record: deadlineRecord
+            }),
+            onSaveSuccess: function(record) {
+                this.close();
+                me.reload();
+            }
+        });
+        createDeadlineWindow.show();
+    }
 });

@@ -25,12 +25,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
 
         /**
          * @cfg
-         * Deadline ``Ext.data.Model``.
-         */
-        deadlinemodel: undefined,
-
-        /**
-         * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
          * The record is changed when a user selects a delivery.
          */
