@@ -349,6 +349,12 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
                                               filters=[dict(field='parentnode__short_name', comp='exact', value='a2'),
                                                        dict(field='parentnode__parentnode__short_name', comp='endswith', value='sem'),
                                                        dict(field='parentnode__parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 1)
+        qrywrap = SimplifiedAssignmentGroup.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='a2'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='sem'),
+                                                       dict(field='parentnode__parentnode__parentnode__short_name', comp='startswith', value='inf1')])
         self.assertEquals(len(qrywrap), 2)
 
     def test_search_exact_number_of_results(self):
@@ -485,6 +491,8 @@ class TestSimplifiedExaminerDeadline(SimplifiedExaminerTestBase):
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondsem_a3_g1.deadlines.all()[0],
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(len(search_res), len(expected_res))
         for s in search_res:
@@ -496,6 +504,8 @@ class TestSimplifiedExaminerDeadline(SimplifiedExaminerTestBase):
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstsem_a2_g1.deadlines.all()[0],
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(len(search_res), len(expected_res))
 
