@@ -1404,11 +1404,11 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=None)
         self.assertEquals(len(qrywrap), 6)
         with self.assertRaises(InvalidNumberOfResults):
-            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=7)
+            SimplifiedDeadline.search(self.admin1, exact_number_of_results=7)
         with self.assertRaises(InvalidNumberOfResults):
-            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=5)
+            SimplifiedDeadline.search(self.admin1, exact_number_of_results=5)
         with self.assertRaises(InvalidNumberOfResults):
-            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=0)
+            SimplifiedDeadline.search(self.admin1, exact_number_of_results=0)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
