@@ -43,7 +43,10 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
                 scale: 'large',
                 listeners: {
                     scope: this,
-                    click: this.onClearValue
+                    click: this.onClearValue,
+                    render: function() {
+                        this.down('storesearchfield').focus();
+                    }
                 }
             });
         }
@@ -75,6 +78,7 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
             }
         });
         this.callParent(arguments);
+
     },
 
     /**

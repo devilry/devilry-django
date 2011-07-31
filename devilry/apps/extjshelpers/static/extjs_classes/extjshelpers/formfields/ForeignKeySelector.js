@@ -53,7 +53,11 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            text: 'Hello world'
+            editable: false,
+            listeners: {
+                scope: this,
+                focus: this.onTriggerClick
+            }
         });
         this.callParent(arguments);
     },

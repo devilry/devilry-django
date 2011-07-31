@@ -30,6 +30,7 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
 
     onNewSearchValue: function(value) {
         var parsedValue = Ext.create('devilry.extjshelpers.SearchStringParser', {
+            pageSizeWithoutType: 10,
             searchstring: value
         });
 

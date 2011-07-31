@@ -75,10 +75,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 border: false,
                 bodyCls: 'editform-sidebar',
                 flex: 5,
-                items: [{
+                items: [this.errorlist, {
                     xtype: 'box',
                     html: this.editform.help || ''
-                }, this.errorlist]
+                }]
             }],
 
             dockedItems: [{
