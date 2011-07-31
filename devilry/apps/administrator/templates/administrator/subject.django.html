@@ -34,8 +34,8 @@
             heading.update(record.data);
         });
 
-        prettyview.addListener('edit', function(record) {
-            Ext.create('devilry.administrator.DefaultEditWindow', {
+        prettyview.addListener('edit', function(record, button) {
+            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
                 editpanel: Ext.ComponentManager.create({
                     xtype: 'restfulsimplified_editpanel',
                     model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
@@ -43,7 +43,9 @@
                     record: record
                 }),
                 prettyview: prettyview
-            }).show();
+            });
+            editwindow.show();
+            editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
         });
     });
 </script>

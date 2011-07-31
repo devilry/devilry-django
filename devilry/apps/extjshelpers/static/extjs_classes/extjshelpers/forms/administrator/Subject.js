@@ -1,7 +1,7 @@
 Ext.define('devilry.extjshelpers.forms.administrator.Subject', {
     extend: 'Ext.form.Panel',
     alias: 'widget.administrator_subjectform',
-    cls: 'widget-nodeform',
+    cls: 'widget-periodform',
     requires: [
         'devilry.extjshelpers.formfields.ForeignKeySelector'
     ],
@@ -37,7 +37,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Subject', {
         fieldLabel: "Parent",
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedNode',
-        emptyText: 'Select a parent node, or leave blank for no parent',
+        emptyText: 'Select a parent node',
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
     }],

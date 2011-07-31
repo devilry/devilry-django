@@ -16,6 +16,7 @@
     Ext.require('devilry.extjshelpers.ButtonBar');
     Ext.require('devilry.extjshelpers.forms.administrator.Node');
     Ext.require('devilry.extjshelpers.forms.administrator.Subject');
+    Ext.require('devilry.extjshelpers.forms.administrator.Period');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
@@ -80,9 +81,8 @@
                         title: 'Create new period',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            modelname: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
-                            editformitems: {{ restfulapi.RestfulSimplifiedPeriod|extjs_form_items}},
-                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedPeriod|extjs_foreignkeys }}
+                            model: {{ restfulapi.RestfulSimplifiedPeriod|extjs_modelname }},
+                            editform: Ext.widget('administrator_periodform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'period/view/{id}')
                     }).show();
