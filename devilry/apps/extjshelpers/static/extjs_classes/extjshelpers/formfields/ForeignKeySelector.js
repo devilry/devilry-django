@@ -18,6 +18,7 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
         this.callParent([config]);
         this.model = Ext.ModelManager.getModel(this.model);
         this.displayTpl = Ext.create('Ext.XTemplate', this.displayTpl);
+        this.realValue = '';
     },
 
     initComponent: function() {
@@ -60,6 +61,10 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
     },
 
     getValue: function() {
+        return this.realValue;
+    },
+
+    getRawValue: function() {
         return this.realValue;
     },
 
