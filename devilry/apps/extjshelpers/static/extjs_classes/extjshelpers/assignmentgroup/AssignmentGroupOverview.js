@@ -1,26 +1,6 @@
 /**
  *
- * Requires the following definitions in the django template:
- *
- *     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"subject,period,assignment,users" }};
- *    
- *     {{ restfulapi.RestfulSimplifiedDelivery|extjs_model:"deadline,assignment_group" }};
- *     {{ restfulapi.RestfulSimplifiedDelivery|extjs_store }};
- *    
- *     {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_model }};
- *     {{ restfulapi.RestfulSimplifiedStaticFeedback|extjs_store }};
- *    
- *     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_model }};
- *     {{ restfulapi.RestfulSimplifiedFileMeta|extjs_store }};
- *    
- *     {# These are used by the grade editor and only required is canExamine is true #}
- *     {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
- *     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_model }};
- *     {{ gradeeditors.RestfulSimplifiedFeedbackDraft|extjs_store }};
- *
- * The ones from ``restfulapi`` are for core classes, while the ones from
- * ``gradeeditors`` is from ``devilry.apps.gradeeditors``. You can dump this
- * code into the django template using:
+ * Requires the following icnlude in the django template:
  *
  *     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" %}
  */

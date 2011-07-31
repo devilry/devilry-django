@@ -1,4 +1,4 @@
-[{
+{
     xtype: 'form',
     border: false,
     items: [{
@@ -25,4 +25,4 @@
             }
         }
     }]
-}]
+}

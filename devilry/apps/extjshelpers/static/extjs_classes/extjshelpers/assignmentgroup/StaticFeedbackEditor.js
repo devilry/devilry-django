@@ -122,6 +122,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             isAdministrator: this.isAdministrator,
             items: {
                 xtype: 'container',
+                layout: 'fit',
                 loader: {
                     url: this.registryitem_recordcontainer.record.data.draft_editor_url,
                     renderer: 'component',
