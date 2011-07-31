@@ -7,7 +7,8 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
 
     config: {
         valueField: 'id',
-        //displayField: 'id',
+        displayTpl: '{id}',
+        emptyText: 'Select something',
         dropdownTpl: '{id}'
     },
 

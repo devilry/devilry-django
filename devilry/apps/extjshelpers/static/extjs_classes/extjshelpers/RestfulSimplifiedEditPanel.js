@@ -121,7 +121,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         });
     },
 
-    onSaveSuccess: function(record) {
+    onSaveSuccess: function(form, action) {
+        var record = action.record;        
         this.fireEvent('saveSucess', record);
     },
 
