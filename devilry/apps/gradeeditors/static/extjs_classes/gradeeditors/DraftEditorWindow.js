@@ -1,6 +1,6 @@
-Ext.define('devilry.extjshelpers.DraftEditorWindow', {
+Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
-    alias: 'widget.gradeeditor',
+    alias: 'widget.gradedrafteditor',
     title: 'Create feedback',
     width: 800,
     height: 600,
