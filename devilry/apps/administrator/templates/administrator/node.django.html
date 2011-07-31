@@ -30,7 +30,7 @@
             ]
         });
 
-        function showEditWindow(record) {
+        function showEditWindow(record, button) {
             var editpanel = Ext.ComponentManager.create({
                 xtype: 'restfulsimplified_editpanel',
                 model: 'devilry.extjshelpers.models.Node',
@@ -40,15 +40,18 @@
             });
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
                 editpanel: editpanel,
-                prettyview: prettyview
+                prettyview: prettyview,
+                width: 500,
+                height: 300
             });
             editwindow.show();
+            editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
         }
 
         prettyview.addListener('edit', showEditWindow);
         prettyview.addListener('loadmodel', function(record) {
             heading.update(record.data);
-            showEditWindow(record);
+            //showEditWindow(record);
         });
     });
 </script>

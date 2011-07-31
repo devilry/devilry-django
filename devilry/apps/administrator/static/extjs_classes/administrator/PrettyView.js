@@ -56,6 +56,7 @@ Ext.define('devilry.administrator.PrettyView', {
              * @event
              * Fired when the edit button is clicked.
              * @param {Ext.model.Model} record The record to edit.
+             * @param button The edit button.
              */
             'edit');
         this.callParent([config]);
@@ -74,6 +75,7 @@ Ext.define('devilry.administrator.PrettyView', {
 
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
+            menu: [],
             scale: 'medium',
             listeners: {
                 scope: this,
@@ -120,8 +122,8 @@ Ext.define('devilry.administrator.PrettyView', {
         throw 'Failed to load the model';
     },
 
-    onEdit: function() {
-        this.fireEvent('edit', this.record);
+    onEdit: function(button) {
+        this.fireEvent('edit', this.record, button);
     },
 
     /** Set record. Triggers the loadmodel event. */
