@@ -149,6 +149,9 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         return localfilters;
     },
 
+    /**
+     * @private
+     */
     applyFirstMatchingShortcut: function(shortcuts, fieldname) {
         var realFieldname = undefined;
         Ext.Object.each(shortcuts, function(shortcut, replacement) {

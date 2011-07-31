@@ -1,7 +1,10 @@
 Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.foreignkeybrowser',
-    showHeaders: false,
+    requires: [
+        'devilry.extjshelpers.formfields.StoreSearchField'
+    ],
+    hideHeaders: true,
     border: false,
 
     config: {
@@ -27,6 +30,14 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
 
         Ext.apply(this, {
             dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [{
+                    xtype: 'storesearchfield',
+                    emptyText: 'Search...',
+                    store: this.store
+                }]
+            }, {
                 xtype: 'pagingtoolbar',
                 store: this.store,
                 dock: 'bottom',
