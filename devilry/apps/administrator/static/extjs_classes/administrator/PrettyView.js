@@ -85,6 +85,10 @@ Ext.define('devilry.administrator.PrettyView', {
 
         var tbar = ['->', this.deletebutton, this.editbutton];
 
+        if(this.extraMeButtons) {
+            Ext.Array.insert(tbar, 2, this.extraMeButtons);
+        }
+
         //if(this.pluginItems) {
             //Ext.Array.insert(tbar, 0, this.pluginItems);
         //}

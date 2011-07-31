@@ -53,23 +53,6 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
         format: 'Y-m-d H:i:s',
         emptyText: 'YYYY-MM-DD hh:mm:ss',
         value: new Date()
-    //}, {
-        //xtype: 'fieldcontainer',
-        //fieldLabel: 'Advanced',
-        //items: [{
-            //name: "must_pass",
-            //fieldLabel: "Must pass?",
-            //xtype: 'checkbox',
-            //checked: true
-        //}, {
-            //name: "attempts",
-            //fieldLabel: "Attempts",
-            //xtype: 'textfield'
-        //}, {
-            //name: "anonymous",
-            //fieldLabel: "Anonymous?",
-            //xtype: 'checkbox'
-        //}]
     }],
 
     help: [
