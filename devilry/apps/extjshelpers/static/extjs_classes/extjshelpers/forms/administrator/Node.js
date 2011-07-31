@@ -43,7 +43,9 @@ Ext.define('devilry.extjshelpers.forms.administrator.Node', {
         allowEmpty: true
     }],
 
-    help: '<p><strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).</p>' +
-        '<p><strong>Long name</strong> is a longer descriptive name which can contain any character.</p>' +
-        '<p><strong>Parent</strong> is empty if this is a top-level node.</p>'
+    help: [
+        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).</p>',
+        '<strong>Long name</strong> is a longer descriptive name which can contain any character.',
+        '<strong>Parent</strong> is empty if this is a top-level node.'
+    ]
 });

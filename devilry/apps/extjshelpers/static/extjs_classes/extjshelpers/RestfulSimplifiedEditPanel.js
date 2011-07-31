@@ -77,7 +77,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 flex: 5,
                 items: [this.errorlist, {
                     xtype: 'box',
-                    html: this.editform.help || ''
+                    html: this.parseHelp()
                 }]
             }],
 
@@ -104,6 +104,17 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         if(this.record) {
             this.loadRecord();
         }
+    },
+
+    parseHelp: function() {
+        if(!this.editform.help) {
+            return '';
+        }
+        var help = '';
+        Ext.Array.each(this.editform.help, function(helpitem) {
+            help += Ext.String.format('<p>{0}</p>', helpitem);
+        });
+        return help;
     },
 
     onSave: function() {
