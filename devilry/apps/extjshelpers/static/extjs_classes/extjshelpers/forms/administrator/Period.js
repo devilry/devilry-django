@@ -41,7 +41,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
         fieldLabel: "Subject",
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedSubject',
-        emptyText: 'Select a parent subject',
+        emptyText: 'Select a subject',
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
     }, {
@@ -77,7 +77,6 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
     help: [
         '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_)',
         '<strong>Long name</strong> is a longer descriptive name which can contain any character.',
-        '<strong>Parent</strong> the subject where this period belongs.'
+        'Choose the <strong>subject</strong> where this period belongs.'
     ]
-
 });

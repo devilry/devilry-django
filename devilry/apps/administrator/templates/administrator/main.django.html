@@ -17,6 +17,7 @@
     Ext.require('devilry.extjshelpers.forms.administrator.Node');
     Ext.require('devilry.extjshelpers.forms.administrator.Subject');
     Ext.require('devilry.extjshelpers.forms.administrator.Period');
+    Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
@@ -101,9 +102,8 @@
                         title: 'Create new assignment',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-                            editformitems: {{ restfulapi.RestfulSimplifiedAssignment|extjs_form_items}},
-                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }}
+                            model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+                            editform: Ext.widget('administrator_assignmentform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'assignment/view/{id}')
                     }).show();

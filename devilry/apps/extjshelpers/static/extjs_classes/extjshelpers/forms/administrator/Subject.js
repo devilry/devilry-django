@@ -37,7 +37,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Subject', {
         fieldLabel: "Parent",
         xtype: 'foreignkeyselector',
         model: 'devilry.apps.administrator.simplified.SimplifiedNode',
-        emptyText: 'Select a parent node',
+        emptyText: 'Select a parent-node',
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
     }],
