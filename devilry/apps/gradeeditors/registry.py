@@ -3,6 +3,7 @@
 
     A :class:`Registry`-object.
 """
+import json
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
@@ -77,6 +78,44 @@ class RegistryItem(object):
                     description = cls.description,
                     config_editor_url = cls.config_editor_url,
                     draft_editor_url = cls.draft_editor_url)
+
+
+class JsonRegistryItem(RegistryItem):
+    """ RegistryItem with extra utility functions for use with JSON config and draft strings """
+    @classmethod
+    def decode_configstring(cls, configstring):
+        """ Decode ``configstring`` using ``json.loads`` and return the result.
+        Raise ConfigValidationError if it fails. """
+        try:
+            return json.loads(configstring)
+        except ValueError, e:
+            raise ConfigValidationError('Could not decode config string as JSON.')
+
+    @classmethod
+    def decode_draftstring(cls, draftstring):
+        """ Decode ``draftstring`` using ``json.loads`` and return the result.
+        Raise DraftValidationError if it fails. """
+        try:
+            return json.loads(draftstring)
+        except ValueError, e:
+            raise DraftValidationError('Could not decode config string as JSON.')
+
+    @classmethod
+    def validate_dict(cls, valuedict, exceptioncls, typedict):
+        """
+        Validate that each key in ``typedict`` is in ``valuedict``, and that
+        the type of the values in ``valuedict`` reflects the types in
+        ``typedict``.
+
+        Raise ``exceptioncls`` with an error message if any validation fails.
+        """
+        for key, value in valuedict.iteritems():
+            if not key in typedict:
+                raise exceptioncls('{0} is required.'.format(key))
+            if not isinstance(value, typedict[key]):
+                raise exceptioncls('{0} must be of type: {1}.'.format(key, typedict[key]))
+
+
 
 
 class Registry(object):
