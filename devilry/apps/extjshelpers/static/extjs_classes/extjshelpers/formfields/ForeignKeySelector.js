@@ -7,7 +7,7 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
 
     config: {
         valueField: 'id',
-        displayField: 'id',
+        //displayField: 'id',
         dropdownTpl: '{id}'
     },
 
@@ -36,5 +36,19 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
             },
         });
         this.callParent(arguments);
+    },
+
+    /** Display ``this.displayTpl`` if any selection, or ``this.emptyText`` if
+     * no selection. */
+    setValue: function(value, doSelect) {
+        value = Ext.Array.from(value);
+        this.callParent(value, doSelect);
+        if(value.length > 0) {
+            var record = value[0];
+            this.displayTplData = record.data;
+            this.setRawValue(this.getDisplayValue());
+        } else {
+            this.setRawValue(this.emptyText);
+        }
     }
 });
