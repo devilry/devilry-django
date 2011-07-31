@@ -51,6 +51,7 @@
                         title: 'Create new node',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
+                            model: Ext.ModelManager.getModel('devilry.extjshelpers.models.Node'),
                             editform: Ext.widget('nodeform')
                             //foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
                         }),
