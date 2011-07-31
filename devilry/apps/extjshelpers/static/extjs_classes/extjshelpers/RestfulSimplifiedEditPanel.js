@@ -41,11 +41,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     initComponent: function() {
         this.errorlist = Ext.create('devilry.extjshelpers.ErrorList');
-
-        console.log(this.model);
-        //console.log(this.editform.supermodel);
-        //console.log(this.editform.stuff);
-
         if(this.editformitems) {
             this.editform = Ext.ComponentManager.create({
                 xtype: 'form',

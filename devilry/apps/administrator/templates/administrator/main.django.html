@@ -24,17 +24,6 @@
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }},
 
     Ext.onReady(function() {
-        Ext.create('devilry.administrator.DefaultCreateWindow', {
-            title: 'Create new node',
-            editpanel: Ext.ComponentManager.create({
-                xtype: 'restfulsimplified_editpanel',
-                model: Ext.ModelManager.getModel('devilry.extjshelpers.models.Node'),
-                editform: Ext.widget('nodeform')
-                //foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
-            }),
-            successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
-        }).show();
-
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
             width: 600,
