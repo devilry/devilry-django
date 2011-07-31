@@ -9,7 +9,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
         height: 450
     },
 
-    flex: 8,
+    flex: 6,
 
     layout: {
         type: 'vbox',
@@ -73,7 +73,8 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
     }],
 
     help: [
-        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_)',
+        {state: 'new', text: 'Set up the mandatory properties of an assignment. Further customization is available after you create the assignment.'},
+        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).',
         '<strong>Long name</strong> is a longer descriptive name which can contain any character.',
         'You must choose the <strong>period</strong> where this period belongs. A period is normally a semester.',
         'The <strong>publishing time</strong> is the time when students will be able to start adding deliveries on the assignment.'

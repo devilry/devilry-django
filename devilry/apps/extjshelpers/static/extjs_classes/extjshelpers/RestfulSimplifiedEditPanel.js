@@ -3,7 +3,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.restfulsimplified_editpanel',
     requires: ['devilry.extjshelpers.RestSubmit'],
-    layout: 'fit',
 
     config: {
         /**
@@ -65,6 +64,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
         Ext.apply(this, {
             layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+
+            layout: {
                 type: 'hbox',
                 align: 'stretch'
             },
@@ -111,8 +115,15 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
             return '';
         }
         var help = '';
-        Ext.Array.each(this.editform.help, function(helpitem) {
-            help += Ext.String.format('<p>{0}</p>', helpitem);
+        var me = this;
+        var state = this.record == undefined? 'new': 'existing';
+        Ext.Array.each(this.editform.help, function(helpobj) {
+            if(Ext.typeOf(helpobj) === 'string') {
+                helpobj = {text: helpobj};
+            }
+            if(helpobj.state == undefined || (helpobj.state == state)) {
+                help += Ext.String.format('<p>{0}</p>', helpobj.text);
+            }
         });
         return help;
     },

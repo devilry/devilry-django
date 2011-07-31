@@ -27,11 +27,13 @@ Ext.define('devilry.extjshelpers.forms.administrator.Node', {
     items: [{
         name: "short_name",
         fieldLabel: "Short name",
-        xtype: 'textfield'
+        xtype: 'textfield',
+        emptyText: 'Example: mathfacultly'
     }, {
         name: "long_name",
         fieldLabel: "Long name",
-        xtype: 'textfield'
+        xtype: 'textfield',
+        emptyText: 'Example: Faculty of Mathematics'
     }, {
         name: "parentnode",
         fieldLabel: "Parent",
