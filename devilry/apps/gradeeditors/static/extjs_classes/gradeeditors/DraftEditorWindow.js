@@ -27,6 +27,33 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         this.initConfig(config);
     },
 
+
+    initComponent: function() {
+        Ext.apply(this, {
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                items: ['->', {
+                    xtype: 'button',
+                    text: 'Publish',
+                    scale: 'large',
+                    iconCls: 'icon-save-32',
+                    listeners: {
+                        scope: this,
+                        click: this.onPublish
+                    }
+                }]
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+
+    onPublish: function() {
+        console.log(this);
+        this.down('form').onPublish();
+    },
+
     /**
      * Exit the grade editor.
      */
