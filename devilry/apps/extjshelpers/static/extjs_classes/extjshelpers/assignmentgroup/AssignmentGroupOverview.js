@@ -183,7 +183,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             }
         });
 
-        var tbarItems = [this.onOtherDeliveriesBtn, {
+        var tbarItems = [{
             xtype: 'button',
             menu: [], // To get an arrow
             id: 'tooltip-deliveries',
@@ -194,7 +194,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 scope: this,
                 click: this.onDeadlines
             }
-        }, '->', {
+        }, this.onOtherDeliveriesBtn, '->', {
             xtype: 'deliveryinfo',
             delivery_recordcontainer: this.delivery_recordcontainer,
             filemetastore: this.filemetastore
@@ -205,7 +205,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 xtype: 'button',
                 menu: [], // To get an arrow
                 id: 'tooltip-uncorrected-groups',
-                text: 'Uncorrected groups',
+                text: 'Open groups',
                 scale: 'large',
                 enableToggle: true,
                 listeners: {
@@ -266,7 +266,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     onOtherDeliveries: function(button) {
         if(!this.deliveriesWindow) {
             this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries and deadlines',
+                title: 'Deliveries',
                 height: 500,
                 width: 400,
                 modal: true,
