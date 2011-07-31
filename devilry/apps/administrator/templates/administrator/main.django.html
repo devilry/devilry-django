@@ -14,8 +14,7 @@
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
-    Ext.require('devilry.extjshelpers.forms.Node');
-    Ext.require('devilry.extjshelpers.models.Node');
+    Ext.require('devilry.extjshelpers.forms.administrator.Node');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
@@ -40,8 +39,8 @@
                         title: 'Create new node',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            model: 'devilry.extjshelpers.models.Node',
-                            editform: Ext.widget('nodeform')
+                            model: 'devilry.apps.administrator.simplified.SimplifiedNode',
+                            editform: Ext.widget('administrator_nodeform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
                     }).show();

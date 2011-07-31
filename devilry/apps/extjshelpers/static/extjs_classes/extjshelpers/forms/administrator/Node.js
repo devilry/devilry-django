@@ -1,6 +1,6 @@
-Ext.define('devilry.extjshelpers.forms.Node', {
+Ext.define('devilry.extjshelpers.forms.administrator.Node', {
     extend: 'Ext.form.Panel',
-    alias: 'widget.nodeform',
+    alias: 'widget.administrator_nodeform',
     cls: 'widget-nodeform',
     requires: [
         'devilry.extjshelpers.formfields.ForeignKeySelector'
@@ -36,7 +36,7 @@ Ext.define('devilry.extjshelpers.forms.Node', {
         name: "parentnode",
         fieldLabel: "Parent",
         xtype: 'foreignkeyselector',
-        model: 'devilry.extjshelpers.models.Node',
+        model: 'devilry.apps.administrator.simplified.SimplifiedNode',
         emptyText: 'Select a parent node, or leave blank for no parent',
         displayTpl: '{long_name} ({short_name})',
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>',

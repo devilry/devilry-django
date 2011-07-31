@@ -11,8 +11,7 @@
 
     Ext.require('devilry.administrator.node.PrettyView');
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
-    Ext.require('devilry.extjshelpers.forms.Node');
-    Ext.require('devilry.extjshelpers.models.Node');
+    Ext.require('devilry.extjshelpers.forms.administrator.Node');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.node.PrettyView', {
             renderTo: 'content-main',
@@ -33,8 +32,8 @@
         function showEditWindow(record, button) {
             var editpanel = Ext.ComponentManager.create({
                 xtype: 'restfulsimplified_editpanel',
-                model: 'devilry.extjshelpers.models.Node',
-                editform: Ext.widget('nodeform'),
+                model: 'devilry.apps.administrator.simplified.SimplifiedNode',
+                editform: Ext.widget('administrator_nodeform'),
                 record: record
             });
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
