@@ -6,6 +6,11 @@ Ext.define('devilry.extjshelpers.forms.Node', {
         'devilry.extjshelpers.formfields.ForeignKeySelector'
     ],
 
+    suggested_windowsize: {
+        width: 600,
+        height: 400
+    },
+
     flex: 8,
 
     layout: {

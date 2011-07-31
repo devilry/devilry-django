@@ -40,8 +40,8 @@
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
                 editpanel: editpanel,
                 prettyview: prettyview,
-                width: 550,
-                height: 330
+                //width: devilry.extjshelpers.forms.Node.suggested_windowsize.width,
+                //height: devilry.extjshelpers.forms.Node.suggested_windowsize.height
             });
             editwindow.show();
             editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
