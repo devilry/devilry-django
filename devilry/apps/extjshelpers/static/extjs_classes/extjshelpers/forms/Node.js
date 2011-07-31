@@ -31,9 +31,11 @@ Ext.define('devilry.extjshelpers.forms.Node', {
         name: "parentnode",
         fieldLabel: "Parent",
         xtype: 'foreignkeyselector',
+        model: 'devilry.extjshelpers.models.Node',
         valueField: 'id',
         emptyText: 'Select a parent node, or leave blank for no parent',
         displayTpl: '{long_name} ({short_name})',
+
         dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
     }],
 
