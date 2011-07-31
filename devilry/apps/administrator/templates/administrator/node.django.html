@@ -32,7 +32,7 @@
         function showEditWindow(record, button) {
             var editpanel = Ext.ComponentManager.create({
                 xtype: 'restfulsimplified_editpanel',
-                model: 'devilry.apps.administrator.simplified.SimplifiedNode',
+                model: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
                 editform: Ext.widget('administrator_nodeform'),
                 record: record
             });

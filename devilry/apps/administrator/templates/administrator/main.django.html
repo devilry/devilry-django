@@ -15,6 +15,7 @@
     Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
     Ext.require('devilry.extjshelpers.forms.administrator.Node');
+    Ext.require('devilry.extjshelpers.forms.administrator.Subject');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
@@ -39,7 +40,7 @@
                         title: 'Create new node',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            model: 'devilry.apps.administrator.simplified.SimplifiedNode',
+                            model: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
                             editform: Ext.widget('administrator_nodeform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
@@ -59,9 +60,8 @@
                         title: 'Create new subject',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-                            editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
-                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }}
+                            model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
+                            editform: Ext.widget('administrator_subjectform')
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'subject/view/{id}')
                     }).show();
