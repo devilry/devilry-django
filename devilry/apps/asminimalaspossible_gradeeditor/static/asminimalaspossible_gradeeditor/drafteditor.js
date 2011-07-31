@@ -1,32 +1,44 @@
 {
-    xtype: 'form',
+    padding: 20,
     border: false,
+    frame: false,
+    xtype: 'form',
     items: [{
         xtype: 'checkboxfield',
         boxLabel: 'Approved',
         id: 'approved-checkbox'
     }],
 
-    //buttons: [{
-        //text: 'Publish feedback',
-        //handler: function() {
-            //if (this.up('form').getForm().isValid()) {
-                //var approved = Ext.getCmp('approved-checkbox').getValue();
-                //var draft = Ext.JSON.encode(approved);
 
-                //var gradedrafteditor = this.up('gradedrafteditor');
-                //gradedrafteditor.saveDraftAndPublish(draft);
-            //}
-        //}
-    //}],
+    createDraft: function() {
+        var approved = Ext.getCmp('approved-checkbox').getValue();
+        var draft = Ext.JSON.encode(approved);
+        return draft;
+    },
 
+    /**
+     * Called when the 'save draft' button is clicked.
+     */
+    onSaveDraft: function() {
+        if (this.getForm().isValid()) {
+            var draft = this.createDraft();
+            var gradedrafteditor = this.up('gradedrafteditor');
+            gradedrafteditor.saveDraft(draft, this.onFailure);
+        }
+    },
+
+    /**
+     * Called when the publish button is clicked.
+     */
     onPublish: function() {
         if (this.getForm().isValid()) {
-            var approved = Ext.getCmp('approved-checkbox').getValue();
-            var draft = Ext.JSON.encode(approved);
-
+            var draft = this.createDraft();
             var gradedrafteditor = this.up('gradedrafteditor');
-            gradedrafteditor.saveDraftAndPublish(draft);
+            gradedrafteditor.saveDraftAndPublish(draft, this.onFailure);
         }
+    },
+
+    onFailure: function() {
+        console.error('Failed!');
     }
 }

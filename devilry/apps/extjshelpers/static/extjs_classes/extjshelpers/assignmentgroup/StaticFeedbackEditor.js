@@ -121,7 +121,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             deliveryid: this.delivery_recordcontainer.record.data.id,
             isAdministrator: this.isAdministrator,
             items: {
-                xtype: 'container',
+                xtype: 'panel',
+                frame: false,
+                border: false,
                 layout: 'fit',
                 loader: {
                     url: this.registryitem_recordcontainer.record.data.draft_editor_url,

@@ -33,11 +33,21 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
+                ui: 'footer',
                 items: ['->', {
+                    xtype: 'button',
+                    text: 'Save draft',
+                    scale: 'large',
+                    iconCls: 'icon-save-32',
+                    listeners: {
+                        scope: this,
+                        click: this.onSaveDraft,
+                    }
+                }, {
                     xtype: 'button',
                     text: 'Publish',
                     scale: 'large',
-                    iconCls: 'icon-save-32',
+                    iconCls: 'icon-add-32',
                     listeners: {
                         scope: this,
                         click: this.onPublish
@@ -48,19 +58,41 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         this.callParent(arguments);
     },
 
-
-    onPublish: function() {
-        console.log(this);
-        this.down('form').onPublish();
+    /**
+     * @private
+     * Get the draft editor.
+     */
+    getDraftEditor: function() {
+        return this.getComponent(0).getComponent(0);
     },
 
     /**
+     * @private
+     * Call the onPublish() method in the draft editor.
+     */
+    onPublish: function() {
+        this.getDraftEditor().onPublish();
+    },
+
+    /**
+     * @private
+     * Call the onSaveDraft() method in the draft editor.
+     */
+    onSaveDraft: function() {
+        this.getDraftEditor().onSaveDraft();
+    },
+
+    /**
+     * @private
      * Exit the grade editor.
      */
     exit: function() {
         this.close();
     },
 
+    /**
+     * @private
+     */
     save: function(published, draft, saveconfig) {
         var classname = Ext.String.format(
             'devilry.apps.gradeeditors.simplified.{0}.SimplifiedFeedbackDraft',
@@ -74,18 +106,26 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         staticfeedback.save(saveconfig, saveconfig);
     },
 
+    /**
+     * Save the current draft.
+     */
     saveDraft: function(draft, onFailure) {
         this.save(false, draft, {
+            scope: this.getDraftEditor(),
             failure: onFailure
         });
     },
 
+    /**
+     * Save and publish draft.
+     *
+     * @param onFailure
+     */
     saveDraftAndPublish: function(draft, onFailure) {
         var me = this;
         this.save(true, draft, {
+            scope: this.getDraftEditor(),
             success: function(response) {
-                console.log("Success");
-                console.log(response.data);
                 me.exit();
             },
             failure: onFailure
