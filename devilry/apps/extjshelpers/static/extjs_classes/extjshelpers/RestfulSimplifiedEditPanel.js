@@ -42,6 +42,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     initComponent: function() {
         this.errorlist = Ext.create('devilry.extjshelpers.ErrorList');
 
+        console.log(this.model);
+        //console.log(this.editform.supermodel);
+        //console.log(this.editform.stuff);
+
         if(this.editformitems) {
             this.editform = Ext.ComponentManager.create({
                 xtype: 'form',
@@ -108,9 +112,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     onSave: function() {
         this.errorlist.clearErrors();
         var me = this;
+
         this.editform.getForm().doAction('devilryrestsubmit', {
             submitEmptyText: true,
             waitMsg: 'Saving item...',
+            model: this.model,
             success: function(form, action) {
                 me.onSaveSuccess(form, action);
             },
@@ -120,12 +126,11 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         });
     },
 
-    onSaveSuccess: function(form, action) {
-        var record = action.record;
+    onSaveSuccess: function(record) {
         this.fireEvent('saveSucess', record);
     },
 
-    onSaveFailure: function(form, action) {
+    onSaveFailure: function(record, action) {
         var errormessages = action.operation.responseData.items.errormessages;
         var me = this;
         Ext.each(errormessages, function(errormessage) {

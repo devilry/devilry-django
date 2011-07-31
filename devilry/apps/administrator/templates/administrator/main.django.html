@@ -14,6 +14,8 @@
     Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
     Ext.require('devilry.extjshelpers.ButtonBarButton');
     Ext.require('devilry.extjshelpers.ButtonBar');
+    Ext.require('devilry.extjshelpers.forms.Node');
+    Ext.require('devilry.extjshelpers.models.Node');
 
 
     {{ restfulapi.RestfulSimplifiedNode|extjs_model }},
@@ -22,6 +24,16 @@
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields" }},
 
     Ext.onReady(function() {
+        Ext.create('devilry.administrator.DefaultCreateWindow', {
+            title: 'Create new node',
+            editpanel: Ext.ComponentManager.create({
+                xtype: 'restfulsimplified_editpanel',
+                model: Ext.ModelManager.getModel('devilry.extjshelpers.models.Node'),
+                editform: Ext.widget('nodeform')
+                //foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
+            }),
+            successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
+        }).show();
 
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
@@ -39,9 +51,8 @@
                         title: 'Create new node',
                         editpanel: Ext.ComponentManager.create({
                             xtype: 'restfulsimplified_editpanel',
-                            modelname: {{ restfulapi.RestfulSimplifiedNode|extjs_modelname }},
-                            editformitems: {{ restfulapi.RestfulSimplifiedNode|extjs_form_items}},
-                            foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
+                            editform: Ext.widget('nodeform')
+                            //foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedNode|extjs_foreignkeys }}
                         }),
                         successUrlTpl: Ext.create('Ext.XTemplate', 'node/view/{id}')
                     }).show();
