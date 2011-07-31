@@ -1,19 +1,14 @@
-from os.path import dirname, join, exists, sep
+from os.path import dirname, join, exists
 from os import listdir, environ, mkdir
 from subprocess import call
 import sys
 import logging
 import argparse
 import os
-#from devilryclient.restfulclient import RestfulFactory
 from ConfigParser import ConfigParser
 
 import datetime
 import time
-
-
-def helloworld():
-    print "Hello world"
 
 
 def showhelp():
@@ -46,18 +41,12 @@ def getcommandlist():
     return commands
 
 
-def getthisdir():
-    """
-    :return: Current directory
-    """
-    return dirname(__file__)
-
-
 def getpluginsdir():
     """
     :return: Plugins directory
     """
-    return join(getthisdir(), "plugins")
+    thisdir = dirname(__file__)
+    return join(thisdir, "plugins")
 
 
 def pathwithargs(path, args):
@@ -81,7 +70,6 @@ def execute(command, args):
     :param command: The command to be called
     :param args: Additional arguments
     """
-    logging.warning('Hello from utils.py')
     #TODO should not search for .py files
     path = join(getpluginsdir(), command + ".py")
     if exists(path):
@@ -122,7 +110,7 @@ def logging_startup(args):
         log_level = logging.WARNING
     elif args.v:
         log_level = logging.DEBUG
-    logging.basicConfig(format='%(message)s', level=log_level)
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=log_level)
     #retrun args that are needed for command
     return args.otherargs
 
@@ -137,8 +125,8 @@ def findconffolder():
             return join(cwd, '.devilry')
         else:
             cwd = dirname(cwd)
-
-    raise ValueError(".devirly not found")
+    logging.error('Not in a devilry workspace (or any parent up to home directory)')
+    raise SystemExit()
 
 
 def create_folder(path):
@@ -175,42 +163,6 @@ def save_metadata(metadata):
     metadata_f = open(join(conf_dir, 'metadata'), 'w')
     metadata_f.write(str(metadata))
     metadata_f.close()
-
-
-# def get_metadata_from_path(path, metadata=None):
-#     """Given a path, find the the context the path belongs to, and
-#     the metadata for that level.
-
-#     :return: (context, metadata)
-#     """
-#     root_dir = dirname(findconffolder())
-#     split_path = path.replace(root_dir, '').split(sep)
-
-#     # might be a plugin already fetched the metadata, so no need to
-#     # fetch it again
-#     if not metadata:
-#         metadata = get_metadata()
-
-#     # alias split_path to something shorter
-#     p = split_path
-#     d = len(split_path)  # d for depth
-
-#     if d == 1:
-#         return metadata
-#     elif d == 2:
-#         return metadata[p[1]]
-#     elif d == 3:
-#         return metadata[p[1]][p[2]]
-#     elif d == 4:
-#         return metadata[p[1]][p[2]][p[3]]
-#     elif d == 5:
-#         return metadata[p[1]][p[2]][p[3]][p[4]]
-#     elif d == 6:
-#         return metadata[p[1]][p[2]][p[3]][p[4]][p[5]]
-#     elif d == 7:
-#         return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]]
-#     else:
-#         return metadata[p[1]][p[2]][p[3]][p[4]][p[5]][p[6]][p[7]]
 
 
 def deadline_format(deadline):

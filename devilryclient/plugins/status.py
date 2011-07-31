@@ -52,6 +52,7 @@ from devilryclient.utils import findconffolder, get_config, get_metadata
 from os.path import dirname, join, sep, exists
 from os import listdir
 import sys
+import logging
 
 
 class DevilryClientStatus(object):
@@ -89,6 +90,10 @@ class DevilryClientStatus(object):
 
     def collect_data(self):
         for key in sorted(self.metadata.keys()):
+            if self.soi != None and not key.startswith(self.soi):
+                continue
+            if len(key.split(sep)) > 7:
+                continue
             print key
             for metakey in self.metadata[key].keys():
                 if metakey == 'query_result':
