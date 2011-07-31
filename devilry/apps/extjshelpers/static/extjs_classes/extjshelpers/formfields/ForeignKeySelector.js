@@ -25,7 +25,11 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
                 remoteFilter: true,
                 remoteSort: true,
                 autoSync: true,
-                autoLoad: true
+                autoLoad: true,
+                listeners: {
+                    scope: this,
+                    load: this.onStoreLoad
+                },
             }),
 
             listConfig: {
@@ -34,9 +38,24 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
                 getInnerTpl: function() {
                     return me.dropdownTpl;
                 }
-            },
+            }
         });
         this.callParent(arguments);
+    },
+
+    onStoreLoad: function(store, records, successful) {
+        if(successful) {
+            console.log('storeLoaded');
+            var form = this.up('form');
+            record = form.getRecord();
+            //var fields = form.getForm().getFields();
+            //var field = fields.filter('name', fieldname).items[0];
+            //field.setValue(records[0].data[fieldname]);
+            console.log(record.data.parentnode);
+            this.setValue(records[0]);
+        } else {
+            throw "Failed to load store for foreign key."
+        }
     },
 
     /** Display ``this.displayTpl`` if any selection, or ``this.emptyText`` if

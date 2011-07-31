@@ -41,6 +41,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     initComponent: function() {
         this.errorlist = Ext.create('devilry.extjshelpers.ErrorList');
+        this.model = Ext.ModelManager.getModel(this.model);
+
         if(this.editformitems) {
             this.editform = Ext.ComponentManager.create({
                 xtype: 'form',
@@ -138,13 +140,13 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         this.editform.loadRecord(this.record);
 
         // Set foreign key field values
-        var fields = this.editform.getForm().getFields();
-        var me = this;
-        Ext.each(this.foreignkeyfieldnames, function(fieldname) {
-            var field = fields.filter('name', fieldname).items[0];
-            field.store.load(function(store, records, successful) {
-                field.setValue(me.record.data[fieldname]);
-            });
-        });
+        //var fields = this.editform.getForm().getFields();
+        //var me = this;
+        //Ext.each(this.foreignkeyfieldnames, function(fieldname) {
+            //var field = fields.filter('name', fieldname).items[0];
+            //field.store.load(function(store, records, successful) {
+                //field.setValue(me.record.data[fieldname]);
+            //});
+        //});
     }
 });
