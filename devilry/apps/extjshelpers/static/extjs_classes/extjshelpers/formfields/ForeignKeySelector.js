@@ -33,7 +33,13 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
          * @cfg
          * The ``Ext.data.Model`` where the data is located. The model must have a proxy.
          */
-        model: undefined
+        model: undefined,
+
+        /**
+         * @cfg
+         * Allow empty?
+         */
+        allowEmpty: false
     },
 
     constructor: function(config) {
@@ -62,6 +68,7 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
                 xtype: 'foreignkeybrowser',
                 model: this.model,
                 foreignkeyselector: this,
+                allowEmpty: this.allowEmpty,
                 tpl: this.dropdownTpl
             }
         });
@@ -102,6 +109,12 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
 
     onLoadFailure: function() {
         throw "Failed to load foreign key value.";
+    },
+
+    // Triggered by ForeignKeyBrowser.
+    onClearValue: function(record) {
+        this.realValue = '';
+        this.setValue('');
     },
 
     // Triggered by ForeignKeyBrowser.

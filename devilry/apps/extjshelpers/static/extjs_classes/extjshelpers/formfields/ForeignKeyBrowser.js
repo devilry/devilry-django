@@ -10,8 +10,9 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
 
     config: {
         tpl: '{id}',
-        model: 'devilry.extjshelpers.models.Node',
-        foreignkeyselector: undefined
+        model: undefined,
+        foreignkeyselector: undefined,
+        allowEmpty: false
     },
 
     constructor: function(config) {
@@ -29,20 +30,34 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
             autoLoad: true
         });
 
+        var toolbarItems = [{
+            xtype: 'storesearchfield',
+            emptyText: 'Search...',
+            store: this.store
+        }];
+        if(this.allowEmpty) {
+            toolbarItems.push('->');
+            toolbarItems.push({
+                xtype: 'button',
+                text: 'Clear value',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onClearValue
+                }
+            });
+        }
+
         Ext.apply(this, {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
-                items: [{
-                    xtype: 'storesearchfield',
-                    emptyText: 'Search...',
-                    store: this.store
-                }]
+                items: toolbarItems
             }, {
                 xtype: 'pagingtoolbar',
                 store: this.store,
                 dock: 'bottom',
-                displayInfo: true
+                displayInfo: false
             }],
 
             columns: [{
@@ -60,6 +75,14 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
             }
         });
         this.callParent(arguments);
+    },
+
+    /**
+     * @private
+     */
+    onClearValue: function() {
+        this.foreignkeyselector.onClearValue();
+        this.up('window').close();
     },
 
     /**

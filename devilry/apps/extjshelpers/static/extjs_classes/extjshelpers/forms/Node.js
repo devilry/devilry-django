@@ -6,7 +6,7 @@ Ext.define('devilry.extjshelpers.forms.Node', {
         'devilry.extjshelpers.formfields.ForeignKeySelector'
     ],
 
-    flex: 10,
+    flex: 8,
 
     layout: {
         type: 'vbox',
@@ -32,11 +32,10 @@ Ext.define('devilry.extjshelpers.forms.Node', {
         fieldLabel: "Parent",
         xtype: 'foreignkeyselector',
         model: 'devilry.extjshelpers.models.Node',
-        //valueField: 'id',
         emptyText: 'Select a parent node, or leave blank for no parent',
         displayTpl: '{long_name} ({short_name})',
-
-        dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>'
+        dropdownTpl: '<div class="important">{short_name}</div><div class="unimportant">{long_name}</div>',
+        allowEmpty: true
     }],
 
     help: '<p><strong>Choose a node</strong>. Students will be able to deliver after the node expires, however deliveries after the node will be clearly marked.</p><p>The <strong>text</strong> is displayed to students when they view the node, and when they add deliveries on the node.</p>',

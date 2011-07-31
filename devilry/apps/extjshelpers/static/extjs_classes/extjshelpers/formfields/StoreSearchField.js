@@ -4,7 +4,6 @@ Ext.define('devilry.extjshelpers.formfields.StoreSearchField', {
     requires: [
         'devilry.extjshelpers.SearchStringParser'
     ],
-    width: 300,
 
     config: {
         /**
