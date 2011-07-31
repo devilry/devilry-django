@@ -17,14 +17,21 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
 
     initComponent: function() {
         var me = this;
+        this.store = Ext.create('Ext.data.Store', {
+            model: this.model,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true,
+            autoLoad: true
+        });
+
         Ext.apply(this, {
-            store: Ext.create('Ext.data.Store', {
-                model: this.model,
-                remoteFilter: true,
-                remoteSort: true,
-                autoSync: true,
-                autoLoad: true
-            }),
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'bottom',
+                displayInfo: true
+            }],
 
             columns: [{
                 header: 'Data',
