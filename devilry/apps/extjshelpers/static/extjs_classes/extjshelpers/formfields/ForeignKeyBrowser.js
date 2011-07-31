@@ -1,3 +1,4 @@
+/** Popup window used by {@link devilry.extjshelpers.formfields.ForeignKeySelector} */
 Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.foreignkeybrowser',
@@ -61,6 +62,9 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
         this.callParent(arguments);
     },
 
+    /**
+     * @private
+     */
     onSelect: function(grid, record) {
         this.foreignkeyselector.onSelect(record);
         this.up('window').close();

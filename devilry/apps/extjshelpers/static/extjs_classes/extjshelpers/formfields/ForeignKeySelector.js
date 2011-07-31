@@ -1,3 +1,8 @@
+/** Field for selection of foreign key values.
+ *
+ * **NOTE**: Assumes that the foreign key is a number and that its value is in
+ * the ``id`` attribute.
+ */
 Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
     extend: 'Ext.form.field.Trigger',
     alias: 'widget.foreignkeyselector',
@@ -5,13 +10,31 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
         'devilry.extjshelpers.formfields.ForeignKeyBrowser'
     ],
 
+    config: {
+        /**
+         * @cfg
+         * Ext.XTemplate for the selected item.
+         */
+        displayTpl: '{id}',
 
-    //config: {
-        //valueField: 'id',
-        //displayTpl: '{id}',
-        //emptyText: 'Select something',
-        //dropdownTpl: '{id}'
-    //},
+        /**
+         * @cfg
+         * Text to display when field is blank.
+         */
+        emptyText: 'Select something',
+
+        /**
+         * @cfg
+         * Ext.XTemplate for items in the dropdown.
+         */
+        dropdownTpl: '{id}',
+
+        /**
+         * @cfg
+         * The ``Ext.data.Model`` where the data is located. The model must have a proxy.
+         */
+        model: undefined
+    },
 
     constructor: function(config) {
         this.initConfig(config);
@@ -81,6 +104,7 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
         throw "Failed to load foreign key value.";
     },
 
+    // Triggered by ForeignKeyBrowser.
     onSelect: function(record) {
         this.setRecordValue(record);
     }
