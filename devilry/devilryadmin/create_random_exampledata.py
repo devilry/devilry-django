@@ -1,3 +1,4 @@
+import json
 import logging
 import itertools
 from random import randint
@@ -259,7 +260,8 @@ def create_assignment(period, deadlines, **assignment_kwargs):
                                            **assignment_kwargs)
     Config.objects.create(assignment=assignment,
                           gradeeditorid='asminimalaspossible',
-                          config='')
+                          config=json.dumps({'defaultvalue': True,
+                                             'fieldlabel': 'Is the assignment approved?'}))
     #assignment.save()
     return assignment
 
