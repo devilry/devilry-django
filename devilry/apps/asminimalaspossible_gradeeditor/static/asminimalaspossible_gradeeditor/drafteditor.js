@@ -38,6 +38,28 @@
     },
 
     /**
+     * Called when the 'save draft' button is clicked.
+     */
+    onSaveDraft: function() {
+        if (this.getForm().isValid()) {
+            var draft = this.createDraft();
+            this.getMainWin().saveDraft(draft, this.onFailure);
+        }
+    },
+
+    /**
+     * Called when the publish button is clicked.
+     */
+    onPublish: function() {
+        if (this.getForm().isValid()) {
+            var draft = this.createDraft();
+            this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
+        }
+    },
+
+
+
+    /**
      * @private
      * Get the grade draft editor main window.
      */
@@ -68,25 +90,5 @@
         var approved = this.getCheckbox().getValue();
         var draft = Ext.JSON.encode(approved);
         return draft;
-    },
-
-    /**
-     * Called when the 'save draft' button is clicked.
-     */
-    onSaveDraft: function() {
-        if (this.getForm().isValid()) {
-            var draft = this.createDraft();
-            this.getMainWin().saveDraft(draft, this.onFailure);
-        }
-    },
-
-    /**
-     * Called when the publish button is clicked.
-     */
-    onPublish: function() {
-        if (this.getForm().isValid()) {
-            var draft = this.createDraft();
-            this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
-        }
     }
 }
