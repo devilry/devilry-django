@@ -3,10 +3,13 @@ import logging
 import itertools
 from random import randint
 from datetime import datetime, timedelta
+from django.contrib.auth.models import User
 
 from devilry.apps.gradeeditors.models import Config
-from django.contrib.auth.models import User
 from devilry.apps.core.models import Delivery
+from devilry.apps.core import pluginloader
+
+pluginloader.autodiscover()
 
 
 
@@ -258,10 +261,12 @@ def create_assignment(period, deadlines, **assignment_kwargs):
     """ Create an assignment from path. """
     assignment = period.assignments.create(publishing_time = deadlines[0] - timedelta(14),
                                            **assignment_kwargs)
-    Config.objects.create(assignment=assignment,
-                          gradeeditorid='asminimalaspossible',
-                          config=json.dumps({'defaultvalue': True,
-                                             'fieldlabel': 'Is the assignment approved?'}))
+    gradeconfig = Config(assignment=assignment,
+                         gradeeditorid='asminimalaspossible',
+                         config=json.dumps({'defaultvalue': True,
+                                            'fieldlabel': 'Is the assignment approved?'}))
+    gradeconfig.full_clean()
+    gradeconfig.save()
     #assignment.save()
     return assignment
 
