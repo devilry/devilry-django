@@ -3,18 +3,28 @@
     border: false,
     frame: false,
     xtype: 'form',
-    items: [{
-        xtype: 'checkboxfield',
-        boxLabel: 'Approved',
-        id: 'approved-checkbox'
-    }],
+    //items: [{
+        //xtype: 'checkboxfield',
+        //boxLabel: 'Approved',
+        //id: 'approved-checkbox'
+    //}],
 
     /**
      * Called by the grade-editor main window just before calling
      * setDraftstring() for the first time.
+     *
+     * @param config Get the grade editor configuration that is stored on the
+     *      current assignment.
      */
-    initializeEditor: function() {
+    initializeEditor: function(config) {
         this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
+
+        this.editorConfig = Ext.JSON.decode(config.config);
+        console.log(this.editorConfig);
+        this.checkbox = Ext.widget('checkboxfield', {
+            boxLabel: this.editorConfig.fieldlabel
+        });
+        this.add(this.checkbox);
     },
 
     /**
@@ -22,17 +32,15 @@
      * both on initialization and when selecting a draft from history (rolling
      * back to a previous draft).
      *
-     * @param config Get the grade editor configuration that is stored on the
-     *      current assignment.
      * @param draftstring The current draftstring, or ``undefined`` if no
      *      drafts have been saved yet.
      */
-    setDraftstring: function(config, draftstring) {
+    setDraftstring: function(draftstring) {
         if(draftstring === undefined) {
-            // TODO: Load default from config
+            this.checkbox.setValue(this.editorConfig.defaultvalue);
         } else {
             var approved = Ext.JSON.decode(draftstring);
-            this.getCheckbox().setValue(approved);
+            this.checkbox.setValue(approved);
         }
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -77,17 +85,10 @@
 
     /**
      * @private
-     */
-    getCheckbox: function() {
-        return Ext.getCmp('approved-checkbox');
-    },
-
-    /**
-     * @private
      * Create a draft (used in onSaveDraft and onPublish)
      */
     createDraft: function() {
-        var approved = this.getCheckbox().getValue();
+        var approved = this.checkbox.getValue();
         var draft = Ext.JSON.encode(approved);
         return draft;
     }

@@ -151,8 +151,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             if(records.length !== 0) {
                 draftstring = records[0].data.draft;
             }
-            this.getDraftEditor().initializeEditor();
-            this.getDraftEditor().setDraftstring(this.getGradeEditorConfig(), draftstring);
+            this.getDraftEditor().initializeEditor(this.getGradeEditorConfig());
+            this.getDraftEditor().setDraftstring(draftstring);
         } else {
             throw "Failed to load current draft."
         }
