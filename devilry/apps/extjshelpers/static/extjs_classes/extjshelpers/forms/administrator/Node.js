@@ -28,7 +28,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Node', {
         name: "short_name",
         fieldLabel: "Short name",
         xtype: 'textfield',
-        emptyText: 'Example: mathfacultly'
+        emptyText: 'Example: mathfaculty'
     }, {
         name: "long_name",
         fieldLabel: "Long name",
