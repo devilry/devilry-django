@@ -78,10 +78,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                     renderer: 'component',
                     autoLoad: true,
                     loadMask: true,
-                    listeners: {
-                        scope: this,
-                        load: this.onLoadDraftEditor
-                    }
+                    scope: this, // for success and failure
+                    success: this.onLoadDraftEditorSuccess,
+                    failure: this.onLoadDraftEditorFailure
+                    //listeners: {
+                        //scope: this,
+                        //load: this.onLoadDraftEditorSuccess
+                    //}
                 }
             }
         });
@@ -101,7 +104,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     /**
      * @private
      */
-    onLoadDraftEditor: function() {
+    onLoadDraftEditorSuccess: function() {
         this.getDraftEditor().getEl().mask('Loading current draft');
 
         var store = Ext.create('Ext.data.Store', {
@@ -123,6 +126,20 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             scope: this,
             callback: this.onLoadCurrentDraft
         });
+    },
+
+    onLoadDraftEditorFailure: function(elementloader, response) {
+        console.error(Ext.String.format(
+            'Loading grade editor failed with {0}: {1}',
+            response.status, response.statusText
+        ));
+        if(response.status === 404) {
+            console.error('Status code 404 indicates that the draft_editor_url is invalid.');
+        } else if(response.status === 200) {
+            console.error('Status code 200 indicates that the draft_editor_url contains javascript with syntax errors.');
+        }
+        console.error('Complete response object:');
+        console.error(response);
     },
 
     /**
