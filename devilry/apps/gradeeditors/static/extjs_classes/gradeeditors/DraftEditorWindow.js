@@ -199,7 +199,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             published: published,
             delivery: this.deliveryid
         });
-        draftrecord.save(saveconfig, saveconfig);
+        draftrecord.save(saveconfig);
     },
 
     /**

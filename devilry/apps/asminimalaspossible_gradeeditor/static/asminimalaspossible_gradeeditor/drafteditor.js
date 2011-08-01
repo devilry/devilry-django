@@ -20,7 +20,6 @@
         this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
 
         this.editorConfig = Ext.JSON.decode(config.config);
-        console.log(this.editorConfig);
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: this.editorConfig.fieldlabel
         });
