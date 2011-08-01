@@ -9,6 +9,13 @@
         id: 'approved-checkbox'
     }],
 
+    /**
+     * Called by the grade-editor main window just before calling
+     * setDraftstring() for the first time.
+     */
+    initializeEditor: function() {
+        this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
+    },
 
     /**
      * Called by the grade-editor main window to set the current draft. Used
@@ -27,7 +34,6 @@
             var approved = Ext.JSON.decode(draftstring);
             this.getCheckbox().setValue(approved);
         }
-        this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
 
