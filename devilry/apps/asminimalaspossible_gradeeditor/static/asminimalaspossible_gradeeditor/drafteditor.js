@@ -9,16 +9,37 @@
         id: 'approved-checkbox'
     }],
 
-    /* Resize window to make it more appropriate for the minimal amount of content. */
     listeners: {
+        /**
+         * Resize window to make it more appropriate for the minimal amount of
+         * content.
+         */
         render: function() {
-            var gradedrafteditor = this.up('gradedrafteditor');
-            gradedrafteditor.changeSize(300, 200);
+            this.getGradeDraftEditor().changeSize(300, 200);
         }
     },
 
+    /**
+     * @private
+     * Get the grade draft editor main container.
+     */
+    getGradeDraftEditor: function() {
+        return this.up('gradedrafteditor');
+    },
 
-    /* Create a draft (used in onSaveDraft and onPublish) */
+    /**
+     * @private
+     * Used by onSaveDraft and onPublish to handle save-failures.
+     */
+    onFailure: function() {
+        console.error('Failed!');
+    }
+
+
+    /**
+     * @private
+     * Create a draft (used in onSaveDraft and onPublish)
+     */
     createDraft: function() {
         var approved = Ext.getCmp('approved-checkbox').getValue();
         var draft = Ext.JSON.encode(approved);
@@ -31,8 +52,7 @@
     onSaveDraft: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            var gradedrafteditor = this.up('gradedrafteditor');
-            gradedrafteditor.saveDraft(draft, this.onFailure);
+            this.getGradeDraftEditor().saveDraft(draft, this.onFailure);
         }
     },
 
@@ -42,12 +62,7 @@
     onPublish: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            var gradedrafteditor = this.up('gradedrafteditor');
-            gradedrafteditor.saveDraftAndPublish(draft, this.onFailure);
+            this.getGradeDraftEditor().saveDraftAndPublish(draft, this.onFailure);
         }
-    },
-
-    onFailure: function() {
-        console.error('Failed!');
     }
 }
