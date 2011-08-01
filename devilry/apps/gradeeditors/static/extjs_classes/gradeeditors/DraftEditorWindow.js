@@ -2,8 +2,8 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.gradedrafteditor',
     title: 'Create feedback',
-    width: 800,
-    height: 600,
+    width: 500,
+    height: 400,
     layout: 'fit',
     modal: true,
 
@@ -86,6 +86,12 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
             }
         });
         this.callParent(arguments);
+    },
+
+    changeSize: function(width, height) {
+        this.setWidth(width);
+        this.setHeight(height);
+        this.center();
     },
 
     /**

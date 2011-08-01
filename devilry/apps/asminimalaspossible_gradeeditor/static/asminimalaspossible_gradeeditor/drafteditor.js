@@ -9,7 +9,16 @@
         id: 'approved-checkbox'
     }],
 
+    /* Resize window to make it more appropriate for the minimal amount of content. */
+    listeners: {
+        render: function() {
+            var gradedrafteditor = this.up('gradedrafteditor');
+            gradedrafteditor.changeSize(300, 200);
+        }
+    },
 
+
+    /* Create a draft (used in onSaveDraft and onPublish) */
     createDraft: function() {
         var approved = Ext.getCmp('approved-checkbox').getValue();
         var draft = Ext.JSON.encode(approved);
