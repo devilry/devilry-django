@@ -89,23 +89,55 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     },
 
     /**
-     * Change the size of the grade editor window. Useful when the default size is
-     * suboptimal for an editor.
-     *
-     * @param width New width.
-     * @param height Ne height.
-     * */
-    changeSize: function(width, height) {
-        this.setWidth(width);
-        this.setHeight(height);
-        this.center();
+     * @private
+     */
+    getSimplifiedFeedbackDraftModelName: function() {
+        return Ext.String.format(
+            'devilry.apps.gradeeditors.simplified.{0}.SimplifiedFeedbackDraft',
+            this.isAdministrator? 'administrator': 'examiner'
+        );
     },
 
     /**
      * @private
      */
     onLoadDraftEditor: function() {
-        // TODO: Load latest draft.
+        this.getDraftEditor().getEl().mask('Loading current draft');
+
+        var store = Ext.create('Ext.data.Store', {
+            model: this.getSimplifiedFeedbackDraftModelName(),
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+
+        });
+
+        store.proxy.extraParams.filters = Ext.JSON.encode({
+            field: 'delivery',
+            comp: 'exact',
+            value: this.deliveryid
+        });
+        store.proxy.extraParams.orderby = Ext.JSON.encode(['-save_timestamp']);
+        store.pageSize = 1;
+        store.load({
+            scope: this,
+            callback: this.onLoadCurrentDraft
+        });
+    },
+
+    /**
+     * @private
+     */
+    onLoadCurrentDraft: function(records, operation, successful) {
+        if(successful) {
+            var draftstring = undefined;
+            if(records.length !== 0) {
+                draftstring = records[0].data.draft;
+            }
+            this.getDraftEditor().setDraftstring(this.getGradeEditorConfig(), draftstring);
+        } else {
+            throw "Failed to load current draft."
+        }
     },
 
     /**
@@ -144,16 +176,12 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      * @private
      */
     save: function(published, draftstring, saveconfig) {
-        var classname = Ext.String.format(
-            'devilry.apps.gradeeditors.simplified.{0}.SimplifiedFeedbackDraft',
-            this.isAdministrator? 'administrator': 'examiner'
-        );
-        var staticfeedback = Ext.create(classname, {
+        var draftrecord = Ext.create(this.getSimplifiedFeedbackDraftModelName(), {
             draft: draftstring,
             published: published,
             delivery: this.deliveryid
         });
-        staticfeedback.save(saveconfig, saveconfig);
+        draftrecord.save(saveconfig, saveconfig);
     },
 
     /**
@@ -194,5 +222,18 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      */
     getGradeEditorConfig: function() {
         return this.gradeeditor_config;
+    },
+
+    /**
+     * Change the size of the grade editor window. Useful when the default size is
+     * suboptimal for an editor.
+     *
+     * @param width New width.
+     * @param height Ne height.
+     * */
+    changeSize: function(width, height) {
+        this.setWidth(width);
+        this.setHeight(height);
+        this.center();
     }
 });

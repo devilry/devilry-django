@@ -9,15 +9,26 @@
         id: 'approved-checkbox'
     }],
 
-    listeners: {
-        /**
-         * Resize window to make it more appropriate for the minimal amount of
-         * content.
-         */
-        render: function() {
-            this.getMainWin().changeSize(300, 200);
-            console.log(this.getMainWin().getGradeEditorConfig());
+
+    /**
+     * Called by the grade-editor main window to set the current draft. Used
+     * both on initialization and when selecting a draft from history (rolling
+     * back to a previous draft).
+     *
+     * @param config Get the grade editor configuration that is stored on the
+     *      current assignment.
+     * @param draftstring The current draftstring, or ``undefined`` if no
+     *      drafts have been saved yet.
+     */
+    setDraftstring: function(config, draftstring) {
+        if(draftstring === undefined) {
+            // TODO: Load default from config
+        } else {
+            var approved = Ext.JSON.decode(draftstring);
+            this.getCheckbox().setValue(approved);
         }
+        this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
+        this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
 
     /**
@@ -36,13 +47,19 @@
         console.error('Failed!');
     },
 
+    /**
+     * @private
+     */
+    getCheckbox: function() {
+        return Ext.getCmp('approved-checkbox');
+    },
 
     /**
      * @private
      * Create a draft (used in onSaveDraft and onPublish)
      */
     createDraft: function() {
-        var approved = Ext.getCmp('approved-checkbox').getValue();
+        var approved = this.getCheckbox().getValue();
         var draft = Ext.JSON.encode(approved);
         return draft;
     },
