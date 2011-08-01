@@ -18,6 +18,10 @@ class Config(models.Model):
     def _get_gradeeditor(self):
         return gradeeditor_registry[self.gradeeditorid]
 
+    def clean(self):
+        config = self._get_gradeeditor()
+        config.validate_config(self.config)
+
 
 class FeedbackDraft(models.Model):
     """

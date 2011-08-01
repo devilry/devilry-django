@@ -109,11 +109,11 @@ class JsonRegistryItem(RegistryItem):
 
         Raise ``exceptioncls`` with an error message if any validation fails.
         """
-        for key, value in valuedict.iteritems():
-            if not key in typedict:
+        for key, typecls in typedict.iteritems():
+            if not key in valuedict:
                 raise exceptioncls('{0} is required.'.format(key))
-            if not isinstance(value, typedict[key]):
-                raise exceptioncls('{0} must be of type: {1}.'.format(key, typedict[key]))
+            if not isinstance(valuedict[key], typecls):
+                raise exceptioncls('{0} must be of type: {1}.'.format(key, typecls))
 
 
 
