@@ -13,9 +13,7 @@ Ext.define('devilry.extjshelpers.SearchField', {
          * The search is not performed if the user changes the input text before
          * ``searchdelay`` is over.
          */
-        searchdelay: 500,
-
-        emptyText: 'Search for anything...'
+        searchdelay: 500
     },
 
     constructor: function(config) {
