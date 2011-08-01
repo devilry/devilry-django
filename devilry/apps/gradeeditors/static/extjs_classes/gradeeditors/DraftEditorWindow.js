@@ -1,6 +1,6 @@
 Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     extend: 'Ext.window.Window',
-    alias: 'widget.gradedrafteditor',
+    alias: 'widget.gradedrafteditormainwin',
     title: 'Create feedback',
     width: 500,
     height: 400,
@@ -143,13 +143,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     /**
      * @private
      */
-    save: function(published, draft, saveconfig) {
+    save: function(published, draftstring, saveconfig) {
         var classname = Ext.String.format(
             'devilry.apps.gradeeditors.simplified.{0}.SimplifiedFeedbackDraft',
             this.isAdministrator? 'administrator': 'examiner'
         );
         var staticfeedback = Ext.create(classname, {
-            draft: draft,
+            draft: draftstring,
             published: published,
             delivery: this.deliveryid
         });
@@ -157,23 +157,29 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     },
 
     /**
-     * Save the current draft.
+     * Save the current draftstring.
+     *
+     * @param draftstring The draftstring to save.
+     * @param onFailure Called when the save fails. The scope is the draft
+     *    editor that ``saveDraft`` was called from.
      */
-    saveDraft: function(draft, onFailure) {
-        this.save(false, draft, {
+    saveDraft: function(draftstring, onFailure) {
+        this.save(false, draftstring, {
             scope: this.getDraftEditor(),
             failure: onFailure
         });
     },
 
     /**
-     * Save and publish draft.
+     * Save and publish draftstring.
      *
-     * @param onFailure
+     * @param draftstring The draftstring to save.
+     * @param onFailure Called when the save fails. The scope is the draft
+     *    editor that ``saveDraft`` was called from.
      */
-    saveDraftAndPublish: function(draft, onFailure) {
+    saveDraftAndPublish: function(draftstring, onFailure) {
         var me = this;
-        this.save(true, draft, {
+        this.save(true, draftstring, {
             scope: this.getDraftEditor(),
             success: function(response) {
                 me.exit();
@@ -182,6 +188,10 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         });
     },
 
+    /**
+     * Get the grade editor configuration that is stored on the current
+     * assignment.
+     */
     getGradeEditorConfig: function() {
         return this.gradeeditor_config;
     }

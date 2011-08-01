@@ -15,16 +15,17 @@
          * content.
          */
         render: function() {
-            this.getGradeDraftEditor().changeSize(300, 200);
+            this.getMainWin().changeSize(300, 200);
+            console.log(this.getMainWin().getGradeEditorConfig());
         }
     },
 
     /**
      * @private
-     * Get the grade draft editor main container.
+     * Get the grade draft editor main window.
      */
-    getGradeDraftEditor: function() {
-        return this.up('gradedrafteditor');
+    getMainWin: function() {
+        return this.up('gradedrafteditormainwin');
     },
 
     /**
@@ -33,7 +34,7 @@
      */
     onFailure: function() {
         console.error('Failed!');
-    }
+    },
 
 
     /**
@@ -52,7 +53,7 @@
     onSaveDraft: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getGradeDraftEditor().saveDraft(draft, this.onFailure);
+            this.getMainWin().saveDraft(draft, this.onFailure);
         }
     },
 
@@ -62,7 +63,7 @@
     onPublish: function() {
         if (this.getForm().isValid()) {
             var draft = this.createDraft();
-            this.getGradeDraftEditor().saveDraftAndPublish(draft, this.onFailure);
+            this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
         }
     }
 }

@@ -117,7 +117,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     loadGradeEditor: function() {
-        Ext.widget('gradedrafteditor', {
+        Ext.widget('gradedrafteditormainwin', {
             deliveryid: this.delivery_recordcontainer.record.data.id,
             isAdministrator: this.isAdministrator,
             gradeeditor_config: this.gradeeditor_config_recordcontainer.record.data,
