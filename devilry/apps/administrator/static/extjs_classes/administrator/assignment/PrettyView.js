@@ -111,9 +111,26 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onGradeEditor: function(button) {
+        Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
+            scope: this,
+            success: function(record) {
+                console.log(record);
+                console.log('success');
+                this.onLoadGradeEditorRecord(record, button);
+            },
+            failure: function() {
+                var record = Ext.create('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig', {
+                    assignment: this.record.data.id
+                });
+            }
+        });
+
+    },
+
+    onLoadGradeEditorRecord: function(record, button) {
         var editpanel = Ext.ComponentManager.create({
             xtype: 'restfulsimplified_editpanel',
-            model: 'devilry.gradeeditors.GradeEditorModel',
+            model: 'devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig',
             editform: Ext.widget('gradeeditorselectform')
         });
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {

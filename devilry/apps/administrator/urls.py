@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from restful import administrator_restful
 from views import (MainView, RestfulSimplifiedView,
-                   RestfulSimplifiedAssignmentGroupView)
+                   RestfulSimplifiedViewWithGradeEditors)
 import editorviews
 
 urlpatterns = patterns('devilry.apps.administrator',
@@ -20,9 +20,9 @@ urlpatterns = patterns('devilry.apps.administrator',
                                                     'administrator/subject.django.html'),
                        RestfulSimplifiedView.as_url('period',
                                                     'administrator/period.django.html'),
-                       RestfulSimplifiedView.as_url('assignment',
-                                                    'administrator/assignment.django.html'),
-                       RestfulSimplifiedAssignmentGroupView.as_url('assignmentgroup',
-                                                                   'administrator/assignmentgroupview.django.html')
+                       RestfulSimplifiedViewWithGradeEditors.as_url('assignment',
+                                                                    'administrator/assignment.django.html'),
+                       RestfulSimplifiedViewWithGradeEditors.as_url('assignmentgroup',
+                                                                    'administrator/assignmentgroupview.django.html')
                       )
 urlpatterns += administrator_restful

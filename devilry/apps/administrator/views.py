@@ -40,7 +40,7 @@ class RestfulSimplifiedView(View):
                            login_required(cls.as_view(template_name=template_name)))
 
 
-class RestfulSimplifiedAssignmentGroupView(RestfulSimplifiedView):
+class RestfulSimplifiedViewWithGradeEditors(RestfulSimplifiedView):
     def edit_context(self, context):
         context['restfulapi'] = dump_all_into_dict(restful);
         context['gradeeditors'] = dump_all_into_dict(gradeeditors_restful);
