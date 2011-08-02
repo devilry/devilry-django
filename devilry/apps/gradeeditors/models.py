@@ -19,7 +19,10 @@ class Config(models.Model):
         return gradeeditor_registry[self.gradeeditorid]
 
     def clean(self):
-        config = self._get_gradeeditor()
+        try:
+            config = self._get_gradeeditor()
+        except KeyError, e:
+            raise ValidationError('Invalid grade editor: {0}'.format(self.gradeeditorid))
         config.validate_config(self.config)
 
 
