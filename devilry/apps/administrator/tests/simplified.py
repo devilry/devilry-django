@@ -1242,8 +1242,11 @@ class TestSimplifiedAdminStaticFeedback(SimplifiedAdminTestBase):
                 self.add_feedback(group)
 
     def test_search_filters(self):
-        #TODO 
-        pass
+        qrywrap = SimplifiedStaticFeedback.search(self.admin1)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedStaticFeedback.search(self.admin1,
+                                              filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
 
     def test_search_exact_number_of_results(self):
         qrywrap = SimplifiedStaticFeedback.search(self.admin1, exact_number_of_results=6)
@@ -1619,8 +1622,11 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
                 self.add_delivery(group, files)
 
     def test_search_filters(self):
-        #TODO
-        pass
+        qrywrap = SimplifiedFileMeta.search(self.admin1)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedFileMeta.search(self.admin1,
+                                              filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
 
     def test_search_exact_number_of_results(self):
         qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=6)
