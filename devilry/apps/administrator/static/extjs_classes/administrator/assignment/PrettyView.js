@@ -5,7 +5,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     requires: [
         'devilry.extjshelpers.studentsmanager.StudentsManager',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
-        'devilry.extjshelpers.forms.administrator.AssignmentAdvanced'
+        'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
+        'devilry.gradeeditors.GradeEditorModel',
+        'devilry.gradeeditors.GradeEditorSelectForm'
     ],
 
     config: {
@@ -91,11 +93,35 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
 
+        this.gradeeditorbutton= Ext.create('Ext.button.Button', {
+            text: 'Grade editor',
+            scale: 'medium',
+            menu: [],
+            listeners: {
+                scope: this,
+                click: this.onGradeEditor
+            }
+        });
+
         Ext.apply(this, {
             relatedButtons: [this.studentsbutton],
-            extraMeButtons: [this.advancedbutton],
+            extraMeButtons: [this.gradeeditorbutton, this.advancedbutton],
         });
         this.callParent(arguments);
+    },
+
+    onGradeEditor: function(button) {
+        var editpanel = Ext.ComponentManager.create({
+            xtype: 'restfulsimplified_editpanel',
+            model: 'devilry.gradeeditors.GradeEditorModel',
+            editform: Ext.widget('gradeeditorselectform')
+        });
+        var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            editpanel: editpanel,
+            prettyview: this
+        });
+        editwindow.show();
+        editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
     },
 
     onAdvanced: function(button) {
