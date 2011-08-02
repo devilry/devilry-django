@@ -29,6 +29,7 @@ Ext.define('devilry.gradeeditors.GradeEditorSelectForm', {
     }],
 
     help: [
-        '<strong>Short name</strong> is a short name used when the long name takes to much space. Short name can only contain english lower-case letters, numbers and underscore (_).</p>',
+        'A <strong>grade editor</strong> is what examiners use to give feedback to students.</p>',
+        'Internally in Devilry, a grade is:<ul><li>The number of points</li><li>TODO</li>TODO</li></ul>'
     ]
 });
