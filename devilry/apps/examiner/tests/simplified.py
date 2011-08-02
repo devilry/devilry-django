@@ -96,6 +96,18 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
 
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedSubject.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedSubject.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedSubject.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
+
     def test_read(self):
         # read firstsem without extra fields
         read_res = SimplifiedSubject.read(self.firstExam, self.inf101.id)
@@ -166,6 +178,18 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
+
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedPeriod.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedPeriod.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedPeriod.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
 
     def test_search_filters(self):
         qrywrap = SimplifiedPeriod.search(self.firstExam)
@@ -279,6 +303,18 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
+
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedAssignment.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedAssignment.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedAssignment.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
 
     def test_search_filters(self):
         qrywrap = SimplifiedAssignment.search(self.firstExam)
@@ -424,6 +460,18 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedAssignmentGroup.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedAssignmentGroup.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedAssignmentGroup.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
+
     def test_read(self):
 
         # do a read with no extra fields
@@ -512,21 +560,16 @@ class TestSimplifiedExaminerDeadline(SimplifiedExaminerTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-
-        #test that a candidate does not get any results searching through the examiner interface
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(testPerson)')
-        search_res = SimplifiedDeadline.search(self.testPerson)
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedDeadline.search(self.firstStud)
         self.assertEquals(len(search_res), 0)
 
-        #but he/she/it does get a result when he/she/it is set to be an examiner
-        self.add_to_path('uni;inf101.firstsem.a1.g1:examiner(testPerson)')
-        search_res = SimplifiedDeadline.search(self.testPerson)
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedDeadline.search(self.admin)
+        self.assertEquals(len(search_res), 0)
 
-        self.assertEquals(len(search_res), 1)
-
-        #but not in another course
-        search_res = SimplifiedDeadline.search(self.testPerson, query='inf110')
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedDeadline.search(self.secondExam, query='inf110')
         self.assertEquals(len(search_res), 0)
 
     def test_read_base(self):
@@ -616,8 +659,11 @@ class TestSimplifiedExaminerStaticFeedback(SimplifiedExaminerTestBase):
                 self.add_feedback(group)
 
     def test_search_filters(self):
-        #TODO 
-        pass
+        qrywrap = SimplifiedStaticFeedback.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedStaticFeedback.search(self.firstExam,
+                                              filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
 
     def test_search_exact_number_of_results(self):
         qrywrap = SimplifiedStaticFeedback.search(self.firstExam, exact_number_of_results=5)
@@ -649,6 +695,19 @@ class TestSimplifiedExaminerStaticFeedback(SimplifiedExaminerTestBase):
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
+
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedStaticFeedback.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        self.create_superuser('superadminuser')
+        search_res = SimplifiedStaticFeedback.search(self.superadminuser)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedStaticFeedback.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
 
     def test_read(self):
         read_res = SimplifiedStaticFeedback.read(self.firstExam, self.inf101_firstsem_a1_g1_feedbacks[0].id)
