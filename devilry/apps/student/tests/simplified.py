@@ -832,16 +832,45 @@ class TestSimplifiedCandidateFileMeta(SimplifiedStudentTestBase):
             self.assertTrue(s in expected_res)
 
     def test_search_security_asexam(self):
-        search_res = SimplifiedFileMeta.search(self.examiner)
+        search_res = SimplifiedFileMeta.search(self.exam1)
         self.assertEquals(len(search_res), 0)
 
     def test_search_security_asadmin(self):
-        search_res = SimplifiedFileMeta.search(self.admin)
+        search_res = SimplifiedFileMeta.search(self.admin1)
         self.assertEquals(len(search_res), 0)
 
     def test_search_security_wrongsubject(self):
         search_res = SimplifiedFileMeta.search(self.secondStud, query='inf110')
         self.assertEquals(len(search_res), 0)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedFileMeta.search(self.firstStud)
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedFileMeta.search(self.firstStud,
+                                        filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
+
+        with self.assertRaises(FilterValidationError):
+            SimplifiedFileMeta.search(self.firstStud,
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='inf110')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedFileMeta.search(self.firstStud,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='inf110')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedFileMeta.search(self.firstStud,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='inf110')])
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedFileMeta.search(self.firstStud, exact_number_of_results=4)
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedFileMeta.search(self.firstStud, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedFileMeta.search(self.firstStud, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedFileMeta.search(self.firstStud, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedFileMeta.search(self.firstStud, exact_number_of_results=0)
 
     def test_read(self):
 
