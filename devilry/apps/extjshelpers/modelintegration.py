@@ -80,7 +80,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
         modelfields.append(exttype)
     #for fieldname in restfulcls._meta.urlmap:
         #modelfields.append(dict(name=fieldname, type='string'))
-
+    modelmeta = restfulcls._meta.simplified._meta.model._meta
     js_result_fieldgroups = json.dumps(result_fieldgroups) # Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with '' below. This assumes that json uses "" for strings, which we hope is universal, at least for the json module in python?
     return """Ext.define('{modelname}', {{
             extend: 'Ext.data.Model',
@@ -104,7 +104,7 @@ def restfulcls_to_extjsmodel(restfulcls, result_fieldgroups=[], modelnamesuffix=
             }})
         }})""".format(modelname = get_extjs_modelname(restfulcls, modelnamesuffix),
                       modelfields = json.dumps(modelfields),
-                      idprop = 'id', # TODO: metaoption
+                      idprop = modelmeta.pk.name,
                       resturl = restfulcls.get_rest_url(),
                       js_result_fieldgroups=js_result_fieldgroups)
 
