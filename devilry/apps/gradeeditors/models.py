@@ -27,6 +27,8 @@ class Config(models.Model):
         if self.config != None:
             config.validate_config(self.config)
 
+
+
 def create_gradeconfig_for_assignment(sender, **kwargs):
     """
     Signal handler which is invoked when an Assignment is created.
