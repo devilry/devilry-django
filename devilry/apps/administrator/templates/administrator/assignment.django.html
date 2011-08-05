@@ -30,9 +30,11 @@
             renderTo: 'content-heading',
             data: {},
             tpl: [
-                '<h1>{parentnode__parentnode__long_name}</h1>',
-                '<h2>{parentnode__long_name}</h2>',
-                '<h3>{long_name} ({short_name})</h3>'
+                '<tpl if="long_name">',
+                '   <h1>{parentnode__parentnode__long_name}</h1>',
+                '   <h2>{parentnode__long_name}</h2>',
+                '   <h3>{long_name} ({short_name})</h3>',
+                '</tpl>'
             ]
         });
 
