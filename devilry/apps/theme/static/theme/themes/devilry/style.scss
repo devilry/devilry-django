@@ -354,9 +354,24 @@ a.warning-button {
             strong {
                 font-weight: bold;
             }
+            em {
+                font-style: italic;
+            }
             p {
                 padding: 5px 0;
-                line-height: 1.2em;
+                line-height: 1.3em;
+            }
+
+            ul {
+                //list-style-type: disc !important;
+                //list-style-position: inside !important;
+                //margin-left: 10px !important;
+                li {
+                    padding: 5px 0;
+                    margin-left: 25px !important;
+                    list-style-type: disc !important;
+                    list-style-position: outside !important;
+                }
             }
         }
     }
