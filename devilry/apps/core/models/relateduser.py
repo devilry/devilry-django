@@ -1,6 +1,4 @@
-from django.contrib.auth.models import User
 from django.db import models
-from django.utils.translation import ugettext as _
 from django.db.models import Q
 
 from period import Period
@@ -10,7 +8,15 @@ from abstract_is_admin import AbstractIsAdmin
 
 
 class RelatedUserBase(models.Model, AbstractIsAdmin):
-    username = models.SlugField(max_length=30, help_text=_('A username.'))
+    """
+    Base class for :cls:`RelatedExaminer` and cls:`RelatedStudent`.
+
+    .. attribute:: username
+
+        A username. Max 30 characters, a-z, A-Z, and _.
+    """
+    username = models.SlugField(max_length=30,
+                                help_text='A username. Max 30 characters, a-z, A-Z, and _')
 
     class Meta:
         abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
@@ -35,7 +41,7 @@ class RelatedExaminer(RelatedUserBase):
         A django.db.models.ForeignKey_ that points to the `Period`_.
     """
     period = models.ForeignKey(Period, related_name='relatedexaminers',
-                               verbose_name=_('Period'))
+                               help_text='The related period.')
 
 
 class RelatedStudent(RelatedUserBase):
@@ -45,4 +51,4 @@ class RelatedStudent(RelatedUserBase):
         A django.db.models.ForeignKey_ that points to the `Period`_.
     """
     period = models.ForeignKey(Period, related_name='relatedstudents',
-                               verbose_name=_('Period'))
+                               help_text='The related period.')
