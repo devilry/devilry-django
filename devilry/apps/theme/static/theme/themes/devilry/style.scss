@@ -431,6 +431,15 @@ span.error {
 }
 
 
+span.menuref {
+    border: 1px solid $neutralcolor_hoverbg;
+    border-radius: 3px;
+    background-color: $neutralcolor_bg;
+    color: $neutralcolor_fg;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap;
+}
 
 table.verticalinfotable {
 	border-collapse:collapse;
@@ -534,6 +543,12 @@ section.extravisible {
     background-image: $icon;
     background-repeat: no-repeat;
     margin: 20px 0 20px 0;
+
+
+    p {
+        padding: 5px 0;
+        line-height: 1.6em !important;
+    }
 }
 
 section.ok {

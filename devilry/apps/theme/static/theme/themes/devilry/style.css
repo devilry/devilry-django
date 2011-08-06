@@ -403,6 +403,15 @@ a.warning-button {
 span.error {
   color: #a00; }
 
+span.menuref {
+  border: 1px solid #0088cc;
+  border-radius: 3px;
+  background-color: #0077b3;
+  color: #e5f7ff;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
 table.verticalinfotable {
   border-collapse: collapse;
   border: 1px solid #D4D2CE; }
@@ -472,6 +481,9 @@ section.ok {
   background-image: url(icons/128x128/ok.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
+  section.ok p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
 
 section.info {
   padding: 0px 0 0 148px;
@@ -479,6 +491,9 @@ section.info {
   background-image: url(icons/128x128/info.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
+  section.info p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
 
 section.help {
   padding: 0px 0 0 148px;
@@ -486,6 +501,9 @@ section.help {
   background-image: url(icons/128x128/help.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
+  section.help p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
 
 section.warning {
   padding: 0px 0 0 148px;
@@ -493,6 +511,9 @@ section.warning {
   background-image: url(icons/128x128/warning.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
+  section.warning p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
 
 section.error {
   padding: 0px 0 0 148px;
@@ -500,6 +521,9 @@ section.error {
   background-image: url(icons/128x128/error.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
+  section.error p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
 
 section h1 {
   font-size: 2.6em;

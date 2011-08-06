@@ -26,7 +26,22 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                The selected grade editor, <em>{graderegistryitem.data.title}</em>, requires',
         '                configuration. Examiners will not be able to give feedback ',
         '                without a configuration.',
-        '                Choose <em>Configure grade editor</em> in the toolbar to create a configuration.',
+        '                Choose <span class="menuref">Grade editor &rarr; Configure current grade editor</span> in the toolbar to create a configuration.',
+        '            </p>',
+        '        </section>',
+        '    </tpl>',
+        '    <tpl if="graderegistryitem">',
+        '        <section class="info">',
+        '            <h1>Grade editor: {graderegistryitem.data.title}</h1>',
+        '            <p>',
+        '               <strong>About:</strong> {graderegistryitem.data.description}',
+        '            </p>',
+        '            <p>',
+        '                To make it easy for examiners to create all the information related ',
+        '                to a grade, Devilry use <em>grade editors</em>. Grade editors give examiners ',
+        '                a unified user-interface tailored for different kinds of grading systems.',
+        '                Select <span class="menuref">Grade editor</span> in the toolbar to ',
+        '                change or configure the grade editor.',
         '            </p>',
         '        </section>',
         '    </tpl>',
@@ -36,7 +51,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '            <p>',
         '               The assignment is currently visible to students and examiners. ',
         '               Its publishing time was <strong>{publishing_time:date}</strong>.',
-        '               You may change the publishing time by selecting the <em>edit</em> button ',
+        '               You may change the publishing time by selecting the <span class="menuref">Edit</span> button ',
         '               in the toolbar, however since it is already published, this may lead ',
         '               to confusion among students and examiners.',
         '            </p>',
@@ -59,6 +74,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                Each students are <em>required</em> to get a passsing grade ',
         '                on this assigmment to pass the <em>period</em>. This requirement ',
         '                is only active for students registered on groups on this assignment.',
+        '                Select <span class="menuref">Advanced options</span> ',
+        '                in the toolbar to change this setting.',
         '            </p>',
         '        </section>',
         '    </tpl>',
@@ -69,7 +86,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                The assignment <em>is anonymous</em>. This means that examiners ',
         '                see the <em>candidate ID</em> instead of user name and ',
         '                email. Furthermore, students do not see who their examiner(s)',
-        '                are.',
+        '                are. ',
+        '                Select <span class="menuref">Advanced options</span> ',
+        '                in the toolbar to change this setting.',
         '            </p>',
         '        </section>',
         '    </tpl>',
@@ -81,7 +100,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         '                can see information about who their students are. ',
         '                Furthermore, students can see who their examiner(s)',
         '                are. This is usually OK, however on exams this is usually ',
-        '                not the recommended setting. Select <em>Advanced options</em> ',
+        '                not the recommended setting. ',
+        '                Select <span class="menuref">Advanced options</span> ',
         '                in the toolbar to change this setting.',
         '            </p>',
         '        </section>',
@@ -134,10 +154,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
 
-        this.selectgradeeditorbutton = Ext.create('Ext.button.Button', {
-            text: 'Select grade editor',
+        this.selectgradeeditorbutton = Ext.widget('menuitem', {
+            text: 'Change grade editor',
             scale: 'large',
-            menu: [],
+            //menu: [],
             listeners: {
                 scope: this,
                 click: this.onSelectGradeEditorBtn,
@@ -149,8 +169,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
 
-        this.configuregradeeditorbutton = Ext.create('Ext.button.Button', {
-            text: 'Configure grade editor',
+        this.configuregradeeditorbutton = Ext.widget('menuitem', {
+            text: 'Configure current grade editor',
             scale: 'large',
             disabled: true,
             listeners: {
@@ -164,9 +184,18 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
 
+        this.gradeeditormenu = Ext.widget('button', {
+            text: 'Grade editor',
+            scale: 'large',
+            menu: [
+                this.selectgradeeditorbutton,
+                this.configuregradeeditorbutton
+            ]
+        });
+
         Ext.apply(this, {
             relatedButtons: [this.studentsbutton],
-            extraMeButtons: [this.selectgradeeditorbutton, this.configuregradeeditorbutton, this.advancedbutton],
+            extraMeButtons: [this.gradeeditormenu, this.advancedbutton],
         });
         this.callParent(arguments);
     },
@@ -195,7 +224,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     loadGradeEditorRegistryItem: function() {
         var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
-        this.configuregradeeditorbutton.getEl().mask('Loading');
+        this.gradeeditormenu.getEl().mask('Loading');
         registryitem_model.load(this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid, {
             scope: this,
             success: function(record) {
@@ -209,7 +238,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         var registryitem = this.gradeeditor_registryitem_recordcontainer.record.data;
         this.missingGradeEditorConfig = config.config === "" && registryitem.config_editor_url != "";
         this.refreshBody();
-        this.configuregradeeditorbutton.getEl().unmask();
+        this.gradeeditormenu.getEl().unmask();
         if(this.gradeeditor_registryitem_recordcontainer.record.data.config_editor_url) {
             this.configuregradeeditorbutton.enable();
         }
@@ -232,7 +261,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
         editwindow.show();
-        editwindow.alignTo(this.selectgradeeditorbutton, 'br', [-editwindow.getWidth(), 0]);
     },
 
     onConfigureGradeEditorBtn: function(button) {
