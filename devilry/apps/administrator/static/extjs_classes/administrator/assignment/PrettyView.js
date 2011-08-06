@@ -111,6 +111,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onGradeEditor: function(button) {
+        button.getEl().mask('Loading');
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
@@ -139,6 +140,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.close();
             }
         });
+        button.getEl().unmask();
         editwindow.show();
         editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
     },
