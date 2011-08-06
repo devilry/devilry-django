@@ -3,7 +3,7 @@ from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta)
-from ..extjshelpers import extjs_restful_modelapi#, wizard
+from ..extjshelpers import extjs_restful_modelapi
 from devilry.coreutils.restful import metabases as restfulmetabases
 
 
@@ -70,12 +70,6 @@ class RestfulSimplifiedAssignment(ModelRestfulView):
 
     class ExtjsModelMeta(restfulmetabases.AssignmentExtjsModelMeta):
         """ Metadata for javascript. """
-        #wizard = wizard.Wizards(
-                #wizard.Wizard("Simple obligatory assignment",
-                               #("An assignment where each student is corrected "
-                                #"by a single examiner."),
-                               #wizard.Page(fields=['parentnode', 'publishing_time']))
-            #)
 
 @administrator_restful.register
 @extjs_restful_modelapi
