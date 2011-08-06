@@ -132,7 +132,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             xtype: 'restfulsimplified_editpanel',
             model: 'devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig',
             editform: Ext.widget('gradeeditorselectform'),
-            record: record
+            record: record,
+            showbuttons: false
         });
         var editwindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
             editpanel: editpanel,
