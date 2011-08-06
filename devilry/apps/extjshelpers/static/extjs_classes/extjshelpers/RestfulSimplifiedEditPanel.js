@@ -22,7 +22,15 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
          * A instance of the ``Ext.data.Model`` which should be loaded into the
          * form.
          */
-        record: undefined
+        record: undefined,
+
+        /**
+         * @cfg
+         * Show the extra-bar (sidebar) at the bottom? Defaults to ``false``,
+         * which means that it will be at the right hand side. This bar contains
+         * help and error messages.
+         */
+        extrabaronbottom: false
     },
     cls: 'editform',
     bodyCls: 'editform-body',
@@ -42,14 +50,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         }
         this.editform.border = 0;
 
+        var extrabarCssCls = this.extrabaronbottom? 'extrabaronbottom': 'extrabaronright';
         Ext.apply(this, {
             layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-
-            layout: {
-                type: 'hbox',
+                type: (this.extrabaronbottom? 'vbox': 'hbox'),
                 align: 'stretch'
             },
 
@@ -57,7 +61,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 xtype: 'panel',
                 frame: false,
                 border: false,
-                bodyCls: 'editform-sidebar',
+                bodyCls: 'editform-sidebar ' + extrabarCssCls,
                 flex: 5,
                 items: [this.errorlist, {
                     xtype: 'box',

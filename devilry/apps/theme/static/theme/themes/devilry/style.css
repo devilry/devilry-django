@@ -349,20 +349,20 @@ a.warning-button {
 
 .editform .editform-body {
   padding: 15px; }
-  .editform .editform-body .editform-sidebar {
+  .editform .editform-body .editform-sidebar strong {
+    font-weight: bold; }
+  .editform .editform-body .editform-sidebar em {
+    font-style: italic; }
+  .editform .editform-body .editform-sidebar p {
+    padding: 5px 0;
+    line-height: 1.3em; }
+  .editform .editform-body .editform-sidebar ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  .editform .editform-body .extrabaronright {
     margin-left: 30px; }
-    .editform .editform-body .editform-sidebar strong {
-      font-weight: bold; }
-    .editform .editform-body .editform-sidebar em {
-      font-style: italic; }
-    .editform .editform-body .editform-sidebar p {
-      padding: 5px 0;
-      line-height: 1.3em; }
-    .editform .editform-body .editform-sidebar ul li {
-      padding: 5px 0;
-      margin-left: 25px !important;
-      list-style-type: disc !important;
-      list-style-position: outside !important; }
 
 /**
  *

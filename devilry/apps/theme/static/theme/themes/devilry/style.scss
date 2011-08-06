@@ -349,7 +349,6 @@ a.warning-button {
     .editform-body {
         padding: 15px;
         .editform-sidebar {
-            margin-left: 30px;
 
             strong {
                 font-weight: bold;
@@ -373,6 +372,9 @@ a.warning-button {
                     list-style-position: outside !important;
                 }
             }
+        }
+        .extrabaronright {
+            margin-left: 30px;
         }
     }
 }
