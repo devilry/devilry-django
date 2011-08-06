@@ -1,5 +1,6 @@
 from ...restful import restful_modelapi, ModelRestfulView, RestfulManager
 from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
+                        SimplifiedRelatedExaminer, SimplifiedRelatedStudent,
                         SimplifiedAssignment, SimplifiedAssignmentGroup,
                         SimplifiedDelivery, SimplifiedDeadline,
                         SimplifiedStaticFeedback, SimplifiedFileMeta)
@@ -8,7 +9,9 @@ from devilry.coreutils.restful import metabases as restfulmetabases
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
-           'RestfulSimplifiedPeriod', 'RestfulSimplifiedAssignment',
+           'RestfulSimplifiedPeriod',
+           'RestfulSimplifiedRelatedExaminer', 'RestfulSimplifiedRelatedStudent',
+           'RestfulSimplifiedAssignment',
            'RestfulSimplifiedAssignmentGroup', 'RestfulSimplifiedDelivery',
            'RestfulSimplifiedDeadline', 'RestfulSimplifiedFileMeta',
            'RestfulSimplifiedStaticFeedback')
@@ -58,6 +61,24 @@ class RestfulSimplifiedPeriod(ModelRestfulView):
         combobox_tpl = ('<div class="important">{parentnode__short_name}.{short_name}</div>'
                         '<div class="unimportant">{long_name}</div>')
         combobox_displayfield = 'short_name'
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedRelatedExaminer(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedRelatedExaminer
+        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
+
+
+@administrator_restful.register
+@extjs_restful_modelapi
+@restful_modelapi
+class RestfulSimplifiedRelatedStudent(ModelRestfulView):
+    class Meta:
+        simplified = SimplifiedRelatedStudent
+        foreignkey_fields = {'period': RestfulSimplifiedPeriod}
 
 
 @administrator_restful.register

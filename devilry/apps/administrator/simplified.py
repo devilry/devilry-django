@@ -126,6 +126,52 @@ class SimplifiedPeriod(CanSaveBase):
         return obj.assignments.all().count() == 0
 
 
+
+class RelatedUsersBase(SimplifiedModelApi):
+    @classmethod
+    def create_searchqryset(cls, user):
+        """ Returns all related users of this type where given ``user`` is admin or superadmin.
+
+        :param user: A django user object.
+        :rtype: a django queryset
+        """
+        return cls._meta.model.where_is_admin_or_superadmin(user)
+
+    @classmethod
+    def write_authorize(cls, user, obj):
+        """ Check if the given ``user`` can save changes to the given
+        ``obj``, and raise ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: A object of the type this method is used in.
+        :throws PermissionDenied:
+        """
+        if not obj.period.can_save(user):
+            raise PermissionDenied()
+
+class RelatedUsersMetaBase:
+    methods = ['create', 'read', 'update', 'delete', 'search']
+    resultfields = FieldSpec('id', 'username', 'period')
+    searchfields = FieldSpec('username')
+    editablefields = ('username', 'period')
+    filters = FilterSpecs(FilterSpec('period'),
+                          FilterSpec('username'))
+
+@simplified_modelapi
+class SimplifiedRelatedExaminer(RelatedUsersBase):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.RelatedExaminer`. """
+    class Meta(RelatedUsersMetaBase):
+        """ Defines what methods an Administrator can use on a RelatedExaminer object using the Simplified API """
+        model = models.RelatedExaminer
+
+@simplified_modelapi
+class SimplifiedRelatedStudent(RelatedUsersBase):
+    """ Simplified wrapper for :class:`devilry.apps.core.models.RelatedStudent`. """
+    class Meta(RelatedUsersMetaBase):
+        """ Defines what methods an Administrator can use on a RelatedStudent object using the Simplified API """
+        model = models.RelatedStudent
+
+
 @simplified_modelapi
 class SimplifiedAssignment(CanSaveBase):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. """
