@@ -140,6 +140,12 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         });
     },
 
+    onLoadGradeEditorRecord: function() {
+        if(this.gradeeditorbutton.rendered) {
+            this.gradeeditorbutton.getEl().unmask();
+        }
+    },
+
     onGradeEditor: function(button) {
         var editpanel = Ext.ComponentManager.create({
             xtype: 'restfulsimplified_editpanel',
@@ -153,15 +159,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.close();
             }
         });
-        this.gradeeditorbutton.getEl().unmask();
         editwindow.show();
         editwindow.alignTo(this.gradeeditorbutton, 'br', [-editwindow.getWidth(), 0]);
-    },
-
-    onLoadGradeEditorRecord: function() {
-        if(this.gradeeditorbutton.rendered) {
-            this.gradeeditorbutton.getEl().unmask();
-        }
     },
 
     onAdvanced: function(button) {
