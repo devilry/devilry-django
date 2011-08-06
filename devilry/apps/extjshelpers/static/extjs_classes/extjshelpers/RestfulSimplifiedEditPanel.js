@@ -13,12 +13,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
         /**
          * @cfg
-         * Items for the ``Ext.form.Panel`` used to edit the RestfulSimplified object. (Required).
-         */
-        editformitems: undefined,
-
-        /**
-         * @cfg
          * List of foreign key field names in the model. (Required).
          */
         foreignkeyfieldnames: undefined,
@@ -41,20 +35,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
     initComponent: function() {
         this.errorlist = Ext.create('devilry.extjshelpers.ErrorList');
         this.model = Ext.ModelManager.getModel(this.model);
-
-        if(this.editformitems) {
-            this.editform = Ext.ComponentManager.create({
-                xtype: 'form',
-                model: this.modelname,
-                items: this.editformitems,
-
-                // Fields will be arranged vertically, stretched to full width
-                layout: 'anchor',
-                defaults: {
-                    anchor: '100%',
-                },
-            });
-        }
 
         this.editform.frame = false;
         if(this.editform.flex == undefined) {
