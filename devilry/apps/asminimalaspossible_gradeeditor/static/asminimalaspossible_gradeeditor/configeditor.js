@@ -4,6 +4,12 @@
     frame: false,
     xtype: 'form', // Does not have to be a form. More complex config editors will probably use a panel with more complex layouts than what forms support.
 
+    /**
+     * Called by the config-editor main window when it is opened.
+     *
+     * @param config Get the grade editor configuration that is stored on the
+     *      current assignment.
+     */
     initializeEditor: function(config) {
         this.getMainWin().changeSize(400, 200); // Change window size to a more appropritate size for so little content.
 
