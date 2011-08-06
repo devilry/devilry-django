@@ -7,6 +7,7 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
     valueField: 'gradeeditorid',
     displayField: 'title',
     queryMode: 'local',
+    editable: false,
 
     listConfig: {
         getInnerTpl: function() {
