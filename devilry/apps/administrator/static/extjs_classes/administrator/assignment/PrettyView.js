@@ -126,6 +126,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.configuregradeeditorbutton = Ext.create('Ext.button.Button', {
             text: 'Configure grade editor',
             scale: 'medium',
+            disabled: true,
             listeners: {
                 scope: this,
                 click: this.onConfigureGradeEditorBtn,
@@ -164,11 +165,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             this.selectgradeeditorbutton.getEl().unmask();
         }
         this.loadGradeEditorRegistryItem();
-        //if(this.configuregradeeditorbutton.rendered) {
-            //this.configuregradeeditorbutton.getEl().unmask();
-        //}
-        //this.onConfigureGradeEditorBtn(this.configuregradeeditorbutton);
-        //console.log(this.gradeeditorconfig_recordcontainer.record);
     },
 
     loadGradeEditorRegistryItem: function() {
@@ -184,6 +180,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     onGradeEditorRegistryItemLoad: function() {
         this.configuregradeeditorbutton.getEl().unmask();
+        if(this.gradeeditor_registryitem_recordcontainer.record.data.config_editor_url) {
+            this.configuregradeeditorbutton.enable();
+        }
     },
 
     onSelectGradeEditorBtn: function(button) {
@@ -194,9 +193,11 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             record: this.gradeeditorconfig_recordcontainer.record,
             extrabaronbottom: true
         });
+        var me = this;
         var editwindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
             editpanel: editpanel,
-            onSaveSuccess: function() {
+            onSaveSuccess: function(record) {
+                me.gradeeditorconfig_recordcontainer.setRecord(record);
                 this.close();
             }
         });
