@@ -116,11 +116,15 @@ Ext.define('devilry.administrator.PrettyView', {
 
     onModelLoadSuccess: function(record) {
         this.record = record;
-        var bodyData = this.getExtraBodyData(record);
-        Ext.apply(bodyData, record.data);
-        this.update(this.bodyTpl.apply(bodyData));
+        this.refreshBody();
         this.getEl().unmask();
         this.fireEvent('loadmodel', record);
+    },
+
+    refreshBody: function() {
+        var bodyData = this.getExtraBodyData(this.record);
+        Ext.apply(bodyData, this.record.data);
+        this.update(this.bodyTpl.apply(bodyData));
     },
 
     getExtraBodyData: function(record) {

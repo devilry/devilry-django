@@ -19,6 +19,17 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
     bodyTpl: Ext.create('Ext.XTemplate',
         '<section>',
+        '    <tpl if="missingGradeEditorConfig">',
+        '        <section class="warning">',
+        '            <h1>Missing grade editor config</h1>',
+        '            <p>',
+        '                The selected grade editor, <em>{graderegistryitem.data.title}</em>, requires',
+        '                configuration. Examiners will not be able to give feedback ',
+        '                without a configuration.',
+        '                Choose <em>Configure grade editor</em> in the toolbar to create a configuration.',
+        '            </p>',
+        '        </section>',
+        '    </tpl>',
         '    <tpl if="published">',
         '        <h1>Published</h1>',
         '        <p>',
@@ -73,6 +84,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     getExtraBodyData: function(record) {
         return {
             published: record.data.publishing_time < Ext.Date.now(),
+            missingGradeEditorConfig: this.missingGradeEditorConfig,
+            graderegistryitem: this.gradeeditor_registryitem_recordcontainer.record
         };
     },
 
@@ -179,6 +192,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onGradeEditorRegistryItemLoad: function() {
+        var config = this.gradeeditorconfig_recordcontainer.record.data;
+        var registryitem = this.gradeeditor_registryitem_recordcontainer.record.data;
+        this.missingGradeEditorConfig = config.config === "" && registryitem.config_editor_url != "";
+        this.refreshBody();
         this.configuregradeeditorbutton.getEl().unmask();
         if(this.gradeeditor_registryitem_recordcontainer.record.data.config_editor_url) {
             this.configuregradeeditorbutton.enable();
