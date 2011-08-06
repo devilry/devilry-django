@@ -80,6 +80,9 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.gradeeditorconfig_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
         this.gradeeditorconfig_recordcontainer.addListener('setRecord', this.onGradeEditorConfigLoad, this);
 
+        this.gradeeditor_registryitem_recordcontainer= Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.gradeeditor_registryitem_recordcontainer.addListener('setRecord', this.onGradeEditorRegistryItemLoad, this);
+
         if(this.record) {
             this.onLoadRecord();
         } else {
@@ -160,10 +163,27 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         if(this.selectgradeeditorbutton.rendered) {
             this.selectgradeeditorbutton.getEl().unmask();
         }
-        if(this.configuregradeeditorbutton.rendered) {
-            this.configuregradeeditorbutton.getEl().unmask();
-        }
+        this.loadGradeEditorRegistryItem();
+        //if(this.configuregradeeditorbutton.rendered) {
+            //this.configuregradeeditorbutton.getEl().unmask();
+        //}
         //this.onConfigureGradeEditorBtn(this.configuregradeeditorbutton);
+        //console.log(this.gradeeditorconfig_recordcontainer.record);
+    },
+
+    loadGradeEditorRegistryItem: function() {
+        var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
+        this.configuregradeeditorbutton.getEl().mask('Loading');
+        registryitem_model.load(this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid, {
+            scope: this,
+            success: function(record) {
+                this.gradeeditor_registryitem_recordcontainer.setRecord(record);
+            }
+        });
+    },
+
+    onGradeEditorRegistryItemLoad: function() {
+        this.configuregradeeditorbutton.getEl().unmask();
     },
 
     onSelectGradeEditorBtn: function(button) {
@@ -185,19 +205,10 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onConfigureGradeEditorBtn: function(button) {
-        var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
-        button.getEl().mask('Loading');
-        registryitem_model.load(this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid, {
-            scope: this,
-            success: function(record) {
-                button.getEl().unmask();
-                Ext.widget('gradeconfigeditormainwin', {
-                    assignmentid: this.record.data.id,
-                    registryitem: record.data,
-                    gradeeditorconfig_recordcontainer: this.gradeeditorconfig_recordcontainer
-                }).show();
-            }
-        });
+        Ext.widget('gradeconfigeditormainwin', {
+            registryitem: this.gradeeditor_registryitem_recordcontainer.record.data,
+            gradeeditorconfig_recordcontainer: this.gradeeditorconfig_recordcontainer
+        }).show();
     },
 
     onAdvanced: function(button) {

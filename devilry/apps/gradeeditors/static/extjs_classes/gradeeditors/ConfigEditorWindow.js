@@ -10,12 +10,6 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     config: {
         /**
          * @cfg
-         * ID of an Assignment. (Required).
-         */
-        assignmentid: undefined,
-
-        /**
-         * @cfg
          * The data attribute of the record returned when loading the
          * grade-editor registry item. (Required).
          */
