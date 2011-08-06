@@ -5,7 +5,6 @@ from random import randint
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 
-from devilry.apps.gradeeditors.models import Config
 from devilry.apps.core.models import Delivery
 from devilry.apps.core import pluginloader
 
