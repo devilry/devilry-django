@@ -8,6 +8,13 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
     displayField: 'title',
     queryMode: 'local',
 
+    listConfig: {
+        getInnerTpl: function() {
+            return '<div class="important">{title}</div><div class="unimportant">{description}</div>';
+        }
+    },
+
+
     initComponent: function() {
         this.neverLoaded = true;
         this.store = Ext.create('Ext.data.Store', {
