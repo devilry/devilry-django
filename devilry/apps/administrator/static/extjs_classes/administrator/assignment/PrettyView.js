@@ -250,6 +250,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             record: this.record
         });
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
+            title: 'Advanced options',
             editpanel: editpanel,
             prettyview: this
         });
