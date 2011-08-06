@@ -85,6 +85,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 }]
             }],
 
+
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
@@ -160,15 +161,5 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     loadRecord: function() {
         this.editform.loadRecord(this.record);
-
-        // Set foreign key field values
-        //var fields = this.editform.getForm().getFields();
-        //var me = this;
-        //Ext.each(this.foreignkeyfieldnames, function(fieldname) {
-            //var field = fields.filter('name', fieldname).items[0];
-            //field.store.load(function(store, records, successful) {
-                //field.setValue(me.record.data[fieldname]);
-            //});
-        //});
     }
 });
