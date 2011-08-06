@@ -38,7 +38,7 @@ Ext.define('devilry.gradeeditors.GradeEditorSelectForm', {
         '</ul>',
 
         'To make it easy for examiners to create all the information related to a <em>grade</em>, ' +
-        'devilry use something that we call <em>grade editors</em>. Grade editors gives examiners a unified user ' +
+        'Devilry use <em>grade editors</em>. Grade editors give examiners a unified user ' +
         'interfaced tailored for different kinds of grading systems.'
     ]
 });
