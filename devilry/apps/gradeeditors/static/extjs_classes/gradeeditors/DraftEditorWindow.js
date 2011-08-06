@@ -128,6 +128,9 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         });
     },
 
+    /**
+     * @private
+     */
     onLoadDraftEditorFailure: function(elementloader, response) {
         console.error(Ext.String.format(
             'Loading grade editor failed with {0}: {1}',
