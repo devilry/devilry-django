@@ -294,6 +294,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 height: 600,
                 layout: 'fit',
                 maximizable: true,
+                modal: true,
                 //maximized: true,
                 closeAction: 'hide',
                 items: {
