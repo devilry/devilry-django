@@ -66,7 +66,7 @@ Ext.define('devilry.administrator.PrettyView', {
     initComponent: function() {
         this.deletebutton = Ext.create('Ext.button.Button', {
             text: 'Delete',
-            scale: 'medium',
+            scale: 'large',
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -76,7 +76,7 @@ Ext.define('devilry.administrator.PrettyView', {
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
             menu: [],
-            scale: 'medium',
+            scale: 'large',
             listeners: {
                 scope: this,
                 click: this.onEdit

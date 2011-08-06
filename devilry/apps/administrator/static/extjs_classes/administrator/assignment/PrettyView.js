@@ -114,7 +114,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.studentsbutton = Ext.create('Ext.button.Button', {
             text: 'Students',
-            scale: 'medium',
+            scale: 'large',
             listeners: {
                 scope: this,
                 click: this.onStudents
@@ -123,7 +123,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.advancedbutton = Ext.create('Ext.button.Button', {
             text: 'Advanced options',
-            scale: 'medium',
+            scale: 'large',
             menu: [],
             listeners: {
                 scope: this,
@@ -133,7 +133,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.selectgradeeditorbutton = Ext.create('Ext.button.Button', {
             text: 'Select grade editor',
-            scale: 'medium',
+            scale: 'large',
             menu: [],
             listeners: {
                 scope: this,
@@ -148,7 +148,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.configuregradeeditorbutton = Ext.create('Ext.button.Button', {
             text: 'Configure grade editor',
-            scale: 'medium',
+            scale: 'large',
             disabled: true,
             listeners: {
                 scope: this,
