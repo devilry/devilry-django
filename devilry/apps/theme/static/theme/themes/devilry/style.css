@@ -453,12 +453,47 @@ td.selectable-gridcell {
       border: 4px solid #77b300 !important;
       background-color: #f7ffe5; }
 
-div.warning, section.warning {
-  background-color: #cc4400;
-  color: #ffeee5;
-  border: 2px solid #333;
+section.extravisible {
   border-radius: 14px;
-  padding: 20px;
+  padding: 10px 10px 10px 158px !important;
+  background-position: 10px 10px;
+  min-height: 148px !important;
+  margin: 20px !important;
+  box-shadow: 0 0 5px 5px #aaa; }
+
+section.ok {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/ok.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+
+section.info {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/info.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+
+section.help {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/help.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+
+section.warning {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/warning.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+
+section.error {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/error.png);
+  background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
 
 section h1 {
