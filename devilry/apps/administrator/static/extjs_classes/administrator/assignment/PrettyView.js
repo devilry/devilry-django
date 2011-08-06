@@ -163,7 +163,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         if(this.configuregradeeditorbutton.rendered) {
             this.configuregradeeditorbutton.getEl().unmask();
         }
-        this.onConfigureGradeEditorBtn(this.configuregradeeditorbutton);
+        //this.onConfigureGradeEditorBtn(this.configuregradeeditorbutton);
     },
 
     onSelectGradeEditorBtn: function(button) {
@@ -194,6 +194,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 Ext.widget('gradeconfigeditormainwin', {
                     assignmentid: this.record.data.id,
                     registryitem: record.data,
+                    gradeeditorconfig_recordcontainer: this.gradeeditorconfig_recordcontainer
                 }).show();
             }
         });

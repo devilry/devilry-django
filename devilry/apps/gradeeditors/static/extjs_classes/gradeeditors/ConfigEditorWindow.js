@@ -19,7 +19,15 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
          * The data attribute of the record returned when loading the
          * grade-editor registry item. (Required).
          */
-        registryitem: undefined
+        registryitem: undefined,
+
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for the grade
+         * editor config. (Required).
+         */
+        gradeeditorconfig_recordcontainer: undefined
     },
 
     constructor: function(config) {
@@ -56,7 +64,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
                     autoLoad: true,
                     loadMask: true,
                     scope: this, // for success and failure
-                    success: this.onLoadConfigEditorSuccess,
+                    success: this.initializeEditor,
                     failure: this.onLoadConfigEditorFailure
                 }
             }
@@ -74,15 +82,18 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     /**
      * @private
      */
-    onLoadConfigEditorSuccess: function() {
-        this.getConfigEditor().getEl().mask('Loading current config');
+    //onLoadConfigEditorSuccess: function() {
+        //this.getConfigEditor().getEl().mask('Loading current config');
 
-        Ext.ModelManager.getModel(this.getConfigModelName()).load(this.assignmentid, {
-            scope: this,
-            callback: this.onLoadCurrentConfig
-        });
-    },
+        //Ext.ModelManager.getModel(this.getConfigModelName()).load(this.gradeeditorconfig_recordcontainer.record.data.assignment, {
+            //scope: this,
+            //callback: this.onLoadCurrentConfig
+        //});
+    //},
 
+    /**
+     * @private
+     */
     onLoadConfigEditorFailure: function(elementloader, response) {
         console.error(Ext.String.format(
             'Loading grade config editor failed with {0}: {1}',
@@ -100,8 +111,15 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     /**
      * @private
      */
-    onLoadCurrentConfig: function(record) {
-        this.getConfigEditor().initializeEditor(record);
+    //onLoadCurrentConfig: function(record) {
+        //this.getConfigEditor().initializeEditor(record.data);
+    //},
+
+    /**
+     * @private
+     */
+    initializeEditor: function() {
+        this.getConfigEditor().initializeEditor(this.gradeeditorconfig_recordcontainer.record.data);
     },
 
 
@@ -126,15 +144,15 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
      */
     saveConfig: function(configstring, onFailure) {
         var me = this;
-
-        var config = Ext.create(this.getConfigModelName(), {
+        var configrecord = Ext.create(this.getConfigModelName(), {
             config: configstring,
-            gradeeditorid: gradeeditorid,
-            assignment: this.assignmentid
+            gradeeditorid: this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid,
+            assignment: this.gradeeditorconfig_recordcontainer.record.data.assignment
         });
-        config.save(config, {
+        configrecord.save({
             scope: this.getConfigEditor(),
             success: function(response) {
+                me.gradeeditorconfig_recordcontainer.setRecord(configrecord);
                 me.close();
             },
             failure: onFailure
