@@ -22,13 +22,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
          * A instance of the ``Ext.data.Model`` which should be loaded into the
          * form.
          */
-        record: undefined,
-
-        /**
-         * @cfg
-         * Show buttons? Defaults to ``true``.
-         */
-        showbuttons: true
+        record: undefined
     },
     cls: 'editform',
     bodyCls: 'editform-body',
@@ -71,25 +65,23 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 }]
             }]
         });
-        if(this.showbuttons) {
-            this.dockedItems = [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                defaults: {minWidth: 75},
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            dock: 'bottom',
+            ui: 'footer',
+            defaults: {minWidth: 75},
 
-                items: ['->', {
-                    xtype: 'button',
-                    text: 'Save',
-                    scale: 'large',
-                    iconCls: 'icon-save-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onSave
-                    }
-                }]
-            }];
-        }
+            items: ['->', {
+                xtype: 'button',
+                text: 'Save',
+                scale: 'large',
+                iconCls: 'icon-save-32',
+                listeners: {
+                    scope: this,
+                    click: this.onSave
+                }
+            }]
+        }];
         this.callParent(arguments);
 
         if(this.record) {
