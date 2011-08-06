@@ -56,7 +56,6 @@ DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsDeliveryStore'
 DELIVERY_STORE_ROOT = join(this_dir, 'deliverystore')
 
-DELAY_MIDDLEWARE_TIME = 0.3
 
 #
 # The if's below is just to make it easy to toggle these settings on and off during development
@@ -68,6 +67,7 @@ if profiler_middleware:
         'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
     ]
 
+DELAY_MIDDLEWARE_TIME = 0.6 # Wait for this time before responding to each request when using DelayMiddleware
 delay_middleware = False
 if delay_middleware:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
