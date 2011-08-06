@@ -6,6 +6,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.studentsmanager.StudentsManager',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel',
         'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
+        'devilry.extjshelpers.SingleRecordContainer',
         'devilry.gradeeditors.GradeEditorModel',
         'devilry.gradeeditors.GradeEditorSelectForm'
     ],
@@ -74,6 +75,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     initComponent: function() {
+        this.gradeeditorconfig_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.gradeeditorconfig_recordcontainer.addListener('setRecord', this.onLoadGradeEditorRecord, this);
+
+        if(this.record) {
+            this.onLoadRecord();
+        } else {
+            this.addListener('loadmodel', this.onLoadRecord, this);
+        }
+
         this.studentsbutton = Ext.create('Ext.button.Button', {
             text: 'Students',
             scale: 'medium',
@@ -93,13 +103,18 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             }
         });
 
-        this.gradeeditorbutton= Ext.create('Ext.button.Button', {
+        this.gradeeditorbutton = Ext.create('Ext.button.Button', {
             text: 'Grade editor',
             scale: 'medium',
             menu: [],
             listeners: {
                 scope: this,
-                click: this.onGradeEditor
+                click: this.onGradeEditor,
+                render: function(button) {
+                    if(!this.gradeeditorconfig_recordcontainer.record) {
+                        button.getEl().mask('Loading');
+                    }
+                }
             }
         });
 
@@ -110,30 +125,27 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.callParent(arguments);
     },
 
-    onGradeEditor: function(button) {
-        button.getEl().mask('Loading');
+    onLoadRecord: function() {
         Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig').load(this.record.data.id, {
             scope: this,
             success: function(record) {
-                this.onLoadGradeEditorRecord(record, button);
+                this.gradeeditorconfig_recordcontainer.setRecord(record);
             },
             failure: function() {
                 var record = Ext.create('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig', {
                     assignment: this.record.data.id
                 });
-                this.onLoadGradeEditorRecord(record, button);
+                this.gradeeditorconfig_recordcontainer.setRecord(record);
             }
         });
-
     },
 
-    onLoadGradeEditorRecord: function(record, button) {
+    onGradeEditor: function(button) {
         var editpanel = Ext.ComponentManager.create({
             xtype: 'restfulsimplified_editpanel',
             model: 'devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig',
             editform: Ext.widget('gradeeditorselectform'),
-            record: record,
-            showbuttons: false
+            record: this.gradeeditorconfig_recordcontainer.record
         });
         var editwindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
             editpanel: editpanel,
@@ -141,9 +153,15 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
                 this.close();
             }
         });
-        button.getEl().unmask();
+        this.gradeeditorbutton.getEl().unmask();
         editwindow.show();
-        editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
+        editwindow.alignTo(this.gradeeditorbutton, 'br', [-editwindow.getWidth(), 0]);
+    },
+
+    onLoadGradeEditorRecord: function() {
+        if(this.gradeeditorbutton.rendered) {
+            this.gradeeditorbutton.getEl().unmask();
+        }
     },
 
     onAdvanced: function(button) {

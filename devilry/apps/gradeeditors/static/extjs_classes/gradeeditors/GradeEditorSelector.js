@@ -16,11 +16,16 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
 
 
     initComponent: function() {
-        this.neverLoaded = true;
+        this.loadingFinished = false;
         this.store = Ext.create('Ext.data.Store', {
             model: 'devilry.gradeeditors.GradeEditorModel',
             autoSync: true
         });
+        this.addListener('render', function() {
+            if(!this.loadingFinished) {
+                this.getEl().mask('Loading');
+            }
+        }, this);
         this.callParent(arguments);
         this.store.load({
             scope: this,
@@ -36,6 +41,10 @@ Ext.define('devilry.gradeeditors.GradeEditorSelector', {
 
     onLoadSuccess: function(records) {
         this.setValue(this.value);
+        this.loadingFinished = true;
+        if(this.rendered) {
+            this.getEl().unmask();
+        }
     },
 
     onLoadFailure: function() {
