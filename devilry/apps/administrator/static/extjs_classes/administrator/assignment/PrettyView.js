@@ -8,6 +8,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         'devilry.extjshelpers.forms.administrator.AssignmentAdvanced',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.gradeeditors.GradeEditorModel',
+        'devilry.gradeeditors.RestfulRegistryItem',
+        'devilry.gradeeditors.ConfigEditorWindow',
         'devilry.gradeeditors.GradeEditorSelectForm'
     ],
 
@@ -121,7 +123,6 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         this.configuregradeeditorbutton = Ext.create('Ext.button.Button', {
             text: 'Configure grade editor',
             scale: 'medium',
-            menu: [],
             listeners: {
                 scope: this,
                 click: this.onConfigureGradeEditorBtn,
@@ -162,6 +163,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         if(this.configuregradeeditorbutton.rendered) {
             this.configuregradeeditorbutton.getEl().unmask();
         }
+        this.onConfigureGradeEditorBtn(this.configuregradeeditorbutton);
     },
 
     onSelectGradeEditorBtn: function(button) {
@@ -183,6 +185,18 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onConfigureGradeEditorBtn: function(button) {
+        var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
+        button.getEl().mask('Loading');
+        registryitem_model.load(this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid, {
+            scope: this,
+            success: function(record) {
+                button.getEl().unmask();
+                Ext.widget('gradeconfigeditormainwin', {
+                    assignmentid: this.record.data.id,
+                    registryitem: record.data,
+                }).show();
+            }
+        });
     },
 
     onAdvanced: function(button) {

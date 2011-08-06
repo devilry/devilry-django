@@ -16,13 +16,6 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
 
         /**
          * @cfg
-         * Use the administrator RESTful interface to store configs? If this is
-         * ``false``, we use the examiner RESTful interface.
-         */
-        isAdministrator: false,
-
-        /**
-         * @cfg
          * The data attribute of the record returned when loading the
          * grade-editor registry item. (Required).
          */
@@ -74,11 +67,8 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     /**
      * @private
      */
-    getSimplifiedFeedbackConfigModelName: function() {
-        return Ext.String.format(
-            'devilry.apps.gradeeditors.simplified.{0}.SimplifiedFeedbackConfig',
-            this.isAdministrator? 'administrator': 'examiner'
-        );
+    getConfigModelName: function() {
+        return 'devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig';
     },
 
     /**
@@ -87,7 +77,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     onLoadConfigEditorSuccess: function() {
         this.getConfigEditor().getEl().mask('Loading current config');
 
-        Ext.ModelManager.getModel(this.getSimplifiedFeedbackConfigModelName()).load(this.assignmentid, {
+        Ext.ModelManager.getModel(this.getConfigModelName()).load(this.assignmentid, {
             scope: this,
             callback: this.onLoadCurrentConfig
         });
@@ -111,12 +101,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
      * @private
      */
     onLoadCurrentConfig: function(record) {
-        var configstring = undefined;
-        if(record) {
-            configstring = record.config;
-        }
-        this.getConfigEditor().initializeEditor(this.getGradeEditorConfig());
-        this.getConfigEditor().setConfigString(configstring);
+        this.getConfigEditor().initializeEditor(record);
     },
 
 
@@ -142,7 +127,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     saveConfig: function(configstring, onFailure) {
         var me = this;
 
-        var config = Ext.create(this.getSimplifiedFeedbackConfigModelName(), {
+        var config = Ext.create(this.getConfigModelName(), {
             config: configstring,
             gradeeditorid: gradeeditorid,
             assignment: this.assignmentid

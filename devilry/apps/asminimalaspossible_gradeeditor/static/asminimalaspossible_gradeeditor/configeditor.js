@@ -11,20 +11,20 @@
         id: 'fieldlabel'
     }],
 
-    buttons: [{
-        text: 'Save',
-        handler: function() {
-            if (this.up('form').getForm().isValid()) {
-                var defaultvalue = Ext.getCmp('defaultvalue').getValue();
-                var fieldlabel = Ext.getCmp('fieldlabel').getValue();
-                var config = Ext.JSON.encode({
-                    defaultvalue: defaultvalue,
-                    fieldlabel: fieldlabel
-                });
 
-                var configeditor = this.up('configeditor');
-                configeditor.saveConfig(config);
-            }
-        }
-    }]
+    initializeEditor: function(config) {
+        this.getMainWin().changeSize(300, 200); // Change window size to a more appropritate size for so little content.
+
+        //this.editorConfig = Ext.JSON.decode(config.config);
+        //this.add(this.checkbox);
+        this.getEl().unmask(); // Unmask the loading mask (set by the main window).
+    },
+
+    /**
+     * @private
+     * Get the grade config editor main window.
+     */
+    getMainWin: function() {
+        return this.up('gradeconfigeditormainwin');
+    },
 }
