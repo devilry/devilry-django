@@ -82,18 +82,6 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
     /**
      * @private
      */
-    //onLoadConfigEditorSuccess: function() {
-        //this.getConfigEditor().getEl().mask('Loading current config');
-
-        //Ext.ModelManager.getModel(this.getConfigModelName()).load(this.gradeeditorconfig_recordcontainer.record.data.assignment, {
-            //scope: this,
-            //callback: this.onLoadCurrentConfig
-        //});
-    //},
-
-    /**
-     * @private
-     */
     onLoadConfigEditorFailure: function(elementloader, response) {
         console.error(Ext.String.format(
             'Loading grade config editor failed with {0}: {1}',
@@ -107,13 +95,6 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
         console.error('Complete response object:');
         console.error(response);
     },
-
-    /**
-     * @private
-     */
-    //onLoadCurrentConfig: function(record) {
-        //this.getConfigEditor().initializeEditor(record.data);
-    //},
 
     /**
      * @private
@@ -141,6 +122,7 @@ Ext.define('devilry.gradeeditors.ConfigEditorWindow', {
 
 
     /**
+     * Called to save a configstring.
      */
     saveConfig: function(configstring, onFailure) {
         var me = this;
