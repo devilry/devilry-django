@@ -75,6 +75,7 @@ Ext.define('devilry.administrator.PrettyView', {
 
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
+            enableToggle: true,
             menu: [],
             scale: 'large',
             listeners: {
