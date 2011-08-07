@@ -1177,19 +1177,52 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.create(self.testadmin, **kw)
 
-    def test_create_with_examiners(self):
+    def test_create_with_examiners_and_candidates(self):
         self.create_user('exampleexaminer1')
         self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
         newpk = SimplifiedAssignmentGroup.create(self.admin1,
                                                  name='test1',
                                                  parentnode=self.inf101_firstsem_a1_g1.parentnode,
-                                                 examiners__username=('exampleexaminer1', 'exampleexaminer2'))
+                                                 fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                                                 fake_candidates=(dict(username='examplestudent1'),
+                                                                  dict(username='examplestudent2',
+                                                                       candidate_id='23xx')))
         create_res = models.AssignmentGroup.objects.get(pk=newpk)
         self.assertEquals(create_res.name, 'test1')
         self.assertEquals(create_res.parentnode,
                           self.inf101_firstsem_a1_g1.parentnode)
         self.assertEquals(create_res.examiners.filter(username='exampleexaminer1').count(), 1)
         self.assertEquals(create_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(create_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
+
+    def test_update_with_examiners_and_candidates(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+        pk = SimplifiedAssignmentGroup.update(self.admin1,
+                                              pk=self.inf101_firstsem_a1_g1.id,
+                                              name='test1',
+                                              parentnode=self.inf101_firstsem_a1_g1.parentnode,
+                                              fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                                              fake_candidates=(dict(username='examplestudent1'),
+                                                               dict(username='examplestudent2',
+                                                                    candidate_id='23xx')))
+        update_res = models.AssignmentGroup.objects.get(pk=pk)
+        self.assertEquals(update_res.name, 'test1')
+        self.assertEquals(update_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
 
     def test_update(self):
         kw = dict(name = 'test')

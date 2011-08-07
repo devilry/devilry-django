@@ -194,21 +194,51 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
         editablefields = ('id', 'name', 'is_open', 'parentnode')
-        fake_editablefields = ('examiners__username',)
+        fake_editablefields = ('fake_examiners', 'fake_candidates')
         methods = ['create', 'read', 'update', 'delete', 'search']
 
+
     @classmethod
-    def post_save(cls, user, obj):
-        if hasattr(obj, 'examiners__username'):
-            examiners__username = obj.examiners__username
-            delattr(obj, 'examiners__username')
+    def _parse_examiners_as_list_of_usernames(cls, obj):
+        if hasattr(obj, 'fake_examiners'):
+            fake_examiners = obj.fake_examiners
             users = []
-            for username in examiners__username:
+            for username in fake_examiners:
                 user = User.objects.get(username=username)
                 users.append(user)
             obj.examiners.clear()
             for user in users:
                 obj.examiners.add(user)
+
+    @classmethod
+    def _parse_candidates_as_list_of_dicts(cls, obj):
+        """
+        Parse candidates as a a list of dicts. Each dict should have the
+        following key,value pairs:
+
+            username
+                The username of an existing user. This key,value pair is required.
+                The user with the given username is created as a candidate.
+            candidate_id
+                The candidate_id. This is optional, and defaults to ``None``.
+
+        If all usernames are valid, ``obj.candidates`` is cleared, and the
+        given candidates are added (I.E.: All current candidates are replaced).
+        """
+        if hasattr(obj, 'fake_candidates'):
+            candidateskwargs = []
+            for candidatespec in obj.fake_candidates:
+                candidatekwargs = dict(student = User.objects.get(username=candidatespec['username']),
+                                       candidate_id = candidatespec.get('candidate_id', None))
+                candidateskwargs.append(candidatekwargs)
+            models.Candidate.objects.filter(assignment_group=obj).delete() # Clear current candidates
+            for candidatekwargs in candidateskwargs:
+                obj.candidates.create(**candidatekwargs)
+
+    @classmethod
+    def post_save(cls, user, obj):
+        cls._parse_examiners_as_list_of_usernames(obj)
+        cls._parse_candidates_as_list_of_dicts(obj)
 
 
 @simplified_modelapi

@@ -229,6 +229,7 @@ class SimplifiedModelApi(object):
         cls.pre_full_clean(user, obj)
         obj.full_clean()
         obj.save()
+        cls.post_save(user, obj)
         return obj.pk
 
     @classmethod
