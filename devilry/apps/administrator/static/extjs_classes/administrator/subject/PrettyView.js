@@ -3,8 +3,11 @@ Ext.define('devilry.administrator.subject.PrettyView', {
     alias: 'widget.administrator_subjectprettyview',
 
     bodyTpl: Ext.create('Ext.XTemplate',
-        '<section>',
-        '<p>What should we put here?</p>',
+        '<section class="help">',
+        '    <h1>What is a subject?</h1>',
+        '    <p>',
+        '        A subject is usually a course or seminar. A subject contains periods, which are usually semesters.',
+        '    </p>',
         '</section>'
     )
 });
