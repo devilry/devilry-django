@@ -58,9 +58,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
         this.userinput = Ext.widget('textareafield', {
             hideLabel: true,
             emptyText: 'My optional group name:: somestudent, anotherstudent',
-            flex: 1 // Take up all remaining vertical space
+            flex: 10 // Take up all remaining vertical space
         });
-        //this.userinput.setValue('dewey\nlouie \n\n huey \ndonald, della');
+        this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
         Ext.apply(this, {
             //items: this.userinput,
 
@@ -69,30 +69,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
                 align: 'stretch'
             },
 
-            defaults: {
-                padding: 20,
-            },
-
             items: [{
                 flex: 10,
                 xtype: 'box',
                 padding: 20,
                 autoScroll: true,
                 html: this.helptext
-            }, {
-                xtype: 'panel',
-                frame: false,
-                border: false,
-                flex: 10,
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                },
-                items: [{
-                    xtype: 'box',
-                    html: '<section><h1>Assignment groups</h1></section>'
-                }, this.userinput]
-            }],
+            }, this.userinput],
 
             dockedItems: [{
                 xtype: 'toolbar',
@@ -112,28 +95,49 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
         this.callParent(arguments);
     },
 
+
+    /**
+     * @private
+     */
+    parseCandidateSpec: function(candidateSpec) {
+        var asArray = candidateSpec.split(/\s*:\s*/);
+        var candidate_id = asArray.length > 1? asArray[1]: null;
+        return {
+            username: asArray[0],
+            candidate_id: candidate_id
+        };
+    },
+
+    /**
+     * @private
+     */
     parseGroupSpec: function(groupSpec) {
         groupSpec = Ext.String.trim(groupSpec);
         if(groupSpec == "") {
             return null;
         }
-        var asArray = groupSpec.split(/\s*,\s*/);
         groupSpecObj = {
             name: null,
             is_open: true,
             fake_candidates: [],
             fake_examiners: []
         };
+
+        var nameSplit = groupSpec.split(/\s*::\s*/);
+        if(nameSplit.length > 1) {
+            groupSpecObj.name = nameSplit[0];
+            groupSpec = nameSplit[1];
+        }
+        var asArray = groupSpec.split(/\s*,\s*/);
         Ext.Array.each(asArray, function(candidateSpec) {
-            var username = candidateSpec;
-            groupSpecObj.fake_candidates.push({
-                username: username,
-                candidate_id: null
-            });
-        });
+            groupSpecObj.fake_candidates.push(this.parseCandidateSpec(candidateSpec));
+        }, this);
         return groupSpecObj;
     },
 
+    /**
+     * @private
+     */
     parseTextToGroupSpec: function(rawValue) {
         var asArray = rawValue.split('\n');
         var resultArray = [];
@@ -147,22 +151,117 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
         return resultArray;
     },
 
+    /**
+     * @private
+     */
     createAll: function(parsedArray) {
         var assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
+        var finishedCounter = 0;
+        var unsuccessful = [];
         Ext.Array.each(parsedArray, function(groupSpecObj) {
             var completeGroupSpecObj = {
                 parentnode: this.assignmentid
             };
             Ext.apply(completeGroupSpecObj, groupSpecObj);
-            //console.log(completeGroupSpecObj);
             var group = Ext.create(assignmentGroupModelCls, completeGroupSpecObj);
-            group.save();
+            group.save({
+                scope: this,
+                success: function() {
+                    finishedCounter ++;
+                    if(finishedCounter == parsedArray.length) {
+                        this.onFinishedSavingAll(unsuccessful, finishedCounter);
+                    }
+                },
+                failure: function() {
+                    finishedCounter ++;
+                    unsuccessful.push(groupSpecObj);
+                    if(finishedCounter == parsedArray.length) {
+                        this.onFinishedSavingAll(unsuccessful, finishedCounter);
+                    }
+                }
+            });
         }, this);
     },
 
+    groupSpecObjToString: function(groupSpecObj) {
+        var groupSpecStr = "";
+        if(groupSpecObj.name) {
+            groupSpecStr += groupSpecObj.name + ":: ";
+        }
+        Ext.Array.each(groupSpecObj.fake_candidates, function(candidate, index) {
+            groupSpecStr += candidate.username;
+            if(candidate.candidate_id) {
+                groupSpecStr += ':' + candidate.candidate_id;
+            }
+            if(index != groupSpecObj.fake_candidates.length-1) {
+                groupSpecStr += ', ';
+            }
+        }, this);
+        return groupSpecStr;
+    },
+
+    /**
+     * @private
+     */
+    groupSpecObjArrayToString: function(groupSpecObjArray) {
+        var str = "";
+        Ext.Array.each(groupSpecObjArray, function(groupSpecObj) {
+            str += this.groupSpecObjToString(groupSpecObj) + '\n';
+        }, this);
+        return str;
+    },
+
+    /**
+     * @private
+     */
+    onFinishedSavingAll: function(unsuccessful, totalCount) {
+        if(unsuccessful.length == 0) {
+            this.onSuccess(totalCount);
+        } else {
+            this.onFailure(unsuccessful, totalCount);
+        }
+    },
+
+    /**
+     * @private
+     */
+    onSuccess: function(totalCount) {
+        var me = this;
+        Ext.MessageBox.show({
+            title: 'Success',
+            msg: Ext.String.format('Created {0} assignment groups.', totalCount),
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.INFO,
+            fn: function() {
+                me.userinput.setValue('');
+                me.up('window').close();
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    onFailure: function(unsuccessful, totalCount) {
+        console.log(totalCount);
+        console.log(unsuccessful);
+        this.userinput.setValue(this.groupSpecObjArrayToString(unsuccessful));
+        Ext.MessageBox.show({
+            title: 'Error',
+            msg: Ext.String.format(
+                'Failed to create {0} of {1} assignment groups. This is usually caused by invalid usernames. The groups with errors have been re-added to the input box.',
+                unsuccessful.length, totalCount),
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR
+        });
+    },
+
+    /**
+     * @private
+     */
     onCreate: function() {
         var parsedArray = this.parseTextToGroupSpec(this.userinput.getValue());
-        console.log(parsedArray);
+        //console.log(parsedArray);
         this.createAll(parsedArray);
     }
 });
