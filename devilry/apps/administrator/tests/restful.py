@@ -373,19 +373,67 @@ class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
         first = data['items'][0]
         self.assertEquals(set(first.keys()), set(self.resultfields.all_aslist()))
 
-
-
     def test_create(self):
-        #TODO test_create
-        pass
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+
+        url = self.simplifiedcls.get_rest_url()
+        data = dict(name='test1',
+                    parentnode=self.inf101_firstsem_a1.id,
+                    fake_examiners=json.dumps(('exampleexaminer1', 'exampleexaminer2')),
+                    fake_candidates=json.dumps((dict(username='examplestudent1'),
+                                                dict(username='examplestudent2',
+                                                     candidate_id='23xx'))))
+        r = self.client.post(url, data=json.dumps(data),
+                             content_type='application/json')
+        self.assertEquals(r.status_code, 201)
+        response = json.loads(r.content)
+        create_res = models.AssignmentGroup.objects.get(id=response['id'])
+        self.assertEquals(create_res.name, 'test1')
+        self.assertEquals(create_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(create_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(create_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(create_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
+
 
     def test_create_errors(self):
         #TODO test_create_errors
         pass
 
     def test_update(self):
-        #TODO test_update
-        pass
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+
+        url = self.simplifiedcls.get_rest_url(self.inf101_firstsem_a1_g1.id,)
+        data = dict(name='test1',
+                    parentnode=self.inf101_firstsem_a1.id,
+                    fake_examiners=json.dumps(('exampleexaminer1', 'exampleexaminer2')),
+                    fake_candidates=json.dumps((dict(username='examplestudent1'),
+                                                dict(username='examplestudent2',
+                                                     candidate_id='23xx'))))
+        r = self.client.put(url, data=json.dumps(data),
+                            content_type='application/json')
+        self.assertEquals(r.status_code, 200)
+        response = json.loads(r.content)
+        update_res = models.AssignmentGroup.objects.get(id=response['id'])
+
+        self.assertEquals(update_res.name, 'test1')
+        self.assertEquals(update_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
 
     def test_update_errors(self):
         #TODO test_update_errors

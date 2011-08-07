@@ -6,6 +6,7 @@ from simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
                         SimplifiedStaticFeedback, SimplifiedFileMeta)
 from ..extjshelpers import extjs_restful_modelapi
 from devilry.coreutils.restful import metabases as restfulmetabases
+from devilry.restful.fields import JsonListWithFallbackField
 
 
 __all__ = ('RestfulSimplifiedNode', 'RestfulSimplifiedSubject',
@@ -99,6 +100,8 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignmentGroup
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
+        fake_editablefields_formfields = {'fake_examiners': JsonListWithFallbackField(),
+                                          'fake_candidates': JsonListWithFallbackField()}
 
     class ExtjsModelMeta(restfulmetabases.AssignmentGroupExtjsModelMeta):
         """ Metadata for javascript. """
