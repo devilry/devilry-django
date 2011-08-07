@@ -90,7 +90,7 @@ class SimplifiedModelApi(object):
     @classmethod
     def _set_values(cls, obj, field_values):
         for fieldname, value in field_values.iteritems():
-            if not fieldname in cls._meta.editablefields:
+            if not fieldname in cls._meta.editablefields and not fieldname in cls._meta.fake_editablefields:
                 raise PermissionDenied('Field {fieldname} can not be edited.'.format(fieldname=fieldname))
             setattr(obj, fieldname, value)
 
@@ -154,9 +154,17 @@ class SimplifiedModelApi(object):
         before ``obj.full_clean()`` in :meth:`create` and :meth:`update`.
 
         Override this to set custom/generated values on ``obj`` before it is
-        validated and saved. The default does nothing ``obj``.
+        validated and saved. The default does nothing.
         """
 
+    @classmethod
+    def post_save(cls, user, obj):
+        """
+        Invoked after the ``obj`` has been saved.
+
+        Override this to set custom/generated values on ``obj`` after it has been
+        validated and saved. The default does nothing.
+        """
 
     @classmethod
     def create(cls, user, **field_values):
@@ -170,12 +178,13 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if any of the ``field_values``
             is not in ``cls._meta.editablefields``.
         """
-        obj =  cls._meta.model()
+        obj = cls._meta.model()
         cls._set_values(obj, field_values)
         cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
         cls.pre_full_clean(user, obj)
         obj.full_clean()
         obj.save()
+        cls.post_save(user, obj)
         return obj.pk
 
     @classmethod

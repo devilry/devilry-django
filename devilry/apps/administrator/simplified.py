@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models import Count
 
 from ...simplified import (SimplifiedModelApi, simplified_modelapi,
@@ -192,7 +193,22 @@ class SimplifiedAssignmentGroup(CanSaveBase):
     :class:`devilry.apps.core.models.AssignmentGroup`. """
     class Meta(SimplifiedAssignmentGroupMetaMixin):
         """ Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API """
+        editablefields = ('id', 'name', 'is_open', 'parentnode')
+        fake_editablefields = ('examiners__username',)
         methods = ['create', 'read', 'update', 'delete', 'search']
+
+    @classmethod
+    def post_save(cls, user, obj):
+        if hasattr(obj, 'examiners__username'):
+            examiners__username = obj.examiners__username
+            delattr(obj, 'examiners__username')
+            users = []
+            for username in examiners__username:
+                user = User.objects.get(username=username)
+                users.append(user)
+            obj.examiners.clear()
+            for user in users:
+                obj.examiners.add(user)
 
 
 @simplified_modelapi
