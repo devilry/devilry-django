@@ -382,10 +382,10 @@ class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
         url = self.simplifiedcls.get_rest_url()
         data = dict(name='test1',
                     parentnode=self.inf101_firstsem_a1.id,
-                    fake_examiners=json.dumps(('exampleexaminer1', 'exampleexaminer2')),
-                    fake_candidates=json.dumps((dict(username='examplestudent1'),
-                                                dict(username='examplestudent2',
-                                                     candidate_id='23xx'))))
+                    fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                    fake_candidates=(dict(username='examplestudent1'),
+                                     dict(username='examplestudent2',
+                                          candidate_id='23xx')))
         r = self.client.post(url, data=json.dumps(data),
                              content_type='application/json')
         self.assertEquals(r.status_code, 201)
@@ -415,10 +415,10 @@ class TestRestfulSimplifiedAssignmentGroup(TestCase, testhelper.TestHelper):
         url = self.simplifiedcls.get_rest_url(self.inf101_firstsem_a1_g1.id,)
         data = dict(name='test1',
                     parentnode=self.inf101_firstsem_a1.id,
-                    fake_examiners=json.dumps(('exampleexaminer1', 'exampleexaminer2')),
-                    fake_candidates=json.dumps((dict(username='examplestudent1'),
-                                                dict(username='examplestudent2',
-                                                     candidate_id='23xx'))))
+                    fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                    fake_candidates=(dict(username='examplestudent1'),
+                                     dict(username='examplestudent2',
+                                          candidate_id='23xx')))
         r = self.client.put(url, data=json.dumps(data),
                             content_type='application/json')
         self.assertEquals(r.status_code, 200)

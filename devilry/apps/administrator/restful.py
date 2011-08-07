@@ -100,8 +100,6 @@ class RestfulSimplifiedAssignmentGroup(ModelRestfulView):
     class Meta:
         simplified = SimplifiedAssignmentGroup
         foreignkey_fields = {'parentnode': RestfulSimplifiedAssignment}
-        fake_editablefields_formfields = {'fake_examiners': JsonListWithFallbackField(),
-                                          'fake_candidates': JsonListWithFallbackField()}
 
     class ExtjsModelMeta(restfulmetabases.AssignmentGroupExtjsModelMeta):
         """ Metadata for javascript. """

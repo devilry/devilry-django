@@ -1,7 +1,7 @@
 from django.db.models import DateTimeField
 from django import forms
 
-from fields import CharWithFallbackField
+from fields import RawWithFallbackField
 
 
 def _create_editform(cls):
@@ -31,7 +31,7 @@ def _create_editform(cls):
     for fakefieldname in cls._meta.simplified._meta.fake_editablefields:
         alleditablefields.append(fakefieldname)
         formfield = cls._meta.fake_editablefields_formfields.get(fakefieldname,
-                                                                 CharWithFallbackField())
+                                                                 RawWithFallbackField())
         extra_classattributes[fakefieldname] = formfield
 
 
