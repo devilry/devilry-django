@@ -156,6 +156,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     createAll: function(parsedArray) {
+        this.userinput.getEl().mask(Ext.String.format('Saving {0} groups', parsedArray.length));
         var assignmentGroupModelCls = 'devilry.apps.administrator.simplified.SimplifiedAssignmentGroup';
         var finishedCounter = 0;
         var unsuccessful = [];
@@ -169,6 +170,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
                 scope: this,
                 success: function() {
                     finishedCounter ++;
+                    this.userinput.getEl().mask(
+                        Ext.String.format('Finished saving {0}/{1} groups',
+                        finishedCounter, parsedArray.length,
+                        parsedArray.length));
                     if(finishedCounter == parsedArray.length) {
                         this.onFinishedSavingAll(unsuccessful, finishedCounter);
                     }
@@ -176,6 +181,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
                 failure: function() {
                     finishedCounter ++;
                     unsuccessful.push(groupSpecObj);
+                    this.userinput.getEl().mask(
+                        Ext.String.format('Finished saving {0}/{1} groups',
+                        finishedCounter, parsedArray.length,
+                        parsedArray.length));
                     if(finishedCounter == parsedArray.length) {
                         this.onFinishedSavingAll(unsuccessful, finishedCounter);
                     }
@@ -219,6 +228,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     onFinishedSavingAll: function(unsuccessful, totalCount) {
+        this.userinput.getEl().unmask();
         if(unsuccessful.length == 0) {
             this.onSuccess(totalCount);
         } else {
@@ -264,6 +274,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     onCreate: function() {
+        this.userinput.getEl().mask('Parsing input');
         var parsedArray = this.parseTextToGroupSpec(this.userinput.getValue());
         //console.log(parsedArray);
         this.createAll(parsedArray);
