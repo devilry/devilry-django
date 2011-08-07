@@ -354,33 +354,34 @@ a.warning-button {
 .editform {
     .editform-body {
         padding: 15px;
-        .editform-sidebar {
-
-            strong {
-                font-weight: bold;
-            }
-            em {
-                font-style: italic;
-            }
-            p {
-                padding: 5px 0;
-                line-height: 1.3em;
-            }
-
-            ul {
-                //list-style-type: disc !important;
-                //list-style-position: inside !important;
-                //margin-left: 10px !important;
-                li {
-                    padding: 5px 0;
-                    margin-left: 25px !important;
-                    list-style-type: disc !important;
-                    list-style-position: outside !important;
-                }
-            }
-        }
+        //.editform-sidebar {
+        //}
         .extrabaronright {
             margin-left: 30px;
+        }
+    }
+}
+
+section.helpsection {
+    strong {
+        font-weight: bold;
+    }
+    em {
+        font-style: italic;
+    }
+    p {
+        padding: 5px 0;
+        line-height: 1.3em;
+    }
+    ul {
+        //list-style-type: disc !important;
+        //list-style-position: inside !important;
+        //margin-left: 10px !important;
+        li {
+            padding: 5px 0;
+            margin-left: 25px !important;
+            list-style-type: disc !important;
+            list-style-position: outside !important;
         }
     }
 }
