@@ -1,5 +1,7 @@
 from types import MethodType
 from django.db.models.fields import AutoField, FieldDoesNotExist
+from django.db import transaction
+
 
 from qryresultwrapper import QryResultWrapper
 from utils import modelinstance_to_dict, get_field_from_fieldname, get_clspath
@@ -178,14 +180,15 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if any of the ``field_values``
             is not in ``cls._meta.editablefields``.
         """
-        obj = cls._meta.model()
-        cls._set_values(obj, field_values)
-        cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
-        cls.pre_full_clean(user, obj)
-        obj.full_clean()
-        obj.save()
-        cls.post_save(user, obj)
-        return obj.pk
+        with transaction.commit_on_success():
+            obj = cls._meta.model()
+            cls._set_values(obj, field_values)
+            cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+            cls.pre_full_clean(user, obj)
+            obj.full_clean()
+            obj.save()
+            cls.post_save(user, obj)
+            return obj.pk
 
     @classmethod
     def read(cls, user, pk, result_fieldgroups=[]):
@@ -221,16 +224,17 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if any of the ``field_values``
             is not in ``cls._meta.editablefields``.
         """
-        obj = cls._getwrapper(pk)
-        cls._set_values(obj, field_values)
-        # Important to write authorize after _set_values in case any attributes
-        # used in write_authorize is changed by _set_values.
-        cls.write_authorize(user, obj)
-        cls.pre_full_clean(user, obj)
-        obj.full_clean()
-        obj.save()
-        cls.post_save(user, obj)
-        return obj.pk
+        with transaction.commit_on_success():
+            obj = cls._getwrapper(pk)
+            cls._set_values(obj, field_values)
+            # Important to write authorize after _set_values in case any attributes
+            # used in write_authorize is changed by _set_values.
+            cls.write_authorize(user, obj)
+            cls.pre_full_clean(user, obj)
+            obj.full_clean()
+            obj.save()
+            cls.post_save(user, obj)
+            return obj.pk
 
     @classmethod
     def delete(cls, user, pk):

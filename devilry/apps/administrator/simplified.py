@@ -210,7 +210,10 @@ class SimplifiedAssignmentGroup(CanSaveBase):
             fake_examiners = obj.fake_examiners
             users = []
             for username in fake_examiners:
-                user = User.objects.get(username=username)
+                try:
+                    user = User.objects.get(username=username)
+                except User.DoesNotExist:
+                    raise PermissionDenied()
                 users.append(user)
             obj.examiners.clear()
             for user in users:
@@ -234,9 +237,14 @@ class SimplifiedAssignmentGroup(CanSaveBase):
         if hasattr(obj, 'fake_candidates'):
             candidateskwargs = []
             for candidatespec in obj.fake_candidates:
-                candidatekwargs = dict(student = User.objects.get(username=candidatespec['username']),
-                                       candidate_id = candidatespec.get('candidate_id', None))
-                candidateskwargs.append(candidatekwargs)
+                try:
+                    user = User.objects.get(username=candidatespec['username'])
+                except User.DoesNotExist:
+                    raise PermissionDenied()
+                else:
+                    candidatekwargs = dict(student = user,
+                                           candidate_id = candidatespec.get('candidate_id', None))
+                    candidateskwargs.append(candidatekwargs)
             models.Candidate.objects.filter(assignment_group=obj).delete() # Clear current candidates
             for candidatekwargs in candidateskwargs:
                 obj.candidates.create(**candidatekwargs)
