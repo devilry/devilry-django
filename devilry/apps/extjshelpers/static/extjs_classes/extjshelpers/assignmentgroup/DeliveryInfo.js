@@ -32,7 +32,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
 
     timeOfDeliveryTpl: Ext.create('Ext.XTemplate',
         '<span class="time_of_delivery">',
-        '   Time of delivery: <em>{time_of_delivery:date}</em>',
+        '   Time of delivery: <em>{time_of_delivery:date}</em><br/>',
         '   <tpl if="time_of_delivery &gt; deadline__deadline">',
         '       <span class="after-deadline">(After deadline)</span>',
         '   </tpl>',
@@ -65,6 +65,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             text: 'Browse files',
             id: 'tooltip-browse-files',
             scale: 'large',
+            menu: [], // To get an arrow
+            enableToggle: true,
             listeners: {
                 scope: this,
                 click: this.showFileMetaBrowserWindow,
@@ -79,19 +81,27 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
      * @private
      */
     showFileMetaBrowserWindow: function(button) {
-        Ext.create('Ext.window.Window', {
+        var fileBrowser = Ext.create('Ext.window.Window', {
             title: 'Files',
             height: 400,
-            width: 600,
+            width: 500,
             modal: true,
-            animateTarget: button,
+            //animateTarget: button,
             layout: 'fit',
             items: [{
                 xtype: 'filemetabrowserpanel',
                 border: false,
                 filemetastore: this.filemetastore,
                 deliveryid: this.delivery_recordcontainer.record.data.id
-            }]
-        }).show();
+            }],
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        fileBrowser.show();
+        fileBrowser.alignTo(button, 'br', [-fileBrowser.getWidth(), 0]);
     }
 });

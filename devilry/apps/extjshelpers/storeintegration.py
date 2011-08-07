@@ -30,6 +30,7 @@ def restfulcls_to_extjsstore(restfulcls, integrateModel=False, modelkwargs={},
         (as modelnamesuffix) to generate the model name.
     """
     if integrateModel:
+        modelkwargs['modelnamesuffix'] = storeidsuffix
         model = restfulcls_to_extjsmodel(restfulcls, **modelkwargs)
     else:
         model = "'{modelname}'".format(modelname=get_extjs_modelname(restfulcls, storeidsuffix))

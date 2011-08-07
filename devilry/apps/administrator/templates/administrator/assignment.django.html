@@ -7,12 +7,15 @@
 {{ block.super }}
 
 <script>
+    {{ restfulapi.RestfulSimplifiedPeriod|extjs_model:"subject" }}
     {{ restfulapi.RestfulSimplifiedAssignment|extjs_model:"pointfields,period,subject" }};
     {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_model:"feedback,assignment,period,subject,users" }};
+    {{ gradeeditors.RestfulSimplifiedConfig|extjs_model }};
     var assignmentgroupstore = {{ restfulapi.RestfulSimplifiedAssignmentGroup|extjs_store }};
 
     Ext.require('devilry.administrator.assignment.PrettyView');
-    Ext.require('devilry.administrator.EditPanel');
+    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
+    Ext.require('devilry.extjshelpers.forms.administrator.Assignment');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.assignment.PrettyView', {
             renderTo: 'content-main',
@@ -27,23 +30,25 @@
             renderTo: 'content-heading',
             data: {},
             tpl: [
-                '<h1>{parentnode__parentnode__long_name}</h1>',
-                '<h2>{parentnode__long_name}</h2>',
-                '<h3>{long_name} ({short_name})</h3>'
+                '<tpl if="long_name">',
+                '   <h1>{parentnode__parentnode__long_name}</h1>',
+                '   <h2>{parentnode__long_name}</h2>',
+                '   <h3>{long_name} ({short_name})</h3>',
+                '</tpl>'
             ]
         });
 
         prettyview.addListener('loadmodel', function(record) {
             heading.update(record.data);
-            {#prettyview.onStudents();#}
+            {# prettyview.onGradeEditor(prettyview.gradeeditorbutton); #}
+            {# prettyview.onStudents(); #}
         });
 
-        prettyview.addListener('edit', function(record) {
+        prettyview.addListener('edit', function(record, button) {
             var editpanel = Ext.ComponentManager.create({
-                xtype: 'administrator_editpanel',
-                modelname: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
-                editformitems: {{ restfulapi.RestfulSimplifiedAssignment|extjs_form_items}},
-                foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedAssignment|extjs_foreignkeys }},
+                xtype: 'restfulsimplified_editpanel',
+                model: {{ restfulapi.RestfulSimplifiedAssignment|extjs_modelname }},
+                editform: Ext.widget('administrator_assignmentform'),
                 record: record
             });
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
@@ -51,6 +56,7 @@
                 prettyview: prettyview
             });
             editwindow.show();
+            editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
         });
     });
 </script>

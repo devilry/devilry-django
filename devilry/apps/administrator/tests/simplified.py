@@ -1,7 +1,7 @@
 from datetime import timedelta
 import re
 
-from django.test import TestCase
+from django.test import TransactionTestCase
 
 
 from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
@@ -16,7 +16,7 @@ from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
 testhelper.TestHelper.set_memory_deliverystore()
 
 
-class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
+class SimplifiedAdminTestBase(TransactionTestCase, testhelper.TestHelper):
 
     def setUp(self):
         self.create_superuser('superadminuser')
@@ -37,15 +37,134 @@ class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
         self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1).d1')
         self.add_to_path('uni;inf101.secondsem.a2.g2:candidate(secondStud):examiner(exam1).d1')
 
+        self.add_to_path('uni;inf101:admin(testadmin).firstsem.a1.g1:candidate(teststud):examiner(testexam)')
 
-class TestSimplifiedNode(SimplifiedAdminTestBase):
+class TestSimplifiedAdminNode(SimplifiedAdminTestBase):
     allExtras = SimplifiedNode._meta.resultfields.additional_aslist()
 
     def setUp(self):
         self.add(nodes='uni:admin(admin1).mat.inf')
         self.add(nodes='uni.fys')
         self.create_superuser('superadminuser')
+        self.add_to_path('uni;inf101:admin(testadmin).firstsem.a1.g1:candidate(teststud):examiner(testexam)')
 
+    def test_create_asadmin(self):
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        newpk = SimplifiedNode.create(self.admin1, short_name='test1', **kw)
+        create_res = models.Node.objects.get(pk=newpk)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'TestOne')
+        self.assertEquals(create_res.parentnode, self.uni)
+
+    def test_create_assuperadmin(self):
+        kw = dict(
+                long_name='TestOne',
+                parentnode = None)
+
+        newpk = SimplifiedNode.create(self.superadminuser, short_name='test1', **kw)
+        create_res = models.Node.objects.get(pk=newpk)
+        self.assertEquals(create_res.short_name, 'test1')
+        self.assertEquals(create_res.long_name, 'TestOne')
+        self.assertEquals(create_res.parentnode, None)
+
+    def test_create_security_asstudent(self):
+        # test that a student cant create a node
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.create(self.teststud, short_name='test1', **kw)
+
+    def test_create_security_asexaminer(self):
+        # test that an examiner cant create a node
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.create(self.testexam, short_name='test1', **kw)
+
+    def test_create_security_assubjectadmin(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.create(self.testadmin, short_name='test1', **kw)
+
+    def test_read(self):
+        # do a read with no extra fields
+        read_res = SimplifiedNode.read(self.admin1, self.uni.id)
+        expected_res = modelinstance_to_dict(self.uni, SimplifiedNode._meta.resultfields.aslist())
+        self.assertEquals(read_res, expected_res)
+
+        # do a read with all extras
+        read_res = SimplifiedNode.read(self.admin1, self.uni.id, result_fieldgroups=self.allExtras)
+        expected_res = modelinstance_to_dict(self.uni, SimplifiedNode._meta.resultfields.aslist(self.allExtras))
+        self.assertEquals(read_res, expected_res)
+
+    def test_read_security_asstudent(self):
+        # test that a student cant read a node
+        with self.assertRaises(PermissionDenied):
+            read_res = SimplifiedNode.read(self.teststud, self.uni.id)
+
+    def test_read_security_asexam(self):
+        # test that a student cant read a node
+        with self.assertRaises(PermissionDenied):
+            read_res = SimplifiedNode.read(self.testexam, self.uni.id)
+
+    def test_read_security_assubjectadmin(self):
+        # test that a student cant read a node
+        with self.assertRaises(PermissionDenied):
+            read_res = SimplifiedNode.read(self.testadmin, self.uni.id)
+
+    def test_update(self):
+        self.assertEquals(self.uni.short_name, 'uni')
+
+        kw = dict(short_name = 'testuni',
+                    long_name = 'Test')
+
+        pk = SimplifiedNode.update(self.admin1,
+                            pk = self.uni.id,
+                            **kw)
+        update_res = models.Node.objects.get(pk=pk)
+        self.assertEquals(update_res.short_name, 'testuni')
+
+        self.assertEquals(self.uni.short_name, 'uni')
+        self.refresh_var(self.uni)
+        self.assertEquals(self.uni.short_name, 'testuni')
+
+    def test_update_security_asstudent(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.update(self.teststud, pk=self.uni.id, **kw)
+
+    def test_update_security_asexaminer(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.update(self.testexam, pk=self.uni.id, **kw)
+
+    def test_update_security_assubjectadmin(self):
+        # test that an admin for a subject cant create a node
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedNode.update(self.testadmin, pk=self.uni.id, **kw)
 
     def test_search_filters(self):
         qrywrap = SimplifiedNode.search(self.admin1)
@@ -78,55 +197,6 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
             SimplifiedNode.search(self.admin1, exact_number_of_results=5)
         with self.assertRaises(InvalidNumberOfResults):
             SimplifiedNode.search(self.admin1, exact_number_of_results=0)
-
-    def test_create_asadmin(self):
-        kw = dict(
-                long_name='TestOne',
-                parentnode = self.uni)
-
-        newpk = SimplifiedNode.create(self.admin1, short_name='test1', **kw)
-        create_res = models.Node.objects.get(pk=newpk)
-        self.assertEquals(create_res.short_name, 'test1')
-        self.assertEquals(create_res.long_name, 'TestOne')
-        self.assertEquals(create_res.parentnode, self.uni)
-
-    def test_create_assuperadmin(self):
-        kw = dict(
-                long_name='TestOne',
-                parentnode = None)
-
-        newpk = SimplifiedNode.create(self.superadminuser, short_name='test1', **kw)
-        create_res = models.Node.objects.get(pk=newpk)
-        self.assertEquals(create_res.short_name, 'test1')
-        self.assertEquals(create_res.long_name, 'TestOne')
-        self.assertEquals(create_res.parentnode, None)
-
-    def test_read(self):
-        # do a read with no extra fields
-        read_res = SimplifiedNode.read(self.admin1, self.uni.id)
-        expected_res = modelinstance_to_dict(self.uni, SimplifiedNode._meta.resultfields.aslist())
-        self.assertEquals(read_res, expected_res)
-
-        # do a read with all extras
-        read_res = SimplifiedNode.read(self.admin1, self.uni.id, result_fieldgroups=self.allExtras)
-        expected_res = modelinstance_to_dict(self.uni, SimplifiedNode._meta.resultfields.aslist(self.allExtras))
-        self.assertEquals(read_res, expected_res)
-
-    def test_update(self):
-        self.assertEquals(self.uni.short_name, 'uni')
-
-        kw = dict(short_name = 'testuni',
-                    long_name = 'Test')
-
-        pk = SimplifiedNode.update(self.admin1,
-                            pk = self.uni.id,
-                            **kw)
-        update_res = models.Node.objects.get(pk=pk)
-        self.assertEquals(update_res.short_name, 'testuni')
-
-        self.assertEquals(self.uni.short_name, 'uni')
-        self.refresh_var(self.uni)
-        self.assertEquals(self.uni.short_name, 'testuni')
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -174,10 +244,16 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedNode.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
-        search_res = SimplifiedNode.search(self.testPerson)
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedNode.search(self.testexam)
+        self.assertEquals(search_res.count(), 0)
+
+    def test_search_security_assubjectadmin(self):
+        search_res = SimplifiedNode.search(self.testadmin)
         self.assertEquals(search_res.count(), 0)
 
     def test_delete_asnodeadmin(self):
@@ -192,16 +268,15 @@ class TestSimplifiedNode(SimplifiedAdminTestBase):
             SimplifiedNode.delete(self.superadminuser, self.uni.id)
 
     def test_delete_noperm(self):
-        self.add_to_path('uni;inf101.secondsem.a1.g2:candidate(secondStud):examiner(exam1)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedNode.delete(self.secondStud, self.uni.id)
+            SimplifiedNode.delete(self.teststud, self.uni.id)
         with self.assertRaises(PermissionDenied):
-            SimplifiedNode.delete(self.exam1, self.uni.id)
+            SimplifiedNode.delete(self.testexam, self.uni.id)
 
-class TestSimplifiedSubject(SimplifiedAdminTestBase):
+class TestSimplifiedAdminSubject(SimplifiedAdminTestBase):
     allExtras = SimplifiedSubject._meta.resultfields.additional_aslist()
     def setUp(self):
-        super(TestSimplifiedSubject,self).setUp()
+        super(TestSimplifiedAdminSubject,self).setUp()
 
     def test_create_asadmin(self):
         kw = dict(
@@ -225,6 +300,33 @@ class TestSimplifiedSubject(SimplifiedAdminTestBase):
         self.assertEquals(create_res.long_name, 'TestOne')
         self.assertEquals(create_res.parentnode, self.uni)
 
+    def test_create_security_asstudent(self):
+        # test that a student cant create a subject
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.create(self.teststud, short_name='test1', **kw)
+
+    def test_create_security_asexaminer(self):
+        # test that an examiner cant create a subject
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.create(self.testexam, short_name='test1', **kw)
+
+    def test_create_security_assubjectadmin(self):
+        # test that an admin for a subject cant create a subject
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.uni)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.create(self.testadmin, short_name='test1', **kw)
+
     def test_read(self):
         # do a read with no extra fields
         read_res = SimplifiedSubject.read(self.admin1, self.inf110.id)
@@ -235,6 +337,21 @@ class TestSimplifiedSubject(SimplifiedAdminTestBase):
         read_res = SimplifiedSubject.read(self.admin1, self.inf110.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf110, SimplifiedSubject._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
+
+    def test_read_security_asstudent(self):
+        # test that a student cant read a subject
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.read(self.teststud, self.inf101.id)
+
+    def test_read_security_asexam(self):
+        # test that an examiner cant read a subject
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.read(self.testexam, self.inf101.id)
+
+    def test_read_security_assubjectadmin(self):
+        # test that a subjectadmin cant read another subject
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.read(self.testadmin, self.inf110.id)
 
     def test_update(self):
         self.assertEquals(self.inf110.short_name, 'inf110')
@@ -251,6 +368,65 @@ class TestSimplifiedSubject(SimplifiedAdminTestBase):
         self.assertEquals(self.inf110.short_name, 'inf110')
         self.refresh_var(self.inf110)
         self.assertEquals(self.inf110.short_name, 'test110')
+
+    def test_update_security_asstudent(self):
+        # test that a student cant update another subject
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.update(self.teststud, pk=self.inf101.id, **kw)
+
+    def test_update_security_asexaminer(self):
+        # test that an examiner cant update another subject
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.update(self.testexam, pk=self.inf101.id, **kw)
+
+    def test_update_security_assubjectadmin(self):
+        # test that an admin for a subject cant update another subject
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedSubject.update(self.testadmin, pk=self.inf110.id, **kw)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedSubject.search(self.admin1)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedSubject.search(self.admin1,
+                                        filters=[dict(field='parentnode__short_name', comp='exact', value='uni')])
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedSubject.search(self.admin1,
+                                        filters=[dict(field='short_name', comp='exact', value='inf110')])
+        self.assertEquals(len(qrywrap), 1)
+
+        with self.assertRaises(FilterValidationError):
+            SimplifiedSubject.search(self.admin1,
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedSubject.search(self.admin1,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedSubject.search(self.admin1,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedSubject.search(self.admin1, exact_number_of_results=2)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedSubject.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 2)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedSubject.search(self.admin1, exact_number_of_results=1)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedSubject.search(self.admin1, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedSubject.search(self.admin1, exact_number_of_results=0)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -294,10 +470,12 @@ class TestSimplifiedSubject(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedSubject.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
-        search_res = SimplifiedSubject.search(self.testPerson)
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedSubject.search(self.testexam)
         self.assertEquals(search_res.count(), 0)
 
     def test_delete_asnodeadmin(self):
@@ -325,10 +503,10 @@ class TestSimplifiedSubject(SimplifiedAdminTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedSubject.delete(self.exam1, self.inf101.id)
 
-class TestSimplifiedPeriod(SimplifiedAdminTestBase):
+class TestSimplifiedAdminPeriod(SimplifiedAdminTestBase):
     allExtras = SimplifiedSubject._meta.resultfields.additional_aslist()
     def setUp(self):
-        super(TestSimplifiedPeriod, self).setUp()
+        super(TestSimplifiedAdminPeriod, self).setUp()
 
     def test_create_asadmin(self):
         kw = dict(
@@ -356,6 +534,39 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
         self.assertEquals(create_res.long_name, 'TestOne')
         self.assertEquals(create_res.parentnode, self.inf110)
 
+    def test_create_security_asstudent(self):
+        # test that a student cant create a period
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.inf101,
+                start_time = self.inf101_firstsem.start_time,
+                end_time = self.inf101_firstsem.end_time)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.create(self.teststud, short_name='test1', **kw)
+
+    def test_create_security_asexaminer(self):
+        # test that an examiner cant create a period
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.inf101,
+                start_time = self.inf101_firstsem.start_time,
+                end_time = self.inf101_firstsem.end_time)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.create(self.testexam, short_name='test1', **kw)
+
+    def test_create_security_assubjectadmin(self):
+        # test that an admin for a subject cant create a period for another subject
+        kw = dict(
+                long_name='TestOne',
+                parentnode = self.inf110,
+                start_time = self.inf110_firstsem.start_time,
+                end_time = self.inf110_firstsem.end_time)
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.create(self.testadmin, short_name='test1', **kw)
+
     def test_read(self):
         # do a read with no extra fields
         read_res = SimplifiedPeriod.read(self.admin1, self.inf110_firstsem.id)
@@ -367,6 +578,21 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
         read_res = SimplifiedPeriod.read(self.admin1, self.inf110_firstsem.id, result_fieldgroups=self.allExtras)
         expected_res = modelinstance_to_dict(self.inf110_firstsem, SimplifiedPeriod._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
+
+    def test_read_security_asstudent(self):
+        # test that a student cant read a period
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.read(self.teststud, self.inf101_firstsem.id)
+
+    def test_read_security_asexam(self):
+        # test that an examiner cant read a period
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.read(self.testexam, self.inf101_firstsem.id)
+
+    def test_read_security_assubjectadmin(self):
+        # test that a subjectadmin cant read another subjects period
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.read(self.testadmin, self.inf110_firstsem.id)
 
     def test_update(self):
         self.assertEquals(self.inf110_firstsem.short_name, 'firstsem')
@@ -383,6 +609,62 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
         self.assertEquals(self.inf110_firstsem.short_name, 'firstsem')
         self.refresh_var(self.inf110_firstsem)
         self.assertEquals(self.inf110_firstsem.short_name, 'testsem')
+
+    def test_update_security_asstudent(self):
+        # test that a student cant update another subject
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.update(self.teststud, pk=self.inf101_firstsem.id, **kw)
+
+    def test_update_security_asexaminer(self):
+        # test that an examiner cant update another subject
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.update(self.testexam, pk=self.inf101_firstsem.id, **kw)
+
+    def test_update_security_assubjectadmin(self):
+        # test that an admin for a subject cant update another subject
+        kw = dict(
+                short_name='test1',
+                long_name='TestOne')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedPeriod.update(self.testadmin, pk=self.inf110_firstsem.id, **kw)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedPeriod.search(self.admin1)
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedPeriod.search(self.admin1,
+                                        filters=[dict(field='parentnode__short_name', comp='exact', value='inf110')])
+        self.assertEquals(len(qrywrap), 2)
+
+        with self.assertRaises(FilterValidationError):
+            SimplifiedPeriod.search(self.admin1,
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='inf110')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedPeriod.search(self.admin1,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='inf110')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedPeriod.search(self.admin1,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='inf110')])
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedPeriod.search(self.admin1, exact_number_of_results=4)
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedPeriod.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedPeriod.search(self.admin1, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedPeriod.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedPeriod.search(self.admin1, exact_number_of_results=0)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -432,10 +714,12 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedPeriod.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
-        search_res = SimplifiedPeriod.search(self.testPerson)
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedPeriod.search(self.testexam)
         self.assertEquals(search_res.count(), 0)
 
     def test_delete_asnodeadmin(self):
@@ -462,11 +746,11 @@ class TestSimplifiedPeriod(SimplifiedAdminTestBase):
         with self.assertRaises(PermissionDenied):
             SimplifiedPeriod.delete(self.exam1, self.inf101_firstsem.id)
 
-class TestSimplifiedAssignment(SimplifiedAdminTestBase):
+class TestSimplifiedAdminAssignment(SimplifiedAdminTestBase):
     allExtras = SimplifiedAssignment._meta.resultfields.additional_aslist()
 
     def setUp(self):
-        super(TestSimplifiedAssignment, self).setUp()
+        super(TestSimplifiedAdminAssignment, self).setUp()
 
     def test_read_base(self):
         # do a read with no extra fields
@@ -500,6 +784,21 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
                                                  'subject', 'pointfields']))
         self.assertEquals(read_res, expected_res)
 
+    def test_read_security_asstudent(self):
+        # test that a student cant read a assignment
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.read(self.teststud, self.inf101_firstsem_a1.id)
+
+    def test_read_security_asexam(self):
+        # test that an examiner cant read an assignment
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.read(self.testexam, self.inf101_firstsem_a1.id)
+
+    def test_read_security_assubjectadmin(self):
+        # test that a subjectadmin cant read another subjects Assignments
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.read(self.testadmin, self.inf110_firstsem_a1.id)
+
     def test_read_security(self):
         self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
 
@@ -509,6 +808,31 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
 
         self.add_to_path('uni;inf110.firstsem.a2:admin(testPerson)')
         SimplifiedAssignment.read(self.testPerson, self.inf110_firstsem_a2.id)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedAssignment.search(self.admin1)
+        self.assertEquals(len(qrywrap), 8)
+        qrywrap = SimplifiedAssignment.search(self.admin1,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstsem')])
+        self.assertEquals(len(qrywrap), 4)
+        qrywrap = SimplifiedAssignment.search(self.admin1,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstsem'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 2)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedAssignment.search(self.admin1, exact_number_of_results=8)
+        self.assertEquals(len(qrywrap), 8)
+        qrywrap = SimplifiedAssignment.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 8)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignment.search(self.admin1, exact_number_of_results=7)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignment.search(self.admin1, exact_number_of_results=9)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignment.search(self.admin1, exact_number_of_results=0)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -579,33 +903,13 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(testPerson)')
-
-        search_res = SimplifiedAssignment.search(self.testPerson)
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedAssignment.search(self.teststud)
         self.assertEquals(search_res.count(), 0)
 
-        self.add_to_path('uni;inf110.firstsem.a2:admin(testPerson)')
-        search_res = SimplifiedAssignment.search(self.testPerson)
-        expected_res = [modelinstance_to_dict(self.inf110_firstsem_a2,
-            SimplifiedAssignment._meta.resultfields.aslist())]
-
-        self.assertEquals(search_res.count(), len(expected_res))
-        for s in search_res:
-            self.assertTrue(s in expected_res)
-
-    def test_search_filters(self):
-        qrywrap = SimplifiedAssignment.search(self.admin1)
-        self.assertEquals(len(qrywrap), 8)
-        qrywrap = SimplifiedAssignment.search(self.admin1,
-                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
-                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstsem')])
-        self.assertEquals(len(qrywrap), 4)
-        qrywrap = SimplifiedAssignment.search(self.admin1,
-                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
-                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstsem'),
-                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='101')])
-        self.assertEquals(len(qrywrap), 2)
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedAssignment.search(self.testexam)
+        self.assertEquals(search_res.count(), 0)
 
     def test_create(self):
         kw = dict(
@@ -622,25 +926,35 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         self.assertEquals(create_res.publishing_time,
                 self.inf110_firstsem_a2.publishing_time)
 
-    def test_create_security(self):
+    def test_create_security_asstudent(self):
         kw = dict(
                 long_name='Test',
                 parentnode = self.inf110_firstsem_a2.parentnode,
                 publishing_time = self.inf110_firstsem_a2.publishing_time)
 
         #test that a student cannot create an assignment
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(inf110Student)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.create(self.inf110Student, short_name='test1', **kw)
+            SimplifiedAssignment.create(self.teststud, short_name='test1', **kw)
+
+    def test_create_security_asexaminer(self):
+        kw = dict(
+                long_name='Test',
+                parentnode = self.inf110_firstsem_a2.parentnode,
+                publishing_time = self.inf110_firstsem_a2.publishing_time)
 
         #test that an administrator cannot create assignment for the wrong course
-        self.add_to_path('uni;inf101:admin(inf101Admin)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.create(self.inf101Admin, short_name='test1', **kw)
+            SimplifiedAssignment.create(self.testexam, short_name='test1', **kw)
 
-        #test that a course-administrator can create assignments for his/her course..
-        self.add_to_path('uni;inf110:admin(inf110Admin)')
-        SimplifiedAssignment.create(self.inf110Admin, short_name='test1', **kw)
+    def test_create_security_asadmin(self):
+        kw = dict(
+                long_name='Test',
+                parentnode = self.inf110_firstsem_a2.parentnode,
+                publishing_time = self.inf110_firstsem_a2.publishing_time)
+
+        #test that an administrator cannot create assignment for the wrong course
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.create(self.testadmin, short_name='test1', **kw)
 
     def test_update(self):
         self.assertEquals(self.inf110_firstsem_a2.short_name, 'a2')
@@ -663,24 +977,31 @@ class TestSimplifiedAssignment(SimplifiedAdminTestBase):
         self.refresh_var(self.inf110_firstsem_a2)
         self.assertEquals(self.inf110_firstsem_a2.short_name, 'test110')
 
-    def test_update_security(self):
+    def test_update_security_asstudent(self):
         kw = dict(
                 long_name = 'TestAssignment',
                 short_name = 'ta')
 
         #test that a student cannot change an assignment
-        self.add_to_path('uni;inf110.firstsem.a2.g1:candidate(inf110Student)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.update(self.inf110Student, pk=self.inf110_firstsem_a2.id, **kw)
+            SimplifiedAssignment.update(self.teststud, pk=self.inf110_firstsem_a2.id, **kw)
 
+    def test_update_security_asexaminer(self):
+        kw = dict(
+                long_name = 'TestAssignment',
+                short_name = 'ta')
+
+        #test that an examiner cannot change an assignment
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignment.update(self.testexam, pk=self.inf110_firstsem_a2.id, **kw)
+
+    def test_update_security_asadmin(self):
+        kw = dict(
+                long_name = 'TestAssignment',
+                short_name = 'ta')
         #test that an administrator cannot change assignment for the wrong course
-        self.add_to_path('uni;inf101:admin(inf101Admin)')
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignment.update(self.inf101Admin, pk=self.inf110_firstsem_a2.id, **kw)
-
-        #test that a course-administrator can change assignments for his/her course..
-        self.add_to_path('uni;inf110:admin(inf110Admin)')
-        SimplifiedAssignment.update(self.inf110Admin, pk=self.inf110_firstsem_a2.id, **kw)
+            SimplifiedAssignment.update(self.testadmin, pk=self.inf110_firstsem_a2.id, **kw)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf110.firstsem.a1:admin(testadmin)')
@@ -711,9 +1032,34 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
     def setUp(self):
         super(TestSimplifiedAdminAssignmentGroup, self).setUp()
 
+    def test_search_filters(self):
+        qrywrap = SimplifiedAssignment.search(self.admin1)
+        self.assertEquals(len(qrywrap), 8)
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='a1')])
+        self.assertEquals(len(qrywrap), 3)
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='a2'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='sem'),
+                                                       dict(field='parentnode__parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 2)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=6)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=7)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=0)
+
     def test_search_noextras(self):
         # search with no query and no extra fields
-
         search_res = SimplifiedAssignmentGroup.search(self.admin1)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1, self.baseFields),
                         modelinstance_to_dict(self.inf101_firstsem_a2_g1, self.baseFields),
@@ -781,21 +1127,156 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
 
         self.assertEquals(read_res, expected_res)
 
-    def test_read_security(self):
+    def test_read_security_asstudent(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignmentGroup.read(self.secondStud, self.inf101_firstsem_a1_g1.id)
+            SimplifiedAssignmentGroup.read(self.teststud, self.inf101_firstsem_a1_g1.id)
+
+    def test_read_security_asexam(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.read(self.testexam, self.inf101_firstsem_a1_g1.id)
+
+    def test_read_security_asadmin(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.read(self.testadmin, self.inf110_secondsem_a1_g1.id)
 
     def test_create(self):
         kw = dict(
-            name='test1',
-            parentnode=self.inf101_firstsem_a1_g1.parentnode)
+                name='test1',
+                parentnode=self.inf101_firstsem_a1_g1.parentnode)
 
         newpk = SimplifiedAssignmentGroup.create(self.admin1, **kw)
         create_res = models.AssignmentGroup.objects.get(pk=newpk)
         self.assertEquals(create_res.name, 'test1')
-        # self.assertEquals(create_res.long_name, 'Test')
         self.assertEquals(create_res.parentnode,
                 self.inf101_firstsem_a1_g1.parentnode)
+
+    def test_create_security_asstudent(self):
+        kw = dict(
+                long_name='Test',
+                parentnode=self.inf101_firstsem_a1_g1.parentnode)
+
+        #test that a student cannot create an assignmentgroup
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.create(self.teststud, **kw)
+
+    def test_create_security_asexaminer(self):
+        kw = dict(
+                long_name='Test',
+                parentnode=self.inf101_firstsem_a1_g1.parentnode)
+
+        #test that an examiner cannot create assignmentgroup
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.create(self.testexam, **kw)
+
+    def test_create_security_asadmin(self):
+        kw = dict(
+                long_name='Test',
+                parentnode=self.inf110_secondsem_a1_g1.parentnode)
+
+        #test that an administrator cannot create assignmentgroup for the wrong course
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.create(self.testadmin, **kw)
+
+    def test_create_with_examiners_and_candidates(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+        newpk = SimplifiedAssignmentGroup.create(self.admin1,
+                                                 name='test1',
+                                                 parentnode=self.inf101_firstsem_a1,
+                                                 fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                                                 fake_candidates=(dict(username='examplestudent1'),
+                                                                  dict(username='examplestudent2',
+                                                                       candidate_id='23xx')))
+        create_res = models.AssignmentGroup.objects.get(pk=newpk)
+        self.assertEquals(create_res.name, 'test1')
+        self.assertEquals(create_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(create_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(create_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(create_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
+
+
+    def test_create_with_examiners_errors_rollback(self):
+        def count():
+            return models.AssignmentGroup.objects.filter(parentnode=self.inf101_firstsem_a1).count()
+        count_before = count()
+        try:
+            SimplifiedAssignmentGroup.create(self.admin1,
+                                             name='test1',
+                                             parentnode=self.inf101_firstsem_a1,
+                                             fake_examiners=('invalidexaminer',))
+        except PermissionDenied, e:
+            count_after = count() #make sure transaction rolls back everything
+            self.assertEquals(count_before, count_after)
+
+    def test_create_with_candidates_errors_rollback(self):
+        self.create_user('exampleexaminer1')
+        def count():
+            return models.AssignmentGroup.objects.filter(parentnode=self.inf101_firstsem_a1).count()
+        count_before = count()
+        try:
+            SimplifiedAssignmentGroup.create(self.admin1,
+                                             name='test1',
+                                             parentnode=self.inf101_firstsem_a1,
+                                             fake_examiners=('exampleexaminer1',),
+                                             fake_candidates=(dict(username='invaliduser'),)
+                                            )
+        except PermissionDenied, e:
+            count_after = count() #make sure transaction rolls back everything
+            self.assertEquals(count_before, count_after)
+
+
+    def test_update_with_examiners_and_candidates(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+        pk = SimplifiedAssignmentGroup.update(self.admin1,
+                                              pk=self.inf101_firstsem_a1_g1.id,
+                                              name='test1',
+                                              parentnode=self.inf101_firstsem_a1_g1.parentnode,
+                                              fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                                              fake_candidates=(dict(username='examplestudent1'),
+                                                               dict(username='examplestudent2',
+                                                                    candidate_id='23xx')))
+        update_res = models.AssignmentGroup.objects.get(pk=pk)
+        self.assertEquals(update_res.name, 'test1')
+        self.assertEquals(update_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
+
+    def test_update_with_candidates_errors_rollback(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        def get():
+            return models.AssignmentGroup.objects.get(id=self.inf101_firstsem_a1_g1.id)
+        before = get()
+        self.assertEquals(before.examiners.count(), 3)
+        self.assertEquals(before.candidates.count(), 2)
+        try:
+            SimplifiedAssignmentGroup.update(self.admin1,
+                                             pk=self.inf101_firstsem_a1_g1.id,
+                                             name='updated',
+                                             parentnode=self.inf101_firstsem_a1,
+                                             fake_examiners=('exampleexaminer1'),
+                                             fake_candidates=(dict(username='invaliduser'),)
+                                            )
+        except PermissionDenied, e:
+            #make sure transaction rolls back everything
+            after = get()
+            self.assertEquals(after.name, before.name)
+            self.assertEquals(after.examiners.count(), 3)
+            self.assertEquals(after.candidates.count(), 2)
 
     def test_update(self):
         kw = dict(name = 'test')
@@ -806,36 +1287,48 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         create_res = models.AssignmentGroup.objects.get(pk=newpk)
         self.assertEquals(create_res.name, 'test')
 
+    def test_update_security_asstudent(self):
+        #test that a student cannot create an assignmentgroup
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.update(self.teststud, pk = self.inf101_firstsem_a1_g1.id, name='test')
+
+    def test_update_security_asexaminer(self):
+        #test that an examiner cannot create assignmentgroup
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.update(self.testexam, pk = self.inf101_firstsem_a1_g1.id, name='test')
+
+    def test_update_security_asadmin(self):
+        #test that an administrator cannot create assignmentgroup for the wrong course
+        with self.assertRaises(PermissionDenied):
+            SimplifiedAssignmentGroup.update(self.testadmin, pk = self.inf110_secondsem_a1_g1.id, name='test')
+
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101.firstsem:admin(testadmin)')
         # this node has children and should raise PermissionDenied
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignmentGroup.delete(self.testadmin,
-                    self.inf101_firstsem_a1_g1.id)
+            SimplifiedAssignmentGroup.delete(self.testadmin, self.inf101_firstsem_a1_g1.id)
 
     def test_delete_assuperadmin(self):
-        SimplifiedAssignmentGroup.delete(self.superadminuser,
-                self.inf101_firstsem_a1_g1.id)
+        SimplifiedAssignmentGroup.delete(self.superadminuser, self.inf101_firstsem_a1_g1.id)
 
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignmentGroup.delete(self.superadminuser,
-                    self.inf101_firstsem_a1_g1.id)
+            SimplifiedAssignmentGroup.delete(self.superadminuser, self.inf101_firstsem_a1_g1.id)
 
-    def test_delete_noperm(self):
+    def test_delete_noperm_asstudent(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignmentGroup.delete(self.firstStud,
-                    self.inf101_firstsem_a1_g1.id)
+            SimplifiedAssignmentGroup.delete(self.teststud, self.inf101_firstsem_a1_g1.id)
 
+    def test_delete_noperm_asexam(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedAssignmentGroup.delete(self.exam2, self.inf101_firstsem_a1_g1.id)
+            SimplifiedAssignmentGroup.delete(self.testexam, self.inf101_firstsem_a1_g1.id)
 
 
-class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
+class TestSimplifiedAdminStaticFeedback(SimplifiedAdminTestBase):
 
     allExtras = SimplifiedStaticFeedback._meta.resultfields.additional_aslist()
 
     def setUp(self):
-        super(TestSimplifiedAdminstratorStaticFeedback, self).setUp()
+        super(TestSimplifiedAdminStaticFeedback, self).setUp()
         # we need to add some deliveries here! Use the admin of uni as
         # an examiner
         # add deliveries and feedbacks to every group that was
@@ -848,6 +1341,25 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
                 group.examiners.add(self.exam1)
                 self.add_delivery(group)
                 self.add_feedback(group)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedStaticFeedback.search(self.admin1)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedStaticFeedback.search(self.admin1,
+                                              filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedStaticFeedback.search(self.admin1, exact_number_of_results=6)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedStaticFeedback.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedStaticFeedback.search(self.admin1, exact_number_of_results=7)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedStaticFeedback.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedStaticFeedback.search(self.admin1, exact_number_of_results=0)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -916,10 +1428,17 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_read(self):
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedStaticFeedback.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedStaticFeedback.search(self.testexam)
+        self.assertEquals(search_res.count(), 0)
+
+    def test_read(self):
         # do a read with no extra fields
-        read_res = SimplifiedStaticFeedback.read(self.admin1, self.inf101_firstsem_a1_g1_deliveries[0].id)
+        read_res = SimplifiedStaticFeedback.read(self.admin1, self.inf101_firstsem_a1_g1_feedbacks[0].id)
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1_feedbacks[0],
                                              SimplifiedStaticFeedback._meta.resultfields.aslist())
         self.assertEquals(read_res, expected_res)
@@ -932,14 +1451,17 @@ class TestSimplifiedAdminstratorStaticFeedback(SimplifiedAdminTestBase):
                                              SimplifiedStaticFeedback._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
-    def test_read_security(self):
-        # test with someone who's not an admin
+    def test_read_security_asstudent(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedStaticFeedback.read(self.firstStud, self.inf101_firstsem_a1_g1_feedbacks[0].id)
+            SimplifiedStaticFeedback.read(self.teststud, self.inf101_firstsem_a1_g1_feedbacks[0].id)
 
-        # test with someone who's not an admin
+    def test_read_security_asexaminer(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedStaticFeedback.read(self.exam1, self.inf101_firstsem_a1_g1_feedbacks[0].id)
+            SimplifiedStaticFeedback.read(self.testexam, self.inf101_firstsem_a1_g1_feedbacks[0].id)
+
+    def test_read_security_asadmin(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedStaticFeedback.read(self.testadmin, self.inf110_secondsem_a1_g1_feedbacks[0].id)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101:admin(testadmin)')
@@ -970,6 +1492,28 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
     def setUp(self):
         super(TestSimplifiedAdminDeadline, self).setUp()
 
+    def test_search_filters(self):
+        qrywrap = SimplifiedDeadline.search(self.admin1)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedDeadline.search(self.admin1,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='assignment_group__parentnode__short_name', comp='exact', value='a1'),
+                                                       dict(field='assignment_group__parentnode__parentnode__short_name', comp='endswith', value='sem'),
+                                                       dict(field='assignment_group__parentnode__parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 2)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=6)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedDeadline.search(self.admin1, exact_number_of_results=7)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedDeadline.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedDeadline.search(self.admin1, exact_number_of_results=0)
+
     def test_search_noextras(self):
         # search with no query and no extra fields
         # should only have the deafault deadlines created when the
@@ -982,6 +1526,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.baseFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.baseFields),
                         ]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         # assert that all search results are as expected
         self.assertEquals(search_res.count(), len(expected_res))
@@ -998,6 +1544,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields),
                         ]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1008,6 +1556,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         search_res = SimplifiedDeadline.search(self.admin1, query='secondStud')
         expected_res = [modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.baseFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.baseFields)]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1020,6 +1570,8 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_firstsem_a2_g1.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2.deadlines.all()[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields)]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
@@ -1041,13 +1593,22 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                         modelinstance_to_dict(self.inf101_secondsem_a1_g2_deadlines[0], self.allFields),
                         modelinstance_to_dict(self.inf101_secondsem_a2_g2.deadlines.all()[0], self.allFields),
                         ]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_read(self):
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedDeadline.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
+    def test_search_security_asexam(self):
+        search_res = SimplifiedDeadline.search(self.testexam)
+        self.assertEquals(search_res.count(), 0)
+
+    def test_read(self):
         # do a read with no extra fields
         read_res = SimplifiedDeadline.read(self.admin1, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1.deadlines.all()[0],
@@ -1060,18 +1621,19 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
                                              SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
 
-    def test_read_security(self):
+    def test_read_security_asstud(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedDeadline.read(self.secondStud, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
+            SimplifiedDeadline.read(self.teststud, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
 
-        # test that an admin in another subject cant read outside his
-        # subjects
-        self.add_to_path('uni;inf110:admin(inf110admin)')
+    def test_read_security_asexam(self):
         with self.assertRaises(PermissionDenied):
-            SimplifiedDeadline.read(self.inf110admin, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
+            SimplifiedDeadline.read(self.testexam, self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
+
+    def test_read_security_asadmin(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.read(self.testadmin, self.inf110_secondsem_a1_g1.deadlines.all()[0].id)
 
     def test_create(self):
-
         # create a deadline that runs out in 3 days
         kw = dict(
             assignment_group=self.inf101_firstsem_a1_g1,
@@ -1085,8 +1647,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
 
         self.assertEquals(read_res, expected_res)
 
-    def test_create_security(self):
-
+    def test_create_invaliddeadline(self):
         # create an invalid deadline, which runs out before the
         # publishing date
         invalid_deadline_dict = dict(
@@ -1096,25 +1657,32 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
         with self.assertRaises(Exception):  # TODO: Where is ValidationError declared?
             SimplifiedDeadline.create(self.admin1, **invalid_deadline_dict)
 
-        # Now try a valid deadline, but with a student
-        valid = dict(
+    def test_create_security_asstudent(self):
+        kw = dict(
             assignment_group=self.inf101_firstsem_a1_g1,
             deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
             text='Last shot!')
-        with self.assertRaises(PermissionDenied):
-            SimplifiedDeadline.create(self.firstStud, **valid)
-
-        # and another admin that isnt an admin for this course
-        self.add_to_path('uni;inf110:admin(inf110admin)')
 
         with self.assertRaises(PermissionDenied):
-            SimplifiedDeadline.create(self.inf110admin, **valid)
+            SimplifiedDeadline.create(self.teststud, **kw)
 
-        # see that the new admin can create a deadline where he is admin
-        SimplifiedDeadline.create(self.inf110admin,
-                                  assignment_group=self.inf110_secondsem_a1_g1,
-                                  deadline=self.inf110_secondsem_a1.publishing_time + timedelta(days=3),
-                                  text='Last shot!')
+    def test_create_security_asexam(self):
+        kw = dict(
+            assignment_group=self.inf101_firstsem_a1_g1,
+            deadline=self.inf101_firstsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            text='Last shot!')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.create(self.testexam, **kw)
+
+    def test_create_security_asadmin(self):
+        kw = dict(
+            assignment_group=self.inf110_secondsem_a1_g1,
+            deadline=self.inf110_secondsem_a1_g1.deadlines.order_by('deadline')[0].deadline + timedelta(days=3),
+            text='Last shot!')
+
+        with self.assertRaises(PermissionDenied):
+            SimplifiedDeadline.create(self.testadmin, **kw)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101:admin(testadmin)')
@@ -1153,6 +1721,25 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
                 group.examiners.add(self.exam1)
                 files = {'good.py': ['print ', 'awesome']}
                 self.add_delivery(group, files)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedFileMeta.search(self.admin1)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedFileMeta.search(self.admin1,
+                                              filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=6)
+        self.assertEquals(len(qrywrap), 6)
+        qrywrap = SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=7)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.admin1, exact_number_of_results=0)
 
     def test_search_noextras(self):
         # search with no query and no extra fields
@@ -1209,8 +1796,15 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_read(self):
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedFileMeta.search(self.teststud)
+        self.assertEquals(search_res.count(), 0)
 
+    def test_search_security_asexaminer(self):
+        search_res = SimplifiedFileMeta.search(self.testexam)
+        self.assertEquals(search_res.count(), 0)
+
+    def test_read(self):
         # do a read with no extra fields
         read_res = SimplifiedFileMeta.read(self.admin1, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0],
@@ -1224,6 +1818,18 @@ class TestSimplifiedAdminFileMeta(SimplifiedAdminTestBase):
         expected_res = modelinstance_to_dict(self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0],
                                              SimplifiedFileMeta._meta.resultfields.aslist(self.allExtras))
         self.assertEquals(read_res, expected_res)
+
+    def test_read_security_asstudent(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.read(self.teststud, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
+
+    def test_read_security_asexaminer(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.read(self.testexam, self.inf101_firstsem_a1_g1_deliveries[0].filemetas.all()[0].id)
+
+    def test_read_security_asadmin(self):
+        with self.assertRaises(PermissionDenied):
+            SimplifiedFileMeta.read(self.testadmin, self.inf110_secondsem_a1_g1_deliveries[0].filemetas.all()[0].id)
 
     def test_delete_asnodeadmin(self):
         self.add_to_path('uni;inf101:admin(testadmin)')

@@ -3,26 +3,21 @@ from django.contrib.auth.decorators import login_required
 
 from restful import administrator_restful
 from views import (MainView, RestfulSimplifiedView,
-                   RestfulSimplifiedAssignmentGroupView)
-import editorviews
+                   RestfulSimplifiedViewWithGradeEditors)
 
 urlpatterns = patterns('devilry.apps.administrator',
                        url(r'^$',
                            login_required(MainView.as_view()),
                            name='administrator'),
-                       editorviews.NodeEditor.create_url(),
-                       editorviews.SubjectEditor.create_url(),
-                       editorviews.PeriodEditor.create_url(),
-                       editorviews.AssignmentEditor.create_url(),
                        RestfulSimplifiedView.as_url('node',
                                                     'administrator/node.django.html'),
                        RestfulSimplifiedView.as_url('subject',
                                                     'administrator/subject.django.html'),
                        RestfulSimplifiedView.as_url('period',
                                                     'administrator/period.django.html'),
-                       RestfulSimplifiedView.as_url('assignment',
-                                                    'administrator/assignment.django.html'),
-                       RestfulSimplifiedAssignmentGroupView.as_url('assignmentgroup',
-                                                                   'administrator/assignmentgroupview.django.html')
+                       RestfulSimplifiedViewWithGradeEditors.as_url('assignment',
+                                                                    'administrator/assignment.django.html'),
+                       RestfulSimplifiedViewWithGradeEditors.as_url('assignmentgroup',
+                                                                    'administrator/assignmentgroupview.django.html')
                       )
 urlpatterns += administrator_restful

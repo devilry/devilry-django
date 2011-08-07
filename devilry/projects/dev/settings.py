@@ -67,6 +67,14 @@ if profiler_middleware:
         'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
     ]
 
+DELAY_MIDDLEWARE_TIME = 0.6 # Wait for this time before responding to each request when using DelayMiddleware
+delay_middleware = False
+if delay_middleware:
+    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+        'devilry.utils.delay_middleware.DelayMiddleware'
+    ]
+
+
 terminal_logging = True
 if terminal_logging:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [

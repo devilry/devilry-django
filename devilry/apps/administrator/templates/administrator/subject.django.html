@@ -8,9 +8,11 @@
 
 <script>
     {{ restfulapi.RestfulSimplifiedSubject|extjs_model }}
+    {{ restfulapi.RestfulSimplifiedNode|extjs_model }}
 
     Ext.require('devilry.administrator.subject.PrettyView');
-    Ext.require('devilry.administrator.EditPanel');
+    Ext.require('devilry.extjshelpers.RestfulSimplifiedEditPanel');
+    Ext.require('devilry.extjshelpers.forms.administrator.Subject');
     Ext.onReady(function() {
         var prettyview = Ext.create('devilry.administrator.subject.PrettyView', {
             renderTo: 'content-main',
@@ -32,17 +34,18 @@
             heading.update(record.data);
         });
 
-        prettyview.addListener('edit', function(record) {
-            Ext.create('devilry.administrator.DefaultEditWindow', {
+        prettyview.addListener('edit', function(record, button) {
+            var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
                 editpanel: Ext.ComponentManager.create({
-                    xtype: 'administrator_editpanel',
-                    modelname: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
-                    editformitems: {{ restfulapi.RestfulSimplifiedSubject|extjs_form_items}},
-                    foreignkeyfieldnames: {{ restfulapi.RestfulSimplifiedSubject|extjs_foreignkeys }},
+                    xtype: 'restfulsimplified_editpanel',
+                    model: {{ restfulapi.RestfulSimplifiedSubject|extjs_modelname }},
+                    editform: Ext.widget('administrator_subjectform'),
                     record: record
                 }),
                 prettyview: prettyview
-            }).show();
+            });
+            editwindow.show();
+            editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
         });
     });
 </script>

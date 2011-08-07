@@ -48,7 +48,8 @@ Ext.define('devilry.extjshelpers.searchwidget.SearchWidget', {
         this.multisearchresultid = this.id + "-multisearchresults";
         Ext.apply(this, {
             items: [{
-                xtype: 'searchfield'
+                xtype: 'searchfield',
+                emptyText: 'Search for anything...'
             }, {
                 xtype: 'multisearchresults',
                 items: this.searchResultItems,

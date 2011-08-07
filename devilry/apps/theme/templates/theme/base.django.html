@@ -77,8 +77,10 @@
             </nav>
         </header>
 
-        <div id="main">
-            {% block main %}{{ page_main }}{% endblock %}
+        <div id="mainwrapper">
+            <div id="main">
+                {% block main %}{{ page_main }}{% endblock %}
+            </div>
         </div>
 
         <footer>

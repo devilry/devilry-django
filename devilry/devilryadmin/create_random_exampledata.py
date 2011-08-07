@@ -1,11 +1,15 @@
+import json
 import logging
 import itertools
 from random import randint
 from datetime import datetime, timedelta
-
-from devilry.apps.gradeeditors.models import Config
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
+
 from devilry.apps.core.models import Delivery
+from devilry.apps.core import pluginloader
+
+pluginloader.autodiscover()
 
 
 
@@ -257,10 +261,12 @@ def create_assignment(period, deadlines, **assignment_kwargs):
     """ Create an assignment from path. """
     assignment = period.assignments.create(publishing_time = deadlines[0] - timedelta(14),
                                            **assignment_kwargs)
-    Config.objects.create(assignment=assignment,
-                          gradeeditorid='asminimalaspossible',
-                          config='')
-    #assignment.save()
+    assignment.gradeeditor_config.gradeeditorid = 'asminimalaspossible'
+    assignment.gradeeditor_config.config = json.dumps({'defaultvalue': True,
+                                                     'fieldlabel': 'Is the assignment approved?'})
+    assignment.gradeeditor_config.full_clean()
+    assignment.gradeeditor_config.save()
+    assignment.save()
     return assignment
 
 def fit_assignment_in_parentnode(assignment, deadlines):
@@ -320,6 +326,12 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
+def add_relatedusers(related, usernames):
+    for username in usernames:
+        try:
+            related.create(username=username)
+        except IntegrityError:
+            pass # We can not add duplicates
 
 def create_example_assignment(period,
                               groupname_prefix = None,
@@ -368,6 +380,8 @@ def create_example_assignment(period,
     logging.info("    Creating groups on {0}".format(assignment))
     all_examiners = create_numbered_users(num_examiners, examinername_prefix)
     all_students = create_numbered_users(num_students, studentname_prefix)
+    add_relatedusers(period.relatedexaminers, all_examiners)
+    add_relatedusers(period.relatedstudents, all_students)
     create_groups(assignment,
                   deadlines = deadlines,
                   groupname_prefix = groupname_prefix,

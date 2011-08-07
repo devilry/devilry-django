@@ -16,6 +16,10 @@ from datepickerintegration import restfulcls_to_datepicker_xtype
 
 def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
     if isinstance(djangofield, ForeignKey):
+        if foreignkey_restfulcls == None:
+            raise ValueError('Foreign key: {fieldname} has no foreignkey_restfulcls. '
+                             'This is usually defined in Meta.foreignkey_fields in '
+                             'the ModelRestfulView.'.format(fieldname=djangofield.name))
         return restfulcls_to_extjscombobox_xtype(foreignkey_restfulcls)
     elif isinstance(djangofield, fields.DateTimeField):
         return restfulcls_to_datepicker_xtype()
@@ -27,7 +31,12 @@ def djangofield_to_extjs_xtype(djangofield, foreignkey_restfulcls):
 
 def djangofield_to_extjsformfield(model, fieldname, foreignkey_restfulcls):
     field = model._meta.get_field_by_name(fieldname)[0] #!!! INTERNAL DJANGO
-    xtype = djangofield_to_extjs_xtype(field, foreignkey_restfulcls)
+    try:
+        xtype = djangofield_to_extjs_xtype(field, foreignkey_restfulcls)
+    except ValueError, e:
+        raise ValueError('model: {module}.{modelname}: {error}'.format(module=model.__module__,
+                                                                       modelname=model.__name__,
+                                                                       error=e))
     extfield = '{{ name: "{fieldname}", fieldLabel: "{field.verbose_name}", '\
             '{xtype} }}'.format(fieldname=fieldname, field=field,
                                     xtype=xtype)

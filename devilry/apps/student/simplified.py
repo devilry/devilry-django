@@ -1,3 +1,4 @@
+from django.db.models import Count
 from datetime import datetime
 
 from ...simplified import simplified_modelapi, SimplifiedModelApi, PermissionDenied
@@ -53,6 +54,10 @@ class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods a Student can use on a Deadline object using the Simplified API """
         methods = ['search', 'read']
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        return cls._meta.model.published_where_is_candidate(user).annotate(number_of_deliveries=Count('deliveries'))
 
 
 @simplified_modelapi

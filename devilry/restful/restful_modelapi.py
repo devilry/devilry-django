@@ -71,6 +71,8 @@ def restful_modelapi(cls):
     cls = restful_api(cls)
     _require_metaattr(cls, 'simplified')
     _create_seachform(cls)
+    if not hasattr(cls._meta, 'fake_editablefields_formfields'):
+        cls._meta.fake_editablefields_formfields = {}
     _create_editform(cls)
     _copy_supports_metaattrs_from_simplified(cls)
     _create_get_foreignkey_fieldcls_method(cls)

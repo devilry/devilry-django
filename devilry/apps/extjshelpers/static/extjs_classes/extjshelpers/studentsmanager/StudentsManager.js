@@ -3,10 +3,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     alias: 'widget.studentsmanager',
     cls: 'studentsmanager',
     layout: 'border',
+    frame: false,
+    border: false,
 
     requires: [
         'devilry.extjshelpers.studentsmanager.FilterSelector',
         'devilry.extjshelpers.studentsmanager.StudentsGrid',
+        'devilry.extjshelpers.studentsmanager.ManuallyCreateUsers',
         'devilry.extjshelpers.SearchField'
     ],
 
@@ -25,15 +28,15 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             items: [{
                 region: 'north',     // position for region
                 xtype: 'panel',
+                frame: false,
+                border: false,
                 height: 100,
-                //html: 'Search will go here'
                 layout: { //Layout spec of underlying components
                     type: 'vbox',
                     align: 'center'
                 },
                 items: [{
                     xtype: 'searchfield',
-                    id: 'foo',
                     width: 600,
                     height: 40,
                     padding: '30 0 0 0'
@@ -48,7 +51,12 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     xtype: 'button',
                     text: 'Add more students',
                     iconCls: 'icon-add-32',
-                    scale: 'large'
+                    scale: 'large',
+                    width: 194,
+                    listeners: {
+                        scope: this,
+                        click: this.onManuallyCreateUsers
+                    }
                 }],
                 items: [{
                     xtype: 'studentsmanager_filterselector'
@@ -57,29 +65,49 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                 region: 'center',     // center region is required, no width/height specified
                 xtype: 'panel',
                 layout: 'fit',
+                frame: false,
+                border: false,
                 items: [{
                     xtype: 'studentsmanager_studentsgrid',
                     store: this.assignmentgroupstore,
                     assignmentid: this.assignmentid
                 }],
 
-                bbar: ['->', {
-                    xtype: 'button',
-                    scale: 'medium',
-                    text: 'Give feedback to selected'
-                }, {
-                    xtype: 'button',
-                    scale: 'medium',
-                    text: 'Statistics'
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    ui: 'footer',
+                    items: ['->', {
+                        xtype: 'button',
+                        scale: 'large',
+                        text: 'Give feedback to selected'
+                    }]
                 }]
             }],
 
         });
         this.callParent(arguments);
         this.setSearchfieldAttributes();
+        //this.addListener('render', function() {
+            //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
+        //}, this);
     },
     
-    
+    onManuallyCreateUsers: function() {
+        var win = Ext.widget('window', {
+            title: 'Create assignment groups',
+            modal: true,
+            width: 400,
+            height: 600,
+            maximizable: true,
+            layout: 'fit',
+            items: {
+                xtype: 'manuallycreateusers',
+                assignmentid: this.assignmentid
+            }
+        });
+        win.show();
+    },
     
     setSearchfieldAttributes: function() {
         var search_field = this.down('searchfield');

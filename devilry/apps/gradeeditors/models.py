@@ -1,3 +1,4 @@
+from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
@@ -13,10 +14,41 @@ class Config(models.Model):
     gradeeditorid = models.SlugField()
     assignment = models.OneToOneField(Assignment, related_name='gradeeditor_config',
                                       primary_key=True)
-    config = models.TextField()
+    config = models.TextField(null=True, blank=True)
 
     def _get_gradeeditor(self):
         return gradeeditor_registry[self.gradeeditorid]
+
+    def clean(self):
+        try:
+            config = self._get_gradeeditor()
+        except KeyError, e:
+            raise ValidationError('Invalid grade editor: {0}'.format(self.gradeeditorid))
+        if self.config:
+            config.validate_config(self.config)
+
+
+
+def create_gradeconfig_for_assignment(sender, **kwargs):
+    """
+    Signal handler which is invoked when an Assignment is created.
+
+    Create default grade Config for Assignment with ``config=''`` if the assignment
+    has no grade Config.
+
+    :param kwargs: Must have an *instance* key with an assignment object as value.
+    """
+    assignment = kwargs['instance']
+    try:
+        config = assignment.gradeeditor_config
+    except Config.DoesNotExist:
+        config = Config(assignment=assignment,
+                        gradeeditorid=gradeeditor_registry.getdefaultkey(),
+                        config='')
+        config.save()
+
+post_save.connect(create_gradeconfig_for_assignment,
+                  sender=Assignment)
 
 
 class FeedbackDraft(models.Model):

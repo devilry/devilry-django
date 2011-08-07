@@ -1,11 +1,16 @@
-/** List deliveries grouped by deadline. */
-Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
+/** List deliveries on a single group, grouped by deadline. */
+Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.deadlinelisting',
-    cls: 'widget-deadlinelisting',
+    alias: 'widget.deliveriesonsinglegrouplisting',
+    cls: 'widget-deliveriesonsinglegrouplisting',
+    requires: [
+        'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel'
+    ],
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
-        '{number}. {time_of_delivery:date}',
+        'Delivery number {number}, ',
+        'delivered <span class="time_of_delivery">{time_of_delivery:date}</span>',
         '<tpl if="time_of_delivery &gt; deadline__deadline">',
         '   <span class="after-deadline">(After deadline)</span>',
         '</tpl>'
@@ -20,16 +25,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
 
         /**
          * @cfg
-         * Enable creation of new deadlines?
-         */
-        enableDeadlineCreation: false,
-
-        /**
-         * @cfg
          * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
          * The record is changed when a user selects a delivery.
          */
-        delivery_recordcontainer: undefined
+        delivery_recordcontainer: undefined,
+
+        /**
+         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined
     },
 
     constructor: function(config) {
@@ -38,10 +43,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     },
 
     initComponent: function() {
-        if(this.enableDeadlineCreation) {
-            this.addCreateNewDeadlineButton();
-        }
-
         var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
             enableGroupingMenu: false,
             groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
@@ -68,7 +69,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
             dockedItems: [{
                 xtype: 'pagingtoolbar',
                 store: this.store,
-                dock: 'top',
+                dock: 'bottom',
                 displayInfo: false
             }]
         });
@@ -98,30 +99,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
 
     /**
      * @private
-     * */
-    addCreateNewDeadlineButton: function() {
-        Ext.apply(this, {
-            bbar: ['->', {
-                xtype: 'button',
-                text: 'Create new deadline',
-                iconCls: 'icon-add-32',
-                scale: 'large',
-                listeners: {
-                    click: function ()
-                    {
-                        console.log('TODO');
-                    }
-                }
-            }]
-        });
-    },
-
-    /**
-     * @private
-     * Reload all deadlines on this assignmentgroup.
+     * Reload all deliveries on this assignmentgroup.
      * */
     reload: function() {
-        this.loadDeadlines(this.assignmentgroup_recordcontainer.record.data.id);
+        this.loadDeliveries(this.assignmentgroup_recordcontainer.record.data.id);
     },
 
     /**
@@ -135,7 +116,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineListing', {
     /**
      * @private
      */
-    loadDeadlines: function(assignmentgroupid) {
+    loadDeliveries: function(assignmentgroupid) {
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'deadline__assignment_group',
             comp: 'exact',

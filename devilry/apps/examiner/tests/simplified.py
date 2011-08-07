@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from ...core import models, testhelper
-from ....simplified import PermissionDenied
+from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
 from ....simplified.utils import modelinstance_to_dict
 from ..simplified import (SimplifiedAssignment, SimplifiedAssignmentGroup, SimplifiedPeriod,
                           SimplifiedSubject, SimplifiedDeadline, SimplifiedStaticFeedback)
@@ -40,6 +40,38 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
     def setUp(self):
         super(TestSimplifiedExaminerSubject, self).setUp()
 
+    def test_search_filters(self):
+        qrywrap = SimplifiedSubject.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedSubject.search(self.firstExam,
+                                        filters=[dict(field='parentnode__short_name', comp='exact', value='uni')])
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedSubject.search(self.firstExam,
+                                        filters=[dict(field='short_name', comp='exact', value='inf110')])
+        self.assertEquals(len(qrywrap), 1)
+
+        with self.assertRaises(FilterValidationError):
+            SimplifiedSubject.search(self.firstExam,
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedSubject.search(self.firstExam,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='uni')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedSubject.search(self.firstExam,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='uni')])
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedSubject.search(self.firstExam, exact_number_of_results=2)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedSubject.search(self.firstExam, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 2)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedSubject.search(self.firstExam, exact_number_of_results=1)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedSubject.search(self.firstExam, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedSubject.search(self.firstExam, exact_number_of_results=0)
+
     def test_search(self):
         # do an empty search to get all subjects firstExam examines
         search_res = SimplifiedSubject.search(self.firstExam)
@@ -63,6 +95,18 @@ class TestSimplifiedExaminerSubject(SimplifiedExaminerTestBase):
 
         self.assertEquals(search_res.count(), 1)
         self.assertEquals(search_res[0], expected_res)
+
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedSubject.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedSubject.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedSubject.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
 
     def test_read(self):
         # read firstsem without extra fields
@@ -134,6 +178,47 @@ class TestSimplifiedExaminerPeriod(SimplifiedExaminerTestBase):
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
+
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedPeriod.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedPeriod.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedPeriod.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedPeriod.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedPeriod.search(self.firstExam,
+                                        filters=[dict(field='parentnode__short_name', comp='exact', value='inf110')])
+        self.assertEquals(len(qrywrap), 1)
+
+        with self.assertRaises(FilterValidationError):
+            SimplifiedPeriod.search(self.firstExam,
+                                  filters=[dict(field='parentnode__INVALID__short_name', comp='exact', value='inf110')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedPeriod.search(self.firstExam,
+                                  filters=[dict(field='INVALIDparentnode__short_name', comp='exact', value='inf110')])
+        with self.assertRaises(FilterValidationError):
+            SimplifiedPeriod.search(self.firstExam,
+                                  filters=[dict(field='parentnode__short_nameINVALID', comp='exact', value='inf110')])
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedPeriod.search(self.firstExam, exact_number_of_results=2)
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedPeriod.search(self.firstExam, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 2)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedPeriod.search(self.firstExam, exact_number_of_results=1)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedPeriod.search(self.firstExam, exact_number_of_results=3)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedPeriod.search(self.firstExam, exact_number_of_results=0)
 
     def test_read(self):
 
@@ -219,6 +304,43 @@ class TestSimplifiedExaminerAssignment(SimplifiedExaminerTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedAssignment.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedAssignment.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedAssignment.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedAssignment.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedAssignment.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstsem')])
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedAssignment.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='firstsem'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 2)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedAssignment.search(self.firstExam, exact_number_of_results=5)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedAssignment.search(self.firstExam, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignment.search(self.firstExam, exact_number_of_results=6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignment.search(self.firstExam, exact_number_of_results=4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignment.search(self.firstExam, exact_number_of_results=0)
+
     def test_read(self):
 
         # do a read with no extra fields
@@ -251,8 +373,39 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
     def setUp(self):
         super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
 
-    def test_search(self):
+    def test_search_filters(self):
+        qrywrap = SimplifiedAssignment.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedAssignmentGroup.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='a1')])
+        self.assertEquals(len(qrywrap), 2)
+        qrywrap = SimplifiedAssignmentGroup.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='a2'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='sem'),
+                                                       dict(field='parentnode__parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 1)
+        qrywrap = SimplifiedAssignmentGroup.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='parentnode__short_name', comp='exact', value='a2'),
+                                                       dict(field='parentnode__parentnode__short_name', comp='endswith', value='sem'),
+                                                       dict(field='parentnode__parentnode__parentnode__short_name', comp='startswith', value='inf1')])
+        self.assertEquals(len(qrywrap), 2)
 
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedAssignmentGroup.search(self.firstExam, exact_number_of_results=5)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedAssignmentGroup.search(self.firstExam, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.firstExam, exact_number_of_results=6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.firstExam, exact_number_of_results=4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedAssignmentGroup.search(self.firstExam, exact_number_of_results=0)
+
+    def test_search(self):
         self.firstExam = User.objects.get(id=self.firstExam.id)
 
         # search with no query and no extra fields
@@ -307,6 +460,18 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
         for s in search_res:
             self.assertTrue(s in expected_res)
 
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedAssignmentGroup.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedAssignmentGroup.search(self.admin)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedAssignmentGroup.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
+
     def test_read(self):
 
         # do a read with no extra fields
@@ -331,14 +496,36 @@ class TestSimplifiedExaminerAssignmentGroup(SimplifiedExaminerTestBase):
             SimplifiedAssignmentGroup.read(self.admin, self.inf101_firstsem_a1_g1.id)
 
 
-class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
+class TestSimplifiedExaminerDeadline(SimplifiedExaminerTestBase):
 
     allExtras = SimplifiedAssignmentGroup._meta.resultfields.additional_aslist()
     baseFields = SimplifiedAssignmentGroup._meta.resultfields.aslist()
     allFields = SimplifiedAssignmentGroup._meta.resultfields.aslist(allExtras)
 
     def set_up(self):
-        super(TestSimplifiedExaminerAssignmentGroup, self).setUp()
+        super(TestSimplifiedExaminerDeadline, self).setUp()
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedDeadline.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedDeadline.search(self.firstExam,
+                                              #result_fieldgroups=['subject'], # has no effect on filters but nice for debugging
+                                              filters=[dict(field='assignment_group__parentnode__short_name', comp='exact', value='a1'),
+                                                       dict(field='assignment_group__parentnode__parentnode__short_name', comp='endswith', value='sem'),
+                                                       dict(field='assignment_group__parentnode__parentnode__parentnode__short_name', comp='endswith', value='101')])
+        self.assertEquals(len(qrywrap), 1)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedDeadline.search(self.firstExam, exact_number_of_results=5)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedDeadline.search(self.firstExam, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedDeadline.search(self.firstExam, exact_number_of_results=6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedDeadline.search(self.firstExam, exact_number_of_results=4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedDeadline.search(self.firstExam, exact_number_of_results=0)
 
     def test_search_all(self):
         search_res = SimplifiedDeadline.search(self.firstExam, result_fieldgroups=self.allExtras)
@@ -352,6 +539,8 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf110_secondsem_a3_g1.deadlines.all()[0],
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(len(search_res), len(expected_res))
         for s in search_res:
@@ -363,27 +552,24 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras)),
                         modelinstance_to_dict(self.inf101_firstsem_a2_g1.deadlines.all()[0],
                                               SimplifiedDeadline._meta.resultfields.aslist(self.allExtras))]
+        for expected in expected_res: # Set annotated fields
+            expected['number_of_deliveries'] = 0
 
         self.assertEquals(len(search_res), len(expected_res))
 
         for s in search_res:
             self.assertTrue(s in expected_res)
 
-    def test_search_security(self):
-
-        #test that a candidate does not get any results searching through the examiner interface
-        self.add_to_path('uni;inf101.firstsem.a1.g1:candidate(testPerson)')
-        search_res = SimplifiedDeadline.search(self.testPerson)
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedDeadline.search(self.firstStud)
         self.assertEquals(len(search_res), 0)
 
-        #but he/she/it does get a result when he/she/it is set to be an examiner
-        self.add_to_path('uni;inf101.firstsem.a1.g1:examiner(testPerson)')
-        search_res = SimplifiedDeadline.search(self.testPerson)
+    def test_search_security_asadmin(self):
+        search_res = SimplifiedDeadline.search(self.admin)
+        self.assertEquals(len(search_res), 0)
 
-        self.assertEquals(len(search_res), 1)
-
-        #but not in another course
-        search_res = SimplifiedDeadline.search(self.testPerson, query='inf110')
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedDeadline.search(self.secondExam, query='inf110')
         self.assertEquals(len(search_res), 0)
 
     def test_read_base(self):
@@ -450,7 +636,7 @@ class TestSimplifiedExaminerSimplifiedDeadline(SimplifiedExaminerTestBase):
                                       self.inf101_firstsem_a1_g1.deadlines.all()[0].id)
 
 
-class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestBase):
+class TestSimplifiedExaminerStaticFeedback(SimplifiedExaminerTestBase):
 
     allExtras = SimplifiedStaticFeedback._meta.resultfields.additional_aslist()
     baseFields = SimplifiedStaticFeedback._meta.resultfields.aslist()
@@ -458,7 +644,7 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestBase):
 
 
     def setUp(self):
-        super(TestSimplifiedExaminerFeedback, self).setUp()
+        super(TestSimplifiedExaminerStaticFeedback, self).setUp()
         # we need to add some deliveries here! Use the admin of uni as
         # an examiner
         # add deliveries and feedbacks to every group that was
@@ -471,6 +657,25 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestBase):
                 group.examiners.add(self.admin)
                 self.add_delivery(group)
                 self.add_feedback(group)
+
+    def test_search_filters(self):
+        qrywrap = SimplifiedStaticFeedback.search(self.firstExam)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedStaticFeedback.search(self.firstExam,
+                                              filters=[dict(field='delivery', comp='exact', value='1')])
+        self.assertEquals(len(qrywrap), 1)
+
+    def test_search_exact_number_of_results(self):
+        qrywrap = SimplifiedStaticFeedback.search(self.firstExam, exact_number_of_results=5)
+        self.assertEquals(len(qrywrap), 5)
+        qrywrap = SimplifiedStaticFeedback.search(self.firstExam, exact_number_of_results=None)
+        self.assertEquals(len(qrywrap), 5)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedStaticFeedback.search(self.firstExam, exact_number_of_results=6)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedStaticFeedback.search(self.firstExam, exact_number_of_results=4)
+        with self.assertRaises(InvalidNumberOfResults):
+            SimplifiedStaticFeedback.search(self.firstExam, exact_number_of_results=0)
 
     def test_search(self):
         search_res = SimplifiedStaticFeedback.search(self.firstExam)
@@ -490,6 +695,19 @@ class TestSimplifiedExaminerFeedback(SimplifiedExaminerTestBase):
         self.assertEquals(search_res.count(), len(expected_res))
         for s in search_res:
             self.assertTrue(s in expected_res)
+
+    def test_search_security_asstudent(self):
+        search_res = SimplifiedStaticFeedback.search(self.firstStud)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_asadmin(self):
+        self.create_superuser('superadminuser')
+        search_res = SimplifiedStaticFeedback.search(self.superadminuser)
+        self.assertEquals(len(search_res), 0)
+
+    def test_search_security_wrongsubject(self):
+        search_res = SimplifiedStaticFeedback.search(self.secondExam, query='inf110')
+        self.assertEquals(len(search_res), 0)
 
     def test_read(self):
         read_res = SimplifiedStaticFeedback.read(self.firstExam, self.inf101_firstsem_a1_g1_feedbacks[0].id)

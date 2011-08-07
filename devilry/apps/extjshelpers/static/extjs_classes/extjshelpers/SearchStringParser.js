@@ -136,6 +136,9 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         return extraParams;
     },
 
+    /**
+     * @private
+     */
     applyShortcuts: function(shortcuts) {
         var localfilters = Ext.clone(this.filters);
         var me = this;
@@ -149,6 +152,9 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         return localfilters;
     },
 
+    /**
+     * @private
+     */
     applyFirstMatchingShortcut: function(shortcuts, fieldname) {
         var realFieldname = undefined;
         Ext.Object.each(shortcuts, function(shortcut, replacement) {

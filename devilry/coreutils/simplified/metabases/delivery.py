@@ -12,7 +12,9 @@ class SimplifiedDeliveryMetaMixin(object):
                              'number',
                              'time_of_delivery',
                              'deadline',
-                             deadline=['deadline__assignment_group', 'deadline__deadline'],
+                             delivered_by=['delivered_by__identifier'],
+                             candidates=['deadline__assignment_group__candidates__identifier'],
+                             deadline=['deadline__deadline'],
                              assignment_group=['deadline__assignment_group',
                                                'deadline__assignment_group__name'],
                              assignment=['deadline__assignment_group__parentnode',
@@ -40,6 +42,7 @@ class SimplifiedDeliveryMetaMixin(object):
                              'deadline__assignment_group__parentnode__parentnode__parentnode__long_name')
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('deadline'),
+                          FilterSpec('time_of_delivery'),
                           ForeignFilterSpec('deadline',
                                             FilterSpec('deadline'),
                                             FilterSpec('assignment_group')),

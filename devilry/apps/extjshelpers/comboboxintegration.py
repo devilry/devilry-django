@@ -3,8 +3,9 @@ from storeintegration import restfulcls_to_extjsstore
 
 def restfulcls_to_extjscombobox_xtype(restfulcls):
     store = restfulcls_to_extjsstore(restfulcls,
-                                          integrateModel=True,
-                                          modelkwargs=dict(result_fieldgroups=restfulcls._extjsmodelmeta.combobox_fieldgroups))
+                                     integrateModel=True,
+                                     modelkwargs=dict(result_fieldgroups=restfulcls._extjsmodelmeta.combobox_fieldgroups),
+                                     storeidsuffix='Combo')
     listconfig = """listConfig: {{
                 loadingText: 'Loading...',
                 emptyText: 'No matching items found.',

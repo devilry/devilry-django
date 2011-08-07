@@ -26,7 +26,6 @@ Ext.define('devilry.extjshelpers.SearchField', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
-            emptyText: 'Search for anything...',
             listeners: {
                 scope: this,
                 specialKey: function(field, e) {

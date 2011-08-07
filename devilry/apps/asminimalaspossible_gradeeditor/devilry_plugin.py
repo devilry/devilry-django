@@ -1,11 +1,12 @@
 import json
 from django.conf import settings
 
-from devilry.apps.gradeeditors import gradeeditor_registry, RegistryItem, DraftValidationError
+from devilry.apps.gradeeditors import (gradeeditor_registry, JsonRegistryItem,
+                                       DraftValidationError, ConfigValidationError)
 
 
 
-class AsMinimalAsPossible(RegistryItem):
+class AsMinimalAsPossible(JsonRegistryItem):
     """
     Serves as a minimal example of a grade editor, and as a well suited grade
     editor for use in test cases.
@@ -13,19 +14,18 @@ class AsMinimalAsPossible(RegistryItem):
     gradeeditorid = 'asminimalaspossible'
     title = 'Minimal'
     description = 'A minimal grade editor for testing. Allows examiners to select if delivery is approved or not approved.'
-    config_editor_url = None
+    config_editor_url = settings.DEVILRY_STATIC_URL + '/asminimalaspossible_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/asminimalaspossible_gradeeditor/drafteditor.js'
 
     @classmethod
     def validate_config(cls, configstring):
-        pass
+        config = cls.decode_configstring(configstring)
+        cls.validate_dict(config, ConfigValidationError, {'defaultvalue': bool,
+                                                          'fieldlabel': basestring})
 
     @classmethod
     def validate_draft(cls, draftstring):
-        try:
-            is_approved = json.loads(draftstring)
-        except ValueError, e:
-            raise DraftValidationError('Could not decode draft string as JSON.')
+        is_approved = cls.decode_draftstring(draftstring)
         if not isinstance(is_approved, bool):
             raise DraftValidationError('The draft string must contain a single boolean value.')
 

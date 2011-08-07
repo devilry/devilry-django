@@ -1,5 +1,7 @@
 from types import MethodType
 from django.db.models.fields import AutoField, FieldDoesNotExist
+from django.db import transaction
+
 
 from qryresultwrapper import QryResultWrapper
 from utils import modelinstance_to_dict, get_field_from_fieldname, get_clspath
@@ -26,7 +28,8 @@ def _create_meta_ediablefields(cls):
     if hasattr(cls._meta, 'editablefields'):
         editablefields = cls._meta.editablefields
     else:
-        editablefields = cls._meta.resultfields.localfields_aslist()
+        editablefields = [f for f in cls._meta.resultfields.localfields_aslist() \
+                if not f in cls._meta.annotated_fields]
         pk = cls._meta.model._meta.pk
         if pk.get_attname() in editablefields:
             if isinstance(pk, AutoField):
@@ -89,7 +92,7 @@ class SimplifiedModelApi(object):
     @classmethod
     def _set_values(cls, obj, field_values):
         for fieldname, value in field_values.iteritems():
-            if not fieldname in cls._meta.editablefields:
+            if not fieldname in cls._meta.editablefields and not fieldname in cls._meta.fake_editablefields:
                 raise PermissionDenied('Field {fieldname} can not be edited.'.format(fieldname=fieldname))
             setattr(obj, fieldname, value)
 
@@ -153,9 +156,17 @@ class SimplifiedModelApi(object):
         before ``obj.full_clean()`` in :meth:`create` and :meth:`update`.
 
         Override this to set custom/generated values on ``obj`` before it is
-        validated and saved. The default does nothing ``obj``.
+        validated and saved. The default does nothing.
         """
 
+    @classmethod
+    def post_save(cls, user, obj):
+        """
+        Invoked after the ``obj`` has been saved.
+
+        Override this to set custom/generated values on ``obj`` after it has been
+        validated and saved. The default does nothing.
+        """
 
     @classmethod
     def create(cls, user, **field_values):
@@ -169,13 +180,15 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if any of the ``field_values``
             is not in ``cls._meta.editablefields``.
         """
-        obj =  cls._meta.model()
-        cls._set_values(obj, field_values)
-        cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
-        cls.pre_full_clean(user, obj)
-        obj.full_clean()
-        obj.save()
-        return obj.pk
+        with transaction.commit_on_success():
+            obj = cls._meta.model()
+            cls._set_values(obj, field_values)
+            cls.write_authorize(user, obj) # Important that this is after parentnode is set on Nodes, or admins on parentnode will not be permitted!
+            cls.pre_full_clean(user, obj)
+            obj.full_clean()
+            obj.save()
+            cls.post_save(user, obj)
+            return obj.pk
 
     @classmethod
     def read(cls, user, pk, result_fieldgroups=[]):
@@ -211,15 +224,17 @@ class SimplifiedModelApi(object):
             if the object does not exist, or if any of the ``field_values``
             is not in ``cls._meta.editablefields``.
         """
-        obj = cls._getwrapper(pk)
-        cls._set_values(obj, field_values)
-        # Important to write authorize after _set_values in case any attributes
-        # used in write_authorize is changed by _set_values.
-        cls.write_authorize(user, obj)
-        cls.pre_full_clean(user, obj)
-        obj.full_clean()
-        obj.save()
-        return obj.pk
+        with transaction.commit_on_success():
+            obj = cls._getwrapper(pk)
+            cls._set_values(obj, field_values)
+            # Important to write authorize after _set_values in case any attributes
+            # used in write_authorize is changed by _set_values.
+            cls.write_authorize(user, obj)
+            cls.pre_full_clean(user, obj)
+            obj.full_clean()
+            obj.save()
+            cls.post_save(user, obj)
+            return obj.pk
 
     @classmethod
     def delete(cls, user, pk):
@@ -314,6 +329,9 @@ def _validate_fieldnameiterator(cls, attribute, fieldnameiterator):
         try:
             get_field_from_fieldname(cls._meta.model, fieldname)
         except FieldDoesNotExist, e:
+            if hasattr(cls._meta, 'annotated_fields'):
+                if fieldname in cls._meta.annotated_fields:
+                    continue
             raise SimplifiedConfigError('{0}.{1}: Invalid field name: {2}.'.format(get_clspath(cls),
                                                                                    attribute,
                                                                                    fieldname))
@@ -408,7 +426,11 @@ def simplified_modelapi(cls):
     _validate_fieldnameiterator(cls, 'Meta.resultfields', cls._meta.resultfields)
     _require_metaattr(cls, 'searchfields')
     _validate_fieldnameiterator(cls, 'Meta.searchfields', cls._meta.searchfields)
+    if not hasattr(cls._meta, 'annotated_fields'):
+        cls._meta.annotated_fields = tuple()
     _create_meta_ediablefields(cls)
+    if not hasattr(cls._meta, 'fake_editablefields'):
+        cls._meta.fake_editablefields = tuple()
     _create_meta_ediable_fieldgroups(cls)
     cls._meta.methods = set(cls._meta.methods)
 

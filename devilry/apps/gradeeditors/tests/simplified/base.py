@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 
 from devilry.apps.core import testhelper
 from devilry.simplified import PermissionDenied
-from devilry.apps.gradeeditors.models import FeedbackDraft, Config
+from devilry.apps.gradeeditors.models import FeedbackDraft
 from devilry.apps.core import pluginloader
 
 
@@ -25,9 +25,10 @@ class SimplifiedFeedbackDraftTestBase(testhelper.TestHelper):
         self.delivery = self.add_delivery(group)
         self._setup_users()
 
-        Config.objects.create(assignment=self.inf101_spring01_assignment1,
-                              gradeeditorid='asminimalaspossible',
-                              config='')
+        self.config = self.inf101_spring01_assignment1.gradeeditor_config
+        self.config.gradeeditorid = 'asminimalaspossible'
+        self.config.config = ''
+        self.config.save()
 
     def _create_draft_without_simplified(self, saved_by):
         return FeedbackDraft.objects.create(delivery=self.delivery,

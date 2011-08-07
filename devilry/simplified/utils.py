@@ -1,6 +1,7 @@
 """ General purpose utilities used by the simplified API. If any functions here
 proves useful outside this module, they should me moved to ``devilry.utils``. """
 from django.db.models.fields.related import ForeignKey
+from django.db.models.fields import FieldDoesNotExist
 
 
 def get_clspath(cls):
@@ -68,5 +69,11 @@ def modelinstance_to_dict(instance, fieldnames):
             path = fieldname.split('__')
             dct[fieldname] = _recurse_getmodelattr(instance, path)
         else:
-            dct[fieldname] = _get_instanceattr(instance, fieldname)
+            try:
+                dct[fieldname] = _get_instanceattr(instance, fieldname)
+            except FieldDoesNotExist:
+                dct[fieldname] = getattr(instance, fieldname) # This is an annotated field (or something is seriously wrong)
+            except AttributeError:
+                # Annotated field
+                continue # If we fail here, it will not work to user this for both read (which does not support annotated fields) and search
     return dct

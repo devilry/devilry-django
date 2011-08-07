@@ -51,7 +51,7 @@ Ext.define('devilry.extjshelpers.RestSubmit', {
         if(record) { // Update the current record with data from form if editing existing (previously loaded with loadRecord())
             this.form.updateRecord(record);
         } else { // Create new record
-            record = Ext.ModelManager.create(this.form.getValues(), this.form.model);
+            record = Ext.ModelManager.create(this.form.getValues(), this.model);
         }
 
         // save() automatically uses the correct REST method (post for create and put for update).

@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 
 from devilry.apps.core import testhelper
@@ -12,6 +13,9 @@ from base import (SimplifiedFeedbackDraftCreateTestBase,
 testhelper.TestHelper.set_memory_deliverystore()
 
 
+CONFIG = json.dumps({'defaultvalue': False, 'fieldlabel': 'approved?'})
+
+
 class SimplifiedConfigAdministratorTestBase(TestCase, testhelper.TestHelper):
     def setUp(self):
         self.create_superuser('superuser')
@@ -21,37 +25,17 @@ class SimplifiedConfigAdministratorTestBase(TestCase, testhelper.TestHelper):
                  assignments=['assignment1:admin(goodadmin)', 'assignment2:admin(badadmin)'])
 
 
-class SimplifiedConfigAdministratorCreateTest(SimplifiedConfigAdministratorTestBase):
-    def _create_success_test(self, user):
-        id = administrator.SimplifiedConfig.create(user,
-                                                   gradeeditorid='fake',
-                                                   assignment=self.inf101_spring01_assignment1,
-                                                   config='tst')
-        Config.objects.get(assignment=id) # Will fail if it does not exist
-
-    def test_create_as_goodadmin(self):
-        self._create_success_test(self.goodadmin)
-
-    def test_create_as_superuser(self):
-        self._create_success_test(self.superuser)
-
-    def test_create_as_badadmin(self):
-        with self.assertRaises(PermissionDenied):
-            id = administrator.SimplifiedConfig.create(self.badadmin,
-                                                       gradeeditorid='fake',
-                                                       assignment=self.inf101_spring01_assignment1,
-                                                       config='tst')
-
 
 class SimplifiedConfigAdministratorReadTest(SimplifiedConfigAdministratorTestBase):
     def _read_success_test(self, user):
-        config = Config.objects.create(gradeeditorid='fake',
-                                       assignment=self.inf101_spring01_assignment1,
-                                       config='tst')
+        config = self.inf101_spring01_assignment1.gradeeditor_config
+        config.gradeeditorid = 'asminimalaspossible'
+        config.config = CONFIG
+        config.save()
         result = administrator.SimplifiedConfig.read(user, config.assignment_id)
-        self.assertEquals(result, {'gradeeditorid': u'fake',
+        self.assertEquals(result, {'gradeeditorid': u'asminimalaspossible',
                                    'assignment': 1,
-                                   'config': u'tst'})
+                                   'config': CONFIG})
 
     def test_read_as_goodadmin(self):
         self._read_success_test(self.goodadmin)
@@ -60,28 +44,26 @@ class SimplifiedConfigAdministratorReadTest(SimplifiedConfigAdministratorTestBas
         self._read_success_test(self.superuser)
 
     def test_read_as_badadmin(self):
-        config = Config.objects.create(gradeeditorid='fake',
-                                       assignment=self.inf101_spring01_assignment1,
-                                       config='tst')
         with self.assertRaises(PermissionDenied):
-            id = administrator.SimplifiedConfig.read(self.badadmin, config.assignment_id)
+            id = administrator.SimplifiedConfig.read(self.badadmin, self.inf101_spring01_assignment1.id)
 
 
 class SimplifiedConfigAdministratorUpdateTest(SimplifiedConfigAdministratorTestBase):
     def setUp(self):
         super(SimplifiedConfigAdministratorUpdateTest, self).setUp()
-        self.config = Config.objects.create(gradeeditorid='fake',
-                                            assignment=self.inf101_spring01_assignment1,
-                                            config='tst')
+        self.config = self.inf101_spring01_assignment1.gradeeditor_config
+        self.config.gradeeditorid = 'asminimalaspossible'
+        self.config.config = CONFIG
+        self.config.save()
 
     def _update_success_test(self, user):
+        newconfig = json.dumps({'defaultvalue': True, 'fieldlabel': 'ok?'})
         administrator.SimplifiedConfig.update(user, self.config.assignment_id,
-                                              gradeeditorid='updated',
+                                              gradeeditorid='asminimalaspossible',
                                               assignment=self.inf101_spring01_assignment1,
-                                              config='UPDATED')
+                                              config=newconfig)
         updated = Config.objects.get(assignment=self.config.assignment_id)
-        self.assertEquals(updated.gradeeditorid, 'updated')
-        self.assertEquals(updated.config, 'UPDATED')
+        self.assertEquals(updated.config, newconfig)
 
 
     def test_update_as_goodadmin(self):
@@ -91,11 +73,12 @@ class SimplifiedConfigAdministratorUpdateTest(SimplifiedConfigAdministratorTestB
         self._update_success_test(self.superuser)
 
     def test_update_as_badadmin(self):
+        newconfig = json.dumps({'defaultvalue': True, 'fieldlabel': 'ok?'})
         with self.assertRaises(PermissionDenied):
             administrator.SimplifiedConfig.update(self.badadmin, self.config.assignment_id,
-                                                  gradeeditorid='updated',
+                                                  gradeeditorid='asminimalaspossible',
                                                   assignment=self.inf101_spring01_assignment1,
-                                                  config='UPDATED')
+                                                  config=newconfig)
 
 
 #

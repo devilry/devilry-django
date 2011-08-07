@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from ...simplified import SimplifiedModelApi, simplified_modelapi, PermissionDenied, FieldSpec
 from ..core import models
 from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
@@ -137,6 +139,10 @@ class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods an Examiner can use on a Deadline object using the Simplified API """
         methods = ['search', 'read', 'create', 'delete']  # TODO: should we have update here?
+
+    @classmethod
+    def create_searchqryset(cls, user, **kwargs):
+        return cls._meta.model.published_where_is_examiner(user).annotate(number_of_deliveries=Count('deliveries'))
 
     @classmethod
     def write_authorize(cls, user, obj):
