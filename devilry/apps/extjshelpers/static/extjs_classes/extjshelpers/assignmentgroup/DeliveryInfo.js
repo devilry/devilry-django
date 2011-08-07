@@ -67,7 +67,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             scale: 'large',
             listeners: {
                 scope: this,
-                click: this.showFileMetaBrowserWindow
+                click: this.showFileMetaBrowserWindow,
+                render: function() {
+                    Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                }
             }
         });
     },

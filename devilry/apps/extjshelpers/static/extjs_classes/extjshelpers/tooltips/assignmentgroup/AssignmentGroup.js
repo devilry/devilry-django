@@ -21,7 +21,7 @@ Ext.define('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {
 
         this.feedback_next = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.StaticFeedbackNext', {});
         this.feedback_previous = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.StaticFeedbackPrevious', {});   
-        this.browse_files = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+        //this.browse_files = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
         this.about = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.AboutTheDelivery', {});
         this.create_new_deadline = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.CreateNewDeadline', {});
         this.other_deliveries = Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.OtherDeliveries', {});
