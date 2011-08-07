@@ -200,6 +200,12 @@ class SimplifiedAssignmentGroup(CanSaveBase):
 
     @classmethod
     def _parse_examiners_as_list_of_usernames(cls, obj):
+        """
+        Parse examiners as a a list of usernames. Each username must be an existing user.
+
+        If all usernames are valid, ``obj.examiners`` is cleared, and the
+        given examiners are added (I.E.: All current examiners are replaced).
+        """
         if hasattr(obj, 'fake_examiners'):
             fake_examiners = obj.fake_examiners
             users = []
