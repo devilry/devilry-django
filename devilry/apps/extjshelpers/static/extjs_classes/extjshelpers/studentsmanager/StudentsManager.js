@@ -102,7 +102,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             maximizable: true,
             layout: 'fit',
             items: {
-                xtype: 'manuallycreateusers'
+                xtype: 'manuallycreateusers',
+                assignmentid: this.assignmentid
             }
         });
         win.show();
