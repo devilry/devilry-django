@@ -137,14 +137,14 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
             searchstring: searchstring
         });
-        var extraParams = assignmentgroupstore.proxy.extraParams;
-        assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
+        var extraParams = this.assignmentgroupstore.proxy.extraParams;
+        this.assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
+        this.assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',
             value: this.assignmentid
         }]);
-        assignmentgroupstore.load({
+        this.assignmentgroupstore.loadPage(1, {
             scope: this,
             callback: function(records, operation, success) {
                 //console.log(records);
