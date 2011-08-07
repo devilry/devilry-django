@@ -137,6 +137,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.studentsbutton = Ext.create('Ext.button.Button', {
             text: 'Students',
+            enableToggle: true,
+            menu: [],
             scale: 'large',
             listeners: {
                 scope: this,
@@ -287,23 +289,27 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onStudents: function() {
-        if(!this.studentswindow) {
-            this.studentswindow = Ext.create('Ext.window.Window', {
-                title: 'Students',
-                width: 800,
-                height: 600,
-                layout: 'fit',
-                maximizable: true,
-                modal: true,
-                //maximized: true,
-                closeAction: 'hide',
-                items: {
-                    xtype: 'studentsmanager',
-                    assignmentgroupstore: this.assignmentgroupstore,
-                    assignmentid: this.objectid
-                },
-            });
-        }
-        this.studentswindow.show();
+        var studentswindow = Ext.create('Ext.window.Window', {
+            title: 'Students',
+            width: 800,
+            height: 600,
+            layout: 'fit',
+            maximizable: true,
+            modal: true,
+            closeAction: 'hide',
+            items: {
+                xtype: 'studentsmanager',
+                assignmentgroupstore: this.assignmentgroupstore,
+                assignmentid: this.objectid
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    this.studentsbutton.toggle(false);
+                }
+            }
+        });
+        studentswindow.show();
+        studentswindow.alignTo(this.studentsbutton, 'bl', [0, 0]);
     }
 });
