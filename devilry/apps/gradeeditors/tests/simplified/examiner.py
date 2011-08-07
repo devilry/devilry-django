@@ -22,20 +22,20 @@ class SimplifiedConfigExaminerReadTest(TestCase, testhelper.TestHelper):
         self.add_to_path('uni;inf101.spring01.assignment2.group2:candidate(secondstudent):examiner(badexaminer)')
 
     def test_read_as_goodexaminer(self):
-        config = Config.objects.create(gradeeditorid='fake',
-                                       assignment=self.inf101_spring01_assignment1,
-                                       config='tst')
-        result = examiner.SimplifiedConfig.read(self.goodexaminer, config.assignment_id)
+        self.config = self.inf101_spring01_assignment1.gradeeditor_config
+        self.config.gradeeditorid = 'fake'
+        self.config.config = 'tst'
+        self.config.save()
+        result = examiner.SimplifiedConfig.read(self.goodexaminer,
+                                                self.inf101_spring01_assignment1.id)
         self.assertEquals(result, {'gradeeditorid': u'fake',
                                    'assignment': 1,
                                    'config': u'tst'})
 
     def test_read_as_badexaminer(self):
-        config = Config.objects.create(gradeeditorid='fake',
-                                       assignment=self.inf101_spring01_assignment1,
-                                       config='tst')
         with self.assertRaises(PermissionDenied):
-            examiner.SimplifiedConfig.read(self.badexaminer, config.assignment_id)
+            examiner.SimplifiedConfig.read(self.badexaminer,
+                                           self.inf101_spring01_assignment1.id)
 
 
 #
