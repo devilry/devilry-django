@@ -62,10 +62,14 @@
             </div>
 
             <div id='authenticated-user-bar'>
-                <span id='authenticated-user-info'>
-                    {{ user.username }}
-                </span>
-                | <a id='logout-link' href='{% url logout %}'>Log out</a>
+                {% if user.is_authenticated %}
+                    <span id='authenticated-user-info'>
+                        {{ user.username }}
+                    </span>
+                    | <a id='logout-link' href='{% url logout %}'>Log out</a>
+                {% else %}
+                    <a id='logout-link' href='{% url login %}'>Log in</a>
+                {% endif %}
             </div>
 
             <nav class="{% block nav-class %}{% endblock %}">
