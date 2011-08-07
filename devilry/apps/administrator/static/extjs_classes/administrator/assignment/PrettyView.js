@@ -148,6 +148,7 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
 
         this.advancedbutton = Ext.create('Ext.button.Button', {
             text: 'Advanced options',
+            enableToggle: true,
             scale: 'large',
             menu: [],
             listeners: {
@@ -282,7 +283,13 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
         var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
             title: 'Advanced options',
             editpanel: editpanel,
-            prettyview: this
+            prettyview: this,
+            listeners: {
+                scope: this,
+                close: function() {
+                    this.advancedbutton.toggle(false);
+                }
+            }
         });
         editwindow.show();
         editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);
