@@ -101,7 +101,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         var win = Ext.widget('window', {
             title: 'Create assignment groups',
             modal: true,
-            width: 800,
+            width: 830,
             height: 600,
             maximizable: true,
             layout: 'fit',
