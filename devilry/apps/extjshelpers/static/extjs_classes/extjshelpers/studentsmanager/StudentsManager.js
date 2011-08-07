@@ -88,85 +88,76 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
         this.callParent(arguments);
         this.setSearchfieldAttributes();
+
         //this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
         //}, this);
     },
     
+    /**
+     * @private
+     */
     onManuallyCreateUsers: function() {
         var win = Ext.widget('window', {
             title: 'Create assignment groups',
             modal: true,
-            width: 400,
+            width: 800,
             height: 600,
             maximizable: true,
             layout: 'fit',
             items: {
                 xtype: 'manuallycreateusers',
                 assignmentid: this.assignmentid
+            },
+            listeners: {
+                scope: this,
+                close: function() {
+                    this.refreshStore();
+                }
             }
         });
         win.show();
     },
     
+    /**
+     * @private
+     */
     setSearchfieldAttributes: function() {
-        var search_field = this.down('searchfield');
-        var me = this;
-        
-        /*Add listener for searchfield input*/
-        search_field.addListener('newSearchValue', this.doSomethingWithSearchFieldString, this);
-        search_field.addListener('emptyInput', function() {
-        
-        var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
-            searchstring: ""
-        });
-        
-        var extraParams = assignmentgroupstore.proxy.extraParams;
-        assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        
-        assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'parentnode',
-            comp: 'exact',
-            value: this.assignmentid
-        }]);
-        
-        assignmentgroupstore.load({
-            scope   : this,
-            callback: function(records, operation, success) {
-                //the operation object contains all of the details of the load operation
-                //console.log(records);
-            }
-        });
-        
+        var searchfield = this.down('searchfield');
+        searchfield.addListener('newSearchValue', this.search, this);
+        searchfield.addListener('emptyInput', function() {
+            this.search("");
         }, this);
-      
-    
     },
     
-    doSomethingWithSearchFieldString: function(value) {            
-        
+    /**
+     * @private
+     */
+    search: function(searchstring) {
         var parsedSearch = Ext.create('devilry.extjshelpers.SearchStringParser', {
-            searchstring: value
+            searchstring: searchstring
         });
-        
         var extraParams = assignmentgroupstore.proxy.extraParams;
         assignmentgroupstore.proxy.extraParams = parsedSearch.applyToExtraParams(extraParams, []);
-        
         assignmentgroupstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',
             value: this.assignmentid
         }]);
-        
-        
         assignmentgroupstore.load({
-            scope   : this,
+            scope: this,
             callback: function(records, operation, success) {
-                //the operation object contains all of the details of the load operation
                 //console.log(records);
             }
         });
-        
+    },
+
+    /**
+     * @private
+     * Reftesh store by re-searching for the current value.
+     */
+    refreshStore: function() {
+        var searchfield = this.down('searchfield');
+        this.search(searchfield.getValue());
     }
-    
 });

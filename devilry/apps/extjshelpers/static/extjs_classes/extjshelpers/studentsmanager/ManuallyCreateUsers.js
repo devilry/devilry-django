@@ -60,7 +60,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
             emptyText: 'My optional group name:: somestudent, anotherstudent',
             flex: 10 // Take up all remaining vertical space
         });
-        this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
+        //this.userinput.setValue('dewey\nlouie:401, hue\n\nSaker azz:: donald, dela:30');
+        //this.userinput.setValue('dewey\nlouie:401');
         Ext.apply(this, {
             //items: this.userinput,
 
@@ -183,6 +184,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
         }, this);
     },
 
+    /**
+     * @private
+     */
     groupSpecObjToString: function(groupSpecObj) {
         var groupSpecStr = "";
         if(groupSpecObj.name) {
@@ -243,8 +247,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.ManuallyCreateUsers', {
      * @private
      */
     onFailure: function(unsuccessful, totalCount) {
-        console.log(totalCount);
-        console.log(unsuccessful);
+        //console.log(totalCount);
+        //console.log(unsuccessful);
         this.userinput.setValue(this.groupSpecObjArrayToString(unsuccessful));
         Ext.MessageBox.show({
             title: 'Error',
