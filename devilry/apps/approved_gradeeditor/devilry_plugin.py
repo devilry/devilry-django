@@ -1,6 +1,5 @@
 import json
 from django.conf import settings
-import re
 
 from devilry.apps.gradeeditors import (gradeeditor_registry, JsonRegistryItem,
                                        DraftValidationError, ConfigValidationError)
