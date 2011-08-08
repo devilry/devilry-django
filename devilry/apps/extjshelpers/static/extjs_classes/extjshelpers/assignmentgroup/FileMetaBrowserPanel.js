@@ -38,7 +38,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                     header: 'File name', flex:1, dataIndex: 'filename'
                 }, {
                     header: 'Size', dataIndex: 'size'
-                }]
+                }],
+                    listeners: {
+                    itemclick: function(self, rec) {
+                        //console.log('File name: ' + rec.data.filename + ', id: ' + rec.data.id);
+                        var url = "/student/show-delivery/filedownload/" + rec.data.id;
+                        // Ext.Ajax.request({
+                            // url: asdf,
+                            // failure: function() {
+                                // console.log("Dette gikk dårlig");
+                            // },
+                            // callback: function() {
+                                // console.log("Callback");
+                            // }
+                        // });
+                        //TODO: Get it to work with ajax
+                        window.open(url, 'download');
+                    }
+                }
+    
             }],
 
             bbar: [{
