@@ -25,6 +25,7 @@ DATABASES = {
 INSTALLED_APPS += [
                    'devilry.projects.dev.apps.tutorialstats',
                    'devilry.apps.asminimalaspossible_gradeeditor',
+                   'devilry.apps.approved_gradeeditor',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
