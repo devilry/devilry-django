@@ -49,14 +49,36 @@ class ShowDeliveryView(View):
 
 class FileUploadView(View):
 
+    def get(self, request, deadlineid):
+        print "# FileUploadView GET-method #"
+        print "#", deadlineid, "#"
+        
+        deadline_obj = get_object_or_404(Deadline, id=deadlineid)
+        assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
+        logged_in_user = request.user
+        candidate = get_object_or_404(Candidate, assignment_group=assignment_group_obj)
+        
+        delivery = Delivery()
+        delivery.time_of_delivery = datetime.now()
+        delivery.delivered_by = candidate
+        delivery.succesful = False
+        deadline_obj.deliveries.add(delivery)
+        delivery.save()
+        
+        json_dict = {'success' : 'true', 'deliveryid' : delivery.id}
+        json_result = json.dumps(json_dict)
+        return HttpResponse(json_result)
+
     def post(self, request, deadlineid):
         print "#", deadlineid, "#"
         print "#", request.user, "#"
+        print "#", request.POST['deliveryid'], "#"
 
         deadline_obj = get_object_or_404(Deadline, id=deadlineid)
         assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
         logged_in_user = request.user
         candidate = get_object_or_404(Candidate, assignment_group=assignment_group_obj)
+        deliveryid = request.POST['deliveryid']
 
         if not assignment_group_obj.is_candidate(logged_in_user):
             #TODO return Json
@@ -73,7 +95,7 @@ class FileUploadView(View):
             uploaded_file = request.FILES['dendrofil']
             uploaded_file_name = uploaded_file.name
 
-            delivery = Delivery()
+            delivery = get_object_or_404(Delivery, id=deliveryid)
             delivery.time_of_delivery = datetime.now()
             delivery.delivered_by = candidate
             delivery.succesful = False
@@ -86,7 +108,7 @@ class FileUploadView(View):
             delivery.full_clean()
             delivery.save()      
             
-            json_dict = {'success' : 'true', 'file' : uploaded_file_name}
+            json_dict = {'success' : 'true', 'file' : uploaded_file_name, 'deliveryid' : delivery.id}
             json_result = json.dumps(json_dict)
            
             return HttpResponse(json_result)

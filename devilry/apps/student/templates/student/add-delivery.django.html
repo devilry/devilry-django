@@ -27,7 +27,19 @@
                 });
             };
 
-  
+        var delid = -1;    
+            
+Ext.Ajax.request({
+    url: '/student/add-delivery/fileupload/{{ deadlineid }}',
+    method: 'GET',
+    success: function(response){
+        console.log("hei dette gikk greit ja");
+        console.log(response);
+        var json_response = Ext.JSON.decode(response.responseText);
+        console.log(json_response.deliveryid);
+        delid = json_response.deliveryid;
+    }
+});  
 
 
         var fileuploadpanel = Ext.create('Ext.panel.Panel', {
@@ -54,34 +66,34 @@
                     {
                         xtype: 'fileuploadfield',
                         name: 'dendrofil',
-                        id: 'homofil',
                         fieldLabel: 'Delivery',
                         labelWidth: 50,
                         width: '100%',
                         anchor: '100%',
                         msgTarget: 'side',
                         allowBlank: true,
-                        emptyText: 'Select files...',
-                        buttonText: 'Browse files...'
+                        emptyText: 'Select file...',
+                        buttonText: 'Browse...'
                     }],
                     buttons: [
                     {
                         text: 'Deliver!',
-                        handler: function (a, b)
+                        handler: function ()
                         {
                         var form = this.up('form').getForm();
-            if(form.isValid()){
-                form.submit({
-                    url: '/student/add-delivery/fileupload/{{ deadlineid }}',
-                    waitMsg: 'Uploading your photo...',
-                    success: function(form, res) {
-                        Ext.Msg.alert('Success', 'File "' + res.result.file + '" has been uploaded.');
-                    },
-                    failure: function(form, res) {
-                       Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
-                    }
-                });
-            }
+                        if(form.isValid()){
+                            form.submit({
+                                url: '/student/add-delivery/fileupload/{{ deadlineid }}',
+                                params: {deliveryid: delid},
+                                waitMsg: 'Uploading your file...',
+                                success: function(form, res) {
+                                    Ext.Msg.alert('Success', 'File "' + res.result.file + '" has been uploaded.' + "deliveryid: " + res.result.deliveryid);
+                                },
+                                failure: function(form, res) {
+                                   Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
+                                }
+                            });
+                        }
 
                             //msg('Success', 'Not really, nothing ever happened with your file');
 
