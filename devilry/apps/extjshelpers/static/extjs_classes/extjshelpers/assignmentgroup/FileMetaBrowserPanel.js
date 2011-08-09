@@ -65,6 +65,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 listeners: {
                     click: function() {
                         console.log('Downloading ZIP some time in the future');
+                        window.open('/student/show-delivery/compressedfiledownload/92', 'download');
                     }
                 }
             }, {

@@ -1,8 +1,10 @@
 from django.views.generic import (TemplateView, View)
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseForbidden
 from django.core.servers.basehttp import FileWrapper
 from datetime import datetime
+import zipfile
+from os import stat
 from mimetypes import guess_type
 import json
 from ..core.models import (Delivery, FileMeta, 
@@ -55,9 +57,9 @@ class FileUploadView(View):
         
         deadline_obj = get_object_or_404(Deadline, id=deadlineid)
         assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
-        logged_in_user = request.user
-        candidate = get_object_or_404(Candidate, assignment_group=assignment_group_obj)
-        
+        logged_in_user = request.user        
+        candidate = get_object_or_404(Candidate, student=logged_in_user, assignment_group=assignment_group_obj)
+                
         delivery = Delivery()
         delivery.time_of_delivery = datetime.now()
         delivery.delivered_by = candidate
@@ -77,7 +79,6 @@ class FileUploadView(View):
         deadline_obj = get_object_or_404(Deadline, id=deadlineid)
         assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
         logged_in_user = request.user
-        candidate = get_object_or_404(Candidate, assignment_group=assignment_group_obj)
         deliveryid = request.POST['deliveryid']
 
         if not assignment_group_obj.is_candidate(logged_in_user):
@@ -97,10 +98,6 @@ class FileUploadView(View):
 
             delivery = get_object_or_404(Delivery, id=deliveryid)
             delivery.time_of_delivery = datetime.now()
-            delivery.delivered_by = candidate
-            delivery.succesful = False
-            deadline_obj.deliveries.add(delivery)
-            delivery.save()
             
             delivery.add_file(uploaded_file_name, uploaded_file.chunks())
 
@@ -150,3 +147,24 @@ class FileDownloadView(View):
         response['Content-Length'] = filemeta.size
         
         return response
+        
+class CompressedFileDownloadView(View):
+
+    def get(self, request, deliveryid):    
+        delivery = get_object_or_404(Delivery, id=deliveryid)
+        zip_file_name = str(request.user) + ".zip"
+        zip_file = zipfile.ZipFile(zip_file_name, "w");
+        
+        for filemeta in delivery.filemetas.all():
+            file_content = filemeta.deliverystore.read_open(filemeta)
+            zip_file.write(file_content.name, filemeta.filename)
+        zip_file.close()
+                
+        
+        response = HttpResponse(FileWrapper(open(zip_file_name, 'rb')),
+                                content_type=guess_type(zip_file_name))                        
+        response['Content-Disposition'] = "attachment; filename=%s" % \
+            zip_file_name.encode("ascii", 'replace')
+        response['Content-Length'] = stat(zip_file_name).st_size
+        return response
+        
