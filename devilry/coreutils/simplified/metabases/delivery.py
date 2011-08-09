@@ -17,6 +17,8 @@ class SimplifiedDeliveryMetaMixin(object):
                              deadline=['deadline__deadline'],
                              assignment_group=['deadline__assignment_group',
                                                'deadline__assignment_group__name'],
+                             assignment_group_users=['deadline__assignment_group__examiners__username',
+                                                     'deadline__assignment_group__candidates__identifier'],
                              assignment=['deadline__assignment_group__parentnode',
                                          'deadline__assignment_group__parentnode__short_name',
                                          'deadline__assignment_group__parentnode__long_name'],
