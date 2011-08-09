@@ -572,11 +572,23 @@ section.error {
     @include bigIconBox(url(icons/128x128/error.png));
 }
 
-.widget-fileuploadpanel section.ok {
-    ul {
-        li {
-            list-style: square !important;
-            font-size: 1.6em !important;
+.widget-fileuploadpanel{
+    section.ok {
+        ul {
+            li {
+                list-style: square !important;
+                font-style: italic;
+                //font-size: 1.6em !important;
+            }
+        }
+    }
+
+    .x-form-file-wrap {
+        margin-top: 20px;
+        input[type="text"] {
+            font-size: 24px !important;
+            padding: 6px !important;
+            height: auto !important;
         }
     }
 }

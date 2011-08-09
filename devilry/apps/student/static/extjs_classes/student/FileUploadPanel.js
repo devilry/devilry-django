@@ -50,7 +50,8 @@ Ext.define('devilry.student.FileUploadPanel', {
     },
 
     initComponent: function() {
-        this.uploadedFiles = ['HelloWorld.py', 'This is a test.txt', 'This-is-a-long-filename-loooooong.longstuff.java'];
+        this.uploadedFiles = //['HelloWorld.py', 'This is a test.txt', 'This-is-a-long-filename-loooooong.longstuff.java'];
+        this.uploadedFiles = [];
         this.infoBoxView = Ext.widget('box', {
             tpl: this.uploadedFilesTpl,
         });
@@ -79,6 +80,9 @@ Ext.define('devilry.student.FileUploadPanel', {
                 allowBlank: true,
                 emptyText: 'Select file...',
                 buttonText: 'Browse...',
+                buttonConfig: {
+                    scale: 'large'
+                },
                 listeners: {
                     scope: this,
                     change: this.onAddFile
