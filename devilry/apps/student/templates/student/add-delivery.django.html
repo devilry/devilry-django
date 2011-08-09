@@ -9,7 +9,7 @@
 
 {% block headextra %}
 <script>
-    var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,users,deadline,assignment_group" }};
+    {{ RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,users,deadline,assignment_group" }};
     var deadlinemodel = {{ RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
 
 
@@ -20,6 +20,8 @@
 
 
         var deadline_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+
         Ext.create('devilry.student.DeadlineTitle', {
             renderTo: 'content-heading',
             singlerecordontainer: deadline_recordcontainer
@@ -31,22 +33,15 @@
             }
         });
 
+        
+
         var fileuploadpanel = Ext.widget('fileuploadpanel', {
             bodyPadding: 20,
             renderTo: 'fileuploadpanel',
             deadlineid: {{ deadlineid }},
-            initialhelptext: 'Upload files for your delivery. You can upload multiple files.'
+            initialhelptext: 'Upload files for your delivery. You can upload multiple files.',
+            deliverymodelname: {{RestfulSimplifiedDelivery|extjs_modelname }}
         });
-
-        Ext.Ajax.request({
-            url: '/student/add-delivery/fileupload/{{ deadlineid }}',
-            method: 'GET',
-            success: function(response){
-                var json_response = Ext.JSON.decode(response.responseText);
-                deliveryid = json_response.deliveryid;
-                fileuploadpanel.enableDeliveries(deliveryid);
-            }
-        });  
     });
 </script>
 

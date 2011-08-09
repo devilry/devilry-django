@@ -20,7 +20,9 @@ Ext.define('devilry.student.FileUploadPanel', {
          * @cfg
          * Id of the delivery.
          */
-        deliveryid: undefined
+        deliveryid: undefined,
+
+        deliverymodelname: undefined
     },
 
     uploadedFilesTpl: Ext.create('Ext.XTemplate',
@@ -63,7 +65,7 @@ Ext.define('devilry.student.FileUploadPanel', {
             disabled: true,
             listeners: {
                 scope: this,
-                click: this.onDeliver
+                click: this.onClickDeliver
             }
         });
 
@@ -97,20 +99,12 @@ Ext.define('devilry.student.FileUploadPanel', {
             }]
         });
         this.callParent(arguments);
-        this.addListener('render', function() {
-            if(this.deliveryid == undefined) {
-                this.getEl().mask('Loading');
-            }
-        }, this);
     },
 
-    enableDeliveries: function(deliveryid) {
-        this.setDeliveryid(deliveryid);
-        if(this.rendered) {
-            this.getEl().unmask();
-        }
-    },
 
+    /**
+     * @private
+     */
     updateInfoBox: function() {
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
@@ -118,7 +112,56 @@ Ext.define('devilry.student.FileUploadPanel', {
         });
     },
 
+
+
+    /**
+     * @private
+     */
+    createInitialDelivery: function() {
+        this.getEl().mask('Initializing delivery...');
+        var delivery = Ext.create(this.deliverymodelname, {
+            deadline: this.deadlineid,
+            id: null,
+            successful: false
+        });
+        delivery.save({
+            scope: this,
+            success: this.onCreateDeliverySuccess,
+            failure: this.onCreateDeliveryFailure
+        });
+    },
+
+    /**
+     * @private
+     */
+    onCreateDeliverySuccess: function(deliveryrecord) {
+        this.deliveryrecord = deliveryrecord;
+        this.getEl().unmask();
+        this.uploadFileInForm();
+    },
+
+    /**
+     * @private
+     */
+    onCreateDeliveryFailure: function(x) {
+        this.getEl().unmask();
+        Ext.Msg.alert('Error', 'Could not create delivery on the selected deadline.'); // TODO: Check status code for permission denied.
+    },
+
+
+
+    /**
+     * @private
+     */
     onAddFile: function () {
+        if(!this.deliveryrecord) {
+            this.createInitialDelivery();
+        } else {
+            this.uploadFileInForm();
+        }
+    },
+
+    uploadFileInForm: function() {
         var form = this.getForm();
         var url = Ext.String.format(
             '{0}/student/add-delivery/fileupload/{1}',
@@ -128,7 +171,7 @@ Ext.define('devilry.student.FileUploadPanel', {
             form.submit({
                 url: url,
                 scope: this,
-                params: {deliveryid: this.deliveryid},
+                params: {deliveryid: this.deliveryrecord.data.id},
                 waitMsg: 'Uploading your file...',
                 success: this.onAddFileSuccess,
                 failure: this.onAddFileFailure
@@ -136,22 +179,25 @@ Ext.define('devilry.student.FileUploadPanel', {
         }
     },
 
+    /**
+     * @private
+     */
     onAddFileSuccess: function(form, res) {
-        //var successMsg = Ext.String.format(
-            //'File {0} has been uploaded (to delivery {1}).\nSelect another file for upload',
-            //res.result.file, res.result.deliveryid
-        //);
-        //Ext.Msg.alert('Success', successMsg);
         this.uploadedFiles.push(res.result.file);
         this.updateInfoBox();
         this.deliverbutton.enable(); // really only needed on first upload, but it does not hurt.
     },
 
+    /**
+     * @private
+     */
     onAddFileFailure: function(form, res) {
         Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
     },
 
-    onDeliver: function() {
+
+
+    onClickDeliver: function() {
         console.log('Deliver');
     }
 });
