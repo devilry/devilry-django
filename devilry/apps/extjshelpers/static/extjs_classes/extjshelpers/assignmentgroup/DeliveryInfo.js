@@ -69,7 +69,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
             enableToggle: true,
             listeners: {
                 scope: this,
-                click: this.showFileMetaBrowserWindow
+                click: this.showFileMetaBrowserWindow,
+                render: function() {
+                    Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                }
             }
         });
     },
