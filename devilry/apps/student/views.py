@@ -1,3 +1,4 @@
+from tempfile import TemporaryFile
 from django.views.generic import (TemplateView, View)
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseForbidden
@@ -7,11 +8,12 @@ import zipfile
 from os import stat
 from mimetypes import guess_type
 import json
-from ..core.models import (Delivery, FileMeta, 
+from ..core.models import (Delivery, FileMeta,
                            Deadline, AssignmentGroup,
                            Candidate)
 
 from devilry.utils.module import dump_all_into_dict
+from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
 import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
                      RestfulSimplifiedStaticFeedback, RestfulSimplifiedAssignment)
@@ -149,8 +151,6 @@ class FileDownloadView(View):
         return response
 
 
-from tempfile import TemporaryFile
-
 class CompressedFileDownloadView(View):
 
     def get(self, request, deliveryid):
@@ -166,7 +166,7 @@ class CompressedFileDownloadView(View):
         zip_file.close()
 
         tempfile.seek(0)
-        response = HttpResponse(FileWrapper(tempfile),
+        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
                                 content_type=guess_type(zip_file_name))
         response['Content-Disposition'] = "attachment; filename=%s" % \
             zip_file_name.encode("ascii", 'replace')
