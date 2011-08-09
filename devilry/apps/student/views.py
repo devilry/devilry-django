@@ -92,10 +92,10 @@ class FileUploadView(View):
             return HttpResponseForbidden("Oh no rude boy! You're not allowed to deliver")
 
         
-        if 'dendrofil' in request.FILES:
+        if 'uploaded_file' in request.FILES:
             
             #TODO Use simplified abstracted models
-            uploaded_file = request.FILES['dendrofil']
+            uploaded_file = request.FILES['uploaded_file']
             uploaded_file_name = uploaded_file.name
 
             delivery = get_object_or_404(Delivery, id=deliveryid)
@@ -139,7 +139,7 @@ class FileDownloadView(View):
                     or assignment_group.is_examiner(request.user) \
                     or request.user.is_superuser \
                     or assignment_group.parentnode.is_admin(request.user)):
-            return http.HttpResponseForbidden("Forbidden")
+            return HttpResponseForbidden("Forbidden")
         
         # TODO: make this work on any storage backend
         response = HttpResponse(FileWrapper(filemeta.deliverystore.read_open(filemeta)),

@@ -12,100 +12,25 @@
   var deliverymodel = {{ RestfulSimplifiedDelivery|extjs_model }};
 
 
-    Ext.onReady(function ()
-    {
-  
-    
-    
-        var msg = function (title, msg)
-            {
-                Ext.Msg.show(
-                {
-                    title: title,
-                    msg: msg,
-                    minWidth: 200,
-                    modal: true,
-                    icon: Ext.Msg.INFO,
-                    buttons: Ext.Msg.OK
-                });
-            };
+    Ext.require('devilry.student.FileUploadPanel');
 
-        var deliveryid = -1;    
-            
+    Ext.onReady(function() {
+        var fileuploadpanel = Ext.widget('fileuploadpanel', {
+            bodyPadding: 20,
+            renderTo: 'fileuploadpanel',
+            deadlineid: {{ deadlineid }},
+            initialhelptext: 'Upload files for your delivery. You can upload multiple files.'
+        });
+
         Ext.Ajax.request({
             url: '/student/add-delivery/fileupload/{{ deadlineid }}',
             method: 'GET',
             success: function(response){
                 var json_response = Ext.JSON.decode(response.responseText);
                 deliveryid = json_response.deliveryid;
+                fileuploadpanel.enableDeliveries(deliveryid);
             }
         });  
-
-
-        var fileuploadpanel = Ext.create('Ext.panel.Panel', {
-            width: 600,
-            renderTo: 'fileuploadpanel',
-            items: [
-            {
-                xtype: 'panel',
-                title: 'Information',
-                height: 100,
-                html: "<h1>INFO</h1><p>Deliver your files!</p>",
-                width: '100%'
-            }, {
-                xtype: 'panel',
-                width: '100%',
-                items: [
-                {
-                    xtype: 'form',
-                    width: '100%',
-                    bodyPadding: 10,
-                    frame: true,
-                    items: [
-                    {
-                        xtype: 'fileuploadfield',
-                        name: 'dendrofil',
-                        fieldLabel: 'Delivery',
-                        labelWidth: 50,
-                        width: '100%',
-                        anchor: '100%',
-                        msgTarget: 'side',
-                        allowBlank: true,
-                        emptyText: 'Select file...',
-                        buttonText: 'Browse...'
-                    }],
-                    buttons: [
-                    {
-                        text: 'Deliver!',
-                        scale: 'large',
-                        handler: function ()
-                        {
-                        var form = this.up('form').getForm();
-                        if(form.isValid()){
-                            form.submit({
-                                url: '/student/add-delivery/fileupload/{{ deadlineid }}',
-                                params: {deliveryid: deliveryid},
-                                waitMsg: 'Uploading your file...',
-                                success: function(form, res) {
-                                    Ext.Msg.alert('Success', 'File "' + res.result.file + '" has been uploaded.' + "\n Select another file for upload!" + res.result.deliveryid);
-                                },
-                                failure: function(form, res) {
-                                   Ext.Msg.alert('Failure', 'Error during upload, TRY AGAIN!');
-                                }
-                            });
-                        }
-
-                            //msg('Success', 'Not really, nothing ever happened with your file');
-
-                        }
-                    }]
-
-                }]
-
-            }]
-
-        });
-
     });
 </script>
 

@@ -362,27 +362,30 @@ a.warning-button {
     }
 }
 
-section.helpsection {
+
+@mixin commonSectionElements() {
     strong {
         font-weight: bold;
     }
     em {
         font-style: italic;
     }
-    p {
-        padding: 5px 0;
-        line-height: 1.3em;
-    }
     ul {
-        //list-style-type: disc !important;
-        //list-style-position: inside !important;
-        //margin-left: 10px !important;
         li {
             padding: 5px 0;
             margin-left: 25px !important;
             list-style-type: disc !important;
             list-style-position: outside !important;
         }
+    }
+}
+
+section.helpsection {
+    @include commonSectionElements();
+
+    p {
+        padding: 5px 0;
+        line-height: 1.3em;
     }
 }
 
@@ -550,6 +553,7 @@ section.extravisible {
         padding: 5px 0;
         line-height: 1.6em !important;
     }
+    @include commonSectionElements();
 }
 
 section.ok {
@@ -566,6 +570,15 @@ section.warning {
 }
 section.error {
     @include bigIconBox(url(icons/128x128/error.png));
+}
+
+.widget-fileuploadpanel section.ok {
+    ul {
+        li {
+            list-style: square !important;
+            font-size: 1.6em !important;
+        }
+    }
 }
 
 

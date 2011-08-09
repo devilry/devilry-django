@@ -361,14 +361,14 @@ section.helpsection strong {
   font-weight: bold; }
 section.helpsection em {
   font-style: italic; }
-section.helpsection p {
-  padding: 5px 0;
-  line-height: 1.3em; }
 section.helpsection ul li {
   padding: 5px 0;
   margin-left: 25px !important;
   list-style-type: disc !important;
   list-style-position: outside !important; }
+section.helpsection p {
+  padding: 5px 0;
+  line-height: 1.3em; }
 
 /**
  *
@@ -485,6 +485,15 @@ section.ok {
   section.ok p {
     padding: 5px 0;
     line-height: 1.6em !important; }
+  section.ok strong {
+    font-weight: bold; }
+  section.ok em {
+    font-style: italic; }
+  section.ok ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
 
 section.info {
   padding: 0px 0 0 148px;
@@ -495,6 +504,15 @@ section.info {
   section.info p {
     padding: 5px 0;
     line-height: 1.6em !important; }
+  section.info strong {
+    font-weight: bold; }
+  section.info em {
+    font-style: italic; }
+  section.info ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
 
 section.help {
   padding: 0px 0 0 148px;
@@ -505,6 +523,15 @@ section.help {
   section.help p {
     padding: 5px 0;
     line-height: 1.6em !important; }
+  section.help strong {
+    font-weight: bold; }
+  section.help em {
+    font-style: italic; }
+  section.help ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
 
 section.warning {
   padding: 0px 0 0 148px;
@@ -515,6 +542,15 @@ section.warning {
   section.warning p {
     padding: 5px 0;
     line-height: 1.6em !important; }
+  section.warning strong {
+    font-weight: bold; }
+  section.warning em {
+    font-style: italic; }
+  section.warning ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
 
 section.error {
   padding: 0px 0 0 148px;
@@ -525,6 +561,19 @@ section.error {
   section.error p {
     padding: 5px 0;
     line-height: 1.6em !important; }
+  section.error strong {
+    font-weight: bold; }
+  section.error em {
+    font-style: italic; }
+  section.error ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+
+.widget-fileuploadpanel section.ok ul li {
+  list-style: square !important;
+  font-size: 1.6em !important; }
 
 section h1 {
   font-size: 2.6em;
