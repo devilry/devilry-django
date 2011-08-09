@@ -17,10 +17,7 @@
     Ext.require('devilry.student.DeadlineTitle');
     Ext.require('devilry.extjshelpers.SingleRecordContainer');
     Ext.onReady(function() {
-
-
         var deadline_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
-        var delivery_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
 
         Ext.create('devilry.student.DeadlineTitle', {
             renderTo: 'content-heading',
@@ -33,14 +30,13 @@
             }
         });
 
-        
-
         var fileuploadpanel = Ext.widget('fileuploadpanel', {
             bodyPadding: 20,
             renderTo: 'fileuploadpanel',
             deadlineid: {{ deadlineid }},
             initialhelptext: 'Upload files for your delivery. You can upload multiple files.',
-            deliverymodelname: {{RestfulSimplifiedDelivery|extjs_modelname }}
+            deliverymodelname: {{RestfulSimplifiedDelivery|extjs_modelname }},
+            deadline_recordcontainer: deadline_recordcontainer
         });
     });
 </script>

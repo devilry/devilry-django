@@ -16,6 +16,8 @@ Ext.define('devilry.student.FileUploadPanel', {
          */
         deadlineid: undefined,
 
+        deadline_recordcontainer: undefined,
+
         deliverymodelname: undefined
     },
 
@@ -24,7 +26,9 @@ Ext.define('devilry.student.FileUploadPanel', {
         '   <section class="ok">',
         '       <h1>Success</h1>',
         '       <p>Delivery created.',
-        '           <a href="{DEVILRY_MAIN_PAGE}/student/assignmentgroup/{deadline.assignment_group}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
+        '           <tpl if="deadline">',
+        '               <a href="{DEVILRY_MAIN_PAGE}/student/assignmentgroup/{deadline.assignment_group}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
+        '           </tpl>',
         '       </p>',
         '   </section>',
         '</tpl>',
@@ -110,13 +114,14 @@ Ext.define('devilry.student.FileUploadPanel', {
      * @private
      */
     updateInfoBox: function(finished) {
-        console.log(this.deliveryrecord);
+        //console.log(this.deliveryrecord);
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
             initialhelptext: this.initialhelptext,
             deliverysuccessful: finished,
             delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
-            DEVILRY_MAIN_PAGE: DevilrySettings.DEVILRY_MAIN_PAGE
+            DEVILRY_MAIN_PAGE: DevilrySettings.DEVILRY_MAIN_PAGE,
+            deadline: (this.deadline_recordcontainer.record? this.deadline_recordcontainer.record.data: null)
         });
     },
 
@@ -169,6 +174,9 @@ Ext.define('devilry.student.FileUploadPanel', {
         }
     },
 
+    /**
+     * @private
+     */
     uploadFileInForm: function() {
         var form = this.getForm();
         var url = Ext.String.format(
@@ -210,6 +218,7 @@ Ext.define('devilry.student.FileUploadPanel', {
      */
     onDeliver: function() {
         this.deliveryrecord.data.successful = true;
+        this.getEl().mask('Saving...');
         this.deliveryrecord.save({
             scope: this,
             success: this.onDeliverSuccess,
@@ -225,12 +234,14 @@ Ext.define('devilry.student.FileUploadPanel', {
         this.deliverbutton.disable();
         this.updateInfoBox(true);
         this.deliveryrecord = null;
+        this.getEl().unmask();
     },
 
     /**
      * @private
      */
     onDeliverFailure: function() {
+        this.getEl().unmask();
         Ext.Msg.alert('Failure', 'Error when finalizing the delivery, TRY AGAIN!');
     }
 });
