@@ -16,33 +16,37 @@ Ext.define('devilry.student.FileUploadPanel', {
          */
         deadlineid: undefined,
 
-        /**
-         * @cfg
-         * Id of the delivery.
-         */
-        deliveryid: undefined,
-
         deliverymodelname: undefined
     },
 
     uploadedFilesTpl: Ext.create('Ext.XTemplate',
-        '<tpl if="filenames.length &gt; 0">',
+        '<tpl if="deliverysuccessful">',
         '   <section class="ok">',
-        '         <h1>Success!</h1>',
-        '         <p>You have uploaded the following {filenames.length} files.</p>',
-        '         <ul>',
-        '         <tpl for="filenames">',
-        '             <li>{.}</li>',
-        '         </tpl>',
-        '         </ul>',
-        '         <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or upload more files.',
+        '       <h1>Success</h1>',
+        '       <p>Delivery created.',
+        '           <a href="{DEVILRY_MAIN_PAGE}/student/assignmentgroup/{deadline.assignment_group}?deliveryid={delivery.id}">Click here</a> to view the delivery.',
+        '       </p>',
         '   </section>',
         '</tpl>',
-        '<tpl if="filenames.length == 0">',
-        '   <section class="help">',
-        '         <h1>Create delivery</h1>',
-        '         <p>{initialhelptext}</p>',
-        '   </section>',
+        '<tpl if="!deliverysuccessful">',
+        '   <tpl if="filenames.length &gt; 0">',
+        '      <section class="info">',
+        '          <h1>File uploaded successfully</h1>',
+        '          <p>You have uploaded the following {filenames.length} files.</p>',
+        '          <ul>',
+        '          <tpl for="filenames">',
+        '              <li>{.}</li>',
+        '          </tpl>',
+        '          </ul>',
+        '          <p>Click the <span class="menuref">deliver</span> button to deliver these {filenames.length} files, or upload more files.</p>',
+        '      </section>',
+        '   </tpl>',
+        '   <tpl if="filenames.length == 0">',
+        '      <section class="help">',
+        '          <h1>Create delivery</h1>',
+        '          <p>{initialhelptext}</p>',
+        '      </section>',
+        '   </tpl>',
         '</tpl>'
     ),
 
@@ -52,7 +56,7 @@ Ext.define('devilry.student.FileUploadPanel', {
     },
 
     initComponent: function() {
-        this.uploadedFiles = //['HelloWorld.py', 'This is a test.txt', 'This-is-a-long-filename-loooooong.longstuff.java'];
+        //this.uploadedFiles = ['HelloWorld.py', 'This is a test.txt', 'This-is-a-long-filename-loooooong.longstuff.java'];
         this.uploadedFiles = [];
         this.infoBoxView = Ext.widget('box', {
             tpl: this.uploadedFilesTpl,
@@ -65,7 +69,7 @@ Ext.define('devilry.student.FileUploadPanel', {
             disabled: true,
             listeners: {
                 scope: this,
-                click: this.onClickDeliver
+                click: this.onDeliver
             }
         });
 
@@ -105,10 +109,14 @@ Ext.define('devilry.student.FileUploadPanel', {
     /**
      * @private
      */
-    updateInfoBox: function() {
+    updateInfoBox: function(finished) {
+        console.log(this.deliveryrecord);
         this.infoBoxView.update({
             filenames: this.uploadedFiles,
-            initialhelptext: this.initialhelptext
+            initialhelptext: this.initialhelptext,
+            deliverysuccessful: finished,
+            delivery: (this.deliveryrecord? this.deliveryrecord.data: null),
+            DEVILRY_MAIN_PAGE: DevilrySettings.DEVILRY_MAIN_PAGE
         });
     },
 
@@ -197,7 +205,32 @@ Ext.define('devilry.student.FileUploadPanel', {
 
 
 
-    onClickDeliver: function() {
-        console.log('Deliver');
+    /**
+     * @private
+     */
+    onDeliver: function() {
+        this.deliveryrecord.data.successful = true;
+        this.deliveryrecord.save({
+            scope: this,
+            success: this.onDeliverSuccess,
+            failure: this.onDeliverFailure
+        });
+    },
+
+    /**
+     * @private
+     */
+    onDeliverSuccess: function() {
+        this.uploadedFiles = [];
+        this.deliverbutton.disable();
+        this.updateInfoBox(true);
+        this.deliveryrecord = null;
+    },
+
+    /**
+     * @private
+     */
+    onDeliverFailure: function() {
+        Ext.Msg.alert('Failure', 'Error when finalizing the delivery, TRY AGAIN!');
     }
 });

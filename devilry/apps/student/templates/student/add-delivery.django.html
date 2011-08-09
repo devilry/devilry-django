@@ -9,7 +9,7 @@
 
 {% block headextra %}
 <script>
-    {{ RestfulSimplifiedDelivery|extjs_model:"subject,period,assignment,users,deadline,assignment_group" }};
+    {{ RestfulSimplifiedDelivery|extjs_model }};
     var deadlinemodel = {{ RestfulSimplifiedDeadline|extjs_model:"subject,period,assignment,assignment_group,assignment_group_users" }};
 
 
