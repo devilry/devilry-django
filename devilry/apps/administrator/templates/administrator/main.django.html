@@ -28,7 +28,7 @@
     Ext.onReady(function() {
         Ext.create('devilry.extjshelpers.ButtonBar', {
             renderTo: 'createbuttonbar',
-            width: 600,
+            cls: 'dashboard-buttonbar',
             items: [{
                 xtype: 'buttonbarbutton',
                 text: 'Node',
@@ -51,7 +51,6 @@
             }, {
                 xtype: 'buttonbarbutton',
                 text: 'Subject',
-                clickurl: '{% url administrator-editors-subject "create" %}',
                 iconCls: 'icon-add-32',
                 tooltipCfg: {
                     title: 'Node &rArr; <span class="tooltip-title-current-item">Subject</span> &rArr; Period &rArr; Assignment',
@@ -72,7 +71,6 @@
                 xtype: 'buttonbarbutton',
                 text: 'Period',
                 iconCls: 'icon-add-32',
-                clickurl: '{% url administrator-editors-period "create" %}',
                 tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; <span class="tooltip-title-current-item">Period</span> &rArr; Assignment',
                     body: 'A Period is a limited period in time, such as a semester.'
@@ -92,7 +90,6 @@
                 xtype: 'buttonbarbutton',
                 text: 'Assignment',
                 iconCls: 'icon-add-32',
-                clickurl: '{% url administrator-editors-assignment "create" %}',
                 tooltipCfg: {
                     title: 'Node &rArr; Subject &rArr; Period &rArr; <span class="tooltip-title-current-item">Assignment</span>',
                     body: 'An Assignment, such as an obligatory assignment, an anoymous home examination or a semester assignment.'
@@ -119,10 +116,11 @@
 
 {% block main %}
 {{ block.super }}
-<p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
-have permission to view or edit. Searching for a user will find any item
-related to that user, and searching for a subject will find anything related to
-that subject.</p>
+<p class='searchwidget-help'>In the box above, you can search for anything
+related to anything that you have permission to view or edit as an
+<strong>administrator</strong>. Searching for a user will find any item related
+to that user, and searching for a subject will find anything related to that
+subject.</p>
 
 <div id="createbuttonbar"></div>
 {% endblock %}

@@ -203,27 +203,30 @@ header {
  * Main (dynamic) content
  *
  */
-#main {
-  padding: 20px;
+#mainwrapper {
   background-color: #f8f8f8; }
-  #main a {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #0B5A9D; }
-  #main a:visited {
-    color: #6E0840; }
-  #main strong {
-    font-weight: bold; }
-  #main em {
-    font-style: italic; }
-  #main p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  #main dt {
-    padding-top: 6px;
-    font-weight: bold; }
-  #main dd {
-    margin-left: 15px; }
+  #mainwrapper #main {
+    width: 930px;
+    padding: 30px 0 30px 0;
+    margin: 0 auto 0 auto; }
+    #mainwrapper #main a {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0B5A9D; }
+    #mainwrapper #main a:visited {
+      color: #6E0840; }
+    #mainwrapper #main strong {
+      font-weight: bold; }
+    #mainwrapper #main em {
+      font-style: italic; }
+    #mainwrapper #main p {
+      padding: 5px 0;
+      line-height: 1.2em; }
+    #mainwrapper #main dt {
+      padding-top: 6px;
+      font-weight: bold; }
+    #mainwrapper #main dd {
+      margin-left: 15px; }
 
 /**
  *
@@ -231,15 +234,15 @@ header {
  *
  */
 .widget-searchwidget .widget-searchfield {
-  font-size: 18px;
+  font-size: 24px;
   line-height: normal !important;
   height: auto !important;
   padding: 4px 15px 4px 15px !important;
   border-radius: 20px;
-  width: 600px !important; }
+  width: 930px !important; }
 
 .multisearchresults {
-  width: 570px; }
+  width: 900px; }
   .multisearchresults > .x-panel-body {
     background-color: #fff;
     border: 3px solid #111;
@@ -258,8 +261,10 @@ header {
 .searchwidget-help {
   padding: 4px 15px 15px 15px !important;
   color: #444;
-  font-size: 0.9em;
-  width: 600px; }
+  font-size: 0.9em; }
+
+.dashboard-buttonbar {
+  width: 930px; }
 
 /**
  *
@@ -349,13 +354,21 @@ a.warning-button {
 
 .editform .editform-body {
   padding: 15px; }
-  .editform .editform-body .editform-sidebar {
+  .editform .editform-body .extrabaronright {
     margin-left: 30px; }
-    .editform .editform-body .editform-sidebar strong {
-      font-weight: bold; }
-    .editform .editform-body .editform-sidebar p {
-      padding: 5px 0;
-      line-height: 1.2em; }
+
+section.helpsection strong {
+  font-weight: bold; }
+section.helpsection em {
+  font-style: italic; }
+section.helpsection p {
+  padding: 5px 0;
+  line-height: 1.3em; }
+section.helpsection ul li {
+  padding: 5px 0;
+  margin-left: 25px !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important; }
 
 /**
  *
@@ -390,6 +403,15 @@ a.warning-button {
 
 span.error {
   color: #a00; }
+
+span.menuref {
+  border: 1px solid #0088cc;
+  border-radius: 3px;
+  background-color: #0077b3;
+  color: #e5f7ff;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
 
 table.verticalinfotable {
   border-collapse: collapse;
@@ -446,13 +468,63 @@ td.selectable-gridcell {
       border: 4px solid #77b300 !important;
       background-color: #f7ffe5; }
 
-div.warning, section.warning {
-  background-color: #cc4400;
-  color: #ffeee5;
-  border: 2px solid #333;
+section.extravisible {
   border-radius: 14px;
-  padding: 20px;
+  padding: 10px 10px 10px 158px !important;
+  background-position: 10px 10px;
+  min-height: 148px !important;
+  margin: 20px !important;
+  box-shadow: 0 0 5px 5px #aaa; }
+
+section.ok {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/ok.png);
+  background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
+  section.ok p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+
+section.info {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/info.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.info p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+
+section.help {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/help.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.help p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+
+section.warning {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/warning.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.warning p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+
+section.error {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/error.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.error p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
 
 section h1 {
   font-size: 2.6em;

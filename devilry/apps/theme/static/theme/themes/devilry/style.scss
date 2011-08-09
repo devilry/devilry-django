@@ -1,5 +1,6 @@
 @import "reset";
 
+$mainwidth: 930px;
 $goodcolor_bg: #77B300;
 $goodcolor_hoverbg: #88CC00;
 $goodcolor_fg: #F7FFE5;
@@ -179,35 +180,39 @@ header {
  *
  */
 
-#main {
-	padding: 20px;
+#mainwrapper {
     background-color: #f8f8f8;
-    a {
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #0B5A9D;
-    }
-    a:visited {
-        color: #6E0840;
-    }
-    strong {
-        font-weight: bold;
-    }
-    em {
-        font-style: italic;
-    }
+    #main {
+        width: $mainwidth;
+        padding: 30px 0 30px 0;
+        margin: 0 auto 0 auto;
+        a {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0B5A9D;
+        }
+        a:visited {
+            color: #6E0840;
+        }
+        strong {
+            font-weight: bold;
+        }
+        em {
+            font-style: italic;
+        }
 
-    p {
-        padding: 5px 0;
-        line-height: 1.2em;
-    }
+        p {
+            padding: 5px 0;
+            line-height: 1.2em;
+        }
 
-    dt {
-        padding-top: 6px;
-        font-weight: bold;
-    }
-    dd {
-        margin-left: 15px;
+        dt {
+            padding-top: 6px;
+            font-weight: bold;
+        }
+        dd {
+            margin-left: 15px;
+        }
     }
 }
 
@@ -220,18 +225,17 @@ header {
  */
 .widget-searchwidget {
     .widget-searchfield {
-        font-size: 18px;
+        font-size: 24px;
         line-height: normal !important;
         height: auto !important;
         padding: 4px 15px 4px 15px !important;
         border-radius: 20px;
-        width: 600px !important;
+        width: $mainwidth !important;
     }
 }
 
 .multisearchresults {
-
-    width: 570px;
+    width: ($mainwidth - 30px);
     >.x-panel-body {
         background-color: #fff;
         border: 3px solid #111;
@@ -259,7 +263,9 @@ header {
     padding: 4px 15px 15px 15px !important;
     color: #444;
     font-size: 0.9em;
-    width: 600px;
+}
+.dashboard-buttonbar {
+    width: $mainwidth;
 }
 
 
@@ -348,16 +354,34 @@ a.warning-button {
 .editform {
     .editform-body {
         padding: 15px;
-        .editform-sidebar {
+        //.editform-sidebar {
+        //}
+        .extrabaronright {
             margin-left: 30px;
+        }
+    }
+}
 
-            strong {
-                font-weight: bold;
-            }
-            p {
-                padding: 5px 0;
-                line-height: 1.2em;
-            }
+section.helpsection {
+    strong {
+        font-weight: bold;
+    }
+    em {
+        font-style: italic;
+    }
+    p {
+        padding: 5px 0;
+        line-height: 1.3em;
+    }
+    ul {
+        //list-style-type: disc !important;
+        //list-style-position: inside !important;
+        //margin-left: 10px !important;
+        li {
+            padding: 5px 0;
+            margin-left: 25px !important;
+            list-style-type: disc !important;
+            list-style-position: outside !important;
         }
     }
 }
@@ -408,6 +432,15 @@ span.error {
 }
 
 
+span.menuref {
+    border: 1px solid $neutralcolor_hoverbg;
+    border-radius: 3px;
+    background-color: $neutralcolor_bg;
+    color: $neutralcolor_fg;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap;
+}
 
 table.verticalinfotable {
 	border-collapse:collapse;
@@ -493,13 +526,46 @@ td.selectable-gridcell {
 }
 
 
-div.warning, section.warning {
-    background-color: $warningcolor_bg;
-    color: $warningcolor_fg;
-    border: 2px solid #333;
+section.extravisible {
+    //border: 2px solid #999;
     border-radius: $radiussize_big;
-    padding: 20px;
+    padding: 10px 10px 10px 158px !important;
+    background-position: 10px 10px;
+    min-height: 148px !important;
+    margin: 20px !important;
+    box-shadow: 0 0 5px 5px #aaa;
+    
+}
+
+
+@mixin bigIconBox($icon) {
+    padding: 0px 0 0 148px;
+    min-height: 128px;
+    background-image: $icon;
+    background-repeat: no-repeat;
     margin: 20px 0 20px 0;
+
+
+    p {
+        padding: 5px 0;
+        line-height: 1.6em !important;
+    }
+}
+
+section.ok {
+    @include bigIconBox(url(icons/128x128/ok.png));
+}
+section.info {
+    @include bigIconBox(url(icons/128x128/info.png));
+}
+section.help {
+    @include bigIconBox(url(icons/128x128/help.png));
+}
+section.warning {
+    @include bigIconBox(url(icons/128x128/warning.png));
+}
+section.error {
+    @include bigIconBox(url(icons/128x128/error.png));
 }
 
 

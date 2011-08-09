@@ -72,3 +72,13 @@ class JsonListWithFallbackField(forms.CharField):
                     return pythonvalue
                 else:
                     return self._fallbackvalue
+
+class RawWithFallbackField(forms.Field):
+    def __init__(self, fallbackvalue=None, *args, **kwargs):
+        self._fallbackvalue = fallbackvalue
+        super(RawWithFallbackField, self).__init__(required=False, *args, **kwargs)
+
+    def to_python(self, value):
+        if value == '':
+            return self._fallbackvalue
+        return value

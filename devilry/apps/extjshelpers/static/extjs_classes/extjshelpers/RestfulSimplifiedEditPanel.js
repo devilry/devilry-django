@@ -13,12 +13,6 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
         /**
          * @cfg
-         * Items for the ``Ext.form.Panel`` used to edit the RestfulSimplified object. (Required).
-         */
-        editformitems: undefined,
-
-        /**
-         * @cfg
          * List of foreign key field names in the model. (Required).
          */
         foreignkeyfieldnames: undefined,
@@ -28,33 +22,27 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
          * A instance of the ``Ext.data.Model`` which should be loaded into the
          * form.
          */
-        record: undefined
+        record: undefined,
+
+        /**
+         * @cfg
+         * Show the extra-bar (sidebar) at the bottom? Defaults to ``false``,
+         * which means that it will be at the right hand side. This bar contains
+         * help and error messages.
+         */
+        extrabaronbottom: false
     },
     cls: 'editform',
     bodyCls: 'editform-body',
 
     constructor: function(config) {
-        this.callParent([config]);
         this.initConfig(config);
+        this.callParent([config]);
     },
 
     initComponent: function() {
         this.errorlist = Ext.create('devilry.extjshelpers.ErrorList');
         this.model = Ext.ModelManager.getModel(this.model);
-
-        if(this.editformitems) {
-            this.editform = Ext.ComponentManager.create({
-                xtype: 'form',
-                model: this.modelname,
-                items: this.editformitems,
-
-                // Fields will be arranged vertically, stretched to full width
-                layout: 'anchor',
-                defaults: {
-                    anchor: '100%',
-                },
-            });
-        }
 
         this.editform.frame = false;
         if(this.editform.flex == undefined) {
@@ -62,14 +50,10 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         }
         this.editform.border = 0;
 
+        var extrabarCssCls = this.extrabaronbottom? 'extrabaronbottom': 'extrabaronright';
         Ext.apply(this, {
             layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-
-            layout: {
-                type: 'hbox',
+                type: (this.extrabaronbottom? 'vbox': 'hbox'),
                 align: 'stretch'
             },
 
@@ -77,32 +61,31 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 xtype: 'panel',
                 frame: false,
                 border: false,
-                bodyCls: 'editform-sidebar',
+                bodyCls: 'editform-sidebar ' + extrabarCssCls,
                 flex: 5,
                 items: [this.errorlist, {
                     xtype: 'box',
                     html: this.parseHelp()
                 }]
-            }],
-
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                defaults: {minWidth: 75},
-
-                items: ['->', {
-                    xtype: 'button',
-                    text: 'Save',
-                    scale: 'large',
-                    iconCls: 'icon-save-32',
-                    listeners: {
-                        scope: this,
-                        click: this.onSave
-                    }
-                }]
             }]
         });
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            dock: 'bottom',
+            ui: 'footer',
+            defaults: {minWidth: 75},
+
+            items: ['->', {
+                xtype: 'button',
+                text: 'Save',
+                scale: 'large',
+                iconCls: 'icon-save-32',
+                listeners: {
+                    scope: this,
+                    click: this.onSave
+                }
+            }]
+        }];
         this.callParent(arguments);
 
         if(this.record) {
@@ -114,7 +97,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
         if(!this.editform.help) {
             return '';
         }
-        var help = '';
+        var help = '<section class="helpsection">';
         var me = this;
         var state = this.record == undefined? 'new': 'existing';
         Ext.Array.each(this.editform.help, function(helpobj) {
@@ -125,7 +108,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
                 help += Ext.String.format('<p>{0}</p>', helpobj.text);
             }
         });
-        return help;
+        return help + '</section>';
     },
 
     onSave: function() {
@@ -160,15 +143,5 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     loadRecord: function() {
         this.editform.loadRecord(this.record);
-
-        // Set foreign key field values
-        //var fields = this.editform.getForm().getFields();
-        //var me = this;
-        //Ext.each(this.foreignkeyfieldnames, function(fieldname) {
-            //var field = fields.filter('name', fieldname).items[0];
-            //field.store.load(function(store, records, successful) {
-                //field.setValue(me.record.data[fieldname]);
-            //});
-        //});
     }
 });

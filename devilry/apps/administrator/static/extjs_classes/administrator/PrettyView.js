@@ -66,7 +66,7 @@ Ext.define('devilry.administrator.PrettyView', {
     initComponent: function() {
         this.deletebutton = Ext.create('Ext.button.Button', {
             text: 'Delete',
-            scale: 'medium',
+            scale: 'large',
             listeners: {
                 scope: this,
                 click: this.onDelete
@@ -75,8 +75,9 @@ Ext.define('devilry.administrator.PrettyView', {
 
         this.editbutton = Ext.create('Ext.button.Button', {
             text: 'Edit',
+            enableToggle: true,
             menu: [],
-            scale: 'medium',
+            scale: 'large',
             listeners: {
                 scope: this,
                 click: this.onEdit
@@ -108,14 +109,23 @@ Ext.define('devilry.administrator.PrettyView', {
             success: this.onModelLoadSuccess,
             failure: this.onModelLoadFailure
         });
+
+        this.addListener('render', function() {
+            this.getEl().mask('Loading');
+        }, this);
     },
 
     onModelLoadSuccess: function(record) {
         this.record = record;
-        var bodyData = this.getExtraBodyData(record);
-        Ext.apply(bodyData, record.data);
-        this.update(this.bodyTpl.apply(bodyData));
+        this.refreshBody();
+        this.getEl().unmask();
         this.fireEvent('loadmodel', record);
+    },
+
+    refreshBody: function() {
+        var bodyData = this.getExtraBodyData(this.record);
+        Ext.apply(bodyData, this.record.data);
+        this.update(this.bodyTpl.apply(bodyData));
     },
 
     getExtraBodyData: function(record) {

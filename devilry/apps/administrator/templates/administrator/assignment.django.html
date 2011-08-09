@@ -30,15 +30,18 @@
             renderTo: 'content-heading',
             data: {},
             tpl: [
-                '<h1>{parentnode__parentnode__long_name}</h1>',
-                '<h2>{parentnode__long_name}</h2>',
-                '<h3>{long_name} ({short_name})</h3>'
+                '<tpl if="long_name">',
+                '   <h1>{parentnode__parentnode__long_name}</h1>',
+                '   <h2>{parentnode__long_name}</h2>',
+                '   <h3>{long_name} ({short_name})</h3>',
+                '</tpl>'
             ]
         });
 
         prettyview.addListener('loadmodel', function(record) {
             heading.update(record.data);
-            {#prettyview.onStudents();#}
+            {# prettyview.onGradeEditor(prettyview.gradeeditorbutton); #}
+            {# prettyview.onStudents(); #}
         });
 
         prettyview.addListener('edit', function(record, button) {
@@ -50,7 +53,13 @@
             });
             var editwindow = Ext.create('devilry.administrator.DefaultEditWindow', {
                 editpanel: editpanel,
-                prettyview: prettyview
+                prettyview: prettyview,
+                listeners: {
+                    scope: this,
+                    close: function() {
+                        button.toggle(false);
+                    }
+                }
             });
             editwindow.show();
             editwindow.alignTo(button, 'br', [-editwindow.getWidth(), 0]);

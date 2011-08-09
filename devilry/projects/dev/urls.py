@@ -10,7 +10,7 @@ from devilry.defaults.urls import devilry_urls
 
 class RedirectToFrontpage(View):
     def get(self, request):
-        return redirect(reverse('administrator'))
+        return redirect(reverse('student'))
 
 
 urlpatterns = patterns('',

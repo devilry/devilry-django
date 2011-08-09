@@ -1,7 +1,7 @@
 from datetime import timedelta
 import re
 
-from django.test import TestCase
+from django.test import TransactionTestCase
 
 
 from ....simplified import PermissionDenied, FilterValidationError, InvalidNumberOfResults
@@ -16,7 +16,7 @@ from ..simplified import (SimplifiedNode, SimplifiedSubject, SimplifiedPeriod,
 testhelper.TestHelper.set_memory_deliverystore()
 
 
-class SimplifiedAdminTestBase(TestCase, testhelper.TestHelper):
+class SimplifiedAdminTestBase(TransactionTestCase, testhelper.TestHelper):
 
     def setUp(self):
         self.create_superuser('superadminuser')
@@ -1176,6 +1176,107 @@ class TestSimplifiedAdminAssignmentGroup(SimplifiedAdminTestBase):
         #test that an administrator cannot create assignmentgroup for the wrong course
         with self.assertRaises(PermissionDenied):
             SimplifiedAssignmentGroup.create(self.testadmin, **kw)
+
+    def test_create_with_examiners_and_candidates(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+        newpk = SimplifiedAssignmentGroup.create(self.admin1,
+                                                 name='test1',
+                                                 parentnode=self.inf101_firstsem_a1,
+                                                 fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                                                 fake_candidates=(dict(username='examplestudent1'),
+                                                                  dict(username='examplestudent2',
+                                                                       candidate_id='23xx')))
+        create_res = models.AssignmentGroup.objects.get(pk=newpk)
+        self.assertEquals(create_res.name, 'test1')
+        self.assertEquals(create_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(create_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(create_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(create_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(create_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
+
+
+    def test_create_with_examiners_errors_rollback(self):
+        def count():
+            return models.AssignmentGroup.objects.filter(parentnode=self.inf101_firstsem_a1).count()
+        count_before = count()
+        try:
+            SimplifiedAssignmentGroup.create(self.admin1,
+                                             name='test1',
+                                             parentnode=self.inf101_firstsem_a1,
+                                             fake_examiners=('invalidexaminer',))
+        except PermissionDenied, e:
+            count_after = count() #make sure transaction rolls back everything
+            self.assertEquals(count_before, count_after)
+
+    def test_create_with_candidates_errors_rollback(self):
+        self.create_user('exampleexaminer1')
+        def count():
+            return models.AssignmentGroup.objects.filter(parentnode=self.inf101_firstsem_a1).count()
+        count_before = count()
+        try:
+            SimplifiedAssignmentGroup.create(self.admin1,
+                                             name='test1',
+                                             parentnode=self.inf101_firstsem_a1,
+                                             fake_examiners=('exampleexaminer1',),
+                                             fake_candidates=(dict(username='invaliduser'),)
+                                            )
+        except PermissionDenied, e:
+            count_after = count() #make sure transaction rolls back everything
+            self.assertEquals(count_before, count_after)
+
+
+    def test_update_with_examiners_and_candidates(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        self.create_user('examplestudent1')
+        self.create_user('examplestudent2')
+        pk = SimplifiedAssignmentGroup.update(self.admin1,
+                                              pk=self.inf101_firstsem_a1_g1.id,
+                                              name='test1',
+                                              parentnode=self.inf101_firstsem_a1_g1.parentnode,
+                                              fake_examiners=('exampleexaminer1', 'exampleexaminer2'),
+                                              fake_candidates=(dict(username='examplestudent1'),
+                                                               dict(username='examplestudent2',
+                                                                    candidate_id='23xx')))
+        update_res = models.AssignmentGroup.objects.get(pk=pk)
+        self.assertEquals(update_res.name, 'test1')
+        self.assertEquals(update_res.parentnode,
+                          self.inf101_firstsem_a1_g1.parentnode)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer1').count(), 1)
+        self.assertEquals(update_res.examiners.filter(username='exampleexaminer2').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent1').count(), 1)
+        self.assertEquals(update_res.candidates.filter(student__username='examplestudent2').count(), 1)
+        self.assertEquals(update_res.candidates.get(student__username='examplestudent2').candidate_id,
+                          '23xx')
+
+    def test_update_with_candidates_errors_rollback(self):
+        self.create_user('exampleexaminer1')
+        self.create_user('exampleexaminer2')
+        def get():
+            return models.AssignmentGroup.objects.get(id=self.inf101_firstsem_a1_g1.id)
+        before = get()
+        self.assertEquals(before.examiners.count(), 3)
+        self.assertEquals(before.candidates.count(), 2)
+        try:
+            SimplifiedAssignmentGroup.update(self.admin1,
+                                             pk=self.inf101_firstsem_a1_g1.id,
+                                             name='updated',
+                                             parentnode=self.inf101_firstsem_a1,
+                                             fake_examiners=('exampleexaminer1'),
+                                             fake_candidates=(dict(username='invaliduser'),)
+                                            )
+        except PermissionDenied, e:
+            #make sure transaction rolls back everything
+            after = get()
+            self.assertEquals(after.name, before.name)
+            self.assertEquals(after.examiners.count(), 3)
+            self.assertEquals(after.candidates.count(), 2)
 
     def test_update(self):
         kw = dict(name = 'test')

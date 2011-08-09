@@ -4,16 +4,11 @@ from django.contrib.auth.decorators import login_required
 from restful import administrator_restful
 from views import (MainView, RestfulSimplifiedView,
                    RestfulSimplifiedViewWithGradeEditors)
-import editorviews
 
 urlpatterns = patterns('devilry.apps.administrator',
                        url(r'^$',
                            login_required(MainView.as_view()),
                            name='administrator'),
-                       editorviews.NodeEditor.create_url(),
-                       editorviews.SubjectEditor.create_url(),
-                       editorviews.PeriodEditor.create_url(),
-                       editorviews.AssignmentEditor.create_url(),
                        RestfulSimplifiedView.as_url('node',
                                                     'administrator/node.django.html'),
                        RestfulSimplifiedView.as_url('subject',

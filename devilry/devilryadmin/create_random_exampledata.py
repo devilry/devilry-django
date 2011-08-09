@@ -4,8 +4,8 @@ import itertools
 from random import randint
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
 
-from devilry.apps.gradeeditors.models import Config
 from devilry.apps.core.models import Delivery
 from devilry.apps.core import pluginloader
 
@@ -270,7 +270,7 @@ def create_assignment(period, deadlines, **assignment_kwargs):
                                                        'fieldlabel': 'Is the assignment approved?'})
     assignment.gradeeditor_config.full_clean()
     assignment.gradeeditor_config.save()
-    #assignment.save()
+    assignment.save()
     return assignment
 
 def fit_assignment_in_parentnode(assignment, deadlines):
@@ -330,6 +330,12 @@ def create_numbered_users(numusers, prefix):
     create_missing_users(users)
     return users
 
+def add_relatedusers(related, usernames):
+    for username in usernames:
+        try:
+            related.create(username=username)
+        except IntegrityError:
+            pass # We can not add duplicates
 
 def create_example_assignment(period,
                               groupname_prefix = None,
@@ -378,6 +384,8 @@ def create_example_assignment(period,
     logging.info("    Creating groups on {0}".format(assignment))
     all_examiners = create_numbered_users(num_examiners, examinername_prefix)
     all_students = create_numbered_users(num_students, studentname_prefix)
+    add_relatedusers(period.relatedexaminers, all_examiners)
+    add_relatedusers(period.relatedstudents, all_students)
     create_groups(assignment,
                   deadlines = deadlines,
                   groupname_prefix = groupname_prefix,
