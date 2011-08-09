@@ -16,7 +16,9 @@ from devilry.utils.module import dump_all_into_dict
 from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
 import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
-                     RestfulSimplifiedStaticFeedback, RestfulSimplifiedAssignment)
+                     RestfulSimplifiedDeadline,
+                     RestfulSimplifiedStaticFeedback,
+                     RestfulSimplifiedAssignment)
 
 class MainView(TemplateView):
     template_name='student/main.django.html'
@@ -35,6 +37,7 @@ class AddDeliveryView(View):
     def get(self, request, deliveryid):
         return render(request, 'student/add-delivery.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
+                       'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
                        'deadlineid': deliveryid,
