@@ -10,7 +10,7 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedDeliveryMetaMixin,
                                                    SimplifiedStaticFeedbackMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, Delivery
 
 
 
@@ -95,8 +95,10 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
         """
         if not AssignmentGroup.published_where_is_candidate(user).filter(id=obj.deadline.assignment_group.id):
             raise PermissionDenied()
-        if obj.successful:
-            raise PermissionDenied()
+        if obj.id != None:
+            current = Delivery.objects.get(id=obj.id)
+            if current.successful:
+                raise PermissionDenied()
 
 
 
