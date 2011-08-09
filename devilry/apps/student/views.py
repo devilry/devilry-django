@@ -145,26 +145,30 @@ class FileDownloadView(View):
         response['Content-Disposition'] = "attachment; filename=%s" % \
             filemeta.filename.encode("ascii", 'replace')
         response['Content-Length'] = filemeta.size
-        
+
         return response
-        
+
+
+from tempfile import TemporaryFile
+
 class CompressedFileDownloadView(View):
 
-    def get(self, request, deliveryid):    
+    def get(self, request, deliveryid):
         delivery = get_object_or_404(Delivery, id=deliveryid)
         zip_file_name = str(request.user) + ".zip"
-        zip_file = zipfile.ZipFile(zip_file_name, "w");
-        
+
+        tempfile = TemporaryFile()
+        zip_file = zipfile.ZipFile(tempfile, 'w');
+
         for filemeta in delivery.filemetas.all():
             file_content = filemeta.deliverystore.read_open(filemeta)
             zip_file.write(file_content.name, filemeta.filename)
         zip_file.close()
-                
-        
-        response = HttpResponse(FileWrapper(open(zip_file_name, 'rb')),
-                                content_type=guess_type(zip_file_name))                        
+
+        tempfile.seek(0)
+        response = HttpResponse(FileWrapper(tempfile),
+                                content_type=guess_type(zip_file_name))
         response['Content-Disposition'] = "attachment; filename=%s" % \
             zip_file_name.encode("ascii", 'replace')
         response['Content-Length'] = stat(zip_file_name).st_size
         return response
-        
