@@ -260,7 +260,7 @@ class SimplifiedDelivery(SimplifiedModelApi):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods an Administrator can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read', 'delete']
+        methods = ['search', 'read'] #, 'create', 'update', 'delete'] # TODO: Delivered by administrator?
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
