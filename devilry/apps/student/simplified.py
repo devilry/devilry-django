@@ -95,6 +95,8 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
         """
         if not AssignmentGroup.published_where_is_candidate(user).filter(id=obj.deadline.assignment_group.id):
             raise PermissionDenied()
+        if obj.successful:
+            raise PermissionDenied()
 
 
 
