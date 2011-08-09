@@ -8,10 +8,12 @@ class SimplifiedDeliveryMetaMixin(object):
     search and which fields can be used to search for a Delivery object
     using the Simplified API """
     model = models.Delivery
+    editablefields = ('deadline', 'successful')
     resultfields = FieldSpec('id',
                              'number',
                              'time_of_delivery',
                              'deadline',
+                             'successful',
                              delivered_by=['delivered_by__identifier'],
                              candidates=['deadline__assignment_group__candidates__identifier'],
                              deadline=['deadline__deadline'],
