@@ -16,9 +16,8 @@
      * @param config Get the grade editor configuration that is stored on the
      *      current assignment.
      */
-    initializeEditor: function(config) {
+    initializeEditor: function() {
 
-        this.editorConfig = Ext.JSON.decode(config.config);
         this.checkbox = Ext.widget('checkboxfield', {
             boxLabel: 'Is the assignment approved?'
         });
@@ -49,10 +48,17 @@
      */
     setDraftstring: function(draftstring) {
         if(draftstring === undefined) {
-            this.checkbox.setValue(this.editorConfig.defaultvalue);
+            this.checkbox.setValue(true);
         } else {
-            var approved = Ext.JSON.decode(draftstring);
+            var buf = Ext.JSON.decode(draftstring);
+            var approved = buf[0];
+            var points = buf[1];
+            var grade = buf[2];
+            var feedback = buf[3];
             this.checkbox.setValue(approved);
+            this.points.setValue(points);
+            this.grade.setValue(grade);
+            this.textarea.setValue(feedback);
         }
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -76,8 +82,6 @@
             this.getMainWin().saveDraftAndPublish(draft, this.onFailure);
         }
     },
-
-
 
     /**
      * @private

@@ -14,14 +14,8 @@ class Manual(JsonRegistryItem):
     gradeeditorid = 'manual'
     title = 'Manual'
     description = 'A simple gradeeditor where an examiner kan set grade, points and a feedbacktext.'
-    config_editor_url = settings.DEVILRY_STATIC_URL + '/manual_gradeeditor/configeditor.js'
+    config_editor_url = None
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/manual_gradeeditor/drafteditor.js'
-
-    @classmethod
-    def validate_config(cls, configstring):
-        config = cls.decode_configstring(configstring)
-        cls.validate_dict(config, ConfigValidationError, {'defaultvalue': bool,
-                                                          'fieldlabel': basestring})
 
     @classmethod
     def validate_draft(cls, draftstring):
