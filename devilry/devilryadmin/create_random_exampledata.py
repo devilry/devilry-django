@@ -265,7 +265,7 @@ def create_assignment(period, deadlines, **assignment_kwargs):
                          #gradeeditorid='asminimalaspossible',
                          #config=json.dumps({'defaultvalue': True,
                                             #'fieldlabel': 'Is the assignment approved?'}))
-    assignment.gradeeditor_config.gradeeditorid = 'manual'
+    assignment.gradeeditor_config.gradeeditorid = 'asminimalaspossible'
     assignment.gradeeditor_config.config = json.dumps({'defaultvalue': True,
                                                        'fieldlabel': 'Is the assignment approved?'})
     assignment.gradeeditor_config.full_clean()
