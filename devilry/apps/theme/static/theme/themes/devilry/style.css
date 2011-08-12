@@ -251,7 +251,8 @@ header {
       margin: 20px; }
       .multisearchresults > .x-panel-body .searchresults .searchresultitem {
         padding: 4px;
-        border: 4px solid transparent; }
+        border: 4px solid transparent;
+        height: auto !important; }
         .multisearchresults > .x-panel-body .searchresults .searchresultitem:hover {
           border: 4px solid #77b300;
           background-color: #f7ffe5; }
@@ -265,6 +266,29 @@ header {
 
 .dashboard-buttonbar {
   width: 930px; }
+
+section.popuplistitem h1, section.popuplistitem h2, section.popuplistitem h3, section.popuplistitem h4 {
+  margin: 0; }
+section.popuplistitem h1 {
+  font-size: 1.4em; }
+section.popuplistitem h2 {
+  font-size: 1.2em; }
+section.popuplistitem h3 {
+  font-size: 1.0em; }
+section.popuplistitem table {
+  width: 100%; }
+  section.popuplistitem table td.rightaligned {
+    text-align: right; }
+    section.popuplistitem table td.rightaligned h1, section.popuplistitem table td.rightaligned h2, section.popuplistitem table td.rightaligned h3, section.popuplistitem table td.rightaligned h4 {
+      color: #888; }
+section.popuplistitem ul li {
+  display: inline; }
+  section.popuplistitem ul li:after {
+    content: ", "; }
+  section.popuplistitem ul li:last-child:after {
+    content: ""; }
+section.popuplistitem ul.useridlist li {
+  font-size: 1.4em; }
 
 /**
  *
@@ -393,7 +417,7 @@ section.helpsection p {
  *
  */
 .unimportant {
-  font-size: 0.8em;
+  font-size: 1.0em;
   color: #444; }
 
 .important {
@@ -572,8 +596,7 @@ section.error {
     list-style-position: outside !important; }
 
 .widget-fileuploadpanel section.ok ul li {
-  list-style: square !important;
-  font-style: italic; }
+  list-style: square !important; }
 .widget-fileuploadpanel .x-form-file-wrap {
   margin-top: 20px; }
   .widget-fileuploadpanel .x-form-file-wrap input[type="text"] {

@@ -40,6 +40,18 @@ body {
     }
 }
 
+@mixin inlineList() {
+    li {
+        display: inline; 
+        &:after {
+            content: ", ";
+        }
+        &:last-child:after {
+            content: "";
+        }
+    }
+}
+
 header {
     background-color: #000; color: #fff;
 
@@ -245,6 +257,7 @@ header {
             .searchresultitem {
                 padding: 4px;
                 border: 4px solid transparent;
+                height: auto !important;
                 &:hover {
                     border: 4px solid $goodcolor_bg;
                     background-color: $goodcolor_fg;
@@ -266,6 +279,39 @@ header {
 }
 .dashboard-buttonbar {
     width: $mainwidth;
+}
+
+section.popuplistitem {
+    h1, h2, h3, h4 {
+        margin: 0;
+    }
+    h1 {
+        font-size: 1.4em;
+    }
+    h2 {
+        font-size: 1.2em;
+    }
+    h3 {
+        font-size: 1.0em;
+    }
+
+    table {
+        width: 100%;
+        td.rightaligned {
+            text-align: right;
+            h1, h2, h3, h4 {
+                color: #888;
+            }
+        }
+    }
+    ul {
+        @include inlineList();
+    }
+    ul.useridlist {
+        li {
+            font-size: 1.4em;
+        }
+    }
 }
 
 
@@ -421,7 +467,7 @@ section.helpsection {
  */
 
 .unimportant {
-    font-size: 0.8em;
+    font-size: 1.0em;
     color: #444;
 }
 .important {
@@ -577,7 +623,6 @@ section.error {
         ul {
             li {
                 list-style: square !important;
-                font-style: italic;
                 //font-size: 1.6em !important;
             }
         }
@@ -610,6 +655,7 @@ section h3 {
     margin: 16px 0 6px 0;
 }
 
+
 section.treeheading {
     margin-bottom: 30px;
     @each $headtype in h1, h2, h3 {
@@ -618,15 +664,7 @@ section.treeheading {
         }
     }
     ul {
-        li {
-            display: inline; 
-            &:after {
-                content: ", ";
-            }
-            &:last-child:after {
-                content: "";
-            }
-        }
+        @include inlineList();
     }
 }
 
