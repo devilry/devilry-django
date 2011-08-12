@@ -270,9 +270,9 @@ header {
 section.popuplistitem h1, section.popuplistitem h2, section.popuplistitem h3, section.popuplistitem h4 {
   margin: 0; }
 section.popuplistitem h1 {
-  font-size: 1.4em; }
-section.popuplistitem h2 {
   font-size: 1.2em; }
+section.popuplistitem h2 {
+  font-size: 1.1em; }
 section.popuplistitem h3 {
   font-size: 1.0em; }
 section.popuplistitem table {
@@ -288,7 +288,7 @@ section.popuplistitem ul li {
   section.popuplistitem ul li:last-child:after {
     content: ""; }
 section.popuplistitem ul.useridlist li {
-  font-size: 1.4em; }
+  font-size: 1.2em; }
 
 /**
  *
