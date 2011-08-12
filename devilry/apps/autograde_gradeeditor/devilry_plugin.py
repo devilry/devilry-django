@@ -62,7 +62,7 @@ class Manual(JsonRegistryItem):
         return dict(is_passing_grade=is_approved,
                     grade=grade,
                     points=points,
-                    rendered_view='You got {0} points on your delivery and your grade is: {1}. Feedback from examiner: "{2}"'.format(points, grade, feedback))
+                    rendered_view=feedback)
 
         #TODO: .format() crashes when using non-ascii symbols.. need to find a fix since norwegian characters are bound to be used in feedbacks!!
 
