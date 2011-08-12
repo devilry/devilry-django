@@ -7,7 +7,8 @@
 <script>
     {% include "extjshelpers/AssignmentGroupOverviewExtjsClasses.django.html" with canExamine="yes" %}
     Ext.require('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview');
-    Ext.require('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup');    
+    Ext.require('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup');
+Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});    
     Ext.onReady(function() {
 
         Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
