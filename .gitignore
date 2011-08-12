@@ -5,6 +5,7 @@
 *.pyo
 *.tmp
 .*.swp
+.*.swo
 *~
 .DS_Store
 target/
