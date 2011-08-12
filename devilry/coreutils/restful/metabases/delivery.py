@@ -3,10 +3,6 @@ class DeliveryExtjsModelMeta:
     combobox_fieldgroups = ['assignment', 'period', 'subject',
                             'assignment_group', 'assignment_group_users']
     combobox_tpl = ('<section class="popuplistitem">'
-                    #'<div class="important">Delivery: {number} '
-                        #'<tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl>'
-                        #'<tpl for="deadline__assignment_group__candidates__identifier">, {.}</tpl>'
-                    #'</div>'
                     '    <table>'
                     '        <tr>'
                     '            <td>'
@@ -20,6 +16,5 @@ class DeliveryExtjsModelMeta:
                     '            </td>'
                     '        </tr>'
                     '    </table>'
-                        #'&mdash; Group id: {deadline__assignment_group}</div>'
                    '</section>')
     combobox_displayfield = 'id'
