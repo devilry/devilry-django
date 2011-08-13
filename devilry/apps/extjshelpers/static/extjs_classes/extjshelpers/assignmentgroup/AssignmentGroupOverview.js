@@ -241,7 +241,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     onUncorrectedGroups: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
-            title: 'To-to list (Groups that have not been closed)',
+            title: 'To-do list (Open groups on this assignment)',
             height: 500,
             width: 400,
             modal: true,
@@ -268,7 +268,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     onOtherDeliveries: function(button) {
         if(!this.deliveriesWindow) {
             this.deliveriesWindow = Ext.create('Ext.window.Window', {
-                title: 'Deliveries',
+                title: 'Deliveries by this group',
                 height: 500,
                 width: 400,
                 modal: true,
@@ -382,7 +382,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     onDeadlines: function(button) {
         var deadlinesWindow = Ext.create('Ext.window.Window', {
-            title: 'Deadlines',
+            title: 'Deadlines for this group',
             width: 600,
             height: 400,
             modal: true,
