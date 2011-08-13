@@ -6,7 +6,7 @@ class DeadlineExtjsModelMeta:
                     '    <table>'
                     '        <tr>'
                     '            <td>'
-                    '               <h1>{deadline:date}</h1>'
+                    '               <h1>Deadline: {deadline:date}</h1>'
                     '               <ul class="useridlist"><tpl for="assignment_group__candidates__identifier"><li>{.}</li></tpl></ul>'
                     '               <p><tpl if="assignment_group__name"> &ndash; {assignment_group__name}</tpl><p>'
                     '            </td>'

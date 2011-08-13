@@ -1,11 +1,12 @@
 class DeliveryExtjsModelMeta:
     """ Metadata for Delivery javascript. """
-    combobox_fieldgroups = ['assignment', 'period', 'subject',
+    combobox_fieldgroups = ['assignment', 'period', 'subject', 'deadline',
                             'assignment_group', 'assignment_group_users']
     combobox_tpl = ('<section class="popuplistitem">'
                     '    <table>'
                     '        <tr>'
                     '            <td>'
+                    '               <h1>Deadline: {deadline__deadline:date}</h1>'
                     '               <ul class="useridlist"><tpl for="deadline__assignment_group__candidates__identifier"><li>{.}</li></tpl></ul>'
                     '               <p>Delivery: {number}<tpl if="deadline__assignment_group__name"> &ndash; {deadline__assignment_group__name}</tpl><p>'
                     '            </td>'
