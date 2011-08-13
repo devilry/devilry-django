@@ -53,6 +53,7 @@ Ext.define('devilry.student.StudentSearchWidget', {
                 xtype: 'searchresults',
                 title: 'Deadlines',
                 store: Ext.data.StoreManager.lookup('devilry.apps.student.simplified.SimplifiedDeadlineStoreSearch'),
+                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.deadline,
                 resultitemConfig: {
                     tpl: this.deadlineRowTpl,
                     defaultbutton: {
