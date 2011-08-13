@@ -22,5 +22,13 @@ Ext.define('devilry.extjshelpers.SingleRecordContainer', {
     setRecord: function(record) {
         this.record = record;
         this.fireEvent('setRecord', this);
+    },
+
+    /**
+     * Fire the setRecord event to with the current record (used to refresh
+     * views after changing the current record).
+     */
+    fireSetRecordEvent: function() {
+        this.fireEvent('setRecord', this);
     }
 });
