@@ -138,7 +138,7 @@ class SimplifiedDeadline(PublishedWhereIsExaminerMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. """
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods an Examiner can use on a Deadline object using the Simplified API """
-        methods = ['search', 'read', 'create', 'update']
+        methods = ['search', 'read', 'create', 'update', 'delete']
         editablefields = ('text', 'deadline', 'assignment_group',
                           'feedbacks_published')
 
