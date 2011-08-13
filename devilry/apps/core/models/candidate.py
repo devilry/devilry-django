@@ -21,6 +21,9 @@ class Candidate(models.Model, Etag):
         more than 30 characters. When the assignment is anonymous, this is
         the "name" shown to examiners instead of the username of the
         student.
+
+    .. attribute:: identifier
+        The candidate_id if this is a candidate on an anonymous assignment, and username if not.
     """
 
     class Meta:
@@ -32,7 +35,8 @@ class Candidate(models.Model, Etag):
 
     # TODO unique within assignment as an option.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
-    identifier = models.CharField(max_length=30)
+    identifier = models.CharField(max_length=30,
+                                  help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
     etag = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
