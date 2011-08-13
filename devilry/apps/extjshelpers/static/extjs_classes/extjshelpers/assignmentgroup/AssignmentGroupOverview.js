@@ -98,7 +98,17 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
 
             this.assignmentgroupstore = Ext.data.StoreManager.lookup(this.getSimplifiedClassName('SimplifiedAssignmentGroupStore'));
             this.deadlinemodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedDeadline'));
+
+            this.assignmentgroup_recordcontainer.addListener('setRecord', this.onSetAssignmentGroup, this);
         }
+
+    },
+
+    /**
+     * @private
+     */
+    onSetAssignmentGroup: function() {
+        this.closeopenbtn.setText(this.assignmentgroup_recordcontainer.record.data.is_open? 'Close group': 'Open group');
     },
 
     /**
@@ -194,6 +204,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 }
             });
             Ext.Array.insert(tbarItems, 0, [onUncorrectedGroupsBtn]);
+
+            this.closeopenbtn = Ext.ComponentManager.create({
+                xtype: 'button',
+                menu: [], // To get an arrow
+                text: '',
+                scale: 'large',
+                enableToggle: true,
+                listeners: {
+                    scope: this,
+                    click: this.onCloseOrOpenGroup
+                }
+            });
+            Ext.Array.insert(tbarItems, 3, [this.closeopenbtn]);
         }
 
 
@@ -218,7 +241,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     onUncorrectedGroups: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
-            title: 'To-to list (Open assignment groups)',
+            title: 'To-to list (Groups that have not been closed)',
             height: 500,
             width: 400,
             modal: true,
@@ -271,6 +294,87 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         if(button) {
             this.deliveriesWindow.alignTo(button, 'bl', [0, 0]);
         }
+    },
+
+    /**
+     * @private
+     */
+    onCloseOrOpenGroup: function(button) {
+        if(this.assignmentgroup_recordcontainer.record.data.is_open) {
+            this.onCloseGroup(button);
+        } else {
+            this.onOpenGroup(button);
+        }
+    },
+
+    /**
+     * @private
+     */
+    onOpenGroup: function(button) {
+        var win = Ext.MessageBox.show({
+            title: 'Are you sure you want to open this group?',
+            msg: '<p>This will <strong>allow</strong> students to add more deliveries. ' +
+                'Normally Devilry will close groups automatically when:</p>'+
+                '<ul>' +
+                '   <li>you have given a passing grade.</li>' +
+                '   <li>students have failed to get a passing grade more than the configured maximum number of times.</li>' +
+                '</ul>' +
+                '<p>And you normally do not open it again unless you want students to add a new delivery.</p>',
+            buttons: Ext.Msg.YESNO,
+            scope: this,
+            closable: false,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+                    this.assignmentgroup_recordcontainer.record.data.is_open = true;
+                    this.assignmentgroup_recordcontainer.record.save({
+                        scope: this,
+                        success: function(record) {
+                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+                        },
+                        failure: function() {
+                            throw "Failed to open group."
+                        }
+                    });
+                }
+                button.toggle(false);
+            }
+        });
+        win.alignTo(button, 'bl', [0, 0]);
+    },
+
+    /**
+     * @private
+     */
+    onCloseGroup: function(button) {
+        var win = Ext.MessageBox.show({
+            title: 'Are you sure you want to close this group?',
+            msg: '<p>This will <strong>prevent</strong> students from adding more deliveries.' +
+                'Normally Devilry will close groups automatically when:</p>'+
+                '<ul>' +
+                '   <li>you have given a passing grade.</li>' +
+                '   <li>students have failed to get a passing grade more than the configured maximum number of times.</li>' +
+                '</ul>' +
+                '<p>However you may have to close a group manually if no maximum number of tries have been configured, or if you want the current feedback to be stored as the final feedback for this group.</p>',
+            buttons: Ext.Msg.YESNO,
+            scope: this,
+            closable: false,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+                    this.assignmentgroup_recordcontainer.record.data.is_open = false;
+                    this.assignmentgroup_recordcontainer.record.save({
+                        scope: this,
+                        success: function(record) {
+                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+                        },
+                        failure: function() {
+                            throw "Failed to close group."
+                        }
+                    });
+                }
+                button.toggle(false);
+            }
+        });
+        win.alignTo(button, 'bl', [0, 0]);
     },
 
     /**

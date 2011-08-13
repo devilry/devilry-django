@@ -215,13 +215,6 @@ header {
       color: #0B5A9D; }
     #mainwrapper #main a:visited {
       color: #6E0840; }
-    #mainwrapper #main strong {
-      font-weight: bold; }
-    #mainwrapper #main em {
-      font-style: italic; }
-    #mainwrapper #main p {
-      padding: 5px 0;
-      line-height: 1.2em; }
     #mainwrapper #main dt {
       padding-top: 6px;
       font-weight: bold; }
@@ -385,6 +378,9 @@ section.helpsection strong {
   font-weight: bold; }
 section.helpsection em {
   font-style: italic; }
+section.helpsection p {
+  padding: 5px 0;
+  line-height: 1.2em; }
 section.helpsection ul li {
   padding: 5px 0;
   margin-left: 25px !important;
@@ -481,6 +477,9 @@ table.verticalinfotable {
     font-weight: bold; }
   .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view em {
     font-style: italic; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view p {
+    padding: 5px 0;
+    line-height: 1.2em; }
   .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -525,6 +524,9 @@ section.ok {
     font-weight: bold; }
   section.ok em {
     font-style: italic; }
+  section.ok p {
+    padding: 5px 0;
+    line-height: 1.2em; }
   section.ok ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -544,6 +546,9 @@ section.info {
     font-weight: bold; }
   section.info em {
     font-style: italic; }
+  section.info p {
+    padding: 5px 0;
+    line-height: 1.2em; }
   section.info ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -563,6 +568,9 @@ section.help {
     font-weight: bold; }
   section.help em {
     font-style: italic; }
+  section.help p {
+    padding: 5px 0;
+    line-height: 1.2em; }
   section.help ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -582,6 +590,9 @@ section.warning {
     font-weight: bold; }
   section.warning em {
     font-style: italic; }
+  section.warning p {
+    padding: 5px 0;
+    line-height: 1.2em; }
   section.warning ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -601,6 +612,9 @@ section.error {
     font-weight: bold; }
   section.error em {
     font-style: italic; }
+  section.error p {
+    padding: 5px 0;
+    line-height: 1.2em; }
   section.error ul li {
     padding: 5px 0;
     margin-left: 25px !important;
@@ -648,6 +662,19 @@ section.treeheading {
 
 #content-main {
   margin-top: 30px; }
+
+.x-message-box .x-window-body strong {
+  font-weight: bold; }
+.x-message-box .x-window-body em {
+  font-style: italic; }
+.x-message-box .x-window-body p {
+  padding: 5px 0;
+  line-height: 1.2em; }
+.x-message-box .x-window-body ul li {
+  padding: 5px 0;
+  margin-left: 25px !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important; }
 
 .studentsmanager .pointscolumn {
   font-size: 30px; }
