@@ -204,7 +204,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             tbar: tbarItems,
             items: [{
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                id: 'tooltip-feedback-window',
                 staticfeedbackstore: this.staticfeedbackstore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
