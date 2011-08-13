@@ -44,6 +44,7 @@ class SimplifiedAssignmentGroupMetaMixin(object):
                              )
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('parentnode'),
+                          FilterSpec('is_open'),
                           ForeignFilterSpec('parentnode',  # Assignment
                                             FilterSpec('parentnode'),
                                             FilterSpec('short_name'),

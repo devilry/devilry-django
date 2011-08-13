@@ -4,6 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
     cls: 'widget-assignmentgrouptodolist',
     hideHeaders: true, // Hide column header
     rowTpl: Ext.create('Ext.XTemplate',
+        '{is_open}',
         '<tpl if="name">',
         '   {name}: ',
         '</tpl>',

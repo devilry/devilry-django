@@ -52,6 +52,16 @@ body {
     }
 }
 
+@mixin inlineItem($bg, $fg, $bordercolor) {
+    border: 1px solid $bordercolor;
+    border-radius: 3px;
+    background-color: $bg;
+    color: $fg;
+    font-weight: bold;
+    padding: 1px 4px;
+    white-space: nowrap;
+}
+
 header {
     background-color: #000; color: #fff;
 
@@ -480,15 +490,8 @@ span.error {
     color: #a00;
 }
 
-
 span.menuref {
-    border: 1px solid $neutralcolor_hoverbg;
-    border-radius: 3px;
-    background-color: $neutralcolor_bg;
-    color: $neutralcolor_fg;
-    font-weight: bold;
-    padding: 1px 4px;
-    white-space: nowrap;
+    @include inlineItem($neutralcolor_bg, $neutralcolor_fg, $neutralcolor_hoverbg);
 }
 
 table.verticalinfotable {
@@ -685,6 +688,13 @@ section.treeheading {
     .nofeedback {
         color: #aaa;
     }
+}
+
+.group_is_open {
+    @include inlineItem($warningcolor_bg, $warningcolor_fg, $warningcolor_hoverbg);
+}
+.group_is_closed {
+    @include inlineItem($goodcolor_bg, $goodcolor_fg, $goodcolor_hoverbg);
 }
 
 

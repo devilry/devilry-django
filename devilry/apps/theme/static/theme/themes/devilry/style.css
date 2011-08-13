@@ -654,6 +654,24 @@ section.treeheading {
 .studentsmanager .nofeedback {
   color: #aaa; }
 
+.group_is_open {
+  border: 1px solid #e64d00;
+  border-radius: 3px;
+  background-color: #cc4400;
+  color: #ffeee5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
+.group_is_closed {
+  border: 1px solid #88cc00;
+  border-radius: 3px;
+  background-color: #77b300;
+  color: #f7ffe5;
+  font-weight: bold;
+  padding: 1px 4px;
+  white-space: nowrap; }
+
 /**
  *
  * Footer
