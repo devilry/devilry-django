@@ -32,8 +32,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
         var me = this;
         this.createButton = Ext.create('Ext.button.Button', {
-            text: 'New feedback',
-            iconCls: 'icon-add-32',
+            text: 'Edit feedback',
+            iconCls: 'icon-edit-32',
             hidden: true,
             scale: 'large',
             listeners: {
