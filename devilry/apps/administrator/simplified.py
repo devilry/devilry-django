@@ -321,6 +321,8 @@ class SimplifiedDeadline(SimplifiedModelApi):
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods an Administrator can use on a Deadline object using the Simplified API """
         methods = ['search', 'read', 'create', 'delete']
+        editablefields = ('text', 'deadline', 'assignment_group',
+                          'feedbacks_published')
 
     @classmethod
     def create_searchqryset(cls, user):

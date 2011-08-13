@@ -43,7 +43,8 @@ def json_serialize_handler(obj):
     if isinstance(obj, ValuesQuerySet):
         return list(obj)
     if hasattr(obj, 'isoformat'):
-        return obj.strftime('%Y-%m-%d %H:%M:%S')
+        #return obj.strftime('%Y-%m-%d')
+        return obj.strftime('%Y-%m-%dT%H:%M:%S')
     else:
         raise TypeError('Object of type %s with value of %s is not JSON serializable' % (
             type(obj), repr(obj)))

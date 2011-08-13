@@ -185,7 +185,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 xtype: 'button',
                 menu: [], // To get an arrow
                 id: 'tooltip-uncorrected-groups',
-                text: 'Open groups',
+                text: 'To-do',
                 scale: 'large',
                 enableToggle: true,
                 listeners: {
@@ -204,7 +204,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             tbar: tbarItems,
             items: [{
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
-                id: 'tooltip-feedback-window',
                 staticfeedbackstore: this.staticfeedbackstore,
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 isAdministrator: this.isAdministrator, // Only required by staticfeedbackeditor
@@ -219,7 +218,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      */
     onUncorrectedGroups: function(button) {
         var groupsWindow = Ext.create('Ext.window.Window', {
-            title: 'Open assignment groups',
+            title: 'To-to list (Open assignment groups)',
             height: 500,
             width: 400,
             modal: true,

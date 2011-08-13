@@ -2,7 +2,10 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
     extend: 'Ext.form.Panel',
     alias: 'widget.administrator_periodform',
     cls: 'widget-periodform',
-    requires: ['devilry.extjshelpers.formfields.ForeignKeySelector'],
+    requires: [
+        'devilry.extjshelpers.formfields.ForeignKeySelector',
+        'devilry.extjshelpers.formfields.DateTimeField'
+    ],
 
     suggested_windowsize: {
         width: 600,
@@ -57,20 +60,16 @@ Ext.define('devilry.extjshelpers.forms.administrator.Period', {
         items: [{
             name: "start_time",
             fieldLabel: "Start",
-            xtype: 'datefield',
-            format: 'Y-m-d H:i:s',
-            flex: 1,
-            emptyText: 'YYYY-MM-DD hh:mm:ss'
+            xtype: 'devilrydatetimefield',
+            flex: 1
         }, {
             xtype: 'box',
             width: 20
         }, {
             name: "end_time",
             fieldLabel: "End",
-            xtype: 'datefield',
-            format: 'Y-m-d H:i:s',
-            flex: 1,
-            emptyText: 'YYYY-MM-DD hh:mm:ss'
+            xtype: 'devilrydatetimefield',
+            flex: 1
         }]
     }],
 

@@ -24,13 +24,13 @@ class AsMinimalAsPossible(JsonRegistryItem):
                                                           'fieldlabel': basestring})
 
     @classmethod
-    def validate_draft(cls, draftstring):
+    def validate_draft(cls, draftstring, configstring):
         is_approved = cls.decode_draftstring(draftstring)
         if not isinstance(is_approved, bool):
             raise DraftValidationError('The draft string must contain a single boolean value.')
 
     @classmethod
-    def draft_to_staticfeedback_kwargs(cls, draftstring):
+    def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):
         is_approved = json.loads(draftstring)
         if is_approved:
             grade = 'approved'

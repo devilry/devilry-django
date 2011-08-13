@@ -10,70 +10,23 @@
 {% block headextra %}
 
 <script>
-
-    {% for RestfulCls in restfulclasses %}
-        {{ RestfulCls|extjs_combobox_model }}
+    {% for RestfulCls in restfulapi.values %}
+        {{ RestfulCls|extjs_combobox_model:"Search" }};
+        {{ RestfulCls|extjs_store:"Search" }};
     {% endfor %}
+    var DASHBOARD_URL = '{{ DEVILRY_MAIN_PAGE }}/student/';
 
-    var assignmentstore = {{ RestfulSimplifiedAssignment|extjs_store }}
-    var assignmentgroupstore = {{ RestfulSimplifiedAssignmentGroup|extjs_store }}
-    var deliverystore = {{ RestfulSimplifiedDelivery|extjs_store }}
-    var deadlinestore = {{ RestfulSimplifiedDeadline|extjs_store }}
-    var listingdeadlinestore = {{ RestfulSimplifiedDeadline|extjs_store }}
-
-    Ext.require('devilry.extjshelpers.searchwidget.SearchWidget');
-    Ext.require('devilry.extjshelpers.searchwidget.FilterConfigDefaults');
+    Ext.require('devilry.student.StudentSearchWidget');
     Ext.onReady(function() {
-        var searchwidget = Ext.create('devilry.extjshelpers.searchwidget.SearchWidget', {
-            renderTo: 'searchwidget',
-            searchResultItems: [{
-                xtype: 'searchresults',
-                title: 'Deadlines',
-                store: deadlinestore,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'Deliver',
-                        clickLinkTpl: 'add-delivery/{id}'
-                    }
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignment groups',
-                store: assignmentgroupstore,
-                filterconfig: devilry.extjshelpers.searchwidget.FilterConfigDefaults.assignmentgroup,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
-                    defaultbutton: {
-                        text: 'View/edit',
-                        clickLinkTpl: 'assignmentgroup/{id}'
-                    },
-                    menuitems: [{
-                        text: 'Show deliveries',
-                        clickFilter: 'type:delivery group:{id}'
-                    }]
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignments',
-                store: assignmentstore,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Deliveries',
-                store: deliverystore,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
-                }
-            }]
+        var searchwidget = Ext.create('devilry.student.StudentSearchWidget', {
+            renderTo: 'searchwidget-container',
+            urlPrefix: DASHBOARD_URL,
+            assignmentgroupRowTpl: '{{ restfulapi.RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            deadlineRowTpl: '{{ restfulapi.RestfulSimplifiedDeadline.ExtjsModelMeta.combobox_tpl|escapejs }}',
+            deliveryRowTpl: '{{ restfulapi.RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
         });
         searchwidget.loadInitialValues();
-        searchwidget.focusOnSearchfield();
-
-
-
+        //searchwidget.focusOnSearchfield();
     });
 
 </script>
@@ -82,7 +35,7 @@
 
 
 {% block main %}
-<div id='searchwidget'></div>
+<div id='searchwidget-container'></div>
 <p class='searchwidget-help'>In the box above, you can search for anything related to anything that you
 have permission to view as a <strong>student</strong>. You can, for example, search for the name of a subject to find anything
 related to subject, or search for a specific assignment.

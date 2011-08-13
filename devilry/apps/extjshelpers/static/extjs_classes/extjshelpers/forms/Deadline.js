@@ -2,6 +2,9 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
     extend: 'Ext.form.Panel',
     alias: 'widget.deadlineform',
     cls: 'widget-deadlineform',
+    requires: [
+        'devilry.extjshelpers.formfields.DateTimeField'
+    ],
 
     flex: 10,
 
@@ -19,9 +22,8 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
     items: [{
         name: "deadline",
         fieldLabel: 'Deadline',
-        xtype: 'datefield',
+        xtype: 'devilrydatetimefield',
         flex: 0,
-        format: 'Y-m-d H:i:s',
     }, {
         name: "text",
         fieldLabel: "Text",
@@ -30,9 +32,8 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
     }],
 
 
-    help: '<p><strong>Choose a deadline</strong>. Students will be able to deliver after the ' +
-        'deadline expires, however deliveries after the deadline will be clearly ' +
-        'marked.</p>' +
-        '<p>The <strong>text</strong> is displayed to students when they view the deadline, ' +
-        'and when they add deliveries on the deadline.</p>'
+    help: [
+        '<strong>Choose a deadline</strong>. Students will be able to deliver after the deadline expires, however deliveries after the deadline will be clearly marked.',
+        'The <strong>text</strong> is displayed to students when they view the deadline, and when they add deliveries on the deadline.'
+    ]
 });

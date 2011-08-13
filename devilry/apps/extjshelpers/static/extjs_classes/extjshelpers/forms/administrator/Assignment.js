@@ -2,7 +2,10 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
     extend: 'Ext.form.Panel',
     alias: 'widget.administrator_assignmentform',
     cls: 'widget-assignmentform',
-    requires: ['devilry.extjshelpers.formfields.ForeignKeySelector'],
+    requires: [
+        'devilry.extjshelpers.formfields.ForeignKeySelector',
+        'devilry.extjshelpers.formfields.DateTimeField'
+    ],
 
     suggested_windowsize: {
         width: 600,
@@ -49,9 +52,7 @@ Ext.define('devilry.extjshelpers.forms.administrator.Assignment', {
     }, {
         name: "publishing_time",
         fieldLabel: "Publishing time",
-        xtype: 'datefield',
-        format: 'Y-m-d H:i:s',
-        emptyText: 'YYYY-MM-DD hh:mm:ss',
+        xtype: 'devilrydatetimefield',
         value: new Date()
     }],
 

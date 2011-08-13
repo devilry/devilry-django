@@ -477,6 +477,18 @@ table.verticalinfotable {
     margin: 0 auto 30px auto !important; }
     .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
       width: 100%; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view strong {
+    font-weight: bold; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view em {
+    font-style: italic; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view p {
+    padding: 5px 0 !important;
+    line-height: 1.6em !important; }
 
 .after-deadline {
   display: inline-block;

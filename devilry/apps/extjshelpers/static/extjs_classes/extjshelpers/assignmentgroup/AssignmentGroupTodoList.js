@@ -53,7 +53,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoList', {
             dockedItems: [{
                 xtype: 'pagingtoolbar',
                 store: this.store,
-                dock: 'top',
+                dock: 'bottom',
                 displayInfo: false
             }]
         });

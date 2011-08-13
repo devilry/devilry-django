@@ -113,8 +113,15 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanel', {
 
     onSave: function() {
         this.errorlist.clearErrors();
-        var me = this;
+        this.beforeSave();
+    },
 
+    beforeSave: function() {
+        this.doSave();
+    },
+
+    doSave: function() {
+        var me = this;
         this.editform.getForm().doAction('devilryrestsubmit', {
             submitEmptyText: true,
             waitMsg: 'Saving item...',
