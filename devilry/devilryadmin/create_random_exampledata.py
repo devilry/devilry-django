@@ -266,15 +266,14 @@ def create_assignment(period, deadlines, **assignment_kwargs):
     #assignment.gradeeditor_config.config=json.dumps({'defaultvalue': True,
                                             #'fieldlabel': 'Is the assignment approved?'})
 
+    #assignment.gradeeditor_config.gradeeditorid = 'manual'
+    #assignment.gradeeditor_config.config = None
     assignment.gradeeditor_config.gradeeditorid = 'autograde'
+    grades = [["C", 65],["B", 80],["A", 93],["F", 0],["E", 30],["D", 45]]
+
     assignment.gradeeditor_config.config = json.dumps({'maxpoints': 100,
-                                                       'approvedlimit': 60,
-                                                       'usegrades': True,
-                                                       'A': 93,
-                                                       'B': 80,
-                                                       'C': 65,
-                                                       'D': 45,
-                                                       'E': 30,
+                                                       'approvedlimit': 30,
+                                                       'grades': grades,
                                                        'pointlabel': 'Enter number of points earned',
                                                        'feedbacklabel': 'Enter feedback'})
     assignment.gradeeditor_config.full_clean()

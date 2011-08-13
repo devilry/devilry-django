@@ -9,6 +9,19 @@
         //id: 'approved-checkbox'
     //}],
 
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
+
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelWidth: 100,
+        labelStyle: 'font-weight:bold'
+    },
+    defaults: {
+        margins: '0 0 10 0'
+    },
     /**
      * Called by the grade-editor main window just before calling
      * setDraftstring() for the first time.
@@ -19,11 +32,12 @@
     initializeEditor: function() {
 
         this.checkbox = Ext.widget('checkboxfield', {
-            boxLabel: 'Is the assignment approved?'
+            boxLabel: 'Is the assignment approved?',
+            flex: 0
         });
         this.textarea = Ext.widget('textareafield', {
             fieldLabel: 'Enter feedback',
-            anchor: '-5 -25'
+            flex: 1
         });
         this.add(this.checkbox);
         this.add(this.textarea);

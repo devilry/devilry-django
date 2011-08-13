@@ -9,6 +9,19 @@
         //id: 'approved-checkbox'
     //}],
 
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
+
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelWidth: 100,
+        labelStyle: 'font-weight:bold'
+    },
+    defaults: {
+        margins: '0 0 10 0'
+    },
     /**
      * Called by the grade-editor main window just before calling
      * setDraftstring() for the first time.
@@ -22,11 +35,12 @@
         this.points = Ext.widget('numberfield', {
             fieldLabel: this.editorConfig.pointlabel,
             minValue: 0,
-            maxValue: this.editorConfig.maxpoints
+            maxValue: this.editorConfig.maxpoints,
+            flex: 0
         });
         this.textarea = Ext.widget('textareafield', {
             fieldLabel: this.editorConfig.feedbacklabel,
-            anchor: '-5 -45'
+            flex: 1
         });
         this.add(this.points);
         this.add(this.textarea);
@@ -44,10 +58,8 @@
         if(draftstring != undefined) {
         //} else{
             var buf = Ext.JSON.decode(draftstring);
-            var points = buf[0];
-            var feedback = buf[2];
-            this.points.setValue(points);
-            this.textarea.setValue(feedback);
+            this.points.setValue(buf.points);
+            this.textarea.setValue(buf.feedback);
         }
         this.getEl().unmask(); // Unmask the loading mask (set by the main window).
     },
@@ -95,51 +107,10 @@
     createDraft: function() {
         var points = this.points.getValue();
         var feedback = this.textarea.getValue();
-        var grade = '';
-        var passing = true;
-        if (this.editorConfig.usegrades) {
-            grade = this.getGrade(points);
-            if (grade == 'F') {
-                passing = false;
-            }
-        } else {
-            passing = this.getApproved(points);
-            if (passing) {
-                grade = 'approved';
-            } else {
-                grade = 'not approved';
-            }
-        }
         
-        var retval = new Array();
-        retval[0] = points;
-        retval[1] = grade;
-        retval[2] = feedback;
-        retval[3] = passing;
+        var retval = {points: points, feedback: feedback}
 
         var draft = Ext.JSON.encode(retval);
         return draft;
-    },
-
-    getGrade: function(points) {
-        if (points > this.editorConfig.A) {
-            return 'A';
-        } else if (points >= this.editorConfig.B) {
-            return 'B';
-        } else if (points >= this.editorConfig.C) {
-            return 'C';
-        } else if (points >= this.editorConfig.D) {
-            return 'D';
-        } else if (points >= this.editorConfig.E) {
-            return 'E';
-        }
-        return 'F';
-    },
-
-    getApproved: function(points) {
-        if (points >= this.editorConfig.approvedlimit) {
-            return true;
-        }
-        return false;
     }
 }
