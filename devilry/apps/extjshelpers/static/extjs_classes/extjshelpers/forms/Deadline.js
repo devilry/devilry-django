@@ -2,6 +2,9 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
     extend: 'Ext.form.Panel',
     alias: 'widget.deadlineform',
     cls: 'widget-deadlineform',
+    requires: [
+        'devilry.extjshelpers.formfields.DateTimeField'
+    ],
 
     flex: 10,
 
@@ -19,9 +22,8 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
     items: [{
         name: "deadline",
         fieldLabel: 'Deadline',
-        xtype: 'datefield',
+        xtype: 'devilrydatetimefield',
         flex: 0,
-        format: 'Y-m-d H:i:s',
     }, {
         name: "text",
         fieldLabel: "Text",
