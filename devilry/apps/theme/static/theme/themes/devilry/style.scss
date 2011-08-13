@@ -552,6 +552,11 @@ table.verticalinfotable {
 
         section.rendered_view {
             //margin: 0 20px 20px 20px;
+            @include commonSectionElements();
+            p {
+                padding: 5px 0 !important;
+                line-height: 1.6em !important;
+            }
         }
     }
 }
