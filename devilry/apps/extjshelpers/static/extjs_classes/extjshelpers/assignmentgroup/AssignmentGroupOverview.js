@@ -20,6 +20,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.extjshelpers.SingleRecordContainer'
     ],
 
+    //title: 'Assignment group',
+
     config: {
         /**
          * @cfg
@@ -27,7 +29,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         */
         renderTitleTo: 'content-heading',
 
-        /**
+        /*Assignment group*
          * @cfg
         * ID of the div to render the body to. Defaults to 'content-main'.
         */
@@ -184,12 +186,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 scope: this,
                 click: this.onDeadlines
             }
-        }, this.onOtherDeliveriesBtn, '->', {
-            xtype: 'deliveryinfo',
-            delivery_recordcontainer: this.delivery_recordcontainer,
-            filemetastore: this.filemetastore
-        }];
-
+        }, this.onOtherDeliveriesBtn];
+        
         if(this.canExamine) {
             var onUncorrectedGroupsBtn = Ext.ComponentManager.create({
                 xtype: 'button',
@@ -223,9 +221,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         Ext.apply(this, {
             xtype: 'panel',
             frame: false,
-            layout: 'fit',
             tbar: tbarItems,
             items: [{
+                xtype: 'box',
+                html: 'todo',
+            }, {
+                xtype: 'deliveryinfo',
+                title: 'Delivery',
+                delivery_recordcontainer: this.delivery_recordcontainer,
+                frame: false,
+                //border: false,
+                filemetastore: this.filemetastore
+            }, {
                 xtype: this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo',
                 staticfeedbackstore: this.staticfeedbackstore,
                 delivery_recordcontainer: this.delivery_recordcontainer,

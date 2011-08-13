@@ -11,8 +11,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackDetailsTable'
     ],
     frame: false,
-    frameHeader: false,
+    //frameHeader: false,
     border: 0,
+    title: 'Feedback',
 
 
     config: {

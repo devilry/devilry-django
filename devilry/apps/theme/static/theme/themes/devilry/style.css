@@ -455,41 +455,42 @@ table.verticalinfotable {
     background-color: #fff; }
 
 .widget-assignmentgroupoverview .widget-staticfeedbackinfo {
-  width: 100% !important;
-  padding: 30px; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview {
-    padding: 20px; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
-      margin: 0 auto 20px auto; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback, .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable {
-    padding: 40px;
-    text-align: center;
-    font-size: 2.0em; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable {
-    cursor: pointer;
-    border: 4px solid transparent; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .no-feedback-editable:hover {
-      border: 4px solid #77b300;
-      background-color: #f7ffe5; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable {
-    margin: 0 auto 30px auto !important; }
-    .widget-assignmentgroupoverview .widget-staticfeedbackinfo .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
-      width: 100%; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view strong {
-    font-weight: bold; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view em {
-    font-style: italic; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view ul li {
-    padding: 5px 0;
-    margin-left: 25px !important;
-    list-style-type: disc !important;
-    list-style-position: outside !important; }
-  .widget-assignmentgroupoverview .widget-staticfeedbackinfo section.rendered_view p {
-    padding: 5px 0 !important;
-    line-height: 1.6em !important; }
+  width: 100% !important; }
+  .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body {
+    padding: 30px; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview {
+      padding: 20px; }
+      .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .widget-staticfeedbackinfo-feedbackview table.verticalinfotable {
+        margin: 0 auto 20px auto; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback, .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback-editable {
+      padding: 40px;
+      text-align: center;
+      font-size: 2.0em; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback-editable {
+      cursor: pointer;
+      border: 4px solid transparent; }
+      .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .no-feedback-editable:hover {
+        border: 4px solid #77b300;
+        background-color: #f7ffe5; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .infotable {
+      margin: 0 auto 30px auto !important; }
+      .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body .infotable .widget-staticfeedbackdetailstable table.verticalinfotable {
+        width: 100%; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view strong {
+      font-weight: bold; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view em {
+      font-style: italic; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
+      padding: 5px 0;
+      line-height: 1.2em; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view ul li {
+      padding: 5px 0;
+      margin-left: 25px !important;
+      list-style-type: disc !important;
+      list-style-position: outside !important; }
+    .widget-assignmentgroupoverview .widget-staticfeedbackinfo > .x-panel-body section.rendered_view p {
+      padding: 5px 0 !important;
+      line-height: 1.6em !important; }
 
 .after-deadline {
   display: inline-block;
