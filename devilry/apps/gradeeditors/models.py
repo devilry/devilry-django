@@ -67,19 +67,20 @@ class FeedbackDraft(models.Model):
                                           related_name='gradeeditor_feedbackdraft',
                                           help_text='The StaticFeedback where this was published if this draft has been published.')
 
-    def _get_gradeeditor(self):
-        return self.delivery.deadline.assignment_group.parentnode.gradeeditor_config._get_gradeeditor()
+    def _get_config(self):
+        return self.delivery.deadline.assignment_group.parentnode.gradeeditor_config
 
     def clean(self):
         if self.id == None: # If creating a new FeedbackDraft
             try:
-                config = self._get_gradeeditor()
+                config = self._get_config()
             except Config.DoesNotExist:
                 raise ValidationError(('Can not create feedback on delivery:{0} '
                                        'because its assignment does not have a '
                                        'gradeeditor_config.').format(self.delivery))
             else:
-                config.validate_draft(self.draft)
+                gradeeditor = config._get_gradeeditor()
+                gradeeditor.validate_draft(self.draft, config.config)
                 if not self.published:
                     self.staticfeedback = None # We should NEVER set staticfeedback if published is not True
         else:
@@ -95,8 +96,9 @@ class FeedbackDraft(models.Model):
 
     def _to_staticfeedback(self):
         """ Return a staticfeedback generated from self. """
-        gradeeditor = self._get_gradeeditor()
-        kwargs = gradeeditor.draft_to_staticfeedback_kwargs(self.draft)
+        config = self._get_config()
+        gradeeditor = config._get_gradeeditor()
+        kwargs = gradeeditor.draft_to_staticfeedback_kwargs(self.draft, config.config)
 
         # Create StaticFeedback from kwargs. We copy by key instead of **kwargs to make sure we dont get anything extra.
         return StaticFeedback(is_passing_grade=kwargs['is_passing_grade'],
