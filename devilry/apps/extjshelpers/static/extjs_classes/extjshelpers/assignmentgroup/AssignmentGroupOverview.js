@@ -348,7 +348,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     onCloseGroup: function(button) {
         var win = Ext.MessageBox.show({
             title: 'Are you sure you want to close this group?',
-            msg: '<p>This will <strong>prevent</strong> students from adding more deliveries.' +
+            msg: '<p>This will <strong>prevent</strong> students from adding more deliveries. ' +
                 'Normally Devilry will close groups automatically when:</p>'+
                 '<ul>' +
                 '   <li>you have given a passing grade.</li>' +
