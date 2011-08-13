@@ -274,6 +274,8 @@ section.popuplistitem table {
     text-align: right; }
     section.popuplistitem table td.rightaligned h1, section.popuplistitem table td.rightaligned h2, section.popuplistitem table td.rightaligned h3, section.popuplistitem table td.rightaligned h4 {
       color: #888; }
+section.popuplistitem strong {
+  font-weight: bold; }
 section.popuplistitem ul li {
   display: inline; }
   section.popuplistitem ul li:after {
