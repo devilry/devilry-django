@@ -9,7 +9,7 @@ def _djangofield_to_extjstype(field):
     elif isinstance(field, fields.AutoField):
         return dict(type='int')
     elif isinstance(field, fields.DateTimeField):
-        return dict(type='date')
+        return dict(type='date', dateFormat='Y-m-dTH:i:s')
     elif isinstance(field, fields.BooleanField):
         return dict(type='bool')
     else:

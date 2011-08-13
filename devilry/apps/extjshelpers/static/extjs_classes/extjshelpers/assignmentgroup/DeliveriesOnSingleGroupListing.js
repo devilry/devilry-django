@@ -122,6 +122,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing'
             comp: 'exact',
             value: assignmentgroupid
         }]);
+        //this.store.load({
+            //scope: this,
+            //callback: function(records) {
+                //console.log(records[0].data);
+            //}
+        //});
         this.store.load();
     }
 });
