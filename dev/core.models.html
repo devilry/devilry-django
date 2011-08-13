@@ -572,41 +572,6 @@ the candidates on this assignment.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devilry.apps.core.models.Assignment.assignment_groups_where_is_examiner">
-<tt class="descname">assignment_groups_where_is_examiner</tt><big>(</big><em>user_obj</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.assignment_groups_where_is_examiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all assignment groups within this assignment where the given
-<tt class="docutils literal"><span class="pre">user_obj</span></tt> is examiner.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.Assignment.assignment_groups_where_can_examine">
-<tt class="descname">assignment_groups_where_can_examine</tt><big>(</big><em>user_obj</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.assignment_groups_where_can_examine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all assignment groups within this assignment where the given
-<tt class="docutils literal"><span class="pre">user_obj</span></tt> is examiner or admin. If the user is superadmin, all
-assignments are returned.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_obj</strong> &#8211; A <a class="reference external" href="http://docs.djangoproject.com/en/dev/topics/auth/#users">django.contrib.auth.models.User</a> object.</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body">QuerySet</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="devilry.apps.core.models.Assignment.clean">
 <tt class="descname">clean</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Assignment.clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the assignment.</p>
@@ -645,6 +610,13 @@ more than 30 characters. When the assignment is anonymous, this is
 the &#8220;name&#8221; shown to examiners instead of the username of the
 student.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="devilry.apps.core.models.model_utils.Candidate.identifier">
+<tt class="descname">identifier</tt><a class="headerlink" href="#devilry.apps.core.models.model_utils.Candidate.identifier" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">The candidate_id if this is a candidate on an anonymous assignment, and username if not.</tt></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1127,23 +1099,6 @@ the given student is candidate.</p>
 write() method of a storage backend (byte strings).</li>
 </ul>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="devilry.apps.core.models.Delivery.get_status_number">
-<tt class="descname">get_status_number</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.apps.core.models.Delivery.get_status_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the numeric status for this delivery.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The numeric status:
-<tt class="xref py py-attr docutils literal"><span class="pre">Delivery.NOT_CORRECTED</span></tt>,
-<tt class="xref py py-attr docutils literal"><span class="pre">Delivery.CORRECTED_NOT_PUBLISHED</span></tt> or
-<tt class="xref py py-attr docutils literal"><span class="pre">Delivery.CORRECTED_AND_PUBLISHED</span></tt>.</td>
 </tr>
 </tbody>
 </table>

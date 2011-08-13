@@ -25,7 +25,6 @@ Example
     POST /examiner/restfulsimplifieddeadline/
 
     {
-        status: 20,
         text: "myvalue",
         deadline: "2010-02-22 22:32:10",
         feedbacks_published: true,
@@ -39,17 +38,6 @@ Required request parameters
 The following request parameters are encoded as a JSON object and sent as the
 request body as shown in the example above.
 
-
-
-status
---------------------------------------------------
-
-Actual location of the field:
-    :class:`devilry.apps.core.models.Deadline`
-About the field:
-    Status number.
-Type
-    Integer
 
 
 text
@@ -113,7 +101,6 @@ Example
     201 CREATED
 
     {
-        status: 20,
         text: "myvalue",
         deadline: "2010-02-22 22:32:10",
         feedbacks_published: true,

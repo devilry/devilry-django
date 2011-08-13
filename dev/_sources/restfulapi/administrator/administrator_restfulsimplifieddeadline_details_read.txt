@@ -198,7 +198,7 @@ Example
         text: "myvalue",
         deadline: "2010-02-22 22:32:10",
         assignment_group: 15,
-        status: 20,
+        number_of_deliveries: No example-value available for this field,
         feedbacks_published: true
     }
 
@@ -242,13 +242,13 @@ The result always contains the following fields:
             Type
                 Integer
     
-        status
+        number_of_deliveries
             Actual location of the field:
-                :class:`devilry.apps.core.models.Deadline`
+                :class:`Generated from a query`
             About the field:
-                Status number.
+                Generated from a query.
             Type
-                Integer
+                unknown
     
         feedbacks_published
             Actual location of the field:

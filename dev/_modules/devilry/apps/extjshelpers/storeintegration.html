@@ -79,6 +79,7 @@
 <span class="sd">        (as modelnamesuffix) to generate the model name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">integrateModel</span><span class="p">:</span>
+        <span class="n">modelkwargs</span><span class="p">[</span><span class="s">&#39;modelnamesuffix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">storeidsuffix</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">restfulcls_to_extjsmodel</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="o">**</span><span class="n">modelkwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="s">&quot;&#39;{modelname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span><span class="o">=</span><span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">storeidsuffix</span><span class="p">))</span>

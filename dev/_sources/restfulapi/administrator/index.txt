@@ -22,6 +22,16 @@ Administrator
     administrator_restfulsimplifiedperiod_details_create
     administrator_restfulsimplifiedperiod_details_update
     administrator_restfulsimplifiedperiod_details_delete
+    administrator_restfulsimplifiedrelatedexaminer_details_read
+    administrator_restfulsimplifiedrelatedexaminer_details_search
+    administrator_restfulsimplifiedrelatedexaminer_details_create
+    administrator_restfulsimplifiedrelatedexaminer_details_update
+    administrator_restfulsimplifiedrelatedexaminer_details_delete
+    administrator_restfulsimplifiedrelatedstudent_details_read
+    administrator_restfulsimplifiedrelatedstudent_details_search
+    administrator_restfulsimplifiedrelatedstudent_details_create
+    administrator_restfulsimplifiedrelatedstudent_details_update
+    administrator_restfulsimplifiedrelatedstudent_details_delete
     administrator_restfulsimplifiedassignment_details_read
     administrator_restfulsimplifiedassignment_details_search
     administrator_restfulsimplifiedassignment_details_create
@@ -32,13 +42,12 @@ Administrator
     administrator_restfulsimplifiedassignmentgroup_details_create
     administrator_restfulsimplifiedassignmentgroup_details_update
     administrator_restfulsimplifiedassignmentgroup_details_delete
-    administrator_restfulsimplifieddelivery_details_read
-    administrator_restfulsimplifieddelivery_details_search
-    administrator_restfulsimplifieddelivery_details_delete
     administrator_restfulsimplifieddeadline_details_read
     administrator_restfulsimplifieddeadline_details_search
     administrator_restfulsimplifieddeadline_details_create
     administrator_restfulsimplifieddeadline_details_delete
+    administrator_restfulsimplifieddelivery_details_read
+    administrator_restfulsimplifieddelivery_details_search
     administrator_restfulsimplifiedstaticfeedback_details_read
     administrator_restfulsimplifiedstaticfeedback_details_search
     administrator_restfulsimplifiedstaticfeedback_details_delete
@@ -176,6 +185,92 @@ Period
 
 
 
+RelatedExaminer
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedexaminer_details_search.html">GET&nbsp;/administrator/restfulsimplifiedrelatedexaminer/</a></th>
+        <td>Search for related examiners.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedexaminer_details_read.html">GET&nbsp;/administrator/restfulsimplifiedrelatedexaminer/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a related examiner.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedexaminer_details_create.html">POST&nbsp;/administrator/restfulsimplifiedrelatedexaminer/</a></th>
+        <td>Create a related examiner.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedexaminer_details_update.html">PUT&nbsp;/administrator/restfulsimplifiedrelatedexaminer/<span class="restfulid">id</span></a></th>
+        <td>Update a related examiner.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedexaminer_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedrelatedexaminer/<span class="restfulid">id</span></a></th>
+        <td>Delete a related examiner.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+RelatedStudent
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedstudent_details_search.html">GET&nbsp;/administrator/restfulsimplifiedrelatedstudent/</a></th>
+        <td>Search for related students.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedstudent_details_read.html">GET&nbsp;/administrator/restfulsimplifiedrelatedstudent/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a related student.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedstudent_details_create.html">POST&nbsp;/administrator/restfulsimplifiedrelatedstudent/</a></th>
+        <td>Create a related student.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedstudent_details_update.html">PUT&nbsp;/administrator/restfulsimplifiedrelatedstudent/<span class="restfulid">id</span></a></th>
+        <td>Update a related student.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifiedrelatedstudent_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifiedrelatedstudent/<span class="restfulid">id</span></a></th>
+        <td>Delete a related student.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
 Assignment
 -------------------------------------------------------------------------
 
@@ -262,39 +357,6 @@ AssignmentGroup
 
 
 
-Delivery
--------------------------------------------------------------------------
-
-.. raw:: html
-
-    <table class="restfulindex">
-        <thead>
-            <tr>
-                <th>Resource</th>
-                <td>Description</td>
-            </tr>
-        </thead>
-        <tbody>
-            
-    <tr>
-        <th><a href="administrator_restfulsimplifieddelivery_details_search.html">GET&nbsp;/administrator/restfulsimplifieddelivery/</a></th>
-        <td>Search for Deliveries.</td>
-    </tr>
-    
-    <tr>
-        <th><a href="administrator_restfulsimplifieddelivery_details_read.html">GET&nbsp;/administrator/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
-        <td>Retrieve a Delivery.</td>
-    </tr>
-    
-    <tr>
-        <th><a href="administrator_restfulsimplifieddelivery_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
-        <td>Delete a Delivery.</td>
-    </tr>
-        </tbody>
-    </table>
-
-
-
 Deadline
 -------------------------------------------------------------------------
 
@@ -327,6 +389,34 @@ Deadline
     <tr>
         <th><a href="administrator_restfulsimplifieddeadline_details_delete.html">DELETE&nbsp;/administrator/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
         <td>Delete a Deadline.</td>
+    </tr>
+        </tbody>
+    </table>
+
+
+
+Delivery
+-------------------------------------------------------------------------
+
+.. raw:: html
+
+    <table class="restfulindex">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <th><a href="administrator_restfulsimplifieddelivery_details_search.html">GET&nbsp;/administrator/restfulsimplifieddelivery/</a></th>
+        <td>Search for Deliveries.</td>
+    </tr>
+    
+    <tr>
+        <th><a href="administrator_restfulsimplifieddelivery_details_read.html">GET&nbsp;/administrator/restfulsimplifieddelivery/<span class="restfulid">id</span></a></th>
+        <td>Retrieve a Delivery.</td>
     </tr>
         </tbody>
     </table>

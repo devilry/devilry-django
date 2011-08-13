@@ -147,6 +147,36 @@ The returned dict should only contain the following keys:</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="devilry.apps.gradeeditors.registry.JsonRegistryItem">
+<em class="property">class </em><tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">JsonRegistryItem</tt><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#JsonRegistryItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.JsonRegistryItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#devilry.apps.gradeeditors.registry.RegistryItem" title="devilry.apps.gradeeditors.registry.RegistryItem"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.gradeeditors.registry.RegistryItem</span></tt></a></p>
+<p>RegistryItem with extra utility functions for use with JSON config and draft strings</p>
+<dl class="classmethod">
+<dt id="devilry.apps.gradeeditors.registry.JsonRegistryItem.decode_configstring">
+<em class="property">classmethod </em><tt class="descname">decode_configstring</tt><big>(</big><em>configstring</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#JsonRegistryItem.decode_configstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.JsonRegistryItem.decode_configstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode <tt class="docutils literal"><span class="pre">configstring</span></tt> using <tt class="docutils literal"><span class="pre">json.loads</span></tt> and return the result.
+Raise ConfigValidationError if it fails.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.gradeeditors.registry.JsonRegistryItem.decode_draftstring">
+<em class="property">classmethod </em><tt class="descname">decode_draftstring</tt><big>(</big><em>draftstring</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#JsonRegistryItem.decode_draftstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.JsonRegistryItem.decode_draftstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode <tt class="docutils literal"><span class="pre">draftstring</span></tt> using <tt class="docutils literal"><span class="pre">json.loads</span></tt> and return the result.
+Raise DraftValidationError if it fails.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="devilry.apps.gradeeditors.registry.JsonRegistryItem.validate_dict">
+<em class="property">classmethod </em><tt class="descname">validate_dict</tt><big>(</big><em>valuedict</em>, <em>exceptioncls</em>, <em>typedict</em><big>)</big><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#JsonRegistryItem.validate_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.JsonRegistryItem.validate_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate that each key in <tt class="docutils literal"><span class="pre">typedict</span></tt> is in <tt class="docutils literal"><span class="pre">valuedict</span></tt>, and that
+the type of the values in <tt class="docutils literal"><span class="pre">valuedict</span></tt> reflects the types in
+<tt class="docutils literal"><span class="pre">typedict</span></tt>.</p>
+<p>Raise <tt class="docutils literal"><span class="pre">exceptioncls</span></tt> with an error message if any validation fails.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="devilry.apps.gradeeditors.registry.Registry">
 <em class="property">class </em><tt class="descclassname">devilry.apps.gradeeditors.registry.</tt><tt class="descname">Registry</tt><a class="reference internal" href="_modules/devilry/apps/gradeeditors/registry.html#Registry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#devilry.apps.gradeeditors.registry.Registry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>

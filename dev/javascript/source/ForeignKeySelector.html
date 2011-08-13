@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-formfields-ForeignKeySelector'>/** Field for selection of foreign key values.
+</span> *
+ * **NOTE**: Assumes that the foreign key is a number and that its value is in
+ * the ``id`` attribute.
+ */
+Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
+    extend: 'Ext.form.field.Trigger',
+    alias: 'widget.foreignkeyselector',
+    requires: [
+        'devilry.extjshelpers.formfields.ForeignKeyBrowser'
+    ],
+
+    config: {
+<span id='devilry-extjshelpers-formfields-ForeignKeySelector-cfg-displayTpl'>        /**
+</span>         * @cfg
+         * Ext.XTemplate for the selected item.
+         */
+        displayTpl: '{id}',
+
+<span id='devilry-extjshelpers-formfields-ForeignKeySelector-cfg-emptyText'>        /**
+</span>         * @cfg
+         * Text to display when field is blank.
+         */
+        emptyText: 'Select something',
+
+<span id='devilry-extjshelpers-formfields-ForeignKeySelector-cfg-dropdownTpl'>        /**
+</span>         * @cfg
+         * Ext.XTemplate for items in the dropdown.
+         */
+        dropdownTpl: '{id}',
+
+<span id='devilry-extjshelpers-formfields-ForeignKeySelector-cfg-model'>        /**
+</span>         * @cfg
+         * The ``Ext.data.Model`` where the data is located. The model must have a proxy.
+         */
+        model: undefined,
+
+<span id='devilry-extjshelpers-formfields-ForeignKeySelector-cfg-allowEmpty'>        /**
+</span>         * @cfg
+         * Allow empty?
+         */
+        allowEmpty: false
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        this.callParent([config]);
+        this.model = Ext.ModelManager.getModel(this.model);
+        this.displayTpl = Ext.create('Ext.XTemplate', this.displayTpl);
+        this.realValue = '';
+    },
+
+    initComponent: function() {
+        var me = this;
+        Ext.apply(this, {
+            editable: false,
+            listeners: {
+                scope: this,
+                focus: this.onTriggerClick
+            }
+        });
+        this.callParent(arguments);
+    },
+
+    onTriggerClick: function() {
+        var win = Ext.create('Ext.window.Window', {
+            height: 300,
+            width: this.getWidth(),
+            modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'foreignkeybrowser',
+                model: this.model,
+                foreignkeyselector: this,
+                allowEmpty: this.allowEmpty,
+                tpl: this.dropdownTpl
+            }
+        });
+        win.show();
+        win.alignTo(this, 'bl', [0, 0]);
+    },
+    
+    setValue: function(value) {
+        var valueType = Ext.typeOf(value);
+        if(valueType == 'number') {
+            var recordId = value;
+            this.model.load(recordId, {
+                scope: this,
+                success: this.onLoadSuccess,
+                failure: this.onLoadFailure
+            });
+        } else {
+            this.callParent([value]);
+        }
+    },
+
+    getValue: function() {
+        return this.realValue;
+    },
+
+    getRawValue: function() {
+        return this.realValue;
+    },
+
+    onLoadSuccess: function(record) {
+        this.setRecordValue(record);
+    },
+
+    setRecordValue: function(record) {
+        this.realValue = record.data.id;
+        this.setValue(this.displayTpl.apply(record.data));
+    },
+
+    onLoadFailure: function() {
+        throw &quot;Failed to load foreign key value.&quot;;
+    },
+
+    // Triggered by ForeignKeyBrowser.
+    onClearValue: function(record) {
+        this.realValue = '';
+        this.setValue('');
+    },
+
+    // Triggered by ForeignKeyBrowser.
+    onSelect: function(record) {
+        this.setRecordValue(record);
+    }
+});
+</pre>
+</body>
+</html>

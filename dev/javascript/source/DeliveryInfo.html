@@ -18,68 +18,20 @@
   <pre class="prettyprint lang-js">
 <span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo'>/**
 </span> * Panel to show Delivery info.
- * Uses {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}
- * or {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
- * to show and manage StaticFeedback (see {@link #canExamine})
- *
- *      -------------------------------------------
- *      | Info about the delivery                 |
- *      |                                         |
- *      |                                         |
- *      -------------------------------------------
- *      | StaticFeedbackInfo                      |
- *      | or                                      |
- *      | StaticFeedbackEditor              |
- *      |                                         |
- *      |                                         |
- *      |                                         |
- *      |                                         |
- *      -------------------------------------------
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.deliveryinfo',
-    title: 'Delivery',
     cls: 'widget-deliveryinfo',
     html: '',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
     ],
 
+    width: 500,
+    style: {border: 'none'},
+
     config: {
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-delivery'>        /**
-</span>         * @cfg
-         * A delivery object, such as ``data`` attribute of a
-         * record loaded from a Delivery store or model.
-         */
-        delivery: undefined,
-
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-canExamine'>        /**
-</span>         * @cfg
-         * Enable creation of new feedbacks? Defaults to ``false``.
-         *
-         * If this is ``true``, 
-         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor}
-         * is used instead of
-         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
-         *
-         * If this is ``true``, the ``assignmentid`` config is _required_.
-         *
-         * When this is ``true``, the authenticated user still needs to have
-         * permission to POST new feedbacks for the view to work.
-         */
-        canExamine: false,
-
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-assignmentid'>        /**
-</span>        * @cfg
-        * Assignment id. Required for 
-        * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor},
-        * which is used if the ``canExamine`` config is ``true``.
-        */
-        assignmentid: undefined,
-
 <span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-filemetastore'>        /**
 </span>         * @cfg
          * FileMeta ``Ext.data.Store``. (Required).
@@ -88,56 +40,86 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
          */
         filemetastore: undefined,
 
-<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-staticfeedbackstore'>        /**
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-cfg-delivery_recordcontainer'>        /**
 </span>         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by
-         * {@link devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo}.
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
          */
-        staticfeedbackstore: undefined
+        delivery_recordcontainer: undefined
     },
 
-    tpl: Ext.create('Ext.XTemplate',
-        'Time of delivery: &lt;em&gt;{time_of_delivery:date}&lt;/em&gt;'
+    timeOfDeliveryTpl: Ext.create('Ext.XTemplate',
+        '&lt;span class=&quot;time_of_delivery&quot;&gt;',
+        '   Time of delivery: &lt;em&gt;{time_of_delivery:date}&lt;/em&gt;&lt;br/&gt;',
+        '   &lt;tpl if=&quot;time_of_delivery &amp;gt; deadline__deadline&quot;&gt;',
+        '       &lt;span class=&quot;after-deadline&quot;&gt;(After deadline)&lt;/span&gt;',
+        '   &lt;/tpl&gt;',
+        '&lt;/span&gt;'
     ),
 
     initComponent: function() {
-        var clsname = this.canExamine? 'StaticFeedbackEditor': 'StaticFeedbackInfo';
-        this.feedbackInfo = Ext.create('devilry.extjshelpers.assignmentgroup.' + clsname, {
-            deliveryid: this.delivery.id,
-            staticfeedbackstore: this.staticfeedbackstore,
-            assignmentid: this.assignmentid
-        });
-
-        var me = this;
         Ext.apply(this, {
-            items: [this.feedbackInfo],
-            tbar: [{
-                xtype: 'button',
-                text: 'Browse files',
-                listeners: {
-                    scope: me,
-                    click: me.showFileMetaBrowserWindow
-                }
-            }, '-&gt;', this.tpl.apply(this.delivery)]
+            hidden: true,
         });
         this.callParent(arguments);
+        if(this.delivery_recordcontainer.record) {
+            this.onLoadDelivery();
+        }
+        this.delivery_recordcontainer.addListener('setRecord', this.onLoadDelivery, this);
     },
 
-    showFileMetaBrowserWindow: function() {
-        Ext.create('Ext.window.Window', {
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-method-onLoadDelivery'>    /**
+</span>     * @private
+     */
+    onLoadDelivery: function() {
+        var delivery = this.delivery_recordcontainer.record.data;
+        this.show();
+        this.removeAll();
+        this.add('-&gt;');
+        this.add(this.timeOfDeliveryTpl.apply(delivery));
+        this.add('-');
+        this.add({
+            xtype: 'button',
+            text: 'Browse files',
+            id: 'tooltip-browse-files',
+            scale: 'large',
+            menu: [], // To get an arrow
+            enableToggle: true,
+            listeners: {
+                scope: this,
+                click: this.showFileMetaBrowserWindow,
+                render: function() {
+                    Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
+                }
+            }
+        });
+    },
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveryInfo-method-showFileMetaBrowserWindow'>    /**
+</span>     * @private
+     */
+    showFileMetaBrowserWindow: function(button) {
+        var fileBrowser = Ext.create('Ext.window.Window', {
             title: 'Files',
             height: 400,
-            width: 600,
+            width: 500,
+            modal: true,
+            //animateTarget: button,
             layout: 'fit',
             items: [{
                 xtype: 'filemetabrowserpanel',
                 border: false,
                 filemetastore: this.filemetastore,
-                deliveryid: this.delivery.id
-            }]
-        }).show();
-
+                deliveryid: this.delivery_recordcontainer.record.data.id
+            }],
+            listeners: {
+                scope: this,
+                close: function() {
+                    button.toggle(false);
+                }
+            }
+        });
+        fileBrowser.show();
+        fileBrowser.alignTo(button, 'br', [-fileBrowser.getWidth(), 0]);
     }
 });
 </pre>

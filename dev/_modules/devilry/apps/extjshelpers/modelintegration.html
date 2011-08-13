@@ -86,7 +86,11 @@
             <span class="n">path</span> <span class="o">=</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">_recurse_get_fkfield</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">_djangofield_to_extjstype</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">fieldname</span> <span class="ow">in</span> <span class="n">simplifiedcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">annotated_fields</span><span class="p">:</span>
+                <span class="n">extjstype</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;auto&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">extjstype</span> <span class="o">=</span><span class="n">_djangofield_to_extjstype</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">))</span> 
+            <span class="k">yield</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">extjstype</span>
 
 
 
@@ -120,12 +124,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">modelfields</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">exttype</span> <span class="ow">in</span> <span class="n">_iter_fields</span><span class="p">(</span><span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span><span class="p">,</span>
-                                         <span class="n">result_fieldgroups</span><span class="p">):</span>
+                                           <span class="n">result_fieldgroups</span><span class="p">):</span>
         <span class="n">exttype</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldname</span>
         <span class="n">modelfields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exttype</span><span class="p">)</span>
-    <span class="c">#for fieldname in restfulcls._meta.urlmap:</span>
-        <span class="c">#modelfields.append(dict(name=fieldname, type=&#39;string&#39;))</span>
-
+    <span class="k">for</span> <span class="n">fake_fieldname</span> <span class="ow">in</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fake_editablefields</span><span class="p">:</span>
+        <span class="n">modelfields</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">fake_fieldname</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;auto&#39;</span><span class="p">})</span>
+    <span class="n">modelmeta</span> <span class="o">=</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">simplified</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span>
     <span class="n">js_result_fieldgroups</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result_fieldgroups</span><span class="p">)</span> <span class="c"># Notice how this is json encoded and added as a string to the JS. This is because we want to send it back as a JSON encoded string to be decoded on the server. Also note that we surround this with &#39;&#39; below. This assumes that json uses &quot;&quot; for strings, which we hope is universal, at least for the json module in python?</span>
     <span class="k">return</span> <span class="s">&quot;&quot;&quot;Ext.define(&#39;{modelname}&#39;, {{</span>
 <span class="s">            extend: &#39;Ext.data.Model&#39;,</span>
@@ -149,7 +153,7 @@
 <span class="s">            }})</span>
 <span class="s">        }})&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelname</span> <span class="o">=</span> <span class="n">get_extjs_modelname</span><span class="p">(</span><span class="n">restfulcls</span><span class="p">,</span> <span class="n">modelnamesuffix</span><span class="p">),</span>
                       <span class="n">modelfields</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modelfields</span><span class="p">),</span>
-                      <span class="n">idprop</span> <span class="o">=</span> <span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="c"># TODO: metaoption</span>
+                      <span class="n">idprop</span> <span class="o">=</span> <span class="n">modelmeta</span><span class="o">.</span><span class="n">pk</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                       <span class="n">resturl</span> <span class="o">=</span> <span class="n">restfulcls</span><span class="o">.</span><span class="n">get_rest_url</span><span class="p">(),</span>
                       <span class="n">js_result_fieldgroups</span><span class="o">=</span><span class="n">js_result_fieldgroups</span><span class="p">)</span>
 

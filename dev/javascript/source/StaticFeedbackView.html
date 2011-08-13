@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
+    extend: 'devilry.extjshelpers.SingleRecordView',
+    alias: 'widget.staticfeedbackview',
+    cls: 'widget-staticfeedbackview',
+
+    tpl: Ext.create('Ext.XTemplate',
+        '&lt;tpl if=&quot;!isactive&quot;&gt;',
+        '   &lt;section class=&quot;warning extravisible&quot;&gt;',
+        '       &lt;h1&gt;This is not the active feedback&lt;/h1&gt;',
+        '       When an examiner publish a feedback, the feedback is ',
+        '       stored forever. When an examiner needs to modify a feedback, ',
+        '       they create a new feedback. Therefore, you see more than ',
+        '       one feedback in the menu above. Unless there is something ',
+        '       wrong with the latest feedback, you should not have to ',
+        '       read this feedback',
+        '   &lt;/section&gt;',
+        '&lt;/tpl&gt;',
+        '&lt;section class=&quot;rendered_view&quot;&gt;{rendered_view}&lt;section&gt;'
+    )
+});
+</pre>
+</body>
+</html>

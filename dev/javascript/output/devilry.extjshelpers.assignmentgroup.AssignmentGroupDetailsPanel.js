@@ -9,7 +9,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetailsPanel(
   "href": "AssignmentGroupDetailsPanel.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupDetailsPanel",
   "code_type": "ext_define",
   "superclasses": [
-
+    "devilry.extjshelpers.SingleRecordView"
   ],
   "tagname": "class",
   "mixins": [
@@ -31,20 +31,54 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetailsPanel(
     "cfg": [
       {
         "type": "Object",
-        "owner": "devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel",
-        "doc": "<p>AssignmentGroup object such as the <code>data</code> attribute of a record\nreturned from loading from a store. (Required).</p>\n",
-        "html_filename": "AssignmentGroupDetailsPanel.html",
-        "href": "AssignmentGroupDetailsPanel.html#devilry-extjshelpers-assignmentgroup-AssignmentGroupDetailsPanel-cfg-assignmentgroup",
+        "owner": "devilry.extjshelpers.SingleRecordView",
+        "doc": "<p>Extra data for the <code>tpl</code>. Applied before the data in\n<code>singlerecordontainer</code>, so any shared attributed with\n<code>singlerecordontainer.data</code> will use the attribute in\n<code>singlerecordontainer.data</code>.</p>\n",
+        "html_filename": "SingleRecordView.html",
+        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-extradata",
         "tagname": "cfg",
-        "shortDoc": "AssignmentGroup object such as the data attribute of a record\nreturned from loading from a store. ...",
+        "shortDoc": "Extra data for the tpl. ...",
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 9,
+        "linenr": 22,
         "inheritable": false,
         "alias": null,
-        "name": "assignmentgroup",
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/AssignmentGroupDetailsPanel.js",
+        "name": "extradata",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordView.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.SingleRecordView",
+        "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> which contains data for the <code>tpl</code>.</p>\n",
+        "html_filename": "SingleRecordView.html",
+        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-singlerecordontainer",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 10,
+        "inheritable": false,
+        "alias": null,
+        "name": "singlerecordontainer",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordView.js",
+        "deprecated": null
+      },
+      {
+        "type": "Object",
+        "owner": "devilry.extjshelpers.SingleRecordView",
+        "doc": "<p>An <code>Ext.XTemplate</code> which takes the record in <code>singlerecordontainer.record.data</code> as input.</p>\n",
+        "html_filename": "SingleRecordView.html",
+        "href": "SingleRecordView.html#devilry-extjshelpers-SingleRecordView-cfg-tpl",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 16,
+        "inheritable": false,
+        "alias": null,
+        "name": "tpl",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/SingleRecordView.js",
         "deprecated": null
       }
     ],
@@ -90,7 +124,7 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_AssignmentGroupDetailsPanel(
   "xtypes": [
     "assignmentgroupdetailspanel"
   ],
-  "extends": "Ext.panel.Panel",
+  "extends": "devilry.extjshelpers.SingleRecordView",
   "allMixins": [
 
   ],

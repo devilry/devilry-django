@@ -33,7 +33,7 @@ Request example
     {
         query: 'a query string',
         filters: [{field:"delivery", comp:"startswith", value:15},
-                      {field:"id", comp:"icontains", value:15}],
+                      {field:"id", comp:"iexact", value:15}],
         orderby: ["id", "-grade", "is_passing_grade", "saved_by", "save_timestamp", "delivery", "rendered_view", "points"],
         start: 10,
         limit: 100
@@ -145,7 +145,7 @@ Example:
     .. code-block:: javascript
 
         [{field:"delivery", comp:"startswith", value:15},
-         {field:"id", comp:"icontains", value:15}]
+         {field:"id", comp:"iexact", value:15}]
 
 Static feedbacks can be filtered on the following *fields*:
 

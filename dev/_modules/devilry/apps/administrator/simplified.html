@@ -46,6 +46,9 @@
           <div class="body">
             
   <h1>Source code for devilry.apps.administrator.simplified</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Count</span>
+
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">simplified_modelapi</span><span class="p">,</span>
                            <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span><span class="p">,</span>
                            <span class="n">FilterSpecs</span><span class="p">,</span> <span class="n">FilterSpec</span><span class="p">,</span> <span class="n">PatternFilterSpec</span><span class="p">)</span>
@@ -171,7 +174,53 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">assignments</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
 
+
 </div></div>
+<span class="k">class</span> <span class="nc">RelatedUsersBase</span><span class="p">(</span><span class="n">SimplifiedModelApi</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns all related users of this type where given ``user`` is admin or superadmin.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :rtype: a django queryset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given ``user`` can save changes to the given</span>
+<span class="sd">        ``obj``, and raise ``PermissionDenied`` if not.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :param obj: A object of the type this method is used in.</span>
+<span class="sd">        :throws PermissionDenied:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">can_save</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">RelatedUsersMetaBase</span><span class="p">:</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
+    <span class="n">resultfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;period&#39;</span><span class="p">)</span>
+    <span class="n">searchfields</span> <span class="o">=</span> <span class="n">FieldSpec</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;period&#39;</span><span class="p">)</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterSpecs</span><span class="p">(</span><span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;period&#39;</span><span class="p">),</span>
+                          <span class="n">FilterSpec</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">))</span>
+
+<span class="nd">@simplified_modelapi</span>
+<span class="k">class</span> <span class="nc">SimplifiedRelatedExaminer</span><span class="p">(</span><span class="n">RelatedUsersBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.RelatedExaminer`. &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">RelatedUsersMetaBase</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a RelatedExaminer object using the Simplified API &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">RelatedExaminer</span>
+
+<span class="nd">@simplified_modelapi</span>
+<span class="k">class</span> <span class="nc">SimplifiedRelatedStudent</span><span class="p">(</span><span class="n">RelatedUsersBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.RelatedStudent`. &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">RelatedUsersMetaBase</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a RelatedStudent object using the Simplified API &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">RelatedStudent</span>
+
+
 <span class="nd">@simplified_modelapi</span>
 <div class="viewcode-block" id="SimplifiedAssignment"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignment">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedAssignment</span><span class="p">(</span><span class="n">CanSaveBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Assignment`. &quot;&quot;&quot;</span>
@@ -192,15 +241,97 @@
 <span class="sd">    :class:`devilry.apps.core.models.AssignmentGroup`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedAssignmentGroup.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedAssignmentGroup.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedAssignmentGroupMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on an AssignmentGroup object using the Simplified API &quot;&quot;&quot;</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;is_open&#39;</span><span class="p">,</span> <span class="s">&#39;parentnode&#39;</span><span class="p">)</span>
+        <span class="n">fake_editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;fake_examiners&#39;</span><span class="p">,</span> <span class="s">&#39;fake_candidates&#39;</span><span class="p">)</span>
         <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">]</span>
 
-</div></div>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_examiners_as_list_of_usernames</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse examiners as a a list of usernames. Each username must be an existing user.</span>
+
+<span class="sd">        If all usernames are valid, ``obj.examiners`` is cleared, and the</span>
+<span class="sd">        given examiners are added (I.E.: All current examiners are replaced).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;fake_examiners&#39;</span><span class="p">):</span>
+            <span class="n">fake_examiners</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">fake_examiners</span>
+            <span class="n">users</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">username</span> <span class="ow">in</span> <span class="n">fake_examiners</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+                <span class="n">users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">examiners</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">examiners</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_candidates_as_list_of_dicts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse candidates as a a list of dicts. Each dict should have the</span>
+<span class="sd">        following key,value pairs:</span>
+
+<span class="sd">            username</span>
+<span class="sd">                The username of an existing user. This key,value pair is required.</span>
+<span class="sd">                The user with the given username is created as a candidate.</span>
+<span class="sd">            candidate_id</span>
+<span class="sd">                The candidate_id. This is optional, and defaults to ``None``.</span>
+
+<span class="sd">        If all usernames are valid, ``obj.candidates`` is cleared, and the</span>
+<span class="sd">        given candidates are added (I.E.: All current candidates are replaced).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;fake_candidates&#39;</span><span class="p">):</span>
+            <span class="n">candidateskwargs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">candidatespec</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">fake_candidates</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">candidatespec</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">])</span>
+                <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">candidatekwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">student</span> <span class="o">=</span> <span class="n">user</span><span class="p">,</span>
+                                           <span class="n">candidate_id</span> <span class="o">=</span> <span class="n">candidatespec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;candidate_id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                    <span class="n">candidateskwargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidatekwargs</span><span class="p">)</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">Candidate</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">assignment_group</span><span class="o">=</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span> <span class="c"># Clear current candidates</span>
+            <span class="k">for</span> <span class="n">candidatekwargs</span> <span class="ow">in</span> <span class="n">candidateskwargs</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">candidates</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">**</span><span class="n">candidatekwargs</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">post_save</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_parse_examiners_as_list_of_usernames</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_parse_candidates_as_list_of_dicts</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+</div>
 <span class="nd">@simplified_modelapi</span>
-<div class="viewcode-block" id="SimplifiedDelivery"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedDelivery</span><span class="p">(</span><span class="n">CanSaveBase</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplifiedDelivery"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery">[docs]</a><span class="k">class</span> <span class="nc">SimplifiedDelivery</span><span class="p">(</span><span class="n">SimplifiedModelApi</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedDelivery.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeliveryMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a Delivery object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">]</span> <span class="c">#, &#39;create&#39;, &#39;update&#39;, &#39;delete&#39;] # TODO: Delivered by administrator?</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedDelivery.create_searchqryset"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns all objects of this type that matches arguments</span>
+<span class="sd">        given in ``\*\*kwargs`` where ``user`` is admin or superadmin.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :param \*\*kwargs: A dict containing search-parameters.</span>
+<span class="sd">        :rtype: a django queryset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SimplifiedDelivery.write_authorize"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDelivery.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given ``user`` can save changes to the given</span>
+<span class="sd">        ``obj``, and raise ``PermissionDenied`` if not.</span>
+
+<span class="sd">        :param user: A django user object.</span>
+<span class="sd">        :param obj: A object of the type this method is used in.</span>
+<span class="sd">        :throws PermissionDenied:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">deadline</span><span class="o">.</span><span class="n">assignment_group</span><span class="o">.</span><span class="n">can_save</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PermissionDenied</span><span class="p">()</span>
 
 </div></div>
 <span class="nd">@simplified_modelapi</span>
@@ -238,6 +369,8 @@
 <div class="viewcode-block" id="SimplifiedDeadline.Meta"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Administrator can use on a Deadline object using the Simplified API &quot;&quot;&quot;</span>
         <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;text&#39;</span><span class="p">,</span> <span class="s">&#39;deadline&#39;</span><span class="p">,</span> <span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>
+                          <span class="s">&#39;feedbacks_published&#39;</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedDeadline.create_searchqryset"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.create_searchqryset">[docs]</a>    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
@@ -246,7 +379,7 @@
 <span class="sd">        :param user: A django user object.</span>
 <span class="sd">        :rtype: a django queryset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">where_is_admin_or_superadmin</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">number_of_deliveries</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s">&#39;deliveries&#39;</span><span class="p">))</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedDeadline.read_authorize"><a class="viewcode-back" href="../../../../administrator.simplified.html#devilry.apps.administrator.simplified.SimplifiedDeadline.read_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">read_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>

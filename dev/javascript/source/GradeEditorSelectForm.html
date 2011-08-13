@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.gradeeditors.GradeEditorSelectForm', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.gradeeditorselectform',
+    cls: 'widget-gradeeditorselectform',
+    requires: ['devilry.gradeeditors.GradeEditorSelector'],
+
+    suggested_windowsize: {
+        width: 500,
+        height: 430
+    },
+
+    flex: 1.5,
+
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
+
+    fieldDefaults: {
+        labelAlign: 'top',
+        labelWidth: 100,
+        labelStyle: 'font-weight:bold'
+    },
+
+    items: [{
+        name: 'gradeeditorid',
+        fieldLabel: &quot;Select a grade editor&quot;,
+        xtype: 'gradeeditorselector'
+    }],
+
+    help: [
+        'A &lt;strong&gt;grade editor&lt;/strong&gt; is what examiners use to give feedback to students.',
+
+        'Internally in Devilry, a grade is:&lt;ul&gt;' +
+        '   &lt;li&gt;The number of points. Any grade in Devilry is represented as a number, however this number is mainly for statistical purposes.&lt;/li&gt;' +
+        '   &lt;li&gt;A very short text that students view. Usually something like: &lt;em&gt;Approved&lt;/em&gt;, &lt;em&gt;B&lt;/em&gt; or &lt;em&gt;7/10&lt;/em&gt;.&lt;/li&gt;' +
+        '   &lt;li&gt;A longer text that students can view.&lt;/li&gt;' +
+        '&lt;/ul&gt;',
+
+        'To make it easy for examiners to create all the information related to a &lt;em&gt;grade&lt;/em&gt;, ' +
+        'Devilry use &lt;em&gt;grade editors&lt;/em&gt;. Grade editors give examiners a unified user-' +
+        'interface tailored for different kinds of grading systems.'
+    ]
+});
+</pre>
+</body>
+</html>

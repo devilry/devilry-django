@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing'>/** List deliveries on a single group, grouped by deadline. */
+</span>Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.deliveriesonsinglegrouplisting',
+    cls: 'widget-deliveriesonsinglegrouplisting',
+    requires: [
+        'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
+        'devilry.extjshelpers.RestfulSimplifiedEditPanel'
+    ],
+    hideHeaders: true, // Hide column header
+    rowTpl: Ext.create('Ext.XTemplate',
+        'Delivery number {number}, ',
+        'delivered &lt;span class=&quot;time_of_delivery&quot;&gt;{time_of_delivery:date}&lt;/span&gt;',
+        '&lt;tpl if=&quot;time_of_delivery &amp;gt; deadline__deadline&quot;&gt;',
+        '   &lt;span class=&quot;after-deadline&quot;&gt;(After deadline)&lt;/span&gt;',
+        '&lt;/tpl&gt;'
+    ),
+
+    config: {
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-cfg-deliverymodel'>        /**
+</span>         * @cfg
+         * Delivery ``Ext.data.Model``.
+         */
+        deliverymodel: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-cfg-delivery_recordcontainer'>        /**
+</span>         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
+         * The record is changed when a user selects a delivery.
+         */
+        delivery_recordcontainer: undefined,
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-cfg-assignmentgroup_recordcontainer'>        /**
+</span>         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    initComponent: function() {
+        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
+            enableGroupingMenu: false,
+            groupHeaderTpl: 'Deadline: {name:date}' // {name} is the current data from the groupField for some reason
+        });
+
+        this.store = this.createDeliveryStore();
+        var me = this;
+        Ext.apply(this, {
+            features: [groupingFeature],
+            columns: [{
+                header: 'Data',
+                dataIndex: 'id',
+                flex: 1,
+                tdCls: 'selectable-gridcell',
+                renderer: function(value, metaData, deliveryrecord) {
+                    //console.log(deliveryrecord.data);
+                    return this.rowTpl.apply(deliveryrecord.data);
+                }
+            }],
+            listeners: {
+                scope: this,
+                itemmouseup: this.onSelectDelivery
+            },
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'bottom',
+                displayInfo: false
+            }]
+        });
+
+        this.callParent(arguments);
+        if(this.assignmentgroup_recordcontainer.record) {
+            this.reload();
+        }
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
+    },
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-method-createDeliveryStore'>    /**
+</span>     * @private
+     * */
+    createDeliveryStore: function() {
+        var deliverystore = Ext.create('Ext.data.Store', {
+            model: this.deliverymodel,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true,
+            groupField: 'deadline__deadline'
+        });
+
+        deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
+        return deliverystore;
+    },
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-method-reload'>    /**
+</span>     * @private
+     * Reload all deliveries on this assignmentgroup.
+     * */
+    reload: function() {
+        this.loadDeliveries(this.assignmentgroup_recordcontainer.record.data.id);
+    },
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-method-onSelectDelivery'>    /**
+</span>     * @private
+     */
+    onSelectDelivery: function(grid, deliveryRecord) {
+        this.delivery_recordcontainer.setRecord(deliveryRecord);
+        this.up('window').close();
+    },
+
+<span id='devilry-extjshelpers-assignmentgroup-DeliveriesOnSingleGroupListing-method-loadDeliveries'>    /**
+</span>     * @private
+     */
+    loadDeliveries: function(assignmentgroupid) {
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'deadline__assignment_group',
+            comp: 'exact',
+            value: assignmentgroupid
+        }]);
+        this.store.load();
+    }
+});
+</pre>
+</body>
+</html>

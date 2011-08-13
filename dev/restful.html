@@ -189,7 +189,7 @@ keyword arguments, and other things.</p>
 <a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
 <p>The name of the url is the <tt class="docutils literal"><span class="pre">cls._meta.urlname</span></tt>, documented in
 <a class="reference internal" href="#devilry.restful.restful_api" title="devilry.restful.restful_api"><tt class="xref py py-func docutils literal"><span class="pre">restful_api()</span></tt></a>.</p>
-<p>The view is wrapped by <tt class="xref py py-func docutils literal"><span class="pre">django.contrib.auth.decorators.login_required()</span></tt>.</p>
+<p>The view is wrapped by <tt class="xref py py-func docutils literal"><span class="pre">forbidden_if_not_authenticated()</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -297,7 +297,7 @@ APIs.</p>
 </pre></div>
 </div>
 <p>An alternative would be to not decorate your views using this class,
-and rather use <tt class="xref py py-class docutils literal"><span class="pre">devilry.</span></tt></p>
+and rather use <a class="reference internal" href="#devilry.restful.RestfulView.create_rest_url" title="devilry.restful.RestfulView.create_rest_url"><tt class="xref py py-meth docutils literal"><span class="pre">devilry.restful.RestfulView.create_rest_url()</span></tt></a>.</p>
 <dl class="method">
 <dt id="devilry.restful.RestfulManager.iter_restfulclasses">
 <tt class="descname">iter_restfulclasses</tt><big>(</big><big>)</big><a class="headerlink" href="#devilry.restful.RestfulManager.iter_restfulclasses" title="Permalink to this definition">¶</a></dt>

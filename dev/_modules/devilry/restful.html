@@ -49,12 +49,14 @@
 <span class="kn">from</span> <span class="nn">restful_api</span> <span class="kn">import</span> <span class="n">restful_api</span>
 <span class="kn">from</span> <span class="nn">restful_modelapi</span> <span class="kn">import</span> <span class="n">restful_modelapi</span>
 <span class="kn">from</span> <span class="nn">restview</span> <span class="kn">import</span> <span class="n">RestfulView</span>
-<span class="kn">from</span> <span class="nn">serializers</span> <span class="kn">import</span> <span class="n">SerializableResult</span>
+<span class="kn">from</span> <span class="nn">serializers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SerializableResult</span><span class="p">,</span> <span class="n">ErrorMsgSerializableResult</span><span class="p">,</span>
+                         <span class="n">ForbiddenSerializableResult</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">modelrestview</span> <span class="kn">import</span> <span class="n">ModelRestfulView</span>
 <span class="kn">from</span> <span class="nn">restfulmanager</span> <span class="kn">import</span> <span class="n">RestfulManager</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;restful_modelapi&#39;</span><span class="p">,</span> <span class="s">&#39;restful_api&#39;</span><span class="p">,</span> <span class="s">&#39;RestfulView&#39;</span><span class="p">,</span> <span class="s">&#39;ModelRestfulView&#39;</span><span class="p">,</span>
-           <span class="s">&#39;SerializableResult&#39;</span><span class="p">,</span> <span class="s">&#39;RestfulManager&#39;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;restful_modelapi&#39;</span><span class="p">,</span> <span class="s">&#39;restful_api&#39;</span><span class="p">,</span> <span class="s">&#39;RestfulView&#39;</span><span class="p">,</span>
+           <span class="s">&#39;ModelRestfulView&#39;</span><span class="p">,</span> <span class="s">&#39;SerializableResult&#39;</span><span class="p">,</span> <span class="s">&#39;RestfulManager&#39;</span><span class="p">,</span>
+           <span class="s">&#39;ForbiddenSerializableResult&#39;</span><span class="p">,</span> <span class="s">&#39;ErrorMsgSerializableResult&#39;</span><span class="p">)</span>
 </pre></div>
 
           </div>

@@ -51,6 +51,7 @@
 
 <span class="sd">    A :class:`Registry`-object.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 
@@ -117,6 +118,52 @@
 <span class="sd">            - rendered_view</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">asinfodict</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">gradeeditorid</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">gradeeditorid</span><span class="p">,</span>
+                    <span class="n">title</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                    <span class="n">description</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                    <span class="n">config_editor_url</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">config_editor_url</span><span class="p">,</span>
+                    <span class="n">draft_editor_url</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">draft_editor_url</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="JsonRegistryItem"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.JsonRegistryItem">[docs]</a><span class="k">class</span> <span class="nc">JsonRegistryItem</span><span class="p">(</span><span class="n">RegistryItem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; RegistryItem with extra utility functions for use with JSON config and draft strings &quot;&quot;&quot;</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="JsonRegistryItem.decode_configstring"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.JsonRegistryItem.decode_configstring">[docs]</a>    <span class="k">def</span> <span class="nf">decode_configstring</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">configstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Decode ``configstring`` using ``json.loads`` and return the result.</span>
+<span class="sd">        Raise ConfigValidationError if it fails. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">configstring</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigValidationError</span><span class="p">(</span><span class="s">&#39;Could not decode config string as JSON.&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="JsonRegistryItem.decode_draftstring"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.JsonRegistryItem.decode_draftstring">[docs]</a>    <span class="k">def</span> <span class="nf">decode_draftstring</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">draftstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Decode ``draftstring`` using ``json.loads`` and return the result.</span>
+<span class="sd">        Raise DraftValidationError if it fails. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">draftstring</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DraftValidationError</span><span class="p">(</span><span class="s">&#39;Could not decode config string as JSON.&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="JsonRegistryItem.validate_dict"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.JsonRegistryItem.validate_dict">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dict</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">valuedict</span><span class="p">,</span> <span class="n">exceptioncls</span><span class="p">,</span> <span class="n">typedict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate that each key in ``typedict`` is in ``valuedict``, and that</span>
+<span class="sd">        the type of the values in ``valuedict`` reflects the types in</span>
+<span class="sd">        ``typedict``.</span>
+
+<span class="sd">        Raise ``exceptioncls`` with an error message if any validation fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">typecls</span> <span class="ow">in</span> <span class="n">typedict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">valuedict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exceptioncls</span><span class="p">(</span><span class="s">&#39;{0} is required.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valuedict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">typecls</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">exceptioncls</span><span class="p">(</span><span class="s">&#39;{0} must be of type: {1}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">typecls</span><span class="p">))</span>
+
+
 
 </div></div>
 <div class="viewcode-block" id="Registry"><a class="viewcode-back" href="../../../../apps.gradeeditors.html#devilry.apps.gradeeditors.registry.Registry">[docs]</a><span class="k">class</span> <span class="nc">Registry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -148,8 +195,12 @@
         <span class="sd">&quot;&quot;&quot; Iterate over the registry yielding (key, title). &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">title</span>
+</div>
+    <span class="k">def</span> <span class="nf">iterinfordicts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">item</span><span class="o">.</span><span class="n">asinfodict</span><span class="p">()</span>
 
-</div></div>
+</div>
 <span class="n">gradeeditor_registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">()</span>
 </pre></div>
 

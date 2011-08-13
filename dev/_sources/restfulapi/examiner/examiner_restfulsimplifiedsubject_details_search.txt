@@ -32,9 +32,9 @@ Request example
 
     {
         query: 'a query string',
-        filters: [{field:"long_name", comp:"icontains", value:"My example value"},
+        filters: [{field:"long_name", comp:"endswith", value:"My example value"},
                       {field:"parentnode", comp:"endswith", value:15},
-                      {field:"parentnode__long_name", comp:"startswith", value:"My example value"}],
+                      {field:"parentnode__long_name", comp:"exact", value:"My example value"}],
         orderby: ["id", "-parentnode", "short_name", "long_name"],
         start: 10,
         limit: 100
@@ -97,9 +97,9 @@ Example:
 
     .. code-block:: javascript
 
-        [{field:"long_name", comp:"icontains", value:"My example value"},
+        [{field:"long_name", comp:"endswith", value:"My example value"},
          {field:"parentnode", comp:"endswith", value:15},
-         {field:"parentnode__long_name", comp:"startswith", value:"My example value"}]
+         {field:"parentnode__long_name", comp:"exact", value:"My example value"}]
 
 Subjects can be filtered on the following *fields*:
 

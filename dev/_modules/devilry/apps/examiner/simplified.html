@@ -46,6 +46,8 @@
           <div class="body">
             
   <h1>Source code for devilry.apps.examiner.simplified</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Count</span>
+
 <span class="kn">from</span> <span class="nn">...simplified</span> <span class="kn">import</span> <span class="n">SimplifiedModelApi</span><span class="p">,</span> <span class="n">simplified_modelapi</span><span class="p">,</span> <span class="n">PermissionDenied</span><span class="p">,</span> <span class="n">FieldSpec</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">devilry.coreutils.simplified.metabases</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimplifiedSubjectMetaMixin</span><span class="p">,</span>
@@ -184,8 +186,14 @@
     <span class="sd">&quot;&quot;&quot; Simplified wrapper for :class:`devilry.apps.core.models.Deadline`. &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SimplifiedDeadline.Meta"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">SimplifiedDeadlineMetaMixin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Defines what methods an Examiner can use on a Deadline object using the Simplified API &quot;&quot;&quot;</span>
-        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">]</span>  <span class="c"># TODO: should we have update here?</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;search&#39;</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;create&#39;</span><span class="p">,</span> <span class="s">&#39;update&#39;</span><span class="p">]</span>
+        <span class="n">editablefields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;text&#39;</span><span class="p">,</span> <span class="s">&#39;deadline&#39;</span><span class="p">,</span> <span class="s">&#39;assignment_group&#39;</span><span class="p">,</span>
+                          <span class="s">&#39;feedbacks_published&#39;</span><span class="p">)</span>
 </div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_searchqryset</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">published_where_is_examiner</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">number_of_deliveries</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s">&#39;deliveries&#39;</span><span class="p">))</span>
+
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="SimplifiedDeadline.write_authorize"><a class="viewcode-back" href="../../../../examiner.simplified.html#devilry.apps.examiner.simplified.SimplifiedDeadline.write_authorize">[docs]</a>    <span class="k">def</span> <span class="nf">write_authorize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Checks if the given ``user`` is an examiner in the given</span>

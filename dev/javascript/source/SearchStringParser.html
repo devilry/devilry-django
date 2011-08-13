@@ -153,6 +153,9 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         return extraParams;
     },
 
+<span id='devilry-extjshelpers-SearchStringParser-method-applyShortcuts'>    /**
+</span>     * @private
+     */
     applyShortcuts: function(shortcuts) {
         var localfilters = Ext.clone(this.filters);
         var me = this;
@@ -166,6 +169,9 @@ Ext.define('devilry.extjshelpers.SearchStringParser', {
         return localfilters;
     },
 
+<span id='devilry-extjshelpers-SearchStringParser-method-applyFirstMatchingShortcut'>    /**
+</span>     * @private
+     */
     applyFirstMatchingShortcut: function(shortcuts, fieldname) {
         var realFieldname = undefined;
         Ext.Object.each(shortcuts, function(shortcut, replacement) {

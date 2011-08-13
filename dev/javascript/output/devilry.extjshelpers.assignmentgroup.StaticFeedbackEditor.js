@@ -23,7 +23,30 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditor({
 
     ],
     "method": [
+      {
+        "params": [
 
+        ],
+        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor",
+        "doc": "<p>Overrides parent method to enable examiners to click to create feedback.</p>\n",
+        "html_filename": "StaticFeedbackEditor.html",
+        "href": "StaticFeedbackEditor.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor-method-bodyWithNoFeedback",
+        "tagname": "method",
+        "shortDoc": "Overrides parent method to enable examiners to click to create feedback. ...",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 132,
+        "inheritable": false,
+        "alias": null,
+        "name": "bodyWithNoFeedback",
+        "return": {
+          "type": "void",
+          "doc": "\n"
+        },
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js",
+        "deprecated": null
+      }
     ],
     "css_var": [
 
@@ -31,38 +54,53 @@ Ext.data.JsonP.devilry_extjshelpers_assignmentgroup_StaticFeedbackEditor({
     "cfg": [
       {
         "type": "Object",
-        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor",
-        "doc": "<p>Assignment id. (Required).</p>\n",
-        "html_filename": "StaticFeedbackEditor.html",
-        "href": "StaticFeedbackEditor.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor-cfg-assignmentid",
+        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo",
+        "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> for Delivery.</p>\n",
+        "html_filename": "StaticFeedbackInfo.html",
+        "href": "StaticFeedbackInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-delivery_recordcontainer",
         "tagname": "cfg",
-        "shortDoc": "Assignment id. ...",
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 8,
+        "linenr": 27,
         "inheritable": false,
         "alias": null,
-        "name": "assignmentid",
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js",
+        "name": "delivery_recordcontainer",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackInfo.js",
         "deprecated": null
       },
       {
         "type": "Object",
-        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo",
-        "doc": "<p>Delivery id. (Required).</p>\n",
-        "html_filename": "StaticFeedbackInfo.html",
-        "href": "StaticFeedbackInfo.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackInfo-cfg-deliveryid",
+        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor",
+        "doc": "<p>A <a href=\"#/api/devilry.extjshelpers.SingleRecordContainer\" rel=\"devilry.extjshelpers.SingleRecordContainer\" class=\"docClass\">devilry.extjshelpers.SingleRecordContainer</a> for GradeEditor Config.</p>\n",
+        "html_filename": "StaticFeedbackEditor.html",
+        "href": "StaticFeedbackEditor.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor-cfg-gradeeditor_config_recordcontainer",
         "tagname": "cfg",
-        "shortDoc": "Delivery id. ...",
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 13,
+        "linenr": 12,
         "inheritable": false,
         "alias": null,
-        "name": "deliveryid",
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackInfo.js",
+        "name": "gradeeditor_config_recordcontainer",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js",
+        "deprecated": null
+      },
+      {
+        "type": "Boolean",
+        "owner": "devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor",
+        "doc": "<p>Use the administrator RESTful interface to store drafts? If this is\n<code>false</code>, we use the examiner RESTful interface.</p>\n",
+        "html_filename": "StaticFeedbackEditor.html",
+        "href": "StaticFeedbackEditor.html#devilry-extjshelpers-assignmentgroup-StaticFeedbackEditor-cfg-isAdministrator",
+        "tagname": "cfg",
+        "protected": false,
+        "static": false,
+        "private": false,
+        "linenr": 18,
+        "inheritable": false,
+        "alias": null,
+        "name": "isAdministrator",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/assignmentgroup/StaticFeedbackEditor.js",
         "deprecated": null
       },
       {

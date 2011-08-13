@@ -42,7 +42,7 @@ Ext.data.JsonP.devilry_administrator_PrettyView({
         "protected": false,
         "static": false,
         "private": false,
-        "linenr": 127,
+        "linenr": 143,
         "inheritable": false,
         "alias": null,
         "name": "setRecord",
@@ -172,6 +172,12 @@ Ext.data.JsonP.devilry_administrator_PrettyView({
             "type": "Ext.model.Model",
             "doc": "<p>The record to edit.</p>\n",
             "name": "record",
+            "optional": false
+          },
+          {
+            "type": "Object",
+            "doc": "<p>The edit button.</p>\n",
+            "name": "button",
             "optional": false
           },
           {

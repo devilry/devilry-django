@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.deadlinesonsinglegrouplisting',
+    cls: 'widget-deadlinesonsinglegrouplisting',
+    requires: [
+        'devilry.extjshelpers.forms.Deadline'
+    ],
+
+    rowTpl: Ext.create('Ext.XTemplate',
+        '{deadline:date}'
+    ),
+
+    config: {
+<span id='global-cfg-deadlinemodel'>        /**
+</span>         * @cfg
+         * Deadline ``Ext.data.Model``.
+         */
+        deadlinemodel: undefined,
+
+<span id='global-cfg-assignmentgroup_recordcontainer'>        /**
+</span>         * @cfg
+         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
+         */
+        assignmentgroup_recordcontainer: undefined,
+
+<span id='global-cfg-enableDeadlineCreation'>        /**
+</span>         * @cfg
+         * Enable creation of new deadlines?
+         */
+        enableDeadlineCreation: false,
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    initComponent: function() {
+        if(this.enableDeadlineCreation) {
+            this.addCreateNewDeadlineButton();
+        }
+        this.store = this.createDeadlineStore();
+        Ext.apply(this, {
+            columns: [{
+                header: 'Deadline',
+                dataIndex: 'deadline',
+                width: 150,
+                renderer: function(value, metaData, deadlinerecord) {
+                    return this.rowTpl.apply(deadlinerecord.data);
+                }
+            }, {
+                header: 'Text',
+                dataIndex: 'text',
+                flex: 2
+            }, {
+                header: 'Deliveries',
+                dataIndex: 'number_of_deliveries',
+                width: 85
+            }],
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: this.store,
+                dock: 'bottom',
+                displayInfo: false
+            }]
+        });
+
+        this.callParent(arguments);
+        if(this.assignmentgroup_recordcontainer.record) {
+            this.reload();
+        }
+        this.assignmentgroup_recordcontainer.addListener('setRecord', this.reload, this);
+    },
+
+<span id='global-method-reload'>    /**
+</span>     * @private
+     * Reload all empty deadlines on this assignmentgroup.
+     * */
+    reload: function() {
+        this.loadDeadlines(this.assignmentgroup_recordcontainer.record.data.id);
+    },
+
+<span id='global-method-loadDeadlines'>    /**
+</span>     * @private
+     */
+    loadDeadlines: function(assignmentgroupid) {
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([{
+            field: 'assignment_group',
+            comp: 'exact',
+            value: assignmentgroupid
+        }]);
+        this.store.load({
+            scope: this,
+            callback: this.onDeadlineStoreLoad
+        });
+    },
+
+<span id='global-method-onDeadlineStoreLoad'>    /**
+</span>     * @private
+     */
+    onDeadlineStoreLoad: function(records, op, success) {
+    },
+
+<span id='global-method-createDeadlineStore'>    /**
+</span>     * @private
+     * */
+    createDeadlineStore: function() {
+        var deadlinestore = Ext.create('Ext.data.Store', {
+            model: this.deadlinemodel,
+            remoteFilter: true,
+            remoteSort: true,
+            autoSync: true
+        });
+
+        deadlinestore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline']);
+        return deadlinestore;
+    },
+
+
+<span id='global-method-addCreateNewDeadlineButton'>    /**
+</span>     * @private
+     * */
+    addCreateNewDeadlineButton: function() {
+        Ext.apply(this, {
+            tbar: ['-&gt;', {
+                xtype: 'button',
+                text: 'Create new deadline',
+                iconCls: 'icon-add-32',
+                scale: 'large',
+                listeners: {
+                    scope: this,
+                    click: this.onCreateNewDeadline
+                }
+            }]
+        });
+    },
+
+<span id='global-method-onCreateNewDeadline'>    /**
+</span>     * @private
+     */
+    onCreateNewDeadline: function() {
+        var deadlineRecord = Ext.create(this.deadlinemodel, {
+            'assignment_group': this.assignmentgroup_recordcontainer.record.data.id
+        });
+
+        var me = this;
+        var createDeadlineWindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {
+            title: 'Create deadline',
+            width: 500,
+            height: 400,
+            editpanel: Ext.widget('restfulsimplified_editpanel', {
+                modelname: this.deadlinemodel,
+                editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
+                record: deadlineRecord
+            }),
+            onSaveSuccess: function(record) {
+                this.close();
+                me.reload();
+            }
+        });
+        createDeadlineWindow.show();
+    }
+});
+</pre>
+</body>
+</html>

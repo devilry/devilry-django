@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-SingleRecordView'>/**
+</span> * View panel bound to a {@link devilry.extjshelpers.SingleRecordContainer}.
+ * Kind of like ``Ext.view.View`` only for a single record.
+ */
+Ext.define('devilry.extjshelpers.SingleRecordView', {
+    extend: 'Ext.Component',
+    alias: 'widget.singlerecordview',
+
+    config: {
+<span id='devilry-extjshelpers-SingleRecordView-cfg-singlerecordontainer'>        /**
+</span>        * @cfg
+        * A {@link devilry.extjshelpers.SingleRecordContainer} which contains data for the ``tpl``.
+        */
+        singlerecordontainer: undefined,
+
+<span id='devilry-extjshelpers-SingleRecordView-cfg-tpl'>        /**
+</span>         * @cfg
+         * An ``Ext.XTemplate`` which takes the record in ``singlerecordontainer.record.data`` as input.
+         */
+        tpl: undefined,
+
+<span id='devilry-extjshelpers-SingleRecordView-cfg-extradata'>        /**
+</span>         * @cfg
+         * Extra data for the ``tpl``. Applied before the data in
+         * ``singlerecordontainer``, so any shared attributed with
+         * ``singlerecordontainer.data`` will use the attribute in
+         * ``singlerecordontainer.data``.
+         */
+        extradata: undefined
+    },
+
+    constructor: function(config) {
+        this.callParent([config]);
+        this.initConfig(config);
+    },
+
+    initComponent: function() {
+        this.callParent(arguments);
+        if(this.singlerecordontainer.record) {
+            this.updateBody();
+        }
+        this.singlerecordontainer.addListener('setRecord', this.onSetRecord, this);
+    },
+
+<span id='devilry-extjshelpers-SingleRecordView-method-onSetRecord'>    /**
+</span>     * @private
+     */
+    onSetRecord: function(singlerecordontainer) {
+        this.updateBody();
+    },
+
+<span id='devilry-extjshelpers-SingleRecordView-method-updateBody'>    /**
+</span>     * @private
+     */
+    updateBody: function() {
+        var data = {};
+        Ext.apply(data, this.extradata);
+        Ext.apply(data, this.singlerecordontainer.record.data);
+        this.update(this.tpl.apply(data));
+    }
+});
+</pre>
+</body>
+</html>

@@ -9,7 +9,7 @@ Ext.data.JsonP.devilry_administrator_DefaultEditWindow({
   "href": "DefaultEditWindow.html#devilry-administrator-DefaultEditWindow",
   "code_type": "ext_define",
   "superclasses": [
-    "devilry.administrator.DefaultEditWindowBase"
+    "devilry.extjshelpers.RestfulSimplifiedEditWindowBase"
   ],
   "tagname": "class",
   "mixins": [
@@ -31,10 +31,10 @@ Ext.data.JsonP.devilry_administrator_DefaultEditWindow({
     "cfg": [
       {
         "type": "Object",
-        "owner": "devilry.administrator.DefaultEditWindowBase",
-        "doc": "<p>The devilry.administrator.EditPanel to use for editing.</p>\n",
-        "html_filename": "DefaultEditWindowBase.html",
-        "href": "DefaultEditWindowBase.html#devilry-administrator-DefaultEditWindowBase-cfg-editpanel",
+        "owner": "devilry.extjshelpers.RestfulSimplifiedEditWindowBase",
+        "doc": "<p>The <a href=\"#/api/devilry.extjshelpers.RestfulSimplifiedEditPanel\" rel=\"devilry.extjshelpers.RestfulSimplifiedEditPanel\" class=\"docClass\">devilry.extjshelpers.RestfulSimplifiedEditPanel</a> to use for editing.</p>\n",
+        "html_filename": "RestfulSimplifiedEditWindowBase.html",
+        "href": "RestfulSimplifiedEditWindowBase.html#devilry-extjshelpers-RestfulSimplifiedEditWindowBase-cfg-editpanel",
         "tagname": "cfg",
         "protected": false,
         "static": false,
@@ -43,7 +43,7 @@ Ext.data.JsonP.devilry_administrator_DefaultEditWindow({
         "inheritable": false,
         "alias": null,
         "name": "editpanel",
-        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/administrator/static/extjs_classes/administrator/DefaultEditWindowBase.js",
+        "filename": "/Volumes/viktig/code/devilry-django/devilry/apps/extjshelpers/static/extjs_classes/extjshelpers/RestfulSimplifiedEditWindowBase.js",
         "deprecated": null
       },
       {
@@ -106,7 +106,7 @@ Ext.data.JsonP.devilry_administrator_DefaultEditWindow({
   "xtypes": [
 
   ],
-  "extends": "devilry.administrator.DefaultEditWindowBase",
+  "extends": "devilry.extjshelpers.RestfulSimplifiedEditWindowBase",
   "allMixins": [
 
   ],

@@ -18,38 +18,18 @@
   <pre class="prettyprint lang-js"><span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupDetailsPanel'>/** AssignmentGroup details panel.
 </span> */
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupDetailsPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'devilry.extjshelpers.SingleRecordView',
     alias: 'widget.assignmentgroupdetailspanel',
     cls: 'widget-assignmentgroupdetailspanel',
 
-    config: {
-<span id='devilry-extjshelpers-assignmentgroup-AssignmentGroupDetailsPanel-cfg-assignmentgroup'>        /**
-</span>        * @cfg
-        * AssignmentGroup object such as the ``data`` attribute of a record
-        * returned from loading from a store. (Required).
-        */
-        assignmentgroup: undefined
-    },
-
-    title: 'Assignment group',
-    bodyTpl: Ext.create('Ext.XTemplate',
+    tpl: Ext.create('Ext.XTemplate',
         '&lt;dl&gt;',
         '   &lt;dt&gt;Id&lt;/dt&gt;',
         '   &lt;dd&gt;{id}&lt;/dd&gt;',
         '   &lt;dt&gt;Is open?&lt;/dt&gt;',
         '   &lt;dd&gt;{is_open}&lt;/dd&gt;',
-        '   &lt;dt&gt;Candidates&lt;/dt&gt;',
-        '   &lt;dd&gt;TODO&lt;/dd&gt;',
         '&lt;/dl&gt;'
-    ),
-
-
-    initComponent: function() {
-        Ext.apply(this, {
-            html: this.bodyTpl.apply(this.assignmentgroup)
-        });
-        this.callParent(arguments);
-    },
+    )
 });
 </pre>
 </body>

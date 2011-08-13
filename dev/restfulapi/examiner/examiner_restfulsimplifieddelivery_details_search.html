@@ -79,9 +79,9 @@ applied in the following order:</p>
 <span class="p">{</span>
     <span class="nx">query</span><span class="o">:</span> <span class="s1">&#39;a query string&#39;</span><span class="p">,</span>
     <span class="nx">filters</span><span class="o">:</span> <span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
-                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
-    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-number&quot;</span><span class="p">,</span> <span class="s2">&quot;time_of_delivery&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline&quot;</span><span class="p">],</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+                  <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}],</span>
+    <span class="nx">orderby</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;-number&quot;</span><span class="p">,</span> <span class="s2">&quot;time_of_delivery&quot;</span><span class="p">,</span> <span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="s2">&quot;successful&quot;</span><span class="p">],</span>
     <span class="nx">start</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">limit</span><span class="o">:</span> <span class="mi">100</span>
 <span class="p">}</span>
@@ -222,8 +222,8 @@ list of filters, where each filter is a map with the following entries:</p>
 <p>Example:</p>
 <blockquote>
 <div><div class="highlight-javascript"><div class="highlight"><pre><span class="p">[{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
- <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="mi">15</span><span class="p">},</span>
+ <span class="p">{</span><span class="nx">field</span><span class="o">:</span><span class="s2">&quot;deadline__assignment_group__name&quot;</span><span class="p">,</span> <span class="nx">comp</span><span class="o">:</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span><span class="s2">&quot;My example value&quot;</span><span class="p">}]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -410,6 +410,18 @@ list of filters, where each filter is a map with the following entries:</p>
 <dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
 </dl>
 </dd>
+<dt>time_of_delivery</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Holds the date and time the Delivery was uploaded.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+<dt>Supported comparison operators:</dt>
+<dd><tt class="docutils literal"><span class="pre">startswith</span></tt>, <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&lt;=</span></tt>, <tt class="docutils literal"><span class="pre">icontains</span></tt>, <tt class="docutils literal"><span class="pre">iexact</span></tt>, <tt class="docutils literal"><span class="pre">endswith</span></tt>, <tt class="docutils literal"><span class="pre">exact</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <tt class="docutils literal"><span class="pre">&gt;</span></tt>.</dd>
+</dl>
+</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -440,6 +452,33 @@ the values from <em>start</em> to <em>start+limit</em>. Start defalts to <tt cla
 results of the search. The following group names are available:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt>assignment_group_users</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>deadline__assignment_group__examiners__username</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+<dt>deadline__assignment_group__candidates__identifier</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
 <dt>assignment</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
@@ -472,70 +511,6 @@ results of the search. The following group names are available:</p>
 <dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
 <dt>Type</dt>
 <dd>String</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-</dd>
-<dt>subject</dt>
-<dd><p class="first"><em>Expands to the following fields:</em></p>
-<blockquote class="last">
-<div><dl class="docutils">
-<dt>deadline__assignment_group__parentnode__parentnode__parentnode</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>Autogenerated identifier.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
-</dl>
-</dd>
-<dt>deadline__assignment_group__parentnode__parentnode__parentnode__short_name</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
-<dt>Type</dt>
-<dd>String</dd>
-</dl>
-</dd>
-<dt>deadline__assignment_group__parentnode__parentnode__parentnode__long_name</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
-<dt>Type</dt>
-<dd>String</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-</dd>
-<dt>deadline</dt>
-<dd><p class="first"><em>Expands to the following fields:</em></p>
-<blockquote class="last">
-<div><dl class="docutils">
-<dt>deadline__assignment_group</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>Autogenerated identifier.</dd>
-<dt>Type</dt>
-<dd>Integer</dd>
-</dl>
-</dd>
-<dt>deadline__deadline</dt>
-<dd><dl class="first last docutils">
-<dt>Actual location of the field:</dt>
-<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
-<dt>About the field:</dt>
-<dd>The time of the deadline.</dd>
-<dt>Type</dt>
-<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
 </dl>
 </dd>
 </dl>
@@ -578,6 +553,40 @@ results of the search. The following group names are available:</p>
 </dl>
 </div></blockquote>
 </dd>
+<dt>delivered_by</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>delivered_by__identifier</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The candidate_id if this is a candidate on an anonymous assignment, and username if not.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>deadline</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>deadline__deadline</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Deadline" title="devilry.apps.core.models.Deadline"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Deadline</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>The time of the deadline.</dd>
+<dt>Type</dt>
+<dd>DateTime string (YYYY-MM-DD hh:mm:ss)</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
 <dt>assignment_group</dt>
 <dd><p class="first"><em>Expands to the following fields:</em></p>
 <blockquote class="last">
@@ -598,6 +607,60 @@ results of the search. The following group names are available:</p>
 <dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.AssignmentGroup" title="devilry.apps.core.models.AssignmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.AssignmentGroup</span></tt></a></dd>
 <dt>About the field:</dt>
 <dd>An optional name for the group. Typically used a project name on project assignments.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>candidates</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>deadline__assignment_group__candidates__identifier</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Candidate" title="devilry.apps.core.models.Candidate"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Candidate</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>List of many values.</dd>
+<dt>Type</dt>
+<dd>List of strings</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>subject</dt>
+<dd><p class="first"><em>Expands to the following fields:</em></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>deadline__assignment_group__parentnode__parentnode__parentnode</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Autogenerated identifier.</dd>
+<dt>Type</dt>
+<dd>Integer</dd>
+</dl>
+</dd>
+<dt>deadline__assignment_group__parentnode__parentnode__parentnode__short_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Max 20 characters. Only numbers, lowercase characters, &#8216;_&#8217; and &#8216;-&#8216;.</dd>
+<dt>Type</dt>
+<dd>String</dd>
+</dl>
+</dd>
+<dt>deadline__assignment_group__parentnode__parentnode__parentnode__long_name</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Subject" title="devilry.apps.core.models.Subject"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Subject</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>A longer name, more descriptive than &#8220;Short name&#8221;. This is the name visible to students.</dd>
 <dt>Type</dt>
 <dd>String</dd>
 </dl>
@@ -626,11 +689,13 @@ example is generated from a non-varying dataset.</em></p>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">number</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
           <span class="nx">time_of_delivery</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
-          <span class="nx">deadline</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
+          <span class="nx">deadline</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">successful</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
         <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="nx">number</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
           <span class="nx">time_of_delivery</span><span class="o">:</span> <span class="s2">&quot;2010-02-22 22:32:10&quot;</span><span class="p">,</span>
-          <span class="nx">deadline</span><span class="o">:</span> <span class="mi">15</span> <span class="p">},</span>
+          <span class="nx">deadline</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+          <span class="nx">successful</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
         <span class="p">...</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -684,6 +749,16 @@ the <em>value</em> for that field. The result always contains the following fiel
 <dd>Autogenerated identifier.</dd>
 <dt>Type</dt>
 <dd>Integer</dd>
+</dl>
+</dd>
+<dt>successful</dt>
+<dd><dl class="first last docutils">
+<dt>Actual location of the field:</dt>
+<dd><a class="reference internal" href="../../core.models.html#devilry.apps.core.models.Delivery" title="devilry.apps.core.models.Delivery"><tt class="xref py py-class docutils literal"><span class="pre">devilry.apps.core.models.Delivery</span></tt></a></dd>
+<dt>About the field:</dt>
+<dd>Has the delivery and all its files been uploaded successfully?</dd>
+<dt>Type</dt>
+<dd>Boolean</dd>
 </dl>
 </dd>
 </dl>

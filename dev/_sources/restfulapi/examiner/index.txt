@@ -18,7 +18,7 @@ Examiner
     examiner_restfulsimplifieddeadline_details_read
     examiner_restfulsimplifieddeadline_details_search
     examiner_restfulsimplifieddeadline_details_create
-    examiner_restfulsimplifieddeadline_details_delete
+    examiner_restfulsimplifieddeadline_details_update
     examiner_restfulsimplifieddelivery_details_read
     examiner_restfulsimplifieddelivery_details_search
     examiner_restfulsimplifiedstaticfeedback_details_read
@@ -170,8 +170,8 @@ Deadline
     </tr>
     
     <tr>
-        <th><a href="examiner_restfulsimplifieddeadline_details_delete.html">DELETE&nbsp;/examiner/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
-        <td>Delete a Deadline.</td>
+        <th><a href="examiner_restfulsimplifieddeadline_details_update.html">PUT&nbsp;/examiner/restfulsimplifieddeadline/<span class="restfulid">id</span></a></th>
+        <td>Update a Deadline.</td>
     </tr>
         </tbody>
     </table>
