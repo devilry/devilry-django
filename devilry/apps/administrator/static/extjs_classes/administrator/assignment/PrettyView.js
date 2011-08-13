@@ -248,12 +248,41 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
     },
 
     onSelectGradeEditorBtn: function(button) {
+        var currentGradeEditorId = this.gradeeditorconfig_recordcontainer.record.data.gradeeditorid
         var editpanel = Ext.ComponentManager.create({
             xtype: 'restfulsimplified_editpanel',
             model: 'devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig',
             editform: Ext.widget('gradeeditorselectform'),
             record: this.gradeeditorconfig_recordcontainer.record,
-            extrabaronbottom: true
+            extrabaronbottom: true,
+            beforeSave: function() {
+                var config = this.record.data.config;
+                if(this.down('gradeeditorselector').getValue() == currentGradeEditorId) {
+                    // Clicked save without changing grade editor
+                    this.up('window').close();
+                    return;
+                }
+                if(config == null || config == '') {
+                    // Do not warn when config will not be lost
+                    this.doSave();
+                } else {
+                    Ext.MessageBox.show({
+                        title: 'Confirm grade editor change',
+                        msg: 'This will <strong>permanently</strong> remove your current configuration for the grade editor.',
+                        buttons: Ext.Msg.YESNO,
+                        icon: Ext.Msg.WARNING,
+                        scope: this,
+                        fn: function(btn) {
+                            if(btn == 'yes') {
+                                this.record.data.config = '';
+                                this.doSave();
+                            } else {
+                                this.up('window').close();
+                            }
+                        }
+                    });
+                }
+            }
         });
         var me = this;
         var editwindow = Ext.create('devilry.extjshelpers.RestfulSimplifiedEditWindowBase', {

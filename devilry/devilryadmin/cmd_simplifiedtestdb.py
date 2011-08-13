@@ -69,7 +69,7 @@ testhelper.add(nodes='duckburgh.univ:admin(duckburghboss)',
                subjects=['duck1100:admin(donald):ln(DUCK1100 - Getting started with python)',
                          'duck1080:admin(daisy):ln(DUCK1080 - Making the illogical seem logical)',
                          'duck3580:admin(clarabelle):ln(DUCK3580 - Making the web work)',
-                         'duck5063:admin(scrooge):ln(DUCK5063 - Make low level stuff)'],
+                         'duck5063:admin(scrooge):ln(DUCK5063 - Make low level stuff - avoiding permanent psychological scarring of most of the students)'],
                periods=['spring01:ln(Spring year zero)'])
 
 

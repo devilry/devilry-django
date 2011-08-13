@@ -10,6 +10,7 @@ from devilry.coreutils.simplified.metabases import (SimplifiedSubjectMetaMixin,
                                                    SimplifiedDeliveryMetaMixin,
                                                    SimplifiedStaticFeedbackMetaMixin,
                                                    SimplifiedFileMetaMetaMixin)
+from devilry.apps.core.models import AssignmentGroup, Delivery
 
 
 
@@ -36,7 +37,7 @@ class PublishedWhereIsCandidateMixin(SimplifiedModelApi):
         :param obj: An object of the type this method is used in.
         :throws PermissionDenied:
         """
-        if not obj.published_where_is_candidate(user).filter(id=obj.id):
+        if not cls._meta.model.published_where_is_candidate(user).filter(id=obj.id):
             raise PermissionDenied()
 
 
@@ -54,6 +55,7 @@ class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods a Student can use on a Deadline object using the Simplified API """
         methods = ['search', 'read']
+        editablefields = tuple()
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
@@ -73,16 +75,32 @@ class SimplifiedDelivery(PublishedWhereIsCandidateMixin):
     """ Simplified wrapper for :class:`devilry.apps.core.models.Delivery`. """
     class Meta(SimplifiedDeliveryMetaMixin):
         """ Defines what methods a Student can use on a Delivery object using the Simplified API """
-        methods = ['search', 'read', 'create']
-        editablefields = ['successful']
+        methods = ['search', 'read', 'create', 'update']
+        editablefields = ('successful', 'deadline')
 
     @classmethod
     def pre_full_clean(cls, user, obj):
-        if not obj.id == None:
-            raise ValueError('BUG: Students should only have create permission on Delivery')
         obj.time_of_delivery = datetime.now()
-        obj.delivered_by = user
-        #obj.deadline = obj.assignment_group.get_active_deadline()
+        candidate = obj.deadline.assignment_group.candidates.get(student=user)
+        obj.delivered_by = candidate
+        obj._set_number()
+
+    @classmethod
+    def write_authorize(cls, user, obj):
+        """ Checks if the given ``user`` is an student in the given
+        ``obj``, and raises ``PermissionDenied`` if not.
+
+        :param user: A django user object.
+        :param obj: An object of the type this method is used in.
+        :throws PermissionDenied:
+        """
+        if not AssignmentGroup.published_where_is_candidate(user).filter(id=obj.deadline.assignment_group.id):
+            raise PermissionDenied()
+        if obj.id != None:
+            current = Delivery.objects.get(id=obj.id)
+            if current.successful:
+                raise PermissionDenied()
+
 
 
 @simplified_modelapi

@@ -1,3 +1,4 @@
+from tempfile import TemporaryFile
 from django.views.generic import (TemplateView, View)
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseForbidden
@@ -7,14 +8,17 @@ import zipfile
 from os import stat
 from mimetypes import guess_type
 import json
-from ..core.models import (Delivery, FileMeta, 
+from ..core.models import (Delivery, FileMeta,
                            Deadline, AssignmentGroup,
                            Candidate)
 
 from devilry.utils.module import dump_all_into_dict
+from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
 import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
-                     RestfulSimplifiedStaticFeedback, RestfulSimplifiedAssignment)
+                     RestfulSimplifiedDeadline,
+                     RestfulSimplifiedStaticFeedback,
+                     RestfulSimplifiedAssignment)
 
 class MainView(TemplateView):
     template_name='student/main.django.html'
@@ -33,6 +37,7 @@ class AddDeliveryView(View):
     def get(self, request, deliveryid):
         return render(request, 'student/add-delivery.django.html',
                       {'RestfulSimplifiedDelivery': RestfulSimplifiedDelivery,
+                       'RestfulSimplifiedDeadline': RestfulSimplifiedDeadline,
                        'RestfulSimplifiedFileMeta': RestfulSimplifiedFileMeta,
                        'RestfulSimplifiedStaticFeedback': RestfulSimplifiedStaticFeedback,
                        'deadlineid': deliveryid,
@@ -50,69 +55,34 @@ class ShowDeliveryView(View):
                       )
 
 class FileUploadView(View):
-
-    def get(self, request, deadlineid):
-        print "# FileUploadView GET-method #"
-        print "#", deadlineid, "#"
-        
-        deadline_obj = get_object_or_404(Deadline, id=deadlineid)
-        assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
-        logged_in_user = request.user        
-        candidate = get_object_or_404(Candidate, student=logged_in_user, assignment_group=assignment_group_obj)
-                
-        delivery = Delivery()
-        delivery.time_of_delivery = datetime.now()
-        delivery.delivered_by = candidate
-        delivery.succesful = False
-        deadline_obj.deliveries.add(delivery)
-        delivery.save()
-        
-        json_dict = {'success' : 'true', 'deliveryid' : delivery.id}
-        json_result = json.dumps(json_dict)
-        return HttpResponse(json_result)
-
     def post(self, request, deadlineid):
-        print "#", deadlineid, "#"
-        print "#", request.user, "#"
-        print "#", request.POST['deliveryid'], "#"
-
         deadline_obj = get_object_or_404(Deadline, id=deadlineid)
         assignment_group_obj = get_object_or_404(AssignmentGroup, id=deadline_obj.assignment_group.id)
         logged_in_user = request.user
         deliveryid = request.POST['deliveryid']
 
         if not assignment_group_obj.is_candidate(logged_in_user):
-            #TODO return Json
-            return HttpResponseForbidden("Oh no rude boy! You're not the right guy")
+            return HttpResponseForbidden()
 
         if not assignment_group_obj.can_add_deliveries():
-            #TODO return Json
-            return HttpResponseForbidden("Oh no rude boy! You're not allowed to deliver")
+            return HttpResponseForbidden()
 
-        
-        if 'dendrofil' in request.FILES:
-            
+        if 'uploaded_file' in request.FILES:
             #TODO Use simplified abstracted models
-            uploaded_file = request.FILES['dendrofil']
+            uploaded_file = request.FILES['uploaded_file']
             uploaded_file_name = uploaded_file.name
 
             delivery = get_object_or_404(Delivery, id=deliveryid)
-            delivery.time_of_delivery = datetime.now()
-            
             delivery.add_file(uploaded_file_name, uploaded_file.chunks())
-
-            delivery.succesful= True
             delivery.full_clean()
-            delivery.save()      
-            
-            json_dict = {'success' : 'true', 'file' : uploaded_file_name, 'deliveryid' : delivery.id}
+            delivery.save()
+
+            json_dict = {'success' : 'true', 'file':uploaded_file_name, 'deliveryid':delivery.id}
             json_result = json.dumps(json_dict)
-           
+
             return HttpResponse(json_result)
-
         else:
-
-            json_result = json.dumps({'success': 'false', 'file': 'null'})
+            json_result = json.dumps({'success': 'false'})
             return HttpResponse(json_result)
 
 
@@ -131,13 +101,13 @@ class FileDownloadView(View):
 
     def get(self, request, filemetaid):    
         filemeta = get_object_or_404(FileMeta, id=filemetaid)
-        print filemeta
+        #print filemeta
         assignment_group = filemeta.delivery.deadline.assignment_group
         if not (assignment_group.is_candidate(request.user) \
                     or assignment_group.is_examiner(request.user) \
                     or request.user.is_superuser \
                     or assignment_group.parentnode.is_admin(request.user)):
-            return http.HttpResponseForbidden("Forbidden")
+            return HttpResponseForbidden("Forbidden")
         
         # TODO: make this work on any storage backend
         response = HttpResponse(FileWrapper(filemeta.deliverystore.read_open(filemeta)),
@@ -145,26 +115,28 @@ class FileDownloadView(View):
         response['Content-Disposition'] = "attachment; filename=%s" % \
             filemeta.filename.encode("ascii", 'replace')
         response['Content-Length'] = filemeta.size
-        
+
         return response
-        
+
+
 class CompressedFileDownloadView(View):
 
-    def get(self, request, deliveryid):    
+    def get(self, request, deliveryid):
         delivery = get_object_or_404(Delivery, id=deliveryid)
         zip_file_name = str(request.user) + ".zip"
-        zip_file = zipfile.ZipFile(zip_file_name, "w");
-        
+
+        tempfile = TemporaryFile()
+        zip_file = zipfile.ZipFile(tempfile, 'w');
+
         for filemeta in delivery.filemetas.all():
             file_content = filemeta.deliverystore.read_open(filemeta)
             zip_file.write(file_content.name, filemeta.filename)
         zip_file.close()
-                
-        
-        response = HttpResponse(FileWrapper(open(zip_file_name, 'rb')),
-                                content_type=guess_type(zip_file_name))                        
+
+        tempfile.seek(0)
+        response = HttpResponse(FileWrapperWithExplicitClose(tempfile),
+                                content_type=guess_type(zip_file_name))
         response['Content-Disposition'] = "attachment; filename=%s" % \
             zip_file_name.encode("ascii", 'replace')
         response['Content-Length'] = stat(zip_file_name).st_size
         return response
-        

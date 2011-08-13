@@ -14,14 +14,8 @@ class Approved(JsonRegistryItem):
     gradeeditorid = 'approved'
     title = 'Approved'
     description = 'A simple gradeeditor that allows examiners to select if delivery is approved or not approved, and give a feedback text.'
-    config_editor_url = settings.DEVILRY_STATIC_URL + '/approved_gradeeditor/configeditor.js'
+    config_editor_url = None
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/approved_gradeeditor/drafteditor.js'
-
-    @classmethod
-    def validate_config(cls, configstring):
-        config = cls.decode_configstring(configstring)
-        cls.validate_dict(config, ConfigValidationError, {'defaultvalue': bool,
-                                                          'fieldlabel': basestring})
 
     @classmethod
     def validate_draft(cls, draftstring):
@@ -45,7 +39,7 @@ class Approved(JsonRegistryItem):
         return dict(is_passing_grade=is_approved,
                     grade=grade,
                     points=int(is_approved),
-                    rendered_view='Your grade is: {0}{1}'.format(grade, feedback))
+                    rendered_view=feedback)
 
         #TODO: .format() crashes when using non-ascii symbols.. need to find a fix since norwegian characters are bound to be used in feedbacks!!
 
