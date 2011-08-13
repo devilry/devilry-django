@@ -128,15 +128,15 @@ class Docstring(object):
     def _fieldinfo_dict_for_annotatedfield(self):
         return dict(help_text="Generated from a query.",
                     fieldtype="unknown",
-                    modelclspath="unknown",
-                    valueexample="No example available")
+                    modelclspath="Generated from a query",
+                    valueexample='No example-value available for this field')
 
     def _create_filter_docattrs(self):
         self.filters = self.restfulcls._meta.simplified._meta.filters
         self.filterspecs = []
         for filterspec in sorted(self.filters.filterspecs.values(), key=lambda s: s.fieldname):
             if filterspec.fieldname in self.restfulcls._meta.simplified._meta.annotated_fields:
-                self._fieldinfo_dict_for_annotatedfield()
+                fs = self._fieldinfo_dict_for_annotatedfield()
             else:
                 field = self._get_field(filterspec.fieldname)
                 fs = self._fieldinfo_dict(field)
