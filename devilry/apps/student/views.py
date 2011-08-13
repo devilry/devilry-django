@@ -25,13 +25,9 @@ class MainView(TemplateView):
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
-        for restclsname in restful.__all__:
-            context[restclsname] = getattr(restful, restclsname)
-        context['restfulclasses'] = [getattr(restful, restclsname) for restclsname in restful.__all__]
-
-        #print restful.RestfulSimplifiedAssignment._meta.simplified._meta.model.objects.all()
-        
+        context['restfulapi'] = dump_all_into_dict(restful);
         return context
+
 
 class AddDeliveryView(View):
     def get(self, request, deliveryid):
