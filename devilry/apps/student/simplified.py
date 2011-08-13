@@ -55,6 +55,7 @@ class SimplifiedDeadline(PublishedWhereIsCandidateMixin):
     class Meta(SimplifiedDeadlineMetaMixin):
         """ Defines what methods a Student can use on a Deadline object using the Simplified API """
         methods = ['search', 'read']
+        editablefields = tuple()
 
     @classmethod
     def create_searchqryset(cls, user, **kwargs):
