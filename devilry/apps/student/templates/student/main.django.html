@@ -28,6 +28,13 @@
             renderTo: 'searchwidget',
             searchResultItems: [{
                 xtype: 'searchresults',
+                title: 'Deliveries',
+                store: deliverystore,
+                resultitemConfig: {
+                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                }
+            }, {
+                xtype: 'searchresults',
                 title: 'Deadlines',
                 store: deadlinestore,
                 resultitemConfig: {
@@ -45,7 +52,7 @@
                 resultitemConfig: {
                     tpl: '{{ RestfulSimplifiedAssignmentGroup.ExtjsModelMeta.combobox_tpl|escapejs }}',
                     defaultbutton: {
-                        text: 'View/edit',
+                        text: 'View',
                         clickLinkTpl: 'assignmentgroup/{id}'
                     },
                     menuitems: [{
@@ -53,20 +60,13 @@
                         clickFilter: 'type:delivery group:{id}'
                     }]
                 }
-            }, {
-                xtype: 'searchresults',
-                title: 'Assignments',
-                store: assignmentstore,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
-                }
-            }, {
-                xtype: 'searchresults',
-                title: 'Deliveries',
-                store: deliverystore,
-                resultitemConfig: {
-                    tpl: '{{ RestfulSimplifiedDelivery.ExtjsModelMeta.combobox_tpl|escapejs }}'
-                }
+            //}, {
+                //xtype: 'searchresults',
+                //title: 'Assignments',
+                //store: assignmentstore,
+                //resultitemConfig: {
+                    //tpl: '{{ RestfulSimplifiedAssignment.ExtjsModelMeta.combobox_tpl|escapejs }}'
+                //}
             }]
         });
         searchwidget.loadInitialValues();
