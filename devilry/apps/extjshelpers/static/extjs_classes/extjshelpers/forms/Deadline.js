@@ -32,9 +32,8 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
     }],
 
 
-    help: '<p><strong>Choose a deadline</strong>. Students will be able to deliver after the ' +
-        'deadline expires, however deliveries after the deadline will be clearly ' +
-        'marked.</p>' +
-        '<p>The <strong>text</strong> is displayed to students when they view the deadline, ' +
-        'and when they add deliveries on the deadline.</p>'
+    help: [
+        '<strong>Choose a deadline</strong>. Students will be able to deliver after the deadline expires, however deliveries after the deadline will be clearly marked.',
+        'The <strong>text</strong> is displayed to students when they view the deadline, and when they add deliveries on the deadline.'
+    ]
 });
