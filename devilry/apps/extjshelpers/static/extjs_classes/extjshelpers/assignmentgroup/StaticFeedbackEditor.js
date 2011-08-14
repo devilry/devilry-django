@@ -207,5 +207,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      */
     onFailingGrade: function() {
         console.log('failing grade...');
+
+        var win = Ext.MessageBox.show({
+            title: 'You published a feedback with a <em>failing</em> grade',
+            msg: '<p>Would you like to give the group another try?</p><ul>' +
+                '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
+                '<li>Choose <em>no</no> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
+                '</ul>',
+            buttons: Ext.Msg.YESNO,
+            scope: this,
+            closable: false,
+            fn: function(buttonId) {
+                if(buttonId == 'yes') {
+
+                } else {
+                    this.closeAssignmentGroup();
+                }
+                button.toggle(false);
+            }
+        });
     }
 });
