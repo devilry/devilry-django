@@ -120,24 +120,44 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
 
-    performActionOnSelected: function(action, loadMaskElement) {
+
+    /**
+     * Call the given action on each selected item. If all items on the current page is selected,
+     * a MessageBox will be shown to the user where they can choose to call the action on all items
+     * instead of just the ones on the current page.
+     *
+     * @param action See {@link #performActionOnAll}.
+     */
+    performActionOnSelected: function(action) {
         var selected = this.selModel.getSelection();
         var totalOnCurrentPage = this.store.getCount();
         if(selected.length === totalOnCurrentPage) {
             // TODO: Ask if _all_
-            this.performActionOnAll(action, loadMaskElement);
+            this.performActionOnAll(action);
         } else {
-            this._performActionOnSelected(action, selected);
+            this._performActionOnSelected(action, selected, 1, selected.length);
         }
     },
 
 
-    performActionOnAll: function(action, loadMaskElement) {
+    /**
+     * Call the given action on each item in the store (on all pages in the store).
+     *
+     * @param action An object with the following attributes:
+     *
+     *      callback
+     *          A callback function that is called for each record in the
+     *          store. The callback gets the folling arguments: `(record,
+     *          index, total)`. Index is the index of the record starting with
+     *          1, and total is the total number of records.
+     *      scope
+     *          The scope to execute `callback` in.
+     *          
+     */
+    performActionOnAll: function(action) {
         this._performActionOnAllTmp = {
             originalCurrentPage: this.store.currentPage,
             action: action,
-            loadMaskElement: loadMaskElement,
-            allRecords: []
         }
         this._performActionOnPage(1);
     },
@@ -152,14 +172,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
         }
 
         if(pagenum > totalPages) {
-            this._performActionOnAllTmp.loadMaskElement.unmask();
             this.store.currentPage = this._performActionOnAllTmp.originalCurrentPage;
             this.store.load();
-            this._performActionOnSelected(this._performActionOnAllTmp.action, this._performActionOnAllTmp.allRecords);
         } else {
-            tpl = 'Finding all items in table. Processing page {0}/{1}';
-            this._performActionOnAllTmp.loadMaskElement.mask(Ext.String.format(tpl, pagenum, totalPages));
-
             this.store.currentPage = pagenum;
             this.store.load({
                 scope: this,
@@ -178,9 +193,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
      * @private
      */
     _performActionOnAllPageLoaded: function(pagenum, records) {
-        Ext.each(records, function(record, index) {
-            this._performActionOnAllTmp.allRecords.push(record);
-        }, this);
+        var startIndex = ((pagenum-1) * this.store.pageSize) + 1;
+        this._performActionOnSelected(
+            this._performActionOnAllTmp.action, records,
+            startIndex, this.store.getTotalCount()
+        );
         pagenum ++;
         this._performActionOnPage(pagenum);
     },
@@ -188,7 +205,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     /**
      * @private
      */
-    _performActionOnSelected: function(action, selected) {
-        Ext.bind(action.callback, action.scope)(selected);
+    _performActionOnSelected: function(action, selected, startIndex, total) {
+        Ext.each(selected, function(record, index) {
+            Ext.bind(action.callback, action.scope)(record, startIndex + index, total);
+        });
     }
 });

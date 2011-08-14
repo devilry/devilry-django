@@ -103,18 +103,23 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      */
     onGiveFeedbackToSelected: function(button) {
         //this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.getEl();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.giveFeedbackToSelected
-        }, this.getEl());
+        });
     },
 
     /**
      * @private
      */
-    giveFeedbackToSelected: function(selected) {
-        console.log(selected);
-        console.log(selected.length);
+    giveFeedbackToSelected: function(record, index, total) {
+        if(index == total) {
+            this.getEl().unmask();
+        } else {
+            var msg = Ext.String.format('Processing group {0}/{1}', index, total);
+            this.getEl().mask(msg);
+        }
     },
     
     /**
