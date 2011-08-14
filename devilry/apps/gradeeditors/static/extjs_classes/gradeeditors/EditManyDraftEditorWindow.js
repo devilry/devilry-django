@@ -51,7 +51,7 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
      * @param draftstring The draftstring.
      */
     saveDraftAndPublish: function(draftstring, onFailure) {
-        this.fireEvent('createNewDraft', draftstring);
+        this.fireEvent('createNewDraft', this.getSimplifiedFeedbackDraftModelName(), draftstring);
         this.exit();
     }
 });

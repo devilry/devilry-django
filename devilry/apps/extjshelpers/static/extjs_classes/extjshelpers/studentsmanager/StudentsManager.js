@@ -176,27 +176,33 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     /**
      * @private
      */
-    onPublishFeedback: function(draftstring) {
-        console.log(draftstring);
+    onPublishFeedback: function(feedbackdraftModelName, draftstring) {
         this.down('studentsmanager_studentsgrid').selModel.selectAll();
         this.down('studentsmanager_studentsgrid').performActionOnSelected({
             scope: this,
             callback: this.giveFeedbackToSelected,
-            extraArgs: []
+            extraArgs: [feedbackdraftModelName, draftstring]
         });
     },
 
     /**
      * @private
      */
-    giveFeedbackToSelected: function(record, index, total, extra) {
-        console.log(extra);
+    giveFeedbackToSelected: function(record, index, total, feedbackdraftModelName, draftstring) {
+        console.log(feedbackdraftModelName);
+        console.log(draftstring);
         if(index == total) {
             this.getEl().unmask();
         } else {
             var msg = Ext.String.format('Processing group {0}/{1}', index, total);
             this.getEl().mask(msg);
-            console.log(msg);
+            
+            //var draftrecord = Ext.create(feedbackdraftModelName, {
+                //draft: draftstring,
+                //published: published,
+                //delivery: this.deliveryid
+            //});
+            //draftrecord.save(saveconfig);
         }
     },
     
