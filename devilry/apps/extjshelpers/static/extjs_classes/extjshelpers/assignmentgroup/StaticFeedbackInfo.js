@@ -7,8 +7,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
-        'devilry.extjshelpers.assignmentgroup.StaticFeedbackDetailsTable'
+        'devilry.extjshelpers.assignmentgroup.StaticFeedbackView'
     ],
     frame: false,
     //frameHeader: false,
@@ -75,7 +74,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 //}, '->']
             //}, this.editToolbar],
             //items: [{
-                //xtype: 'staticfeedbackdetailstable',
+                //xtype: 'staticfeedbackdetails',
                 //singlerecordontainer: this.staticfeedback_recordcontainer
             //}]
         //});

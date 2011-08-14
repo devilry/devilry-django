@@ -554,15 +554,6 @@ table.verticalinfotable {
                 }
             }
 
-            .infotable {
-                margin: 0 auto 30px auto !important;
-                .widget-staticfeedbackdetailstable {
-                    table.verticalinfotable {
-                        width: 100%;
-                    }
-                }
-            }
-
             section.rendered_view {
                 //margin: 0 20px 20px 20px;
                 @include commonSectionElements();
