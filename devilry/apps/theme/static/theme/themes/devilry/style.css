@@ -516,116 +516,6 @@ section.extravisible {
   margin: 20px !important;
   box-shadow: 0 0 5px 5px #aaa; }
 
-section.ok {
-  padding: 0px 0 0 148px;
-  min-height: 128px;
-  background-image: url(icons/128x128/ok.png);
-  background-repeat: no-repeat;
-  margin: 20px 0 20px 0; }
-  section.ok p {
-    padding: 5px 0;
-    line-height: 1.6em !important; }
-  section.ok strong {
-    font-weight: bold; }
-  section.ok em {
-    font-style: italic; }
-  section.ok p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  section.ok ul li {
-    padding: 5px 0;
-    margin-left: 25px !important;
-    list-style-type: disc !important;
-    list-style-position: outside !important; }
-
-section.info {
-  padding: 0px 0 0 148px;
-  min-height: 128px;
-  background-image: url(icons/128x128/info.png);
-  background-repeat: no-repeat;
-  margin: 20px 0 20px 0; }
-  section.info p {
-    padding: 5px 0;
-    line-height: 1.6em !important; }
-  section.info strong {
-    font-weight: bold; }
-  section.info em {
-    font-style: italic; }
-  section.info p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  section.info ul li {
-    padding: 5px 0;
-    margin-left: 25px !important;
-    list-style-type: disc !important;
-    list-style-position: outside !important; }
-
-section.help {
-  padding: 0px 0 0 148px;
-  min-height: 128px;
-  background-image: url(icons/128x128/help.png);
-  background-repeat: no-repeat;
-  margin: 20px 0 20px 0; }
-  section.help p {
-    padding: 5px 0;
-    line-height: 1.6em !important; }
-  section.help strong {
-    font-weight: bold; }
-  section.help em {
-    font-style: italic; }
-  section.help p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  section.help ul li {
-    padding: 5px 0;
-    margin-left: 25px !important;
-    list-style-type: disc !important;
-    list-style-position: outside !important; }
-
-section.warning {
-  padding: 0px 0 0 148px;
-  min-height: 128px;
-  background-image: url(icons/128x128/warning.png);
-  background-repeat: no-repeat;
-  margin: 20px 0 20px 0; }
-  section.warning p {
-    padding: 5px 0;
-    line-height: 1.6em !important; }
-  section.warning strong {
-    font-weight: bold; }
-  section.warning em {
-    font-style: italic; }
-  section.warning p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  section.warning ul li {
-    padding: 5px 0;
-    margin-left: 25px !important;
-    list-style-type: disc !important;
-    list-style-position: outside !important; }
-
-section.error {
-  padding: 0px 0 0 148px;
-  min-height: 128px;
-  background-image: url(icons/128x128/error.png);
-  background-repeat: no-repeat;
-  margin: 20px 0 20px 0; }
-  section.error p {
-    padding: 5px 0;
-    line-height: 1.6em !important; }
-  section.error strong {
-    font-weight: bold; }
-  section.error em {
-    font-style: italic; }
-  section.error p {
-    padding: 5px 0;
-    line-height: 1.2em; }
-  section.error ul li {
-    padding: 5px 0;
-    margin-left: 25px !important;
-    list-style-type: disc !important;
-    list-style-position: outside !important; }
-
 section.ok-small {
   padding: 0px 0 0 84px;
   min-height: 64px;
@@ -647,6 +537,36 @@ section.ok-small {
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
+  section.ok-small:first-child {
+    margin-top: 0; }
+  section.ok-small:last-child {
+    margin-bottom: 0; }
+
+section.ok {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/ok.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.ok p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.ok strong {
+    font-weight: bold; }
+  section.ok em {
+    font-style: italic; }
+  section.ok p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.ok ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.ok:first-child {
+    margin-top: 0; }
+  section.ok:last-child {
+    margin-bottom: 0; }
 
 section.info-small {
   padding: 0px 0 0 84px;
@@ -669,28 +589,36 @@ section.info-small {
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
+  section.info-small:first-child {
+    margin-top: 0; }
+  section.info-small:last-child {
+    margin-bottom: 0; }
 
-section.help-small {
-  padding: 0px 0 0 84px;
-  min-height: 64px;
-  background-image: url(icons/64x64/help.png);
+section.info {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/info.png);
   background-repeat: no-repeat;
   margin: 20px 0 20px 0; }
-  section.help-small p {
+  section.info p {
     padding: 5px 0;
     line-height: 1.6em !important; }
-  section.help-small strong {
+  section.info strong {
     font-weight: bold; }
-  section.help-small em {
+  section.info em {
     font-style: italic; }
-  section.help-small p {
+  section.info p {
     padding: 5px 0;
     line-height: 1.2em; }
-  section.help-small ul li {
+  section.info ul li {
     padding: 5px 0;
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
+  section.info:first-child {
+    margin-top: 0; }
+  section.info:last-child {
+    margin-bottom: 0; }
 
 section.warning-small {
   padding: 0px 0 0 84px;
@@ -713,6 +641,36 @@ section.warning-small {
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
+  section.warning-small:first-child {
+    margin-top: 0; }
+  section.warning-small:last-child {
+    margin-bottom: 0; }
+
+section.warning {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/warning.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.warning p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.warning strong {
+    font-weight: bold; }
+  section.warning em {
+    font-style: italic; }
+  section.warning p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.warning ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.warning:first-child {
+    margin-top: 0; }
+  section.warning:last-child {
+    margin-bottom: 0; }
 
 section.error-small {
   padding: 0px 0 0 84px;
@@ -735,6 +693,88 @@ section.error-small {
     margin-left: 25px !important;
     list-style-type: disc !important;
     list-style-position: outside !important; }
+  section.error-small:first-child {
+    margin-top: 0; }
+  section.error-small:last-child {
+    margin-bottom: 0; }
+
+section.error {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/error.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.error p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.error strong {
+    font-weight: bold; }
+  section.error em {
+    font-style: italic; }
+  section.error p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.error ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.error:first-child {
+    margin-top: 0; }
+  section.error:last-child {
+    margin-bottom: 0; }
+
+section.help-small {
+  padding: 0px 0 0 84px;
+  min-height: 64px;
+  background-image: url(icons/64x64/help.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.help-small p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.help-small strong {
+    font-weight: bold; }
+  section.help-small em {
+    font-style: italic; }
+  section.help-small p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.help-small ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.help-small:first-child {
+    margin-top: 0; }
+  section.help-small:last-child {
+    margin-bottom: 0; }
+
+section.help {
+  padding: 0px 0 0 148px;
+  min-height: 128px;
+  background-image: url(icons/128x128/help.png);
+  background-repeat: no-repeat;
+  margin: 20px 0 20px 0; }
+  section.help p {
+    padding: 5px 0;
+    line-height: 1.6em !important; }
+  section.help strong {
+    font-weight: bold; }
+  section.help em {
+    font-style: italic; }
+  section.help p {
+    padding: 5px 0;
+    line-height: 1.2em; }
+  section.help ul li {
+    padding: 5px 0;
+    margin-left: 25px !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important; }
+  section.help:first-child {
+    margin-top: 0; }
+  section.help:last-child {
+    margin-bottom: 0; }
 
 .widget-fileuploadpanel section.ok ul li {
   list-style: square !important; }
