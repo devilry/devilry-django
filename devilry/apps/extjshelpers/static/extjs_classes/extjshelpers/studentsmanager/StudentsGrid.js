@@ -56,7 +56,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
     },
 
     initComponent: function() {
-        this.store.pageSize = 10;
+        this.store.pageSize = 12; // TODO: Default to 30
         this.store.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'parentnode',
             comp: 'exact',
@@ -100,12 +100,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
             }]
         });
         this.callParent(arguments);
-        this.store.load({
-            params: {
-                start: 0,
-                limit: 10
-            }
-        });
+        this.store.load();
     },
 
     formatCandidatesCol: function(value, p, record) {
@@ -122,5 +117,76 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsGrid', {
 
     formatGradeCol: function(value, p, record) {
         return this.gradeColTpl.apply(record.data);
+    },
+
+
+    performActionOnSelected: function(action, loadMaskElement) {
+        var selected = this.selModel.getSelection();
+        var totalOnCurrentPage = this.store.getCount();
+        if(selected.length === totalOnCurrentPage) {
+            // TODO: Ask if _all_
+            this.performActionOnAll(action, loadMaskElement);
+        } else {
+            this._performActionOnSelected(action, selected);
+        }
+    },
+
+
+    performActionOnAll: function(action, loadMaskElement) {
+        this._performActionOnAllTmp = {
+            currentPage: this.store.currentPage,
+            action: action,
+            loadMaskElement: loadMaskElement,
+            allRecords: []
+        }
+        this._performActionOnPage(1);
+    },
+
+    /**
+     * @private
+     */
+    _performActionOnPage: function(pagenum) {
+        var totalPages = this.store.getTotalCount() / this.store.pageSize;
+        if(this.store.getTotalCount() % this.store.pageSize != 0) {
+            totalPages = Math.ceil(totalPages);
+        }
+
+        if(pagenum > totalPages) {
+            this._performActionOnAllTmp.loadMaskElement.unmask();
+            this._performActionOnSelected(this._performActionOnAllTmp.action, this._performActionOnAllTmp.allRecords);
+        } else {
+            tpl = 'Finding all items in table. Processing page {0}/{1}';
+            this._performActionOnAllTmp.loadMaskElement.mask(Ext.String.format(tpl, pagenum, totalPages));
+
+            this.store.currentPage = pagenum;
+            this.store.load({
+                scope: this,
+                callback: function(records, op, success) {
+                    if(success) {
+                        this._performActionOnAllPageLoaded(pagenum, records);
+                    } else {
+                        throw "Failed to load page";
+                    }
+                }
+            });
+        }
+    },
+
+    /**
+     * @private
+     */
+    _performActionOnAllPageLoaded: function(pagenum, records) {
+        Ext.each(records, function(record, index) {
+            this._performActionOnAllTmp.allRecords.push(record);
+        }, this);
+        pagenum ++;
+        this._performActionOnPage(pagenum);
+    },
+
+    /**
+     * @private
+     */
+    _performActionOnSelected: function(action, selected) {
+        Ext.bind(action.callback, action.scope)(selected);
     }
 });

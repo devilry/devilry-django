@@ -80,7 +80,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     items: ['->', {
                         xtype: 'button',
                         scale: 'large',
-                        text: 'Give feedback to selected'
+                        text: 'Give feedback to selected',
+                        listeners: {
+                            scope: this,
+                            click: this.onGiveFeedbackToSelected
+                        }
                     }]
                 }]
             }],
@@ -92,6 +96,25 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         //this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
         //}, this);
+    },
+
+    /**
+     * @private
+     */
+    onGiveFeedbackToSelected: function(button) {
+        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.giveFeedbackToSelected
+        }, this.getEl());
+    },
+
+    /**
+     * @private
+     */
+    giveFeedbackToSelected: function(selected) {
+        console.log(selected);
+        console.log(selected.length);
     },
     
     /**
