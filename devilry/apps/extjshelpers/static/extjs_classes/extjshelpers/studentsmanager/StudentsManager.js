@@ -15,12 +15,17 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 
     config: {
         assignmentgroupstore: undefined,
-        assignmentid: undefined
+        assignmentid: undefined,
+        gradeeditor_config_model: undefined
     },
 
     constructor: function(config) {
         this.callParent([config]);
         this.initConfig(config);
+
+        this.gradeeditor_config_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer = Ext.create('devilry.extjshelpers.SingleRecordContainer');
+        this.registryitem_recordcontainer.addListener('setRecord', this.onLoadRegistryItem, this);
     },
 
     initComponent: function() {
@@ -96,24 +101,65 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         //this.addListener('render', function() {
             //this.up('window').addListener('show', this.onManuallyCreateUsers, this);
         //}, this);
+        this.loadGradeEditorConfigModel();
     },
 
     /**
      * @private
      */
-    onGiveFeedbackToSelected: function(button) {
-        //this.down('studentsmanager_studentsgrid').selModel.selectAll();
-        this.getEl();
-        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+    loadGradeEditorConfigModel: function() {
+        this.gradeeditor_config_model.load(this.assignmentid, {
             scope: this,
-            callback: this.giveFeedbackToSelected
+            success: function(record) {
+                this.gradeeditor_config_recordcontainer.setRecord(record);
+                this.loadRegistryItem();
+            },
+            failure: function() {
+                // TODO: Handle errors
+            }
         });
     },
 
     /**
      * @private
      */
-    giveFeedbackToSelected: function(record, index, total) {
+    loadRegistryItem: function() {
+        var registryitem_model = Ext.ModelManager.getModel('devilry.gradeeditors.RestfulRegistryItem');
+        registryitem_model.load(this.gradeeditor_config_recordcontainer.record.data.gradeeditorid, {
+            scope: this,
+            success: function(record) {
+                this.registryitem_recordcontainer.setRecord(record);
+            }
+        });
+    },
+
+    /**
+     * @private
+     */
+    onLoadRegistryItem: function() {
+        console.log('TODO: Enable Give feedback to selected');
+        console.log(this.gradeeditor_config_recordcontainer.record.data);
+        console.log(this.registryitem_recordcontainer.record.data);
+    },
+
+    /**
+     * @private
+     */
+    onGiveFeedbackToSelected: function(button) {
+        console.log(this.registryitem_recordcontainer.record.data);
+        this.down('studentsmanager_studentsgrid').selModel.selectAll();
+        this.down('studentsmanager_studentsgrid').performActionOnSelected({
+            scope: this,
+            callback: this.giveFeedbackToSelected,
+            extraArgs: []
+        });
+    },
+
+    /**
+     * @private
+     */
+    giveFeedbackToSelected: function(record, index, total, extra) {
+        console.log(extra);
         if(index == total) {
             this.getEl().unmask();
         } else {

@@ -336,7 +336,8 @@ Ext.define('devilry.administrator.assignment.PrettyView', {
             items: {
                 xtype: 'studentsmanager',
                 assignmentgroupstore: this.assignmentgroupstore,
-                assignmentid: this.objectid
+                assignmentid: this.objectid,
+                gradeeditor_config_model: Ext.ModelManager.getModel('devilry.apps.gradeeditors.simplified.administrator.SimplifiedConfig')
             },
             listeners: {
                 scope: this,
